@@ -25,9 +25,7 @@ import org.faktorips.util.StringUtil;
 /**
  * The intention of this class is to use it as a base class for generators that are created by JET.
  * Therefore the JET-Skeleton class needs to extend from this class. Furthermore the JET-Skeleton's
- * generate() method must exactly match the signature of this class's generate() method.
- * JetJavaContentGenerator classes can be provided to a JetJavaSourceFileBuilder and are responsible
- * to just create the content of the java file while the file builder does the rest. Class
+ * generate() method must exactly match the signature of this class's generate() method. Class
  * declarations within JET-template files need to be done by means of the appendXXX-methods of this
  * class. This assures that all import declarations will be collected. To be able to add the imports
  * at the right position within the code the markImportLocation() method has to be used. See the
@@ -134,7 +132,7 @@ public abstract class JetJavaContentGenerator {
         IJavaElement[] imports = importContainer.getChildren();
         for (int i = 0; i < imports.length; i++) {
             String imp = ((IImportDeclaration)imports[i]).getSource(); // example for imp: import
-                                                                       // java.util.Date;
+            // java.util.Date;
             existingImports.add(imp.substring(7, imp.length() - 1));
         }
         return existingImports.getUncoveredImports(decl);
@@ -185,4 +183,5 @@ public abstract class JetJavaContentGenerator {
     public IJavaPackageStructure getPackageStructure() {
         return builder.getPackageStructure();
     }
+
 }

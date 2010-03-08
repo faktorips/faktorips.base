@@ -558,7 +558,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        // TODO AW: Not implemented yet.
     }
 
     @Override
@@ -566,7 +565,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        // TODO AW: Not implemented yet.
     }
 
 }

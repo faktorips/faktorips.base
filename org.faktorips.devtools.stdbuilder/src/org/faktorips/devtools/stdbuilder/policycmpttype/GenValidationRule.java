@@ -395,7 +395,6 @@ public class GenValidationRule extends GenTypePart {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        // TODO AW: Not implemented yet.
     }
 
     @Override
@@ -403,7 +402,6 @@ public class GenValidationRule extends GenTypePart {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        // TODO AW: Not implemented yet.
     }
 
 }

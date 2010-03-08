@@ -1023,7 +1023,6 @@ public class GenAssociationToMany extends GenAssociation {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        // TODO AW: Not implemented yet.
     }
 
     @Override
@@ -1031,7 +1030,6 @@ public class GenAssociationToMany extends GenAssociation {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        // TODO AW: Not implemented yet.
     }
 
     /**

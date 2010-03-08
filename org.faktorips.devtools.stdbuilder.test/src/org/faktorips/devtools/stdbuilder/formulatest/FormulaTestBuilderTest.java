@@ -15,31 +15,50 @@ package org.faktorips.devtools.stdbuilder.formulatest;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.eclipse.jdt.core.IType;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 
-public class FormulaTestBuilderTest extends AbstractIpsPluginTest {
+public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
 
-    private IIpsProject ipsProject;
+    private static final String PRODUCT_NAME = "ProductCmpt";
+
+    private static final String POLICY_TYPE_NAME = "Policy";
+
+    private static final String PRODUCT_TYPE_NAME = "Product";
+
     private IProductCmpt productCmpt;
+
     private IProductCmptType productCmptType;
+
     private IFormula formula;
+
+    private FormulaTestBuilder builder;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ipsProject = super.newIpsProject("TestProject");
-        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, POLICY_TYPE_NAME, PRODUCT_TYPE_NAME);
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
-        productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
+        IProductCmptTypeMethod formulaMethod = productCmptType.newFormulaSignature("testFormula");
+        formulaMethod.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        productCmpt = newProductCmpt(productCmptType, PRODUCT_NAME);
         IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(0);
         formula = generation.newFormula();
+        formula.setExpression("1 + 1");
         formula.newFormulaTestCase();
+        formula.setFormulaSignature("testFormula");
+
+        builder = new FormulaTestBuilder(builderSet, DefaultBuilderSet.KIND_FORMULA_TEST_CASE);
     }
 
     public void testDelete() throws CoreException {
@@ -57,6 +76,15 @@ public class FormulaTestBuilderTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         productCmpt2.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    }
+
+    private IType getGeneratedJavaClass() {
+        return getGeneratedJavaType(productCmpt, true, true, PRODUCT_NAME + FormulaTestBuilder.RUNTIME_EXTENSION);
+    }
+
+    public void testGetGeneratedJavaElements() {
+        generatedJavaElements = builder.getGeneratedJavaElements(productCmpt);
+        assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));
     }
 
 }

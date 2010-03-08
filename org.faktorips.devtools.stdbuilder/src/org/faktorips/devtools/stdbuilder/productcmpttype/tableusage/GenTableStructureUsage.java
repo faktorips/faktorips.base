@@ -180,7 +180,6 @@ public class GenTableStructureUsage extends GenTypePart {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        // TODO AW: Not implemented yet.
     }
 
     @Override
@@ -188,7 +187,6 @@ public class GenTableStructureUsage extends GenTypePart {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        // TODO AW: Not implemented yet.
     }
 
 }

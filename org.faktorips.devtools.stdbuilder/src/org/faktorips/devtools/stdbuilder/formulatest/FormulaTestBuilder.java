@@ -27,7 +27,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -77,7 +80,7 @@ import org.faktorips.values.DateUtil;
 public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
 
     private static final String FORMULA_TEST_CASE_NAME = "formulaTestCaseName";
-    private static final String RUNTIME_EXTENSION = "_formulaTest";
+    public static final String RUNTIME_EXTENSION = "_formulaTest";
     private static final String TEST_METHOD_PREFIX = "test";
 
     private IIpsProject project;
@@ -133,9 +136,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        if (!productCmpt.isValid()) {
-            return false;
-        }
         // build formula test if at least one formula and formula test is specified
         if (!productCmpt.containsFormulaTest()) {
             return false;
@@ -191,7 +191,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    /*
+    /**
      * Returns the file resource of the given ips source file.
      */
     private IFile getFile(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -202,7 +202,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return folder.getFile(fileName + RUNTIME_EXTENSION + ".java");
     }
 
-    /*
+    /**
      * Returns the package folder for the given ips sourcefile.
      */
     private IFolder getFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -238,7 +238,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         generateComputeTestMethods(formulasToTestForGeneration, mainSection.getMethodBuilder());
     }
 
-    /*
+    /**
      * Creates all compute methods which should be tested by the formula test cases
      */
     private void generateComputeTestMethods(Map<IFormula, Integer> formulasToTest, JavaCodeFragmentBuilder builder)
@@ -266,9 +266,14 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return "ForTest_" + generationId;
     }
 
-    /*
-     * Code sample: <pre> public FtPolicyA___2006__01_formulaTest(String formulaTestCaseName) {
-     * super(formulaTestCaseName); } </pre>
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * public FtPolicyA___2006__01_formulaTest(String formulaTestCaseName) {
+     *     super(formulaTestCaseName);
+     * }
+     * </pre>
      */
     private void generateConstructor(JavaCodeFragmentBuilder builder) throws CoreException {
         String className = getUnqualifiedClassName();
@@ -280,11 +285,14 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         builder.methodEnd();
     }
 
-    /*
+    /**
      * Code sample:
      * 
-     * <pre> public IFtPolicyType getFtPolicyType() { return (IFtPolicyType)
-     * getRepository().getProductComponent("FtPolicyA 2006-01"); } </pre>
+     * <pre>
+     * public IFtPolicyType getFtPolicyType() {
+     *     return (IFtPolicyType)getRepository().getProductComponent(&quot;FtPolicyA 2006-01&quot;);
+     * }
+     * </pre>
      */
     private void generateMethodGetProductCmptType(IProductCmptType type, JavaCodeFragmentBuilder builder)
             throws CoreException {
@@ -305,10 +313,12 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         builder.closeBracket();
     }
 
-    /*
+    /**
      * Code sample:
      * 
-     * <pre> public IMotorProductGen getMotorProductGen() </pre>
+     * <pre>
+     * public IMotorProductGen getMotorProductGen()
+     * </pre>
      */
     private void generateSignatureGetProductCmptGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
@@ -318,7 +328,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 EMPTY_STRING_ARRAY);
     }
 
-    /*
+    /**
      * Generates an empty method.
      */
     private void generateExecuteBusinessLogicMethod(IProductCmptType productCmptType,
@@ -331,11 +341,15 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 javaDoc, ANNOTATION_GENERATED);
     }
 
-    /*
+    /**
      * Code sample:
      * 
-     * <pre> public void executeAsserts(IpsTestResult result) { IFtPolicyType productCmpt =
-     * getFtPolicyType(); testFtPolicyA___2006__01___20070101(productCmpt, result); } </pre>
+     * <pre>
+     * public void executeAsserts(IpsTestResult result) {
+     *     IFtPolicyType productCmpt = getFtPolicyType();
+     *     testFtPolicyA___2006__01___20070101(productCmpt, result);
+     * }
+     * </pre>
      */
     private void generateExecuteAssertsMethod(IProductCmptType productCmptType,
             List<String> testMethods,
@@ -364,15 +378,17 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 new String[] { IpsTestResult.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
     }
 
-    /*
+    /**
      * Code sample:
      * 
-     * <pre> public void testFtPolicyA___2006__01___20070101(IProductComponent productCmpt,
+     * <pre>
+     * public void testFtPolicyA___2006__01___20070101(IProductComponent productCmpt,
      * IpsTestResult result) { FtPolicyTypeGen productComponentGen = (FtPolicyTypeGen)
      * productCmpt.getGenerationBase( DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
      * Object formulaResult = null; formulaResult = productComponentGen.computeFormulaResult(new
      * Integer(1), null); assertEquals(Decimal.valueOf("104.1"), formulaResult, result,
-     * productComponentGen.toString(), "formulaResult.Formeltest"); </pre>
+     * productComponentGen.toString(), "formulaResult.Formeltest");
+     * </pre>
      */
     private List<String> generateTestMethods(IProductCmpt productCmpt, JavaCodeFragmentBuilder codeBuilder)
             throws CoreException {
@@ -394,7 +410,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return true;
     }
 
-    /*
+    /**
      * @see generateTestMethods
      */
     private void appendTestMethodsContentForGeneration(IProductCmptGeneration generation,
@@ -545,15 +561,30 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return name.replaceAll(" ", "_").replaceAll("\\(", "_").replaceAll("\\)", "_");
     }
 
+    private IIpsSrcFile getVirtualIpsSrcFile(IProductCmpt productCmpt) throws CoreException {
+        String name = productCmpt.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(
+                productCmpt.getName());
+        return productCmpt.getIpsPackageFragment().getIpsSrcFile(
+                IpsObjectType.PRODUCT_CMPT.getFileName(name + RUNTIME_EXTENSION));
+    }
+
+    @Override
+    protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes)
+            throws CoreException {
+
+        String typeName = getUnqualifiedClassName(getVirtualIpsSrcFile((IProductCmpt)ipsObject));
+        ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JAVA_EXTENSION);
+        javaTypes.add(compilationUnit.getType(typeName));
+    }
+
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-        // TODO AW: Not implemented yet.
+
     }
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        // TODO AW: Not implemented yet.
-        throw new RuntimeException("Not implemented yet.");
+        return false;
     }
 
 }
