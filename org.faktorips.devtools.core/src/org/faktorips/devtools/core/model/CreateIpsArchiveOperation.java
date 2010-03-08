@@ -101,7 +101,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
             IProgressMonitor exportMonitor = new SubProgressMonitor(monitor, 98);
             exportMonitor.beginTask(null, getWorkload());
 
-            IFile workspaceFile = getWorkspaceFile(archive);
+            IFile workspaceFile = getWorkspaceFile();
             if (workspaceFile != null && workspaceFile.getLocalTimeStamp() == archive.lastModified()) {
                 try {
                     // windows file system does not return milliseconde, only seconds
@@ -144,11 +144,11 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         }
     }
 
-    /*
+    /**
      * If the file exists in the workspace then refresh it.
      */
     private void refreshInWorkspaceIfNecessary(IProgressMonitor monitor) throws CoreException {
-        IFile fileInWorkspace = getWorkspaceFile(archive);
+        IFile fileInWorkspace = getWorkspaceFile();
         if (fileInWorkspace == null) {
             // nothing to do, because the file dosn't exists in the workspace
             monitor.done();
@@ -164,11 +164,11 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         }
     }
 
-    /*
+    /**
      * Search and return the given file in the workspace, if the file isn't in the workspace return
      * <code>null</code>.
      */
-    private IFile getWorkspaceFile(File file) {
+    private IFile getWorkspaceFile() {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (int i = 0; i < projects.length; i++) {
             IPath projectPath = projects[i].getLocation();

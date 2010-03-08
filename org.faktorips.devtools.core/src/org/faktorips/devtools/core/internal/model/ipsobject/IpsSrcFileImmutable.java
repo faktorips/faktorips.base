@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -30,123 +30,116 @@ import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 
 /**
- * Represents an IpsSrcFile with an immutable content. Instances of this IpsSrcFile cannot be accessed 
- * via the finder Methods of the IpsProject.
+ * Represents an IpsSrcFile with an immutable content. Instances of this IpsSrcFile cannot be
+ * accessed via the finder Methods of the IpsProject.
  * 
  * @author Thorsten Guenther, Peter Erzberger
  */
 public class IpsSrcFileImmutable extends IpsSrcFile {
 
     private IpsObject ipsObject;
-    
-	/**
-	 * Create a new IpsSrcFileImmutable with a content based on the provided InputStream. The content of this
-     * IpsSrcFile cannot be changed. 
-	 * 
-	 * @param project the IIpsProject this IpsSrcFile relates to
-	 * @param name the name of this IpsSrcFile
+
+    /**
+     * Create a new IpsSrcFileImmutable with a content based on the provided InputStream. The
+     * content of this IpsSrcFile cannot be changed.
+     * 
+     * @param project the IIpsProject this IpsSrcFile relates to
+     * @param name the name of this IpsSrcFile
      * @param content the content of this IpsSrcFile
-	 */
-	public IpsSrcFileImmutable(String name, InputStream content) {
-		super(new IpsProject(IpsPlugin.getDefault().getIpsModel(), "IpsSrcFileImmutableIpsProject"), name); //$NON-NLS-1$
-		setContents(content);
-	}
-    
+     */
+    public IpsSrcFileImmutable(String name, InputStream content) {
+        super(new IpsProject(IpsPlugin.getDefault().getIpsModel(), "IpsSrcFileImmutableIpsProject"), name); //$NON-NLS-1$
+        setContents(content);
+    }
+
     /**
      * Returns <code>true</code> as the file is constructed from an existing input stream.
      * 
      * {@inheritDoc}
      */
+    @Override
     public boolean exists() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-	public boolean isHistoric() {
+    @Override
+    public boolean isHistoric() {
         return true;
     }
-    
+
     /**
      * Returns null.
-	 */
-	public IFile getCorrespondingFile() {
-		return null;
-	}
-	
-	/**
-     * Returns null.
-	 */
-	public IResource getCorrespondingResource() {
-		return null;
-	}
-
-	/**
-	 * Does nothing - no save on remote files.
-	 */
-	public void save(boolean force, IProgressMonitor monitor) throws CoreException {
-		// No save on remote files
-	}
-	
-	private void setContents(InputStream in) {
-		try {
-            ipsObject = (IpsObject)getIpsObjectType().newObject(this);
-            Document doc =IpsPlugin.getDefault().newDocumentBuilder().parse(in);
-            ipsObject.initFromXml(doc.getDocumentElement());
-		} catch (Exception e) {
-            IpsPlugin.log(new IpsStatus(e));
-		}
-	}
-	
-	/**
-	 * No modification allowed
-	 */
-	public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
-		// No modification of a remote file
-	}
-
-	/**
-	 * Remote files can not be modified - so it is never dirty.
-	 */
-	public boolean isDirty() {
-		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
-	}
-
-    /**
-	 * {@inheritDoc}
-	 */
-	public boolean isMutable() {
-		return false;
-	}
-    
-    /**
-     * {@inheritDoc}
      */
+    @Override
+    public IFile getCorrespondingFile() {
+        return null;
+    }
+
+    /**
+     * Returns null.
+     */
+    @Override
+    public IResource getCorrespondingResource() {
+        return null;
+    }
+
+    /**
+     * Does nothing - no save on remote files.
+     */
+    @Override
+    public void save(boolean force, IProgressMonitor monitor) throws CoreException {
+        // No save on remote files
+    }
+
+    private void setContents(InputStream in) {
+        try {
+            ipsObject = (IpsObject)getIpsObjectType().newObject(this);
+            Document doc = IpsPlugin.getDefault().newDocumentBuilder().parse(in);
+            ipsObject.initFromXml(doc.getDocumentElement());
+        } catch (Exception e) {
+            IpsPlugin.log(new IpsStatus(e));
+        }
+    }
+
+    /**
+     * No modification allowed
+     */
+    @Override
+    public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
+        // No modification of a remote file
+    }
+
+    /**
+     * Remote files can not be modified - so it is never dirty.
+     */
+    @Override
+    public boolean isDirty() {
+        return false;
+    }
+
+    @Override
+    public IpsObjectType getIpsObjectType() {
+        return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
+    }
+
+    @Override
+    public boolean isMutable() {
+        return false;
+    }
+
+    @Override
     public boolean isContentParsable() {
         return ipsObject.isFromParsableFile();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public IIpsObject getIpsObject() throws CoreException {
         return ipsObject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public QualifiedNameType getQualifiedNameType() {
         return QualifiedNameType.newQualifedNameType(name);
     }
-    
-    
+
 }

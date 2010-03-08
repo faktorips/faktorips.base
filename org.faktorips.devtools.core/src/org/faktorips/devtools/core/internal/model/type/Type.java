@@ -502,8 +502,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * Collects the dependencies of this type. Subclasses need to call this method in their
      * dependsOn() methods. The provided parameter must not be <code>null</code>.
      */
-    protected void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details)
-            throws CoreException {
+    protected void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
         if (hasSupertype()) {
             IDependency dependency = IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(),
                     new QualifiedNameType(getSupertype(), getIpsObjectType()));
@@ -524,7 +523,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     private void addAttributeDatatypeDependencies(Set<IDependency> dependencies,
-            Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+            Map<IDependency, List<IDependencyDetail>> details) {
         IAttribute[] attributes = getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             String datatype = attributes[i].getDatatype();
@@ -535,7 +534,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     private void addQualifiedNameTypesForRelationTargets(Set<IDependency> dependencies,
-            Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+            Map<IDependency, List<IDependencyDetail>> details) {
         IAssociation[] relations = getAssociations();
         for (int i = 0; i < relations.length; i++) {
             String targetQName = relations[i].getTarget();

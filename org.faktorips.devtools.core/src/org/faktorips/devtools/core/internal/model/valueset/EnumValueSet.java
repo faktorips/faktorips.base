@@ -330,8 +330,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return list;
     }
 
-    private void validateValueWithoutDuplicateCheck(MessageList list, int index, ValueDatatype datatype)
-            throws CoreException {
+    private void validateValueWithoutDuplicateCheck(MessageList list, int index, ValueDatatype datatype) {
         ObjectProperty op = new ObjectProperty(this, PROPERTY_VALUES, index);
         String value = values.get(index);
         if (datatype == null) {

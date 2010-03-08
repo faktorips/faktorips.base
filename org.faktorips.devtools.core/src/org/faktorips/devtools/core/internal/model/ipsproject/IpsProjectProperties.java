@@ -116,9 +116,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createdFromParsableFileContents = props.createdFromParsableFileContents;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         try {
             MessageList list = new MessageList();
@@ -126,8 +123,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 validateBuilderSetConfig(ipsProject, list);
             }
             validateUsedPredefinedDatatype(ipsProject, list);
-            validateIpsObjectPath(ipsProject, list);
-            validateRequiredFeatures(ipsProject, list);
+            validateIpsObjectPath(list);
+            validateRequiredFeatures(list);
             DynamicValueDatatype[] valuetypes = getDefinedValueDatatypes();
             for (int i = 0; i < valuetypes.length; i++) {
                 list.add(valuetypes[i].checkReadyToUse());
@@ -146,7 +143,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     }
 
-    private void validateRequiredFeatures(IIpsProject ipsProject, MessageList list) {
+    private void validateRequiredFeatures(MessageList list) {
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
         for (int i = 0; i < managers.length; i++) {
             if (getMinRequiredVersionNumber(managers[i].getFeatureId()) == null) {
@@ -181,10 +178,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return true;
     }
 
-    /*
+    /**
      * Validate the ips object path entry.
      */
-    private void validateIpsObjectPath(IIpsProject ipsProject, MessageList list) throws CoreException {
+    private void validateIpsObjectPath(MessageList list) throws CoreException {
         list.add(path.validate());
     }
 

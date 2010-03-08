@@ -165,9 +165,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /** Validates the <tt>IEnumAttributeReference</tt>s. */
-    private void validateEnumAttributeReferences(MessageList validationMessageList, IEnumType enumType)
-            throws CoreException {
-
+    private void validateEnumAttributeReferences(MessageList validationMessageList, IEnumType enumType) {
         validateEnumAttributeReferencesCount(validationMessageList, enumType);
         if (validationMessageList.getNoOfMessages() > 0) {
             return;

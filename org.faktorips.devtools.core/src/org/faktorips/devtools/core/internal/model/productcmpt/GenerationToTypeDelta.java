@@ -82,13 +82,12 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
             ProdDefPropertyType propertyType = ProdDefPropertyType.values()[i];
             LinkedHashMap<String, IProdDefProperty> propertiesMap = ((ProductCmptType)productCmptType)
                     .getProdDefPropertiesMap(propertyType, ipsProject);
-            checkForMissingPropertyValues(propertiesMap, propertyType);
+            checkForMissingPropertyValues(propertiesMap);
             checkForInconsistentPropertyValues(propertiesMap, propertyType);
         }
     }
 
-    private void checkForMissingPropertyValues(LinkedHashMap<String, IProdDefProperty> propertiesMap,
-            ProdDefPropertyType propertyType) {
+    private void checkForMissingPropertyValues(LinkedHashMap<String, IProdDefProperty> propertiesMap) {
         for (Iterator<IProdDefProperty> it = propertiesMap.values().iterator(); it.hasNext();) {
             IProdDefProperty property = it.next();
             if (generation.getPropertyValue(property) == null) {

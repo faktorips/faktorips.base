@@ -96,7 +96,7 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
         getContent().updateState(memento.getState(), memento.isDirty());
     }
 
-    String getEncoding() throws CoreException {
+    String getEncoding() {
         return getIpsProject().getXmlFileCharset();
     }
 

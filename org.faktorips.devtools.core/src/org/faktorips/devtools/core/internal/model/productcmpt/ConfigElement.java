@@ -67,58 +67,34 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductCmpt getProductCmpt() {
         return (IProductCmpt)getParent().getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getPropertyName() {
         return pcTypeAttribute;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findPcTypeAttribute(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ProdDefPropertyType getPropertyType() {
         return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getPropertyValue() {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getPolicyCmptTypeAttribute() {
         return pcTypeAttribute;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setPolicyCmptTypeAttribute(String newName) {
         String oldName = pcTypeAttribute;
         pcTypeAttribute = newName;
@@ -126,25 +102,16 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         valueChanged(oldName, pcTypeAttribute);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getValue() {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValue(String newValue) {
         String oldValue = value;
         value = newValue;
         valueChanged(oldValue, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType(ipsProject);
         if (pcType == null) {
@@ -153,9 +120,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return pcType.findPolicyCmptTypeAttribute(pcTypeAttribute, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAttribute a = findPcTypeAttribute(ipsProject);
         if (a != null) {
@@ -164,9 +128,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -183,6 +144,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     private IPolicyCmptTypeAttribute validateReferenceToAttribute(MessageList list, IIpsProject ipsProject)
             throws CoreException {
+
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
         if (attribute == null) {
             IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType(ipsProject);
@@ -202,10 +164,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     private void validateValueAndValueSet(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
             throws CoreException {
+
         ValueDatatype valueDatatype = validateValueVsDatatype(attribute, ipsProject, list);
         if (valueDatatype != null) {
-            validateValueVsValueSet(attribute, valueDatatype, ipsProject, list);
-            validateValueSetVsAttributeValueSet(attribute, valueDatatype, ipsProject, list);
+            validateValueVsValueSet(ipsProject, list);
+            validateValueSetVsAttributeValueSet(attribute, ipsProject, list);
         }
     }
 
@@ -242,7 +205,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     private void validateValueSetVsAttributeValueSet(IPolicyCmptTypeAttribute attribute,
-            ValueDatatype valueDatatype,
             IIpsProject ipsProject,
             MessageList list) throws CoreException {
 
@@ -290,10 +252,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         list.add(new Message(msgCode, text, Message.ERROR, invalidObject, invalidProperties));
     }
 
-    private void validateValueVsValueSet(IPolicyCmptTypeAttribute attribute,
-            ValueDatatype valueDatatype,
-            IIpsProject ipsProject,
-            MessageList list) throws CoreException {
+    private void validateValueVsValueSet(IIpsProject ipsProject, MessageList list) throws CoreException {
 
         if (StringUtils.isNotEmpty(value)) {
             if (!valueSet.containsValue(value, ipsProject)) {
@@ -307,7 +266,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         String valueInMsg = value;
         if (value == null) {
             valueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        } else if (value.equals("")) { //$NON-NLS-1$
+        } else if (value.equals("")) {
             valueInMsg = Messages.ConfigElement_msgValueIsEmptyString;
         }
         String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, valueInMsg, valueDatatype.getName());
@@ -389,7 +348,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             valueSet = (IValueSet)part;
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        throw new RuntimeException("Unknown part type" + part.getClass());
     }
 
     /**
@@ -401,7 +360,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             valueSet = null;
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        throw new RuntimeException("Unknown part type" + part.getClass());
     }
 
     /**
@@ -413,7 +372,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
         value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
 
-        pcTypeAttribute = element.getAttribute("attribute"); //$NON-NLS-1$
+        pcTypeAttribute = element.getAttribute("attribute");
         name = pcTypeAttribute;
     }
 
@@ -424,7 +383,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute("attribute", pcTypeAttribute); //$NON-NLS-1$
-        ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
+        ValueToXmlHelper.addValueToElement(value, element, "Value");
     }
 
     /**
@@ -432,7 +391,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      */
     @SuppressWarnings("unchecked")
     public IIpsObjectPart newPart(Class partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+        throw new IllegalArgumentException("Unknown part type" + partType);
     }
 
     /**
@@ -457,7 +416,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             // ignore value nodes, will be parsed in the this#initPropertiesFromXml method
             return null;
         }
-        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
+        throw new RuntimeException("Could not create part for tag name: " + xmlTagName);
     }
 
     public ValueDatatype getValueDatatype() {

@@ -67,16 +67,10 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         super(path);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsArchive getIpsArchive() {
         return archive;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IPath getArchivePath() {
         if (archive == null) {
             return null;
@@ -84,9 +78,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return archive.getArchivePath();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setArchivePath(IIpsProject ipsProject, IPath newArchivePath) {
         if (newArchivePath == null) {
             archive = null;
@@ -98,30 +89,18 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         archive = new IpsArchive(ipsProject, newArchivePath);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getType() {
         return IIpsObjectPathEntry.TYPE_ARCHIVE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getIpsPackageFragmentRootName() {
         return getIpsArchive().getArchivePath().lastSegment();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
         return archive.getRoot();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean exists(QualifiedNameType qnt) throws CoreException {
         if (archive == null) {
@@ -130,9 +109,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return archive.contains(qnt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findIpsSrcFilesInternal(IpsObjectType type,
             String packageFragment,
@@ -141,9 +117,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
@@ -154,9 +127,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
             String prefix,
@@ -182,16 +152,13 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         }
     }
 
-    private IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType) throws CoreException {
+    private IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType) {
         archive.getRoot().getIpsPackageFragment(qNameType.getPackageName());
         ArchiveIpsPackageFragment pack = new ArchiveIpsPackageFragment(
                 (ArchiveIpsPackageFragmentRoot)archive.getRoot(), qNameType.getPackageName());
         return new ArchiveIpsSrcFile(pack, qNameType.getFileName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(Element element, IProject project) {
         String path = element.getAttribute("file"); //$NON-NLS-1$
@@ -203,9 +170,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);
@@ -214,9 +178,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
         if (archive == null || !archive.exists()) {
@@ -228,17 +189,11 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "ArchiveEntry[" + getArchivePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isContained(IResourceDelta delta) {
         return ((IpsArchive)archive).isContained(delta);
     }
@@ -246,4 +201,5 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     public InputStream getRessourceAsStream(String path) throws CoreException {
         return archive.getResourceAsStream(path);
     }
+
 }

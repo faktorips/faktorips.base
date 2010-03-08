@@ -352,8 +352,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
-    private void initTableContentsFromTemplate(TableContents newTableContents, TableContents template)
-            throws CoreException {
+    private void initTableContentsFromTemplate(TableContents newTableContents, TableContents template) {
         newTableContents.setTableStructure(template.getTableStructure());
         newTableContents.setNumOfColumnsInternal(template.getNumOfColumns());
         newTableContents.setDescription(template.getDescription());

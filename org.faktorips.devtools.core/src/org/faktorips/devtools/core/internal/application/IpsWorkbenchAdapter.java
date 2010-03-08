@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,79 +35,68 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 class IpsWorkbenchAdapter extends WorkbenchAdapter {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object[] getChildren(Object object) {
-		if (object instanceof IContainer) {
-			try {
-				return ((IContainer) object).members();
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-		}
-		return new IResource[0];
-	}
+    @Override
+    public Object[] getChildren(Object object) {
+        if (object instanceof IContainer) {
+            try {
+                return ((IContainer)object).members();
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+        return new IResource[0];
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ImageDescriptor getImageDescriptor(Object object) {
-		String key = null;
-		ImageDescriptor image = null;
-		if (object instanceof IProject) {
-			if (((IProject) object).isOpen()) {
-				key = IDE.SharedImages.IMG_OBJ_PROJECT;
-			} else {
-				key = IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED;
-			}
-		} else if (object instanceof IFile) {
-			key = ISharedImages.IMG_OBJ_FILE;
-			IFile file = (IFile) object;
-			IContentType contentType = null;
-			try {
-				IContentTypeMatcher matcher = file.getProject()
-						.getContentTypeMatcher();
-				contentType = matcher.findContentTypeFor(file.getName());
-			} catch (CoreException e) {
-			}
-			image = PlatformUI.getWorkbench().getEditorRegistry()
-					.getImageDescriptor(file.getName(), contentType);
+    @Override
+    public ImageDescriptor getImageDescriptor(Object object) {
+        String key = null;
+        ImageDescriptor image = null;
+        if (object instanceof IProject) {
+            if (((IProject)object).isOpen()) {
+                key = IDE.SharedImages.IMG_OBJ_PROJECT;
+            } else {
+                key = IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED;
+            }
+        } else if (object instanceof IFile) {
+            key = ISharedImages.IMG_OBJ_FILE;
+            IFile file = (IFile)object;
+            IContentType contentType = null;
+            try {
+                IContentTypeMatcher matcher = file.getProject().getContentTypeMatcher();
+                contentType = matcher.findContentTypeFor(file.getName());
+            } catch (CoreException e) {
+            }
+            image = PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(file.getName(), contentType);
 
-		} else if (object instanceof IFolder) {
-			key = ISharedImages.IMG_OBJ_FOLDER;
-		}
+        } else if (object instanceof IFolder) {
+            key = ISharedImages.IMG_OBJ_FOLDER;
+        }
 
-		if (image != null) {
-			return image;
-		}
+        if (image != null) {
+            return image;
+        }
 
-		if (key != null) {
-			return PlatformUI.getWorkbench().getSharedImages()
-					.getImageDescriptor(key);
-		}
+        if (key != null) {
+            return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(key);
+        }
 
-		return super.getImageDescriptor(object);
-	}
+        return super.getImageDescriptor(object);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getLabel(Object object) {
-		if (object instanceof IResource) {
-			return ((IResource) object).getName();
-		}
-		return super.getLabel(object);
-	}
+    @Override
+    public String getLabel(Object object) {
+        if (object instanceof IResource) {
+            return ((IResource)object).getName();
+        }
+        return super.getLabel(object);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getParent(Object object) {
-		if (object instanceof IResource) {
-			return ((IResource) object).getParent();
-		}
-		return super.getParent(object);
-	}
+    @Override
+    public Object getParent(Object object) {
+        if (object instanceof IResource) {
+            return ((IResource)object).getParent();
+        }
+        return super.getParent(object);
+    }
 
 }

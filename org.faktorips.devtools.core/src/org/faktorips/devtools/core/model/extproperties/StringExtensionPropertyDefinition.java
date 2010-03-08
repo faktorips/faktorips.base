@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,7 +18,8 @@ import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of </code>IExtensionPropertyDefinition</code> for extension properties of type String.
+ * Implementation of </code>IExtensionPropertyDefinition</code> for extension properties of type
+ * String.
  * 
  * @author Jan Ortmann
  */
@@ -31,27 +32,19 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object getValueFromXml(Element valueElement) {
-    	CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
-    	if (cdata==null) {
-    		return ""; //$NON-NLS-1$
-    	}
-    	return cdata.getData();
+        CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
+        if (cdata == null) {
+            return ""; //$NON-NLS-1$
+        }
+        return cdata.getData();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object getValueFromString(String value) {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setDefaultValue(String s) {
         defaultValue = s;
     }

@@ -61,7 +61,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
     @Override
     public void initialize(IWorkbenchConfigurer configurer) {
 
-        // make sure we always save and restore worbench state
+        // make sure we always save and restore workbench state
         // note, this does not save the workspace(!) state. This has to be handled explicitly in
         // postShutdown!
         configurer.setSaveAndRestore(true);
@@ -106,17 +106,11 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         manager.registerAdapters(factory, IMarker.class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getInitialWindowPerspectiveId() {
         return IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
         return new IpsWorkbenchWindowAdvisor(configurer);
@@ -263,9 +257,6 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         getWorkbenchConfigurer().declareImage(symbolicName, desc, shared);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void postShutdown() {
         if (ResourcesPlugin.getWorkspace() != null) {
@@ -295,7 +286,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         };
         try {
             // yes it is internal, but you would need to copy a lot of classes to get the same
-            // funcitonality!
+            // functionality!
             new ProgressMonitorJobsDialog(null).run(true, false, runnable);
         } catch (InvocationTargetException e) {
             status.merge(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 1, "Internal Error", e.getTargetException()));

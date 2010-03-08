@@ -419,9 +419,8 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
     }
 
-    private void resetLauchAndTestRun() throws DebugException {
+    private void resetLauchAndTestRun() {
         trace("Reset lauch and test run."); //$NON-NLS-1$
-
         launchStartTime = 0;
     }
 

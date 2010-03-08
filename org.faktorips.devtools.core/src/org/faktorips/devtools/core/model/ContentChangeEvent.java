@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,16 +23,16 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An event that signals the change of an ips source file's content. 
+ * An event that signals the change of an ips source file's content.
  */
-public class ContentChangeEvent  {
+public class ContentChangeEvent {
 
     public final static int TYPE_WHOLE_CONTENT_CHANGED = 1;
 
     public final static int TYPE_PROPERTY_CHANGED = 2;
-    
+
     public final static int TYPE_PART_ADDED = 4;
-    
+
     public final static int TYPE_PART_REMOVED = 8;
 
     public final static int TYPE_PARTS_CHANGED_POSITIONS = 16;
@@ -40,7 +40,7 @@ public class ContentChangeEvent  {
     public final static ContentChangeEvent newPartAddedEvent(IIpsObjectPart part) {
         return new ContentChangeEvent(part, TYPE_PART_ADDED);
     }
-    
+
     public final static ContentChangeEvent newPartRemovedEvent(IIpsObjectPart part) {
         return new ContentChangeEvent(part, TYPE_PART_REMOVED);
     }
@@ -53,43 +53,44 @@ public class ContentChangeEvent  {
         return new ContentChangeEvent(file, parts);
     }
 
-    public final static ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file, List<? extends IIpsObjectPart> parts) {
+    public final static ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file,
+            List<? extends IIpsObjectPart> parts) {
         return new ContentChangeEvent(file, parts);
     }
 
     public final static ContentChangeEvent newWholeContentChangedEvent(IIpsSrcFile file) {
         return new ContentChangeEvent(file);
     }
-    
+
     private IIpsSrcFile ipsSrcFile;
-    
+
     private IIpsObjectPart part;
-    
+
     private List<IIpsObjectPart> movedParts = null;
-    
+
     private int type = TYPE_PROPERTY_CHANGED;
-    
+
     private ContentChangeEvent(IIpsSrcFile ipsSrcFile) {
         this.ipsSrcFile = ipsSrcFile;
-        this.type = TYPE_WHOLE_CONTENT_CHANGED;
+        type = TYPE_WHOLE_CONTENT_CHANGED;
     }
-    
+
     private ContentChangeEvent(IIpsObjectPart part, int eventType) {
         ArgumentCheck.notNull(part);
         this.part = part;
-        this.ipsSrcFile = part.getIpsObject().getIpsSrcFile();
-        this.type = eventType;
+        ipsSrcFile = part.getIpsObject().getIpsSrcFile();
+        type = eventType;
     }
-    
+
     private ContentChangeEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
-        this.ipsSrcFile = file;
-        this.movedParts = new ArrayList<IIpsObjectPart>();
+        ipsSrcFile = file;
+        movedParts = new ArrayList<IIpsObjectPart>();
         for (int i = 0; i < parts.length; i++) {
             movedParts.add(parts[i]);
         }
-        this.type = TYPE_PARTS_CHANGED_POSITIONS;
+        type = TYPE_PARTS_CHANGED_POSITIONS;
     }
-    
+
     private ContentChangeEvent(IIpsSrcFile file, List<? extends IIpsObjectPart> parts) {
         movedParts = Collections.unmodifiableList(parts);
     }
@@ -100,7 +101,7 @@ public class ContentChangeEvent  {
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
     }
-    
+
     /**
      * Returns event type.
      * 
@@ -114,35 +115,35 @@ public class ContentChangeEvent  {
     }
 
     /**
-     * Returns the part that was either changed, added, or removed. 
-     * Returns <code>null</code> if this information is not available.
+     * Returns the part that was either changed, added, or removed. Returns <code>null</code> if
+     * this information is not available.
      */
     public IIpsObjectPart getPart() {
         return part;
     }
-    
+
     // TODO JAVADOC!
     public IIpsObjectPart[] getMovedParts() {
-        if (movedParts==null) {
+        if (movedParts == null) {
             return new IIpsObjectPart[0];
         }
         return movedParts.toArray(new IIpsObjectPart[movedParts.size()]);
     }
-    
+
     public boolean isAffected(IIpsObjectPartContainer partContainer) {
-        if (partContainer==null) {
+        if (partContainer == null) {
             return false;
         }
-        if (partContainer==this.part) {
+        if (partContainer == part) {
             return true;
         }
-        if (partContainer.getIpsSrcFile()!=null && partContainer.getIpsSrcFile().equals(ipsSrcFile)) {
+        if (partContainer.getIpsSrcFile() != null && partContainer.getIpsSrcFile().equals(ipsSrcFile)) {
             return true;
         }
-        if (type==TYPE_WHOLE_CONTENT_CHANGED) {
+        if (type == TYPE_WHOLE_CONTENT_CHANGED) {
             return true;
         }
-        if (movedParts==null) {
+        if (movedParts == null) {
             return false;
         }
         for (IIpsObjectPart part : movedParts) {
@@ -152,15 +153,15 @@ public class ContentChangeEvent  {
         }
         return false;
     }
-    
+
     public boolean containsAffectedObjects(Class<?> type) {
         ArgumentCheck.notNull(type);
-        if (part!=null) {
+        if (part != null) {
             if (type.isAssignableFrom(part.getClass())) {
                 return true;
             }
         }
-        if (movedParts==null) {
+        if (movedParts == null) {
             return false;
         }
         for (IIpsObjectPart part : movedParts) {
@@ -170,13 +171,10 @@ public class ContentChangeEvent  {
         }
         return false;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     public String toString() {
         return "ContentChangeEvent for " + ipsSrcFile; //$NON-NLS-1$
     }
-    
-    
+
 }

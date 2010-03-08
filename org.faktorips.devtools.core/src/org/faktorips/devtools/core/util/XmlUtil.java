@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
@@ -53,15 +54,15 @@ import org.xml.sax.SAXParseException;
  */
 public class XmlUtil {
 
-    public final static void setAttributeConvertNullToEmptyString(Element el, String attribute, String value) {        
-        if (value==null) {
+    public final static void setAttributeConvertNullToEmptyString(Element el, String attribute, String value) {
+        if (value == null) {
             el.setAttribute(attribute, ""); //$NON-NLS-1$
         } else {
             el.setAttribute(attribute, value);
         }
     }
-    
-    public final static String getAttributeConvertEmptyStringToNull(Element el, String attribute) {        
+
+    public final static String getAttributeConvertEmptyStringToNull(Element el, String attribute) {
         String value = el.getAttribute(attribute);
         if ("".equals(value)) { //$NON-NLS-1$
             return null;
@@ -82,9 +83,9 @@ public class XmlUtil {
         if (calendar == null) {
             return ""; //$NON-NLS-1$
         }
-        int month = calendar.get(GregorianCalendar.MONTH) + 1;
-        int date = calendar.get(GregorianCalendar.DATE);
-        return calendar.get(GregorianCalendar.YEAR) + "-" + (month < 10 ? "0" + month : "" + month) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int date = calendar.get(Calendar.DATE);
+        return calendar.get(Calendar.YEAR) + "-" + (month < 10 ? "0" + month : "" + month) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "-" + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
@@ -129,8 +130,8 @@ public class XmlUtil {
      * Transforms the given node to a string and writes in to the given writer.
      * <p>
      * The encoding that is used to transforms the string into bytes is defined by the writer. E.g.
-     * a <code>OutputStreamWriter</code> is created with a Charset/encoding. With a </code>StringWriter</code>
-     * no encoding is neccessary.
+     * a <code>OutputStreamWriter</code> is created with a Charset/encoding. With a
+     * </code>StringWriter</code> no encoding is neccessary.
      * <p>
      * However, to get the encoding option set in the xml header e.g. <code><?xml version="1.0"
      * encoding="Cp1252"?></code>, it is neccessary to pass the encoding to this method. Note that
@@ -155,8 +156,7 @@ public class XmlUtil {
         transformer.transform(source, result);
     }
 
-    public final static Document getDocument(InputStream is) throws SAXException, IOException,
-            ParserConfigurationException {
+    public final static Document getDocument(InputStream is) throws SAXException, IOException {
         return getDefaultDocumentBuilder().parse(is);
     }
 
@@ -242,7 +242,7 @@ public class XmlUtil {
             throws TransformerException {
         writeXMLtoResult(new StreamResult(os), doc, doctype, indentWidth, encoding);
     }
-    
+
     /**
      * Writes a XML document to a dom result object.
      * <p>
@@ -267,7 +267,7 @@ public class XmlUtil {
         transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
         transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
         if (encoding != null) {
-            transformer.setOutputProperty(OutputKeys.ENCODING, encoding); //$NON-NLS-1$
+            transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         }
         if (doctype != null) {
             transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype);
@@ -279,9 +279,7 @@ public class XmlUtil {
         }
         transformer.transform(src, res);
     }
-    
-    
-    
+
     public final static Element getFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -361,8 +359,7 @@ public class XmlUtil {
     }
 
     /**
-     * Returns the node's text child node or <code>null</code> if the node
-     * hasn't got a text node.  
+     * Returns the node's text child node or <code>null</code> if the node hasn't got a text node.
      */
     public final static Text getTextNode(Node node) {
         node.normalize();
@@ -374,7 +371,7 @@ public class XmlUtil {
         }
         return null;
     }
-    
+
     /**
      * Returns the node's first CDATA section or <code>null</code> if the node hasn't got one.
      */
@@ -433,13 +430,15 @@ public class XmlUtil {
      * parent and returns this new child.
      */
     public final static Node addNewCDATAorTextChild(Document doc, Node parent, String text) {
-        if (text == null)
+        if (text == null) {
             return null;
+        }
         char[] chars = text.toCharArray();
         boolean toCDATA = false;
         for (int i = 0; i < chars.length && !toCDATA; i++) {
-            if (chars[i] < 32 || 126 < chars[i])
+            if (chars[i] < 32 || 126 < chars[i]) {
                 toCDATA = true;
+            }
         }
         return toCDATA ? addNewCDATAChild(doc, parent, text) : addNewTextChild(doc, parent, text);
     }

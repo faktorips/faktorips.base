@@ -359,9 +359,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * identified by its index in each given <tt>IEnumValue</tt> up or down in the containing list
      * by 1.
      */
-    private void moveEnumAttributeValues(int enumAttributeIndex, List<IEnumValue> enumValues, boolean up)
-            throws CoreException {
-
+    private void moveEnumAttributeValues(int enumAttributeIndex, List<IEnumValue> enumValues, boolean up) {
         for (IEnumValue currentEnumValue : enumValues) {
             currentEnumValue.moveEnumAttributeValue(currentEnumValue.getEnumAttributeValues().get(enumAttributeIndex),
                     up);
@@ -495,7 +493,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * If the this <tt>IEnumType</tt> is abstract or does not contain values the validation will
      * succeed even if there is no <tt>IEnumLiteralNameAttribute</tt>.
      */
-    private void validateLiteralNameAttribute(MessageList validationMessageList) throws CoreException {
+    private void validateLiteralNameAttribute(MessageList validationMessageList) {
         // Pass validation if the EnumType is abstract or does not contain values.
         if (isAbstract || !isContainingValues()) {
             return;

@@ -83,7 +83,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        validateIsNeeded(list, ipsProject);
+        validateIsNeeded(list);
         if (list.getNoOfMessages() == 0) {
             validateDefaultValueProviderAttribute(list, ipsProject);
         }
@@ -93,7 +93,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
      * Validates whether this <tt>IEnumLiteralNameAttribute</tt> is needed by the <tt>IEnumType</tt>
      * it belongs to.
      */
-    private void validateIsNeeded(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateIsNeeded(MessageList list) throws CoreException {
         IEnumType enumType = getEnumType();
         if (!(enumType.isCapableOfContainingValues())) {
             String text = Messages.EnumLiteralNameAttribute_NotNeeded;

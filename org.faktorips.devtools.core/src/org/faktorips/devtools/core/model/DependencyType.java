@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,7 +21,7 @@ import java.io.Serializable;
  * 
  * @author Peter Erzberger
  */
-public class DependencyType implements Serializable{
+public class DependencyType implements Serializable {
 
     private static final long serialVersionUID = 615796376725042939L;
 
@@ -38,7 +38,8 @@ public class DependencyType implements Serializable{
     /**
      * 
      */
-    public final static DependencyType REFERENCE_COMPOSITION_MASTER_DETAIL = new DependencyType("master to detail composition dependency"); //$NON-NLS-1$
+    public final static DependencyType REFERENCE_COMPOSITION_MASTER_DETAIL = new DependencyType(
+            "master to detail composition dependency"); //$NON-NLS-1$
 
     /**
      * 
@@ -51,7 +52,7 @@ public class DependencyType implements Serializable{
     public final static DependencyType DATATYPE = new DependencyType("datatype dependency"); //$NON-NLS-1$
 
     private String name;
-    
+
     /**
      * @param id
      * @param name
@@ -61,34 +62,33 @@ public class DependencyType implements Serializable{
         this.name = name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public String toString(){
+    @Override
+    public String toString() {
         return name;
     }
-    
-    private DependencyType getDependencyType(String name){
-        if(INSTANCEOF.name.equals(name)){
+
+    private DependencyType getDependencyType(String name) {
+        if (INSTANCEOF.name.equals(name)) {
             return INSTANCEOF;
         }
-        if(SUBTYPE.name.equals(name)){
+        if (SUBTYPE.name.equals(name)) {
             return SUBTYPE;
         }
-        if(REFERENCE.name.equals(name)){
+        if (REFERENCE.name.equals(name)) {
             return REFERENCE;
         }
-        if(REFERENCE_COMPOSITION_MASTER_DETAIL.name.equals(name)){
+        if (REFERENCE_COMPOSITION_MASTER_DETAIL.name.equals(name)) {
             return REFERENCE_COMPOSITION_MASTER_DETAIL;
         }
-        if(DATATYPE.name.equals(name)){
+        if (DATATYPE.name.equals(name)) {
             return DATATYPE;
         }
         throw new IllegalArgumentException("No type specified for the provided name."); //$NON-NLS-1$
     }
-    
-    /*
-     * This is necessary to ensure that when deserialized there exisits only one instance of a dependency type within the vm.  
+
+    /**
+     * This is necessary to ensure that when deserialized there exisits only one instance of a
+     * dependency type within the vm.
      */
     private Object readResolve() throws ObjectStreamException {
         return getDependencyType(name);

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,12 +37,13 @@ public abstract class ProductCmptTypeHierarchyVisitor extends TypeHierarchyVisit
      * Returns the product component types visited by the visitor in the order they were visited.
      */
     public IProductCmptType[] getVisitedProductCmptTypes() {
-        return (IProductCmptType[])visitedTypes.toArray(new IProductCmptType[visitedTypes.size()]);
+        return visitedTypes.toArray(new IProductCmptType[visitedTypes.size()]);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     final protected boolean visit(IType currentType) throws CoreException {
         return visit((IProductCmptType)currentType);
     }
@@ -51,7 +52,8 @@ public abstract class ProductCmptTypeHierarchyVisitor extends TypeHierarchyVisit
      * Template method in that subclasses realize the function for the given type.
      * 
      * @return <code>true</code> if the visitor should continue to navigate up the hierarchy.
-     * <code>false</code> if not.
+     *         <code>false</code> if not.
      */
     protected abstract boolean visit(IProductCmptType currentType) throws CoreException;
+
 }

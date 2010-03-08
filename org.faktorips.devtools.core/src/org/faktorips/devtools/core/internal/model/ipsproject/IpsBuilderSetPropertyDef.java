@@ -54,11 +54,9 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     private List<String> discretePropertyValues;
 
     public IpsBuilderSetPropertyDef() {
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDefaultValue(IIpsProject ipsProject) {
         return defaultValue;
     }
@@ -84,9 +82,6 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getLabel() {
         return label;
     }
@@ -98,9 +93,6 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     public IStatus initialize(IIpsModel ipsModel, Map properties) {
         type = (String)properties.get("type"); //$NON-NLS-1$
@@ -114,9 +106,6 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object parseValue(String value) {
         if (value == null) {
             return null;
@@ -138,17 +127,11 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
                 + "\" cannot be converted into an instance of the type " + type + " of this IpsBuilderSetPropertyDef."); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAvailable(IIpsProject ipsProject) {
         String optionValue = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
         return supportedJdkVersions.isEmpty() || supportedJdkVersions.contains(optionValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Message validateValue(String value) {
 
         if (value == null) {
@@ -182,24 +165,16 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
                         + "\" of this property \"" + getName() + "\"", Message.ERROR); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String[] getDiscreteValues() {
         return discretePropertyValues.toArray(new String[discretePropertyValues.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasDiscreteValues() {
         return discretePropertyValues.size() != 0;
     }
 
-    private final static void retrieveEnumValues(String type,
-            List<String> discreteValues,
-            IConfigurationElement element,
-            ILog logger) {
+    private final static void retrieveEnumValues(String type, List<String> discreteValues, IConfigurationElement element) {
+
         if (!StringUtils.isEmpty(type) && type.equals("enum") && element.getName().equals("discreteValues")) { //$NON-NLS-1$ //$NON-NLS-2$
             IConfigurationElement[] values = element.getChildren();
             for (int j = 0; j < values.length; j++) {
@@ -218,6 +193,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             Map<String, Object> properties,
             IConfigurationElement element,
             ILog logger) {
+
         if ("extensionPoint".equals(type)) { //$NON-NLS-1$
 
             String extensionPointId = element.getAttribute("extensionPointId"); //$NON-NLS-1$
@@ -328,7 +304,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         IConfigurationElement[] childs = element.getChildren();
 
         for (int j = 0; j < childs.length; j++) {
-            retrieveEnumValues(type, discreteValues, childs[j], logger);
+            retrieveEnumValues(type, discreteValues, childs[j]);
             retrieveJdkComplianceLevels(jdkComplianceLevelList, childs[j]);
         }
         if ("enum".equals(type) && discreteValues.isEmpty()) { //$NON-NLS-1$
@@ -351,5 +327,4 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         }
         return propertyDef;
     }
-
 }

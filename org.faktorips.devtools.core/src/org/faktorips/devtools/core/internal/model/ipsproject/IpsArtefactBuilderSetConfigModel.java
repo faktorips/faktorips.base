@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -40,7 +40,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
 
     private Map<String, String> properties;
     private Map<String, String> propertiesDescription;
-    
+
     /**
      * Creates an empty IPS artifact builder set configuration instances.
      */
@@ -59,9 +59,10 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
     }
 
     /**
-     * Creates and returns an IPS artifact builder set configuration instance from the provided dom element.
+     * Creates and returns an IPS artifact builder set configuration instance from the provided dom
+     * element.
      */
-    public final void initFromXml(Element el){
+    public final void initFromXml(Element el) {
         properties = new LinkedHashMap<String, String>();
         propertiesDescription = new LinkedHashMap<String, String>();
         NodeList nl = el.getElementsByTagName("Property"); //$NON-NLS-1$
@@ -72,7 +73,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
             NodeList propertyElNodeList = propertyEl.getChildNodes();
             for (int j = 0; j < propertyElNodeList.getLength(); j++) {
                 Node node = propertyElNodeList.item(j);
-                if(node instanceof Comment){
+                if (node instanceof Comment) {
                     Comment comment = (Comment)node;
                     propertiesDescription.put(key, comment.getData());
                 }
@@ -80,19 +81,13 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
             properties.put(key, value);
         }
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getPropertyDescription(String propertyName){
-        return (String) propertiesDescription.get(propertyName);
+
+    public String getPropertyDescription(String propertyName) {
+        return propertiesDescription.get(propertyName);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public String getPropertyValue(String propertyName) {
-        return (String)properties.get(propertyName);
+        return properties.get(propertyName);
     }
 
     /**
@@ -101,59 +96,50 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
      * @param propertyName the name of the property
      * @param value the value of the property
      */
-    public void setPropertyValue(String propertyName, String value, String description){
+    public void setPropertyValue(String propertyName, String value, String description) {
         ArgumentCheck.notNull(propertyName);
         ArgumentCheck.notNull(value);
         properties.put(propertyName, value);
-        if(description != null){
+        if (description != null) {
             propertiesDescription.put(propertyName, description);
         }
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public final Element toXml(Document doc) {
         Element root = doc.createElement(XML_ELEMENT);
         Set<String> keys = properties.keySet();
-        for (Iterator<String> iter = keys.iterator();iter.hasNext();) {
+        for (Iterator<String> iter = keys.iterator(); iter.hasNext();) {
             String key = iter.next();
-            String value = (String)properties.get(key);
+            String value = properties.get(key);
             Element prop = doc.createElement("Property"); //$NON-NLS-1$
-            String description = (String)propertiesDescription.get(key);
-            if(description != null){
+            String description = propertiesDescription.get(key);
+            if (description != null) {
                 Comment comment = doc.createComment(description);
                 prop.appendChild(comment);
             }
             root.appendChild(prop);
             prop.setAttribute("name", key); //$NON-NLS-1$
-            prop.setAttribute("value", value); //$NON-NLS-1$
+            prop.setAttribute("value", value);
         }
         return root;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String[] getPropertyNames() {
-        return (String[])properties.keySet().toArray(new String[properties.size()]);
+        return properties.keySet().toArray(new String[properties.size()]);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo){
+
+    public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo) {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         for (Iterator<String> it = this.properties.keySet().iterator(); it.hasNext();) {
-            String name = (String)it.next();
+            String name = it.next();
             IIpsBuilderSetPropertyDef propertyDef = builderSetInfo.getPropertyDefinition(name);
-            if(propertyDef == null){
+            if (propertyDef == null) {
                 throw new IllegalStateException("The property: " + name
                         + " of this builder set configuration is not defined in the provided for the builder set: "
                         + builderSetInfo.getBuilderSetId());
             }
-            String valueAsString = (String)this.properties.get(name);
-            if(!propertyDef.isAvailable(ipsProject)){
+            String valueAsString = this.properties.get(name);
+            if (!propertyDef.isAvailable(ipsProject)) {
                 properties.put(name, propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
                 continue;
             }
@@ -163,17 +149,16 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
         for (int i = 0; i < propertyDefs.length; i++) {
             Object value = properties.get(propertyDefs[i].getName());
-            if(value == null){
-                properties.put(propertyDefs[i].getName(), propertyDefs[i].parseValue(propertyDefs[i].getDisableValue(ipsProject)));
+            if (value == null) {
+                properties.put(propertyDefs[i].getName(), propertyDefs[i].parseValue(propertyDefs[i]
+                        .getDisableValue(ipsProject)));
             }
         }
         return new IpsArtefactBuilderSetConfig(properties);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public MessageList validate(IIpsProject ipsProject, IpsArtefactBuilderSetInfo builderSetInfo){
+    public MessageList validate(IIpsProject ipsProject, IpsArtefactBuilderSetInfo builderSetInfo) {
         return builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, this);
     }
+
 }

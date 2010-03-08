@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Jan Ortmann
  */
-public abstract class TypeHierarchyVisitor extends HierarchyVisitor<IType>{
+public abstract class TypeHierarchyVisitor extends HierarchyVisitor<IType> {
 
     /**
      * Constructs a new visitor.
@@ -38,16 +38,17 @@ public abstract class TypeHierarchyVisitor extends HierarchyVisitor<IType>{
     public TypeHierarchyVisitor(IIpsProject ipsProject) {
         super(ipsProject);
     }
-    
+
     /**
      * Returns the types visited by the visitor in the order they were visited.
      */
     public IType[] getVisitedTypes() {
-        return (IType[])visitedTypes.toArray(new IType[visitedTypes.size()]);
+        return visitedTypes.toArray(new IType[visitedTypes.size()]);
     }
-    
+
     @Override
     protected IType findSupertype(IType currentType, IIpsProject ipsProject) throws CoreException {
         return currentType.findSupertype(ipsProject);
     }
+
 }

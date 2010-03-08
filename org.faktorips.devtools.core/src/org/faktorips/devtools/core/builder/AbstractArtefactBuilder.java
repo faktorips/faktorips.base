@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 package org.faktorips.devtools.core.builder;
- 
+
 import java.io.ByteArrayInputStream;
 
 import org.eclipse.core.resources.IContainer;
@@ -33,71 +33,55 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
 
-	private IIpsArtefactBuilderSet builderSet;
-	
-	public AbstractArtefactBuilder(IIpsArtefactBuilderSet builderSet) {
-		ArgumentCheck.notNull(builderSet);
-		this.builderSet = builderSet;
-	}
+    private IIpsArtefactBuilderSet builderSet;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsArtefactBuilderSet getBuilderSet() {
-		return builderSet;
-	}
-    
+    public AbstractArtefactBuilder(IIpsArtefactBuilderSet builderSet) {
+        ArgumentCheck.notNull(builderSet);
+        this.builderSet = builderSet;
+    }
+
+    public IIpsArtefactBuilderSet getBuilderSet() {
+        return builderSet;
+    }
+
     public IIpsProject getIpsProject() {
         return builderSet.getIpsProject();
     }
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
-		// default implementation does nothing
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
-		// default implementation does nothing
-	}
+    public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+        // default implementation does nothing
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
-		// default implementation does nothing
-	}
+    public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+        // default implementation does nothing
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
-		// default implementation does nothing
-	}
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+        // default implementation does nothing
+    }
+
+    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
+        // default implementation does nothing
+    }
 
     /**
      * Returns false.
      */
-	public boolean buildsDerivedArtefacts() {
+    public boolean buildsDerivedArtefacts() {
         return false;
     }
 
-    /**
-	 * {@inheritDoc}
-	 */
-	public String toString() {
-		return getName();
-	}
+    @Override
+    public String toString() {
+        return getName();
+    }
 
     /**
-     * This method needs to be used in subclasses of this builder when a file is created during the build cycle. This
-     * method creates a file only if the file handle points to a file that doesn't exist. Also the folder hierarchy up
-     * to the destination folder specified in the ipsproject properties is created if it doesn't exist. The files and
-     * folders are marked as derived if this builder builds derived artefacts. See the method <code>buildDerivedArtefacts()</code>.
+     * This method needs to be used in subclasses of this builder when a file is created during the
+     * build cycle. This method creates a file only if the file handle points to a file that doesn't
+     * exist. Also the folder hierarchy up to the destination folder specified in the ipsproject
+     * properties is created if it doesn't exist. The files and folders are marked as derived if
+     * this builder builds derived artefacts. See the method <code>buildDerivedArtefacts()</code>.
      * 
      * @param file the file handle
      * @return true if the file needs to be created, false if the file already exists
@@ -122,10 +106,11 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
     }
 
     /**
-     * This method needs to be used in subclasses of this builder when a folder is created during the build cycle. This
-     * method creates a folder only if the folder handle points to a folder that doesn't exist. Also the folder hierarchy up
-     * to the destination folder specified in the ipsproject properties is created if it doesn't exist. The folders are marked 
-     * as derived if this builder builds derived artefacts. See the method <code>buildDerivedArtefacts()</code>.
+     * This method needs to be used in subclasses of this builder when a folder is created during
+     * the build cycle. This method creates a folder only if the folder handle points to a folder
+     * that doesn't exist. Also the folder hierarchy up to the destination folder specified in the
+     * ipsproject properties is created if it doesn't exist. The folders are marked as derived if
+     * this builder builds derived artefacts. See the method <code>buildDerivedArtefacts()</code>.
      * 
      * @param folder the folder handle
      * @return true if the folder needs to be created, false if the folder already exists

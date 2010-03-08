@@ -135,7 +135,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Returns whether this <tt>EnumAttributeValue</tt> refers to an
      * <tt>EnumLiteralNameAttribute</tt>.
      */
-    private boolean isLiteralNameEnumAttributeValue(IEnumAttribute enumAttribute) throws CoreException {
+    private boolean isLiteralNameEnumAttributeValue(IEnumAttribute enumAttribute) {
         return enumAttribute instanceof IEnumLiteralNameAttribute;
     }
 
@@ -214,7 +214,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                 validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);
                 if (list.getNoOfMessages() == 0) {
                     if (isLiteralNameEnumAttributeValue(enumAttribute)) {
-                        validateLiteralNameEnumAttributeValue(list, enumAttribute);
+                        validateLiteralNameEnumAttributeValue(list);
                     }
                 }
             }
@@ -225,9 +225,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Validations necessary if this <tt>IEnumAttributeValue</tt> refers to an
      * <tt>IEnumAttribute</tt> that is used as literal name.
      */
-    private void validateLiteralNameEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute)
-            throws CoreException {
-
+    private void validateLiteralNameEnumAttributeValue(MessageList list) {
         // A literal name EnumAttributeValue must be java conform.
         String complianceLevel = getIpsProject().getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
         String sourceLevel = getIpsProject().getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
@@ -243,9 +241,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Validations necessary if this <tt>IEnumAttributeValue</tt> refers to a unique identifier
      * <tt>IEnumAttribute</tt>.
      */
-    private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute)
-            throws CoreException {
-
+    private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IEnumAttribute enumAttribute) {
         String text;
         Message validationMessage;
 
@@ -282,9 +278,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Returns whether this <tt>IEnumAttributeValue</tt> refers to a unique identifier
      * <tt>IEnumAttribute</tt>.
      */
-    private boolean isUniqueIdentifierEnumAttributeValue(IEnumAttribute enumAttribute, IEnumType enumType)
-            throws CoreException {
-
+    private boolean isUniqueIdentifierEnumAttributeValue(IEnumAttribute enumAttribute, IEnumType enumType) {
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
         return enumValueContainerImpl.containsValidationCacheUniqueIdentifier(enumType
                 .getIndexOfEnumAttribute(enumAttribute));

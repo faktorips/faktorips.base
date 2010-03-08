@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,10 +33,10 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * This manager is instantiated at start up of the faktor ips plugin and the plugin holds a single
  * instance of it during its life cycle. It is responsible for saving the states of the dependency
- * graphs that have been accessed during startup and shut down phase of the faktor ips plugin. The states
- * will be saved at shut down of the eclipse application. The dependency graph states are saved to
- * files located at the eclipse save location of the org.faktorips.devtools.core plugin. Once a
- * state of a dependency graph has been saved this state can be retrieved by this persistence
+ * graphs that have been accessed during startup and shut down phase of the faktor ips plugin. The
+ * states will be saved at shut down of the eclipse application. The dependency graph states are
+ * saved to files located at the eclipse save location of the org.faktorips.devtools.core plugin.
+ * Once a state of a dependency graph has been saved this state can be retrieved by this persistence
  * manager.
  * 
  * @author Peter Erzberger
@@ -66,14 +66,19 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             graph.setIpsProject(project);
             return graph;
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "An Exception occurred while trying to establish the last state of the dependency graph for the project " + project.getName(), e)); //$NON-NLS-1$
+            IpsPlugin
+                    .log(new IpsStatus(
+                            IStatus.WARNING,
+                            "An Exception occurred while trying to establish the last state of the dependency graph for the project " + project.getName(), e)); //$NON-NLS-1$
             return new DependencyGraph(project);
         } finally {
             if (ois != null) {
                 try {
                     ois.close();
                 } catch (IOException e1) {
-                    IpsPlugin.log(new IpsStatus("Unable to close the input stream while of the dependency graph file " + file.getAbsolutePath(), e1)); //$NON-NLS-1$
+                    IpsPlugin
+                            .log(new IpsStatus(
+                                    "Unable to close the input stream while of the dependency graph file " + file.getAbsolutePath(), e1)); //$NON-NLS-1$
                     return new DependencyGraph(project);
                 }
             }
@@ -121,7 +126,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
         return "dependencygraph." + project.getName(); //$NON-NLS-1$
     }
 
-    private void save(DependencyGraph graph) throws CoreException {
+    private void save(DependencyGraph graph) {
         ObjectOutputStream os = null;
         File file = getDependencyGraphFile(graph.getIpsProject());
         try {
@@ -131,7 +136,8 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             os.flush();
             os.close();
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unable to save dependency graph file " + file.getAbsolutePath(), e)); //$NON-NLS-1$
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING,
+                    "Unable to save dependency graph file " + file.getAbsolutePath(), e)); //$NON-NLS-1$
         } finally {
             if (os != null) {
                 try {

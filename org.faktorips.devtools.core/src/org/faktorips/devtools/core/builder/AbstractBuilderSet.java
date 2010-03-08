@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,23 +33,22 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
 
     /**
-     * Configuration property for this builder. IIpsArtefactBuilderSets that use this builder
-     * can provide values of this property via the IIpsArtefactBuilderSetConfig object that 
-     * is provided by the initialize method of an IIpsArtefactBuilderSet.
+     * Configuration property for this builder. IIpsArtefactBuilderSets that use this builder can
+     * provide values of this property via the IIpsArtefactBuilderSetConfig object that is provided
+     * by the initialize method of an IIpsArtefactBuilderSet.
      */
     public final static String CONFIG_PROPERTY_GENERATOR_LOCALE = "generatorLocale"; //$NON-NLS-1$
-    
-    
+
     private String id;
     private String label;
     private IIpsProject ipsProject;
     private IIpsArtefactBuilderSetConfig config;
     private IIpsArtefactBuilder[] builders;
-    
+
     public AbstractBuilderSet() {
         super();
     }
-    
+
     /**
      * Constructor for testing purposes.
      */
@@ -57,55 +56,35 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         this.builders = builders;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getId() {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setId(String id) {
         this.id = id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getLabel() {
         return label;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setLabel(String label) {
         this.label = label;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setIpsProject(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
     }
 
+    @Override
     public String toString() {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsAggregateRootBuilder() {
         return false;
     }
@@ -124,35 +103,23 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsArtefactBuilder[] getArtefactBuilders() {
         return builders;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IIpsArtefactBuilderSetConfig getConfig() {
         return config;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
         ArgumentCheck.notNull(config);
         this.config = config;
         builders = createBuilders();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Locale getLanguageUsedInGeneratedSourceCode() {
         String localeString = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_GENERATOR_LOCALE);
-        if(localeString == null){
+        if (localeString == null) {
             return Locale.ENGLISH;
         }
         return getLocale(localeString);
@@ -182,37 +149,28 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
      */
     protected abstract IIpsArtefactBuilder[] createBuilders() throws CoreException;
 
-   /**
-     * {@inheritDoc}
-     */
     public void afterBuildProcess(int buildKind) throws CoreException {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void beforeBuildProcess(int buildKind) throws CoreException {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass) {
-      List<T> result = new ArrayList<T>();
-      if (builders == null) {
-          return result;
-      }
-      for (int i = 0; i < builders.length; i++) {
-          //TODO genau die Klasse oder auch subklassen?
-          if (builderClass.isAssignableFrom(builders[i].getClass())) {
-              result.add(builderClass.cast(builders[i]));
-          }
-      }
-      return result;
+        List<T> result = new ArrayList<T>();
+        if (builders == null) {
+            return result;
+        }
+        for (int i = 0; i < builders.length; i++) {
+            // TODO genau die Klasse oder auch subklassen?
+            if (builderClass.isAssignableFrom(builders[i].getClass())) {
+                result.add(builderClass.cast(builders[i]));
+            }
+        }
+        return result;
     }
 
-	public boolean isTableBasedEnumValidationRequired() {
-		return true;
-	}
+    public boolean isTableBasedEnumValidationRequired() {
+        return true;
+    }
 
 }

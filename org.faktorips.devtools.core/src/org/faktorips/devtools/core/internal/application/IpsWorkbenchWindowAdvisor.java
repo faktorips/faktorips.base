@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,23 +25,19 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  */
 class IpsWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-	/**
-	 * @param configurer The configurer to use.
-	 */
-	public IpsWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-		super(configurer);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
-		return new IpsActionBarAdvisor(configurer);
-	}
-	
     /**
-     * {@inheritDoc}
+     * @param configurer The configurer to use.
      */
+    public IpsWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+        super(configurer);
+    }
+
+    @Override
+    public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
+        return new IpsActionBarAdvisor(configurer);
+    }
+
+    @Override
     public void preWindowOpen() {
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 
@@ -52,5 +48,4 @@ class IpsWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setTitle(Messages.IpsWorkbenchAdvisor_title);
     }
 
-    
 }

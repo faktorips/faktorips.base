@@ -173,7 +173,6 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      */
     // TODO translate messages
     public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject, String propertyName, String propertyValue) {
-
         IIpsBuilderSetPropertyDef propertyDef = propertyDefinitions.get(propertyName);
         if (propertyDef == null) {
             String text = "The builder set " + builderSetId + " doesn't support the property " + propertyName;
@@ -194,7 +193,6 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     }
 
     private final static Map<String, IIpsBuilderSetPropertyDef> retrieveBuilderSetProperties(IExtensionRegistry registry,
-            IExtension extension,
             String builderSetId,
             IIpsModel ipsModel,
             IConfigurationElement element,
@@ -241,7 +239,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
                     }
 
                     Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = retrieveBuilderSetProperties(
-                            registry, extension, extension.getUniqueIdentifier(), ipsModel, element, logger);
+                            registry, extension.getUniqueIdentifier(), ipsModel, element, logger);
                     builderSetInfoList.add(new IpsArtefactBuilderSetInfo(extension.getNamespaceIdentifier(),
                             builderSetClassName, extension.getUniqueIdentifier(), extension.getLabel(),
                             builderSetPropertyDefs));
@@ -249,4 +247,5 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             }
         }
     }
+
 }
