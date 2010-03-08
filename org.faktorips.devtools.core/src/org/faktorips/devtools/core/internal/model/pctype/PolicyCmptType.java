@@ -476,7 +476,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
         ArgumentCheck.notNull(xmlTag);
         if (xmlTag.getTagName().equals(IPersistentTypeInfo.XML_TAG)) {
-            return new PersistentTypeInfo(this, id);
+            return newPersistentTypeInfoInternal(this, id);
         }
         return super.newPart(xmlTag, id);
     }
@@ -485,9 +485,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     public IIpsObjectPart newPart(Class partType) {
         if (partType == PersistentTypeInfo.class) {
-            return new PersistentTypeInfo(this, getNextPartId());
+            return newPersistentTypeInfoInternal(this, getNextPartId());
         }
         return super.newPart(partType);
+    }
+
+    /*
+     * Creates a new persistent type info for this policy component type
+     */
+    private IIpsObjectPart newPersistentTypeInfoInternal(PolicyCmptType policyCmptType, String id) {
+        persistenceTypeInfo = new PersistentTypeInfo(this, id);
+        return persistenceTypeInfo;
     }
 
     @Override
@@ -557,6 +565,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             persistenceTypeInfo = null;
             return;
         }
-        persistenceTypeInfo = newPart(PersistentTypeInfo.class);
+        newPart(PersistentTypeInfo.class);
     }
 }
