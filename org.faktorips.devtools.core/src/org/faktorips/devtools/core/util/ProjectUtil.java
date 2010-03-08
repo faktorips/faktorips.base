@@ -117,12 +117,13 @@ public class ProjectUtil {
     public static IIpsProject createIpsProject(IJavaProject javaProject,
             boolean isProductDefinitionProject,
             boolean isModelProject,
+            boolean isPersistentProject,
             String runtimeIdPrefix,
             IFolder mergableFolder,
             IFolder derivedFolder,
             IFolder srcFolder) throws CoreException {
         IIpsProject ipsProject = createIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject,
-                isModelProject);
+                isModelProject, isPersistentProject);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.setOutputDefinedPerSrcFolder(true);
@@ -283,13 +284,15 @@ public class ProjectUtil {
     public static IIpsProject createIpsProject(IJavaProject javaProject,
             String runtimeIdPrefix,
             boolean isProductDefinitionProject,
-            boolean isModelProject) throws CoreException {
+            boolean isModelProject,
+            boolean isPersistentProject) throws CoreException {
         addIpsRuntimeLibraries(javaProject);
         IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setRuntimeIdPrefix(runtimeIdPrefix);
         props.setProductDefinitionProject(isProductDefinitionProject);
         props.setModelProject(isModelProject);
+        props.setPersistenceSupport(isPersistentProject);
 
         // use the first registered builder set info as default
         IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel()

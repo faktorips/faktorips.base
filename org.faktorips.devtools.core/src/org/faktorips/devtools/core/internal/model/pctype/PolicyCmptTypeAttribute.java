@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,6 +32,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -59,6 +62,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     private IValueSet valueSet;
     private boolean overwrites = false;
     private String computationMethodSignature = ""; //$NON-NLS-1$
+    private IIpsObjectPart persistenceAttributeInfo;
 
     /**
      * Creates a new attribute.
@@ -69,6 +73,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     public PolicyCmptTypeAttribute(PolicyCmptType pcType, String id) {
         super(pcType, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        if (pcType.getIpsProject().isPersistenceSupportEnabled()) {
+            persistenceAttributeInfo = newPart(PersistentAttributeInfo.class);
+        }
     }
 
     public IPolicyCmptType getPolicyCmptType() {
@@ -286,13 +293,13 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
     }
 
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-    }
-
     @Override
     protected void addPart(IIpsObjectPart part) {
-        valueSet = (IValueSet)part;
+        if (part instanceof IValueSet) {
+            valueSet = (IValueSet)part;
+        } else {
+            persistenceAttributeInfo = part;
+        }
     }
 
     @Override
@@ -301,16 +308,37 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
         }
+        if (xmlTag.getTagName().equals(IPersistentAttributeInfo.XML_TAG)) {
+            return new PersistentAttributeInfo(this, id);
+        }
         return null;
+    }
+
+    // TODO Joerg Merge Persistence Branch: warum ueber Reflection und nicht
+    // instanceof wie z.B. in
+    // org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType.newPart(Class)
+    public IIpsObjectPart newPart(Class partType) {
+        try {
+            Constructor<? extends IIpsObjectPart> constructor = partType.getConstructor(IIpsObjectPart.class,
+                    String.class);
+            IIpsObjectPart result = constructor.newInstance(this, getNextPartId());
+            return result;
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+        }
+        throw new IllegalArgumentException("Unsupported part type: " + partType);
     }
 
     @Override
     public IIpsElement[] getChildren() {
+        List<IIpsElement> children = new ArrayList<IIpsElement>();
         if (valueSet != null) {
-            return new IIpsElement[] { valueSet };
-        } else {
-            return new IIpsElement[0];
+            children.add(valueSet);
         }
+        if (persistenceAttributeInfo != null) {
+            children.add(persistenceAttributeInfo);
+        }
+        return children.toArray(new IIpsElement[children.size()]);
     }
 
     public ValueDatatype getValueDatatype() {
@@ -345,6 +373,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void reinitPartCollections() {
         // Nothing to do.
+        // TODO Joerg Merge PersistenceBranch: wirklich nicht valueSet neu anlegen?
     }
 
     @Override
@@ -375,4 +404,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return getDatatype();
     }
 
+    public IPersistentAttributeInfo getPersistenceAttributeInfo() {
+        return (IPersistentAttributeInfo)persistenceAttributeInfo;
+    }
 }

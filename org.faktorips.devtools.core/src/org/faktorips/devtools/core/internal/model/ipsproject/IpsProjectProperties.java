@@ -43,6 +43,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
+import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
+import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.question.QuestionAssignedUserGroup;
 import org.faktorips.devtools.core.model.question.QuestionStatus;
@@ -79,25 +82,29 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private boolean modelProject;
     private boolean productDefinitionProject;
+    private boolean persistentProject;
+
     private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
     private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
     private String builderSetId = ""; //$NON-NLS-1$
     private IIpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel();
     private IIpsObjectPath path = new IpsObjectPath(new IpsProject());
     private String[] predefinedDatatypesUsed = new String[0];
-    private List<Datatype> definedDatatypes = new ArrayList<Datatype>(0); // all datatypes defined
-    // in the project
-    // including(!) the value
-    // datatypes.
+
+    // all datatypes defined in the project including(!) the value datatypes.
+    private List<Datatype> definedDatatypes = new ArrayList<Datatype>(0);
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
     private boolean javaProjectContainsClassesForDynamicDatatypes = false;
     private boolean derivedUnionIsImplementedRuleEnabled = true;
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private boolean rulesWithoutReferencesAllowed = false;
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
+
     // hidden resource names in the model and product explorer
     private Set<String> resourcesPathExcludedFromTheProductDefiniton = new HashSet<String>(10);
     private Long lastPersistentModificationTimestamp;
+
+    private IPersistenceOptions persistenceOptions = new PersistenceOptions();
 
     /**
      * Default constructor.
@@ -178,7 +185,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return true;
     }
 
-    /**
+    /*
      * Validate the ips object path entry.
      */
     private void validateIpsObjectPath(MessageList list) throws CoreException {
@@ -363,6 +370,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.setAttribute(
                 "javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
+        projectEl.setAttribute("persistentProject", "" + persistentProject); //$NON-NLS-1$ //$NON-NLS-2$
 
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -432,6 +440,27 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE,
                 rulesWithoutReferencesAllowed));
 
+        // persistence options
+        createPersistenceOptionsDescriptionComment(projectEl);
+        Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
+        persistenceOptionsEl.setAttribute("maxTableNameLength", String.valueOf(getPersistenceOptions() //$NON-NLS-1$
+                .getMaxTableNameLength()));
+        persistenceOptionsEl.setAttribute("maxColumnNameLength", String.valueOf(getPersistenceOptions() //$NON-NLS-1$
+                .getMaxColumnNameLenght()));
+        projectEl.appendChild(persistenceOptionsEl);
+
+        //        Element tableNamingEl = doc.createElement("TableNamingStrategy"); //$NON-NLS-1$
+        //        Element tableColumnNamingEl = doc.createElement("TableColumnNamingStrategy"); //$NON-NLS-1$
+
+        ITableNamingStrategy tableNamingStrategy = getPersistenceOptions().getTableNamingStrategy();
+        ITableColumnNamingStrategy tableColumnNamingStrategy = getPersistenceOptions().getTableColumnNamingStrategy();
+
+        //        tableNamingEl.setAttribute("id", tableNamingStrategy.toString()); //$NON-NLS-1$
+        //        tableColumnNamingEl.setAttribute("id", tableColumnNamingStrategy.toString()); //$NON-NLS-1$
+
+        persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
+        persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
+
         return projectEl;
     }
 
@@ -445,6 +474,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void initFromXml(IIpsProject ipsProject, Element element) {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
+        persistentProject = Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue(); //$NON-NLS-1$
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(
                 element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue(); //$NON-NLS-1$
@@ -486,6 +516,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
 
         initOptionalConstraints(element);
+
+        initPersistenceOptions(element);
     }
 
     /**
@@ -614,6 +646,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 rulesWithoutReferencesAllowed = enable;
             }
         }
+    }
+
+    private void initPersistenceOptions(Element element) {
+        persistenceOptions = new PersistenceOptions(XmlUtil.getFirstElement(element, IPersistenceOptions.XML_TAG_NAME));
     }
 
     private void writeDefinedDataTypesToXML(Document doc, Element parent) {
@@ -899,6 +935,25 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
 
+    private void createPersistenceOptionsDescriptionComment(Node parentEl) {
+        String s = "PersistenceOptions" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "In this section you can adjust parameters relating the persistance of IPolicyCmptTypes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "The table and column naming strategies define how identifier names are transformed into" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "database table and column names. The attributes maxTableNameLength and maxColumnNameLength" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "constrain the maximum possible length of a table or column name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <TableNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "</PersistenceOptions>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "Currently Faktor-IPS includes the strategies CamelCaseToUpperUnderscoreTableNamingStrategy" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, examples:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    IdentifierName1 -> IDENTIFIER_NAME1" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        createDescriptionComment(s, parentEl);
+    }
+
     private void createDescriptionComment(String text, Node parent) {
         createDescriptionComment(text, parent, "        "); //$NON-NLS-1$
     }
@@ -1013,6 +1068,34 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         new QuestionStatus(type, "closed", Messages.IpsProjectProperties_ENUM_QUESTION_STATUS_CLOSED); //$NON-NLS-1$
         new QuestionStatus(type, "deferred", Messages.IpsProjectProperties_ENUM_QUESTION_STATUS_DEFERRED); //$NON-NLS-1$
         return type;
+    }
+
+    public boolean isPersistenceSupportEnabled() {
+        return persistentProject;
+    }
+
+    public void setPersistenceSupport(boolean persistentProject) {
+        this.persistentProject = persistentProject;
+    }
+
+    public IPersistenceOptions getPersistenceOptions() {
+        return persistenceOptions;
+    }
+
+    public ITableColumnNamingStrategy getTableColumnNamingStrategy() {
+        return getPersistenceOptions().getTableColumnNamingStrategy();
+    }
+
+    public ITableNamingStrategy getTableNamingStrategy() {
+        return getPersistenceOptions().getTableNamingStrategy();
+    }
+
+    public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy) {
+        getPersistenceOptions().setTableColumnNamingStrategy(newStrategy);
+    }
+
+    public void setTableNamingStrategy(ITableNamingStrategy newStrategy) {
+        getPersistenceOptions().setTableNamingStrategy(newStrategy);
     }
 
 }

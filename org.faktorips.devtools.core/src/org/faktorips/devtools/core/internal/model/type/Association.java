@@ -21,7 +21,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
@@ -37,10 +40,14 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IAssociation.
+ * <p>
+ * Note: This implementation is atomic per default. We cannot inherit from
+ * {@link AtomicIpsObjectPart} directly since some methods there are "final" and thus cannot be
+ * overridden.
  * 
  * @author Jan Ortmann
  */
-public abstract class Association extends AtomicIpsObjectPart implements IAssociation {
+public abstract class Association extends IpsObjectPart implements IAssociation {
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
@@ -487,6 +494,37 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
             }
             return true;
         }
-
     }
+
+    @Override
+    protected void addPart(IIpsObjectPart part) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public IIpsElement[] getChildren() {
+        return new IIpsElement[0];
+    }
+
+    // TODO Joerg Merge PersistenceBranch: jetzt IpsObjectPart und dann atomic? siehe Note im
+    // JavaDoc der Klasse
+    @Override
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        throw new IllegalArgumentException("This implementation is atomic, cannot add part."); //$NON-NLS-1$
+    }
+
+    public IIpsObjectPart newPart(Class<?> partType) {
+        throw new IllegalArgumentException("This implementation is atomic, cannot add part: " + partType); //$NON-NLS-1$
+    }
+
+    @Override
+    protected void reinitPartCollections() {
+        // nothing to do
+    }
+
+    @Override
+    protected void removePart(IIpsObjectPart part) {
+        throw new UnsupportedOperationException("This implementation is atomic, no part to remove.");
+    }
+
 }

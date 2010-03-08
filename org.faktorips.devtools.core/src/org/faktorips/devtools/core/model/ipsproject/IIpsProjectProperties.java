@@ -93,7 +93,7 @@ public interface IIpsProjectProperties {
     public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config);
 
     /**
-     * Returns the objct path to lookup objets.
+     * Returns the object path to lookup objects.
      */
     public IIpsObjectPath getIpsObjectPath();
 
@@ -122,9 +122,21 @@ public interface IIpsProjectProperties {
     public boolean isProductDefinitionProject();
 
     /**
-     * Sets if this is project contains product definition data.
+     * Sets if this project contains product definition data.
      */
     public void setProductDefinitionProject(boolean productDefinitionProject);
+
+    /**
+     * Returns <code>true</code> if this is a project that supports persistence, otherwise
+     * <code>false</code>. Persistent projects can store and retrieve policy component types to/from
+     * a relational database.
+     */
+    public boolean isPersistenceSupportEnabled();
+
+    /**
+     * Sets if this project supports persistence.
+     */
+    public void setPersistenceSupport(boolean persistentProject);
 
     /**
      * Returns the strategy how product component names are composed.
@@ -135,6 +147,30 @@ public interface IIpsProjectProperties {
      * Sets the strategy how product component names are composed.
      */
     public void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy);
+
+    /**
+     * Returns the strategy used to name database tables used for persisting policy component types.
+     * Returns <code>null</code> if persistence support is not enabled for this IPS project.
+     */
+    public ITableNamingStrategy getTableNamingStrategy();
+
+    /**
+     * Sets the strategy how database table names are composed. Does nothing if persistence support
+     * is not enabled.
+     */
+    public void setTableNamingStrategy(ITableNamingStrategy newStrategy);
+
+    /**
+     * Returns the strategy used to name database columns used for persisting policy component
+     * types. Returns <code>null</code> if persistence support is not enabled for this IPS project.
+     */
+    public ITableColumnNamingStrategy getTableColumnNamingStrategy();
+
+    /**
+     * Sets the strategy how database table column names are composed. Does nothing if persistence
+     * support is not enabled.
+     */
+    public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy);
 
     /**
      * Sets the naming convention for changes over time (by id) used in the generated sourcecode.
@@ -312,4 +348,11 @@ public interface IIpsProjectProperties {
      */
     public EnumType getQuestionStatus();
 
+    /**
+     * Returns the persistence options for this ips project, or <code>null</code> if the project
+     * does not support persistence.
+     * 
+     * @see #isPersistenceSupportEnabled()
+     */
+    public IPersistenceOptions getPersistenceOptions();
 }

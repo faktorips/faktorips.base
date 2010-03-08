@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.internal.MethodNames;
@@ -155,6 +156,10 @@ public class GenAssociationTo1 extends GenAssociation {
             String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
+            getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
+                    association, builder);
+
+            // TODO: introduce Generator for JAXB annotations
             if (isGenerateJaxbSupport()) {
                 builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
                         + "\", type=" + targetImplClassName + ".class");

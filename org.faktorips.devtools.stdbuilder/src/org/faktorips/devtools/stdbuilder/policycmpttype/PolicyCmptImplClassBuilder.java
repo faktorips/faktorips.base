@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
@@ -1350,6 +1351,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         String fieldName = getGenerator(association).getFieldNameForAssociation();
 
+        getGenPolicyCmptType().getBuilderSet().addAnnotations(
+                AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, null, memberVarsBuilder);
+
+        // TODO: JAXB annotation generation should be handled by the line above (create subclass of
+        // AnnotationGenerator and add it to the Standard Builder Set)
         if (isGenerateJaxbSuppert()) {
             // TODO JOERG wofuer brauchen wir das, bzw. ist der attribute name so korrekt (vorher
             // "parent-object.id") muss getestet werden
@@ -1704,6 +1710,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateTypeAnnotations(JavaCodeFragmentBuilder builder) throws CoreException {
         super.generateTypeAnnotations(builder);
 
+        getGenPolicyCmptType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS,
+                getPcType(), builder);
+
+        // TODO: JAXB annotation generation should be handled by the line above (create subclass of
+        // AnnotationGenerator and add it to the Standard Builder Set)
         if (!getGenPolicyCmptType().getBuilderSet().isGenerateJaxbSupport()) {
             return;
         }

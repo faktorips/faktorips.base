@@ -25,6 +25,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
+import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
+import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -351,6 +354,55 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     public EnumType getQuestionStatus() {
         return propertiesInternal.getQuestionStatus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IPersistenceOptions getPersistenceOptions() {
+        return propertiesInternal.getPersistenceOptions();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITableColumnNamingStrategy getTableColumnNamingStrategy() {
+        return propertiesInternal.getTableColumnNamingStrategy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITableNamingStrategy getTableNamingStrategy() {
+        return propertiesInternal.getTableNamingStrategy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPersistenceSupportEnabled() {
+        return propertiesInternal.isPersistenceSupportEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setPersistenceSupport(boolean persistentProject) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTableNamingStrategy(ITableNamingStrategy newStrategy) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
     }
 
 }

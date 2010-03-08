@@ -22,6 +22,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaGeneratiorHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.LocalizedTextHelper;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.AssociationChangedEvent;
 import org.faktorips.runtime.INotificationSupport;
@@ -272,6 +273,10 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
     public void generateChangeListenerConstants(JavaCodeFragmentBuilder builder) {
         localizedTextHelper.appendLocalizedJavaDoc("FIELD_PROPERTY_CHANGE_SUPPORT", builder, genPolicyCmptType
                 .getLanguageUsedInGeneratedSourceCode());
+
+        genPolicyCmptType.getBuilderSet().addAnnotations(
+                AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, null, builder);
+
         builder.appendJavaModifier(Modifier.PROTECTED);
         builder.append(' ');
         builder.appendJavaModifier(Modifier.FINAL);

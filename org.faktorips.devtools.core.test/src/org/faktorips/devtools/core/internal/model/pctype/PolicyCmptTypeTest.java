@@ -791,6 +791,14 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION));
     }
 
+    public void testPersistenceSupport() throws CoreException {
+        assertFalse(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
+        IIpsProjectProperties properties = policyCmptType.getIpsProject().getProperties();
+        properties.setPersistenceSupport(true);
+        ipsProject.setProperties(properties);
+        assertTrue(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
+    }
+
     private class AggregateRootBuilderSet extends EmptyBuilderSet {
 
         public final static String ID = "AggregateRootBuilderSet";

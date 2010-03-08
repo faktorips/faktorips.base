@@ -137,4 +137,42 @@ public class StringUtilTest extends TestCase {
         assertEquals("Asd1234", StringUtil.toCamelCase(testString, true));
         assertEquals("asd1234", StringUtil.toCamelCase(testString, false));
     }
+
+    public void testCamelCaseToUnderscore() {
+        String testString = null;
+        assertEquals("", StringUtil.camelCaseToUnderscore(testString, false));
+        assertEquals("", StringUtil.camelCaseToUnderscore(testString, true));
+
+        testString = "";
+        assertEquals("", StringUtil.camelCaseToUnderscore(testString, false));
+        assertEquals("", StringUtil.camelCaseToUnderscore(testString, true));
+
+        testString = "Asd";
+        assertEquals("Asd", StringUtil.camelCaseToUnderscore(testString, false));
+        assertEquals("Asd", StringUtil.camelCaseToUnderscore(testString, true));
+
+        testString = "ASD";
+        assertEquals("ASD", StringUtil.camelCaseToUnderscore(testString, false));
+        assertEquals("A_S_D", StringUtil.camelCaseToUnderscore(testString, true));
+
+        testString = "asd,def.ghi_jkl-mno pqr";
+        assertEquals("asd_def_ghi_jkl_mno_pqr", StringUtil.camelCaseToUnderscore(testString, false));
+        assertEquals("asd_def_ghi_jkl_mno_pqr", StringUtil.camelCaseToUnderscore(testString, true));
+
+        testString = "Asd,.-_ Def";
+        assertEquals("Asd_Def", StringUtil.camelCaseToUnderscore(testString, false));
+        assertEquals("Asd_Def", StringUtil.camelCaseToUnderscore(testString, true));
+
+        testString = "asDE-F1234";
+        assertEquals("as_DE_F1234", StringUtil.camelCaseToUnderscore(testString, false));
+        assertEquals("as_D_E_F1234", StringUtil.camelCaseToUnderscore(testString, true));
+
+        testString = "a.,- b-cdEF";
+        assertEquals("a_b_cd_EF", StringUtil.camelCaseToUnderscore(testString, false));
+        assertEquals("a_b_cd_E_F", StringUtil.camelCaseToUnderscore(testString, true));
+
+        testString = "HausratVertrag2IJ";
+        assertEquals("Hausrat_Vertrag2_IJ", StringUtil.camelCaseToUnderscore(testString, false));
+        assertEquals("Hausrat_Vertrag2_I_J", StringUtil.camelCaseToUnderscore(testString, true));
+    }
 }

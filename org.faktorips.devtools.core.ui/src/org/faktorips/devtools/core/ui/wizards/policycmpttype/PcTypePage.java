@@ -188,10 +188,11 @@ public class PcTypePage extends TypePage {
     @Override
     protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
+        IPolicyCmptType type = (IPolicyCmptType)newIpsObject;
         if (isPolicyCmptTypeConfigurable()) {
-            IPolicyCmptType type = (IPolicyCmptType)newIpsObject;
             type.setConfigurableByProductCmptType(true);
             type.setProductCmptType(pageOfAssociatedType.getQualifiedIpsObjectName());
         }
+        type.initPersistentTypeInfo();
     }
 }

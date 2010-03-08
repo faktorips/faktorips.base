@@ -79,6 +79,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
+import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -2012,6 +2014,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
             IpsPlugin.log(e);
         }
         return null;
+    }
+
+    public ITableColumnNamingStrategy getTableColumnNamingStrategy() {
+        return getPropertiesInternal().getTableColumnNamingStrategy();
+    }
+
+    public ITableNamingStrategy getTableNamingStrategy() {
+        return getPropertiesInternal().getTableNamingStrategy();
+    }
+
+    public boolean isPersistenceSupportEnabled() {
+        return getPropertiesInternal().isPersistenceSupportEnabled();
     }
 
 }

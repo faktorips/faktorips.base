@@ -56,6 +56,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.util.ProjectUtil;
@@ -74,6 +75,7 @@ public class AddIpsNatureAction extends ActionDelegate {
     private String runtimeIdPrefix = Messages.AddIpsNatureAction_defaultRuntimeIdPrefix;
     private boolean isModelProject = true;
     private boolean isProductDefinitionProject = false;
+    private boolean isPersistentProject = false;
 
     /**
      * {@inheritDoc}
@@ -124,11 +126,8 @@ public class AddIpsNatureAction extends ActionDelegate {
                 // Repository (DTR).
                 // The .project file is not stored in the DTR. With this action, the user can re-add
                 // the IPS Nature after the check out.
-                boolean answer = MessageDialog
-                        .openConfirm(
-                                getShell(),
-                                Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
-                                Messages.AddIpsNatureAction_readdNature);
+                boolean answer = MessageDialog.openConfirm(getShell(),
+                        Messages.AddIpsNatureAction_titleAddFaktorIpsNature, Messages.AddIpsNatureAction_readdNature);
                 if (answer) {
                     ProjectUtil.addIpsNature(ipsProject.getProject());
                 }
@@ -159,7 +158,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             }
 
             IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, runtimeIdPrefix,
-                    isProductDefinitionProject, isModelProject);
+                    isProductDefinitionProject, isModelProject, isPersistentProject);
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName);
             if (!ipsModelFolder.exists()) {
                 ipsModelFolder.create(true, true, null);
@@ -208,6 +207,8 @@ public class AddIpsNatureAction extends ActionDelegate {
         private Radiobutton modelProjectButton;
         private Radiobutton productDefinitionProjectButton;
         private Radiobutton fullProjectButton;
+
+        private Checkbox enablePersistenceCheckbox;
 
         /**
          * Image for title area
@@ -277,6 +278,9 @@ public class AddIpsNatureAction extends ActionDelegate {
 
             fullProjectButton = radiobuttonGroup.addRadiobutton(Messages.AddIpsNatureAction_fullProject);
             fullProjectButton.setChecked(isModelProject && isProductDefinitionProject);
+
+            enablePersistenceCheckbox = kit.createCheckbox(radiobuttonGroup.getGroup());
+            enablePersistenceCheckbox.setText(Messages.AddIpsNatureAction_PersistenceSupport);
 
             kit.createVerticalSpacer(composite, 5);
             Composite textComposite = kit.createLabelEditColumnComposite(composite);
@@ -445,6 +449,7 @@ public class AddIpsNatureAction extends ActionDelegate {
                 isModelProject = modelProjectButton.isChecked() || fullProjectButton.isChecked();
                 isProductDefinitionProject = productDefinitionProjectButton.isChecked()
                         || fullProjectButton.isChecked();
+                isPersistentProject = enablePersistenceCheckbox.isChecked();
             }
             super.buttonPressed(buttonId);
         }

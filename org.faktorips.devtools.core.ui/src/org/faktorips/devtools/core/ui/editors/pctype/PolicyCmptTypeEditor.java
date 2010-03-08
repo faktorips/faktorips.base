@@ -44,12 +44,18 @@ public class PolicyCmptTypeEditor extends TypeEditor {
     @Override
     protected void addAllInOneSinglePage() throws PartInitException {
         addPage(new PolicyCmptTypeStructurePage(this, false));
+        if (getIpsProject().isPersistenceSupportEnabled()) {
+            addPage(new PersistencePage(this));
+        }
     }
 
     @Override
     protected void addSplittedInMorePages() throws PartInitException {
         addPage(new PolicyCmptTypeStructurePage(this, true));
         addPage(new PolicyCmptTypeBehaviourPage(this));
+        if (getIpsProject().isPersistenceSupportEnabled()) {
+            addPage(new PersistencePage(this));
+        }
     }
 
 }

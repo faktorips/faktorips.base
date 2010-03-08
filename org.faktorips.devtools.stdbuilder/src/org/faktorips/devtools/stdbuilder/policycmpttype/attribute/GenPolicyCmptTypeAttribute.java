@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
@@ -193,6 +194,11 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
         memberVarsBuilders.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
+        getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD,
+                getAttribute(), memberVarsBuilders);
+
+        // TODO: JAXB annotation generation should be handled by the line above (create subclass of
+        // AnnotationGenerator and add it to the Standard Builder Set)
         if (isGenerateJaxbSupport()) {
             String annotationParam = "name=\"" + getAttribute().getName() + "\"";
             if (!getDatatypeHelper().getDatatype().isPrimitive()) {

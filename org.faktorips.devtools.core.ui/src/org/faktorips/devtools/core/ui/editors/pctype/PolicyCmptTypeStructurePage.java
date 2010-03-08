@@ -43,6 +43,8 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
 
     @Override
     protected void createContentForSingleStructurePage(Composite formBody, UIToolkit toolkit) {
+        createPersistenceTypeInfoSectionIfNecessary(formBody, toolkit);
+
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
         new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
@@ -52,6 +54,8 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
 
     @Override
     protected void createContentForSplittedStructurePage(Composite formBody, UIToolkit toolkit) {
+        createPersistenceTypeInfoSectionIfNecessary(formBody, toolkit);
+
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new AttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
         new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
@@ -62,7 +66,15 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
         new GeneralInfoSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
     }
 
-    private void registerContentsChangeListener() {
+    private void createPersistenceTypeInfoSectionIfNecessary(Composite formBody, UIToolkit toolkit) {
+        if (!getIpsObject().getIpsProject().isPersistenceSupportEnabled()) {
+            return;
+        }
+        new PersistentTypeInfoSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
+    }
+
+    // package level access, need this functionality also in PersistencePage
+    void registerContentsChangeListener() {
         /*
          * Refreshing the page after a change in the PolicyCmptType occurred is necessary since
          * there is a dependency from attributes that are displayed in the GeneralInfoSection and

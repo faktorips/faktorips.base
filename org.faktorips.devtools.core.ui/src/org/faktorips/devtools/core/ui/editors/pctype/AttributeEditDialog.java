@@ -49,10 +49,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -66,9 +68,12 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -205,6 +210,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             nameText.setFocus();
         }
 
+        createPersistenceTabItemIfNecessary(tabFolder);
         createDescriptionTabItem(tabFolder);
 
         tabFolder.addSelectionListener(new SelectionListener() {
@@ -734,6 +740,61 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         ruleUIController.add(msgCodeField, IValidationRule.PROPERTY_MESSAGE_CODE);
         ruleUIController.add(msgTextField, IValidationRule.PROPERTY_MESSAGE_TEXT);
         ruleUIController.add(msgSeverityField, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+    }
+
+    private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
+        if (!ipsProject.getProperties().isPersistenceSupportEnabled()) {
+            return;
+        }
+        final TabItem persistencePage = new TabItem(tabFolder, SWT.NONE);
+        persistencePage.setText("Persistence");
+
+        Composite c = createTabItemComposite(tabFolder, 1, false);
+        persistencePage.setControl(c);
+
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+
+        uiToolkit.createFormLabel(workArea, "Table column name:");
+        Text columnNameText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(columnNameText, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME);
+
+        uiToolkit.createFormLabel(workArea, "Is an unique attribute:");
+        Checkbox uniqueCheckbox = uiToolkit.createCheckbox(workArea);
+        bindingContext.bindContent(uniqueCheckbox, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE);
+
+        uiToolkit.createFormLabel(workArea, "Is a nullable attribute:");
+        Checkbox nullableCheckbox = uiToolkit.createCheckbox(workArea);
+        bindingContext.bindContent(nullableCheckbox, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
+
+        uiToolkit.createFormLabel(workArea, "Column size:");
+        IntegerField sizeField = new IntegerField(uiToolkit.createText(workArea));
+        bindingContext.bindContent(sizeField, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE);
+
+        uiToolkit.createFormLabel(workArea, "Column precision:");
+        IntegerField precisionField = new IntegerField(uiToolkit.createText(workArea));
+        bindingContext.bindContent(precisionField, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION);
+
+        uiToolkit.createFormLabel(workArea, "Column scale:");
+        IntegerField scaleField = new IntegerField(uiToolkit.createText(workArea));
+        bindingContext.bindContent(scaleField, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE);
+
+        uiToolkit.createFormLabel(workArea, "Temporal type:");
+        Combo temporalMappingCombo = uiToolkit.createCombo(workArea);
+        setComboItemsForEnum(temporalMappingCombo, DateTimeMapping.class);
+        ComboField temporalMappingField = new EnumField(temporalMappingCombo, DateTimeMapping.class);
+        bindingContext.bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
+
+        uiToolkit.createFormLabel(workArea, "Datatype converter:");
+        Combo converter = uiToolkit.createCombo(workArea);
+        // TODO: implement converter
+        converter.setEnabled(false);
     }
 
     class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {

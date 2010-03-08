@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,10 +21,14 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.type.Association;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -40,9 +45,13 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     private boolean qualified = false;
     private String inverseAssociation = ""; //$NON-NLS-1$
+    private IIpsObjectPart persistenceAssociationInfo;
 
     public PolicyCmptTypeAssociation(IPolicyCmptType pcType, String id) {
         super(pcType, id);
+        if (pcType.getIpsProject().isPersistenceSupportEnabled()) {
+            persistenceAssociationInfo = newPart(PersistentAssociationInfo.class);
+        }
     }
 
     public IPolicyCmptType getPolicyCmptType() {
@@ -423,5 +432,41 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
+    }
+
+    public IPersistentAssociationInfo getPersistenceAssociatonInfo() {
+        return (IPersistentAssociationInfo)persistenceAssociationInfo;
+    }
+
+    @Override
+    protected void addPart(IIpsObjectPart part) {
+        persistenceAssociationInfo = part;
+    }
+
+    @Override
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        if (xmlTag.getTagName().equals(IPersistentAssociationInfo.XML_TAG)) {
+            return new PersistentAssociationInfo(this, id);
+        }
+        return null;
+    }
+
+    @Override
+    public IIpsObjectPart newPart(Class partType) {
+        try {
+            Constructor<? extends IIpsObjectPart> constructor = partType.getConstructor(IIpsObjectPart.class,
+                    String.class);
+            IIpsObjectPart result = constructor.newInstance(this, getNextPartId());
+            return result;
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+        }
+        throw new IllegalArgumentException("Unsupported part type: " + partType);
+    }
+
+    @Override
+    public IIpsElement[] getChildren() {
+        return (persistenceAssociationInfo == null) ? new IIpsElement[0]
+                : new IIpsElement[] { persistenceAssociationInfo };
     }
 }

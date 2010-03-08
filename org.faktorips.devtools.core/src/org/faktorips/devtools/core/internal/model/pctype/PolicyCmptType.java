@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.Method;
@@ -32,17 +34,21 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -66,11 +72,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     private boolean forceExtensionCompilationUnitGeneration = false;
 
     private IpsObjectPartCollection<IValidationRule> rules;
+    private IIpsObjectPart persistenceTypeInfo;
 
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
         rules = new IpsObjectPartCollection<IValidationRule>(this, ValidationRule.class, IValidationRule.class,
                 ValidationRule.TAG_NAME);
+        internalInitPersistenceTypeInfo();
     }
 
     @Override
@@ -456,4 +464,99 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     }
 
+    public IPersistentTypeInfo getPersistenceTypeInfo() {
+        return (IPersistentTypeInfo)persistenceTypeInfo;
+    }
+
+    // The methods below are overridden to allow a single IPersistenceTypeInfo instance be part of
+    // this class. The default implementations handle only the case where the part is a
+    // IIpsObjectPartCollection and not a single IIpsObjectPart.
+
+    @Override
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        ArgumentCheck.notNull(xmlTag);
+        if (xmlTag.getTagName().equals(IPersistentTypeInfo.XML_TAG)) {
+            return new PersistentTypeInfo(this, id);
+        }
+        return super.newPart(xmlTag, id);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public IIpsObjectPart newPart(Class partType) {
+        if (partType == PersistentTypeInfo.class) {
+            return new PersistentTypeInfo(this, getNextPartId());
+        }
+        return super.newPart(partType);
+    }
+
+    @Override
+    protected void addPart(IIpsObjectPart part) {
+        if (IPersistentTypeInfo.class.isAssignableFrom(part.getClass())) {
+            persistenceTypeInfo = part;
+        } else {
+            super.addPart(part);
+        }
+    }
+
+    @Override
+    protected void reinitPartCollections() {
+        super.reinitPartCollections();
+        internalInitPersistenceTypeInfo();
+    }
+
+    @Override
+    protected void removePart(IIpsObjectPart part) {
+        if (PersistentTypeInfo.class.isAssignableFrom(part.getClass())) {
+            persistenceTypeInfo = newPart(PersistentTypeInfo.class);
+        } else {
+            super.removePart(part);
+        }
+    }
+
+    @Override
+    public IIpsElement[] getChildren() {
+        List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(super.getChildren()));
+        // This is the only time, the model element could be null at instantiation time
+        if (persistenceTypeInfo != null) {
+            children.add(persistenceTypeInfo);
+        }
+        return children.toArray(new IIpsElement[children.size()]);
+    }
+
+    public void initPersistentTypeInfo() throws CoreException {
+        if (!getIpsProject().isPersistenceSupportEnabled()) {
+            throw new CoreException(new IpsStatus(
+                    "Cannot initialize persistence information because the IPS Project is not persistent."));
+        }
+
+        IPersistentTypeInfo persistenceTypeInfo = getPersistenceTypeInfo();
+        ITableNamingStrategy tableNamingStrategy = getIpsProject().getTableNamingStrategy();
+
+        if (hasSupertype()) {
+            IPolicyCmptType pcSupertype = (IPolicyCmptType)findSupertype(getIpsProject());
+            IPersistentTypeInfo pcSupertypeInfo = pcSupertype.getPersistenceTypeInfo();
+            persistenceTypeInfo.setInheritanceStrategy(pcSupertypeInfo.getInheritanceStrategy());
+            if (pcSupertypeInfo.getInheritanceStrategy() == InheritanceStrategy.JOINED_SUBCLASS) {
+                persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
+            } else {
+                String rawTableName = pcSupertype.getName();
+                persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(rawTableName));
+                persistenceTypeInfo.setDiscriminatorDatatype(pcSupertypeInfo.getDiscriminatorDatatype());
+                persistenceTypeInfo.setDiscriminatorValue(getName());
+            }
+        } else {
+            persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
+            persistenceTypeInfo.setDiscriminatorValue(getName());
+        }
+    }
+
+    private void internalInitPersistenceTypeInfo() {
+        IIpsProject ipsProject = getIpsProject();
+        if (ipsProject == null || !ipsProject.isPersistenceSupportEnabled()) {
+            persistenceTypeInfo = null;
+            return;
+        }
+        persistenceTypeInfo = newPart(PersistentTypeInfo.class);
+    }
 }
