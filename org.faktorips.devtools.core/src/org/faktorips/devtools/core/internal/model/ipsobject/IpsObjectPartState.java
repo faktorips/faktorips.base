@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -80,6 +81,8 @@ public class IpsObjectPartState {
         } catch (SAXException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
 

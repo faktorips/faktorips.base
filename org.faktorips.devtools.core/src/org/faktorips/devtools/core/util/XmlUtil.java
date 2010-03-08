@@ -156,7 +156,8 @@ public class XmlUtil {
         transformer.transform(source, result);
     }
 
-    public final static Document getDocument(InputStream is) throws SAXException, IOException {
+    public final static Document getDocument(InputStream is) throws SAXException, IOException,
+            ParserConfigurationException {
         return getDefaultDocumentBuilder().parse(is);
     }
 
