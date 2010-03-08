@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.internal.MethodNames;
@@ -926,42 +927,23 @@ public abstract class GenAssociation extends GenTypePart {
      * }
      * </pre>
      */
-    public void generateMethodCopyPropertiesForComposition(String paramName, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    public void generateCodeForCopyPropertiesForComposition(String paramName,
+            String copyMapName,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String field = getFieldNameForAssociation();
         IPolicyCmptType targetType = association.findTargetPolicyCmptType(getIpsProject());
         String targetTypeQName = getQualifiedClassName(targetType, false);
-        if (association.is1ToMany()) {
-            ((GenAssociationToMany)this).generateCodeForCopyPropertiesForComposition(paramName, methodsBuilder, field,
-                    targetType, targetTypeQName);
-            return;
-        }
-        // 1-1
-        methodsBuilder.appendln("if (");
-        methodsBuilder.append(field);
-        methodsBuilder.appendln("!=null) {");
-        methodsBuilder.append(paramName);
-        methodsBuilder.append(".");
-        methodsBuilder.append(field);
-        methodsBuilder.append(" = (");
-        methodsBuilder.appendClassName(targetTypeQName);
-        methodsBuilder.append(")");
-        methodsBuilder.append(field);
-        methodsBuilder.append(".");
-        methodsBuilder.append(MethodNames.NEW_COPY);
-        methodsBuilder.appendln("();");
-        if (targetType.isDependantType() && inverseAssociation != null) {
-            methodsBuilder.append(paramName);
-            methodsBuilder.append(".");
-            methodsBuilder.append(field);
-            methodsBuilder.append(".");
-            methodsBuilder.append(getMethodNameSetParentObjectInternal(true));
-            methodsBuilder.append("(");
-            methodsBuilder.append(paramName);
-            methodsBuilder.appendln(");");
-        }
-        methodsBuilder.appendln("}");
+
+        generateCodeForCopyPropertiesForComposition(paramName, copyMapName, methodsBuilder, field, targetType,
+                targetTypeQName);
     }
+
+    protected abstract void generateCodeForCopyPropertiesForComposition(String paramName,
+            String copyMapName,
+            JavaCodeFragmentBuilder methodsBuilder,
+            String field,
+            IPolicyCmptType targetType,
+            String targetTypeQName) throws CoreException;
 
     public abstract void generateMethodCopyPropertiesForAssociation(String paramName,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
@@ -1034,6 +1016,15 @@ public abstract class GenAssociation extends GenTypePart {
 
     public abstract void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder)
             throws CoreException;
+
+    public abstract void generateCodeForCopyAssociation(String varCopy,
+            String varCopyMap,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+
+    public abstract void generateCodeForCopyComposition(String varCopy,
+            String varCopyMap,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+
 
     /**
      * Returns <code>true</code> if the association is the inverse of a derived union association,
@@ -1120,4 +1111,28 @@ public abstract class GenAssociation extends GenTypePart {
         StandardBuilderSet builderSet = getGenType().getBuilderSet();
         return builderSet.getGenerator(policyCmptType);
     }
+    
+        /**
+     * generate a snippet for the generateCodeForComposition method, this part is equal for *To1 and
+     * *ToMany
+     * 
+     * @param varCopyMap
+     * @param varTarget
+     * @param methodsBuilder
+     * @throws CoreException
+     */
+    protected void generateSnippetForCopyCompositions(String varCopyMap,
+            String varTarget,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String unqTargetImplName = getUnqualifiedClassName(getTargetPolicyCmptType(), false);
+        String varCopyTarget = "copy" + unqTargetImplName;
+        methodsBuilder.append(unqTargetImplName).append(' ').append(varCopyTarget).append(" = ") //
+                .append('(').append(unqTargetImplName).append(')').append(varCopyMap) //
+                .append(".get(").append(varTarget).appendln(");");
+        methodsBuilder.append("((").append(unqTargetImplName).append(')').append(varTarget).append(").") //
+                .append(PolicyCmptImplClassBuilder.METHOD_COPY_ASSOCIATIONS) //
+                .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
+
+    }
+    
 }

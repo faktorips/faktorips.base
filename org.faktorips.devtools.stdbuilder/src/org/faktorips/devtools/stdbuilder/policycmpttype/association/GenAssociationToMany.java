@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
 
 /**
@@ -625,7 +626,21 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.appendln(");");
     }
 
+    /**
+     * Code sample for 1-Many composition //may differ for Java5
+     * 
+     * <pre>
+     * for (Iterator it = child2s.iterator(); it.hasNext();) {
+     *     ICpChild2 cpChild2 = (ICpChild2)it.next();
+     *     ICpChild2 copycpChild2 = (ICpChild2)cpChild2.newCopy();
+     *     ((DependantObject)copycpChild2).setParentModelObjectInternal(copy);
+     *     copy.child2s.add(copycpChild2);
+     * }
+     * </pre>
+     */
+    @Override
     protected void generateCodeForCopyPropertiesForComposition(String paramName,
+            String copyMapName,
             JavaCodeFragmentBuilder methodsBuilder,
             String field,
             IPolicyCmptType targetType,
@@ -655,11 +670,9 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.append(varCopy);
         methodsBuilder.append(" = ( ");
         methodsBuilder.appendClassName(targetTypeQName);
-        methodsBuilder.append(")");
-        methodsBuilder.append(varOrig);
-        methodsBuilder.append(".");
-        methodsBuilder.append(MethodNames.NEW_COPY);
-        methodsBuilder.appendln("();");
+
+        methodsBuilder.append(")").append(varOrig).append(".").append(PolicyCmptImplClassBuilder.METHOD_NEW_COPY) //
+                .append("(").append(copyMapName).append(");");
 
         if (inverseAssociation != null) {
             String targetClass = getQualifiedClassName(inverseAssociation.getPolicyCmptType(), false);
@@ -677,6 +690,7 @@ public class GenAssociationToMany extends GenAssociation {
         }
 
         methodsBuilder.appendln(paramName + "." + field + ".add(" + varCopy + ");");
+        methodsBuilder.append(copyMapName).append(".put(").append(varOrig).append(", ").append(varCopy).appendln(");");
         methodsBuilder.appendln("}");
         return;
     }
@@ -1013,6 +1027,87 @@ public class GenAssociationToMany extends GenAssociation {
             IIpsElement ipsElement) {
 
         // TODO AW: Not implemented yet.
+    }
+
+    /**
+     * Generates code for associations in the copyAssociations method. Sample:
+     * 
+     * <pre>
+     * for (IPerson iPerson : insuredPersons) {
+     *     if (copyMap.containsKey(iPerson)) {
+     *         copy.insuredPersons.remove(iPerson);
+     *         copy.insuredPersons.add(copyMap.get(iPerson));
+     *     }
+     * }
+     * </pre>
+     * 
+     * 
+     */
+    @Override
+    public void generateCodeForCopyAssociation(String varCopy, String varCopyMap, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String unqTargetInterfName = getUnqualifiedClassName(getTargetPolicyCmptType(), true);
+        String varName = StringUtils.uncapitalize(unqTargetInterfName);
+        methodsBuilder.append(getForLoopCode(unqTargetInterfName, varName, fieldName));
+        methodsBuilder.append("if (") //
+                .append(varCopyMap).append(".containsKey(").append(varName) //
+                .appendln(")) {");
+        methodsBuilder.append(varCopy).append('.').append(fieldName).append(".remove(").append(varName).appendln(");");
+        methodsBuilder.append(varCopy).append('.').append(fieldName).append(".add(") //
+                .append('(').append(unqTargetInterfName).append(')') //
+                .append(varCopyMap).append(".get(").append(varName).appendln("));");
+        methodsBuilder.appendln("}");
+        methodsBuilder.appendln("}");
+    }
+
+    /**
+     * Generate code for compositions in the copyAssociations method. Sample:
+     * 
+     * <pre>
+     * for (IPerson iPerson : persons) {
+     *     Person copyPerson = (Person)copyMap.get(person);
+     *     person.copyAssociations(copyPerson, copyMap);
+     * }
+     * </pre>
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public void generateCodeForCopyComposition(String varCopy, String varCopyMap, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String unqTargetInterfName = getUnqualifiedClassName(getTargetPolicyCmptType(), true);
+        String varName = StringUtils.uncapitalize(unqTargetInterfName);
+        methodsBuilder.append(getForLoopCode(unqTargetInterfName, varName, fieldName));
+        generateSnippetForCopyCompositions(varCopyMap, varName, methodsBuilder);
+        methodsBuilder.appendln("}");
+    }
+
+    private JavaCodeFragment getForLoopCode(String className, String varName, String collectionName) {
+        // depends on typesafe collections because new for-loop-style only makes sense with these
+        // collections
+        if (isUseTypesafeCollections()) {
+            return getForLoopCodeJ5(className, varName, collectionName);
+        } else {
+            return getForLoopCodeJ4(className, varName, collectionName);
+        }
+
+    }
+
+    private JavaCodeFragment getForLoopCodeJ4(String className, String varName, String collectionName) {
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+        builder.append("for (").appendClassName(Iterator.class).append(" iterator = ").append(collectionName).append(
+                ".iterator()").append("; ") //
+                .appendln("iterator.hasNext();) {");
+        builder.append(className).append(' ').append(varName).append(" = ").append('(').append(className).append(')') //
+                .appendln("iterator.next();");
+        return builder.getFragment();
+    }
+
+    private JavaCodeFragment getForLoopCodeJ5(String className, String varName, String collectionName) {
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+        builder.append("for (").append(className).append(' ').append(varName).append(" : ") //
+                .append(collectionName).appendln(") {");
+        return builder.getFragment();
     }
 
 }
