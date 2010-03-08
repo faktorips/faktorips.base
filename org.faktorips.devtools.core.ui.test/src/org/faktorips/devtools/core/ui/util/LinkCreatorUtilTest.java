@@ -55,7 +55,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     private ProductCmpt cmptC1;
     private ProductStructureContentProvider contentProvider;
     private IProductCmptTreeStructure structure;
-    private ProductCmpt cmptB3;
+    // private ProductCmpt cmptB3;
     private ProductCmpt cmptC2;
     private IProductCmptTypeAssociation associationToB1;
     private IProductCmptTypeAssociation associationToB2;
@@ -65,9 +65,6 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     private ProductCmptType typeSubB;
     private ProductCmpt cmptSubB1;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -94,7 +91,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         cmptA = newProductCmpt(typeA, "CmptA");
         cmptB1 = newProductCmpt(typeB, "testPackX.CmptB1");
         cmptB2 = newProductCmpt(typeB, "CmptB2");
-        cmptB3 = newProductCmpt(typeB, "testPackY.CmptB3");
+        // cmptB3 = newProductCmpt(typeB, "testPackY.CmptB3");
         cmptC1 = newProductCmpt(typeC, "CmptC1");
         cmptC2 = newProductCmpt(typeC, "testPackZ.CmptC2");
         cmptC3 = newProductCmpt(typeC, "CmptC3");

@@ -22,13 +22,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class InstanceContentProvideTest extends AbstractIpsPluginTest {
 
-    private InstanceContentProvider contentProvider = new InstanceContentProvider();
+    // private InstanceContentProvider contentProvider = new InstanceContentProvider();
 
     private IIpsProject ipsProject;
 
     private IIpsProject referencingProject;
 
-    private IIpsProject independentProject;
+    // private IIpsProject independentProject;
 
     private IIpsProject leaveProject1;
 
@@ -67,7 +67,7 @@ public class InstanceContentProvideTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(referencingProject);
         leaveProject2.setIpsObjectPath(path);
 
-        independentProject = newIpsProject("ReferencedProject");
+        // independentProject = newIpsProject("ReferencedProject");
     }
 
     public void testEmtptyTest() {

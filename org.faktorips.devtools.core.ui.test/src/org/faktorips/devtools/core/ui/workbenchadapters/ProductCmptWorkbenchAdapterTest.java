@@ -56,7 +56,6 @@ public class ProductCmptWorkbenchAdapterTest extends AbstractIpsPluginTest {
         bNormalType.setInstancesIcon("normalTypeImage.gif");
         // create components
         IProductCmpt aSuperCmpt = newProductCmpt(aSuperType, "SuperProductCmpt");
-        IProductCmpt bNormalCmpt = newProductCmpt(bNormalType, "NormalProductCmpt");
         IProductCmpt cSubCmpt = newProductCmpt(cSubType, "SubProductCmpt");
 
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)aSuperCmpt.getAdapter(IWorkbenchAdapter.class);

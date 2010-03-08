@@ -93,11 +93,9 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         file.create(null, true, null);
 
         // create sort order file
-        List list = new ArrayList();
-
+        List<String> list = new ArrayList<String>();
         list.add("ZTestPackageFragment");
         list.add("TestPackageFragment");
-
         createPackageOrderFile((IFolder)root.getCorrespondingResource(), list);
     }
 
@@ -148,4 +146,5 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         assertTrue(sorter.compare(null, folder, subFolder) < 0);
         assertTrue(sorter.compare(null, subFolder, folder) > 0);
     }
+
 }

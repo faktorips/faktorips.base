@@ -63,7 +63,8 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
 
         // don't find any association because no association on policyCmptType1 have policyCmptType2
         // as target
-        List result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
+        List<IAssociation> result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21,
+                policyCmptType1);
         assertEquals(0, result.size());
 
         // don't find associations from supertype
