@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -170,6 +172,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     protected final void createProductCmpt() throws CoreException {
         productCmpt = newProductCmpt(productCmptType, "ExampleProduct");
         productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
+        productCmptGeneration.setValidFrom(new GregorianCalendar(2010, 3, 10));
         productCmptGenerationConfigElement = productCmptGeneration.newConfigElement(policyCmptTypeAttribute);
         attributeValue = productCmptGeneration.newAttributeValue(productCmptTypeAttribute);
     }
