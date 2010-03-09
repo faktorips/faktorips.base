@@ -136,9 +136,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        if (!productCmpt.isValid()) {
-            return false;
-        }
         // build formula test if at least one formula and formula test is specified
         if (!productCmpt.containsFormulaTest()) {
             return false;
@@ -224,6 +221,11 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     protected void generateCodeForJavatype() throws CoreException {
         if (productCmpt == null) {
             throw new CoreException(new IpsStatus("Product component not found! " + getIpsSrcFile()));
+        }
+
+        // Do not generate code if the product component is not valid as it may lead to exceptions.
+        if (!productCmpt.isValid()) {
+            return;
         }
 
         TypeSection mainSection = getMainTypeSection();
