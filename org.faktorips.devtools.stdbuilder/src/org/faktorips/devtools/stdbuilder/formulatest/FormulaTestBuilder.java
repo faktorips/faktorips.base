@@ -136,6 +136,9 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+        if (!productCmpt.isValid()) {
+            return false;
+        }
         // build formula test if at least one formula and formula test is specified
         if (!productCmpt.containsFormulaTest()) {
             return false;

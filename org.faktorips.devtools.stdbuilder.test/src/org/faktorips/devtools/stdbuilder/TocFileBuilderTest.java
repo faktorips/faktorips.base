@@ -117,7 +117,6 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     public void testToc() throws Exception {
-
         // create a product component
         IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
         IProductCmptType productCmptType = type.findProductCmptType(project);

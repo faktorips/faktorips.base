@@ -58,7 +58,6 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
 
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(productCmpt);
-        assertTrue(generatedJavaElements.contains(getGeneratedJavaClass("___20100308")));
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass("___20100320")));
     }
 
