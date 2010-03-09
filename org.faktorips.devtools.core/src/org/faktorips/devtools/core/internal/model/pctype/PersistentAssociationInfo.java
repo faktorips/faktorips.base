@@ -80,12 +80,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     public boolean isJoinTableRequired() throws CoreException {
-        boolean isUnidirectional1ToManyComposition = isUnidirectional()
-                && getPolicyComponentTypeAssociation().isComposition()
-                && getPolicyComponentTypeAssociation().is1ToMany();
-
-        boolean isOneToManyAssociation = getPolicyComponentTypeAssociation().isAssoziation()
-                && getPolicyComponentTypeAssociation().is1ToMany();
+        boolean isOneToManyAssociation = getPolicyComponentTypeAssociation().is1ToMany();
 
         IPolicyCmptTypeAssociation inverseAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject());
@@ -94,7 +89,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
         boolean isManyToManyAssociation = isOneToManyAssociation && isInverseAssociationOneToMany;
 
-        return isUnidirectional1ToManyComposition || isManyToManyAssociation;
+        return isManyToManyAssociation;
     }
 
     public boolean isOrphanDeleting() {
@@ -172,20 +167,21 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             if (StringUtils.isBlank(joinTableName)) {
                 msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_EMPTY, "The join table name is empty.", Message.ERROR,
                         this, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
-            }
-            if (PersistenceUtil.isValidDatabaseIdentifier(joinTableName)) {
-                msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_INVALID, "The join table name is invalid.",
-                        Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
+            } else {
+                if (!PersistenceUtil.isValidDatabaseIdentifier(joinTableName)) {
+                    msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_INVALID, "The join table name is invalid.",
+                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
+                }
             }
             // validate column names of join table if they are not blank
             if (!StringUtils.isBlank(sourceColumnName)) {
-                if (PersistenceUtil.isValidDatabaseIdentifier(sourceColumnName)) {
+                if (!PersistenceUtil.isValidDatabaseIdentifier(sourceColumnName)) {
                     msgList.add(new Message(MSGCODE_SOURCE_COLUMN_NAME_INVALID, "The source column name is invalid.",
                             Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME));
                 }
             }
             if (!StringUtils.isBlank(sourceColumnName)) {
-                if (PersistenceUtil.isValidDatabaseIdentifier(targetColumnName)) {
+                if (!PersistenceUtil.isValidDatabaseIdentifier(targetColumnName)) {
                     msgList.add(new Message(MSGCODE_TARGET_COLUMN_NAME_INVALID, "The target column name is invalid.",
                             Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME));
                 }

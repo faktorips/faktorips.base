@@ -184,7 +184,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         fragment.addImport(IMPORT_TRANSIENT);
         fragment.append(ANNOTATION_TRANSIENT);
 
-        // TODO: merge with createAnnotationForCompositionOneToOne() when the code generation
+        // TODO Joerg Merge Persistence Branch: merge with createAnnotationForCompositionOneToOne()
+        // when the code generation
         // for the "parentModelObject" field is fixed
 
         // change @OneToOne -> @OneToMany

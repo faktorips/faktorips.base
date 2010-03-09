@@ -112,6 +112,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     // stores the last inverse association, to indicate changes of this property
     private String prevInverseAssociationRoleName = "";
     private String prevAssociationRoleName = "";
+    private IPolicyCmptTypeAssociation prevInverseAssociation;
+    private String prevInverseAssociationName;
 
     public NewPcTypeAssociationWizard(IPolicyCmptTypeAssociation association) {
         super.setWindowTitle(Messages.NewPcTypeAssociationWizard_wizardTitle);
@@ -715,19 +717,25 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
 
     private void storeInverseAssociation(IPolicyCmptTypeAssociation inverseAssociation) {
-        this.inverseAssociation = inverseAssociation;
         if (inverseAssociation != null) {
+            if (prevInverseAssociation != null && prevInverseAssociation != inverseAssociation) {
+                prevInverseAssociation.setInverseAssociation(prevInverseAssociationName);
+            }
+            prevInverseAssociationName = inverseAssociation.getInverseAssociation();
             association.setInverseAssociation(inverseAssociation.getTargetRoleSingular());
             inverseAssociation.setInverseAssociation(association.getTargetRoleSingular());
         } else {
             association.setInverseAssociation(""); //$NON-NLS-1$
         }
+        this.inverseAssociation = inverseAssociation;
         inverseAssociationPropertyPage.setAssociationAndUpdatePage(inverseAssociation);
 
         // store role names to handle the next role name change
         // the role names are used as definition for the corresponding inverse association
+
         prevAssociationRoleName = association.getTargetRoleSingular();
         prevInverseAssociationRoleName = inverseAssociation == null ? "" : inverseAssociation.getTargetRoleSingular();
+        prevInverseAssociation = inverseAssociation;
     }
 
     public void storeExistingInverseAssociation(String inverseAssociation) {

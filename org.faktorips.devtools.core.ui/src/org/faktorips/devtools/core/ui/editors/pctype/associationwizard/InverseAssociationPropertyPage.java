@@ -349,7 +349,9 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
      */
     public void setDefaultFocus() {
         updateDefaultTargetRoleSingular();
-        targetRoleSingularText.setFocus();
-        targetRoleSingularText.selectAll();
+        if (!targetRoleSingularText.isDisposed()) {
+            targetRoleSingularText.setFocus();
+            targetRoleSingularText.selectAll();
+        }
     }
 }
