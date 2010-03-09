@@ -18,15 +18,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 
 /**
@@ -40,26 +35,25 @@ public class MoveIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
 
     private IIpsPackageFragment targetIpsPackageFragment;
 
+    private IIpsPackageFragment originalIpsPackageFragment;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         IIpsPackageFragmentRoot fragmentRoot = policyCmptType.getIpsPackageFragment().getRoot();
+        originalIpsPackageFragment = fragmentRoot.getIpsPackageFragment(PACKAGE);
         targetIpsPackageFragment = fragmentRoot.createPackageFragment(TARGET_PACKAGE_NAME, true, null);
     }
 
+    @Override
     public void testCheckInitialConditionsValid() throws CoreException {
-        ProcessorBasedRefactoring refactoring = policyCmptType.getMoveRefactoring();
-        RefactoringStatus status = refactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
-        assertFalse(status.hasError());
+        super.testCheckInitialConditionsValid();
     }
 
+    @Override
     public void testCheckInitialConditionsInvalid() throws CoreException {
-        policyCmptType.setProductCmptType("abc");
-
-        ProcessorBasedRefactoring refactoring = policyCmptType.getMoveRefactoring();
-        RefactoringStatus status = refactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
-        assertTrue(status.hasFatalError());
+        super.testCheckInitialConditionsInvalid();
     }
 
     public void testCheckFinalConditionsValid() throws CoreException {
@@ -75,7 +69,7 @@ public class MoveIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
         ProcessorBasedRefactoring refactoring = policyCmptType.getMoveRefactoring();
         IIpsMoveProcessor moveProcessor = (IIpsMoveProcessor)refactoring.getProcessor();
         moveProcessor.setTargetIpsPackageFragment(targetIpsPackageFragment);
-        newProductCmptType(ipsProject, TARGET_PACKAGE_NAME + "." + POLICY_NAME);
+        newProductCmptType(ipsProject, TARGET_PACKAGE_NAME + "." + POLICY_CMPT_TYPE_NAME);
         RefactoringStatus status = refactoring.getProcessor().checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertTrue(status.hasFatalError());
@@ -83,93 +77,46 @@ public class MoveIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
 
     public void testMovePolicyCmptType() throws CoreException {
         performMoveRefactoring(policyCmptType, targetIpsPackageFragment);
-        String movedQualifiedName = TARGET_PACKAGE_NAME + "." + POLICY_NAME;
 
-        // Find the new policy component type.
-        IIpsSrcFile ipsSrcFile = targetIpsPackageFragment.getIpsSrcFile(POLICY_NAME, policyCmptType.getIpsObjectType());
-        assertTrue(ipsSrcFile.exists());
-        IPolicyCmptType newPolicyCmptType = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-        assertEquals(targetIpsPackageFragment, newPolicyCmptType.getIpsPackageFragment());
+        checkIpsSrcFiles(POLICY_CMPT_TYPE_NAME, POLICY_CMPT_TYPE_NAME, originalIpsPackageFragment,
+                targetIpsPackageFragment, IpsObjectType.POLICY_CMPT_TYPE);
 
-        // Check for product component type configuration update.
-        assertEquals(movedQualifiedName, productCmptType.getPolicyCmptType());
-
-        // Check for test parameter and test attribute update.
-        assertEquals(movedQualifiedName, testPolicyCmptTypeParameter.getPolicyCmptType());
-        assertEquals(movedQualifiedName, testAttribute.getPolicyCmptType());
-        assertEquals(movedQualifiedName, testParameterChild1.getPolicyCmptType());
-        assertEquals(movedQualifiedName, testParameterChild2.getPolicyCmptType());
-        assertEquals(movedQualifiedName, testParameterChild3.getPolicyCmptType());
-
-        // Check for method parameter update.
-        assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());
-        assertEquals(movedQualifiedName, policyMethod.getParameters()[1].getDatatype());
-        assertEquals(movedQualifiedName, productMethod.getParameters()[2].getDatatype());
-
-        // Check for association update.
-        assertEquals(movedQualifiedName, otherPolicyToPolicyAssociation.getTarget());
+        checkPolicyCmptTypeReferences(TARGET_PACKAGE_NAME + "." + POLICY_CMPT_TYPE_NAME);
     }
 
     public void testMoveSuperPolicyCmptType() throws CoreException {
         performMoveRefactoring(superPolicyCmptType, targetIpsPackageFragment);
-        String movedQualifiedName = TARGET_PACKAGE_NAME + "." + SUPER_POLICY_NAME;
 
-        // Check for test attribute update.
-        assertEquals(movedQualifiedName, superTestAttribute.getPolicyCmptType());
-
-        // Check for subtype update.
-        assertEquals(movedQualifiedName, policyCmptType.getSupertype());
+        checkSuperPolicyCmptTypeReferences(TARGET_PACKAGE_NAME + "." + SUPER_POLICY_CMPT_TYPE_NAME);
     }
 
     public void testMoveProductCmptType() throws CoreException {
         performMoveRefactoring(productCmptType, targetIpsPackageFragment);
-        String movedQualifiedName = TARGET_PACKAGE_NAME + "." + PRODUCT_NAME;
 
-        // Find the new product component type.
-        IIpsSrcFile ipsSrcFile = targetIpsPackageFragment.getIpsSrcFile(PRODUCT_NAME, productCmptType
-                .getIpsObjectType());
-        assertTrue(ipsSrcFile.exists());
-        IProductCmptType newProductCmptType = (IProductCmptType)ipsSrcFile.getIpsObject();
-        assertEquals(targetIpsPackageFragment, newProductCmptType.getIpsPackageFragment());
+        checkIpsSrcFiles(PRODUCT_CMPT_TYPE_NAME, PRODUCT_CMPT_TYPE_NAME, originalIpsPackageFragment,
+                targetIpsPackageFragment, IpsObjectType.PRODUCT_CMPT_TYPE);
 
-        // Check for policy component type configuration update.
-        assertEquals(movedQualifiedName, policyCmptType.getProductCmptType());
-
-        // Check for product component reference update.
-        assertEquals(movedQualifiedName, productCmpt.getProductCmptType());
-
-        // Check for method parameter update.
-        assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());
-        assertEquals(movedQualifiedName, productMethod.getParameters()[1].getDatatype());
-        assertEquals(movedQualifiedName, policyMethod.getParameters()[2].getDatatype());
-
-        // Check for association update.
-        assertEquals(movedQualifiedName, otherProductToProductAssociation.getTarget());
-    }
-
-    public void testMoveProductCmpt() throws CoreException {
-        String newQName = TARGET_PACKAGE_NAME + "." + productCmpt.getName();
-        performMoveRefactoring(productCmpt, targetIpsPackageFragment);
-
-        // Find the new product
-        IIpsSrcFile file = targetIpsPackageFragment.getIpsSrcFile(productCmpt.getName(), IpsObjectType.PRODUCT_CMPT);
-
-        assertNotNull(file);
-        assertTrue(file.exists());
-
-        // Check for update of referring product cmpt
-        IProductCmptGeneration gen = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
-        IProductCmptLink[] links = gen.getLinks();
-        assertEquals(1, links.length);
-        assertEquals(newQName, links[0].getTarget());
+        checkProductCmptTypeReferences(TARGET_PACKAGE_NAME + "." + PRODUCT_CMPT_TYPE_NAME);
     }
 
     public void testMoveSuperProductCmptType() throws CoreException {
         performMoveRefactoring(superProductCmptType, targetIpsPackageFragment);
-        String movedQualifiedName = TARGET_PACKAGE_NAME + "." + SUPER_PRODUCT_NAME;
 
-        // Check for subtype update.
-        assertEquals(movedQualifiedName, productCmptType.getSupertype());
+        checkSuperProductCmptTypeReferences(TARGET_PACKAGE_NAME + "." + SUPER_PRODUCT_CMPT_TYPE_NAME);
+    }
+
+    public void testMoveProductCmpt() throws CoreException {
+        performMoveRefactoring(productCmpt, targetIpsPackageFragment);
+
+        checkIpsSrcFiles(PRODUCT_NAME, PRODUCT_NAME, originalIpsPackageFragment, targetIpsPackageFragment,
+                IpsObjectType.PRODUCT_CMPT);
+
+        checkProductCmptReferences(TARGET_PACKAGE_NAME + "." + productCmpt.getName());
+    }
+
+    @Override
+    protected ProcessorBasedRefactoring getRefactoring(IIpsElement ipsElement) {
+        return ipsElement.getMoveRefactoring();
     }
 
 }

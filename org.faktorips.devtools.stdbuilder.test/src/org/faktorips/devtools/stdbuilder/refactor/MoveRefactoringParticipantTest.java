@@ -50,8 +50,8 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         assertFalse(policyInterface.exists());
 
         // Obtain the moved Java elements.
-        policyClass = getJavaType(TARGET_PACKAGE_NAME, POLICY_NAME, true);
-        policyInterface = getJavaType(TARGET_PACKAGE_NAME, POLICY_NAME, false);
+        policyClass = getJavaType(TARGET_PACKAGE_NAME, POLICY_CMPT_TYPE_NAME, true);
+        policyInterface = getJavaType(TARGET_PACKAGE_NAME, POLICY_CMPT_TYPE_NAME, false);
 
         assertTrue(policyClass.exists());
         assertTrue(policyInterface.exists());
@@ -68,10 +68,10 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         assertFalse(productGenInterface.exists());
 
         // Obtain the moved Java elements.
-        productClass = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_NAME, true);
-        productInterface = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_NAME, false);
-        productGenClass = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_NAME + "Gen", true);
-        productGenInterface = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_NAME + "Gen", false);
+        productClass = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME, true);
+        productInterface = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME, false);
+        productGenClass = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME + "Gen", true);
+        productGenInterface = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME + "Gen", false);
 
         assertTrue(productClass.exists());
         assertTrue(productInterface.exists());

@@ -53,12 +53,12 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         // Initialize folders and Java elements.
         modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model"));
         internalFolder = modelFolder.getFolder("internal");
-        policyInterface = getJavaType(PACKAGE, POLICY_NAME, false);
-        policyClass = getJavaType(PACKAGE, POLICY_NAME, true);
-        productInterface = getJavaType(PACKAGE, PRODUCT_NAME, false);
-        productClass = getJavaType(PACKAGE, PRODUCT_NAME, true);
-        productGenInterface = getJavaType(PACKAGE, PRODUCT_NAME + "Gen", false);
-        productGenClass = getJavaType(PACKAGE, PRODUCT_NAME + "Gen", true);
+        policyInterface = getJavaType(PACKAGE, POLICY_CMPT_TYPE_NAME, false);
+        policyClass = getJavaType(PACKAGE, POLICY_CMPT_TYPE_NAME, true);
+        productInterface = getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME, false);
+        productClass = getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME, true);
+        productGenInterface = getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME + "Gen", false);
+        productGenClass = getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME + "Gen", true);
     }
 
     /**

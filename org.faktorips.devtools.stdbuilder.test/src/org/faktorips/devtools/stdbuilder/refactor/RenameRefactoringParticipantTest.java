@@ -157,8 +157,8 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         performRenameRefactoring(policyCmptType, "RenamedPolicy");
 
-        assertFalse(getJavaType(PACKAGE, POLICY_NAME, false).exists());
-        assertFalse(getJavaType(PACKAGE, POLICY_NAME, true).exists());
+        assertFalse(getJavaType(PACKAGE, POLICY_CMPT_TYPE_NAME, false).exists());
+        assertFalse(getJavaType(PACKAGE, POLICY_CMPT_TYPE_NAME, true).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedPolicy", false).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedPolicy", true).exists());
 
@@ -173,10 +173,10 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         performRenameRefactoring(productCmptType, "RenamedProduct");
 
-        assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, false).exists());
-        assertFalse(getJavaType(PACKAGE, PRODUCT_NAME, true).exists());
-        assertFalse(getJavaType(PACKAGE, PRODUCT_NAME + "Gen", false).exists());
-        assertFalse(getJavaType(PACKAGE, PRODUCT_NAME + "Gen", true).exists());
+        assertFalse(getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME, false).exists());
+        assertFalse(getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME, true).exists());
+        assertFalse(getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME + "Gen", false).exists());
+        assertFalse(getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME + "Gen", true).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedProduct", false).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedProduct", true).exists());
         assertTrue(getJavaType(PACKAGE, "RenamedProductGen", false).exists());

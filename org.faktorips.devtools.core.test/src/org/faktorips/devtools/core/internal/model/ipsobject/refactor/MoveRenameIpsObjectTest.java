@@ -13,9 +13,18 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -72,24 +81,24 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         policyMethod.setName("policyMethod");
         policyMethod.setDatatype(Datatype.STRING.getQualifiedName());
         policyMethod.newParameter(Datatype.INTEGER.getQualifiedName(), "notToBeChanged");
-        policyMethod.newParameter(QUALIFIED_POLICY_NAME, "toBeChanged");
-        policyMethod.newParameter(QUALIFIED_PRODUCT_NAME, "withProductDatatype");
+        policyMethod.newParameter(QUALIFIED_POLICY_CMPT_TYPE_NAME, "toBeChanged");
+        policyMethod.newParameter(QUALIFIED_PRODUCT_CMPT_TYPE_NAME, "withProductDatatype");
 
         // Setup product method.
         productMethod = otherProductCmptType.newMethod();
         productMethod.setName("productMethod");
         productMethod.setDatatype(Datatype.STRING.getQualifiedName());
         productMethod.newParameter(Datatype.INTEGER.getQualifiedName(), "notToBeChanged");
-        productMethod.newParameter(QUALIFIED_PRODUCT_NAME, "toBeChanged");
-        productMethod.newParameter(QUALIFIED_POLICY_NAME, "withPolicyDatatype");
+        productMethod.newParameter(QUALIFIED_PRODUCT_CMPT_TYPE_NAME, "toBeChanged");
+        productMethod.newParameter(QUALIFIED_POLICY_CMPT_TYPE_NAME, "withPolicyDatatype");
 
         // Setup policy associations.
         otherPolicyToPolicyAssociation = otherPolicyCmptType.newPolicyCmptTypeAssociation();
-        otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_NAME);
+        otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_CMPT_TYPE_NAME);
 
         // Setup product associations.
         otherProductToProductAssociation = otherProductCmptType.newProductCmptTypeAssociation();
-        otherProductToProductAssociation.setTarget(QUALIFIED_PRODUCT_NAME);
+        otherProductToProductAssociation.setTarget(QUALIFIED_PRODUCT_CMPT_TYPE_NAME);
 
         // Create a test attribute based on an attribute of the super policy component type.
         IPolicyCmptTypeAttribute superPolicyAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
@@ -99,7 +108,7 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         superPolicyAttribute.setAttributeType(AttributeType.CHANGEABLE);
         superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
         superTestAttribute.setAttribute(superPolicyAttribute);
-        superTestAttribute.setPolicyCmptType(SUPER_POLICY_NAME);
+        superTestAttribute.setPolicyCmptType(SUPER_POLICY_CMPT_TYPE_NAME);
 
         createProductCmpt();
 
@@ -107,7 +116,97 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
         otherProductToProductLink = productCmptGeneration.newLink(otherProductToProductAssociation);
         otherProductToProductLink.setTarget(productCmpt.getQualifiedName());
-
     }
+
+    protected void testCheckInitialConditionsValid() throws CoreException {
+        ProcessorBasedRefactoring refactoring = getRefactoring(policyCmptType);
+        RefactoringStatus status = refactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
+        assertFalse(status.hasError());
+    }
+
+    protected void testCheckInitialConditionsInvalid() throws CoreException {
+        policyCmptType.setProductCmptType("abc");
+
+        ProcessorBasedRefactoring refactoring = getRefactoring(policyCmptType);
+        RefactoringStatus status = refactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
+        assertTrue(status.hasFatalError());
+    }
+
+    protected void checkIpsSrcFiles(String oldName,
+            String newName,
+            IIpsPackageFragment originalIpsPackageFragment,
+            IIpsPackageFragment targetIpsPackageFragment,
+            IpsObjectType ipsObjectType) throws CoreException {
+
+        // The old file must no longer exist.
+        IIpsSrcFile oldIpsSrcFile = originalIpsPackageFragment.getIpsSrcFile(oldName, ipsObjectType);
+        assertFalse(oldIpsSrcFile.exists());
+
+        // Find the new file and validate the IPS object.
+        IIpsSrcFile newIpsSrcFile = targetIpsPackageFragment.getIpsSrcFile(newName, ipsObjectType);
+        assertTrue(newIpsSrcFile.exists());
+        IIpsObject newIpsObject = newIpsSrcFile.getIpsObject();
+        assertEquals(newName, newIpsObject.getName());
+        assertEquals(targetIpsPackageFragment, newIpsObject.getIpsPackageFragment());
+    }
+
+    protected void checkPolicyCmptTypeReferences(String newQualifiedName) {
+        // Check for product component type configuration update.
+        assertEquals(newQualifiedName, productCmptType.getPolicyCmptType());
+
+        // Check for test parameter and test attribute update.
+        assertEquals(newQualifiedName, testPolicyCmptTypeParameter.getPolicyCmptType());
+        assertEquals(newQualifiedName, testAttribute.getPolicyCmptType());
+        assertEquals(newQualifiedName, testParameterChild1.getPolicyCmptType());
+        assertEquals(newQualifiedName, testParameterChild2.getPolicyCmptType());
+        assertEquals(newQualifiedName, testParameterChild3.getPolicyCmptType());
+
+        // Check for method parameter update.
+        assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());
+        assertEquals(newQualifiedName, policyMethod.getParameters()[1].getDatatype());
+        assertEquals(newQualifiedName, productMethod.getParameters()[2].getDatatype());
+
+        // Check for association update.
+        assertEquals(newQualifiedName, otherPolicyToPolicyAssociation.getTarget());
+    }
+
+    protected void checkSuperPolicyCmptTypeReferences(String newQualifiedName) {
+        // Check for test attribute update.
+        assertEquals(newQualifiedName, superTestAttribute.getPolicyCmptType());
+
+        // Check for subtype update.
+        assertEquals(newQualifiedName, policyCmptType.getSupertype());
+    }
+
+    protected void checkProductCmptTypeReferences(String newQualifiedName) {
+        // Check for policy component type configuration update.
+        assertEquals(newQualifiedName, policyCmptType.getProductCmptType());
+
+        // Check for product component reference update.
+        assertEquals(newQualifiedName, productCmpt.getProductCmptType());
+
+        // Check for method parameter update.
+        assertEquals(Datatype.INTEGER.getQualifiedName(), policyMethod.getParameters()[0].getDatatype());
+        assertEquals(newQualifiedName, productMethod.getParameters()[1].getDatatype());
+        assertEquals(newQualifiedName, policyMethod.getParameters()[2].getDatatype());
+
+        // Check for association update.
+        assertEquals(newQualifiedName, otherProductToProductAssociation.getTarget());
+    }
+
+    protected void checkSuperProductCmptTypeReferences(String newQualifiedName) {
+        // Check for subtype update.
+        assertEquals(newQualifiedName, productCmptType.getSupertype());
+    }
+
+    protected void checkProductCmptReferences(String newQualifiedName) {
+        // Check for update of referring product component generation.
+        IProductCmptGeneration gen = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
+        IProductCmptLink[] links = gen.getLinks();
+        assertEquals(1, links.length);
+        assertEquals(newQualifiedName, links[0].getTarget());
+    }
+
+    protected abstract ProcessorBasedRefactoring getRefactoring(IIpsElement ipsElement);
 
 }
