@@ -2,39 +2,20 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Sample Action Set"
-            visible="true"
-            id="org.faktorips.fipsdoc.actionSet">
-         <menu
-               label="Sample &amp;Menu"
-               id="sampleMenu">
-            <separator
-                  name="sampleGroup">
-            </separator>
-         </menu>
-         <action
-               label="&amp;Sample Action"
-               icon="icons/sample.gif"
-               class="org.faktorips.fipsdoc.actions.ShowDocPreferencesAction"
-               tooltip="Hello, Eclipse world"
-               menubarPath="sampleMenu/sampleGroup"
-               toolbarPath="sampleGroup"
-               id="org.faktorips.fipsdoc.actions.ShowDocPreferencesAction">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            objectClass="org.eclipse.core.resources.IFile"
-            name="Sample Page"
-            nameFilter="*.*"
-            class="org.faktorips.fipsdoc.properties.SamplePropertyPage"
-            id="org.faktorips.fipsdoc.properties.samplePropertyPage">
-      </page>
+      <extension point="org.eclipse.ui.popupMenus">
+		<objectContribution adaptable="true" id="createHtmlExport" objectClass="org.eclipse.jdt.core.IJavaProject">
+            <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
+			    <separator name="faktorIpsGroup"/>
+            </menu>
+			<action
+		    class="org.faktorips.devtools.htmlexport.actions.CreateHtmlExportAction"
+		    enablesFor="*"
+		    icon="icons/AddIpsNature.gif"
+		    id="createHtmlExport"
+		    label="%createHtmlExport"
+		    menubarPath="faktorIPSMenu/faktorIpsGroup"/>
+		  	
+		</objectContribution>
    </extension>
 
 </plugin>

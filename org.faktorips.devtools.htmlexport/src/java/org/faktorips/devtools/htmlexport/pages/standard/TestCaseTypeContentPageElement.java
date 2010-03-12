@@ -116,9 +116,7 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 	public void build() {
 		super.build();
 
-		HierarchyPageElement root = createTestCaseTypeHierarchie();
-
-		addPageElements(root);
+		addPageElements(createTestCaseTypeHierarchie());
 	}
 
 	private HierarchyPageElement createTestCaseTypeHierarchie() {
@@ -208,8 +206,6 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 		keyValueTable.addKeyValueRow(ITestRuleParameter.PROPERTY_NAME, testParameter.getName());
 		keyValueTable.addKeyValueRow(ITestRuleParameter.PROPERTY_TEST_PARAMETER_TYPE, testParameter.getTestParameterType().getName());
 		keyValueTable.addKeyValueRow(ITestRuleParameter.PROPERTY_DESCRIPTION, testParameter.getDescription());
-
-		testParameter.getTestParameterType();
 
 		testParameterPageElement.addPageElements(keyValueTable);
 		return testParameterPageElement;

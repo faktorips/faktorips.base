@@ -13,7 +13,7 @@ public class Documentor {
 
     private void setDocumentorConfiguration(DocumentorConfiguration config) {
         if (config == null)
-            throw new IllegalArgumentException("config darf nicht null sein");
+            throw new IllegalArgumentException(Messages.Documentor_configNotNull);
         this.config = config;
     }
 

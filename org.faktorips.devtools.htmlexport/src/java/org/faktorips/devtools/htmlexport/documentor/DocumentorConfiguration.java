@@ -22,6 +22,10 @@ public class DocumentorConfiguration {
     
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
+	public DocumentorConfiguration() {
+		super();
+	}
+
 	public void setLinkedIpsObjectClasses(IpsObjectType... ipsObjectTypes ){
     	linkedIpsObjectTypes = ipsObjectTypes;
     }

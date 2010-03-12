@@ -25,7 +25,7 @@ import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageEleme
 
 public class StandardDocumentorScript extends AbstractDocumentorScript {
 
-    private static final String STANDARD_PATH = "standard/";
+    private static final String STANDARD_PATH = "";
 
 	public void execute(DocumentorConfiguration config) {
         List<IIpsObject> objects = config.getLinkedObjects();
@@ -98,14 +98,14 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
         AllClassesPageElement allClassesPage = new AllClassesPageElement(config.getIpsProject(), objects);
         allClassesPage.setLinkTarget("content");
         allClassesPage.build();
-        FileHandler.writeFile(config, "standard/classes.html", getPageContent(config, allClassesPage));
+        FileHandler.writeFile(config, STANDARD_PATH + "classes.html", getPageContent(config, allClassesPage));
     }
 
     private void writeOverviewPage(DocumentorConfiguration config, List<IIpsObject> objects) {
         AllPackagesPageElement allPackagesPage = new AllPackagesPageElement(config.getIpsProject(), objects);
         allPackagesPage.setLinkTarget("classes");
         allPackagesPage.build();
-        writeFileWithOutput(config, allPackagesPage, "standard/overview.html");
+        writeFileWithOutput(config, allPackagesPage, STANDARD_PATH + "overview.html");
     }
 
     private void writeFileWithOutput(DocumentorConfiguration config, AbstractRootPageElement allPackagesPage, String filePath) {
@@ -123,13 +123,13 @@ public class StandardDocumentorScript extends AbstractDocumentorScript {
 
     private void writeBaseFrameDefinition(DocumentorConfiguration config) {
         IGenerator baseFrameHtml = new BaseFrameHtmlGenerator("Komponenten", "20%, 80%", "30%, 70%");
-        FileHandler.writeFile(config, "standard/index.html", baseFrameHtml.generate());
+        FileHandler.writeFile(config, STANDARD_PATH + "index.html", baseFrameHtml.generate());
     }
 
     private void writeProjectOverviewPage(DocumentorConfiguration config) {
         AbstractRootPageElement projectOverviewHtml = new ProjectOverviewPageElement(config);
         projectOverviewHtml.build();
-        FileHandler.writeFile(config, "standard/summary.html", getPageContent(config, projectOverviewHtml));
+        FileHandler.writeFile(config, STANDARD_PATH + "summary.html", getPageContent(config, projectOverviewHtml));
     }
 
 }
