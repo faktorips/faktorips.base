@@ -749,7 +749,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     if (isUseTypesafeCollections()) {
                         methodsBuilder.append("<");
                         methodsBuilder.appendClassName(getGenerator(r).getQualifiedClassName(
-                                getGenerator(r).getTargetPolicyCmptType(), true));
+                                getGenerator(r).getTargetPolicyCmptType(), false));
                         methodsBuilder.append('>');
                     }
                     methodsBuilder.append(" it=" + field + ".iterator(); it.hasNext();) {");

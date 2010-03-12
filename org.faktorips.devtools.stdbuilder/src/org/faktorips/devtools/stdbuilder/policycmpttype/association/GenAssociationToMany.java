@@ -1062,6 +1062,7 @@ public class GenAssociationToMany extends GenAssociation {
     public void generateCodeForCopyAssociation(String varCopy, String varCopyMap, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         String unqTargetInterfName = getUnqualifiedClassName(getTargetPolicyCmptType(), true);
+        String unqTargetClassName = getUnqualifiedClassName(getTargetPolicyCmptType(), false);
         String varName = StringUtils.uncapitalize(unqTargetInterfName);
         methodsBuilder.append(getForLoopCode(unqTargetInterfName, varName, fieldName));
         methodsBuilder.append("if (") //
@@ -1069,7 +1070,7 @@ public class GenAssociationToMany extends GenAssociation {
                 .appendln(")) {");
         methodsBuilder.append(varCopy).append('.').append(fieldName).append(".remove(").append(varName).appendln(");");
         methodsBuilder.append(varCopy).append('.').append(fieldName).append(".add(") //
-                .append('(').append(unqTargetInterfName).append(')') //
+                .append('(').append(unqTargetClassName).append(')') //
                 .append(varCopyMap).append(".get(").append(varName).appendln("));");
         methodsBuilder.appendln("}");
         methodsBuilder.appendln("}");
