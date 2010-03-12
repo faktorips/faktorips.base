@@ -123,11 +123,11 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      */
     @Override
     protected int getNextColumn() {
-        int nextColumn = (isAtNewColumn()) ? getColumnIndex() : getColumnIndex() + 1;
+        int nextColumn = getColumnIndex() + 1;
         while (skippedColumns.contains(nextColumn)) {
             nextColumn++;
         }
-        return nextColumn;
+        return nextColumn > getColumnCount() - 1 ? 0 : nextColumn;
     }
 
     /**
