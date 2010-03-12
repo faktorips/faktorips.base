@@ -24,6 +24,9 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 /**
  * A reference to a <code>IProductCmpt</code>. Used by <code>ProductCmptStructure</code>.
  * 
+ * Note: This is in fact a Reference to ProductCmptLink not to the ProductCmpt. We might refactor
+ * the name once
+ * 
  * @author Thorsten Guenther
  */
 public class ProductCmptReference extends ProductCmptStructureReference implements IProductCmptReference {
@@ -55,7 +58,7 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
      */
     @Override
     protected IIpsObjectPartContainer getWrapped() {
-        return cmpt;
+        return link;
     }
 
     /**
