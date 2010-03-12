@@ -798,6 +798,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         ipsProject.setProperties(properties);
         assertTrue(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
 
+        policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicyWithPerstence");
+
         // per default the policy component type should persist
         assertTrue(policyCmptType.isPersistentEnabled());
         policyCmptType.getPersistenceTypeInfo().setEnabled(false);
