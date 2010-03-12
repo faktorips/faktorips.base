@@ -60,6 +60,12 @@ import org.faktorips.util.message.Message;
  */
 public class UIToolkit {
     private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR"; //$NON-NLS-1$
+    private static final String READONLY_BACKGROUND_COLOR = "READONLY_BACKGROUND_COLOR"; //$NON-NLS-1$
+
+    private static final int FOREGROUND_COLOR_DISABLED = SWT.COLOR_DARK_GRAY;
+    private static final int FOREGROUND_COLOR_ENABLED = SWT.COLOR_LIST_FOREGROUND;
+    private static final int BACKGROUND_COLOR_DISABLED = SWT.COLOR_TITLE_INACTIVE_BACKGROUND;
+    private static final int BACKGROUND_COLOR_ENABLED = SWT.COLOR_LIST_BACKGROUND;
 
     private FormToolkit formToolkit;
 
@@ -67,7 +73,7 @@ public class UIToolkit {
 
     /**
      * Adjusts the control so that the data shown in it can be either edited or not according to the
-     * given changeable value. If this control is a composite all it's children (and recursivly
+     * given changeable value. If this control is a composite all it's children (and recursively
      * their children) are adjusted as well.
      */
     public void setDataChangeable(Control c, boolean changeable) {
@@ -80,7 +86,15 @@ public class UIToolkit {
         }
         if (c instanceof Text) {
             ((Text)c).setEditable(changeable);
-            setForegroundColor((Text)c, changeable);
+            setForegroundColor(c, changeable);
+            setBackgroundColor(c, changeable);
+            return;
+        }
+        if (c instanceof Label) {
+            if (formToolkit == null) {
+                // grayed label text only in dialogs
+                setForegroundColor(c, changeable);
+            }
             return;
         }
         if (c instanceof Checkbox) {
@@ -95,6 +109,12 @@ public class UIToolkit {
             ((Button)c).setEnabled(changeable);
             return;
         }
+        if (c instanceof Group) {
+            if (formToolkit == null) {
+                // grayed group text only in dialogs
+                setForegroundColor(c, changeable);
+            }
+        }
         // note: this has to be the last if statement as other controls might derive from
         // composite
         if (c instanceof Composite) {
@@ -105,25 +125,46 @@ public class UIToolkit {
         }
     }
 
-    private void setForegroundColor(Text text, boolean changeable) {
-        if (formToolkit == null) {
-            // color will be implicit changed by OS
-            return;
-        }
-        text.setForeground(getForegroundColorFromFormToolkit(changeable));
+    private void setForegroundColor(Control control, boolean changeable) {
+        setColor(control, true, changeable);
     }
 
-    private Color getForegroundColorFromFormToolkit(boolean changeable) {
-        if (changeable) {
-            return formToolkit.getColors().getForeground();
+    private void setBackgroundColor(Control control, boolean changeable) {
+        setColor(control, false, changeable);
+    }
+
+    private void setColor(Control control, boolean foreground, boolean changeable) {
+        Color color = null;
+        if (formToolkit == null) {
+            if (!changeable) {
+                color = control.getDisplay().getSystemColor(
+                        foreground ? FOREGROUND_COLOR_DISABLED : BACKGROUND_COLOR_DISABLED);
+            } else {
+                color = control.getDisplay().getSystemColor(
+                        foreground ? FOREGROUND_COLOR_ENABLED : BACKGROUND_COLOR_ENABLED);
+            }
+        } else {
+            color = getColorFromFormToolkit(changeable, foreground);
         }
-        Color color = formToolkit.getColors().getColor(READONLY_FOREGROUND_COLOR);
+        if (foreground) {
+            control.setForeground(color);
+        } else {
+            control.setBackground(color);
+        }
+    }
+
+    private Color getColorFromFormToolkit(boolean changeable, boolean foreground) {
+        if (changeable) {
+            return foreground ? formToolkit.getColors().getForeground() : formToolkit.getColors().getBackground();
+        }
+        String key = foreground ? READONLY_FOREGROUND_COLOR : READONLY_BACKGROUND_COLOR;
+        Color color = formToolkit.getColors().getColor(key);
         if (color == null) {
-            formToolkit.getColors().createColor(READONLY_FOREGROUND_COLOR,
-                    formToolkit.getColors().getSystemColor(SWT.COLOR_DARK_GRAY));
+            return formToolkit.getColors().createColor(key,
+                    formToolkit.getColors().getSystemColor(BACKGROUND_COLOR_DISABLED));
             // color will be disposed by the FormColors#colorRegistry
         }
-        return formToolkit.getColors().getColor(READONLY_FOREGROUND_COLOR);
+        return formToolkit.getColors().getColor(key);
     }
 
     /**
