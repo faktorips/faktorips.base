@@ -32,6 +32,10 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     public void testValidate() {
+        // TODO missing validate test
+        // MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS
+        // MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME
+        // MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME
 
     }
 
@@ -43,6 +47,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         IPersistentAttributeInfo persistenceAttributeInfo = pcAttribute.getPersistenceAttributeInfo();
         persistenceAttributeInfo.initFromXml(element);
 
+        assertFalse(persistenceAttributeInfo.isTransient());
         assertEquals("PREMIUM", persistenceAttributeInfo.getTableColumnName());
         assertTrue(persistenceAttributeInfo.getTableColumnNullable());
         assertEquals(2, persistenceAttributeInfo.getTableColumnPrecision());
@@ -61,6 +66,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         persistenceAttributeInfo.setTableColumnSize(256);
         persistenceAttributeInfo.setTableColumnUnique(false);
         persistenceAttributeInfo.setTemporalMapping(DateTimeMapping.DATE_AND_TIME);
+        persistenceAttributeInfo.setTransient(true);
         Element element = policyCmptType.toXml(newDocument());
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
@@ -70,6 +76,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         IPersistentAttributeInfo persistenceAttributeInfoCopy = copyOfPcType.getPolicyCmptTypeAttributes()[0]
                 .getPersistenceAttributeInfo();
 
+        assertTrue(persistenceAttributeInfoCopy.isTransient());
         assertEquals("TEST_COLUMN", persistenceAttributeInfoCopy.getTableColumnName());
         assertTrue(persistenceAttributeInfoCopy.getTableColumnNullable());
         assertEquals(3, persistenceAttributeInfoCopy.getTableColumnPrecision());

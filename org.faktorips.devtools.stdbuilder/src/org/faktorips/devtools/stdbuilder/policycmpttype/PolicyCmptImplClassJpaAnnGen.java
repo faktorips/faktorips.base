@@ -128,4 +128,11 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         fragment.addImport(IMPORT_DISCRIMINATOR_TYPE);
         fragment.addImport(IMPORT_DISCRIMINATOR_VALUE);
     }
+
+    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+        if (!(ipsElement instanceof IPolicyCmptType)) {
+            return false;
+        }
+        return ((IPolicyCmptType)ipsElement).isPersistentEnabled();
+    }
 }

@@ -15,6 +15,8 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -45,4 +47,23 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractAnnotati
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD;
     }
 
+    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+        if (ipsElement instanceof IPolicyCmptTypeAssociation) {
+            IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)ipsElement;
+            if (!association.getPolicyCmptType().isPersistentEnabled()) {
+                return false;
+            }
+            if (!PolicyCmptImplClassAssociationJpaAnnGen.isTargetPolicyCmptTypePersistenceEnabled(this, association)) {
+                return true;
+            }
+
+            // check only if the source is not marked as transient
+            // don't care about the target, because there is a validation
+            // that checks that both sides are marked as transient or not transient
+            return association.getPersistenceAssociatonInfo().isTransient();
+        } else if (ipsElement instanceof IPolicyCmptType) {
+            return ((IPolicyCmptType)ipsElement).isPersistentEnabled();
+        }
+        return false;
+    }
 }

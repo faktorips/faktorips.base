@@ -37,4 +37,9 @@ public class PolicyCmptImplClassAttributeSetterJpaAnnGen extends AbstractAnnotat
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER;
     }
+
+    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+        // currently there are no annotation created by this generator class
+        return false;
+    }
 }

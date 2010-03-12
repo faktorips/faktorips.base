@@ -152,9 +152,13 @@ public class GenAssociationTo1 extends GenAssociation {
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
         super.generateMemberVariables(builder, ipsProject, generatesInterface);
+        String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
+        builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+
+        getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD,
+                association, builder);
+
         if (!isDerivedUnion() && !isCompositionDetailToMaster()) {
-            String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
-            builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
             getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
                     association, builder);

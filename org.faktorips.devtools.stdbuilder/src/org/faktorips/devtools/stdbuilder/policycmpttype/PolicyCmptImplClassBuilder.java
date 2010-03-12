@@ -72,7 +72,6 @@ import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
-
     public final static String METHOD_COPY_ASSOCIATIONS = "copyAssociationsInternal";
 
     public final static String METHOD_NEW_COPY = "newCopyInternal";
@@ -1339,7 +1338,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      * 
      * Note that the field is declared using the class, otherwise it is not possible to use the
-     * field with jaxb.
+     * field with JAXB or JPA.
      * 
      * @param association
      */
@@ -1351,14 +1350,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         String fieldName = getGenerator(association).getFieldNameForAssociation();
 
-        getGenPolicyCmptType().getBuilderSet().addAnnotations(
-                AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, null, memberVarsBuilder);
-
         // TODO: JAXB annotation generation should be handled by the line above (create subclass of
         // AnnotationGenerator and add it to the Standard Builder Set)
         if (isGenerateJaxbSuppert()) {
-            // TODO JOERG wofuer brauchen wir das, bzw. ist der attribute name so korrekt (vorher
-            // "parent-object.id") muss getestet werden
             memberVarsBuilder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
             memberVarsBuilder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", fieldName + ".id");
         }

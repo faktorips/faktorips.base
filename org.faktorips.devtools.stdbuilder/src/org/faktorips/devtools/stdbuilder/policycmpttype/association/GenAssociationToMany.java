@@ -182,7 +182,6 @@ public class GenAssociationToMany extends GenAssociation {
     /**
      * {@inheritDoc}
      */
-
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
@@ -194,12 +193,15 @@ public class GenAssociationToMany extends GenAssociation {
             initialValueExpression.appendClassName(ArrayList.class);
             if (isUseTypesafeCollections()) {
                 initialValueExpression.append("<");
-                initialValueExpression.appendClassName(targetInterfaceName);
+                initialValueExpression.appendClassName(targetImplClassName);
                 initialValueExpression.append(">");
             }
             initialValueExpression.append("()");
             String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+
+            getGenType().getBuilderSet().addAnnotations(
+                    AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, association, builder);
 
             getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
                     association, builder);
@@ -218,7 +220,7 @@ public class GenAssociationToMany extends GenAssociation {
             }
 
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
-                    + (isUseTypesafeCollections() ? "<" + targetInterfaceName + ">" : ""), fieldName,
+                    + (isUseTypesafeCollections() ? "<" + targetImplClassName + ">" : ""), fieldName,
                     initialValueExpression);
         }
     }
@@ -315,7 +317,7 @@ public class GenAssociationToMany extends GenAssociation {
      * <pre>
      * [Javadoc]
      * public List&lt;ICoverage&gt; getCoverages() {
-     *     return Collections.unmodifiableList(coverages);
+     *     return Collections.unmodifiableList((List<? extends ICoverage>)coverages)
      * }
      * </pre>
      */
@@ -328,10 +330,15 @@ public class GenAssociationToMany extends GenAssociation {
         if (isUseTypesafeCollections()) {
             methodsBuilder.append("return ");
             methodsBuilder.appendClassName(Collections.class.getName());
-            methodsBuilder.append(".unmodifiableList(");
+            methodsBuilder.append(".unmodifiableList((");
+            methodsBuilder.appendClassName(List.class.getName());
+            methodsBuilder.append("<? extends ");
+            methodsBuilder.appendClassName(targetInterfaceName);
+            methodsBuilder.append(">)");
             methodsBuilder.append(fieldName);
             methodsBuilder.appendln(");");
         } else {
+            // TODO Joerg Merge Persistence java 4 support?
             methodsBuilder.append("return (");
             methodsBuilder.appendClassName(targetImplClassName);
             methodsBuilder.append("[])");
@@ -420,7 +427,12 @@ public class GenAssociationToMany extends GenAssociation {
         }
         generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, paramName);
         methodsBuilder.append(fieldName);
-        methodsBuilder.appendln(".add(" + paramName + ");");
+        methodsBuilder.append(".add(");
+        methodsBuilder.append("(");
+        methodsBuilder.append(getQualifiedClassName(getTargetPolicyCmptType(), false));
+        methodsBuilder.append(")");
+        methodsBuilder.append(paramName);
+        methodsBuilder.appendln(");");
         if (association.isAssoziation() && inverseAssociation != null) {
             methodsBuilder.append(getGenType().getBuilderSet().getGenerator(target).getGenerator(inverseAssociation)
                     .generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
@@ -656,7 +668,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.appendClassName(Iterator.class);
         if (isUseTypesafeCollections()) {
             methodsBuilder.append("<");
-            methodsBuilder.appendClassName(getQualifiedClassName(targetType, true));
+            methodsBuilder.appendClassName(getQualifiedClassName(targetType, false));
             methodsBuilder.append(">");
         }
         methodsBuilder.append(" it = ");

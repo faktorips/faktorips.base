@@ -59,6 +59,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         boolean isNullable = jpaAttributeInfo.getTableColumnNullable();
 
         fragment.addImport(IMPORT_COLUMN);
+
         fragment.append(ANNOTATION_COLUMN);
         fragment.append("(name = \"").append(tableColumnName).append('"');
         fragment.append(", nullable = ").append(isNullable);
@@ -103,4 +104,14 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD;
     }
 
+    public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
+        if (!(ipsElement instanceof IPolicyCmptTypeAttribute)) {
+            return false;
+        }
+        if (!((IPolicyCmptTypeAttribute)ipsElement).getPolicyCmptType().isPersistentEnabled()) {
+            return false;
+        }
+        // the attribute must not be marked as transient
+        return !((IPolicyCmptTypeAttribute)ipsElement).getPersistenceAttributeInfo().isTransient();
+    }
 }

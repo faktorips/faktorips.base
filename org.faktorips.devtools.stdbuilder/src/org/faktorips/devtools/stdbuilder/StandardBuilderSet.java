@@ -586,6 +586,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             return;
         }
         for (IAnnotationGenerator generator : generators) {
+            if (!generator.isGenerateAnnotationFor(ipsElement)) {
+                continue;
+            }
             builder.append(generator.createAnnotation(ipsElement));
             builder.appendln();
         }

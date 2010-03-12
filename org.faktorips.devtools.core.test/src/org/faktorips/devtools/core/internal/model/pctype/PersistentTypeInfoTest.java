@@ -47,6 +47,13 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_SECONDARY_TABLE_NAME_INVALID));
     }
 
+    public void testSetEnabled() {
+        IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        persTypeInfo.getIpsSrcFile().markAsClean();
+        persTypeInfo.setEnabled(!persTypeInfo.isEnabled());
+        assertTrue(persTypeInfo.getIpsSrcFile().isDirty());
+    }
+
     public void testValidate_DiscriminatorInvalid() throws CoreException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
 
@@ -110,6 +117,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persistenceTypeInfo.initFromXml(element);
 
+        assertTrue(persistenceTypeInfo.isEnabled());
         assertEquals("persistence descr", persistenceTypeInfo.getDescription());;
         assertEquals("D_COLUMN", persistenceTypeInfo.getDiscriminatorColumnName());
         assertEquals(DiscriminatorDatatype.INTEGER, persistenceTypeInfo.getDiscriminatorDatatype());
@@ -128,6 +136,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
         persTypeInfo.setTableName("Table1");
         persTypeInfo.setSecondaryTableName("SecondaryTable1");
+        persTypeInfo.setEnabled(false);
 
         Element element = policyCmptType.toXml(newDocument());
 
@@ -142,5 +151,6 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertEquals(InheritanceStrategy.JOINED_SUBCLASS, copy.getInheritanceStrategy());
         assertEquals("Table1", copy.getTableName());
         assertEquals("SecondaryTable1", copy.getSecondaryTableName());
+        assertFalse(copy.isEnabled());
     }
 }

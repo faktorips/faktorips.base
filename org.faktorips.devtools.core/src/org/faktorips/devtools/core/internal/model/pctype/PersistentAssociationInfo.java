@@ -35,10 +35,11 @@ import org.w3c.dom.Element;
  */
 public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IPersistentAssociationInfo {
 
+    private boolean transientAssociation = false;
     private String targetColumnName = "";
     private String sourceColumnName = "";
     private String joinTableName = "";
-    private FetchType fetchType = FetchType.FETCH_LAZY;
+    private FetchType fetchType = FetchType.LAZY;
 
     private IIpsObjectPart policyComponentTypeAssociation;
 
@@ -70,6 +71,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         return targetColumnName;
     }
 
+    public boolean isTransient() {
+        return transientAssociation;
+    }
+
     public boolean isBidirectional() {
         return getPolicyComponentTypeAssociation().hasInverseAssociation();
     }
@@ -80,10 +85,15 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     public boolean isJoinTableRequired() throws CoreException {
-        boolean isOneToManyAssociation = getPolicyComponentTypeAssociation().is1ToMany();
+        return isJoinTableRequired(getPolicyComponentTypeAssociation().findInverseAssociation(
+                getPolicyComponentTypeAssociation().getIpsProject()));
+    }
 
-        IPolicyCmptTypeAssociation inverseAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
-                getPolicyComponentTypeAssociation().getIpsProject());
+    private boolean isJoinTableRequired(IPolicyCmptTypeAssociation inverseAssociation) {
+        boolean isOneToManyAssociation = getPolicyComponentTypeAssociation().is1ToMany();
+        if (isUnidirectional()) {
+            return isOneToManyAssociation;
+        }
 
         boolean isInverseAssociationOneToMany = (inverseAssociation != null) && inverseAssociation.is1ToMany();
 
@@ -98,7 +108,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     public boolean isUnidirectional() {
-        return getPolicyComponentTypeAssociation().hasInverseAssociation();
+        return !getPolicyComponentTypeAssociation().hasInverseAssociation();
     }
 
     public void setFetchType(FetchType fetchType) {
@@ -133,6 +143,12 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, targetColumnName);
     }
 
+    public void setTransient(boolean transientAssociation) {
+        boolean oldValue = this.transientAssociation;
+        this.transientAssociation = transientAssociation;
+        valueChanged(oldValue, transientAssociation);
+    }
+
     public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation() {
         return (IPolicyCmptTypeAssociation)policyComponentTypeAssociation;
     }
@@ -145,6 +161,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+        transientAssociation = Boolean.valueOf(element.getAttribute(PROPERTY_TRANSIENT));
         sourceColumnName = element.getAttribute(PROPERTY_SOURCE_COLUMN_NAME);
         targetColumnName = element.getAttribute(PROPERTY_TARGET_COLUMN_NAME);
         joinTableName = element.getAttribute(PROPERTY_JOIN_TABLE_NAME);
@@ -154,6 +171,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_TRANSIENT, Boolean.toString(transientAssociation));
         element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, "" + sourceColumnName);
         element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName);
         element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);
@@ -162,7 +180,38 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
-        if (isJoinTableRequired()) {
+        IPolicyCmptTypeAssociation inverseAssociation = null;
+        if (isBidirectional()) {
+            inverseAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
+                    getPolicyComponentTypeAssociation().getIpsProject());
+            boolean transientMismatch = false;
+            if (isTransient() || !getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()) {
+                if (inverseAssociation == null) {
+                    return; // => different error, bidirectional with missing inverse
+                }
+                if (inverseAssociation.getPersistenceAssociatonInfo().isTransient()) {
+                    return;
+                }
+
+                if (inverseAssociation.getPolicyCmptType().getPersistenceTypeInfo().isEnabled()) {
+                    transientMismatch = true;
+                }
+            } else {
+                if (inverseAssociation != null
+                        && (inverseAssociation.getPersistenceAssociatonInfo().isTransient() || !inverseAssociation
+                                .getPolicyCmptType().isPersistentEnabled())) {
+                    transientMismatch = true;
+                }
+            }
+            if (transientMismatch) {
+                msgList.add(new Message(MSGCODE_TARGET_SIDE_NOT_TRANSIENT,
+                        "In case of transient association, the target side must also be marked as transient.",
+                        Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
+                return;
+            }
+        }
+
+        if (isJoinTableRequired(inverseAssociation)) {
             // validate join table name
             if (StringUtils.isBlank(joinTableName)) {
                 msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_EMPTY, "The join table name is empty.", Message.ERROR,

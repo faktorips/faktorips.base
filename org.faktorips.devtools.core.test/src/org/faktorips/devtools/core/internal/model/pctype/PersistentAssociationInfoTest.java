@@ -14,10 +14,14 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
@@ -85,8 +89,65 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
 
+        persistenceAssociatonInfo.setTransient(true);
+        targetPcAssociation.getPersistenceAssociatonInfo().setTransient(true);
+        ml = persistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(0, ml.getNoOfMessages());
+
+        persistenceAssociatonInfo.setTransient(false);
+        targetPcAssociation.getPersistenceAssociatonInfo().setTransient(false);
         persistenceAssociatonInfo.setTargetColumnName("TARGET_COLUMN");
         ml = persistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(0, ml.getNoOfMessages());
+    }
+
+    public void testValidateTargetSideNotTransient() throws CoreException {
+        MessageList ml = null;
+
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        IPersistentAssociationInfo sourcePersistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
+        IPersistentAssociationInfo targetPersistenceAssociatonInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(0, ml.getNoOfMessages());
+        ml = targetPersistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(0, ml.getNoOfMessages());
+
+        // test target association must be transient or target policy component persist disabled
+
+        sourcePersistenceAssociatonInfo.setTransient(true);
+        ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_SIDE_NOT_TRANSIENT));
+        ml = targetPersistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_SIDE_NOT_TRANSIENT));
+
+        targetPersistenceAssociatonInfo.setTransient(true);
+        ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(0, ml.getNoOfMessages());
+        ml = targetPersistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(0, ml.getNoOfMessages());
+
+        sourcePersistenceAssociatonInfo.setTransient(true);
+        targetPersistenceAssociatonInfo.setTransient(false);
+        targetPersistenceAssociatonInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
+                .getPersistenceTypeInfo().setEnabled(false);
+        ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(0, ml.getNoOfMessages());
+        ml = targetPersistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(0, ml.getNoOfMessages());
+
+        targetPersistenceAssociatonInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
+                .getPersistenceTypeInfo().setEnabled(true);
+
+        // no transient mismatch in case of unidirectional association
+
+        pcAssociation.setInverseAssociation("");
+        pcAssociation.setMaxCardinality(1); // set to 1 we don't want a join table
+        ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
+        System.out.println(ml);
         assertEquals(0, ml.getNoOfMessages());
     }
 
@@ -127,6 +188,10 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
                 AssociationType.COMPOSITION_DETAIL_TO_MASTER, new int[] { 0, 1 }, new int[] { 0, 2 });
         assertFalse(persistenceAssociatonInfo.isJoinTableRequired());
 
+        // unidirectional :n Composition master to detail, join table required
+        pcAssociation.setInverseAssociation("");
+        setAssociationTypeAndCardinality(AssociationType.COMPOSITION_MASTER_TO_DETAIL, null, new int[] { 0, 2 }, null);
+        assertTrue(persistenceAssociatonInfo.isJoinTableRequired());
     }
 
     public void testJoinTableRequiredDetail2Master() throws CoreException {
@@ -160,8 +225,49 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         pcAssociation.setAssociationType(associationTypeSource);
         pcAssociation.setMinCardinality(cardinalitiesSource[0]);
         pcAssociation.setMaxCardinality(cardinalitiesSource[1]);
-        targetPcAssociation.setAssociationType(associationTypeTarget);
-        targetPcAssociation.setMinCardinality(cardinalitiesTarget[0]);
-        targetPcAssociation.setMaxCardinality(cardinalitiesTarget[1]);
+        if (associationTypeTarget != null) {
+            targetPcAssociation.setAssociationType(associationTypeTarget);
+        }
+        if (cardinalitiesTarget != null) {
+            targetPcAssociation.setMinCardinality(cardinalitiesTarget[0]);
+            targetPcAssociation.setMaxCardinality(cardinalitiesTarget[1]);
+        }
+    }
+
+    public void testInitFromXml() throws CoreException {
+        NodeList nodeList = getTestDocument().getElementsByTagName(IPersistentAssociationInfo.XML_TAG);
+        assertEquals(1, nodeList.getLength());
+
+        Element element = (Element)nodeList.item(0);
+        IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
+        persistenceAssociatonInfo.initFromXml(element);
+
+        assertFalse(persistenceAssociatonInfo.isTransient());
+        assertEquals("joinTable1", persistenceAssociatonInfo.getJoinTableName());
+        assertEquals("targetColumn1", persistenceAssociatonInfo.getTargetColumnName());
+        assertEquals("sourceColumn1", persistenceAssociatonInfo.getSourceColumnName());
+        assertEquals(FetchType.LAZY, persistenceAssociatonInfo.getFetchType());
+    }
+
+    public void testToXml() throws CoreException {
+        IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
+        persistenceAssociatonInfo.setTransient(true);
+        persistenceAssociatonInfo.setJoinTableName("joinTable0");
+        persistenceAssociatonInfo.setTargetColumnName("targetColumn0");
+        persistenceAssociatonInfo.setSourceColumnName("sourceColumn0");
+        persistenceAssociatonInfo.setFetchType(FetchType.EAGER);
+        Element element = persistenceAssociatonInfo.toXml(newDocument());
+
+        PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
+        copyOfPcType.newPolicyCmptTypeAssociation();
+        IPersistentAssociationInfo copyOfPersistenceAssociatonInfo = copyOfPcType.getPolicyCmptTypeAssociations()[0]
+                .getPersistenceAssociatonInfo();
+        copyOfPersistenceAssociatonInfo.initFromXml(element);
+
+        assertTrue(copyOfPersistenceAssociatonInfo.isTransient());
+        assertEquals("joinTable0", copyOfPersistenceAssociatonInfo.getJoinTableName());
+        assertEquals("targetColumn0", copyOfPersistenceAssociatonInfo.getTargetColumnName());
+        assertEquals("sourceColumn0", copyOfPersistenceAssociatonInfo.getSourceColumnName());
+        assertEquals(FetchType.EAGER, copyOfPersistenceAssociatonInfo.getFetchType());
     }
 }

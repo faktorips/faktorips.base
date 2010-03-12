@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
@@ -43,6 +44,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
@@ -240,7 +242,90 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Composite c = createTabItemComposite(tabFolder, 1, false);
         persistencePage.setControl(c);
 
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+        Checkbox checkTransient = uiToolkit.createCheckbox(c, "The association is transient");
+        bindingContext.bindContent(checkTransient, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_TRANSIENT);
+
+        final Composite allPersistentProps = uiToolkit.createGridComposite(c, 1, true, true);
+
+        uiToolkit.createVerticalSpacer(allPersistentProps, 12);
+
+        final Group joinTable = createGroupJoinTable(allPersistentProps);
+
+        uiToolkit.createVerticalSpacer(allPersistentProps, 12);
+
+        createGroupOtherPersistentProps(allPersistentProps);
+
+        // disable all tab page controls if policy component type shouldn't persist
+        bindingContext.add(new ControlPropertyBinding(c, association.getPolicyCmptType().getPersistenceTypeInfo(),
+                IPersistentTypeInfo.PROPERTY_ENABLED, Boolean.TYPE) {
+            @Override
+            public void updateUiIfNotDisposed() {
+                uiToolkit.setDataChangeable(getControl(), ((IPersistentTypeInfo)getObject()).isEnabled());
+                uiToolkit.setDataChangeable(getControl(), ((IPersistentTypeInfo)getObject()).isEnabled());
+            }
+        });
+        // disable all persistent controls if attribute is marked as transient
+        bindingContext.add(new ControlPropertyBinding(allPersistentProps, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
+            @Override
+            public void updateUiIfNotDisposed() {
+                IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
+                boolean persistEnabled = associationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
+                        .isPersistentEnabled();
+                if (!persistEnabled) {
+                    return;
+                }
+                uiToolkit.setDataChangeable(getControl(), !associationInfo.isTransient());
+            }
+        });
+        // disable join table controls if join table is not required
+        bindingContext.add(new ControlPropertyBinding(joinTable, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
+            @Override
+            public void updateUiIfNotDisposed() {
+                IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
+                boolean persistEnabled = associationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
+                        .isPersistentEnabled();
+                if (!persistEnabled) {
+                    return;
+                }
+                if (associationInfo.isTransient()) {
+                    return;
+                }
+                try {
+                    uiToolkit.setDataChangeable(getControl(), associationInfo.isJoinTableRequired());
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+        });
+    }
+
+    private Group createGroupOtherPersistentProps(Composite allPersistentProps) {
+        Group groupOtherProps = uiToolkit.createGroup(allPersistentProps, "Persistent Properties");
+        GridData layoutData = (GridData)groupOtherProps.getLayoutData();
+        layoutData.grabExcessVerticalSpace = false;
+
+        Composite otherPropsComposite = uiToolkit.createLabelEditColumnComposite(groupOtherProps);
+        otherPropsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        uiToolkit.createFormLabel(otherPropsComposite, "Fetch Type:");
+        Combo fetchTypeCombo = uiToolkit.createCombo(otherPropsComposite);
+        setComboItemsForEnum(fetchTypeCombo, FetchType.class);
+        ComboField fetchTypeField = new EnumField(fetchTypeCombo, FetchType.class);
+        bindingContext.bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
+        return groupOtherProps;
+    }
+
+    private Group createGroupJoinTable(Composite allPersistentProps) {
+        Group groupJoinTable = uiToolkit.createGroup(allPersistentProps, "Join Table Properties");
+        GridData layoutData = (GridData)groupJoinTable.getLayoutData();
+        layoutData.grabExcessVerticalSpace = false;
+
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(groupJoinTable);
+        workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         uiToolkit.createFormLabel(workArea, "Join Table Name:");
         Text joinTableNameText = uiToolkit.createText(workArea);
@@ -257,16 +342,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(targetColumnNameText, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME);
 
-        uiToolkit.createFormLabel(workArea, "Fetch Type:");
-        Combo fetchTypeCombo = uiToolkit.createCombo(workArea);
-        setComboItemsForEnum(fetchTypeCombo, FetchType.class);
-        ComboField fetchTypeField = new EnumField(fetchTypeCombo, FetchType.class);
-        bindingContext.bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
-                IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
+        return groupJoinTable;
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {
-
         public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
         public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel"; //$NON-NLS-1$
         public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$

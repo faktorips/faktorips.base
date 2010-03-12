@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -86,15 +89,23 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
         private class PersistentAssociationContentProvider implements IStructuredContentProvider {
             public Object[] getElements(Object inputElement) {
-                return ((IPolicyCmptType)getIpsObject()).getPolicyCmptTypeAssociations();
+                List<IPolicyCmptTypeAssociation> content = new ArrayList<IPolicyCmptTypeAssociation>();
+                IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = ((IPolicyCmptType)getIpsObject())
+                        .getPolicyCmptTypeAssociations();
+                for (int i = 0; i < policyCmptTypeAssociations.length; i++) {
+                    if (!policyCmptTypeAssociations[i].getPersistenceAssociatonInfo().isTransient()) {
+                        content.add(policyCmptTypeAssociations[i]);
+                    }
+                }
+                return content.toArray();
             }
 
             public void dispose() {
-                // nothing todo
+                // nothing to do
             }
 
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // nothing todo
+                // nothing to do
             }
         }
 

@@ -275,7 +275,8 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
                 .getLanguageUsedInGeneratedSourceCode());
 
         genPolicyCmptType.getBuilderSet().addAnnotations(
-                AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, null, builder);
+                AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, genPolicyCmptType.getPolicyCmptType(),
+                builder);
 
         builder.appendJavaModifier(Modifier.PROTECTED);
         builder.append(' ');

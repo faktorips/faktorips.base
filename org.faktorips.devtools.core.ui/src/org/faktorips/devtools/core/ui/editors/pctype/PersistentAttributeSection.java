@@ -87,6 +87,9 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                         .getPolicyCmptTypeAttributes();
                 List<IPolicyCmptTypeAttribute> persistableAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
                 for (IPolicyCmptTypeAttribute pcAttribute : pcAttributes) {
+                    if (pcAttribute.getPersistenceAttributeInfo().isTransient()) {
+                        continue;
+                    }
                     AttributeType attributeType = pcAttribute.getAttributeType();
                     if (attributeType == AttributeType.CHANGEABLE
                             || attributeType == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
@@ -97,11 +100,11 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
             }
 
             public void dispose() {
-                // nothing todo
+                // nothing to do
             }
 
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // nothing todo
+                // nothing to do
             }
         }
 

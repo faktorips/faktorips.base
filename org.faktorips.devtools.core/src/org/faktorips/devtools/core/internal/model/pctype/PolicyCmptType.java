@@ -468,6 +468,10 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return (IPersistentTypeInfo)persistenceTypeInfo;
     }
 
+    public boolean isPersistentEnabled() {
+        return getPersistenceTypeInfo() != null && getPersistenceTypeInfo().isEnabled();
+    }
+
     // The methods below are overridden to allow a single IPersistenceTypeInfo instance be part of
     // this class. The default implementations handle only the case where the part is a
     // IIpsObjectPartCollection and not a single IIpsObjectPart.

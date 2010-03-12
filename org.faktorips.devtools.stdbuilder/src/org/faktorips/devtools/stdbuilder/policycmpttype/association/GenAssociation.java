@@ -989,7 +989,7 @@ public abstract class GenAssociation extends GenTypePart {
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
-        // nothing to do
+        // nothing to do            
     }
 
     public abstract void generateCodeForContainerAssociationImplementation(List<IAssociation> associations,
@@ -1094,7 +1094,7 @@ public abstract class GenAssociation extends GenTypePart {
         return result;
     }
 
-    private GenAssociation getGeneratorForInverseAssociation() throws CoreException {
+    public GenAssociation getGeneratorForInverseAssociation() throws CoreException {
         if (inverseAssociation == null) {
             return null;
         }

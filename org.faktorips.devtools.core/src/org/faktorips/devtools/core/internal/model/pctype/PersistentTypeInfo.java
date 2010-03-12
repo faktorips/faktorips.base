@@ -46,6 +46,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     private boolean notJoinedSubclass = true;
 
+    private boolean enabled = true;
+
     public boolean isNotJoinedSubclass() {
         return notJoinedSubclass;
     }
@@ -56,6 +58,16 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     public PersistentTypeInfo(IPolicyCmptType pcType, String id) {
         super(pcType, id);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        boolean oldValue = this.enabled;
+        this.enabled = enabled;
+        valueChanged(oldValue, enabled);
     }
 
     public String getDiscriminatorColumnName() {
@@ -221,6 +233,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         element.setAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME, "" + discriminatorColumnName); //$NON-NLS-1$
         element.setAttribute(PROPERTY_DISCRIMINATOR_DATATYPE, "" + discriminatorDatatype); //$NON-NLS-1$
         element.setAttribute(PROPERTY_DISCRIMINATOR_VALUE, "" + discriminatorValue); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_ENABLED, Boolean.valueOf(enabled).toString());
     }
 
     @Override
@@ -232,6 +245,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         discriminatorColumnName = element.getAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME);
         discriminatorDatatype = DiscriminatorDatatype.valueOf(element.getAttribute(PROPERTY_DISCRIMINATOR_DATATYPE));
         discriminatorValue = element.getAttribute(PROPERTY_DISCRIMINATOR_VALUE);
+        enabled = Boolean.valueOf(element.getAttribute(PROPERTY_ENABLED));
     }
 
     /**

@@ -9,7 +9,7 @@
         <valueset valuesetcontenttype="IntegerRANGE">
     	    <IntegerRange></IntegerRange>
         </valueset>
-        <PersistenceAttribute id="b6af2ed3-9471-464b-8121-eabd60f60e61" tableColumnName="PREMIUM" tableColumnNullable="true" tableColumnPrecision="2" tableColumnScale="16" tableColumnSize="255" tableColumnUnique="false" temporalMapping="DATE_ONLY">
+        <PersistenceAttribute transient="false" id="b6af2ed3-9471-464b-8121-eabd60f60e61" tableColumnName="PREMIUM" tableColumnNullable="true" tableColumnPrecision="2" tableColumnScale="16" tableColumnSize="255" tableColumnUnique="false" temporalMapping="DATE_ONLY">
             <Description/>
         </PersistenceAttribute>        
     </Attribute>

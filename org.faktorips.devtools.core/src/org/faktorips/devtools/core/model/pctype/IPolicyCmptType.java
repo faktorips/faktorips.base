@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
@@ -359,4 +360,13 @@ public interface IPolicyCmptType extends IType {
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
     public IPersistentTypeInfo getPersistenceTypeInfo();
+
+    /**
+     * Returns true if the policy component type should persistent. Returns <code>false</code> ff
+     * the type shouldn't persists, and therefore no persistent type info is necessary.
+     * 
+     * @see #getPersistenceTypeInfo()
+     * @see PersistentTypeInfo#setEnabled(boolean)
+     */
+    public boolean isPersistentEnabled();
 }

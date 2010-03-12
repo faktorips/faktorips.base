@@ -334,7 +334,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      */
     public IPolicyCmptTypeAssociation newInverseAssociation() throws CoreException;
 
-
     /**
      * Returns the object containing information about how to persist this policy component type
      * association into a relational database table.
@@ -345,5 +344,4 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
     public IPersistentAssociationInfo getPersistenceAssociatonInfo();
-
 }

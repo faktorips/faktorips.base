@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -50,6 +49,7 @@ import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
@@ -137,11 +138,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private EnumValueField msgSeverityField;
 
     /**
-     * Collection of all controlls depending on the CheckValueAgainstValueSetRule.
-     */
-    private ArrayList<Control> ruleDependendControls = new ArrayList<Control>();
-
-    /**
      * Folder which contains the pages shown by this editor. Used to modify which page is shown.
      */
     private TabFolder tabFolder;
@@ -165,6 +161,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     // placeholder for the default edit field, the edit field for the default value depends on
     // the attributes datatype
     private Composite defaultEditFieldPlaceholder;
+
+    private Group ruleGroup;
 
     /**
      * @param parentShell
@@ -651,9 +649,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         });
 
-        Group ruleGroup = uiToolkit.createGroup(checkComposite, Messages.AttributeEditDialog_ruleTitle);
+        ruleGroup = uiToolkit.createGroup(checkComposite, Messages.AttributeEditDialog_ruleTitle);
         Composite nameComposite = uiToolkit.createLabelEditColumnComposite(ruleGroup);
-        Label nameLabel = uiToolkit.createFormLabel(nameComposite, Messages.AttributeEditDialog_labelName);
+        uiToolkit.createFormLabel(nameComposite, Messages.AttributeEditDialog_labelName);
         Text nameText = uiToolkit.createText(nameComposite);
         nameText.setFocus();
 
@@ -661,9 +659,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Group msgGroup = uiToolkit.createGroup(ruleGroup, Messages.AttributeEditDialog_messageTitle);
         Composite msgComposite = uiToolkit.createLabelEditColumnComposite(msgGroup);
         msgComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        Label codeLabel = uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelCode);
+        uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelCode);
         Text codeText = uiToolkit.createText(msgComposite);
-        Label severityLabel = uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelSeverity);
+        uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelSeverity);
         Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.getEnumType());
         Label label = uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelText);
         label.getParent().setLayoutData(
@@ -676,16 +674,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         msgTextField = new TextField(msgText);
         msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());;
 
-        ruleDependendControls.add(ruleGroup);
-        ruleDependendControls.add(nameLabel);
-        ruleDependendControls.add(nameText);
-        ruleDependendControls.add(msgGroup);
-        ruleDependendControls.add(codeLabel);
-        ruleDependendControls.add(codeText);
-        ruleDependendControls.add(severityCombo);
-        ruleDependendControls.add(severityLabel);
-        ruleDependendControls.add(label);
-        ruleDependendControls.add(msgText);
         if (rule != null) {
             validationRuleAdded.setChecked(true);
             enableCheckValueAgainstValueSetRule(true);
@@ -697,15 +685,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             createRuleUIController();
             ruleUIController.updateUI();
         }
+
         return workArea;
     }
 
     private void enableCheckValueAgainstValueSetRule(boolean enabled) {
-        for (Iterator<Control> iter = ruleDependendControls.iterator(); iter.hasNext();) {
-            Control control = iter.next();
-            control.setEnabled(enabled);
-        }
-
+        uiToolkit.setDataChangeable(ruleGroup, enabled);
         if (enabled) {
             if (rule != null) {
                 // we already have a rule, so dont create one. this could happen
@@ -752,7 +737,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Composite c = createTabItemComposite(tabFolder, 1, false);
         persistencePage.setControl(c);
 
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+        Composite checkComposite = uiToolkit.createGridComposite(c, 1, true, false);
+        Checkbox checkTransient = uiToolkit.createCheckbox(checkComposite, "The attribute is transient");
+        bindingContext.bindContent(checkTransient, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TRANSIENT);
+
+        final Group group = uiToolkit.createGroup(checkComposite, "Persistent Properties");
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(group);
 
         uiToolkit.createFormLabel(workArea, "Table column name:");
         Text columnNameText = uiToolkit.createText(workArea);
@@ -795,6 +786,28 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Combo converter = uiToolkit.createCombo(workArea);
         // TODO: implement converter
         converter.setEnabled(false);
+
+        // disable all tab page controls if policy component type shouldn't persist
+        bindingContext.add(new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
+                IPersistentTypeInfo.PROPERTY_ENABLED, Boolean.TYPE) {
+            @Override
+            public void updateUiIfNotDisposed() {
+                uiToolkit.setDataChangeable(persistencePage.getControl(), ((IPersistentTypeInfo)getObject())
+                        .isEnabled());
+            }
+        });
+        // disable property controls if attribute is marked as transient
+        bindingContext.add(new ControlPropertyBinding(c, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
+            @Override
+            public void updateUiIfNotDisposed() {
+                IPersistentAttributeInfo associationInfo = (IPersistentAttributeInfo)getObject();
+                boolean changeable = associationInfo.getPolicyComponentTypeAttribute().getPolicyCmptType()
+                        .isPersistentEnabled();
+                uiToolkit
+                        .setDataChangeable(group, changeable && !((IPersistentAttributeInfo)getObject()).isTransient());
+            }
+        });
     }
 
     class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {

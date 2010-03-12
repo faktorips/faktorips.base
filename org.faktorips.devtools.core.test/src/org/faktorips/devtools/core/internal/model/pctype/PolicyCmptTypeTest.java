@@ -797,6 +797,12 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         properties.setPersistenceSupport(true);
         ipsProject.setProperties(properties);
         assertTrue(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
+
+        // per default the policy component type should persist
+        assertTrue(policyCmptType.isPersistentEnabled());
+        policyCmptType.getPersistenceTypeInfo().setEnabled(false);
+        assertFalse(policyCmptType.isPersistentEnabled());
+        policyCmptType.getPersistenceTypeInfo().setEnabled(false);
     }
 
     private class AggregateRootBuilderSet extends EmptyBuilderSet {

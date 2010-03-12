@@ -51,6 +51,11 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public final static String PROPERTY_TARGET_COLUMN_NAME = "targetColumnName"; //$NON-NLS-1$
 
     /**
+     * The name of a property that indicates that the association is transient.
+     */
+    public final static String PROPERTY_TRANSIENT = "transient"; //$NON-NLS-1$
+
+    /**
      * The name of the fetch type (lazy/eager) property.
      */
     public final static String PROPERTY_FETCH_TYPE = "fetchType"; //$NON-NLS-1$
@@ -79,6 +84,11 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
      * Validation message code for invalid target column name.
      */
     public static final String MSGCODE_TARGET_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "TargetColumnNameInvalid";
+
+    /**
+     * Validation message code for inverse association or target must be marked as transient.
+     */
+    public static final String MSGCODE_TARGET_SIDE_NOT_TRANSIENT = MSGCODE_PREFIX + "TargetSideNotTransient";
 
     /**
      * Returns the {@link IPolicyCmptTypeAssociation} this info object belongs to.
@@ -183,11 +193,22 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public boolean isJoinTableRequired() throws CoreException;
 
     /**
+     * Returns true if the association is transient.
+     */
+    public boolean isTransient();
+
+    /**
+     * Set to <code>true</code> if the association should be transient. Set to <code>false</code> if
+     * the policy component is not transient and will be persists.
+     */
+    public void setTransient(boolean transientAssociation);
+
+    /**
      * Determines whether to use cascading load on the database (also fetching dependent objects of
      * the object to load instead of using deferred loading proxies).
      */
     public enum FetchType {
-        FETCH_LAZY,
-        FETCH_EAGER;
+        LAZY,
+        EAGER;
     }
 }

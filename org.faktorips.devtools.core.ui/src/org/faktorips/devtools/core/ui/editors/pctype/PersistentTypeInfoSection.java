@@ -17,6 +17,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
@@ -24,8 +25,10 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -38,6 +41,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 public class PersistentTypeInfoSection extends IpsSection {
 
     private final IPolicyCmptType ipsObject;
+    private Composite composite;
 
     public PersistentTypeInfoSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
         super(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, GridData.FILL_HORIZONTAL, toolkit);
@@ -48,10 +52,36 @@ public class PersistentTypeInfoSection extends IpsSection {
         setExpanded(false);
     }
 
+    private class EnabledPersistentTypeInfoControlsBinding extends ControlPropertyBinding {
+        private UIToolkit toolkit;
+
+        public EnabledPersistentTypeInfoControlsBinding(Control control, UIToolkit toolkit) {
+            super(control, ipsObject.getPersistenceTypeInfo(), IPersistentTypeInfo.PROPERTY_ENABLED, Boolean.TYPE);
+            this.toolkit = toolkit;
+        }
+
+        @Override
+        public void updateUiIfNotDisposed() {
+            try {
+                Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+                toolkit.setDataChangeable(getControl(), value);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         client.setLayout(new GridLayout(1, false));
-        Composite composite = toolkit.createLabelEditColumnComposite(client);
+
+        Checkbox checkboxEnable = toolkit.createCheckbox(client);
+        checkboxEnable.setText("Activate persistent for this type");
+        bindingContext.bindContent(checkboxEnable, ipsObject.getPersistenceTypeInfo(),
+                IPersistentTypeInfo.PROPERTY_ENABLED);
+
+        composite = toolkit.createLabelEditColumnComposite(client);
+        bindingContext.add(new EnabledPersistentTypeInfoControlsBinding(composite, toolkit));
 
         toolkit.createLabel(composite, "Inheritance Strategy");
         Combo inheritanceStrategyCombo = toolkit.createCombo(composite);

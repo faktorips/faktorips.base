@@ -67,6 +67,12 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     public final static String PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS = "notJoinedSubclass"; //$NON-NLS-1$
 
     /**
+     * The name of a property that indicates that the persistent is enabled for the policy component
+     * type
+     */
+    public final static String PROPERTY_ENABLED = "enabled"; //$NON-NLS-1$
+
+    /**
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "PERSISTENCETYPE-"; //$NON-NLS-1$
@@ -98,6 +104,18 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      */
     public final static String MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID = MSGCODE_PREFIX
             + "PersistenceTypeInheritanceStrategyInvalid"; //$NON-NLS-1$
+
+    /**
+     * Return <code>true</code> if the persistence type info in enabled. Returns <code>false</code>
+     * if the associate policy component type should not be persist.
+     */
+    public boolean isEnabled();
+
+    /**
+     * Set to <code>true</code> if the associate policy component type should persist. Set to
+     * <code>false</code> if the policy component type doesn't need persistent type info.
+     */
+    public void setEnabled(boolean enabled);
 
     /**
      * Returns the name of database table. Returns an empty string if the table name has not been

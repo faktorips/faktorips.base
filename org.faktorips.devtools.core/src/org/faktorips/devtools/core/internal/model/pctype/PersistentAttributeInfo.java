@@ -48,6 +48,7 @@ import org.w3c.dom.Element;
  */
 public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPersistentAttributeInfo {
 
+    private boolean transientAttribute = false;
     private String tableColumnName = "";
 
     private boolean tableColumnNullable = true;
@@ -77,6 +78,10 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     // TODO implement
     public IPersistableTypeConverter getTableColumnConverter() {
         throw new NotImplementedException();
+    }
+
+    public boolean isTransient() {
+        return transientAttribute;
     }
 
     public String getTableColumnName() {
@@ -150,6 +155,12 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, unique);
     }
 
+    public void setTransient(boolean transientAttribute) {
+        boolean oldValue = this.transientAttribute;
+        this.transientAttribute = transientAttribute;
+        valueChanged(oldValue, transientAttribute);
+    }
+
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute() {
         return (IPolicyCmptTypeAttribute)policyComponentTypeAttribute;
     }
@@ -190,6 +201,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+        transientAttribute = Boolean.valueOf(element.getAttribute(PROPERTY_TRANSIENT));
         tableColumnName = element.getAttribute(PROPERTY_TABLE_COLUMN_NAME);
         tableColumnSize = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_SIZE));
         tableColumnScale = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_SCALE));
@@ -202,6 +214,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_TRANSIENT, Boolean.toString(transientAttribute));
         element.setAttribute(PROPERTY_TABLE_COLUMN_NAME, "" + tableColumnName); //$NON-NLS-1$
         element.setAttribute(PROPERTY_TABLE_COLUMN_SIZE, "" + tableColumnSize); //$NON-NLS-1$
         element.setAttribute(PROPERTY_TABLE_COLUMN_SCALE, "" + tableColumnScale); //$NON-NLS-1$
@@ -213,7 +226,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
 
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
-        if (!isPersistentAttribute()) {
+        if (!isPersistentAttribute() || isTransient()) {
             return;
         }
 
