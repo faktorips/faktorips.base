@@ -19,10 +19,10 @@ import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Abstract reference for <code>ProductCmptStructure</code>.
@@ -76,15 +76,29 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     }
 
     private void detectCycle(ArrayList<IIpsElement> seenElements) throws CycleInProductStructureException {
-        if (!(getWrapped() instanceof IProductCmptTypeAssociation) && seenElements.contains(getWrapped())) {
-            seenElements.add(getWrapped());
-            throw new CycleInProductStructureException(seenElements.toArray(new IIpsElement[seenElements.size()]));
-        } else {
-            seenElements.add(getWrapped());
-            if (parent != null) {
-                parent.detectCycle(seenElements);
+        if (getWrappedIpsObject() instanceof IProductCmpt) {
+            if (seenElements.contains(getWrappedIpsObject())) {
+                throw new CycleInProductStructureException(seenElements.toArray(new IIpsElement[seenElements.size()]));
+            } else {
+                seenElements.add(getWrappedIpsObject());
             }
         }
+        if (parent != null) {
+            parent.detectCycle(seenElements);
+        }
+        //        
+        //        
+        // if (!(getWrapped() instanceof IProductCmptTypeAssociation) &&
+        // seenElements.contains(getWrapped())) {
+        // seenElements.add(getWrapped());
+        // throw new CycleInProductStructureException(seenElements.toArray(new
+        // IIpsElement[seenElements.size()]));
+        // } else {
+        // seenElements.add(getWrapped());
+        // if (parent != null) {
+        // parent.detectCycle(seenElements);
+        // }
+        // }
     }
 
     /**
@@ -108,13 +122,17 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
             return false;
         }
         ProductCmptStructureReference other = (ProductCmptStructureReference)obj;
-        return getWrapped() == other.getWrapped() && getStructure() == other.getStructure();
+        return getWrapped() == other.getWrapped() && getWrappedIpsObject() == other.getWrappedIpsObject()
+                && getStructure() == other.getStructure();
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + getWrapped().hashCode();
+        if (getWrapped() != null) {
+            hash = 31 * hash + getWrapped().hashCode();
+        }
+        hash = 31 * hash + getWrappedIpsObject().hashCode();
         return 31 * hash + getStructure().hashCode();
     }
 }

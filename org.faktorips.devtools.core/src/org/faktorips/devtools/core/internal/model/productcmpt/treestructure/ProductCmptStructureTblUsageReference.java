@@ -59,6 +59,9 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
      */
     public IIpsObject getWrappedIpsObject() {
         try {
+            if (tableContentUsage == null) {
+                return null;
+            }
             return tableContentUsage.findTableContents(tableContentUsage.getIpsProject());
         } catch (CoreException e) {
             // will be handled as validation error

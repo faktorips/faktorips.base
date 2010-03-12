@@ -21,8 +21,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
- * A reference to a {@link IProductCmptTypeAssociation}. Used by <code>ProductCmptStructure</code>
- * .
+ * A reference to a {@link IProductCmptTypeAssociation}. Used by <code>ProductCmptStructure</code> .
  * 
  * @author Thorsten Guenther
  */
@@ -36,8 +35,9 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
      * @param parent
      * @throws CycleInProductStructureException
      */
-    public ProductCmptTypeAssociationReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
-            IProductCmptTypeAssociation association) throws CycleInProductStructureException {
+    public ProductCmptTypeAssociationReference(IProductCmptTreeStructure structure,
+            ProductCmptStructureReference parent, IProductCmptTypeAssociation association)
+            throws CycleInProductStructureException {
         super(structure, parent);
         this.association = association;
     }
@@ -61,6 +61,9 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
      * {@inheritDoc}
      */
     public IIpsObject getWrappedIpsObject() {
+        if (association == null) {
+            return null;
+        }
         return association.getIpsObject();
     }
 }
