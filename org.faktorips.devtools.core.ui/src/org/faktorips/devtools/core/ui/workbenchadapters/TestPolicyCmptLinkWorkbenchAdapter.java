@@ -62,6 +62,6 @@ public class TestPolicyCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAd
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Link.gif", true); //$NON-NLS-1$
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("AssociationType-Composition.gif", true); //$NON-NLS-1$
     }
 }
