@@ -434,8 +434,15 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.append(paramName);
         methodsBuilder.appendln(");");
         if (association.isAssoziation() && inverseAssociation != null) {
-            methodsBuilder.append(getGenType().getBuilderSet().getGenerator(target).getGenerator(inverseAssociation)
-                    .generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
+            GenPolicyCmptType generatorForTarget = getGenType().getBuilderSet().getGenerator(target);
+            if (generatorForTarget != null) {
+                GenAssociation generatorForInverse = generatorForTarget.getGenerator(inverseAssociation);
+                if (generatorForInverse != null) {
+                    methodsBuilder.append(generatorForInverse.generateCodeToSynchronizeReverseAssoziation(paramName,
+                            targetInterfaceName));
+                }
+
+            }
         }
         generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, paramName);
         methodsBuilder.closeBracket();
@@ -497,17 +504,19 @@ public class GenAssociationToMany extends GenAssociation {
             String varToCleanUp) throws CoreException {
 
         JavaCodeFragment body = new JavaCodeFragment();
+        GenAssociation genReverseAssociation = ((GenPolicyCmptType)getGenType()).getGenerator(reverseAssociation);
+        if (genReverseAssociation == null) {
+            return body;
+        }
         if (!association.is1ToMany()) {
             body.append("if (" + varToCleanUp + "!=null) {");
         }
         if (reverseAssociation.is1ToMany()) {
-            String removeMethod = ((GenAssociationToMany)((GenPolicyCmptType)getGenType())
-                    .getGenerator(reverseAssociation)).getMethodNameRemoveObject();
+            String removeMethod = ((GenAssociationToMany)genReverseAssociation).getMethodNameRemoveObject();
             body.append(varToCleanUp + "." + removeMethod + "(this);");
         } else {
             String targetClass = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), false);
-            String setMethod = ((GenPolicyCmptType)getGenType()).getGenerator(reverseAssociation)
-                    .getMethodNameSetObject();
+            String setMethod = genReverseAssociation.getMethodNameSetObject();
             body.append("((");
             body.appendClassName(targetClass);
             body.append(")" + varToCleanUp + ")." + setMethod + "(null);");
