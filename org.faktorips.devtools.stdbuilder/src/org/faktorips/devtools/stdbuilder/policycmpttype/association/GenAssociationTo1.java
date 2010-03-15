@@ -295,8 +295,15 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.appendClassName(targetImplClassName);
         methodsBuilder.append(")" + paramName + ";");
         if (reverseAssociation != null) {
-            methodsBuilder.append(getGenType().getBuilderSet().getGenerator(target).getGenerator(reverseAssociation)
-                    .generateCodeToSynchronizeReverseAssoziation(fieldName, targetImplClassName));
+            GenPolicyCmptType generatorForTarget = getGenType().getBuilderSet().getGenerator(target);
+            if (generatorForTarget != null) {
+                GenAssociation generatorForReverse = generatorForTarget.getGenerator(reverseAssociation);
+                if (generatorForReverse != null) {
+                    methodsBuilder.append(generatorForReverse.generateCodeToSynchronizeReverseAssoziation(fieldName,
+                            targetImplClassName));
+                }
+            }
+
         }
         generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         methodsBuilder.closeBracket();
