@@ -25,6 +25,12 @@ import org.w3c.dom.NodeList;
 
 public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        policyCmptType.getPersistenceTypeInfo().setEnabled(true);
+    }
+
     public void testValidate_InvalidTableNames() throws CoreException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
 

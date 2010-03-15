@@ -33,6 +33,9 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         super.setUp();
         PolicyCmptType targetPolicyCmptType = newPolicyCmptType(ipsProject, "Policy2");
 
+        targetPolicyCmptType.getPersistenceTypeInfo().setEnabled(true);
+        policyCmptType.getPersistenceTypeInfo().setEnabled(true);
+
         pcAssociation = policyCmptType.newPolicyCmptTypeAssociation();
         targetPcAssociation = targetPolicyCmptType.newPolicyCmptTypeAssociation();
 
