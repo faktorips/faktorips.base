@@ -98,6 +98,39 @@ public class ProjectUtil {
     }
 
     /**
+     * Create an IPS-Project based on the given Java-Project. This project does not use the
+     * persistence feature.
+     * 
+     * @param javaProject The Java-Project to use as base for the IPS-Project
+     * @param runtimeIdPrefix The prefix for the runtime-IDs to be used in the new project.
+     * @param mergableFolder The source folder for mergable java files.
+     * @param derivedFolder The source folder for derived java files.
+     * @param srcFolder The source folder for IPS-Objects.
+     * @param isProductDefinitionProject <code>true</code> to create a project which is capable of
+     *            product definitions.
+     * @param isModelProject <code>true</code> to create a project which is capabel of model
+     *            objects.
+     * 
+     * @return The new IPS-Project.
+     * 
+     * @throws CoreException In case of any Errors.
+     * @deprecated As of release 2.6, replaced by
+     *             {@link #createIpsProject(IJavaProject, boolean, boolean, boolean, String, IFolder, IFolder, IFolder)}
+     *             .
+     */
+    @Deprecated
+    public static IIpsProject createIpsProject(IJavaProject javaProject,
+            boolean isProductDefinitionProject,
+            boolean isModelProject,
+            String runtimeIdPrefix,
+            IFolder mergableFolder,
+            IFolder derivedFolder,
+            IFolder srcFolder) throws CoreException {
+        return createIpsProject(javaProject, isProductDefinitionProject, isModelProject, false, runtimeIdPrefix,
+                mergableFolder, derivedFolder, srcFolder);
+    }
+
+    /**
      * Create an IPS-Project based on the given Java-Project.
      * 
      * @param javaProject The Java-Project to use as base for the IPS-Project
@@ -113,6 +146,7 @@ public class ProjectUtil {
      * @return The new IPS-Project.
      * 
      * @throws CoreException In case of any Errors.
+     * @since 2.6
      */
     public static IIpsProject createIpsProject(IJavaProject javaProject,
             boolean isProductDefinitionProject,
@@ -271,6 +305,28 @@ public class ProjectUtil {
     }
 
     /**
+     * Create an IpsProject based on the given JavaProject. This project does not use the
+     * persistence feature.
+     * 
+     * @param javaProject The JavaProject which is to be extended with IPS-Capabilities
+     * @param runtimeIdPrefix The prefix for RuntimeIDs to be used in this project
+     * @param isProductDefinitionProject <code>true</code> if this is a product definition project.
+     * @param isModelProject <code>true</code> if this is a model project.
+     * @return The new IpsProject.
+     * 
+     * @throws CoreException In case of any Errors.
+     * @deprecated As of release 2.6, replaced by
+     *             {@link #createIpsProject(IJavaProject, String, boolean, boolean, boolean)}.
+     */
+    @Deprecated
+    public static IIpsProject createIpsProject(IJavaProject javaProject,
+            String runtimeIdPrefix,
+            boolean isProductDefinitionProject,
+            boolean isModelProject) throws CoreException {
+        return createIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject, isModelProject, false);
+    }
+
+    /**
      * Create an IpsProject based on the given JavaProject.
      * 
      * @param javaProject The JavaProject which is to be extended with IPS-Capabilities
@@ -280,6 +336,7 @@ public class ProjectUtil {
      * @return The new IpsProject.
      * 
      * @throws CoreException In case of any Errors.
+     * @since 2.6
      */
     public static IIpsProject createIpsProject(IJavaProject javaProject,
             String runtimeIdPrefix,
