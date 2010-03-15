@@ -320,7 +320,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     private Group createGroupJoinTable(Composite allPersistentProps) {
-        Group groupJoinTable = uiToolkit.createGroup(allPersistentProps, "Join Table Properties");
+        Group groupJoinTable = uiToolkit.createGroup(allPersistentProps, "Database Schema Properties");
         GridData layoutData = (GridData)groupJoinTable.getLayoutData();
         layoutData.grabExcessVerticalSpace = false;
 
@@ -337,6 +337,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(sourceColumnNameText, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME);
 
+        // TODO Joerg JPA wollen wir die JoinColumn bei der one-to-many so definieren?
+        // wenn ja, disable state fixen
         uiToolkit.createFormLabel(workArea, "Target Column Name:");
         Text targetColumnNameText = uiToolkit.createText(workArea);
         bindingContext.bindContent(targetColumnNameText, association.getPersistenceAssociatonInfo(),

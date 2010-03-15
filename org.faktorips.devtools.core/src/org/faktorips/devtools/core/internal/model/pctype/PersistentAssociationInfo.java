@@ -92,12 +92,23 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private boolean isJoinTableRequired(IPolicyCmptTypeAssociation inverseAssociation) {
         boolean isOneToManyAssociation = getPolicyComponentTypeAssociation().is1ToMany();
         if (isUnidirectional()) {
+            // TODO Joerg JPA oder andersweitig die JoinColumn definieren?
+            if (!StringUtils.isEmpty(getTargetColumnName())) {
+                return false;
+            }
             return isOneToManyAssociation;
         }
 
         boolean isInverseAssociationOneToMany = (inverseAssociation != null) && inverseAssociation.is1ToMany();
 
         boolean isManyToManyAssociation = isOneToManyAssociation && isInverseAssociationOneToMany;
+
+        // if the inverse side specifies an join table then this will be the master of the
+        // relationship, and we didn't need to define an join table on this side
+        if (inverseAssociation != null
+                && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinTableName())) {
+            return false;
+        }
 
         return isManyToManyAssociation;
     }
@@ -180,6 +191,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
+        if (!getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()) {
+            return;
+        }
+
         IPolicyCmptTypeAssociation inverseAssociation = null;
         if (isBidirectional()) {
             inverseAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(

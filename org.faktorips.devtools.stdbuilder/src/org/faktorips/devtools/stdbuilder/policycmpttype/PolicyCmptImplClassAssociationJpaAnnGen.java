@@ -14,26 +14,24 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
-import org.faktorips.devtools.stdbuilder.type.GenType;
 
 /**
  * This class generates JPA annotations for associations of policy component types.
@@ -43,25 +41,48 @@ import org.faktorips.devtools.stdbuilder.type.GenType;
 public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationGenerator {
 
     // JPA imports
-    private static final String IMPORT_ONE_TO_MANY = "javax.persistence.OneToMany";
     private static final String IMPORT_JOIN_TABLE = "javax.persistence.JoinTable";
-    private static final String IMPORT_MANY_TO_MANY = "javax.persistence.ManyToMany";
-    private static final String IMPORT_ONE_TO_ONE = "javax.persistence.OneToOne";
     private static final String IMPORT_JOIN_COLUMN = "javax.persistence.JoinColumn";
-    private static final String IMPORT_TRANSIENT = "javax.persistence.Transient";
+    private static final String IMPORT_ONE_TO_MANY = "javax.persistence.OneToMany";
+    private static final String IMPORT_ONE_TO_ONE = "javax.persistence.OneToOne";
+    private static final String IMPORT_MANY_TO_MANY = "javax.persistence.ManyToMany";
+    private static final String IMPORT_MANY_TO_ONE = "javax.persistence.ManyToOne";
     private static final String IMPORT_CASCADE_TYPE = "javax.persistence.CascadeType";
     private static final String IMPORT_FETCH_TYPE = "javax.persistence.FetchType";
 
-    private static final String ANNOTATION_ONE_TO_ONE = "@OneToOne";
-    private static final String ANNOTATION_ONE_TO_MANY = "@OneToMany";
     private static final String ANNOTATION_JOIN_TABLE = "@JoinTable";
-    private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
     private static final String ANNOTATION_JOIN_COLUMN = "@JoinColumn";
-    private static final String ANNOTATION_TRANSIENT = "@Transient";
+    private static final String ANNOTATION_ONE_TO_MANY = "@OneToMany";
+    private static final String ANNOTATION_ONE_TO_ONE = "@OneToOne";
+    private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
+    private static final String ANNOTATION_MANY_TO_ONE = "@ManyToOne";
 
     // EclipseLink imports
     private static final String IMPORT_PRIVATE_OWNED = "org.eclipse.persistence.annotations.PrivateOwned";
     private static final String ANNOTATION_PRIVATE_OWNED = "@PrivateOwned";
+
+    private static enum RELATIONSHIP_TYPE {
+        UNKNOWN,
+        ONE_TO_MANY,
+        ONE_TO_ONE,
+        MANY_TO_MANY,
+        MANY_TO_ONE
+    }
+
+    private static Map<RELATIONSHIP_TYPE, String> importForRelationshipType = new HashMap<RELATIONSHIP_TYPE, String>(4);
+    private static Map<RELATIONSHIP_TYPE, String> annotationForRelationshipType = new HashMap<RELATIONSHIP_TYPE, String>(
+            4);
+
+    static {
+        importForRelationshipType.put(RELATIONSHIP_TYPE.ONE_TO_MANY, IMPORT_ONE_TO_MANY);
+        importForRelationshipType.put(RELATIONSHIP_TYPE.ONE_TO_ONE, IMPORT_ONE_TO_ONE);
+        importForRelationshipType.put(RELATIONSHIP_TYPE.MANY_TO_MANY, IMPORT_MANY_TO_MANY);
+        importForRelationshipType.put(RELATIONSHIP_TYPE.MANY_TO_ONE, IMPORT_MANY_TO_ONE);
+        annotationForRelationshipType.put(RELATIONSHIP_TYPE.ONE_TO_MANY, ANNOTATION_ONE_TO_MANY);
+        annotationForRelationshipType.put(RELATIONSHIP_TYPE.ONE_TO_ONE, ANNOTATION_ONE_TO_ONE);
+        annotationForRelationshipType.put(RELATIONSHIP_TYPE.MANY_TO_MANY, ANNOTATION_MANY_TO_MANY);
+        annotationForRelationshipType.put(RELATIONSHIP_TYPE.MANY_TO_ONE, ANNOTATION_MANY_TO_ONE);
+    }
 
     public PolicyCmptImplClassAssociationJpaAnnGen(StandardBuilderSet builderSet) {
         super(builderSet);
@@ -73,19 +94,39 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        IPolicyCmptTypeAssociation pcTypeAssociation = (IPolicyCmptTypeAssociation)ipsElement;
-        IPersistentAssociationInfo associatonInfo = pcTypeAssociation.getPersistenceAssociatonInfo();
+        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)ipsElement;
 
         try {
-            if (pcTypeAssociation.isAssoziation()) {
-                createAnnotationForAssociation(fragment, pcTypeAssociation, associatonInfo);
-            } else if (pcTypeAssociation.isComposition()) {
-                if (pcTypeAssociation.getMaxCardinality() > 1) {
-                    createAnnotationForCompositionOneToMany(fragment, pcTypeAssociation, associatonInfo);
-                } else {
-                    createAnnotationForCompositionOneToOne(fragment, pcTypeAssociation, associatonInfo);
-                }
+            if (!association.getPersistenceAssociatonInfo().isValid()) {
+                return fragment;
             }
+
+            // get necessary generators
+            GenAssociation genAssociation = getGenerator(association);
+            IPolicyCmptTypeAssociation inverseAssociation = genAssociation.getInverseAssociation();
+            GenAssociation genInverseAssociation = getGenerator(inverseAssociation);
+
+            // add import and annotation depending on the relationship type (e.g. oneToMany)
+            RELATIONSHIP_TYPE relationShip = evalRelationShipType(association, inverseAssociation);
+            fragment.addImport(importForRelationshipType.get(relationShip));
+            fragment.append(annotationForRelationshipType.get(relationShip));
+
+            // add common attributes
+            List<String> attributesToAppend = new ArrayList<String>();
+            addAnnotationAttributeMappedBy(relationShip, fragment, attributesToAppend, genAssociation,
+                    genInverseAssociation);
+            addAnnotationAttributeCascade(relationShip, fragment, attributesToAppend, genAssociation,
+                    genInverseAssociation);
+            addAnnotationAttributeFetch(relationShip, fragment, attributesToAppend, genAssociation,
+                    genInverseAssociation);
+            addAnnotationAttributesTargetEntity(fragment, attributesToAppend, genAssociation, genInverseAssociation);
+            appendAllAttributes(fragment, attributesToAppend);
+
+            // evaluate further attributes depending on the relationship type
+            addAnnotationFor(relationShip, fragment, genAssociation, genInverseAssociation);
+
+            // add special annotation in case of join table needed
+            addAnnotationJoinTable(fragment, genAssociation, genInverseAssociation);
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -93,48 +134,55 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         return fragment;
     }
 
-    private void createAnnotationForCompositionManyToOne(JavaCodeFragment fragment,
-            IPolicyCmptTypeAssociation pcTypeAssociation,
-            IPersistentAssociationInfo associatonInfo) {
-        // TODO Auto-generated method stub
-
-    }
-
-    private void createAnnotationForAssociation(JavaCodeFragment fragment,
-            IPolicyCmptTypeAssociation pcTypeAssociation,
-            IPersistentAssociationInfo associatonInfo) throws CoreException {
-
-        IIpsProject ipsProject = pcTypeAssociation.getIpsProject();
-        IPolicyCmptType targetPcType = pcTypeAssociation.findTargetPolicyCmptType(ipsProject);
-        String targetQName = getQualifiedImplClassName(targetPcType);
-
-        IPersistentAssociationInfo persistenceAssociatonInfo = pcTypeAssociation.getPersistenceAssociatonInfo();
-        fragment.addImport(IMPORT_CASCADE_TYPE);
-        if (persistenceAssociatonInfo.isJoinTableRequired()) {
-            createAnnotationsForAssociationManyToMany(fragment, targetQName, persistenceAssociatonInfo);
-
-        } else if (persistenceAssociatonInfo.isUnidirectional() && pcTypeAssociation.is1ToMany()) {
-            fragment.addImport(IMPORT_ONE_TO_MANY);
-            fragment.append(ANNOTATION_ONE_TO_MANY).append("(");
-            fragment.append("targetEntity = " + targetQName).append(".class");
-            fragment.append(", cascade = CascadeType.ALL").appendln(")");
+    private void addAnnotationFor(RELATIONSHIP_TYPE relationShip,
+            JavaCodeFragment fragment,
+            GenAssociation genAssociation,
+            GenAssociation genInverseAssociation) {
+        IPolicyCmptTypeAssociation association = genAssociation.getAssociation();
+        switch (relationShip) {
+            case ONE_TO_MANY:
+                if (!association.isAssoziation()) {
+                    fragment.addImport(IMPORT_PRIVATE_OWNED);
+                    fragment.appendln(ANNOTATION_PRIVATE_OWNED);
+                }
+                break;
+            case ONE_TO_ONE:
+                break;
+            case MANY_TO_ONE:
+                break;
+            case MANY_TO_MANY:
+                break;
+            default:
+                throw new RuntimeException("Error unknow relationship type: " + relationShip.toString());
         }
     }
 
-    private void createAnnotationsForAssociationManyToMany(JavaCodeFragment fragment,
-            String targetQName,
-            IPersistentAssociationInfo persistenceAssociatonInfo) {
-
-        fragment.append(ANNOTATION_MANY_TO_MANY).append('(');
-        fragment.append("targetEntity = " + targetQName).append(".class");
-        fragment.append(", cascade = CascadeType.ALL").appendln(')');
-
-        fragment.addImport(IMPORT_MANY_TO_MANY);
-
-        addAnnotationJoinTable(fragment, persistenceAssociatonInfo);
+    private GenAssociation getGenerator(IPolicyCmptTypeAssociation pcTypeAssociation) throws CoreException {
+        if (pcTypeAssociation == null) {
+            return null;
+        }
+        return getStandardBuilderSet().getGenerator(pcTypeAssociation.getPolicyCmptType()).getGenerator(
+                pcTypeAssociation);
     }
 
-    private void addAnnotationJoinTable(JavaCodeFragment fragment, IPersistentAssociationInfo persistenceAssociatonInfo) {
+    private GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException {
+        return getStandardBuilderSet().getGenerator(policyCmptType);
+    }
+
+    private void addAnnotationJoinTable(JavaCodeFragment fragment,
+            GenAssociation genAssociation,
+            GenAssociation genInverseAssociation) throws CoreException {
+        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
+                .getPersistenceAssociatonInfo();
+        if (genInverseAssociation == null) {
+            if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getTargetColumnName())) {
+                appendJoinColumn(fragment, persistenceAssociatonInfo.getTargetColumnName(), false);
+            }
+            return;
+        }
+        if (!persistenceAssociatonInfo.isJoinTableRequired()) {
+            return;
+        }
         if (StringUtils.isBlank(persistenceAssociatonInfo.getJoinTableName())) {
             return;
         }
@@ -159,55 +207,14 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             return;
         }
         String lhs = inverse ? "inverseJoinColumns = " : "joinColumns = ";
+        fragment.append(lhs);
+        appendJoinColumn(fragment, columnName, inverse);
+    }
+
+    private void appendJoinColumn(JavaCodeFragment fragment, String columnName, boolean inverse) {
         fragment.addImport(IMPORT_JOIN_COLUMN);
-        fragment.append(lhs).append(ANNOTATION_JOIN_COLUMN).append('(');
+        fragment.append(ANNOTATION_JOIN_COLUMN).append('(');
         appendName(fragment, columnName).append(")");
-    }
-
-    private void createAnnotationForCompositionOneToOne(JavaCodeFragment fragment,
-            IPolicyCmptTypeAssociation pcTypeAssociation,
-            IPersistentAssociationInfo associatonInfo) throws CoreException {
-        fragment.addImport(IMPORT_ONE_TO_ONE);
-        fragment.append(ANNOTATION_ONE_TO_ONE);
-
-        List<String> attributesToAppend = new ArrayList<String>();
-        addAnnotationAttributeMappedBy(fragment, attributesToAppend, pcTypeAssociation);
-        addAnnotationAttributeCascadeAllAndEager(fragment, attributesToAppend, pcTypeAssociation);
-        appendAllAttributes(fragment, attributesToAppend);
-        if (pcTypeAssociation.isCompositionMasterToDetail()) {
-            fragment.addImport(IMPORT_PRIVATE_OWNED);
-            fragment.appendln(ANNOTATION_PRIVATE_OWNED);
-        }
-    }
-
-    public GenAssociation getGenAssociation(IPolicyCmptTypeAssociation pcTypeAssociation) throws CoreException {
-        return getStandardBuilderSet().getGenerator(pcTypeAssociation.getPolicyCmptType()).getGenerator(
-                pcTypeAssociation);
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * "@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="policy")"
-     * "@ANNOTATION_PRIVATE_OWNED"
-     * </pre>
-     */
-    private void createAnnotationForCompositionOneToMany(JavaCodeFragment fragment,
-            IPolicyCmptTypeAssociation pcTypeAssociation,
-            IPersistentAssociationInfo associatonInfo) throws CoreException {
-        fragment.addImport(IMPORT_ONE_TO_MANY);
-        fragment.append(ANNOTATION_ONE_TO_MANY);
-
-        List<String> attributesToAppend = new ArrayList<String>();
-        addAnnotationAttributeMappedBy(fragment, attributesToAppend, pcTypeAssociation);
-        addAnnotationAttributeCascadeAllAndEager(fragment, attributesToAppend, pcTypeAssociation);
-        appendAllAttributes(fragment, attributesToAppend);
-
-        addAnnotationJoinTable(fragment, associatonInfo);
-
-        fragment.addImport(IMPORT_PRIVATE_OWNED);
-        fragment.appendln(ANNOTATION_PRIVATE_OWNED);
     }
 
     private void appendAllAttributes(JavaCodeFragment fragment, List<String> attributesToAppend) {
@@ -221,16 +228,38 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         fragment.append(')');
     }
 
-    private boolean addAnnotationAttributeCascadeAllAndEager(JavaCodeFragment fragment,
+    private void addAnnotationAttributesTargetEntity(JavaCodeFragment fragment,
             List<String> attributesToAppend,
-            IPolicyCmptTypeAssociation pcTypeAssociation) {
+            GenAssociation genAssociation,
+            GenAssociation genInverseAssociation) throws CoreException {
+        GenPolicyCmptType genTargetPolicyCmptType = getGenerator(genAssociation.getTargetPolicyCmptType());
+        String targetQName = genTargetPolicyCmptType.getQualifiedName(false);
+        attributesToAppend.add("targetEntity = " + targetQName + ".class");
+    }
+
+    private void addAnnotationAttributeCascade(RELATIONSHIP_TYPE relationShip,
+            JavaCodeFragment fragment,
+            List<String> attributesToAppend,
+            GenAssociation genAssociation,
+            GenAssociation genInverseAssociation) {
+        if (relationShip == RELATIONSHIP_TYPE.MANY_TO_ONE) {
+            return;
+        }
+
         fragment.addImport(IMPORT_CASCADE_TYPE);
-        fragment.addImport(IMPORT_FETCH_TYPE);
         attributesToAppend.add("cascade=CascadeType.ALL");
+    }
+
+    private void addAnnotationAttributeFetch(RELATIONSHIP_TYPE relationShip,
+            JavaCodeFragment fragment,
+            List<String> attributesToAppend,
+            GenAssociation genAssociation,
+            GenAssociation genInverseAssociation) {
+        fragment.addImport(IMPORT_FETCH_TYPE);
+        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
+                .getPersistenceAssociatonInfo();
         // note that the FetchType enumeration must be equal to the FetchType enumeration in JPA
-        attributesToAppend.add("fetch=FetchType."
-                + pcTypeAssociation.getPersistenceAssociatonInfo().getFetchType().toString());
-        return true;
+        attributesToAppend.add("fetch=FetchType." + persistenceAssociatonInfo.getFetchType().toString());
     }
 
     /*
@@ -238,57 +267,64 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
      * field of the inverse side. Note that if the relationship is unidirectional then a further
      * table will be used to hold all associations to the target.
      */
-    private boolean addAnnotationAttributeMappedBy(JavaCodeFragment fragment,
+    private void addAnnotationAttributeMappedBy(RELATIONSHIP_TYPE relationShip,
+            JavaCodeFragment fragment,
             List<String> attributesToAppend,
-            IPolicyCmptTypeAssociation pcTypeAssociation) throws CoreException {
-        if (StringUtils.isEmpty(pcTypeAssociation.getInverseAssociation())) {
-            // no inverse specified
-            // this is an unidirectional association
+            GenAssociation genAssociation,
+            GenAssociation genInverseAssociation) throws CoreException {
+        if (genInverseAssociation == null) {
+            // inverse generator not exist,
+            // maybe this is an unidirectional association
+            return;
+        }
+
+        if (isOwnerOfRelationship(genAssociation.getAssociation(), genInverseAssociation.getAssociation())) {
+            return;
+        }
+
+        // // the many-to-one side is the owning side, so the join column is defined on that side
+        // if (relationShip != RELATIONSHIP_TYPE.MANY_TO_ONE) {
+        // return false;
+        // }
+
+        attributesToAppend.add("mappedBy=\"" + genInverseAssociation.getFieldNameForAssociation() + "\"");
+    }
+
+    public boolean isOwnerOfRelationship(IPolicyCmptTypeAssociation association,
+            IPolicyCmptTypeAssociation inverseAssociation) throws CoreException {
+        IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
+        if (persistenceAssociatonInfo.isUnidirectional()) {
+            // if no inverse is given, then the association is always the owner
+            return true;
+        }
+        // in bidirectional associations the many-to-one side is the owning side
+        // therefore we use the detail to master side as owner where the join column will be defined
+        if (association.isCompositionMasterToDetail()) {
             return false;
         }
-        GenAssociation generatorInverseAssociation = getGenAssociation(pcTypeAssociation)
-                .getGeneratorForInverseAssociation();
-        if (generatorInverseAssociation == null) {
-            // inverse generator not found, maybe a problem in the generator
-            return false;
+        if (association.isCompositionDetailToMaster()) {
+            return true;
         }
 
-        attributesToAppend.add("mappedBy=\"" + generatorInverseAssociation.getFieldNameForAssociation() + "\"");
-        return true;
-    }
-
-    private String getRootOfTargetQName(IPolicyCmptType targetPcType) throws CoreException {
-        FindRootTypeVisitor rootVisitor = new FindRootTypeVisitor(targetPcType.getIpsProject());
-        rootVisitor.start(targetPcType);
-        IPolicyCmptType rootType = rootVisitor.getRootType();
-
-        return getQualifiedImplClassName(rootType);
-    }
-
-    private String getQualifiedImplClassName(IPolicyCmptType targetPcType) {
-        return GenType.getQualifiedName(targetPcType, getStandardBuilderSet(), false);
-    }
-
-    private final class FindRootTypeVisitor extends TypeHierarchyVisitor {
-        IPolicyCmptType rootType = null;
-
-        private FindRootTypeVisitor(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            IPolicyCmptType pcType = (IPolicyCmptType)currentType;
-            if (pcType.hasSupertype()) {
-                return true;
-            }
-            rootType = pcType;
+        if (inverseAssociation == null) {
+            // error in bidirectional association, inverse not exists
             return false;
         }
 
-        public IPolicyCmptType getRootType() {
-            return rootType;
+        boolean isManyToMany = association.getMaxCardinality() > 1 && inverseAssociation.getMaxCardinality() > 1;
+        if (isManyToMany) {
+            // note that no matter which side is designated as the owner
+            // we define here that the side with the join table is the owner
+            return StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinTableName());
         }
+
+        // no many-to-many association, the owner is the many-to-one side
+        if (inverseAssociation.getMaxCardinality() > 1) {
+            return true;
+        }
+
+        // TODO Joerg JPA wer ist der Owner bei Assoziationen 1:1
+        return false;
     }
 
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
@@ -303,6 +339,29 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             return false;
         }
         return isTargetPolicyCmptTypePersistenceEnabled(this, pcTypeAssociation);
+    }
+
+    private RELATIONSHIP_TYPE evalRelationShipType(IPolicyCmptTypeAssociation association,
+            IPolicyCmptTypeAssociation inverseAssociation) {
+        int sourceCardinality = association.getMaxCardinality();
+        int targetCardinality = inverseAssociation == null ? 0 : inverseAssociation.getMaxCardinality();
+
+        if (sourceCardinality > 1 && !(targetCardinality > 1)) {
+            return RELATIONSHIP_TYPE.ONE_TO_MANY;
+        }
+        if (sourceCardinality > 1 && targetCardinality > 1) {
+            return RELATIONSHIP_TYPE.MANY_TO_MANY;
+        }
+        if (sourceCardinality == 1 && targetCardinality == 1) {
+            return RELATIONSHIP_TYPE.ONE_TO_ONE;
+        }
+        if (sourceCardinality == 1 && targetCardinality > 1) {
+            return RELATIONSHIP_TYPE.MANY_TO_ONE;
+        }
+        if (sourceCardinality == 1 && targetCardinality == 0) {
+            return RELATIONSHIP_TYPE.ONE_TO_ONE;
+        }
+        return RELATIONSHIP_TYPE.UNKNOWN;
     }
 
     /*

@@ -226,7 +226,8 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
 
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
-        if (!isPersistentAttribute() || isTransient()) {
+        if (!isPersistentAttribute() || isTransient()
+                || !getPolicyComponentTypeAttribute().getPolicyCmptType().isPersistentEnabled()) {
             return;
         }
 

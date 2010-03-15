@@ -46,7 +46,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     private boolean notJoinedSubclass = true;
 
-    private boolean enabled = true;
+    // per default the persistent is disabled
+    private boolean enabled = false;
 
     public boolean isNotJoinedSubclass() {
         return notJoinedSubclass;
@@ -152,6 +153,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     @Override
     public void validateThis(MessageList msgList, IIpsProject ipsProject) {
+        if (!enabled) {
+            return;
+        }
         try {
             validateInheritanceStrategy(msgList);
             validateTableNames(msgList);

@@ -193,7 +193,7 @@ public class GenAssociationToMany extends GenAssociation {
             initialValueExpression.appendClassName(ArrayList.class);
             if (isUseTypesafeCollections()) {
                 initialValueExpression.append("<");
-                initialValueExpression.appendClassName(targetImplClassName);
+                initialValueExpression.appendClassName(targetInterfaceName);
                 initialValueExpression.append(">");
             }
             initialValueExpression.append("()");
@@ -220,7 +220,7 @@ public class GenAssociationToMany extends GenAssociation {
             }
 
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
-                    + (isUseTypesafeCollections() ? "<" + targetImplClassName + ">" : ""), fieldName,
+                    + (isUseTypesafeCollections() ? "<" + targetInterfaceName + ">" : ""), fieldName,
                     initialValueExpression);
         }
     }
@@ -317,7 +317,7 @@ public class GenAssociationToMany extends GenAssociation {
      * <pre>
      * [Javadoc]
      * public List&lt;ICoverage&gt; getCoverages() {
-     *     return Collections.unmodifiableList((List<? extends ICoverage>)coverages)
+     *     return Collections.unmodifiableList(coverages)
      * }
      * </pre>
      */
@@ -330,15 +330,11 @@ public class GenAssociationToMany extends GenAssociation {
         if (isUseTypesafeCollections()) {
             methodsBuilder.append("return ");
             methodsBuilder.appendClassName(Collections.class.getName());
-            methodsBuilder.append(".unmodifiableList((");
-            methodsBuilder.appendClassName(List.class.getName());
-            methodsBuilder.append("<? extends ");
-            methodsBuilder.appendClassName(targetInterfaceName);
-            methodsBuilder.append(">)");
+            methodsBuilder.append(".unmodifiableList(");
             methodsBuilder.append(fieldName);
             methodsBuilder.appendln(");");
         } else {
-            // TODO Joerg Merge Persistence java 4 support?
+            // TODO Joerg Merge Persistence java 1.4 support?
             methodsBuilder.append("return (");
             methodsBuilder.appendClassName(targetImplClassName);
             methodsBuilder.append("[])");
@@ -500,23 +496,24 @@ public class GenAssociationToMany extends GenAssociation {
     }
 
     private JavaCodeFragment generateCodeToCleanupOldReference(IPolicyCmptTypeAssociation association,
-            IPolicyCmptTypeAssociation reverseAssociation,
+            IPolicyCmptTypeAssociation inverseAssociation,
             String varToCleanUp) throws CoreException {
 
         JavaCodeFragment body = new JavaCodeFragment();
-        GenAssociation genReverseAssociation = ((GenPolicyCmptType)getGenType()).getGenerator(reverseAssociation);
-        if (genReverseAssociation == null) {
+        GenAssociation genInverseAssociation = ((GenPolicyCmptType)getGenType()).getGenerator(inverseAssociation);
+        if (genInverseAssociation == null) {
             return body;
         }
         if (!association.is1ToMany()) {
             body.append("if (" + varToCleanUp + "!=null) {");
         }
-        if (reverseAssociation.is1ToMany()) {
-            String removeMethod = ((GenAssociationToMany)genReverseAssociation).getMethodNameRemoveObject();
+        if (inverseAssociation.is1ToMany()) {
+            String removeMethod = ((GenAssociationToMany)genInverseAssociation).getMethodNameRemoveObject();
             body.append(varToCleanUp + "." + removeMethod + "(this);");
         } else {
-            String targetClass = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), false);
-            String setMethod = genReverseAssociation.getMethodNameSetObject();
+            GenAssociation genAssociation = ((GenPolicyCmptType)getGenType()).getGenerator(association);
+            String targetClass = getQualifiedClassName(genAssociation.getTargetPolicyCmptType(), false);
+            String setMethod = genInverseAssociation.getMethodNameSetObject();
             body.append("((");
             body.appendClassName(targetClass);
             body.append(")" + varToCleanUp + ")." + setMethod + "(null);");
@@ -677,7 +674,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.appendClassName(Iterator.class);
         if (isUseTypesafeCollections()) {
             methodsBuilder.append("<");
-            methodsBuilder.appendClassName(getQualifiedClassName(targetType, false));
+            methodsBuilder.appendClassName(getQualifiedClassName(targetType, true));
             methodsBuilder.append(">");
         }
         methodsBuilder.append(" it = ");

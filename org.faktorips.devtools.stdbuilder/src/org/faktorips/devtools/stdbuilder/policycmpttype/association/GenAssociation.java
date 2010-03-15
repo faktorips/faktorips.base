@@ -989,7 +989,7 @@ public abstract class GenAssociation extends GenTypePart {
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
-        // nothing to do            
+        // nothing to do
     }
 
     public abstract void generateCodeForContainerAssociationImplementation(List<IAssociation> associations,
@@ -1108,6 +1108,21 @@ public abstract class GenAssociation extends GenTypePart {
     private GenPolicyCmptType getGeneratorFor(IPolicyCmptType policyCmptType) throws CoreException {
         StandardBuilderSet builderSet = getGenType().getBuilderSet();
         return builderSet.getGenerator(policyCmptType);
+    }
+
+    /**
+     * Returns the association this generator belongs to.
+     */
+    public IPolicyCmptTypeAssociation getAssociation() {
+        return association;
+    }
+
+    /**
+     * Returns the inverse association of the association this generator belongs to, or null is no
+     * inverse association is specified.
+     */
+    public IPolicyCmptTypeAssociation getInverseAssociation() {
+        return inverseAssociation;
     }
 
     /**

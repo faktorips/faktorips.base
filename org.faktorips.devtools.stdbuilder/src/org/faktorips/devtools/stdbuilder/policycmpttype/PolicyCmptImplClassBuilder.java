@@ -749,7 +749,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     if (isUseTypesafeCollections()) {
                         methodsBuilder.append("<");
                         methodsBuilder.appendClassName(getGenerator(r).getQualifiedClassName(
-                                getGenerator(r).getTargetPolicyCmptType(), false));
+                                getGenerator(r).getTargetPolicyCmptType(), true));
                         methodsBuilder.append('>');
                     }
                     methodsBuilder.append(" it=" + field + ".iterator(); it.hasNext();) {");
@@ -1338,14 +1338,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      * 
      * Note that the field is declared using the class, otherwise it is not possible to use the
-     * field with JAXB or JPA.
+     * field with JAXB.
      * 
      * @param association
      */
     private void generateFieldForParent(JavaCodeFragmentBuilder memberVarsBuilder,
             IPolicyCmptTypeAssociation association) throws CoreException {
         String javadoc = getLocalizedText(getPcType(), "FIELD_PARENT_JAVADOC") + " "
-                + StringUtil.unqualifiedName(getTargetQualifiedName(association, false));
+                + StringUtil.unqualifiedName(getTargetQualifiedName(association, true));
         memberVarsBuilder.javaDoc(javadoc, ANNOTATION_GENERATED);
 
         String fieldName = getGenerator(association).getFieldNameForAssociation();

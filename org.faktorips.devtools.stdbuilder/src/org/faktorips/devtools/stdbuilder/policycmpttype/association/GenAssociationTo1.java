@@ -157,11 +157,10 @@ public class GenAssociationTo1 extends GenAssociation {
 
         getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD,
                 association, builder);
+        getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
+                association, builder);
 
         if (!isDerivedUnion() && !isCompositionDetailToMaster()) {
-
-            getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
-                    association, builder);
 
             // TODO: introduce Generator for JAXB annotations
             if (isGenerateJaxbSupport()) {
@@ -172,7 +171,7 @@ public class GenAssociationTo1 extends GenAssociation {
                 }
             }
 
-            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetImplClassName, fieldName,
+            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetInterfaceName, fieldName,
                     new JavaCodeFragment("null"));
         }
     }
@@ -286,7 +285,7 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(fieldName);
         methodsBuilder.append(") return;");
         if (inverseAssociation != null) {
-            methodsBuilder.appendClassName(targetImplClassName);
+            methodsBuilder.appendClassName(targetInterfaceName);
             methodsBuilder.append(" oldRefObject = ");
             methodsBuilder.append(fieldName);
             methodsBuilder.append(';');
@@ -477,9 +476,14 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(MethodNames.NEW_COPY);
         methodsBuilder.appendln("();");
         if (targetType.isDependantType() && inverseAssociation != null) {
+            methodsBuilder.append("(");
+            methodsBuilder.append("(");
+            methodsBuilder.appendClassName(targetTypeQName);
+            methodsBuilder.append(")");
             methodsBuilder.append(paramName);
             methodsBuilder.append(".");
             methodsBuilder.append(field);
+            methodsBuilder.append(")");
             methodsBuilder.append(".");
             methodsBuilder.append(getMethodNameSetParentObjectInternal(true));
             methodsBuilder.append("(");

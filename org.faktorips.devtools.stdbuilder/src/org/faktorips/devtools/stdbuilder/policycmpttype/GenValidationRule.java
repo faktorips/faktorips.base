@@ -292,6 +292,10 @@ public class GenValidationRule extends GenTypePart {
             IIpsProject ipsProject) throws CoreException {
 
         JavaCodeFragment code = new JavaCodeFragment();
+        if (!getGenType().getIpsPart().isValid()) {
+            return code;
+        }
+
         if (validatedAttributes.length > 0) {
             code.appendClassName(ObjectProperty.class);
             code.append("[] ");
