@@ -157,7 +157,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     public StandardBuilderSet() {
         ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
-        version = "2.6.0";
+        version = "3.0.0";
         // Following code sections sets the version to the stdbuilder-plugin/bundle version.
         // Most of the time we hardwire the version of the generated code here, but from time to
         // time

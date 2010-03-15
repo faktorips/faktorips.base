@@ -58,7 +58,7 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getTargetVersion() {
-        return "2.6.0.rc1"; //$NON-NLS-1$
+        return "3.0.0.ms1"; //$NON-NLS-1$
     }
 
     @Override
