@@ -41,6 +41,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     }
 
     private final static String ANNOTATION_ENTITY = "@Entity";
+    private final static String ANNOTATION_MAPPEDSUPERCLASS = "@MappedSuperclass";
     private final static String ANNOTATION_TABLE = "@Table";
     private final static String ANNOTATION_SECONDARY_TABLE = "@SecondaryTable";
     private static final String ANNOTATION_DISCRIMINATOR_COLUMN = "@DiscriminatorColumn";
@@ -48,6 +49,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     private static final String ANNOTATION_INHERITANCE = "@Inheritance";
 
     private static final String IMPORT_ENTITY = "javax.persistence.Entity";
+    private static final String IMPORT_MAPPEDSUPERCLASS = "javax.persistence.MappedSuperclass";
     private static final String IMPORT_TABLE = "javax.persistence.Table";
     private static final String IMPORT_SECONDARY_TABLE = "javax.persistence.SecondaryTable";
     private static final String IMPORT_DISCRIMINATOR_COLUMN = "javax.persistence.DiscriminatorColumn";
@@ -76,11 +78,15 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
         IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
 
-        fragment.addImport(IMPORT_ENTITY);
-        fragment.appendln(ANNOTATION_ENTITY);
-
-        addAnnotationsForInheritanceStrategy(fragment, persistenceTypeInfo);
-        addAnnotationsForDescriminator(fragment, persistenceTypeInfo);
+        if (pcType.isAbstract()) {
+            fragment.addImport(IMPORT_MAPPEDSUPERCLASS);
+            fragment.appendln(ANNOTATION_MAPPEDSUPERCLASS);
+        } else {
+            fragment.addImport(IMPORT_ENTITY);
+            fragment.appendln(ANNOTATION_ENTITY);
+            addAnnotationsForInheritanceStrategy(fragment, persistenceTypeInfo);
+            addAnnotationsForDescriminator(fragment, persistenceTypeInfo);
+        }
 
         return fragment;
     }
