@@ -424,9 +424,6 @@ public class GenAssociationToMany extends GenAssociation {
         generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, paramName);
         methodsBuilder.append(fieldName);
         methodsBuilder.append(".add(");
-        methodsBuilder.append("(");
-        methodsBuilder.append(getQualifiedClassName(getTargetPolicyCmptType(), false));
-        methodsBuilder.append(")");
         methodsBuilder.append(paramName);
         methodsBuilder.appendln(");");
         if (association.isAssoziation() && inverseAssociation != null) {

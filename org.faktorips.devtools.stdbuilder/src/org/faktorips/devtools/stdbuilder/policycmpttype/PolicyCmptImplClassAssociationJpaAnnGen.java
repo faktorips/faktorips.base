@@ -233,7 +233,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             GenAssociation genAssociation,
             GenAssociation genInverseAssociation) throws CoreException {
         GenPolicyCmptType genTargetPolicyCmptType = getGenerator(genAssociation.getTargetPolicyCmptType());
-        String targetQName = genTargetPolicyCmptType.getQualifiedName(false);
+        String targetQName = genTargetPolicyCmptType.getUnqualifiedClassName(false);
+        fragment.addImport(genTargetPolicyCmptType.getQualifiedName(false));
         attributesToAppend.add("targetEntity = " + targetQName + ".class");
     }
 
@@ -351,6 +352,11 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         }
         if (sourceCardinality > 1 && targetCardinality > 1) {
             return RELATIONSHIP_TYPE.MANY_TO_MANY;
+        }
+        if (sourceCardinality == 1 && association.isQualified() && targetCardinality == 1) {
+            // special case max 1 but is qualified, thus child's are stored in a list
+            // and we need an one-to-many annotation
+            return RELATIONSHIP_TYPE.ONE_TO_MANY;
         }
         if (sourceCardinality == 1 && targetCardinality == 1) {
             return RELATIONSHIP_TYPE.ONE_TO_ONE;

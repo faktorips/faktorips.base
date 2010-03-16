@@ -248,11 +248,11 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         inverseAssociation.setInverseAssociation(getName());
 
         IPolicyCmptTypeAssociation derivedUnionAssociation = (IPolicyCmptTypeAssociation)findSubsettedDerivedUnion(getIpsProject());
-        if (derivedUnionAssociation != null) {
+        if (isAssoziation() && derivedUnionAssociation != null) {
             inverseAssociation.setSubsettedDerivedUnion(derivedUnionAssociation.getInverseAssociation());
         }
 
-        if (isDerivedUnion()) {
+        if (isAssoziation() && isDerivedUnion()) {
             inverseAssociation.setDerivedUnion(true);
         }
 

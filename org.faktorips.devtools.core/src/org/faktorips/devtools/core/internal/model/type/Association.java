@@ -391,7 +391,8 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
             String text = Messages.Association_msg_MaxCardinalityMustBeAtLeast1;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this,
                     PROPERTY_MAX_CARDINALITY));
-        } else if (is1To1() && isDerivedUnion()) {
+        } else if (is1To1() && isDerivedUnion()
+                && !(getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER)) {
             String text = Messages.Association_msg_MaxCardinalityForDerivedUnionTooLow;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW, text, Message.ERROR, this,
                     new String[] { PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY }));

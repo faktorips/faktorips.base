@@ -1345,10 +1345,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateFieldForParent(JavaCodeFragmentBuilder memberVarsBuilder,
             IPolicyCmptTypeAssociation association) throws CoreException {
         String javadoc = getLocalizedText(getPcType(), "FIELD_PARENT_JAVADOC") + " "
-                + StringUtil.unqualifiedName(getTargetQualifiedName(association, true));
+                + StringUtil.unqualifiedName(getTargetQualifiedName(association, false));
         memberVarsBuilder.javaDoc(javadoc, ANNOTATION_GENERATED);
 
         String fieldName = getGenerator(association).getFieldNameForAssociation();
+
+        getGenPolicyCmptType().getBuilderSet().addAnnotations(
+                AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, association, memberVarsBuilder);
+        getGenPolicyCmptType().getBuilderSet().addAnnotations(
+                AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION, association, memberVarsBuilder);
 
         // TODO: JAXB annotation generation should be handled by the line above (create subclass of
         // AnnotationGenerator and add it to the Standard Builder Set)
