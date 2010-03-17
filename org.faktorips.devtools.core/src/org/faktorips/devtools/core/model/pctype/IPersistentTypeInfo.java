@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 
@@ -73,6 +74,12 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     public final static String PROPERTY_ENABLED = "enabled"; //$NON-NLS-1$
 
     /**
+     * The name of a property that indicates that the discriminator column name and datatype is
+     * defined in this type.
+     */
+    public final static String PROPERTY_DEFINES_DISCRIMINATOR_COLUMN = "definesDiscriminatorColumn"; //$NON-NLS-1$
+
+    /**
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "PERSISTENCETYPE-"; //$NON-NLS-1$
@@ -106,6 +113,13 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
             + "PersistenceTypeInheritanceStrategyInvalid"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the discriminator can only be defined in the base
+     * entity.
+     */
+    public final static String MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED = MSGCODE_PREFIX
+            + "definitionOfDiscriminatorNotAllowed"; //$NON-NLS-1$
+
+    /**
      * Return <code>true</code> if the persistence type info in enabled. Returns <code>false</code>
      * if the associate policy component type should not be persist.
      */
@@ -116,6 +130,29 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * <code>false</code> if the policy component type doesn't need persistent type info.
      */
     public void setEnabled(boolean enabled);
+
+    /**
+     * Returns <code>true</code> if this persistent type defines the discriminator column. Not that
+     * the discriminator column can only be defined at the base entity. If the current persistent
+     * type defines the discriminator column then the column name and datatype must given in this
+     * type. The column name and datatype of the discriminator can't be different or overwritten in
+     * one of the subclasses.
+     */
+    public boolean isDefinesDiscriminatorColumn();
+
+    /**
+     * Search the base entity of this persistent type.
+     * 
+     * @see #isDefinesDiscriminatorColumn
+     */
+    public IPolicyCmptType findBaseEntity() throws CoreException;
+
+    /**
+     * Set to <code>true</code> if this type defines the discriminator column name and datatype.
+     * Note that the discriminator column name and datatype can only be specified in the base
+     * entity.
+     */
+    public void setDefinesDiscriminatorColumn(boolean definesDiscriminatorColumn);
 
     /**
      * Returns the name of database table. Returns an empty string if the table name has not been
@@ -251,11 +288,12 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * </ul>
      * The use of the strategy MIXED enables support for a dedicated (secondary) table which can be
      * used in practice to map a line of business to its own table.
+     * 
+     * TODO JPA InheritanceStrategy.MIXED
      */
     public enum InheritanceStrategy {
         SINGLE_TABLE,
-        JOINED_SUBCLASS,
-        MIXED;
+        JOINED_SUBCLASS
     }
 
     /**

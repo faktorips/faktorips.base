@@ -43,14 +43,14 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_TABLE_NAME_INVALID));
 
         // secondary table name is only validated if it is necessary
-        persTypeInfo.setInheritanceStrategy(InheritanceStrategy.MIXED);
-        persTypeInfo.setSecondaryTableName("VaL_id");
-        msgList = persTypeInfo.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_SECONDARY_TABLE_NAME_INVALID));
-
-        persTypeInfo.setSecondaryTableName("42invalid");
-        msgList = persTypeInfo.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_SECONDARY_TABLE_NAME_INVALID));
+        // persTypeInfo.setInheritanceStrategy(InheritanceStrategy.MIXED);
+        // persTypeInfo.setSecondaryTableName("VaL_id");
+        // msgList = persTypeInfo.validate(ipsProject);
+        // assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_SECONDARY_TABLE_NAME_INVALID));
+        //
+        // persTypeInfo.setSecondaryTableName("42invalid");
+        // msgList = persTypeInfo.validate(ipsProject);
+        // assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_SECONDARY_TABLE_NAME_INVALID));
     }
 
     public void testSetEnabled() {
@@ -124,6 +124,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persistenceTypeInfo.initFromXml(element);
 
         assertTrue(persistenceTypeInfo.isEnabled());
+        assertTrue(persistenceTypeInfo.isDefinesDiscriminatorColumn());
         assertEquals("persistence descr", persistenceTypeInfo.getDescription());;
         assertEquals("D_COLUMN", persistenceTypeInfo.getDiscriminatorColumnName());
         assertEquals(DiscriminatorDatatype.INTEGER, persistenceTypeInfo.getDiscriminatorDatatype());
@@ -143,7 +144,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persTypeInfo.setTableName("Table1");
         persTypeInfo.setSecondaryTableName("SecondaryTable1");
         persTypeInfo.setEnabled(false);
-
+        persTypeInfo.setDefinesDiscriminatorColumn(false);
         Element element = policyCmptType.toXml(newDocument());
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
@@ -158,5 +159,6 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertEquals("Table1", copy.getTableName());
         assertEquals("SecondaryTable1", copy.getSecondaryTableName());
         assertFalse(copy.isEnabled());
+        assertFalse(copy.isDefinesDiscriminatorColumn());
     }
 }

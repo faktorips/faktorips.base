@@ -288,11 +288,11 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             InheritanceStrategy currentInheritanceStrategy = currentType.getPersistenceTypeInfo()
                     .getInheritanceStrategy();
-            if (lastVisitedTypeInheritanceStrategy == InheritanceStrategy.MIXED
-                    && currentInheritanceStrategy == InheritanceStrategy.SINGLE_TABLE) {
-                // attributes are persisted to two different tables, abort collecting
-                return false;
-            }
+            // if (lastVisitedTypeInheritanceStrategy == InheritanceStrategy.MIXED
+            // && currentInheritanceStrategy == InheritanceStrategy.SINGLE_TABLE) {
+            // // attributes are persisted to two different tables, abort collecting
+            // return false;
+            // }
 
             IPolicyCmptTypeAttribute[] policyCmptTypeAttributes = currentType.getPolicyCmptTypeAttributes();
             for (IPolicyCmptTypeAttribute currentAttribute : policyCmptTypeAttributes) {

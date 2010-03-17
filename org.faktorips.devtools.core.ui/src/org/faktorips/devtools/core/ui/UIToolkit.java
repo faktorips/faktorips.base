@@ -110,10 +110,10 @@ public class UIToolkit {
             return;
         }
         if (c instanceof Group) {
-            if (formToolkit == null) {
-                // grayed group text only in dialogs
-                setForegroundColor(c, changeable);
-            }
+            // if (formToolkit == null) {
+            // grayed group text only in dialogs
+            setForegroundColor(c, changeable);
+            // }
         }
         // note: this has to be the last if statement as other controls might derive from
         // composite

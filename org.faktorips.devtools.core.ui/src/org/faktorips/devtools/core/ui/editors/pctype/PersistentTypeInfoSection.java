@@ -18,6 +18,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
@@ -52,11 +53,11 @@ public class PersistentTypeInfoSection extends IpsSection {
         setExpanded(false);
     }
 
-    private class EnabledPersistentTypeInfoControlsBinding extends ControlPropertyBinding {
+    private class EnabledControlsBindingByProperty extends ControlPropertyBinding {
         private UIToolkit toolkit;
 
-        public EnabledPersistentTypeInfoControlsBinding(Control control, UIToolkit toolkit) {
-            super(control, ipsObject.getPersistenceTypeInfo(), IPersistentTypeInfo.PROPERTY_ENABLED, Boolean.TYPE);
+        public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property) {
+            super(control, ipsObject.getPersistenceTypeInfo(), property, Boolean.TYPE);
             this.toolkit = toolkit;
         }
 
@@ -78,53 +79,77 @@ public class PersistentTypeInfoSection extends IpsSection {
         Checkbox checkboxEnable = toolkit.createCheckbox(client);
         checkboxEnable.setText("Activate persistent for this type");
 
-        composite = toolkit.createLabelEditColumnComposite(client);
+        composite = toolkit.createGridComposite(client, 1, true, false);
 
-        toolkit.createLabel(composite, "Inheritance Strategy");
-        Combo inheritanceStrategyCombo = toolkit.createCombo(composite);
+        Composite detailComposite = toolkit.createLabelEditColumnComposite(composite);
+
+        toolkit.createLabel(detailComposite, "Inheritance Strategy");
+        Combo inheritanceStrategyCombo = toolkit.createCombo(detailComposite);
         setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
         ComboField inheritanceStrategyField = new EnumField(inheritanceStrategyCombo, InheritanceStrategy.class);
 
-        toolkit.createLabel(composite, "Table Name");
-        Text tableNameText = toolkit.createText(composite);
+        toolkit.createLabel(detailComposite, "Table Name");
+        Text tableNameText = toolkit.createText(detailComposite);
 
-        toolkit.createLabel(composite, "Secondary Table Name");
-        Text secondaryTableNameText = toolkit.createText(composite);
+        //
+        // toolkit.createLabel(detailComposite, "Secondary Table Name");
+        // Text secondaryTableNameText = toolkit.createText(detailComposite);
 
-        toolkit.createLabel(composite, "Descriminator Column Name");
-        Text descriminatorColumnNameText = toolkit.createText(composite);
+        Group discriminatorGroup = toolkit.createGroup(composite, "Descriminator");
 
-        toolkit.createLabel(composite, "Descriminator Datatype");
-        Combo descriminatorDatatypeCombo = toolkit.createCombo(composite);
+        Composite discriminatorValueComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
+        toolkit.createLabel(discriminatorValueComposite, "Descriminator Column Value");
+        Text descriminatorColumnValueText = toolkit.createText(discriminatorValueComposite);
+
+        Checkbox defineDiscriminatorColumn = toolkit.createCheckbox(discriminatorGroup);
+        defineDiscriminatorColumn.setText("This type defines the dicriminator column");
+
+        Composite discriminatorDefComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
+
+        toolkit.createLabel(discriminatorDefComposite, "Descriminator Column Name");
+        Text descriminatorColumnNameText = toolkit.createText(discriminatorDefComposite);
+
+        toolkit.createLabel(discriminatorDefComposite, "Descriminator Datatype");
+        Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
         setComboItems(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
         ComboField descriminatorDatatypeField = new EnumField(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
-
-        toolkit.createLabel(composite, "Descriminator Column Value");
-        Text descriminatorColumnValueText = toolkit.createText(composite);
 
         if (ipsObject.getPersistenceTypeInfo() != null) {
             bindingContext.bindContent(checkboxEnable, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_ENABLED);
-            bindingContext.add(new EnabledPersistentTypeInfoControlsBinding(composite, toolkit));
+            bindingContext.add(new EnabledControlsBindingByProperty(composite, toolkit,
+                    IPersistentTypeInfo.PROPERTY_ENABLED));
+
             bindingContext.bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY);
             bindingContext.bindContent(tableNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_TABLE_NAME);
-            bindingContext.bindContent(secondaryTableNameText, ipsObject.getPersistenceTypeInfo(),
-                    IPersistentTypeInfo.PROPERTY_SECONDARY_TABLE_NAME);
-            bindingContext.bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
-                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME);
-            // disable this control if the inheritance strategy JoinedSubclass is used
-            bindingContext.bindEnabled(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
-                    IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
-            bindingContext.bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
-                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_DATATYPE);
-            bindingContext.bindEnabled(descriminatorDatatypeCombo, ipsObject.getPersistenceTypeInfo(),
-                    IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
+
             bindingContext.bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
-            bindingContext.bindEnabled(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
-                    IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
+
+            bindingContext.bindContent(defineDiscriminatorColumn, ipsObject.getPersistenceTypeInfo(),
+                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
+            bindingContext.add(new EnabledControlsBindingByProperty(discriminatorDefComposite, toolkit,
+                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
+
+            bindingContext.bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME);
+            bindingContext.bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_DATATYPE);
+
+            // bindingContext.bindEnabled(descriminatorColumnValueText,
+            // ipsObject.getPersistenceTypeInfo(),
+            // IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
+            // bindingContext.bindEnabled(descriminatorDatatypeCombo,
+            // ipsObject.getPersistenceTypeInfo(),
+            // IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
+            // bindingContext.bindEnabled(descriminatorColumnNameText,
+            // ipsObject.getPersistenceTypeInfo(),
+            // IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
+            // bindingContext.bindContent(secondaryTableNameText,
+            // ipsObject.getPersistenceTypeInfo(),
+            // IPersistentTypeInfo.PROPERTY_SECONDARY_TABLE_NAME);
         } else {
             // special handling if no persistence type info exists before
             checkboxEnable.setChecked(false);

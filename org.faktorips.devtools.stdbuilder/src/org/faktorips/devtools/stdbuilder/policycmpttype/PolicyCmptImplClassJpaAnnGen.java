@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -88,21 +89,39 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
         String tableName = getTableNameObeyingNamingStrategy(persistenceTypeInfo.getTableName());
 
-        fragment.appendln(ANNOTATION_TABLE + "(name = \"" + tableName + "\")");
-        fragment.addImport(IMPORT_TABLE);
+        if (StringUtils.isNotEmpty(persistenceTypeInfo.getTableName())) {
+            fragment.addImport(IMPORT_TABLE);
+            fragment.appendln(ANNOTATION_TABLE + "(name = \"" + tableName + "\")");
+        }
+
+        // the inheritance strategy must only be add to the root entity class
+        // (base entity), we suppose that the discriminator column must always
+        // defined in the base entity, thus we can use this assumption to check
+        // if the current type is the root
+        if (!persistenceTypeInfo.isDefinesDiscriminatorColumn()) {
+            return;
+        }
 
         if (inhStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
             fragment.append(ANNOTATION_INHERITANCE).append("(strategy = ");
             fragment.append(ATTRIBUTE_INHERITANCE_TYPE).append(".JOINED)");
             fragment.addImport(IMPORT_INHERITANCE);
             fragment.addImport(IMPORT_INHERITANCE_TYPE);
+        } else if (inhStrategy == InheritanceStrategy.SINGLE_TABLE) {
+            // note that the single table inheritance strategy is the default
+            // strategy, nevertheless we add this annotation
+            fragment.append(ANNOTATION_INHERITANCE).append("(strategy = ");
+            fragment.append(ATTRIBUTE_INHERITANCE_TYPE).append(".SINGLE_TABLE)");
+            fragment.addImport(IMPORT_INHERITANCE);
+            fragment.addImport(IMPORT_INHERITANCE_TYPE);
         }
 
-        if (inhStrategy == InheritanceStrategy.MIXED) {
-            tableName = getTableNameObeyingNamingStrategy(persistenceTypeInfo.getSecondaryTableName());
-            fragment.appendln(ANNOTATION_SECONDARY_TABLE + "(name = \"" + tableName + "\")");
-            fragment.addImport(IMPORT_SECONDARY_TABLE);
-        }
+        // if (inhStrategy == InheritanceStrategy.MIXED) {
+        // tableName =
+        // getTableNameObeyingNamingStrategy(persistenceTypeInfo.getSecondaryTableName());
+        // fragment.appendln(ANNOTATION_SECONDARY_TABLE + "(name = \"" + tableName + "\")");
+        // fragment.addImport(IMPORT_SECONDARY_TABLE);
+        // }
     }
 
     private String getTableNameObeyingNamingStrategy(String tableName) {
@@ -111,21 +130,22 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     }
 
     private void addAnnotationsForDescriminator(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {
-        if (persistenceTypeInfo.getInheritanceStrategy() == InheritanceStrategy.JOINED_SUBCLASS) {
+        String discriminatorValue = persistenceTypeInfo.getDiscriminatorValue();
+        fragment.appendln(ANNOTATION_DISCRIMINATOR_VALUE + "(\"" + discriminatorValue + "\")");
+        fragment.addImport(IMPORT_DISCRIMINATOR_VALUE);
+
+        if (!persistenceTypeInfo.isDefinesDiscriminatorColumn()) {
             return;
         }
 
         DiscriminatorDatatype discriminatorDatatype = persistenceTypeInfo.getDiscriminatorDatatype();
         String discriminatorColumnName = persistenceTypeInfo.getDiscriminatorColumnName();
-        String discriminatorValue = persistenceTypeInfo.getDiscriminatorValue();
 
         fragment.appendln(ANNOTATION_DISCRIMINATOR_COLUMN + "(name = \"" + discriminatorColumnName
                 + "\", discriminatorType = DiscriminatorType." + discriminatorDatatype + ")");
-        fragment.appendln(ANNOTATION_DISCRIMINATOR_VALUE + "(\"" + discriminatorValue + "\")");
 
         fragment.addImport(IMPORT_DISCRIMINATOR_COLUMN);
         fragment.addImport(IMPORT_DISCRIMINATOR_TYPE);
-        fragment.addImport(IMPORT_DISCRIMINATOR_VALUE);
     }
 
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {

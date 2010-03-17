@@ -76,14 +76,14 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
         InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
 
-        if (inhStrategy == InheritanceStrategy.MIXED) {
-            String secondaryTableName = persistenceTypeInfo.getSecondaryTableName();
-            ITableColumnNamingStrategy tableColumnNamingStrategy = pcType.getIpsProject()
-                    .getTableColumnNamingStrategy();
-            secondaryTableName = tableColumnNamingStrategy.getTableColumnName(secondaryTableName);
-
-            fragment.append(", table = \"").append(secondaryTableName).append('"');
-        }
+        // if (inhStrategy == InheritanceStrategy.MIXED) {
+        // String secondaryTableName = persistenceTypeInfo.getSecondaryTableName();
+        // ITableColumnNamingStrategy tableColumnNamingStrategy = pcType.getIpsProject()
+        // .getTableColumnNamingStrategy();
+        // secondaryTableName = tableColumnNamingStrategy.getTableColumnName(secondaryTableName);
+        //
+        // fragment.append(", table = \"").append(secondaryTableName).append('"');
+        // }
     }
 
     private void createTemporalAnnotationIfTemporalDatatype(JavaCodeFragment fragment,
