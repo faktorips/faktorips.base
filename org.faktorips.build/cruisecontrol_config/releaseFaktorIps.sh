@@ -448,11 +448,11 @@ assertValidParameters()
 	fi
 	
 	# check unnecessary parameter overwrite
-	if [ "$OVERWRITE" = "true" -a "$SKIPPUBLISH" = "true" ] ; then
-	  echo "=> Cancel build: the -overwrite parameter must not be given (unnecessary) because -skipPublish is true."
-	  echo "                 use script without -overwrite and try again" 
-	  showUsageAndExit
-	fi
+#	if [ "$OVERWRITE" = "true" -a "$SKIPPUBLISH" = "true" ] ; then
+#	  echo "=> Cancel build: the -overwrite parameter must not be given (unnecessary) because -skipPublish is true."
+#	  echo "                 use script without -overwrite and try again" 
+#	  showUsageAndExit
+#	fi
 }
 
 showParameter()
