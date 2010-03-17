@@ -62,7 +62,8 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     public void testValidate_DiscriminatorInvalid() throws CoreException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
-
+        persTypeInfo.setDefinesDiscriminatorColumn(true);
+        persTypeInfo.setDiscriminatorValue("value");
         persTypeInfo.setDiscriminatorColumnName("invali?");
         MessageList msgList = persTypeInfo.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID));
@@ -136,6 +137,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     public void testToXml() throws CoreException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        persTypeInfo.setDefinesDiscriminatorColumn(false);
         persTypeInfo.setDescription("persistence descr");
         persTypeInfo.setDiscriminatorColumnName("D_COLUMN");
         persTypeInfo.setDiscriminatorDatatype(DiscriminatorDatatype.CHAR);
@@ -144,7 +146,6 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persTypeInfo.setTableName("Table1");
         persTypeInfo.setSecondaryTableName("SecondaryTable1");
         persTypeInfo.setEnabled(false);
-        persTypeInfo.setDefinesDiscriminatorColumn(false);
         Element element = policyCmptType.toXml(newDocument());
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");

@@ -43,7 +43,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private InheritanceStrategy inheritanceStrategy = InheritanceStrategy.SINGLE_TABLE;
     private String discriminatorValue = "DISCRIMINATOR_VALUE";
     private DiscriminatorDatatype discriminatorDatatype = DiscriminatorDatatype.STRING;
-    private String discriminatorColumnName = "DTYPE";
+    private String discriminatorColumnName = "";
 
     private boolean notJoinedSubclass = true;
 
@@ -255,14 +255,12 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 String text = "The discriminator definition is not allowed here because this type doesn't define the discriminator column.";
                 msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
                         IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
-                return;
             }
         } else {
             if (!PersistenceUtil.isValidDatabaseIdentifier(discriminatorColumnName) && isDefinesDiscriminatorColumn()) {
                 String text = "The discriminator column name is invalid.";
-                msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
                         IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
-                return;
             }
         }
 
@@ -450,7 +448,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private final static class DiscriminatorValidator extends PolicyCmptTypeHierarchyVisitor {
 
         private final InheritanceStrategy inheritanceStrategy;
-        private final String discriminatorColumnName;
         private final List<String> discriminatorValues = new ArrayList<String>();
 
         // If these fields are not null errors exist in the naming of the tables
@@ -460,7 +457,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         public DiscriminatorValidator(IPersistentTypeInfo typeInfo) {
             inheritanceStrategy = typeInfo.getInheritanceStrategy();
-            discriminatorColumnName = typeInfo.getDiscriminatorColumnName();
         }
 
         @Override
