@@ -160,8 +160,10 @@ public class UIToolkit {
         String key = foreground ? READONLY_FOREGROUND_COLOR : READONLY_BACKGROUND_COLOR;
         Color color = formToolkit.getColors().getColor(key);
         if (color == null) {
-            return formToolkit.getColors().createColor(key,
-                    formToolkit.getColors().getSystemColor(BACKGROUND_COLOR_DISABLED));
+            return formToolkit.getColors().createColor(
+                    key,
+                    formToolkit.getColors().getSystemColor(
+                            (foreground ? FOREGROUND_COLOR_DISABLED : BACKGROUND_COLOR_DISABLED)));
             // color will be disposed by the FormColors#colorRegistry
         }
         return formToolkit.getColors().getColor(key);
