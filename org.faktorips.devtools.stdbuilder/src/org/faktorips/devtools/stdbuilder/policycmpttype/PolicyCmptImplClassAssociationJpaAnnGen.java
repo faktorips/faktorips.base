@@ -286,14 +286,15 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             return;
         }
 
-        if (isOwnerOfRelationship(genAssociation.getAssociation(), genInverseAssociation.getAssociation())) {
+        if (!isOwnerOfRelationship(genAssociation.getAssociation(), genInverseAssociation.getAssociation())) {
             return;
         }
 
-        // // the many-to-one side is the owning side, so the join column is defined on that side
-        // if (relationShip != RELATIONSHIP_TYPE.MANY_TO_ONE) {
-        // return false;
-        // }
+        // many-to-one side is the owning side, so a join column is defined on that side
+        // the mappedBy attribute is not necessary
+        if (relationShip == RELATIONSHIP_TYPE.MANY_TO_ONE) {
+            return;
+        }
 
         attributesToAppend.add("mappedBy=\"" + genInverseAssociation.getFieldNameForAssociation() + "\"");
     }
@@ -331,7 +332,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             return true;
         }
 
-        // TODO Joerg JPA wer ist der Owner bei Assoziationen 1:1
+        if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
+            return true;
+        }
         return false;
     }
 
