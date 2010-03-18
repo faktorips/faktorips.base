@@ -446,7 +446,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
         if (xmlTag.getTagName().equals(IPersistentAssociationInfo.XML_TAG)) {
-            return new PersistentAssociationInfo(this, id);
+            persistenceAssociationInfo = new PersistentAssociationInfo(this, id);
+            return persistenceAssociationInfo;
         }
         return null;
     }

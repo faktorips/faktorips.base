@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.pctype.PersistentAssociationInfo;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -54,6 +55,7 @@ import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.util.StringUtil;
 
 /**
  * A dialog to edit an association.
@@ -65,6 +67,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private PmoAssociation pmoAssociation;
 
     private ExtensionPropertyControlFactory extFactory;
+    private IPolicyCmptTypeAssociation inverseAssociation;
 
     /**
      * @param parentShell
@@ -76,6 +79,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         ipsProject = association.getIpsProject();
         pmoAssociation = new PmoAssociation(association);
         extFactory = new ExtensionPropertyControlFactory(association.getClass());
+        searchInverseAssociation();
+    }
+
+    private void searchInverseAssociation() {
+        try {
+            inverseAssociation = association.findInverseAssociation(ipsProject);
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
     }
 
     /**
@@ -174,7 +186,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         cardinalityField.setSupportsNull(false);
         bindingContext.bindContent(cardinalityField, association, IAssociation.PROPERTY_MAX_CARDINALITY);
 
-        // inverse relation
+        // inverse association
         uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_inverseAssociationLabel);
         Text reverseRelationText = uiToolkit.createText(workArea);
         bindingContext.bindContent(reverseRelationText, association,
@@ -249,11 +261,12 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         final Composite allPersistentProps = uiToolkit.createGridComposite(c, 1, true, true);
 
         uiToolkit.createVerticalSpacer(allPersistentProps, 12);
-
         final Group joinTable = createGroupJoinTable(allPersistentProps);
 
         uiToolkit.createVerticalSpacer(allPersistentProps, 12);
+        final Group foreignKey = createGroupForeignKey(allPersistentProps);
 
+        uiToolkit.createVerticalSpacer(allPersistentProps, 12);
         createGroupOtherPersistentProps(allPersistentProps);
 
         // disable all tab page controls if policy component type shouldn't persist
@@ -275,35 +288,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                         .isPersistentEnabled();
                 if (!persistEnabled) {
                     return;
-                }
-                uiToolkit.setDataChangeable(getControl(), !associationInfo.isTransient());
-            }
-        });
-        // disable join table controls if join table is not required
-        bindingContext.add(new ControlPropertyBinding(joinTable, association.getPersistenceAssociatonInfo(),
-                IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
-            @Override
-            public void updateUiIfNotDisposed() {
-                IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
-                boolean persistEnabled = associationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
-                        .isPersistentEnabled();
-                if (!persistEnabled) {
-                    return;
-                }
-                if (associationInfo.isTransient()) {
-                    return;
-                }
-                try {
-                    uiToolkit.setDataChangeable(getControl(), associationInfo.isJoinTableRequired());
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+                } else {
+                    uiToolkit.setDataChangeable(getControl(), !associationInfo.isTransient());
                 }
             }
         });
     }
 
     private Group createGroupOtherPersistentProps(Composite allPersistentProps) {
-        Group groupOtherProps = uiToolkit.createGroup(allPersistentProps, "Persistent Properties");
+        Group groupOtherProps = uiToolkit.createGroup(allPersistentProps, "Properties");
         GridData layoutData = (GridData)groupOtherProps.getLayoutData();
         layoutData.grabExcessVerticalSpace = false;
 
@@ -319,10 +312,60 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         return groupOtherProps;
     }
 
+    private Group createGroupForeignKey(Composite allPersistentProps) {
+        Group groupJoinColumn = uiToolkit.createGroup(allPersistentProps, "Foreign Key/Join Column");
+        GridData layoutData = (GridData)groupJoinColumn.getLayoutData();
+        layoutData.grabExcessVerticalSpace = false;
+
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(groupJoinColumn);
+        workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        uiToolkit.createFormLabel(workArea, "Foreign Key Column Name:");
+        Text joinColumnNameText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(joinColumnNameText, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME);
+
+        PersistentAssociationInfo persistentAssociationInfo = (PersistentAssociationInfo)association
+                .getPersistenceAssociatonInfo();
+        if (!persistentAssociationInfo.isJoinColumnRequired(inverseAssociation)) {
+            uiToolkit.setDataChangeable(workArea, false);
+        }
+
+        if (!persistentAssociationInfo.isJoinColumnRequired(inverseAssociation) && !isJoinTableRequired()) {
+            uiToolkit.createLabel(groupJoinColumn,
+                    "Note: The foreign key column is defined in the inverse assosiation.");
+        } else if (isUnidirectional() && persistentAssociationInfo.isJoinColumnRequired(inverseAssociation)) {
+            if (persistentAssociationInfo.isForeignKeyColumnCreatedOnTargetSide(inverseAssociation)) {
+                uiToolkit.createLabel(groupJoinColumn, NLS.bind(
+                        "Note: The foreign key column is a column of the table defined for the target entity {0}.",
+                        StringUtil.unqualifiedName(association.getTarget())));
+            }
+        }
+        return groupJoinColumn;
+    }
+
+    private boolean isJoinTableRequired() {
+        try {
+            return association.getPersistenceAssociatonInfo().isJoinTableRequired();
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return false;
+        }
+    }
+
+    private boolean isUnidirectional() {
+        return StringUtils.isEmpty(association.getInverseAssociation());
+    }
+
     private Group createGroupJoinTable(Composite allPersistentProps) {
-        Group groupJoinTable = uiToolkit.createGroup(allPersistentProps, "Database Schema Properties");
+        Group groupJoinTable = uiToolkit.createGroup(allPersistentProps, "Join Table");
         GridData layoutData = (GridData)groupJoinTable.getLayoutData();
         layoutData.grabExcessVerticalSpace = false;
+
+        Checkbox checkOwner = uiToolkit.createCheckbox(groupJoinTable,
+                "This association is the owning side of the many-to-many association.");
+        bindingContext.bindContent(checkOwner, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION);
 
         Composite workArea = uiToolkit.createLabelEditColumnComposite(groupJoinTable);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -337,8 +380,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(sourceColumnNameText, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME);
 
-        // TODO Joerg JPA wollen wir die JoinColumn bei der one-to-many so definieren?
-        // wenn ja, disable state fixen
         uiToolkit.createFormLabel(workArea, "Target Column Name:");
         Text targetColumnNameText = uiToolkit.createText(workArea);
         bindingContext.bindContent(targetColumnNameText, association.getPersistenceAssociatonInfo(),
@@ -368,7 +409,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public void setSubset(boolean newValue) {
             subset = newValue;
             if (!subset) {
-                association.setSubsettedDerivedUnion(""); //$NON-NLS-1$
+                association.setSubsettedDerivedUnion("");
             }
             notifyListeners();
         }
@@ -416,7 +457,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public String getConstrainedNote() {
             try {
                 if (association.isCompositionDetailToMaster()) {
-                    return StringUtils.rightPad("", 120) + StringUtils.rightPad("\n", 120) + StringUtils.right("\n", 120); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    return StringUtils.rightPad("", 120) + StringUtils.rightPad("\n", 120)
+                            + StringUtils.right("\n", 120);
                 }
                 IProductCmptTypeAssociation matchingAss = association
                         .findMatchingProductCmptTypeAssociation(ipsProject);
@@ -424,7 +466,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     String type = matchingAss.getProductCmptType().getName();
                     return NLS.bind(Messages.AssociationEditDialog_noteAssociationIsConstrainedByProductStructure,
                             type, matchingAss.getTargetRoleSingular())
-                            + StringUtils.rightPad("\n", 120); //$NON-NLS-1$
+                            + StringUtils.rightPad("\n", 120);
                 } else {
                     String note = Messages.AssociationEditDialog_noteAssociationNotConstrainedByProductStructure;
                     IProductCmptType sourceProductType = association.getPolicyCmptType()
@@ -438,11 +480,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                                             sourceProductType.getName(), targetProductType.getName());
                         }
                     }
-                    return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120); //$NON-NLS-1$ //$NON-NLS-2$
+                    return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120);
                 }
             } catch (CoreException e) {
                 IpsPlugin.log(e);
-                return ""; //$NON-NLS-1$
+                return "";
             }
 
         }

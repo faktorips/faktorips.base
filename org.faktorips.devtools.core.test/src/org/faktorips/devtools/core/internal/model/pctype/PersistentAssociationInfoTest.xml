@@ -3,6 +3,8 @@ transient="false"
 fetchType="LAZY" 
 id="4711" joinTableName="joinTable1" 
 sourceColumnName="sourceColumn1" 
-targetColumnName="targetColumn1">
+targetColumnName="targetColumn1"
+joinColumnName="joinColumn1"
+ownerOfManyToManyAssociation="false">
 <Description/>
 </PersistenceAssociation>

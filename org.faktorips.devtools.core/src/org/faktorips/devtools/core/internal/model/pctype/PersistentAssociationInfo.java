@@ -36,12 +36,22 @@ import org.w3c.dom.Element;
 public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IPersistentAssociationInfo {
 
     private boolean transientAssociation = false;
+    private boolean ownerOfManyToManyAssociation = false;
+    private String joinTableName = "";
     private String targetColumnName = "";
     private String sourceColumnName = "";
-    private String joinTableName = "";
+    private String joinColumnName = "";
     private FetchType fetchType = FetchType.LAZY;
 
     private IIpsObjectPart policyComponentTypeAssociation;
+
+    private static enum RELATIONSHIP_TYPE {
+        UNKNOWN,
+        ONE_TO_MANY,
+        ONE_TO_ONE,
+        MANY_TO_MANY,
+        MANY_TO_ONE
+    }
 
     /**
      */
@@ -71,8 +81,16 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         return targetColumnName;
     }
 
+    public String getJoinColumnName() {
+        return joinColumnName;
+    }
+
     public boolean isTransient() {
         return transientAssociation;
+    }
+
+    public boolean isOwnerOfManyToManyAssociation() {
+        return ownerOfManyToManyAssociation;
     }
 
     public boolean isBidirectional() {
@@ -92,23 +110,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private boolean isJoinTableRequired(IPolicyCmptTypeAssociation inverseAssociation) {
         boolean isOneToManyAssociation = getPolicyComponentTypeAssociation().is1ToMany();
         if (isUnidirectional()) {
-            // TODO Joerg JPA oder andersweitig die JoinColumn definieren?
-            if (!StringUtils.isEmpty(getTargetColumnName())) {
-                return false;
-            }
-            return isOneToManyAssociation;
+            // force no need of join table if unidirectional on-to-many association
+            // if we add the attribute joinColumn then the column will be created on the target side
+            // without corresponding field on the target side
+            return false;
         }
 
         boolean isInverseAssociationOneToMany = (inverseAssociation != null) && inverseAssociation.is1ToMany();
-
         boolean isManyToManyAssociation = isOneToManyAssociation && isInverseAssociationOneToMany;
-
-        // if the inverse side specifies an join table then this will be the master of the
-        // relationship, and we didn't need to define an join table on this side
-        if (inverseAssociation != null
-                && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinTableName())) {
-            return false;
-        }
 
         return isManyToManyAssociation;
     }
@@ -154,10 +163,169 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, targetColumnName);
     }
 
+    public void setJoinColumnName(String newJoinColumnName) {
+        ArgumentCheck.notNull(newJoinColumnName);
+        String oldValue = joinColumnName;
+        joinColumnName = newJoinColumnName;
+
+        valueChanged(oldValue, joinColumnName);
+    }
+
     public void setTransient(boolean transientAssociation) {
         boolean oldValue = this.transientAssociation;
         this.transientAssociation = transientAssociation;
         valueChanged(oldValue, transientAssociation);
+    }
+
+    public void setOwnerOfManyToManyAssociation(boolean ownerOfManyToManyAssociation) {
+        boolean oldValue = this.ownerOfManyToManyAssociation;
+        this.ownerOfManyToManyAssociation = ownerOfManyToManyAssociation;
+        valueChanged(oldValue, ownerOfManyToManyAssociation);
+    }
+
+    /**
+     * Returns <code>true</code> if the column to foreign key will be created on the target side.
+     */
+    public boolean isForeignKeyColumnCreatedOnTargetSide(IPolicyCmptTypeAssociation inverseAssociation) {
+        return inverseAssociation == null && getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier();
+    }
+
+    /**
+     * Returns <code>true</code> if the foreign key is defined on the target side.
+     */
+    public boolean isForeignKeyColumnDefinedOnTargetSide(IPolicyCmptTypeAssociation inverseAssociation) {
+        if (inverseAssociation == null) {
+            return false;
+        }
+        return inverseAssociation.is1To1() && getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier()
+                || (getPolicyComponentTypeAssociation().isCompositionDetailToMaster() && inverseAssociation.is1To1());
+    }
+
+    /**
+     * Returns <code>true</code> if the join column is required.
+     * <table border=1>
+     * <tr>
+     * <td colspan=3><b>bidirectional</b></td>
+     * </tr>
+     * <tr>
+     * <td>one-to-one</td>
+     * <td>master-to-detail</td>
+     * <td><b>true</b></td>
+     * </tr>
+     * <tr>
+     * <td>one-to-one</td>
+     * <td>detail-to-master</td>
+     * <td>false</td>
+     * </tr>
+     * <tr>
+     * <tr>
+     * <td>one-to-one</td>
+     * <td>association</td>
+     * <td><b>true</b><i> (on one side)</i></td>
+     * </tr>
+     * <tr>
+     * <td>one-to-many</td>
+     * <td>master-to-detail</td>
+     * <td>false</td>
+     * </tr>
+     * <tr>
+     * <td>one-to-many</td>
+     * <td>detail-to-master</td>
+     * <td>
+     * <i>false (but not supported)</i></td>
+     * </tr>
+     * <tr>
+     * <td>one-to-many</td>
+     * <td>association</td>
+     * <td>false</td>
+     * </tr>
+     * <tr>
+     * <td>many-to-one</td>
+     * <td>master-to-detail</td>
+     * <td><i>false (but not supported)</i></td>
+     * </tr>
+     * <tr>
+     * <td>many-to-one</td>
+     * <td>detail-to-master</td>
+     * <td><b>true</b></td>
+     * </tr>
+     * <tr>
+     * <td>many-to-one</td>
+     * <td>association</td>
+     * <td><b>true</b></td>
+     * </tr>
+     * <tr>
+     * <td>many-to-many</td>
+     * <td>all</td>
+     * <td>false</td>
+     * </tr>
+     * <tr>
+     * <td colspan=3><b>unidirectionl</b></td>
+     * </tr>
+     * <tr>
+     * <td>all</td>
+     * <td>all</td>
+     * <td><b>true</b></td>
+     * </tr>
+     * </table>
+     */
+    public boolean isJoinColumnRequired(IPolicyCmptTypeAssociation inverseAssociation) {
+        if (isUnidirectional()) {
+            return true;
+        }
+        if (isBidirectional() && inverseAssociation == null) {
+            // different error inverse not found
+            return true;
+        }
+        RELATIONSHIP_TYPE relType = evalRelationShipType(inverseAssociation);
+        if (relType == RELATIONSHIP_TYPE.ONE_TO_ONE) {
+            if (getPolicyComponentTypeAssociation().isCompositionDetailToMaster()) {
+                return false;
+            }
+            if (getPolicyComponentTypeAssociation().isAssoziation()
+                    && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
+                // target join column is defined on the target side
+                return false;
+            }
+            return true;
+        }
+        if (relType == RELATIONSHIP_TYPE.MANY_TO_MANY) {
+            return false;
+        }
+        if (relType == RELATIONSHIP_TYPE.ONE_TO_MANY) {
+            return false;
+        }
+        if (relType == RELATIONSHIP_TYPE.MANY_TO_ONE) {
+            return true;
+        }
+        throw new RuntimeException("'Unsupported relationship type: " + relType.toString());
+    }
+
+    private RELATIONSHIP_TYPE evalRelationShipType(IPolicyCmptTypeAssociation inverseAssociation) {
+        int sourceCardinality = getPolicyComponentTypeAssociation().getMaxCardinality();
+        int targetCardinality = inverseAssociation.getMaxCardinality();
+
+        // special case max 1 but is qualified, thus child's are stored in a list
+        if (getPolicyComponentTypeAssociation().isQualified()) {
+            sourceCardinality = Integer.MAX_VALUE;
+        }
+        if (inverseAssociation.isQualified()) {
+            targetCardinality = Integer.MAX_VALUE;
+        }
+
+        if (sourceCardinality > 1 && targetCardinality == 1) {
+            return RELATIONSHIP_TYPE.ONE_TO_MANY;
+        }
+        if (sourceCardinality > 1 && targetCardinality > 1) {
+            return RELATIONSHIP_TYPE.MANY_TO_MANY;
+        }
+        if (sourceCardinality == 1 && targetCardinality == 1) {
+            return RELATIONSHIP_TYPE.ONE_TO_ONE;
+        }
+        if (sourceCardinality == 1 && targetCardinality > 1) {
+            return RELATIONSHIP_TYPE.MANY_TO_ONE;
+        }
+        return RELATIONSHIP_TYPE.UNKNOWN;
     }
 
     public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation() {
@@ -173,20 +341,26 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         transientAssociation = Boolean.valueOf(element.getAttribute(PROPERTY_TRANSIENT));
+        ownerOfManyToManyAssociation = Boolean
+                .valueOf(element.getAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         sourceColumnName = element.getAttribute(PROPERTY_SOURCE_COLUMN_NAME);
         targetColumnName = element.getAttribute(PROPERTY_TARGET_COLUMN_NAME);
         joinTableName = element.getAttribute(PROPERTY_JOIN_TABLE_NAME);
         fetchType = FetchType.valueOf(element.getAttribute(PROPERTY_FETCH_TYPE));
+        joinColumnName = element.getAttribute(PROPERTY_JOIN_COLUMN_NAME);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TRANSIENT, Boolean.toString(transientAssociation));
+        element.setAttribute(PROPERTY_TRANSIENT, "" + Boolean.toString(transientAssociation));
+        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, ""
+                + Boolean.toString(ownerOfManyToManyAssociation));
         element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, "" + sourceColumnName);
         element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName);
         element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);
         element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);
+        element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName);
     }
 
     @Override
@@ -199,57 +373,119 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (isBidirectional()) {
             inverseAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
                     getPolicyComponentTypeAssociation().getIpsProject());
-            boolean transientMismatch = false;
-            if (isTransient() || !getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()) {
-                if (inverseAssociation == null) {
-                    return; // => different error, bidirectional with missing inverse
-                }
-                if (inverseAssociation.getPersistenceAssociatonInfo().isTransient()) {
-                    return;
-                }
+        }
+        validateJoinColumn(msgList, inverseAssociation);
+        validateTransientMismatch(msgList, inverseAssociation);
+        validateJoinTable(msgList, inverseAssociation);
+    }
 
-                if (inverseAssociation.getPolicyCmptType().getPersistenceTypeInfo().isEnabled()) {
-                    transientMismatch = true;
-                }
-            } else {
-                if (inverseAssociation != null
-                        && (inverseAssociation.getPersistenceAssociatonInfo().isTransient() || !inverseAssociation
-                                .getPolicyCmptType().isPersistentEnabled())) {
-                    transientMismatch = true;
-                }
-            }
-            if (transientMismatch) {
-                msgList.add(new Message(MSGCODE_TARGET_SIDE_NOT_TRANSIENT,
-                        "In case of transient association, the target side must also be marked as transient.",
-                        Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
-                return;
-            }
+    private void validateJoinColumn(MessageList msgList, IPolicyCmptTypeAssociation inverseAssociation) {
+        if (isJoinColumnRequired(inverseAssociation)) {
+            // validate must not be empty
+            validateJoinColumn(msgList, false);
+        } else {
+            // validate must be empty
+            validateJoinColumn(msgList, true);
+        }
+    }
+
+    private void validateTransientMismatch(MessageList msgList, IPolicyCmptTypeAssociation inverseAssociation) {
+        boolean transientMismatch = false;
+        if (inverseAssociation == null) {
+            // different error, skip join table validation
+            return;
         }
 
-        if (isJoinTableRequired(inverseAssociation)) {
-            // validate join table name
-            if (StringUtils.isBlank(joinTableName)) {
-                msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_EMPTY, "The join table name is empty.", Message.ERROR,
-                        this, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
-            } else {
-                if (!PersistenceUtil.isValidDatabaseIdentifier(joinTableName)) {
-                    msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_INVALID, "The join table name is invalid.",
-                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
-                }
+        if (isTransient() || !getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()) {
+            if (inverseAssociation.getPersistenceAssociatonInfo().isTransient()) {
+                return;
             }
-            // validate column names of join table if they are not blank
-            if (!StringUtils.isBlank(sourceColumnName)) {
-                if (!PersistenceUtil.isValidDatabaseIdentifier(sourceColumnName)) {
-                    msgList.add(new Message(MSGCODE_SOURCE_COLUMN_NAME_INVALID, "The source column name is invalid.",
-                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME));
-                }
+
+            if (inverseAssociation.getPolicyCmptType().getPersistenceTypeInfo().isEnabled()) {
+                transientMismatch = true;
             }
-            if (!StringUtils.isBlank(sourceColumnName)) {
-                if (!PersistenceUtil.isValidDatabaseIdentifier(targetColumnName)) {
-                    msgList.add(new Message(MSGCODE_TARGET_COLUMN_NAME_INVALID, "The target column name is invalid.",
-                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME));
-                }
+        } else {
+            if (inverseAssociation.getPersistenceAssociatonInfo().isTransient()
+                    || !inverseAssociation.getPolicyCmptType().isPersistentEnabled()) {
+                transientMismatch = true;
             }
+        }
+        if (transientMismatch) {
+            msgList.add(new Message(MSGCODE_TARGET_SIDE_NOT_TRANSIENT,
+                    "In case of transient association, the target side must also be marked as transient.",
+                    Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
+            return;
+        }
+    }
+
+    private void validateJoinTable(MessageList msgList, IPolicyCmptTypeAssociation inverseAssociation) {
+        if (inverseAssociation == null) {
+            // different error, skip join table validation
+            return;
+        }
+
+        // if no join table is required then mark as owner is invalid
+        if (!isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()) {
+            msgList
+                    .add(new Message(
+                            MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN,
+                            "Must not be marked as owning side of many-to-many association because an join table is not required.",
+                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
+            return;
+        }
+
+        if (!isJoinTableRequired(inverseAssociation) || !isOwnerOfManyToManyAssociation()) {
+            // all join table details must be empty
+            validateJoinTableDetails(msgList, true);
+            return;
+        }
+
+        if (isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()) {
+            // all join table details must not be empty
+            validateJoinTableDetails(msgList, false);
+            return;
+        }
+
+        // validate missing owner of relationship
+        if (isJoinTableRequired(inverseAssociation) && !isOwnerOfManyToManyAssociation()
+                && !inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
+            msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_IS_MISSING,
+                    "At least one assocition must be marked as the owning side of the relationship.", Message.ERROR,
+                    this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
+        }
+    }
+
+    private void validateJoinColumn(MessageList msgList, boolean mustBeEmpty) {
+        validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_COLUMN_NAME_EMPTY,
+                MSGCODE_JOIN_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME, joinColumnName,
+                "join column name");
+    }
+
+    private void validateJoinTableDetails(MessageList msgList, boolean mustBeEmpty) {
+        validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_TABLE_NAME_EMPTY,
+                MSGCODE_JOIN_TABLE_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME, joinTableName,
+                "join table name");
+        validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_SOURCE_COLUMN_NAME_EMPTY,
+                MSGCODE_SOURCE_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
+                sourceColumnName, "source column name");
+        validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_TARGET_COLUMN_NAME_EMPTY,
+                MSGCODE_TARGET_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
+                targetColumnName, "target column name");
+    }
+
+    private void validateEmptyAndValidDatabaseIdentifier(MessageList msgList,
+            boolean mustBeEmpty,
+            String msgCodeEmpty,
+            String msgCodeInValid,
+            String property,
+            String value,
+            String propertyName) {
+        String emptyText = "The " + propertyName + " must " + (mustBeEmpty ? "" : "not") + " be empty";
+        String invalidText = propertyName + " is invalid.";
+        if (mustBeEmpty && !StringUtils.isEmpty(value) || !mustBeEmpty && StringUtils.isEmpty(value)) {
+            msgList.add(new Message(msgCodeEmpty, emptyText, Message.ERROR, this, property));
+        } else if (!mustBeEmpty && !PersistenceUtil.isValidDatabaseIdentifier(value)) {
+            msgList.add(new Message(msgCodeInValid, invalidText, Message.ERROR, this, property));
         }
     }
 }

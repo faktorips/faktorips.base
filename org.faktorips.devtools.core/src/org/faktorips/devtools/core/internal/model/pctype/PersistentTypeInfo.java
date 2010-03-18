@@ -38,10 +38,10 @@ import org.w3c.dom.Element;
  */
 public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersistentTypeInfo {
 
-    private String tableName = "TABLE_NAME";
+    private String tableName = "";
     private String secondaryTableName = "";
     private InheritanceStrategy inheritanceStrategy = InheritanceStrategy.SINGLE_TABLE;
-    private String discriminatorValue = "DISCRIMINATOR_VALUE";
+    private String discriminatorValue = "";
     private DiscriminatorDatatype discriminatorDatatype = DiscriminatorDatatype.STRING;
     private String discriminatorColumnName = "";
 

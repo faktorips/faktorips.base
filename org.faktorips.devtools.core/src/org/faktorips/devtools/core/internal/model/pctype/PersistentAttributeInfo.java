@@ -58,6 +58,9 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     private int tableColumnScale = 16;
     private int tableColumnPrecision = 2;
 
+    private String converterQualifiedClassName;
+    private String columnDefinition;
+
     private DateTimeMapping temporalMapping = DateTimeMapping.DATE_ONLY;
 
     private IIpsObjectPart policyComponentTypeAttribute;

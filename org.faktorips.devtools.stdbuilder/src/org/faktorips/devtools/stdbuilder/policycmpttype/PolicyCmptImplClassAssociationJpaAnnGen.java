@@ -111,7 +111,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             fragment.addImport(importForRelationshipType.get(relationShip));
             fragment.append(annotationForRelationshipType.get(relationShip));
 
-            // add common attributes
+            // add attributes to relationship annotation
             List<String> attributesToAppend = new ArrayList<String>();
             addAnnotationAttributeMappedBy(relationShip, fragment, attributesToAppend, genAssociation,
                     genInverseAssociation);
@@ -155,6 +155,12 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             default:
                 throw new RuntimeException("Error unknow relationship type: " + relationShip.toString());
         }
+
+        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
+                .getPersistenceAssociatonInfo();
+        if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
+            appendJoinColumn(fragment, persistenceAssociatonInfo.getJoinColumnName(), false);
+        }
     }
 
     private GenAssociation getGenerator(IPolicyCmptTypeAssociation pcTypeAssociation) throws CoreException {
@@ -174,12 +180,6 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             GenAssociation genInverseAssociation) throws CoreException {
         IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
                 .getPersistenceAssociatonInfo();
-        if (genInverseAssociation == null) {
-            if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getTargetColumnName())) {
-                appendJoinColumn(fragment, persistenceAssociatonInfo.getTargetColumnName(), false);
-            }
-            return;
-        }
         if (!persistenceAssociatonInfo.isJoinTableRequired()) {
             return;
         }
@@ -190,9 +190,15 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         fragment.append(ANNOTATION_JOIN_TABLE).append('(');
         appendName(fragment, persistenceAssociatonInfo.getJoinTableName());
 
+        if (!StringUtils.isEmpty(persistenceAssociatonInfo.getSourceColumnName())
+                || !StringUtils.isEmpty(persistenceAssociatonInfo.getTargetColumnName())) {
+            fragment.append(", ");
+        }
         appendJoinColumns(fragment, persistenceAssociatonInfo.getSourceColumnName(), false);
+        if (!StringUtils.isEmpty(persistenceAssociatonInfo.getSourceColumnName())) {
+            fragment.append(", ");
+        }
         appendJoinColumns(fragment, persistenceAssociatonInfo.getTargetColumnName(), true);
-
         fragment.appendln(')');
     }
 
@@ -202,13 +208,14 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
      * XX=@JoinColumn(name = "columnName") <br/>
      * with XX=(joinColumns|inverseJoinColumns) depending on inverse parameter
      */
-    private void appendJoinColumns(JavaCodeFragment fragment, String columnName, boolean inverse) {
-        if (StringUtils.isBlank(columnName)) {
-            return;
+    private boolean appendJoinColumns(JavaCodeFragment fragment, String columnName, boolean inverse) {
+        if (StringUtils.isEmpty(columnName)) {
+            return false;
         }
         String lhs = inverse ? "inverseJoinColumns = " : "joinColumns = ";
         fragment.append(lhs);
         appendJoinColumn(fragment, columnName, inverse);
+        return true;
     }
 
     private void appendJoinColumn(JavaCodeFragment fragment, String columnName, boolean inverse) {

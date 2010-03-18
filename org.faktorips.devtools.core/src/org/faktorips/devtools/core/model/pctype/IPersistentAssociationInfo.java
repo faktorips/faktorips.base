@@ -32,6 +32,11 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public final static String XML_TAG = "PersistenceAssociation"; //$NON-NLS-1$
 
     /**
+     * The name of a property that indicates that the association is transient.
+     */
+    public final static String PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION = "ownerOfManyToManyAssociation"; //$NON-NLS-1$
+
+    /**
      * The name of the join table name property.
      */
     public final static String PROPERTY_JOIN_TABLE_NAME = "joinTableName"; //$NON-NLS-1$
@@ -61,6 +66,13 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public final static String PROPERTY_FETCH_TYPE = "fetchType"; //$NON-NLS-1$
 
     /**
+     * The name of the join column name property. In a one-to-many relationship this is the name of
+     * the column which references the opposite of the owning side (foreign key to the non-owning
+     * side).
+     */
+    public final static String PROPERTY_JOIN_COLUMN_NAME = "joinColumnName"; //$NON-NLS-1$
+
+    /**
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "PERSISTENCEASSOCIATION-"; //$NON-NLS-1$
@@ -76,6 +88,16 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public static final String MSGCODE_JOIN_TABLE_NAME_INVALID = MSGCODE_PREFIX + "JoinTableNameInvalid";
 
     /**
+     * Validation message code for empty source column name.
+     */
+    public static final String MSGCODE_SOURCE_COLUMN_NAME_EMPTY = MSGCODE_PREFIX + "SourceColumnNameEmpty";
+
+    /**
+     * Validation message code for empty target column name.
+     */
+    public static final String MSGCODE_TARGET_COLUMN_NAME_EMPTY = MSGCODE_PREFIX + "TargteColumnNameEmpty";
+
+    /**
      * Validation message code for invalid source column name.
      */
     public static final String MSGCODE_SOURCE_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "SourceColumnNameInvalid";
@@ -86,9 +108,30 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public static final String MSGCODE_TARGET_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "TargetColumnNameInvalid";
 
     /**
+     * Validation message code for empty or not empty join column name.
+     */
+    public static final String MSGCODE_JOIN_COLUMN_NAME_EMPTY = MSGCODE_PREFIX + "JoinColumnNameEmpty";
+
+    /**
+     * Validation message code for not valid join column name.
+     */
+    public static final String MSGCODE_JOIN_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "JoinColumnNameInvalid";
+
+    /**
      * Validation message code for inverse association or target must be marked as transient.
      */
     public static final String MSGCODE_TARGET_SIDE_NOT_TRANSIENT = MSGCODE_PREFIX + "TargetSideNotTransient";
+
+    /**
+     * Validation message code indicates that the owning side of the relationship is missing.
+     */
+    public static final String MSGCODE_OWNER_OF_ASSOCIATION_IS_MISSING = MSGCODE_PREFIX + "OwnerOfAssociationIsMissing";
+
+    /**
+     * Validation message code indicates that the owning side must not be given.
+     */
+    public static final String MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN = MSGCODE_PREFIX
+            + "OwnerOfAssociationMustNotGiven";
 
     /**
      * Returns the {@link IPolicyCmptTypeAssociation} this info object belongs to.
@@ -149,6 +192,20 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public void setTargetColumnName(String newTargetColumnName);
 
     /**
+     * Returns the join column name for this association required for one-to-many relationships.
+     * Returns an empty String if it has not been set yet.
+     */
+    public String getJoinColumnName();
+
+    /**
+     * Sets the join column name for this association which is required for one-to-many
+     * relationships.
+     * 
+     * @throws NullPointerException if <code>joinColumnName</code> is <code>null</code>.
+     */
+    public void setJoinColumnName(String joinColumnName);
+
+    /**
      * Returns the fetch type for this association.
      * 
      * @see FetchType
@@ -196,6 +253,17 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
      * Returns true if the association is transient.
      */
     public boolean isTransient();
+
+    /**
+     * Set to <code>true</code> if the association should be the owner of am many-to-many
+     * association. set to <code>false</code> if the target side is the owner.
+     */
+    public void setOwnerOfManyToManyAssociation(boolean ownerOfManyToManyAssociation);
+
+    /**
+     * Returns true if the association is the owner of am many-to-many association.
+     */
+    public boolean isOwnerOfManyToManyAssociation();
 
     /**
      * Set to <code>true</code> if the association should be transient. Set to <code>false</code> if

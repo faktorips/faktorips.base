@@ -191,10 +191,12 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
                 AssociationType.COMPOSITION_DETAIL_TO_MASTER, new int[] { 0, 1 }, new int[] { 0, 2 });
         assertFalse(persistenceAssociatonInfo.isJoinTableRequired());
 
-        // unidirectional :n Composition master to detail, join table required
+        // unidirectional :n Composition master to detail, join table not required
+        // because we can add in JPA an attribute joinTable (column name of the target side forein
+        // key column) instead
         pcAssociation.setInverseAssociation("");
         setAssociationTypeAndCardinality(AssociationType.COMPOSITION_MASTER_TO_DETAIL, null, new int[] { 0, 2 }, null);
-        assertTrue(persistenceAssociatonInfo.isJoinTableRequired());
+        assertFalse(persistenceAssociatonInfo.isJoinTableRequired());
     }
 
     public void testJoinTableRequiredDetail2Master() throws CoreException {
@@ -246,10 +248,12 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.initFromXml(element);
 
         assertFalse(persistenceAssociatonInfo.isTransient());
+        assertFalse(persistenceAssociatonInfo.isOwnerOfManyToManyAssociation());
         assertEquals("joinTable1", persistenceAssociatonInfo.getJoinTableName());
         assertEquals("targetColumn1", persistenceAssociatonInfo.getTargetColumnName());
         assertEquals("sourceColumn1", persistenceAssociatonInfo.getSourceColumnName());
         assertEquals(FetchType.LAZY, persistenceAssociatonInfo.getFetchType());
+        assertEquals("joinColumn1", persistenceAssociatonInfo.getJoinColumnName());
     }
 
     public void testToXml() throws CoreException {
@@ -259,6 +263,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setTargetColumnName("targetColumn0");
         persistenceAssociatonInfo.setSourceColumnName("sourceColumn0");
         persistenceAssociatonInfo.setFetchType(FetchType.EAGER);
+        persistenceAssociatonInfo.setJoinColumnName("joinColumn0");
+        persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
         Element element = persistenceAssociatonInfo.toXml(newDocument());
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
@@ -268,9 +274,11 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         copyOfPersistenceAssociatonInfo.initFromXml(element);
 
         assertTrue(copyOfPersistenceAssociatonInfo.isTransient());
+        assertTrue(copyOfPersistenceAssociatonInfo.isOwnerOfManyToManyAssociation());
         assertEquals("joinTable0", copyOfPersistenceAssociatonInfo.getJoinTableName());
         assertEquals("targetColumn0", copyOfPersistenceAssociatonInfo.getTargetColumnName());
         assertEquals("sourceColumn0", copyOfPersistenceAssociatonInfo.getSourceColumnName());
         assertEquals(FetchType.EAGER, copyOfPersistenceAssociatonInfo.getFetchType());
+        assertEquals("joinColumn0", copyOfPersistenceAssociatonInfo.getJoinColumnName());
     }
 }
