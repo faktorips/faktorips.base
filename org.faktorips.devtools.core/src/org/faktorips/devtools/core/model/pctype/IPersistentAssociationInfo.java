@@ -118,9 +118,9 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public static final String MSGCODE_JOIN_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "JoinColumnNameInvalid";
 
     /**
-     * Validation message code for inverse association or target must be marked as transient.
+     * Validation message code indicate that one side is not and one side is marked as transient.
      */
-    public static final String MSGCODE_TARGET_SIDE_NOT_TRANSIENT = MSGCODE_PREFIX + "TargetSideNotTransient";
+    public static final String MSGCODE_TRANSIENT_MISMATCH = MSGCODE_PREFIX + "TransientMismatch";
 
     /**
      * Validation message code indicates that the owning side of the relationship is missing.

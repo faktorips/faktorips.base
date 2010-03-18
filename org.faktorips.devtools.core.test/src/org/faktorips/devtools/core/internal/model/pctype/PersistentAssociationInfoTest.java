@@ -65,20 +65,22 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setSourceColumnName("");
 
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        // TODO Joerg Merge Persistence Branch keine Validierung der Target/Source Column Names wenn
-        // leer? StringUtils.isBlank korrekt, d.h. lassen wir namen die nur leerzeichen enthalten
-        // zu?
         assertEquals(1, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_EMPTY));
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_OWNER_OF_ASSOCIATION_IS_MISSING));
 
+        persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
         persistenceAssociatonInfo.setJoinTableName("INVALID JOIN_TABLE");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(3, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_EMPTY));
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_EMPTY));
 
         persistenceAssociatonInfo.setJoinTableName("JOIN_TABLE");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(2, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_EMPTY));
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_EMPTY));
 
         persistenceAssociatonInfo.setTargetColumnName("INVALID SOURCE_COLUMN");
         persistenceAssociatonInfo.setSourceColumnName("INVALID TARGET_COLUMN");
@@ -97,6 +99,12 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         ml = persistenceAssociatonInfo.validate(ipsProject);
         assertEquals(0, ml.getNoOfMessages());
 
+        persistenceAssociatonInfo.setTransient(true);
+        targetPcAssociation.getPersistenceAssociatonInfo().setTransient(false);
+        ml = persistenceAssociatonInfo.validate(ipsProject);
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
+
         persistenceAssociatonInfo.setTransient(false);
         targetPcAssociation.getPersistenceAssociatonInfo().setTransient(false);
         persistenceAssociatonInfo.setTargetColumnName("TARGET_COLUMN");
@@ -112,6 +120,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         IPersistentAssociationInfo sourcePersistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         IPersistentAssociationInfo targetPersistenceAssociatonInfo = targetPcAssociation.getPersistenceAssociatonInfo();
 
+        targetPersistenceAssociatonInfo.setJoinColumnName("JoinColumn");
+
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
         assertEquals(0, ml.getNoOfMessages());
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
@@ -122,10 +132,10 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         sourcePersistenceAssociatonInfo.setTransient(true);
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
         assertEquals(1, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_SIDE_NOT_TRANSIENT));
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
         assertEquals(1, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_SIDE_NOT_TRANSIENT));
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
 
         targetPersistenceAssociatonInfo.setTransient(true);
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
@@ -149,8 +159,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         pcAssociation.setInverseAssociation("");
         pcAssociation.setMaxCardinality(1); // set to 1 we don't want a join table
+        sourcePersistenceAssociatonInfo.setJoinColumnName("JoinColumn");
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
-        System.out.println(ml);
         assertEquals(0, ml.getNoOfMessages());
     }
 

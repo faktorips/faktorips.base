@@ -374,8 +374,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             inverseAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
                     getPolicyComponentTypeAssociation().getIpsProject());
         }
-        validateJoinColumn(msgList, inverseAssociation);
         validateTransientMismatch(msgList, inverseAssociation);
+        if (isTransient()) {
+            return;
+        }
+        validateJoinColumn(msgList, inverseAssociation);
         validateJoinTable(msgList, inverseAssociation);
     }
 
@@ -411,9 +414,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             }
         }
         if (transientMismatch) {
-            msgList.add(new Message(MSGCODE_TARGET_SIDE_NOT_TRANSIENT,
-                    "In case of transient association, the target side must also be marked as transient.",
-                    Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
+            msgList
+                    .add(new Message(
+                            MSGCODE_TRANSIENT_MISMATCH,
+                            "In case of transient association, the target side must also be marked as transient and vise versa.",
+                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
             return;
         }
     }
@@ -437,13 +442,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (!isJoinTableRequired(inverseAssociation) || !isOwnerOfManyToManyAssociation()) {
             // all join table details must be empty
             validateJoinTableDetails(msgList, true);
-            return;
         }
 
         if (isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()) {
             // all join table details must not be empty
             validateJoinTableDetails(msgList, false);
-            return;
         }
 
         // validate missing owner of relationship
@@ -480,7 +483,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String property,
             String value,
             String propertyName) {
-        String emptyText = "The " + propertyName + " must " + (mustBeEmpty ? "" : "not") + " be empty";
+        String emptyText = "The " + propertyName + " must" + (mustBeEmpty ? "" : " not") + " be empty";
         String invalidText = propertyName + " is invalid.";
         if (mustBeEmpty && !StringUtils.isEmpty(value) || !mustBeEmpty && StringUtils.isEmpty(value)) {
             msgList.add(new Message(msgCodeEmpty, emptyText, Message.ERROR, this, property));
