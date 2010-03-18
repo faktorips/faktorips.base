@@ -287,7 +287,18 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             return;
         }
 
-        if (baseEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
+        boolean discrValueMustBeEmpty = false;
+        if (getPolicyCmptType().isAbstract()) {
+            discrValueMustBeEmpty = true;
+        } else {
+            if (baseEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
+                discrValueMustBeEmpty = false;
+            } else {
+                discrValueMustBeEmpty = true;
+            }
+        }
+
+        if (!discrValueMustBeEmpty) {
             if (StringUtils.isEmpty(discriminatorValue)) {
                 String text = "The discriminator value must not be empty if the base entity defines the dicriminator column.";
                 msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
@@ -295,18 +306,23 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 return;
             }
         } else {
-            // discriminator not defined, just check that the discriminator value must be empty
             if (!StringUtils.isEmpty(discriminatorValue)) {
-                String text = "The discriminator value must be empty if the base entity doesn't define a discriminator column.";
+                String text = "The discriminator value must be empty if the base entity doesn't define a discriminator column or the type is abstract.";
                 msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
                         IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
-                return;
-            } else {
                 return;
             }
         }
 
-        if (!discriminatorDatatype.isParsableToDiscriminatorDatatype(discriminatorValue)) {
+        if (!baseEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
+            // discriminator not defined in hierarchy,
+            // skip next validation steps
+            return;
+        }
+
+        if (!discrValueMustBeEmpty
+                && !baseEntity.getPersistenceTypeInfo().getDiscriminatorDatatype().isParsableToDiscriminatorDatatype(
+                        discriminatorValue)) {
             String text = "The discriminator value does not conform to the specified descriminator datatype.";
             msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
@@ -389,7 +405,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
-    private IPolicyCmptType getPolicyCmptType() {
+    public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getIpsObject();
     }
 
@@ -495,7 +511,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             IPersistentTypeInfo persistenceTypeInfo = currentType.getPersistenceTypeInfo();
 
             if (StringUtils.isEmpty(currentType.getSupertype())) {
-                if (persistenceTypeInfo.isEnabled()) {
+                if (persistenceTypeInfo.isEnabled() && !persistenceTypeInfo.getPolicyCmptType().isAbstract()) {
                     baseEntity = currentType;
                 }
                 return false;

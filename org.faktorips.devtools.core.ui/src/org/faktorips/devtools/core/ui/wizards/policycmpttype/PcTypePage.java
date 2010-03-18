@@ -193,6 +193,5 @@ public class PcTypePage extends TypePage {
             type.setConfigurableByProductCmptType(true);
             type.setProductCmptType(pageOfAssociatedType.getQualifiedIpsObjectName());
         }
-        type.initPersistentTypeInfo();
     }
 }

@@ -120,6 +120,11 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
             + "definitionOfDiscriminatorNotAllowed"; //$NON-NLS-1$
 
     /**
+     * Returns the policy component type this persistent type info belongs to.
+     */
+    public IPolicyCmptType getPolicyCmptType();
+
+    /**
      * Return <code>true</code> if the persistence type info in enabled. Returns <code>false</code>
      * if the associate policy component type should not be persist.
      */

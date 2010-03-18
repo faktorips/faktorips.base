@@ -545,19 +545,24 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         IPersistentTypeInfo persistenceTypeInfo = getPersistenceTypeInfo();
         ITableNamingStrategy tableNamingStrategy = getIpsProject().getTableNamingStrategy();
 
-        if (hasSupertype()) {
+        IPolicyCmptType baseEntity = persistenceTypeInfo.findBaseEntity();
+        if (baseEntity != null && baseEntity != this) {
             IPolicyCmptType pcSupertype = (IPolicyCmptType)findSupertype(getIpsProject());
-            IPersistentTypeInfo pcSupertypeInfo = pcSupertype.getPersistenceTypeInfo();
-            persistenceTypeInfo.setInheritanceStrategy(pcSupertypeInfo.getInheritanceStrategy());
-            if (pcSupertypeInfo.getInheritanceStrategy() == InheritanceStrategy.JOINED_SUBCLASS) {
-                persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
-            } else {
-                String rawTableName = pcSupertype.getName();
-                persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(rawTableName));
+            if (pcSupertype != null && pcSupertype.isPersistentEnabled()) {
+                IPersistentTypeInfo pcSupertypeInfo = pcSupertype.getPersistenceTypeInfo();
+                persistenceTypeInfo.setInheritanceStrategy(pcSupertypeInfo.getInheritanceStrategy());
+                if (pcSupertypeInfo.getInheritanceStrategy() == InheritanceStrategy.JOINED_SUBCLASS) {
+                    persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
+                } else {
+                    persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(pcSupertype.getName()));
+                }
                 persistenceTypeInfo.setDiscriminatorDatatype(pcSupertypeInfo.getDiscriminatorDatatype());
+            } else {
+                persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
                 persistenceTypeInfo.setDiscriminatorValue(getName());
             }
         } else {
+            persistenceTypeInfo.setDefinesDiscriminatorColumn(true);
             persistenceTypeInfo.setTableName(tableNamingStrategy.getTableName(getName()));
             persistenceTypeInfo.setDiscriminatorValue(getName());
         }

@@ -64,8 +64,13 @@ public class PersistentTypeInfoSection extends IpsSection {
         @Override
         public void updateUiIfNotDisposed() {
             try {
-                Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
-                toolkit.setDataChangeable(getControl(), value);
+                boolean enabled;
+                if (!ipsObject.getPersistenceTypeInfo().isEnabled()) {
+                    enabled = false;
+                } else {
+                    enabled = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+                }
+                toolkit.setDataChangeable(getControl(), enabled);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
