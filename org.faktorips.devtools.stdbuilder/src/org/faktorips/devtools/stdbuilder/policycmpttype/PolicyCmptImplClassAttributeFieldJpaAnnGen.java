@@ -108,14 +108,14 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         }
         fragment.addImport(IMPORT_CONVERTER);
         fragment.addImport(IMPORT_CONVERT);
-        fragment.addImport(jpaAttributeInfo.getConverterQualifiedClassName());
 
         String converterName = StringUtil.unqualifiedName(jpaAttributeInfo.getConverterQualifiedClassName());
         fragment.append(ANNOTATION_CONVERTER);
         fragment.append("(name=");
         fragment.appendQuoted(converterName);
         fragment.append(", converterClass=");
-        fragment.append(jpaAttributeInfo.getConverterQualifiedClassName());
+        fragment.appendClassName(jpaAttributeInfo.getConverterQualifiedClassName());
+        fragment.append(".class");
         fragment.append(")");
         fragment.append(ANNOTATION_CONVERT);
         fragment.append("(");
