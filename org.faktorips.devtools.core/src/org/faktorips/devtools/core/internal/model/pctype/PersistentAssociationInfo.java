@@ -178,6 +178,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     public void setOwnerOfManyToManyAssociation(boolean ownerOfManyToManyAssociation) {
+        if (!ownerOfManyToManyAssociation) {
+            setJoinTableName("");
+            setTargetColumnName("");
+            setSourceColumnName("");
+        }
         boolean oldValue = this.ownerOfManyToManyAssociation;
         this.ownerOfManyToManyAssociation = ownerOfManyToManyAssociation;
         valueChanged(oldValue, ownerOfManyToManyAssociation);
@@ -452,9 +457,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         // validate missing owner of relationship
         if (isJoinTableRequired(inverseAssociation) && !isOwnerOfManyToManyAssociation()
                 && !inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
-            msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_IS_MISSING,
+            msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
                     "At least one assocition must be marked as the owning side of the relationship.", Message.ERROR,
                     this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
+        } else if (isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()
+                && inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
+            msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
+                    "The owning side of the relationship is marked on both sides.", Message.ERROR, this,
+                    IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         }
     }
 

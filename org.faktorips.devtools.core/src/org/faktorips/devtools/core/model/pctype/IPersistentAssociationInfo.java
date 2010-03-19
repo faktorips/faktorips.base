@@ -123,9 +123,10 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public static final String MSGCODE_TRANSIENT_MISMATCH = MSGCODE_PREFIX + "TransientMismatch";
 
     /**
-     * Validation message code indicates that the owning side of the relationship is missing.
+     * Validation message code indicates that the owning side of the relationship is missing or
+     * marked on both sides.
      */
-    public static final String MSGCODE_OWNER_OF_ASSOCIATION_IS_MISSING = MSGCODE_PREFIX + "OwnerOfAssociationIsMissing";
+    public static final String MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH = MSGCODE_PREFIX + "OwnerOfAssociationMismatch";
 
     /**
      * Validation message code indicates that the owning side must not be given.
