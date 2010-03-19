@@ -298,21 +298,82 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals("joinColumn0", copyOfPersistenceAssociatonInfo.getJoinColumnName());
     }
 
-    public void testIsJoinColumnRequired() {
+    public void testIsJoinColumnRequired() throws CoreException {
+
+        // due to performance reason do the cast to PersistentAssociationInfo
+        // thus we can use the public method isJoinTableRequired(inverseAss)
+        PersistentAssociationInfo persistenceAssociatonInfo = (PersistentAssociationInfo)pcAssociation
+                .getPersistenceAssociatonInfo();
+        PersistentAssociationInfo inversePersistenceAssociatonInfo = (PersistentAssociationInfo)targetPcAssociation
+                .getPersistenceAssociatonInfo();
+
         // bidirectional:
-        // one-to-one | master-to-detail => true
-        // one-to-one | detail-to-master => false
+
+        // one-to-one | master-to-detail => false
+        // one-to-one | detail-to-master => true
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(1);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(1);
+        assertFalse(persistenceAssociatonInfo.isJoinColumnRequired(targetPcAssociation));
+        assertTrue(inversePersistenceAssociatonInfo.isJoinColumnRequired(pcAssociation));
+
         // one-to-one | association => true (on one side)
+        pcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        pcAssociation.setMaxCardinality(1);
+        targetPcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        targetPcAssociation.setMaxCardinality(1);
+        assertTrue(persistenceAssociatonInfo.isJoinColumnRequired(targetPcAssociation));
+        assertTrue(inversePersistenceAssociatonInfo.isJoinColumnRequired(pcAssociation));
+
+        pcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        pcAssociation.setMaxCardinality(1);
+        persistenceAssociatonInfo.setJoinColumnName("JoinColumn");
+        targetPcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        targetPcAssociation.setMaxCardinality(1);
+
+        assertTrue(persistenceAssociatonInfo.isJoinColumnRequired(targetPcAssociation));
+        assertFalse(inversePersistenceAssociatonInfo.isJoinColumnRequired(pcAssociation));
+
         // one-to-many | master-to-detail => false
-        // one-to-many | detail-to-master => false (but not supported)
-        // one-to-many | association => false
-        // many-to-one | master-to-detail => false (but not supported)
         // many-to-one | detail-to-master => true
+        // one-to-many | detail-to-master => false (but not supported)
+        // many-to-one | master-to-detail => false (but not supported)
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(2);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(1);
+        assertFalse(persistenceAssociatonInfo.isJoinColumnRequired(targetPcAssociation));
+        assertTrue(inversePersistenceAssociatonInfo.isJoinColumnRequired(pcAssociation));
+
+        // one-to-many | association => false
         // many-to-one | association => true
+        pcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        pcAssociation.setMaxCardinality(2);
+        targetPcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        targetPcAssociation.setMaxCardinality(1);
+        assertFalse(persistenceAssociatonInfo.isJoinColumnRequired(targetPcAssociation));
+        assertTrue(inversePersistenceAssociatonInfo.isJoinColumnRequired(pcAssociation));
+
         // many-to-many | all => false
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(2);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(2);
+        assertFalse(persistenceAssociatonInfo.isJoinColumnRequired(targetPcAssociation));
+        assertFalse(inversePersistenceAssociatonInfo.isJoinColumnRequired(pcAssociation));
+
         // unidirectional:
+
         // all | all => true
-        // TODO Joerg Testfall
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(1);
+        pcAssociation.setInverseAssociation("");
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(2);
+        targetPcAssociation.setInverseAssociation("");
+        assertTrue(persistenceAssociatonInfo.isJoinColumnRequired(targetPcAssociation));
+        assertTrue(inversePersistenceAssociatonInfo.isJoinColumnRequired(pcAssociation));
     }
 
     public void testColumnNamesUnique() {

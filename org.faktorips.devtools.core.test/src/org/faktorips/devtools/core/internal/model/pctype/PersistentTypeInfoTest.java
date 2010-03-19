@@ -162,4 +162,8 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertFalse(copy.isEnabled());
         assertFalse(copy.isDefinesDiscriminatorColumn());
     }
+
+    public void testFindBaseEntity() {
+        // TODO Joerg Testfall
+    }
 }

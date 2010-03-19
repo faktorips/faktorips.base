@@ -107,7 +107,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
                 getPolicyComponentTypeAssociation().getIpsProject()));
     }
 
-    private boolean isJoinTableRequired(IPolicyCmptTypeAssociation inverseAssociation) {
+    public boolean isJoinTableRequired(IPolicyCmptTypeAssociation inverseAssociation) {
         boolean isOneToManyAssociation = getPolicyComponentTypeAssociation().is1ToMany();
         if (isUnidirectional()) {
             // force no need of join table if unidirectional on-to-many association
