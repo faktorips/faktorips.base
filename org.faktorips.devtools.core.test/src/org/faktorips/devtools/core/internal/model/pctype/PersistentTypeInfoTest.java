@@ -163,7 +163,29 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertFalse(copy.isDefinesDiscriminatorColumn());
     }
 
-    public void testFindBaseEntity() {
-        // TODO Joerg Testfall
+    public void testFindBaseEntity() throws CoreException {
+        IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        assertEquals(policyCmptType, persTypeInfo.findBaseEntity());
+
+        policyCmptType.getPersistenceTypeInfo().setEnabled(false);
+        assertNull(persTypeInfo.findBaseEntity());
+
+        policyCmptType.getPersistenceTypeInfo().setEnabled(true);
+        policyCmptType.setAbstract(true);
+        assertEquals(policyCmptType, persTypeInfo.findBaseEntity());
+
+        PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "SuperPolicy1");
+        policyCmptType.setSupertype(superPcType.getQualifiedName());
+
+        // with supertype but supertype should not persist
+        assertEquals(policyCmptType, persTypeInfo.findBaseEntity());
+
+        superPcType.getPersistenceTypeInfo().setEnabled(true);
+        assertEquals(superPcType, persTypeInfo.findBaseEntity());
+        assertEquals(superPcType, superPcType.getPersistenceTypeInfo().findBaseEntity());
+
+        // doesn't matter the type is abstract
+        superPcType.setAbstract(true);
+        assertEquals(superPcType, persTypeInfo.findBaseEntity());
     }
 }

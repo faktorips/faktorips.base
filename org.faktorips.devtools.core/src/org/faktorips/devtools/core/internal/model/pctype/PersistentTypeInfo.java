@@ -511,7 +511,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             IPersistentTypeInfo persistenceTypeInfo = currentType.getPersistenceTypeInfo();
 
             if (StringUtils.isEmpty(currentType.getSupertype())) {
-                if (persistenceTypeInfo.isEnabled() && !persistenceTypeInfo.getPolicyCmptType().isAbstract()) {
+                if (persistenceTypeInfo.isEnabled()) {
                     baseEntity = currentType;
                 }
                 return false;
