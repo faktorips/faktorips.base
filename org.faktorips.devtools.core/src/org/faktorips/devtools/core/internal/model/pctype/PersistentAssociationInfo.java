@@ -205,18 +205,15 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (inverseAssociation == null) {
             return false;
         }
-        if (inverseAssociation.is1To1() && getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier()) {
-            // one-to-many
-            return true;
-        }
-        if (getPolicyComponentTypeAssociation().isCompositionDetailToMaster() && inverseAssociation.is1To1()) {
-            return true;
-        }
+
+        // special case in one-to-one association the side if the join column is given on the target
+        // side then the foreign key column is not necessary
         if (getPolicyComponentTypeAssociation().isAssoziation() && inverseAssociation.is1To1()
                 && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
             return true;
         }
-        return false;
+
+        return !isJoinColumnRequired(inverseAssociation);
     }
 
     /**
@@ -228,12 +225,12 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
      * <tr>
      * <td>one-to-one</td>
      * <td>master-to-detail</td>
-     * <td><b>true</b></td>
+     * <td>false</td>
      * </tr>
      * <tr>
      * <td>one-to-one</td>
      * <td>detail-to-master</td>
-     * <td>false</td>
+     * <td><b>true</b></td>
      * </tr>
      * <tr>
      * <tr>
@@ -302,7 +299,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         }
         RELATIONSHIP_TYPE relType = evalRelationShipType(inverseAssociation);
         if (relType == RELATIONSHIP_TYPE.ONE_TO_ONE) {
-            if (getPolicyComponentTypeAssociation().isCompositionDetailToMaster()) {
+            if (getPolicyComponentTypeAssociation().isCompositionMasterToDetail()) {
                 return false;
             }
             if (getPolicyComponentTypeAssociation().isAssoziation()

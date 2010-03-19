@@ -345,13 +345,17 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         PersistentAssociationInfo persistentAssociationInfo = (PersistentAssociationInfo)association
                 .getPersistenceAssociatonInfo();
-        if (persistentAssociationInfo.isForeignKeyColumnDefinedOnTargetSide(inverseAssociation)) {
-            uiToolkit.createLabel(groupJoinColumn,
-                    "Note: The foreign key column is defined in the inverse assosiation.");
-        } else if (persistentAssociationInfo.isForeignKeyColumnCreatedOnTargetSide(inverseAssociation)) {
-            uiToolkit.createLabel(groupJoinColumn, NLS.bind(
-                    "Note: The foreign key column is a column of the table defined for the target entity {0}.",
-                    StringUtil.unqualifiedName(association.getTarget())));
+
+        if (!persistentAssociationInfo.isOwnerOfManyToManyAssociation()) {
+            // special information about foreign key column
+            if (persistentAssociationInfo.isForeignKeyColumnDefinedOnTargetSide(inverseAssociation)) {
+                uiToolkit.createLabel(groupJoinColumn,
+                        "Note: The foreign key column is defined in the inverse assosiation.");
+            } else if (persistentAssociationInfo.isForeignKeyColumnCreatedOnTargetSide(inverseAssociation)) {
+                uiToolkit.createLabel(groupJoinColumn, NLS.bind(
+                        "Note: The foreign key column is a column of the table defined for the target entity {0}.",
+                        StringUtil.unqualifiedName(association.getTarget())));
+            }
         }
         return groupJoinColumn;
     }
