@@ -102,10 +102,6 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         Group discriminatorGroup = toolkit.createGroup(composite, "Descriminator");
 
-        Composite discriminatorValueComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
-        toolkit.createLabel(discriminatorValueComposite, "Descriminator Column Value");
-        Text descriminatorColumnValueText = toolkit.createText(discriminatorValueComposite);
-
         Checkbox defineDiscriminatorColumn = toolkit.createCheckbox(discriminatorGroup);
         defineDiscriminatorColumn.setText("This type defines the dicriminator column");
 
@@ -119,6 +115,9 @@ public class PersistentTypeInfoSection extends IpsSection {
         setComboItems(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
         ComboField descriminatorDatatypeField = new EnumField(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
 
+        toolkit.createLabel(discriminatorDefComposite, "Descriminator Column Value");
+        Text descriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
+
         if (ipsObject.getPersistenceTypeInfo() != null) {
             bindingContext.bindContent(checkboxEnable, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_ENABLED);
@@ -130,18 +129,20 @@ public class PersistentTypeInfoSection extends IpsSection {
             bindingContext.bindContent(tableNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_TABLE_NAME);
 
-            bindingContext.bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
-                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
-
             bindingContext.bindContent(defineDiscriminatorColumn, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
-            bindingContext.add(new EnabledControlsBindingByProperty(discriminatorDefComposite, toolkit,
+            bindingContext.add(new EnabledControlsBindingByProperty(descriminatorColumnNameText, toolkit,
+                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
+            bindingContext.add(new EnabledControlsBindingByProperty(descriminatorDatatypeCombo, toolkit,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
 
             bindingContext.bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME);
             bindingContext.bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_DATATYPE);
+
+            bindingContext.bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
 
             // bindingContext.bindEnabled(descriminatorColumnValueText,
             // ipsObject.getPersistenceTypeInfo(),
