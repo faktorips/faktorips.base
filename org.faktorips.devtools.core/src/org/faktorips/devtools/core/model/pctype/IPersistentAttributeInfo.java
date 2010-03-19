@@ -85,6 +85,16 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
     public final static String PROPERTY_TRANSIENT = "transient"; //$NON-NLS-1$
 
     /**
+     * The name of a property that indicates the qualified class name of the converter if used.
+     */
+    public final static String PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME = "converterQualifiedClassName"; //$NON-NLS-1$
+
+    /**
+     * The name of a property that indicates the SQL column definition.
+     */
+    public final static String PROPERTY_SQL_COLUMN_DEFINITION = "sqlColumnDefinition"; //$NON-NLS-1$
+
+    /**
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "PERSISTENCEATTRIBUTE-"; //$NON-NLS-1$
@@ -195,6 +205,28 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      * Sets a converter for this column;
      */
     public void setTableColumnConverter(IPersistableTypeConverter newConverter);
+
+    /**
+     * Returns the SQL column definition.
+     */
+    public String getSqlColumnDefinition();
+
+    /**
+     * Sets the SQL column definition. If the column should be created with more specialized
+     * options, the columnDefinition contains the String SQL fragment that the JPA provider uses
+     * when generating the DDL for the column.
+     */
+    public void setSqlColumnDefinition(String sqlColumnDefinition);
+
+    /**
+     * Returns the qualified class name of the converter for this column.
+     */
+    public String getConverterQualifiedClassName();
+
+    /**
+     * Sets the qualified class name of the converter for this column.
+     */
+    public void setConverterQualifiedClassName(String converterQualifiedClassName);
 
     /**
      * Returns true if the underlying attribute is persisted. Constants and fields which are

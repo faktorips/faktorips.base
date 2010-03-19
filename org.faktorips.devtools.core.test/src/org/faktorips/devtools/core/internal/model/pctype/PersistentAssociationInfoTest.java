@@ -314,4 +314,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         // all | all => true
         // TODO Joerg Testfall
     }
+
+    public void testColumnNamesUnique() {
+        // TODO Joerg Testfall column names der JoinColumns muessen unique sein!
+    }
 }

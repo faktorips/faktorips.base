@@ -55,6 +55,8 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertEquals(255, persistenceAttributeInfo.getTableColumnSize());
         assertFalse(persistenceAttributeInfo.getTableColumnUnique());
         assertEquals(DateTimeMapping.DATE_ONLY, persistenceAttributeInfo.getTemporalMapping());
+        assertEquals("sqlColumnDefinition1", persistenceAttributeInfo.getSqlColumnDefinition());
+        assertEquals("converterQualifiedClassName1", persistenceAttributeInfo.getConverterQualifiedClassName());
     }
 
     public void testToXml() throws CoreException {
@@ -67,6 +69,8 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         persistenceAttributeInfo.setTableColumnUnique(false);
         persistenceAttributeInfo.setTemporalMapping(DateTimeMapping.DATE_AND_TIME);
         persistenceAttributeInfo.setTransient(true);
+        persistenceAttributeInfo.setSqlColumnDefinition("sqlColumnDefinition0");
+        persistenceAttributeInfo.setConverterQualifiedClassName("converterQualifiedClassName0");
         Element element = policyCmptType.toXml(newDocument());
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
@@ -84,5 +88,8 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertEquals(256, persistenceAttributeInfoCopy.getTableColumnSize());
         assertFalse(persistenceAttributeInfoCopy.getTableColumnUnique());
         assertEquals(DateTimeMapping.DATE_AND_TIME, persistenceAttributeInfoCopy.getTemporalMapping());
+        assertEquals("sqlColumnDefinition0", persistenceAttributeInfo.getSqlColumnDefinition());
+        assertEquals("converterQualifiedClassName0", persistenceAttributeInfo.getConverterQualifiedClassName());
+
     }
 }

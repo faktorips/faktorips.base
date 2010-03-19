@@ -224,7 +224,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         });
 
         final ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
-
             @Override
             public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
                 if (!event.getIpsSrcFile().exists()) {
@@ -782,10 +781,15 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
 
-        uiToolkit.createFormLabel(workArea, "Datatype converter:");
-        Combo converter = uiToolkit.createCombo(workArea);
-        // TODO: implement converter
-        converter.setEnabled(false);
+        uiToolkit.createFormLabel(workArea, "Datatype converter class:");
+        Text converterQualifiedName = uiToolkit.createText(workArea);
+        bindingContext.bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
+
+        uiToolkit.createFormLabel(workArea, "SQL column definition:");
+        Text sqlColumnDefinition = uiToolkit.createText(workArea);
+        bindingContext.bindContent(sqlColumnDefinition, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION);
 
         // disable all tab page controls if policy component type shouldn't persist
         bindingContext.add(new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),

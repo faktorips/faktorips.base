@@ -13,6 +13,11 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
@@ -24,6 +29,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceS
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.util.StringUtil;
 
 /**
  * This class generates JPA annotations for fields derived from policy component type attributes.
@@ -40,6 +46,12 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
     private static final String IMPORT_TEMPORAL_TYPE = "javax.persistence.TemporalType";
 
     private static final String ATTRIBUTE_TEMPORAL_TYPE = "TemporalType";
+
+    // TODO eclipse link specific converter
+    private static final String ANNOTATION_CONVERTER = "@Converter";
+    private static final String ANNOTATION_CONVERT = "@Convert";
+    private static final String IMPORT_CONVERTER = "org.eclipse.persistence.annotations.Converter";
+    private static final String IMPORT_CONVERT = "org.eclipse.persistence.annotations.Convert";
 
     public PolicyCmptImplClassAttributeFieldJpaAnnGen(StandardBuilderSet builderSet) {
         super(builderSet);
@@ -61,13 +73,54 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         fragment.addImport(IMPORT_COLUMN);
 
         fragment.append(ANNOTATION_COLUMN);
-        fragment.append("(name = \"").append(tableColumnName).append('"');
-        fragment.append(", nullable = ").append(isNullable);
-        createSecondaryTableAnnotationIfMixedInheritance(fragment, jpaAttributeInfo);
+
+        List<String> attributesToAppend = new ArrayList<String>();
+        attributesToAppend.add("name=\"" + tableColumnName + "\"");
+        attributesToAppend.add("nullable = " + isNullable);
+        if (StringUtils.isNotEmpty(jpaAttributeInfo.getSqlColumnDefinition())) {
+            attributesToAppend.add("columnDefinition=\"" + jpaAttributeInfo.getSqlColumnDefinition() + "\"");
+        }
+
+        fragment.append("(");
+        for (Iterator<String> iterator = attributesToAppend.iterator(); iterator.hasNext();) {
+            String attr = iterator.next();
+            fragment.append(attr);
+            if (iterator.hasNext()) {
+                fragment.append(", ");
+            }
+        }
         fragment.append(')').appendln();
         createTemporalAnnotationIfTemporalDatatype(fragment, jpaAttributeInfo);
+        createConverterAnnotation(fragment, jpaAttributeInfo);
 
         return fragment;
+    }
+
+    /**
+     * <code>
+     * Converter(name = "gender", converterClass = example.Gender) 
+     * Convert("gender")
+     * <code>
+     */
+    private void createConverterAnnotation(JavaCodeFragment fragment, IPersistentAttributeInfo jpaAttributeInfo) {
+        if (StringUtils.isEmpty(jpaAttributeInfo.getConverterQualifiedClassName())) {
+            return;
+        }
+        fragment.addImport(IMPORT_CONVERTER);
+        fragment.addImport(IMPORT_CONVERT);
+        fragment.addImport(jpaAttributeInfo.getConverterQualifiedClassName());
+
+        String converterName = StringUtil.unqualifiedName(jpaAttributeInfo.getConverterQualifiedClassName());
+        fragment.append(ANNOTATION_CONVERTER);
+        fragment.append("(name=");
+        fragment.appendQuoted(converterName);
+        fragment.append(", converterClass=");
+        fragment.append(jpaAttributeInfo.getConverterQualifiedClassName());
+        fragment.append(")");
+        fragment.append(ANNOTATION_CONVERT);
+        fragment.append("(");
+        fragment.appendQuoted(converterName);
+        fragment.append(")");
     }
 
     private void createSecondaryTableAnnotationIfMixedInheritance(JavaCodeFragment fragment,

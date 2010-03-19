@@ -58,8 +58,8 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     private int tableColumnScale = 16;
     private int tableColumnPrecision = 2;
 
-    private String converterQualifiedClassName;
-    private String columnDefinition;
+    private String converterQualifiedClassName = "";
+    private String sqlColumnDefinition = "";
 
     private DateTimeMapping temporalMapping = DateTimeMapping.DATE_ONLY;
 
@@ -109,6 +109,14 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
 
     public boolean getTableColumnUnique() {
         return tableColumnUnique;
+    }
+
+    public String getConverterQualifiedClassName() {
+        return converterQualifiedClassName;
+    }
+
+    public String getSqlColumnDefinition() {
+        return sqlColumnDefinition;
     }
 
     public void setTableColumnConverter(IPersistableTypeConverter newConverter) {
@@ -164,6 +172,20 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, transientAttribute);
     }
 
+    public void setConverterQualifiedClassName(String converterQualifiedClassName) {
+        ArgumentCheck.notNull(converterQualifiedClassName);
+        String oldValue = this.converterQualifiedClassName;
+        this.converterQualifiedClassName = converterQualifiedClassName;
+        valueChanged(oldValue, converterQualifiedClassName);
+    }
+
+    public void setSqlColumnDefinition(String sqlColumnDefinition) {
+        ArgumentCheck.notNull(sqlColumnDefinition);
+        String oldValue = this.sqlColumnDefinition;
+        this.sqlColumnDefinition = sqlColumnDefinition;
+        valueChanged(oldValue, tableColumnName);
+    }
+
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute() {
         return (IPolicyCmptTypeAttribute)policyComponentTypeAttribute;
     }
@@ -212,6 +234,8 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         tableColumnUnique = Boolean.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_UNIQE));
         tableColumnNullable = Boolean.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_NULLABLE));
         temporalMapping = DateTimeMapping.valueOf(element.getAttribute(PROPERTY_TEMPORAL_MAPPING));
+        sqlColumnDefinition = element.getAttribute(PROPERTY_SQL_COLUMN_DEFINITION);
+        converterQualifiedClassName = element.getAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
     }
 
     @Override
@@ -225,6 +249,8 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         element.setAttribute(PROPERTY_TABLE_COLUMN_UNIQE, "" + tableColumnUnique); //$NON-NLS-1$
         element.setAttribute(PROPERTY_TABLE_COLUMN_NULLABLE, "" + tableColumnNullable); //$NON-NLS-1$
         element.setAttribute(PROPERTY_TEMPORAL_MAPPING, "" + temporalMapping); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_SQL_COLUMN_DEFINITION, "" + sqlColumnDefinition); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME, "" + converterQualifiedClassName); //$NON-NLS-1$
     }
 
     @Override
