@@ -278,7 +278,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
      * <td>false</td>
      * </tr>
      * <tr>
-     * <td colspan=3><b>unidirectionl</b></td>
+     * <td colspan=3><b>unidirectional</b></td>
      * </tr>
      * <tr>
      * <td>all</td>

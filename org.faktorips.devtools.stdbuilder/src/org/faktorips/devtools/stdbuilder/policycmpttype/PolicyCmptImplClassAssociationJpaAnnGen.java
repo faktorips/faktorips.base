@@ -286,7 +286,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             return;
         }
 
-        if (!isOwnerOfRelationship(genAssociation.getAssociation(), genInverseAssociation.getAssociation())) {
+        if (isOwnerOfRelationship(genAssociation.getAssociation(), genInverseAssociation.getAssociation())) {
+            // the owned by must be defined on the inverse side of the owner side,
+            // otherwise the joined table annotation will be ignored
             return;
         }
 

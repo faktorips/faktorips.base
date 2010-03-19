@@ -299,8 +299,12 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     return;
                 }
                 uiToolkit.setDataChangeable(getControl(), associationInfo.isOwnerOfManyToManyAssociation());
-                uiToolkit.setDataChangeable(groupForeignKey, !associationInfo.isOwnerOfManyToManyAssociation());
-                enableOrDisableForeignKeyColumn();
+                try {
+                    uiToolkit.setDataChangeable(groupForeignKey, !associationInfo.isJoinTableRequired());
+                    enableOrDisableForeignKeyColumn();
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
             }
         });
 

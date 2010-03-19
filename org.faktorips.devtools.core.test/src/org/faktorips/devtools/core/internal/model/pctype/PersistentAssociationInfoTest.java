@@ -297,4 +297,21 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals(FetchType.EAGER, copyOfPersistenceAssociatonInfo.getFetchType());
         assertEquals("joinColumn0", copyOfPersistenceAssociatonInfo.getJoinColumnName());
     }
+
+    public void testIsJoinColumnRequired() {
+        // bidirectional:
+        // one-to-one | master-to-detail => true
+        // one-to-one | detail-to-master => false
+        // one-to-one | association => true (on one side)
+        // one-to-many | master-to-detail => false
+        // one-to-many | detail-to-master => false (but not supported)
+        // one-to-many | association => false
+        // many-to-one | master-to-detail => false (but not supported)
+        // many-to-one | detail-to-master => true
+        // many-to-one | association => true
+        // many-to-many | all => false
+        // unidirectional:
+        // all | all => true
+        // TODO Joerg Testfall
+    }
 }
