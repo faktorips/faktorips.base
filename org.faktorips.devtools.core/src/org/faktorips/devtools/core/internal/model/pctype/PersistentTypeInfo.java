@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -265,14 +266,17 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         if (baseEntity == null) {
-            // there must be a base entity, maybe an error
+            // there must always be a base entity, maybe an error
             return;
         }
 
-        if (!isDefinesDiscriminatorColumn()
-                && baseEntity == getPolicyCmptType()
+        if (getPolicyCmptType().hasSupertype()
+                && !baseEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()
                 && (inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)) {
-            String text = "The discriminator definition must be defined because this is the base entity of the inheritance hierarchy.";
+            String text = NLS
+                    .bind(
+                            "The discriminator definition must be defined in the base entity {0} of the inheritance hierarchy.",
+                            baseEntity.getUnqualifiedName());
             msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
             return;
@@ -462,7 +466,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private final static class DiscriminatorValidator extends PolicyCmptTypeHierarchyVisitor {
-
         private final InheritanceStrategy inheritanceStrategy;
         private final List<String> discriminatorValues = new ArrayList<String>();
 
@@ -487,8 +490,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             // - discriminator values must be unique
             if (discriminatorValues.contains(currentTypeInfo.getDiscriminatorValue())) {
                 conflictingTypeInfo = currentTypeInfo;
-                errorMessage = "The discriminator value is already defined in the supertype "
-                        + currentType.getUnqualifiedName();
+                errorMessage = NLS.bind("The discriminator value \"{0}\" is already defined in the supertype {1}",
+                        currentTypeInfo.getDiscriminatorValue(), currentType.getUnqualifiedName());
                 errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE;
                 return false;
             } else {

@@ -188,4 +188,8 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         superPcType.setAbstract(true);
         assertEquals(superPcType, persTypeInfo.findBaseEntity());
     }
+
+    public void testValidateDiscriminatorValue() {
+        // TODO JPA Testfall
+    }
 }
