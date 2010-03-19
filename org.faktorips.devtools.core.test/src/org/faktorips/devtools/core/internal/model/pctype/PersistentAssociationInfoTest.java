@@ -275,12 +275,12 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     public void testToXml() throws CoreException {
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         persistenceAssociatonInfo.setTransient(true);
+        persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
         persistenceAssociatonInfo.setJoinTableName("joinTable0");
         persistenceAssociatonInfo.setTargetColumnName("targetColumn0");
         persistenceAssociatonInfo.setSourceColumnName("sourceColumn0");
         persistenceAssociatonInfo.setFetchType(FetchType.EAGER);
         persistenceAssociatonInfo.setJoinColumnName("joinColumn0");
-        persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
         Element element = persistenceAssociatonInfo.toXml(newDocument());
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
