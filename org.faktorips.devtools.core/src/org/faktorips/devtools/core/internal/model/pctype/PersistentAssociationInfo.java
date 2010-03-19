@@ -178,10 +178,13 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     public void setOwnerOfManyToManyAssociation(boolean ownerOfManyToManyAssociation) {
+        // clear other columns to hold a consistent state
         if (!ownerOfManyToManyAssociation) {
             setJoinTableName("");
             setTargetColumnName("");
             setSourceColumnName("");
+        } else {
+            setJoinColumnName("");
         }
         boolean oldValue = this.ownerOfManyToManyAssociation;
         this.ownerOfManyToManyAssociation = ownerOfManyToManyAssociation;
@@ -202,8 +205,18 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (inverseAssociation == null) {
             return false;
         }
-        return inverseAssociation.is1To1() && getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier()
-                || (getPolicyComponentTypeAssociation().isCompositionDetailToMaster() && inverseAssociation.is1To1());
+        if (inverseAssociation.is1To1() && getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier()) {
+            // one-to-many
+            return true;
+        }
+        if (getPolicyComponentTypeAssociation().isCompositionDetailToMaster() && inverseAssociation.is1To1()) {
+            return true;
+        }
+        if (getPolicyComponentTypeAssociation().isAssoziation() && inverseAssociation.is1To1()
+                && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -273,13 +286,18 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
      * <td><b>true</b></td>
      * </tr>
      * </table>
+     * Note that if this relationship side the owner of a many-to-many association then return
+     * always <code>false</code>.
      */
     public boolean isJoinColumnRequired(IPolicyCmptTypeAssociation inverseAssociation) {
+        if (isOwnerOfManyToManyAssociation()) {
+            return false;
+        }
         if (isUnidirectional()) {
             return true;
         }
         if (isBidirectional() && inverseAssociation == null) {
-            // different error inverse not found
+            // error inverse not found
             return true;
         }
         RELATIONSHIP_TYPE relType = evalRelationShipType(inverseAssociation);

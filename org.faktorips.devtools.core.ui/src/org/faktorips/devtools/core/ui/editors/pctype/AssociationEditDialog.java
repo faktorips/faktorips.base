@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
@@ -68,6 +67,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
     private ExtensionPropertyControlFactory extFactory;
     private IPolicyCmptTypeAssociation inverseAssociation;
+    private Composite joinColumnComposite;
 
     /**
      * @param parentShell
@@ -261,23 +261,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         final Composite allPersistentProps = uiToolkit.createGridComposite(c, 1, true, true);
 
         uiToolkit.createVerticalSpacer(allPersistentProps, 12);
-        final Group joinTable = createGroupJoinTable(allPersistentProps);
+        final Composite joinTableComposite = createGroupJoinTable(allPersistentProps);
 
         uiToolkit.createVerticalSpacer(allPersistentProps, 12);
-        final Group foreignKey = createGroupForeignKey(allPersistentProps);
+        final Group groupForeignKey = createGroupForeignKey(allPersistentProps);
 
         uiToolkit.createVerticalSpacer(allPersistentProps, 12);
         createGroupOtherPersistentProps(allPersistentProps);
 
-        // disable all tab page controls if policy component type shouldn't persist
-        bindingContext.add(new ControlPropertyBinding(c, association.getPolicyCmptType().getPersistenceTypeInfo(),
-                IPersistentTypeInfo.PROPERTY_ENABLED, Boolean.TYPE) {
-            @Override
-            public void updateUiIfNotDisposed() {
-                uiToolkit.setDataChangeable(getControl(), ((IPersistentTypeInfo)getObject()).isEnabled());
-                uiToolkit.setDataChangeable(getControl(), ((IPersistentTypeInfo)getObject()).isEnabled());
-            }
-        });
         // disable all persistent controls if attribute is marked as transient
         bindingContext.add(new ControlPropertyBinding(allPersistentProps, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
@@ -293,6 +284,29 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 }
             }
         });
+        // disable join table
+        bindingContext.add(new ControlPropertyBinding(joinTableComposite, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, Boolean.TYPE) {
+            @Override
+            public void updateUiIfNotDisposed() {
+                IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
+                boolean persistEnabled = associationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
+                        .isPersistentEnabled();
+                if (!persistEnabled) {
+                    return;
+                }
+                if (associationInfo.isTransient()) {
+                    return;
+                }
+                uiToolkit.setDataChangeable(getControl(), associationInfo.isOwnerOfManyToManyAssociation());
+                uiToolkit.setDataChangeable(groupForeignKey, !associationInfo.isOwnerOfManyToManyAssociation());
+                enableOrDisableForeignKeyColumn();
+            }
+        });
+
+        if (!association.getPolicyCmptType().isPersistentEnabled()) {
+            uiToolkit.setDataChangeable(c, false);
+        }
     }
 
     private Group createGroupOtherPersistentProps(Composite allPersistentProps) {
@@ -317,47 +331,46 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         GridData layoutData = (GridData)groupJoinColumn.getLayoutData();
         layoutData.grabExcessVerticalSpace = false;
 
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(groupJoinColumn);
-        workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+        joinColumnComposite = uiToolkit.createLabelEditColumnComposite(groupJoinColumn);
+        joinColumnComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        uiToolkit.createFormLabel(workArea, "Foreign Key Column Name:");
-        Text joinColumnNameText = uiToolkit.createText(workArea);
+        uiToolkit.createFormLabel(joinColumnComposite, "Foreign Key Column Name:");
+        Text joinColumnNameText = uiToolkit.createText(joinColumnComposite);
         bindingContext.bindContent(joinColumnNameText, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME);
 
         PersistentAssociationInfo persistentAssociationInfo = (PersistentAssociationInfo)association
                 .getPersistenceAssociatonInfo();
-        if (!persistentAssociationInfo.isJoinColumnRequired(inverseAssociation)) {
-            uiToolkit.setDataChangeable(workArea, false);
-        }
-
-        if (!persistentAssociationInfo.isJoinColumnRequired(inverseAssociation) && !isJoinTableRequired()) {
+        if (persistentAssociationInfo.isForeignKeyColumnDefinedOnTargetSide(inverseAssociation)) {
             uiToolkit.createLabel(groupJoinColumn,
                     "Note: The foreign key column is defined in the inverse assosiation.");
-        } else if (isUnidirectional() && persistentAssociationInfo.isJoinColumnRequired(inverseAssociation)) {
-            if (persistentAssociationInfo.isForeignKeyColumnCreatedOnTargetSide(inverseAssociation)) {
-                uiToolkit.createLabel(groupJoinColumn, NLS.bind(
-                        "Note: The foreign key column is a column of the table defined for the target entity {0}.",
-                        StringUtil.unqualifiedName(association.getTarget())));
-            }
+        } else if (persistentAssociationInfo.isForeignKeyColumnCreatedOnTargetSide(inverseAssociation)) {
+            uiToolkit.createLabel(groupJoinColumn, NLS.bind(
+                    "Note: The foreign key column is a column of the table defined for the target entity {0}.",
+                    StringUtil.unqualifiedName(association.getTarget())));
         }
         return groupJoinColumn;
     }
 
-    private boolean isJoinTableRequired() {
+    private void enableOrDisableForeignKeyColumn() {
+        PersistentAssociationInfo persistentAssociationInfo = (PersistentAssociationInfo)association
+                .getPersistenceAssociatonInfo();
+        boolean foreignKeyDefinedOnTargetSide = persistentAssociationInfo
+                .isForeignKeyColumnDefinedOnTargetSide(inverseAssociation);
+        if (persistentAssociationInfo.isOwnerOfManyToManyAssociation()) {
+            foreignKeyDefinedOnTargetSide = true;
+        }
         try {
-            return association.getPersistenceAssociatonInfo().isJoinTableRequired();
+            if (persistentAssociationInfo.isJoinTableRequired()) {
+                return;
+            }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
-            return false;
         }
+        uiToolkit.setDataChangeable(joinColumnComposite, !foreignKeyDefinedOnTargetSide);
     }
 
-    private boolean isUnidirectional() {
-        return StringUtils.isEmpty(association.getInverseAssociation());
-    }
-
-    private Group createGroupJoinTable(Composite allPersistentProps) {
+    private Composite createGroupJoinTable(Composite allPersistentProps) {
         Group groupJoinTable = uiToolkit.createGroup(allPersistentProps, "Join Table");
         GridData layoutData = (GridData)groupJoinTable.getLayoutData();
         layoutData.grabExcessVerticalSpace = false;
@@ -367,25 +380,25 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(checkOwner, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION);
 
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(groupJoinTable);
-        workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite joinTableComposte = uiToolkit.createLabelEditColumnComposite(groupJoinTable);
+        joinTableComposte.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        uiToolkit.createFormLabel(workArea, "Join Table Name:");
-        Text joinTableNameText = uiToolkit.createText(workArea);
+        uiToolkit.createFormLabel(joinTableComposte, "Join Table Name:");
+        Text joinTableNameText = uiToolkit.createText(joinTableComposte);
         bindingContext.bindContent(joinTableNameText, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME);
 
-        uiToolkit.createFormLabel(workArea, "Source Column Name:");
-        Text sourceColumnNameText = uiToolkit.createText(workArea);
+        uiToolkit.createFormLabel(joinTableComposte, "Source Column Name:");
+        Text sourceColumnNameText = uiToolkit.createText(joinTableComposte);
         bindingContext.bindContent(sourceColumnNameText, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME);
 
-        uiToolkit.createFormLabel(workArea, "Target Column Name:");
-        Text targetColumnNameText = uiToolkit.createText(workArea);
+        uiToolkit.createFormLabel(joinTableComposte, "Target Column Name:");
+        Text targetColumnNameText = uiToolkit.createText(joinTableComposte);
         bindingContext.bindContent(targetColumnNameText, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME);
 
-        return groupJoinTable;
+        return joinTableComposte;
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {
