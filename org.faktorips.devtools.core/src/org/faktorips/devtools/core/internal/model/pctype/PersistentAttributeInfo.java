@@ -19,9 +19,6 @@ import java.util.List;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.classtypes.DateDatatype;
-import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -65,10 +62,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
 
     private IIpsObjectPart policyComponentTypeAttribute;
 
-    // why are there no static fields for GregorianCalendarAsDateDatatype and DateDatatype?
-    private static Datatype[] temporalDatatypes = new Datatype[] { Datatype.GREGORIAN_CALENDAR_DATE,
-            new GregorianCalendarAsDateDatatype(), new DateDatatype() };
-
     /**
      * @param policyComponentTypeAttribute
      * @throws CoreException
@@ -76,11 +69,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     public PersistentAttributeInfo(IIpsObjectPart ipsObject, String id) {
         super(ipsObject, id);
         policyComponentTypeAttribute = ipsObject;
-    }
-
-    // TODO implement
-    public IPersistableTypeConverter getTableColumnConverter() {
-        throw new NotImplementedException();
     }
 
     public boolean isTransient() {
@@ -193,18 +181,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     public boolean isPersistentAttribute() {
         AttributeType attrType = getPolicyComponentTypeAttribute().getAttributeType();
         return (attrType == AttributeType.CHANGEABLE || attrType == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-    }
-
-    public boolean isTemporalAttribute() {
-        String datatypeName = getPolicyComponentTypeAttribute().getDatatype();
-
-        for (Datatype temporalDatatype : temporalDatatypes) {
-            if (datatypeName.equals(temporalDatatype.getName())) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public DateTimeMapping getTemporalMapping() {

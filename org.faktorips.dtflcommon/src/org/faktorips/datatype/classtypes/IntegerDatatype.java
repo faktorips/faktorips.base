@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,24 +24,24 @@ import org.faktorips.datatype.ValueClassDatatype;
  */
 public class IntegerDatatype extends ValueClassDatatype implements NumericDatatype {
 
-	public IntegerDatatype() {
-		super(Integer.class);
-	}
+    public IntegerDatatype() {
+        super(Integer.class);
+    }
 
-	public IntegerDatatype(String name) {
-		super(Integer.class, name);
-	}
-	
-	/**
+    public IntegerDatatype(String name) {
+        super(Integer.class, name);
+    }
+
+    /**
      * {@inheritDoc}
-	 */
-	public Object getValue(String s) {
+     */
+    @Override
+    public Object getValue(String s) {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
-		return Integer.valueOf(s);
-	}
-
+        return Integer.valueOf(s);
+    }
 
     /**
      * {@inheritDoc}
@@ -71,18 +71,22 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
         }
         Integer intA = (Integer)getValue(dividend);
         Integer intB = (Integer)getValue(divisor);
-        
+
         if (intA == null) {
             throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to an Integer");
         }
-        
+
         if (intB == null) {
             throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to an Integer");
         }
-        
+
         int a = intA.intValue();
         int b = intB.intValue();
 
         return b == 0 ? false : a % b == 0;
+    }
+
+    public boolean hasDecimalPlaces() {
+        return false;
     }
 }

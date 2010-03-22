@@ -174,7 +174,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             BaseEntityFinder baseEntityFinder = new BaseEntityFinder();
             baseEntityFinder.start(getPolicyCmptType());
 
-            validateInheritanceStrategy(msgList, baseEntityFinder.baseEntity);
+            validateInheritanceStrategy(msgList);
             validateTableName(msgList, baseEntityFinder.baseEntity);
             validateDisriminator(msgList, baseEntityFinder.baseEntity);
         } catch (CoreException e) {
@@ -182,8 +182,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
-    private void validateInheritanceStrategy(final MessageList msgList, IPolicyCmptType baseEntity)
-            throws CoreException {
+    private void validateInheritanceStrategy(final MessageList msgList) throws CoreException {
         IPolicyCmptType pcType = getPolicyCmptType();
         if (!pcType.hasSupertype()) {
             // if (inheritanceStrategy == InheritanceStrategy.MIXED) {
@@ -199,19 +198,34 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         new InheritanceStrategyMismatchVisitor(this, msgList).start(pcType);
     }
 
-    private void validateTableName(MessageList msgList, IPolicyCmptType baseEntity) throws CoreException {
+    private void validateTableName(MessageList msgList, IPolicyCmptType baseEntity) {
+        // validate none single table strategy
         if (inheritanceStrategy != InheritanceStrategy.SINGLE_TABLE) {
-            validateThisTableName(msgList);
+            if (getPolicyCmptType().isAbstract()) {
+                if (!StringUtils.isEmpty(tableName)) {
+                    msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID,
+                            "The table name must be empty because this type is abstract and the inheritance strategy is: "
+                                    + inheritanceStrategy.toString(), Message.ERROR, this,
+                            IPersistentTypeInfo.PROPERTY_TABLE_NAME));
+                }
+                return;
+            }
+            // if a subtype type has no attributes then we didn't need an own table
+            if (StringUtils.isNotEmpty(getPolicyCmptType().getSupertype())
+                    && getPolicyCmptType().getAttributes().length == 0) {
+                return;
+            }
+            validateTableNameValidIdentifier(msgList);
             return;
         }
 
-        // single table inheritance
+        // in single table inheritance only the base entity table name must not be empty
         if (getPolicyCmptType() == baseEntity) {
-            validateThisTableName(msgList);
+            validateTableNameValidIdentifier(msgList);
             return;
         }
 
-        // table name must be empty
+        // in single table inheritance all not base entity table names must be empty
         if (!StringUtils.isEmpty(tableName)) {
             msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID,
                     "The table name must be empty because this is not the base entity and the inheritance strategy is: "
@@ -235,7 +249,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         // }
     }
 
-    private void validateThisTableName(MessageList msgList) {
+    private void validateTableNameValidIdentifier(MessageList msgList) {
         if (!PersistenceUtil.isValidDatabaseIdentifier(tableName)) {
             msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, "The table name is invalid", Message.ERROR,
                     this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
@@ -254,13 +268,13 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (!isDefinesDiscriminatorColumn()) {
             if (StringUtils.isNotEmpty(discriminatorColumnName)) {
                 String text = "The discriminator definition is not allowed here because this type doesn't define the discriminator column.";
-                msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
                         IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
             }
         } else {
-            if (!PersistenceUtil.isValidDatabaseIdentifier(discriminatorColumnName) && isDefinesDiscriminatorColumn()) {
+            if (isDefinesDiscriminatorColumn() && !PersistenceUtil.isValidDatabaseIdentifier(discriminatorColumnName)) {
                 String text = "The discriminator column name is invalid.";
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
                         IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME));
             }
         }
@@ -272,12 +286,13 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         if (getPolicyCmptType().hasSupertype()
                 && !baseEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()
-                && (inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)) {
+                && (inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)
+                && getPolicyCmptType().getAttributes().length > 0) {
             String text = NLS
                     .bind(
-                            "The discriminator definition must be defined in the base entity {0} of the inheritance hierarchy.",
+                            "The discriminator definition is missing, the discriminator must be defined in the base entity {0}.",
                             baseEntity.getUnqualifiedName());
-            msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
+            msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
             return;
         }
@@ -305,14 +320,14 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (!discrValueMustBeEmpty) {
             if (StringUtils.isEmpty(discriminatorValue)) {
                 String text = "The discriminator value must not be empty if the base entity defines the dicriminator column.";
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
                         IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
                 return;
             }
         } else {
             if (!StringUtils.isEmpty(discriminatorValue)) {
                 String text = "The discriminator value must be empty if the base entity doesn't define a discriminator column or the type is abstract.";
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
                         IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
                 return;
             }
@@ -328,7 +343,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 && !baseEntity.getPersistenceTypeInfo().getDiscriminatorDatatype().isParsableToDiscriminatorDatatype(
                         discriminatorValue)) {
             String text = "The discriminator value does not conform to the specified descriminator datatype.";
-            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, text, Message.ERROR, this,
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
             return;
         }
@@ -337,8 +352,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         DiscriminatorValidator dValidator = new DiscriminatorValidator(this);
         dValidator.start(pcType);
         if (dValidator.conflictingTypeInfo != null) {
-            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID, dValidator.errorMessage, Message.ERROR,
-                    this, dValidator.errorProperty));
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, dValidator.errorMessage,
+                    Message.ERROR, this, dValidator.errorProperty));
         }
     }
 
@@ -482,7 +497,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         protected boolean visit(IPolicyCmptType currentType) {
             IPersistentTypeInfo currentTypeInfo = currentType.getPersistenceTypeInfo();
 
-            if (inheritanceStrategy != InheritanceStrategy.SINGLE_TABLE) {
+            if (!(inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)) {
                 return false;
             }
 

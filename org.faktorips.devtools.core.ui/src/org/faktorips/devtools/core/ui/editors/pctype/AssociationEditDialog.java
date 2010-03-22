@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.JoinFetchType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -327,6 +328,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         ComboField fetchTypeField = new EnumField(fetchTypeCombo, FetchType.class);
         bindingContext.bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
+
+        uiToolkit.createFormLabel(otherPropsComposite, "Join Fetch Type:");
+        Combo joinFetchTypeCombo = uiToolkit.createCombo(otherPropsComposite);
+        setComboItemsForEnum(joinFetchTypeCombo, JoinFetchType.class);
+        ComboField joinFetchTypeField = new EnumField(joinFetchTypeCombo, JoinFetchType.class);
+        bindingContext.bindContent(joinFetchTypeField, association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_JOIN_FETCH_TYPE);
+
         return groupOtherProps;
     }
 

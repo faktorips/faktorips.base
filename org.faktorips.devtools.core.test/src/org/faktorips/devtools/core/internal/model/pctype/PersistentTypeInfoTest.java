@@ -66,11 +66,11 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persTypeInfo.setDiscriminatorValue("value");
         persTypeInfo.setDiscriminatorColumnName("invali?");
         MessageList msgList = persTypeInfo.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID));
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
 
         persTypeInfo.setDiscriminatorColumnName("dtype");
         msgList = persTypeInfo.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID));
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
 
         // validate discriminator value which has the datatype String
         persTypeInfo.setDiscriminatorValue("value");
@@ -93,7 +93,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertNotNull(getValidationMessageForDiscriminator(persTypeInfo, DiscriminatorDatatype.INTEGER));
         assertNull(getValidationMessageForDiscriminator(persTypeInfo, DiscriminatorDatatype.STRING));
 
-        // validate empty value
+        // validate empty valueSuper
         persTypeInfo.setDiscriminatorValue("");
         assertNotNull(getValidationMessageForDiscriminator(persTypeInfo, DiscriminatorDatatype.VOID));
         assertNotNull(getValidationMessageForDiscriminator(persTypeInfo, DiscriminatorDatatype.CHAR));
@@ -111,7 +111,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
             DiscriminatorDatatype datatype) throws CoreException {
         persTypeInfo.setDiscriminatorDatatype(datatype);
         MessageList msgList = persTypeInfo.validate(ipsProject);
-        Message message = msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID);
+        Message message = msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID);
 
         return message;
     }
@@ -189,7 +189,101 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertEquals(superPcType, persTypeInfo.findBaseEntity());
     }
 
-    public void testValidateDiscriminatorValue() {
-        // TODO JPA Testfall
+    public void testValidateDiscriminatorValue() throws CoreException {
+        MessageList msgList = null;
+        PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "SuperPolicy1");
+        PolicyCmptType policyCmptType2 = newPolicyCmptType(ipsProject, "Policy2");
+        policyCmptType.setSupertype(superPcType.getQualifiedName());
+        policyCmptType2.setSupertype(superPcType.getQualifiedName());
+
+        IPersistentTypeInfo persistenceTypeInfoSuper = superPcType.getPersistenceTypeInfo();
+        IPersistentTypeInfo persistenceTypeInfo1 = policyCmptType.getPersistenceTypeInfo();
+        IPersistentTypeInfo persistenceTypeInfo2 = policyCmptType2.getPersistenceTypeInfo();
+        persistenceTypeInfoSuper.setEnabled(true);
+        persistenceTypeInfo1.setEnabled(true);
+        persistenceTypeInfo2.setEnabled(true);
+
+        persistenceTypeInfoSuper.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+        persistenceTypeInfo1.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+        persistenceTypeInfo2.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+
+        msgList = persistenceTypeInfoSuper.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+
+        msgList = persistenceTypeInfo1.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+        msgList = persistenceTypeInfo2.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+
+        // super type without and with discriminator value
+
+        persistenceTypeInfoSuper.setDefinesDiscriminatorColumn(true);
+        persistenceTypeInfoSuper.setDiscriminatorColumnName("DTYPE");
+        persistenceTypeInfoSuper.setDiscriminatorDatatype(DiscriminatorDatatype.STRING);
+        persistenceTypeInfoSuper.setDiscriminatorValue("");
+        superPcType.setAbstract(true);// if abstract then the discriminator is not necessary
+        msgList = persistenceTypeInfoSuper.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        superPcType.setAbstract(false);
+        msgList = persistenceTypeInfoSuper.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        persistenceTypeInfoSuper.setDiscriminatorValue("S");
+        msgList = persistenceTypeInfoSuper.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        // test subtype
+
+        msgList = persistenceTypeInfo1.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        msgList = persistenceTypeInfo2.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        persistenceTypeInfo1.setDiscriminatorValue("1");
+        persistenceTypeInfo2.setDiscriminatorValue("1");
+        msgList = persistenceTypeInfo1.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        msgList = persistenceTypeInfo2.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        // same discriminator value
+
+        persistenceTypeInfoSuper.setDiscriminatorValue("1");
+        msgList = persistenceTypeInfo1.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        msgList = persistenceTypeInfo2.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        // supertype value not checked
+        msgList = superPcType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        // with only one subtype
+
+        policyCmptType2.setSupertype("");
+        persistenceTypeInfo2.setDiscriminatorValue("");
+
+        persistenceTypeInfoSuper.setDiscriminatorValue("1");
+        msgList = persistenceTypeInfo1.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        msgList = persistenceTypeInfo2.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        msgList = superPcType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        // with join table
+
+        persistenceTypeInfoSuper.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
+        persistenceTypeInfo1.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
+
+        msgList = persistenceTypeInfo1.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        msgList = superPcType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        persistenceTypeInfoSuper.setDiscriminatorValue("S");
+        msgList = persistenceTypeInfo1.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        msgList = superPcType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
     }
 }

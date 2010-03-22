@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 
@@ -56,10 +57,6 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
     private static final String ANNOTATION_ONE_TO_ONE = "@OneToOne";
     private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
     private static final String ANNOTATION_MANY_TO_ONE = "@ManyToOne";
-
-    // EclipseLink imports
-    private static final String IMPORT_PRIVATE_OWNED = "org.eclipse.persistence.annotations.PrivateOwned";
-    private static final String ANNOTATION_PRIVATE_OWNED = "@PrivateOwned";
 
     private static enum RELATIONSHIP_TYPE {
         UNKNOWN,
@@ -106,6 +103,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             IPolicyCmptTypeAssociation inverseAssociation = genAssociation.getInverseAssociation();
             GenAssociation genInverseAssociation = getGenerator(inverseAssociation);
 
+            IPersistenceProvider persistenceProviderImpl = genAssociation.getGenType().getBuilderSet()
+                    .getPersistenceProviderImplementation();
+
             // add import and annotation depending on the relationship type (e.g. oneToMany)
             RELATIONSHIP_TYPE relationShip = evalRelationShipType(association, inverseAssociation);
             fragment.addImport(importForRelationshipType.get(relationShip));
@@ -123,10 +123,13 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             appendAllAttributes(fragment, attributesToAppend);
 
             // evaluate further attributes depending on the relationship type
-            addAnnotationFor(relationShip, fragment, genAssociation, genInverseAssociation);
+            addAnnotationFor(persistenceProviderImpl, relationShip, fragment, genAssociation, genInverseAssociation);
 
             // add special annotation in case of join table needed
             addAnnotationJoinTable(fragment, genAssociation, genInverseAssociation);
+
+            // in case of eager the fetch type specifies the outer or inner join type
+            addAnnotationJoinFetchType(persistenceProviderImpl, fragment, genAssociation, genInverseAssociation);
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -134,7 +137,17 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         return fragment;
     }
 
-    private void addAnnotationFor(RELATIONSHIP_TYPE relationShip,
+    private void addAnnotationJoinFetchType(IPersistenceProvider persistenceProviderImpl,
+            JavaCodeFragment fragment,
+            GenAssociation genAssociation,
+            GenAssociation genInverseAssociation) {
+        if (persistenceProviderImpl.isSupportingJoinFetchType()) {
+            persistenceProviderImpl.addAnnotationJoinFetchType(fragment);
+        }
+    }
+
+    private void addAnnotationFor(IPersistenceProvider persistenceProviderImpl,
+            RELATIONSHIP_TYPE relationShip,
             JavaCodeFragment fragment,
             GenAssociation genAssociation,
             GenAssociation genInverseAssociation) {
@@ -142,8 +155,12 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         switch (relationShip) {
             case ONE_TO_MANY:
                 if (!association.isAssoziation()) {
-                    fragment.addImport(IMPORT_PRIVATE_OWNED);
-                    fragment.appendln(ANNOTATION_PRIVATE_OWNED);
+                    if (persistenceProviderImpl == null) {
+                        return;
+                    }
+                    if (persistenceProviderImpl.isSuppotingOrphanRemoval()) {
+                        persistenceProviderImpl.addAnnotationOrphanRemoval(fragment);
+                    }
                 }
                 break;
             case ONE_TO_ONE:

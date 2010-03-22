@@ -78,6 +78,13 @@
                name="generateJaxbSupport"
                type="boolean">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="none"
+               description="Class implemements the persistence provider"
+               label="Persistence provider implementation"
+               name="persistenceProviderImplementation"
+               type="string">
+         </builderSetPropertyDef>         
       </builderSet>
    </extension>
    <extension

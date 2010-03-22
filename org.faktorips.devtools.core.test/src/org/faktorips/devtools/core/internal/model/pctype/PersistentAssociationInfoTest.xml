@@ -5,6 +5,7 @@ id="4711" joinTableName="joinTable1"
 sourceColumnName="sourceColumn1" 
 targetColumnName="targetColumn1"
 joinColumnName="joinColumn1"
-ownerOfManyToManyAssociation="false">
+ownerOfManyToManyAssociation="false"
+joinFetchType="INNER">
 <Description/>
 </PersistenceAssociation>

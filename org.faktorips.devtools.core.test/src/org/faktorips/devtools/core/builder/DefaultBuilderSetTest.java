@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -34,7 +34,8 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
 
-	protected void setUp() throws Exception {
+    @Override
+    protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject();
         IIpsObjectPath path = project.getIpsObjectPath();
@@ -43,16 +44,16 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         entry.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample");
         entry.setBasePackageRelativeTocPath("motor/toc.xml");
         project.setIpsObjectPath(path);
-	}
+    }
 
-	public void testGetRuntimeRepositoryTocFile() throws CoreException {
+    public void testGetRuntimeRepositoryTocFile() throws CoreException {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         DefaultBuilderSet builderSet = new TestBuilderSet();
-		IFile file = builderSet.getRuntimeRepositoryTocFile(root);
-		assertNotNull(file);
+        IFile file = builderSet.getRuntimeRepositoryTocFile(root);
+        assertNotNull(file);
         assertEquals("extension/org/faktorips/sample/internal/motor/toc.xml", file.getProjectRelativePath().toString());
-	}
-    
+    }
+
     public void testGetRuntimeRepositoryTocResourceName() throws CoreException {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         DefaultBuilderSet builderSet = new TestBuilderSet();
@@ -60,28 +61,30 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         assertEquals("org/faktorips/sample/internal/motor/toc.xml", tocResource);
     }
 
-	class TestBuilderSet extends DefaultBuilderSet {
+    class TestBuilderSet extends DefaultBuilderSet {
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public IIpsArtefactBuilder[] getArtefactBuilders() {
-			return null;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public IIpsArtefactBuilder[] getArtefactBuilders() {
+            return null;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean isSupportFlIdentifierResolver() {
-			return false;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean isSupportFlIdentifierResolver() {
+            return false;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
-			return null;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
+            return null;
+        }
 
         /**
          * {@inheritDoc}
@@ -93,6 +96,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         public void initialize(IIpsArtefactBuilderSetConfigModel config) throws CoreException {
         }
 
+        @Override
         public String getVersion() {
             return "";
         }
@@ -100,9 +104,9 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
             return new IIpsArtefactBuilder[0];
         }
-        
-	}
+    }
 }

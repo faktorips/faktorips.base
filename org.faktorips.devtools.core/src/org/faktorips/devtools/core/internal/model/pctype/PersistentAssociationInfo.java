@@ -42,6 +42,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private String sourceColumnName = "";
     private String joinColumnName = "";
     private FetchType fetchType = FetchType.LAZY;
+    private JoinFetchType joinFetchType = JoinFetchType.INNER;
 
     private IIpsObjectPart policyComponentTypeAssociation;
 
@@ -67,6 +68,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
     public FetchType getFetchType() {
         return fetchType;
+    }
+
+    public JoinFetchType getJoinFetchType() {
+        return joinFetchType;
     }
 
     public String getJoinTableName() {
@@ -137,6 +142,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         this.fetchType = fetchType;
 
         valueChanged(oldValue, fetchType);
+    }
+
+    public void setJoinFetchType(JoinFetchType joinFetchType) {
+        ArgumentCheck.notNull(joinFetchType);
+        JoinFetchType oldValue = this.joinFetchType;
+        this.joinFetchType = joinFetchType;
+
+        valueChanged(oldValue, joinFetchType);
     }
 
     public void setJoinTableName(String newJoinTableName) {
@@ -367,6 +380,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         targetColumnName = element.getAttribute(PROPERTY_TARGET_COLUMN_NAME);
         joinTableName = element.getAttribute(PROPERTY_JOIN_TABLE_NAME);
         fetchType = FetchType.valueOf(element.getAttribute(PROPERTY_FETCH_TYPE));
+        String joinFetchTypeAttr = element.getAttribute(PROPERTY_JOIN_FETCH_TYPE);
+        if (StringUtils.isNotEmpty(joinFetchTypeAttr)) {
+            joinFetchType = JoinFetchType.valueOf(joinFetchTypeAttr);
+        }
         joinColumnName = element.getAttribute(PROPERTY_JOIN_COLUMN_NAME);
     }
 
@@ -380,6 +397,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName);
         element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);
         element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);
+        element.setAttribute(PROPERTY_JOIN_FETCH_TYPE, "" + joinFetchType);
         element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName);
     }
 

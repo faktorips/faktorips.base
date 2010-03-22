@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,7 +18,7 @@ package org.faktorips.datatype;
  */
 public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implements NumericDatatype {
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public String getName() {
@@ -38,8 +38,8 @@ public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implemen
     public ValueDatatype getWrapperType() {
         return Datatype.INTEGER;
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public String getJavaClassName() {
@@ -53,9 +53,10 @@ public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implemen
         return "0";
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValue(String value) {
         return Integer.valueOf(value);
     }
@@ -90,4 +91,7 @@ public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implemen
         return b == 0 ? false : a % b == 0;
     }
 
+    public boolean hasDecimalPlaces() {
+        return false;
+    }
 }

@@ -102,7 +102,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * Validation message code to indicate that this persistence info type has an invalid
      * discriminator set.
      */
-    public final static String MSGCODE_PERSISTENCE_DISCRIMINATOR_INVALID = MSGCODE_PREFIX
+    public final static String MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID = MSGCODE_PREFIX
             + "PersistenceTypeDiscriminatorInvalid"; //$NON-NLS-1$
 
     /**
@@ -113,8 +113,15 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
             + "PersistenceTypeInheritanceStrategyInvalid"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the discriminator can only be defined in the base
+     * Validation message code to indicate that the discriminator definition is missing on the base
      * entity.
+     */
+    public final static String MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING = MSGCODE_PREFIX
+            + "definitionOfDiscriminatorMissing"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the discriminator definition is not allowed here.
+     * Only on the base entity.
      */
     public final static String MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED = MSGCODE_PREFIX
             + "definitionOfDiscriminatorNotAllowed"; //$NON-NLS-1$

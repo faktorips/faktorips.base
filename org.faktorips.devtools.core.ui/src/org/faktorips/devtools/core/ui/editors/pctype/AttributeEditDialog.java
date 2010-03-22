@@ -69,7 +69,6 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
@@ -84,6 +83,7 @@ import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeMethodEditDialog;
+import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
@@ -163,6 +163,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Composite defaultEditFieldPlaceholder;
 
     private Group ruleGroup;
+
+    private IntegerField sizeField;
+
+    private IntegerField precisionField;
+
+    private IntegerField scaleField;
+
+    private EnumField temporalMappingField;
 
     /**
      * @param parentShell
@@ -760,36 +768,37 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
 
         uiToolkit.createFormLabel(workArea, "Column size:");
-        IntegerField sizeField = new IntegerField(uiToolkit.createText(workArea));
+        sizeField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(sizeField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE);
 
         uiToolkit.createFormLabel(workArea, "Column precision:");
-        IntegerField precisionField = new IntegerField(uiToolkit.createText(workArea));
+        precisionField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(precisionField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION);
 
         uiToolkit.createFormLabel(workArea, "Column scale:");
-        IntegerField scaleField = new IntegerField(uiToolkit.createText(workArea));
+        scaleField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(scaleField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE);
 
         uiToolkit.createFormLabel(workArea, "Temporal type:");
         Combo temporalMappingCombo = uiToolkit.createCombo(workArea);
         setComboItemsForEnum(temporalMappingCombo, DateTimeMapping.class);
-        ComboField temporalMappingField = new EnumField(temporalMappingCombo, DateTimeMapping.class);
+        temporalMappingField = new EnumField(temporalMappingCombo, DateTimeMapping.class);
         bindingContext.bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
-
-        uiToolkit.createFormLabel(workArea, "Datatype converter class:");
-        Text converterQualifiedName = uiToolkit.createText(workArea);
-        bindingContext.bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
-                IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
 
         uiToolkit.createFormLabel(workArea, "SQL column definition:");
         Text sqlColumnDefinition = uiToolkit.createText(workArea);
         bindingContext.bindContent(sqlColumnDefinition, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION);
+
+        uiToolkit.createFormLabel(workArea, "Datatype converter class:");
+        final Text converterQualifiedName = uiToolkit.createText(workArea);
+
+        bindingContext.bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
 
         // disable all tab page controls if policy component type shouldn't persist
         bindingContext.add(new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
@@ -800,18 +809,61 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         .isEnabled());
             }
         });
+
         // disable property controls if attribute is marked as transient
         bindingContext.add(new ControlPropertyBinding(c, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
             @Override
             public void updateUiIfNotDisposed() {
-                IPersistentAttributeInfo associationInfo = (IPersistentAttributeInfo)getObject();
-                boolean changeable = associationInfo.getPolicyComponentTypeAttribute().getPolicyCmptType()
-                        .isPersistentEnabled();
-                uiToolkit
-                        .setDataChangeable(group, changeable && !((IPersistentAttributeInfo)getObject()).isTransient());
+                boolean enabled = isPersistentEnabled();
+                uiToolkit.setDataChangeable(group, enabled);
+                if (enabled) {
+                    disableDeactiveControls();
+                    enableDisableDatatypeDependingControls();
+                }
+            }
+
+            private void disableDeactiveControls() {
+                if (!ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportConverter()) {
+                    converterQualifiedName.setEnabled(false);
+                }
+
             }
         });
+
+        bindingContext.add(new ControlPropertyBinding(c, attribute, IAttribute.PROPERTY_DATATYPE, String.class) {
+            @Override
+            public void updateUiIfNotDisposed() {
+                if (isPersistentEnabled()) {
+                    enableDisableDatatypeDependingControls();
+                }
+            }
+        });
+    }
+
+    private boolean isPersistentEnabled() {
+        boolean enabled = attribute.getPolicyCmptType().isPersistentEnabled();
+        if (!enabled) {
+            return false;
+        }
+        return !attribute.getPersistenceAttributeInfo().isTransient();
+    }
+
+    private void enableDisableDatatypeDependingControls() {
+        try {
+            ValueDatatype datatype = attribute.findDatatype(ipsProject);
+
+            boolean hasDecimalPlaces = PersistenceUtil.isSupportingDecimalPlaces(datatype);
+            boolean hasLength = PersistenceUtil.isSupportingLenght(datatype);
+            boolean needsTemporalType = PersistenceUtil.isSupportingTemporalType(datatype);
+
+            uiToolkit.setDataChangeable(precisionField.getControl(), hasDecimalPlaces);
+            uiToolkit.setDataChangeable(scaleField.getControl(), hasDecimalPlaces);
+            uiToolkit.setDataChangeable(sizeField.getControl(), hasLength);
+            uiToolkit.setDataChangeable(temporalMappingField.getControl(), needsTemporalType);
+        } catch (CoreException e) {
+            // validation error, displayed in dialog message area
+        }
     }
 
     class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {

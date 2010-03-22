@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -131,6 +132,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final static String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport";
 
+    /**
+     * Configuration property contains the persistence provider implementation.
+     */
+    public final static String CONFIG_PROPERTY_PERSISTENCE_PROVIDER_IMPLEMENTAION = "persistenceProviderImplementation";
+
     private TableImplBuilder tableImplBuilder;
 
     private TableRowBuilder tableRowBuilder;
@@ -149,6 +155,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private EnumTypeBuilder enumTypeBuilder;
 
+    private Map<String, CachedPersistenceProvider> allSupportedPersistenceProvider;
+
     private final String version;
 
     private final Map<IType, GenType> ipsObjectTypeGenerators;
@@ -157,6 +165,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     public StandardBuilderSet() {
         ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
+        initSupportedPersistenceProviderMap();
+
         version = "3.0.0";
         // Following code sections sets the version to the stdbuilder-plugin/bundle version.
         // Most of the time we hardwire the version of the generated code here, but from time to
@@ -631,6 +641,46 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
     }
 
+    private void initSupportedPersistenceProviderMap() {
+        allSupportedPersistenceProvider = new HashMap<String, CachedPersistenceProvider>(2);
+        allSupportedPersistenceProvider.put("eclipseLink1.1", CachedPersistenceProvider
+                .create(EclipseLink1PersistenceProvider.class));
+        allSupportedPersistenceProvider.put("genericJPA2.0", CachedPersistenceProvider
+                .create(GenericJPA2PersistenceProvider.class));
+    }
+
+    @Override
+    public boolean isPersistentProviderSupportConverter() {
+        IPersistenceProvider persistenceProviderImpl = getPersistenceProviderImplementation();
+        return persistenceProviderImpl != null && getPersistenceProviderImplementation().isSupportingConverter();
+    }
+
+    /**
+     * Returns the persistence provider or <code>null</code> if no
+     */
+    public IPersistenceProvider getPersistenceProviderImplementation() {
+        String persistenceProviderKey = (String)getConfig().getPropertyValue(
+                CONFIG_PROPERTY_PERSISTENCE_PROVIDER_IMPLEMENTAION);
+        if (StringUtils.isEmpty(persistenceProviderKey) || "none".equalsIgnoreCase(persistenceProviderKey)) {
+            return null;
+        }
+        CachedPersistenceProvider pProviderCached = allSupportedPersistenceProvider.get(persistenceProviderKey);
+        if (pProviderCached == null) {
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unknow persistence provider  \"" + persistenceProviderKey
+                    + "\". Supported provider are: " + allSupportedPersistenceProvider.keySet().toString()));
+            return null;
+        }
+
+        if (pProviderCached.cachedProvider == null) {
+            try {
+                pProviderCached.cachedProvider = pProviderCached.persistenceProviderClass.newInstance();
+            } catch (Exception e) {
+                IpsPlugin.log(e);
+            }
+        }
+        return pProviderCached.cachedProvider;
+    }
+
     public String getJavaClassName(Datatype datatype) throws CoreException {
         if (datatype instanceof IPolicyCmptType) {
             return getGenerator((IPolicyCmptType)datatype).getQualifiedName(true);
@@ -724,4 +774,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return productCmptInterfaceBuilder;
     }
 
+    private static class CachedPersistenceProvider {
+        Class<? extends IPersistenceProvider> persistenceProviderClass;
+        IPersistenceProvider cachedProvider = null;
+
+        private static CachedPersistenceProvider create(Class<? extends IPersistenceProvider> pPClass) {
+            CachedPersistenceProvider providerCache = new CachedPersistenceProvider();
+            providerCache.persistenceProviderClass = pPClass;
+            return providerCache;
+        }
+    }
 }

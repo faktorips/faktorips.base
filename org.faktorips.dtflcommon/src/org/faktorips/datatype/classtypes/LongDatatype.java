@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,24 +24,24 @@ import org.faktorips.datatype.ValueClassDatatype;
  */
 public class LongDatatype extends ValueClassDatatype implements NumericDatatype {
 
-	public LongDatatype() {
-		super(Long.class);
-	}
+    public LongDatatype() {
+        super(Long.class);
+    }
 
-	public LongDatatype(String name) {
-		super(Long.class, name);
-	}
-	
-	/**
+    public LongDatatype(String name) {
+        super(Long.class, name);
+    }
+
+    /**
      * {@inheritDoc}
-	 */
-	public Object getValue(String s) {
+     */
+    @Override
+    public Object getValue(String s) {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
-		return Long.valueOf(s);
-	}
-
+        return Long.valueOf(s);
+    }
 
     /**
      * {@inheritDoc}
@@ -71,18 +71,22 @@ public class LongDatatype extends ValueClassDatatype implements NumericDatatype 
         }
         Long longA = (Long)getValue(dividend);
         Long longB = (Long)getValue(divisor);
-        
+
         if (longA == null) {
             throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to a Long");
         }
-        
+
         if (longB == null) {
             throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to a Long");
         }
-        
+
         long a = longA.longValue();
         long b = longB.longValue();
 
         return b == 0 ? false : a % b == 0;
+    }
+
+    public boolean hasDecimalPlaces() {
+        return false;
     }
 }

@@ -66,6 +66,11 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public final static String PROPERTY_FETCH_TYPE = "fetchType"; //$NON-NLS-1$
 
     /**
+     * The name of the join fetch type (outer/inner) property.
+     */
+    public final static String PROPERTY_JOIN_FETCH_TYPE = "joinFetchType"; //$NON-NLS-1$
+
+    /**
      * The name of the join column name property. In a one-to-many relationship this is the name of
      * the column which references the opposite of the owning side (foreign key to the non-owning
      * side).
@@ -221,6 +226,20 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public void setFetchType(FetchType fetchType);
 
     /**
+     * Returns the join fetch type for this association.
+     * 
+     * @see FetchType
+     */
+    public JoinFetchType getJoinFetchType();
+
+    /**
+     * Sets the join fetch type for this association.
+     * 
+     * @see FetchType
+     */
+    public void setJoinFetchType(JoinFetchType joinFetchType);
+
+    /**
      * @return <code>true</code> if the corresponding association does not have an inverse relation.
      */
     public boolean isUnidirectional();
@@ -279,5 +298,13 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public enum FetchType {
         LAZY,
         EAGER;
+    }
+
+    /**
+     * Determines the join fetch type in case of eager fetch type.
+     */
+    public enum JoinFetchType {
+        INNER,
+        OUTER;
     }
 }

@@ -173,4 +173,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         return true;
     }
 
+    public boolean isPersistentProviderSupportConverter() {
+        return false;
+    }
 }

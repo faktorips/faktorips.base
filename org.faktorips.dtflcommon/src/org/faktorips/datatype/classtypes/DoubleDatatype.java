@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -43,11 +43,12 @@ public class DoubleDatatype extends ValueClassDatatype implements NumericDatatyp
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValue(String s) {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
-		return Double.valueOf(s);
+        return Double.valueOf(s);
     }
 
     /**
@@ -75,7 +76,7 @@ public class DoubleDatatype extends ValueClassDatatype implements NumericDatatyp
         if (dividend == null || divisor == null) {
             throw new NullPointerException("dividend and divisor both can not be null.");
         }
-        
+
         BigDecimal a = new BigDecimal(dividend);
         BigDecimal b = new BigDecimal(divisor);
 
@@ -85,5 +86,9 @@ public class DoubleDatatype extends ValueClassDatatype implements NumericDatatyp
         } catch (ArithmeticException e) {
             return false;
         }
+    }
+
+    public boolean hasDecimalPlaces() {
+        return true;
     }
 }

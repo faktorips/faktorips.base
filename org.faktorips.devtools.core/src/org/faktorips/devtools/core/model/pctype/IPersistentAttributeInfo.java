@@ -197,11 +197,6 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
     public void setTableColumnPrecision(int precision);
 
     /**
-     * Returns a converter for this column.
-     */
-    public IPersistableTypeConverter getTableColumnConverter();
-
-    /**
      * Sets a converter for this column;
      */
     public void setTableColumnConverter(IPersistableTypeConverter newConverter);
@@ -236,11 +231,6 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      * @see AttributeType
      */
     public boolean isPersistentAttribute();
-
-    /**
-     * Returns <code>true</code> if the underlying attribute represents a temporal type.
-     */
-    public boolean isTemporalAttribute();
 
     /**
      * If this attribute corresponds to a temporal type then this method returns the temporal

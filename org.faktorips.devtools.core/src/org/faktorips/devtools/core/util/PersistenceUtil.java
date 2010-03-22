@@ -16,6 +16,12 @@ package org.faktorips.devtools.core.util;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.NumericDatatype;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.classtypes.BigDecimalDatatype;
+import org.faktorips.datatype.classtypes.DateDatatype;
+import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
+import org.faktorips.datatype.classtypes.StringDatatype;
 
 /**
  * A utility class for persistence (validation of table names, ..).
@@ -41,5 +47,23 @@ public class PersistenceUtil {
             return false;
         }
         return NAME_PATTERN.matcher(name).matches();
+    }
+
+    public static boolean isSupportingDecimalPlaces(ValueDatatype valueDatatype) {
+        if (valueDatatype instanceof NumericDatatype) {
+            return ((NumericDatatype)valueDatatype).hasDecimalPlaces();
+        }
+        if (valueDatatype instanceof BigDecimalDatatype) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isSupportingTemporalType(ValueDatatype valueDatatype) {
+        return valueDatatype instanceof GregorianCalendarDatatype || valueDatatype instanceof DateDatatype;
+    }
+
+    public static boolean isSupportingLenght(ValueDatatype valueDatatype) {
+        return valueDatatype instanceof StringDatatype;
     }
 }

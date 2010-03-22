@@ -295,5 +295,4 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public String getVersion() {
         return "";
     }
-
 }

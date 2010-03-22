@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,25 +26,27 @@ import org.faktorips.values.Decimal;
  */
 public class DecimalDatatype extends ValueClassDatatype implements NumericDatatype {
 
-	public DecimalDatatype() {
-		super(Decimal.class);
-	}
-	
-	public DecimalDatatype(String name) {
-	    super(Decimal.class, name);
-	}
+    public DecimalDatatype() {
+        super(Decimal.class);
+    }
 
-	/**
-     * {@inheritDoc}
-	 */
-	public Object getValue(String s) {
-		return Decimal.valueOf(s);
-	}
+    public DecimalDatatype(String name) {
+        super(Decimal.class, name);
+    }
 
     /**
      * {@inheritDoc}
      */
-	public boolean hasNullObject() {
+    @Override
+    public Object getValue(String s) {
+        return Decimal.valueOf(s);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasNullObject() {
         return true;
     }
 
@@ -76,12 +78,13 @@ public class DecimalDatatype extends ValueClassDatatype implements NumericDataty
         Decimal b = Decimal.valueOf(divisor);
         try {
             a.divide(b, 0, BigDecimal.ROUND_UNNECESSARY);
-        }
-        catch (ArithmeticException e) {
+        } catch (ArithmeticException e) {
             return false;
         }
         return true;
     }
 
-    
+    public boolean hasDecimalPlaces() {
+        return true;
+    }
 }

@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.JoinFetchType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -269,6 +270,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals("targetColumn1", persistenceAssociatonInfo.getTargetColumnName());
         assertEquals("sourceColumn1", persistenceAssociatonInfo.getSourceColumnName());
         assertEquals(FetchType.LAZY, persistenceAssociatonInfo.getFetchType());
+        assertEquals(JoinFetchType.INNER, persistenceAssociatonInfo.getJoinFetchType());
         assertEquals("joinColumn1", persistenceAssociatonInfo.getJoinColumnName());
     }
 
@@ -280,6 +282,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setTargetColumnName("targetColumn0");
         persistenceAssociatonInfo.setSourceColumnName("sourceColumn0");
         persistenceAssociatonInfo.setFetchType(FetchType.EAGER);
+        persistenceAssociatonInfo.setJoinFetchType(JoinFetchType.OUTER);
         persistenceAssociatonInfo.setJoinColumnName("joinColumn0");
         Element element = persistenceAssociatonInfo.toXml(newDocument());
 
@@ -295,6 +298,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals("targetColumn0", copyOfPersistenceAssociatonInfo.getTargetColumnName());
         assertEquals("sourceColumn0", copyOfPersistenceAssociatonInfo.getSourceColumnName());
         assertEquals(FetchType.EAGER, copyOfPersistenceAssociatonInfo.getFetchType());
+        assertEquals(JoinFetchType.OUTER, copyOfPersistenceAssociatonInfo.getJoinFetchType());
         assertEquals("joinColumn0", copyOfPersistenceAssociatonInfo.getJoinColumnName());
     }
 
