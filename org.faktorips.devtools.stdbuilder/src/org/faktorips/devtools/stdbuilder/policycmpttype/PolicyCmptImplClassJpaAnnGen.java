@@ -187,9 +187,6 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         if (!(ipsElement instanceof IPolicyCmptType)) {
             return false;
         }
-        if (((IPolicyCmptType)ipsElement).isAbstract()) {
-            return false;
-        }
         return ((IPolicyCmptType)ipsElement).isPersistentEnabled();
     }
 }

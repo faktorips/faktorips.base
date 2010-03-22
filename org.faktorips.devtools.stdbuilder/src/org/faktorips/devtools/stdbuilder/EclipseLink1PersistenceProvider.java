@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.util.StringUtil;
@@ -28,10 +29,15 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
     private static final String ANNOTATION_PRIVATE_OWNED = "@PrivateOwned";
 
     // converter annotation constants
-    private static final String ANNOTATION_CONVERTER = "@Converter";
-    private static final String ANNOTATION_CONVERT = "@Convert";
     private static final String IMPORT_CONVERTER = "org.eclipse.persistence.annotations.Converter";
     private static final String IMPORT_CONVERT = "org.eclipse.persistence.annotations.Convert";
+    private static final String ANNOTATION_CONVERTER = "@Converter";
+    private static final String ANNOTATION_CONVERT = "@Convert";
+
+    // join fetch type in case of eager fetch type
+    private static final String IMPORT_JOIN_FETCH = "org.eclipse.persistence.annotations.JoinFetch";
+    private static final String IMPORT_JOIN_FETCH_TYPE = "org.eclipse.persistence.annotations.JoinFetchType";
+    private static final String ANNOTATION_JOIN_FETCH = "@JoinFetch";
 
     public boolean isSupportingConverter() {
         return true;
@@ -62,15 +68,23 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
         javaCodeFragment.append(ANNOTATION_CONVERT);
         javaCodeFragment.append("(");
         javaCodeFragment.appendQuoted(converterName);
-        javaCodeFragment.append(")");
+        javaCodeFragment.appendln(")");
     }
 
-    public void addAnnotationJoinFetchType(JavaCodeFragment javaCodeFragment) {
-        throw new UnsupportedOperationException();
+    public void addAnnotationJoinFetchType(JavaCodeFragment javaCodeFragment, String joinFetchTypeValue) {
+        if (StringUtils.isEmpty(joinFetchTypeValue)) {
+            return;
+        }
+        javaCodeFragment.addImport(IMPORT_JOIN_FETCH);
+        javaCodeFragment.addImport(IMPORT_JOIN_FETCH_TYPE);
+        javaCodeFragment.append(ANNOTATION_JOIN_FETCH);
+        javaCodeFragment.append("(value = JoinFetchType.");
+        javaCodeFragment.append(joinFetchTypeValue);
+        javaCodeFragment.appendln(")");
     }
 
     public boolean isSupportingJoinFetchType() {
-        return false;
+        return true;
     }
 
 }

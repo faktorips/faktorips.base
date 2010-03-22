@@ -26,7 +26,7 @@ public interface IPersistenceProvider {
 
     public void addAnnotationOrphanRemoval(JavaCodeFragment javaCodeFragment);
 
-    public void addAnnotationJoinFetchType(JavaCodeFragment javaCodeFragment);
+    public void addAnnotationJoinFetchType(JavaCodeFragment javaCodeFragment, String joinFetchTypeValue);
 
     public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,
             IPersistentAttributeInfo persistentAttributeInfo);

@@ -142,7 +142,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             GenAssociation genAssociation,
             GenAssociation genInverseAssociation) {
         if (persistenceProviderImpl.isSupportingJoinFetchType()) {
-            persistenceProviderImpl.addAnnotationJoinFetchType(fragment);
+            persistenceProviderImpl.addAnnotationJoinFetchType(fragment, genAssociation.getAssociation()
+                    .getPersistenceAssociatonInfo().getJoinFetchType().toString());
         }
     }
 

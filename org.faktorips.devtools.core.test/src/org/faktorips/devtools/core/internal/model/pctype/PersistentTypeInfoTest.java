@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -209,6 +210,19 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
         msgList = persistenceTypeInfoSuper.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+
+        // if no attribute exists then the discriminator is not necessary
+        msgList = persistenceTypeInfo1.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+        msgList = persistenceTypeInfo2.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+
+        IAttribute attribute1 = policyCmptType.newAttribute();
+        IAttribute attribute2 = policyCmptType2.newAttribute();
+        attribute1.setName("att1");
+        attribute1.setDatatype("String");
+        attribute2.setName("att1");
+        attribute1.setDatatype("String");
 
         msgList = persistenceTypeInfo1.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
