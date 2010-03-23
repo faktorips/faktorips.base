@@ -1,6 +1,6 @@
 <project name="org.faktorips.util" default="buildjar">
 
-	<property name="projectname" value="valuetypes" />
+	<property name="projectname" value="valuetypes.java5" />
 	<property name="buildproject.path" value="./../../org.faktorips.build" />
 	
 	<!-- reads the ipsversion (bundle version) from the manifest file -->

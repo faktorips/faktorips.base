@@ -2,7 +2,7 @@
 
 	<property name="clientpackage" value="**" />
 
-	<property name="projectname" value="runtime" />
+	<property name="projectname" value="runtime.java5" />
 	<property name="buildproject.path" value="./../../org.faktorips.build" />
 	
 	<!-- reads the ipsversion (bundle version) from the manifest file -->
@@ -14,10 +14,10 @@
 	<!-- classes inside the client jar -->
 	<property name="clientJarClassDir" location="classes/java"/>
 	<property name="clientJarClasses" 
-		value="**/MessageList.class,
-			   **/Message.class,
-			   **/MsgReplacementParameter.class,
-			   **/ObjectProperty.class"/>
+		value="**/MessageList*.class,
+			   **/Message*.class,
+			   **/MsgReplacementParameter*.class,
+			   **/ObjectProperty*.class"/>
 	
 	<property name="clientJarSrcDir" location="../src"/>
 	<property name="clientJarSrc" 
@@ -78,8 +78,8 @@
 	<!-- build faktorips runtime client -->
 	<target name="buildclientjar" >
 		<ant antfile="${buildproject.path}/build.xml" target="buildSpecificJar">
-			<property name="projectname" value="client" />
-			<property name="jarfile" location="results/faktorips-runtime-client.jar" />		
+			<property name="projectname" value="client.java5" />
+			<property name="jarfile" location="results/faktorips-runtime-client.java5.jar" />		
 			<property name="selectedDir" value="${clientJarClassDir}" />			
 			<property name="selectedFiles" value="${clientJarClasses}" />			
 			<reference refid="classpath" torefid="classpath"/>
@@ -89,9 +89,9 @@
 	<!-- build faktorips runtime client -->
 	<target name="buildclientsrcjar" >
 		<ant antfile="${buildproject.path}/build.xml" target="buildSpecificJar">
-			<property name="projectname" value="client" />
+			<property name="projectname" value="client.java5" />
 			<property name="manifest-title" value="FaktorIPS-Runtime client-jar" />
-			<property name="jarfile" location="results/faktorips-runtime-client-src.zip" />	
+			<property name="jarfile" location="results/faktorips-runtime-client-src.java5.zip" />	
 			<property name="selectedDir" value="${clientJarSrcDir}" />	
 			<property name="selectedFiles" value="${clientJarSrc}" />			
 			<reference refid="classpath" torefid="classpath"/>
