@@ -14,10 +14,10 @@
 	<!-- classes inside the client jar -->
 	<property name="clientJarClassDir" location="classes/java"/>
 	<property name="clientJarClasses" 
-		value="**/MessageList.class,
-			   **/Message.class,
-			   **/MsgReplacementParameter.class,
-			   **/ObjectProperty.class"/>
+		value="**/MessageList*.class,
+			   **/Message*.class,
+			   **/MsgReplacementParameter*.class,
+			   **/ObjectProperty*.class"/>
 	
 	<property name="clientJarSrcDir" location="../src"/>
 	<property name="clientJarSrc" 
