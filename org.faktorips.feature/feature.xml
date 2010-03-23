@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="Faktor-IPS"
-      version="0.0.0"
+      version="3.0.0"
       provider-name="Faktor Zehn AG"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
@@ -768,12 +768,6 @@ Nutzer dort auf die Änderung hinweisen.
 Diese Datenschutzbestimmungen können auf der Website der Faktor Zehn AG über das Link “Daten-
 schutz” abgerufen und ausgedruckt werden.
    </license>
-
-   <includes
-         id="org.faktorips.feature.source"
-         version="0.0.0"
-         name="Faktor-IPS Source"
-         optional="true"/>
 
    <requires>
       <import plugin="org.eclipse.ui"/>
