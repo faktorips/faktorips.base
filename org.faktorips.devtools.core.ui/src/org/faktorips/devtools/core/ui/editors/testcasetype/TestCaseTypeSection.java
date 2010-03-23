@@ -1073,7 +1073,7 @@ public class TestCaseTypeSection extends IpsSection {
             createDetailsArea(null);
         }
 
-        configureToolBar();
+        configureToolBar(detailsSection);
 
         sashForm.setWeights(new int[] { 50, 50 });
         redrawForm();
@@ -1091,7 +1091,7 @@ public class TestCaseTypeSection extends IpsSection {
     /*
      * Configuration of toolbar
      */
-    private void configureToolBar() {
+    private void configureToolBar(Section detailsSection) {
         // Toolbar item show all
         Action actionAll = new Action("structureAll", IAction.AS_CHECK_BOX) { //$NON-NLS-1$
             @Override
@@ -1102,8 +1102,11 @@ public class TestCaseTypeSection extends IpsSection {
         actionAll.setChecked(showAll);
         actionAll.setToolTipText(Messages.TestCaseTypeSection_Action_ShowAll_ToolTip);
         actionAll.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
-        form.getToolBarManager().add(actionAll);
-        form.updateToolBar();
+        ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+        ToolBar toolbar = toolBarManager.createControl(detailsSection);
+        toolBarManager.add(actionAll);
+        toolBarManager.update(true);
+        detailsSection.setTextClient(toolbar);
     }
 
     /*
