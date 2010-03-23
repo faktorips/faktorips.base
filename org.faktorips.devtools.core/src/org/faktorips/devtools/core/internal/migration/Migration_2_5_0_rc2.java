@@ -52,7 +52,7 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getDescription() {
-        return "The modeling of composition has changed.\n" //$NON-NLS-1$
+        return "The modeling of composition has changed. " //$NON-NLS-1$
                 + "Now every child model object becomes a concrete parent model object variable for each parent they belongs to."; //$NON-NLS-1$
     }
 

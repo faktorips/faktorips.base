@@ -163,11 +163,10 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
     private void addAnnotationsForDescriminator(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {
         String discriminatorValue = persistenceTypeInfo.getDiscriminatorValue();
-        if (StringUtils.isEmpty(discriminatorValue)) {
-            return;
+        if (!StringUtils.isEmpty(discriminatorValue)) {
+            fragment.appendln(ANNOTATION_DISCRIMINATOR_VALUE + "(\"" + discriminatorValue + "\")");
+            fragment.addImport(IMPORT_DISCRIMINATOR_VALUE);
         }
-        fragment.appendln(ANNOTATION_DISCRIMINATOR_VALUE + "(\"" + discriminatorValue + "\")");
-        fragment.addImport(IMPORT_DISCRIMINATOR_VALUE);
 
         if (!persistenceTypeInfo.isDefinesDiscriminatorColumn()) {
             return;

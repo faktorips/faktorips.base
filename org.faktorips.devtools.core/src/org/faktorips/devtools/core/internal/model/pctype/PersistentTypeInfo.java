@@ -40,17 +40,30 @@ import org.w3c.dom.Element;
 public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersistentTypeInfo {
 
     private String tableName = "";
-    private String secondaryTableName = "";
+
+    // the strategy which should be used to store the hierarchy objects
+    // the strategy must only be defined on the root entity, the subclasses will adopt the
+    // same strategy that is specified in the root entity superclass.
+    // the JPA default is single table
     private InheritanceStrategy inheritanceStrategy = InheritanceStrategy.SINGLE_TABLE;
+
+    // class indicator
+    // the discriminator should used in single table and join subclass strategy
+    // some vendors offer implementations of joined inheritance without the use of a discriminator
+    // column but the discriminator columns should be used to ensure the portability
     private String discriminatorValue = "";
     private DiscriminatorDatatype discriminatorDatatype = DiscriminatorDatatype.STRING;
     private String discriminatorColumnName = "";
+
+    private String secondaryTableName = "";
 
     private boolean notJoinedSubclass = true;
 
     // per default the persistent is disabled
     private boolean enabled = false;
 
+    // specifies if the associate type defines the discriminator or not
+    // note that only the base entity (root entity) can define the discriminator
     private boolean definesDiscriminatorColumn = false;
 
     public boolean isNotJoinedSubclass() {
@@ -319,7 +332,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         if (!discrValueMustBeEmpty) {
             if (StringUtils.isEmpty(discriminatorValue)) {
-                String text = "The discriminator value must not be empty if the base entity defines the dicriminator column.";
+                String text = "The discriminator value must not be empty if the base entity defines the dicriminator column and the type is not abstract.";
                 msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
                         IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
                 return;
@@ -349,11 +362,13 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         IPolicyCmptType pcType = getPolicyCmptType();
-        DiscriminatorValidator dValidator = new DiscriminatorValidator(this);
-        dValidator.start(pcType);
-        if (dValidator.conflictingTypeInfo != null) {
-            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, dValidator.errorMessage,
-                    Message.ERROR, this, dValidator.errorProperty));
+        if (!pcType.isAbstract()) {
+            DiscriminatorValidator dValidator = new DiscriminatorValidator(this);
+            dValidator.start(pcType);
+            if (dValidator.conflictingTypeInfo != null) {
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, dValidator.errorMessage,
+                        Message.ERROR, this, dValidator.errorProperty));
+            }
         }
     }
 
@@ -496,8 +511,11 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
             IPersistentTypeInfo currentTypeInfo = currentType.getPersistenceTypeInfo();
-
+            if (currentType.isAbstract()) {
+                return true;
+            }
             if (!(inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)) {
+                // wrong inheritance strategy abort
                 return false;
             }
 

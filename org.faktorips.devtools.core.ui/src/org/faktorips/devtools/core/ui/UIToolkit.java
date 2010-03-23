@@ -64,7 +64,7 @@ public class UIToolkit {
 
     private static final int FOREGROUND_COLOR_DISABLED = SWT.COLOR_DARK_GRAY;
     private static final int FOREGROUND_COLOR_ENABLED = SWT.COLOR_LIST_FOREGROUND;
-    private static final int BACKGROUND_COLOR_DISABLED = SWT.COLOR_TITLE_INACTIVE_BACKGROUND;
+    private static final int BACKGROUND_COLOR_DISABLED = SWT.COLOR_LIST_BACKGROUND;
     private static final int BACKGROUND_COLOR_ENABLED = SWT.COLOR_LIST_BACKGROUND;
 
     private FormToolkit formToolkit;
@@ -87,7 +87,10 @@ public class UIToolkit {
         if (c instanceof Text) {
             ((Text)c).setEditable(changeable);
             setForegroundColor(c, changeable);
-            setBackgroundColor(c, changeable);
+            if (formToolkit == null) {
+                // grayed text background only in dialogs
+                setBackgroundColor(c, changeable);
+            }
             return;
         }
         if (c instanceof Label) {

@@ -185,7 +185,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertEquals(superPcType, persTypeInfo.findBaseEntity());
         assertEquals(superPcType, superPcType.getPersistenceTypeInfo().findBaseEntity());
 
-        // doesn't matter the type is abstract
+        // doesn't matter if the super type is abstract
         superPcType.setAbstract(true);
         assertEquals(superPcType, persTypeInfo.findBaseEntity());
     }
@@ -268,6 +268,17 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         msgList = persistenceTypeInfo2.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
         // supertype value not checked
+        msgList = superPcType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        // with abstract subclass
+        policyCmptType2.setAbstract(true);
+        persistenceTypeInfo2.setDiscriminatorValue("");
+        persistenceTypeInfoSuper.setDiscriminatorValue("1");
+        msgList = persistenceTypeInfo1.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+        msgList = persistenceTypeInfo2.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
         msgList = superPcType.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
 
