@@ -1255,7 +1255,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         updateButtonEnableState(selection.getFirstElement());
 
-        if (!showAll) {
+        if (!showAll && !selection.isEmpty()) {
             // show only the elements which belongs to the selection
             // if a test value is selected show the value objects
             // if a test policy component or a child of a policy component is selected, show all
