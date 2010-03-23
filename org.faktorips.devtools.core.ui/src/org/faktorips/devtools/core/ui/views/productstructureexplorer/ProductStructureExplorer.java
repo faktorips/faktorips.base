@@ -82,6 +82,8 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
+import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
+import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
@@ -344,31 +346,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         retargetAction.setToolTipText(refreshAction.getToolTipText());
         getViewSite().getActionBars().getToolBarManager().add(retargetAction);
 
-        // collapse all action
-        toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("CollapseAll.gif")) {//$NON-NLS-1$
-                    @Override
-                    public void run() {
-                        treeViewer.collapseAll();
-                    }
-
-                    @Override
-                    public String getToolTipText() {
-                        return Messages.ProductStructureExplorer_menuCollapseAll_toolkit;
-                    }
-                });
-
-        // expand all action
-        toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("ExpandAll.gif")) {//$NON-NLS-1$
-                    @Override
-                    public void run() {
-                        treeViewer.expandAll();
-                    }
-
-                    @Override
-                    public String getToolTipText() {
-                        return Messages.ProductStructureExplorer_menuExpandAll_toolkit;
-                    }
-                });
+        toolBarManager.add(new ExpandAllAction(treeViewer));
+        toolBarManager.add(new CollapseAllAction(treeViewer));
 
         // clear action
         toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {//$NON-NLS-1$

@@ -31,8 +31,6 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_infoMessageEmptyView_1;
     public static String ProductStructureExplorer_infoMessageEmptyView_2;
     public static String ProductStructureExplorer_label_NoGenerationForDate;
-    public static String ProductStructureExplorer_menuCollapseAll_toolkit;
-    public static String ProductStructureExplorer_menuExpandAll_toolkit;
     public static String ProductStructureExplorer_menuShowReferencedTables_name;
     public static String ProductStructureExplorer_menuShowReferencedTables_tooltip;
     public static String ProductStructureExplorer_menuShowAssociationNodes_name;
