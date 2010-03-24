@@ -15,11 +15,11 @@
 	<!-- TODO Abh. zu IEnumValue wieder entfernen! nach fix -->
 	<property name="clientJarClassDir" location="classes/java"/>
 	<property name="clientJarClasses" 
-		value="**/MessageList.class,
-			   **/Message.class,
-			   **/MsgReplacementParameter.class,
-			   **/ObjectProperty.class,
-	           **/IEnumValue.class"/>
+		value="**/MessageList*.class,
+			   **/Message*.class,
+			   **/MsgReplacementParameter*.class,
+			   **/ObjectProperty*.class,
+	           **/IEnumValue*.class"/>
 	
 	<property name="clientJarSrcDir" location="../src"/>
 	<property name="clientJarSrc" 
