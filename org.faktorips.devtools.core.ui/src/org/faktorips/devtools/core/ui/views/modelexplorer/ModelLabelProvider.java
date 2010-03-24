@@ -65,6 +65,19 @@ public class ModelLabelProvider implements ILabelProvider {
     }
 
     public Image getImage(Object element) {
+        if (element instanceof IIpsProject) {
+            /*
+             * Use the project images provided by eclipse (with nature overlay images), instead of
+             * calling the workbench adapter for IpsProjects (which returns an IpsProject-Icon
+             * only). This is necessary as there are IpsProjects with other natures that need to be
+             * displayed as such (e.g. analysis and transformation projects).
+             * 
+             * This was not implemented using Adapters as IpsProjects should be displayed with
+             * IpsProject-Icon in situations other than the ModelExplorer (like the ipsProject
+             * references).
+             */
+            return getImage(((IIpsProject)element).getProject());
+        }
         if (element instanceof IIpsElement) {
             return defaultLabelProvider.getImage(element);
         } else if (element instanceof IResource) {
