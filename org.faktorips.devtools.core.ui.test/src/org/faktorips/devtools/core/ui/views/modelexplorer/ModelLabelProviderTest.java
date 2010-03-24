@@ -91,7 +91,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
      */
     public void testGetImage() {
         // Image returned by getImage() equals Image returned by IpsElement#getImage()
-        Image img = IpsUIPlugin.getImageHandling().getImage(proj);
+        Image img = IpsUIPlugin.getImageHandling().getImage(proj.getProject());
         assertTrue(img == flatProvider.getImage(proj));
         assertTrue(img == hierarchyProvider.getImage(proj));
         img = IpsUIPlugin.getImageHandling().getImage(root);
