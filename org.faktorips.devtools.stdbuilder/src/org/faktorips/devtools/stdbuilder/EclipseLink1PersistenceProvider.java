@@ -34,9 +34,11 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
     private static final String ANNOTATION_CONVERT = "@Convert";
 
     // join fetch type in case of eager fetch type
-    private static final String IMPORT_JOIN_FETCH = "org.eclipse.persistence.annotations.JoinFetch";
-    private static final String IMPORT_JOIN_FETCH_TYPE = "org.eclipse.persistence.annotations.JoinFetchType";
-    private static final String ANNOTATION_JOIN_FETCH = "@JoinFetch";
+    // private static final String IMPORT_JOIN_FETCH =
+    // "org.eclipse.persistence.annotations.JoinFetch";
+    // private static final String IMPORT_JOIN_FETCH_TYPE =
+    // "org.eclipse.persistence.annotations.JoinFetchType";
+    // private static final String ANNOTATION_JOIN_FETCH = "@JoinFetch";
 
     public boolean isSupportingConverter() {
         return true;
