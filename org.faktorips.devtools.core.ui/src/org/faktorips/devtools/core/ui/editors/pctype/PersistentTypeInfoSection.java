@@ -55,22 +55,26 @@ public class PersistentTypeInfoSection extends IpsSection {
 
     private class EnabledControlsBindingByProperty extends ControlPropertyBinding {
         private UIToolkit toolkit;
+        private boolean checkEnable = true;
 
-        public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property) {
+        public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property, boolean checkEnable) {
             super(control, ipsObject.getPersistenceTypeInfo(), property, Boolean.TYPE);
             this.toolkit = toolkit;
+            this.checkEnable = checkEnable;
         }
 
         @Override
         public void updateUiIfNotDisposed() {
             try {
-                boolean enabled;
                 if (!ipsObject.getPersistenceTypeInfo().isEnabled()) {
-                    enabled = false;
+                    toolkit.setDataChangeable(getControl(), false);
                 } else {
-                    enabled = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+                    boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+                    if (!checkEnable) {
+                        enabled = !enabled;
+                    }
+                    toolkit.setDataChangeable(getControl(), enabled);
                 }
-                toolkit.setDataChangeable(getControl(), enabled);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -122,7 +126,7 @@ public class PersistentTypeInfoSection extends IpsSection {
             bindingContext.bindContent(checkboxEnable, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_ENABLED);
             bindingContext.add(new EnabledControlsBindingByProperty(composite, toolkit,
-                    IPersistentTypeInfo.PROPERTY_ENABLED));
+                    IPersistentTypeInfo.PROPERTY_ENABLED, true));
 
             bindingContext.bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY);
@@ -131,13 +135,15 @@ public class PersistentTypeInfoSection extends IpsSection {
                     IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE);
             bindingContext.bindContent(tableNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_TABLE_NAME);
+            bindingContext.add(new EnabledControlsBindingByProperty(tableNameText, toolkit,
+                    IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, false));
 
             bindingContext.bindContent(defineDiscriminatorColumn, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
             bindingContext.add(new EnabledControlsBindingByProperty(descriminatorColumnNameText, toolkit,
-                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
+                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
             bindingContext.add(new EnabledControlsBindingByProperty(descriminatorDatatypeCombo, toolkit,
-                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
+                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
 
             bindingContext.bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME);
@@ -147,18 +153,6 @@ public class PersistentTypeInfoSection extends IpsSection {
             bindingContext.bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
 
-            // bindingContext.bindEnabled(descriminatorColumnValueText,
-            // ipsObject.getPersistenceTypeInfo(),
-            // IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
-            // bindingContext.bindEnabled(descriminatorDatatypeCombo,
-            // ipsObject.getPersistenceTypeInfo(),
-            // IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
-            // bindingContext.bindEnabled(descriminatorColumnNameText,
-            // ipsObject.getPersistenceTypeInfo(),
-            // IPersistentTypeInfo.PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS);
-            // bindingContext.bindContent(secondaryTableNameText,
-            // ipsObject.getPersistenceTypeInfo(),
-            // IPersistentTypeInfo.PROPERTY_SECONDARY_TABLE_NAME);
         } else {
             // special handling if no persistence type info exists before
             checkboxEnable.setChecked(false);
