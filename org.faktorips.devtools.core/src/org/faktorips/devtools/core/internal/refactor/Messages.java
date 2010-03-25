@@ -32,6 +32,14 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    public static String IpsRefactoringProcessor_errorIpsElementDoesNotExist;
+    public static String IpsRefactoringProcessor_errorIpsSrcFileOutOfSync;
+
+    public static String IpsRenameProcessor_msgNewNameEmpty;
+    public static String IpsRenameProcessor_msgNewNameEqualsElementName;
+
+    public static String IpsMoveProcessor_msgTargetLocationEqualsOriginalLocation;
+
     public static String MoveOperation_errorMessageSourceNotExists;
     public static String MoveOperation_msgErrorProductCmptIsMissing;
     public static String MoveOperation_msgErrorTheTargetIsIncludedInTheSource;

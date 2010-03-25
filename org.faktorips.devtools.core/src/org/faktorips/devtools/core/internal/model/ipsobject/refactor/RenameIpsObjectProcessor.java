@@ -13,27 +13,32 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.internal.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.util.message.MessageList;
 
 /**
- * This is the "Rename Type" - refactoring.
+ * This is the "Rename IPS Object" - refactoring.
  * 
  * @author Alexander Weickmann
  */
 public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
 
     /**
-     * A helper providing functionality shared between the "Rename Type" and "Move Type"
+     * A helper providing functionality shared between the "Rename IPS Object" and "Move IPS Object"
      * refactorings.
      */
     private final MoveRenameIpsObjectHelper renameMoveHelper;
 
     /**
-     * @param toBeRefactored The <tt>BaseIpsObject</tt> to be renamed.
+     * @param toBeRefactored The <tt>IIpsObject</tt> to be renamed.
      */
     public RenameIpsObjectProcessor(IpsObject toBeRefactored) {
         super(toBeRefactored);
@@ -43,12 +48,15 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
 
     @Override
     protected void addIpsSrcFiles() throws CoreException {
-        renameMoveHelper.addIpsSrcFiles();
+        List<IIpsSrcFile> ipsSrcFiles = renameMoveHelper.addIpsSrcFiles();
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            addIpsSrcFile(ipsSrcFile);
+        }
     }
 
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.validateUserInputThis(getObject().getIpsPackageFragment(), getNewName(), status, pm);
+        renameMoveHelper.validateUserInputThis(getIpsObject().getIpsPackageFragment(), getNewName(), status, pm);
     }
 
     @Override
@@ -56,28 +64,28 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
             IProgressMonitor pm,
             CheckConditionsContext context) throws CoreException {
 
-        renameMoveHelper.checkFinalConditionsThis(getObject().getIpsPackageFragment(), getNewName(), status, pm,
-                context);
+        MessageList validationMessageList = renameMoveHelper.checkFinalConditionsThis(getIpsObject()
+                .getIpsPackageFragment(), getNewName(), status, pm, context);
+        addValidationMessagesToStatus(validationMessageList, status);
     }
 
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.refactorIpsModel(getObject().getIpsPackageFragment(), getNewName(), pm);
+        renameMoveHelper.refactorIpsModel(getIpsObject().getIpsPackageFragment(), getNewName(), pm);
     }
 
-    /** Returns the <tt>IType</tt> to be renamed. */
-    private IpsObject getObject() {
+    private IpsObject getIpsObject() {
         return (IpsObject)getIpsElement();
     }
 
     @Override
     public String getIdentifier() {
-        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameTypeProcessor";
+        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameIpsObjectProcessor";
     }
 
     @Override
     public String getProcessorName() {
-        return Messages.RenameTypeProcessor_processorName;
+        return Messages.RenameIpsObjectProcessor_processorName;
     }
 
 }

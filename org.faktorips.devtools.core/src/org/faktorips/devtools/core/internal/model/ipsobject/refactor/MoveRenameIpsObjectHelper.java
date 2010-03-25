@@ -30,6 +30,9 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.internal.refactor.IpsMoveProcessor;
+import org.faktorips.devtools.core.internal.refactor.IpsRefactoringProcessor;
+import org.faktorips.devtools.core.internal.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -46,30 +49,29 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The <tt>RenameTypeMoveTypeHelper</tt> bundles common functionality of the "Rename Type" and
- * "Move Type" refactorings.
+ * The <tt>MoveRenameIpsObjectHelper</tt> bundles common functionality of the "Rename IPS Object"
+ * and "Move IPS Object" refactorings.
  * 
  * @author Alexander Weickmann
  */
 public final class MoveRenameIpsObjectHelper {
 
-    /** New <tt>IIpsSrcFile</tt> containing a copy of the <tt>IType</tt> to be refactored. */
+    /** New <tt>IIpsSrcFile</tt> containing a copy of the <tt>IIpsObject</tt> to be refactored. */
     private IIpsSrcFile copiedIpsSrcFile;
 
-    /** The <tt>IType</tt> to be refactored. */
+    /** The <tt>IIpsObject</tt> to be refactored. */
     private final IpsObject toBeRefactored;
 
     /** The <tt>IpsRefactoringProcessor</tt> that uses this helper. */
     private final IpsRefactoringProcessor refactoringProcessor;
 
     private IDependency[] dependencies;
+
     private Map<IDependency, IIpsProject> dependencyToProject;
 
     /**
-     * Creates a <tt>RenameTypeMoveTypeHelper</tt>.
-     * 
      * @param refactoringProcessor The <tt>IpsRefactoringProcessor</tt> that uses this helper.
-     * @param toBeRefactored The <tt>IType</tt> to be refactored.
+     * @param toBeRefactored The <tt>IIpsObject</tt> to be refactored.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
@@ -96,19 +98,24 @@ public final class MoveRenameIpsObjectHelper {
     }
 
     /**
+     * Returns a list containing the <tt>IIpsSrcFile</tt>s that are affected by the refactoring.
+     * 
      * @see IpsRefactoringProcessor#addIpsSrcFiles()
      */
-    public void addIpsSrcFiles() throws CoreException {
-        for (IDependency dependency : getDependencies()) {
+    public List<IIpsSrcFile> addIpsSrcFiles() throws CoreException {
+        IDependency[] dependencies = getDependencies();
+        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>(dependencies.length);
+        for (IDependency dependency : dependencies) {
             IIpsSrcFile ipsSrcFile = dependencyToProject.get(dependency).findIpsSrcFile(dependency.getSource());
-            refactoringProcessor.addIpsSrcFile(ipsSrcFile);
+            ipsSrcFiles.add(ipsSrcFile);
         }
+        return ipsSrcFiles;
     }
 
     /**
-     * Can't validate because for type validation the type's source file must be copied. Validation
-     * will still be performed during final condition checking so it should be OK. We check if there
-     * is already a source file with the new name in this package however.
+     * Can't validate because for IPS object validation the object's source file must be copied.
+     * Validation will still be performed during final condition checking so it should be OK. We
+     * check if there is already a source file with the new name in this package however.
      * 
      * @see IpsRenameProcessor#validateUserInputThis(RefactoringStatus, IProgressMonitor)
      * @see IpsMoveProcessor#validateUserInputThis(RefactoringStatus, IProgressMonitor)
@@ -122,7 +129,7 @@ public final class MoveRenameIpsObjectHelper {
             String sourceFileName = ipsSrcFile.getName();
             String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
             if (relevantNamePart.equals(newName)) {
-                status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeHelper_msgSourceFileAlreadyExists, newName,
+                status.addFatalError(NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileAlreadyExists, newName,
                         targetIpsPackageFragment.getName()));
                 break;
             }
@@ -130,16 +137,19 @@ public final class MoveRenameIpsObjectHelper {
     }
 
     /**
-     * The source file of the <tt>IType</tt> will be copied this early. Based on that new source
-     * file and on the copied <tt>IType</tt> validation is performed. If the validation fails the
-     * copy will be deleted so everything is left in a clean state (as it was before). If only a
-     * warning or information validation message results the copy must also be deleted and recreated
-     * later if the user really starts the refactoring.
+     * The source file of the <tt>IIpsObject</tt> will be copied this early. Based on that new
+     * source file and on the copied <tt>IIpsObject</tt> validation is performed. If the validation
+     * fails the copy will be deleted so everything is left in a clean state (as it was before). If
+     * only a warning or information validation message results the copy must also be deleted and
+     * recreated later if the user really starts the refactoring.
+     * <p>
+     * Returns the list of validation messages that should be added to the return status by the
+     * calling refactoring processor.
      * 
      * @see IpsRefactoringProcessor#checkFinalConditionsThis(RefactoringStatus, IProgressMonitor,
      *      CheckConditionsContext)
      */
-    public void checkFinalConditionsThis(IIpsPackageFragment targetIpsPackageFragment,
+    public MessageList checkFinalConditionsThis(IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             RefactoringStatus status,
             IProgressMonitor pm,
@@ -149,22 +159,23 @@ public final class MoveRenameIpsObjectHelper {
             copySourceFileToTargetLocation(targetIpsPackageFragment, newName, pm);
         } catch (CoreException e) {
             status.addFatalError(e.getLocalizedMessage());
-            return;
+            return new MessageList();
         }
 
         IpsObject copy = (IpsObject)copiedIpsSrcFile.getIpsObject();
 
         MessageList validationMessageList = copy.validate(copy.getIpsProject());
-        refactoringProcessor.addValidationMessagesToStatus(validationMessageList, status);
 
         // Delete the copy again in every case because participants condition checking may fail.
         copiedIpsSrcFile.getCorrespondingResource().delete(true, pm);
         copiedIpsSrcFile = null;
+
+        return validationMessageList;
     }
 
     /**
-     * Copies the <tt>IType</tt> to be refactored into a new source file with the desired new name
-     * inside the desired destination package.
+     * Copies the <tt>IIpsObject</tt> to be refactored into a new source file with the desired new
+     * name inside the desired destination package.
      */
     private void copySourceFileToTargetLocation(IIpsPackageFragment targetIpsPackageFragment,
             String newName,
@@ -255,7 +266,7 @@ public final class MoveRenameIpsObjectHelper {
         toBeRefactored.getIpsSrcFile().getCorrespondingResource().delete(true, pm);
     }
 
-    /** Returns the <tt>IType</tt>'s new qualified name. */
+    /** Returns the <tt>IIpsObject</tt>'s new qualified name. */
     private String getNewQualifiedName(IIpsPackageFragment targetIpsPackageFragment, String newName) {
         return getQualifiedName(targetIpsPackageFragment, newName);
     }

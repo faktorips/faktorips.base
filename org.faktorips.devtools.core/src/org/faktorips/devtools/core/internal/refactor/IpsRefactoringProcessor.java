@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
+package org.faktorips.devtools.core.internal.refactor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -135,9 +135,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
      * Adds an entry to the provided <tt>RefactoringStatus</tt> for every messages contained in the
      * provided <tt>MessageList</tt>.
      * <p>
-     * If validation messages with certain message codes shall not be added to the
-     * <tt>RefactoringStatus</tt> these message codes must be added to the set of ignored message
-     * codes.
+     * Excluded are validation message codes that are ignored by the refactoring processor.
      * 
      * @see #getIgnoredValidationMessageCodes()
      * 
@@ -245,7 +243,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
      * Returns the set containing all validation message codes that will be ignored during final
      * condition checking.
      */
-    protected final Set<String> getIgnoredValidationMessageCodes() {
+    public final Set<String> getIgnoredValidationMessageCodes() {
         return ignoredValidationMessageCodes;
     }
 

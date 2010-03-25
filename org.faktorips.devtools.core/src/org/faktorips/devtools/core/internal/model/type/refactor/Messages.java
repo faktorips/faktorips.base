@@ -11,13 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
+package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.ipsobject.refactor.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.type.refactor.messages"; //$NON-NLS-1$
 
     private Messages() {
 
@@ -28,10 +28,6 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    public static String MoveRenameIpsObjectHelper_msgSourceFileAlreadyExists;
-
-    public static String RenameIpsObjectProcessor_processorName;
-
-    public static String MoveIpsObjectProcessor_processorName;
+    public static String RenameAttributeProcessor_processorName;
 
 }

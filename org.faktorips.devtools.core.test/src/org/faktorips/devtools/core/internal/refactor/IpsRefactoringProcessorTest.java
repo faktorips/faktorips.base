@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
+package org.faktorips.devtools.core.internal.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,6 +22,7 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.core.internal.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
