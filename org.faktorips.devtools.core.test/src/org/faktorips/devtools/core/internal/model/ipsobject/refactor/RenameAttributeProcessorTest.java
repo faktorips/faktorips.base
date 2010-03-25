@@ -22,7 +22,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -44,24 +43,10 @@ import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
  */
 public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        createProductCmpt();
-    }
-
     public void testCheckInitialConditionsValid() throws CoreException {
         ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
         RefactoringStatus status = renameRefactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
-    }
-
-    public void testCheckInitialConditionsInvalidAttribute() throws CoreException {
-        policyCmptTypeAttribute.setDatatype("");
-
-        ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
-        RefactoringStatus status = renameRefactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
-        assertTrue(status.hasFatalError());
     }
 
     public void testCheckFinalConditionsValid() throws CoreException {
@@ -83,14 +68,6 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         renameProcessor.setNewName("otherAttribute");
         RefactoringStatus status = renameRefactoring.getProcessor().checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
-        assertTrue(status.hasFatalError());
-    }
-
-    public void testCheckInitialConditionsInvalidType() throws CoreException {
-        policyCmptType.setProductCmptType("xyz");
-
-        ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
-        RefactoringStatus status = renameRefactoring.checkInitialConditions(new NullProgressMonitor());
         assertTrue(status.hasFatalError());
     }
 
@@ -129,11 +106,11 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     /**
-     * Creates another <tt>IPolicyCmptType</tt> that has an attribute that corresponds exactly to
-     * the attribute of the already existing <tt>IPolicyCmptType</tt>.
+     * Creates another attribute in the second <tt>IPolicyCmptType</tt> that that corresponds
+     * exactly to the attribute of the already existing <tt>IPolicyCmptType</tt>.
      * <p>
-     * This new <tt>IPolicyCmptType</tt> is configured by a new <tt>IProductCmptType</tt>. Based on
-     * that <tt>IProductCmptType</tt> exists an <tt>IProductCmpt</tt>. The refactoring of the
+     * This other <tt>IPolicyCmptType</tt> is configured by a new <tt>IProductCmptType</tt>. Based
+     * on that <tt>IProductCmptType</tt> exists an <tt>IProductCmpt</tt>. The refactoring of the
      * original <tt>IPolicyCmptTypeAttribute</tt> may not cause modifications to this new
      * <tt>IProductCmpt</tt>'s <tt>IConfigElement</tt>s.
      * <p>
@@ -142,8 +119,6 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * refactoring, too.
      */
     public void testRenamePolicyCmptTypeAttributeSameNames() throws CoreException {
-        // Create the other policy component type.
-        IPolicyCmptType otherPolicyCmptType = newPolicyCmptType(ipsProject, "OtherPolicy");
         otherPolicyCmptType.setConfigurableByProductCmptType(true);
 
         // Create an attribute corresponding to the attribute of the original policy component type.

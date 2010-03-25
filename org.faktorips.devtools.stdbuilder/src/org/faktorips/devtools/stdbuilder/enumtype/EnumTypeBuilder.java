@@ -424,20 +424,20 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumType, expressionValue, true, repositoryExp);
     }
 
-    private String getMethodNameGetValueBy(IEnumAttribute uniqueEnumAttribute) {
+    public String getMethodNameGetValueBy(IEnumAttribute uniqueEnumAttribute) {
         String attributeName = uniqueEnumAttribute.getName();
         char[] charArray = attributeName.toCharArray();
         charArray[0] = Character.toUpperCase(attributeName.charAt(0));
         return "getValueBy" + String.copyValueOf(charArray); //$NON-NLS-1$
     }
 
-    private String getMethodNameIsValueBy(IEnumAttribute uniqueEnumAttribute) {
+    public String getMethodNameIsValueBy(IEnumAttribute uniqueEnumAttribute) {
         return "isValueBy" + StringUtils.capitalize(uniqueEnumAttribute.getName()); //$NON-NLS-1$
     }
 
-    public String getMethodNameOfIdentifierAttribute(IEnumType enumType, IIpsProject ipsProject) throws CoreException {
-        IEnumAttribute idAttr = enumType.findIdentiferAttribute(ipsProject);
-        return getJavaNamingConvention().getGetterMethodName(idAttr.getName(), idAttr.findDatatype(ipsProject));
+    public String getMethodNameGetIdentifierAttribute(IEnumType enumType, IIpsProject ipsProject) throws CoreException {
+        IEnumAttribute idAttribute = enumType.findIdentiferAttribute(ipsProject);
+        return getMethodNameGetter(idAttribute);
     }
 
     /**
@@ -551,8 +551,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies(false)) {
             String attributeName = currentEnumAttribute.getName();
-            // The first character will be made lower case
-            String codeName = getJavaNamingConvention().getMemberVarName(attributeName);
+            String codeName = getMemberVarName(attributeName);
 
             if (currentEnumAttribute.isValid()) {
                 /*
@@ -571,6 +570,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 }
             }
         }
+    }
+
+    /** The first character will be made lower case. */
+    public String getMemberVarName(String attributeName) {
+        return getJavaNamingConvention().getMemberVarName(attributeName);
     }
 
     /** Generates the java code for the constructor. */
@@ -735,14 +739,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         IIpsProject ipsProject = getIpsProject();
 
-        // Create getters for each attribute
+        // Create getters for each attribute.
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             if (currentEnumAttribute.isValid()) {
                 String attributeName = currentEnumAttribute.getName();
                 String description = currentEnumAttribute.getDescription();
-
-                Datatype datatype = currentEnumAttribute.findDatatype(ipsProject);
-                String methodName = getJavaNamingConvention().getGetterMethodName(attributeName, datatype);
+                String methodName = getMethodNameGetter(currentEnumAttribute);
 
                 // If an interface is to be generated then only generate the method signatures.
                 if (useInterfaceGeneration()) {
@@ -765,7 +767,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         // Build method body
                         JavaCodeFragment methodBody = new JavaCodeFragment();
                         methodBody.append("return "); //$NON-NLS-1$
-                        methodBody.append(getJavaNamingConvention().getMemberVarName(attributeName));
+                        methodBody.append(getMemberVarName(attributeName));
                         methodBody.append(';');
 
                         DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
@@ -1030,11 +1032,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         body.append(")"); //$NON-NLS-1$
         body.appendOpenBracket();
         body.append("return this."); //$NON-NLS-1$
-        body.append(getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
+        body.append(getMethodNameGetIdentifierAttribute(getEnumType(), getIpsProject()));
         body.append("().equals((("); //$NON-NLS-1$
         body.appendClassName(getQualifiedClassName());
         body.append(")obj)."); //$NON-NLS-1$
-        body.append(getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
+        body.append(getMethodNameGetIdentifierAttribute(getEnumType(), getIpsProject()));
         body.append("());"); //$NON-NLS-1$
         body.appendCloseBracket();
         body.appendln("return false;"); //$NON-NLS-1$
@@ -1057,7 +1059,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
         JavaCodeFragment body = new JavaCodeFragment();
         body.append("return "); //$NON-NLS-1$
-        body.append(getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
+        body.append(getMethodNameGetIdentifierAttribute(getEnumType(), getIpsProject()));
         body.appendln("().hashCode();"); //$NON-NLS-1$
 
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -1177,7 +1179,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             IEnumAttribute enumAttribute,
             IType javaType) {
 
-        String methodName = getGetterMethodName(enumAttribute);
+        String methodName = getMethodNameGetter(enumAttribute);
         String[] parameterTypeSignature = new String[0];
         IMethod getterMethod = javaType.getMethod(methodName, parameterTypeSignature);
         javaElements.add(getterMethod);
@@ -1212,9 +1214,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         javaElements.add(isValueByMethod);
     }
 
-    private String getGetterMethodName(IEnumAttribute enumAttribute) {
-        return getJavaNamingConvention().getGetterMethodName(enumAttribute.getName(),
-                getDatatypeHelper(enumAttribute).getDatatype());
+    public String getMethodNameGetter(IEnumAttribute enumAttribute) {
+        Datatype datatype = getDatatypeHelper(enumAttribute).getDatatype();
+        return getJavaNamingConvention().getGetterMethodName(enumAttribute.getName(), datatype);
     }
 
     private String getMemberVarName(IEnumAttribute enumAttribute) {

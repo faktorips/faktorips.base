@@ -169,7 +169,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.append("return null;"); //$NON-NLS-1$
         body.appendCloseBracket();
         body.append("return value."); //$NON-NLS-1$
-        body.append(enumTypeBuilder.getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
+        body.append(enumTypeBuilder.getMethodNameGetIdentifierAttribute(getEnumType(), getIpsProject()));
         body.append("();"); //$NON-NLS-1$
 
         builder.javaDoc(getLocalizedText(getEnumType(), "METHOD_MARSHAL_JAVADOC"));

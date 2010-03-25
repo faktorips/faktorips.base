@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
@@ -26,14 +24,10 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 
@@ -44,25 +38,13 @@ import org.faktorips.devtools.core.model.type.IMethod;
  */
 public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest {
 
-    protected static final String OTHER_POLICY_NAME = "OtherPolicy";
-
-    protected static final String OTHER_PRODUCT_TYPE_NAME = "OtherProductType";
-
     protected static final String OTHER_PRODUCT_NAME = "OtherProduct";
-
-    protected IPolicyCmptType otherPolicyCmptType;
-
-    protected IProductCmptType otherProductCmptType;
 
     protected IProductCmpt otherProductCmpt;
 
     protected IMethod policyMethod;
 
     protected IMethod productMethod;
-
-    protected IPolicyCmptTypeAssociation otherPolicyToPolicyAssociation;
-
-    protected IProductCmptTypeAssociation otherProductToProductAssociation;
 
     protected IProductCmptLink otherProductToProductLink;
 
@@ -71,10 +53,6 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-
-        // Create another policy component type and another product component type.
-        otherPolicyCmptType = newPolicyCmptType(ipsProject, OTHER_POLICY_NAME);
-        otherProductCmptType = newProductCmptType(ipsProject, OTHER_PRODUCT_TYPE_NAME);
 
         // Setup policy method.
         policyMethod = otherPolicyCmptType.newMethod();
@@ -92,14 +70,6 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         productMethod.newParameter(QUALIFIED_PRODUCT_CMPT_TYPE_NAME, "toBeChanged");
         productMethod.newParameter(QUALIFIED_POLICY_CMPT_TYPE_NAME, "withPolicyDatatype");
 
-        // Setup policy associations.
-        otherPolicyToPolicyAssociation = otherPolicyCmptType.newPolicyCmptTypeAssociation();
-        otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_CMPT_TYPE_NAME);
-
-        // Setup product associations.
-        otherProductToProductAssociation = otherProductCmptType.newProductCmptTypeAssociation();
-        otherProductToProductAssociation.setTarget(QUALIFIED_PRODUCT_CMPT_TYPE_NAME);
-
         // Create a test attribute based on an attribute of the super policy component type.
         IPolicyCmptTypeAttribute superPolicyAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
         superPolicyAttribute.setName("superPolicyAttribute");
@@ -109,8 +79,7 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
         superTestAttribute.setAttribute(superPolicyAttribute);
         superTestAttribute.setPolicyCmptType(SUPER_POLICY_CMPT_TYPE_NAME);
-
-        createProductCmpt();
+        superTestAttribute.setName("superPolicyAttribute");
 
         otherProductCmpt = newProductCmpt(otherProductCmptType, OTHER_PRODUCT_NAME);
         IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
@@ -118,21 +87,7 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         otherProductToProductLink.setTarget(productCmpt.getQualifiedName());
     }
 
-    protected void testCheckInitialConditionsValid() throws CoreException {
-        ProcessorBasedRefactoring refactoring = getRefactoring(policyCmptType);
-        RefactoringStatus status = refactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
-        assertFalse(status.hasError());
-    }
-
-    protected void testCheckInitialConditionsInvalid() throws CoreException {
-        policyCmptType.setProductCmptType("abc");
-
-        ProcessorBasedRefactoring refactoring = getRefactoring(policyCmptType);
-        RefactoringStatus status = refactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
-        assertTrue(status.hasFatalError());
-    }
-
-    protected void checkIpsSrcFiles(String oldName,
+    protected void checkIpsSourceFiles(String oldName,
             String newName,
             IIpsPackageFragment originalIpsPackageFragment,
             IIpsPackageFragment targetIpsPackageFragment,
@@ -199,12 +154,43 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         assertEquals(newQualifiedName, productCmptType.getSupertype());
     }
 
+    protected void checkTestCaseTypeReferences(String newQualifiedName) {
+        // Check for test case reference update.
+        assertEquals(newQualifiedName, testCase.getTestCaseType());
+    }
+
+    protected void checkEnumTypeReferences(String newQualifiedName) {
+        // Check for enumeration content reference update.
+        assertEquals(newQualifiedName, enumContent.getEnumType());
+    }
+
+    protected void checkTableStructureReferences(String newQualifiedName) {
+        // Check for table contents reference update.
+        assertEquals(newQualifiedName, tableContents.getTableStructure());
+    }
+
+    protected void checkBusinessFunctionReferences(String newQualifiedName) {
+
+    }
+
     protected void checkProductCmptReferences(String newQualifiedName) {
         // Check for update of referring product component generation.
-        IProductCmptGeneration gen = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
-        IProductCmptLink[] links = gen.getLinks();
+        IProductCmptGeneration generation = (IProductCmptGeneration)otherProductCmpt.getFirstGeneration();
+        IProductCmptLink[] links = generation.getLinks();
         assertEquals(1, links.length);
         assertEquals(newQualifiedName, links[0].getTarget());
+    }
+
+    protected void checkTestCaseReferences(String newQualifiedName) {
+
+    }
+
+    protected void checkEnumContentReferences(String newQualifiedName) {
+
+    }
+
+    protected void checkTableContentsReferences(String newQualifiedName) {
+
     }
 
     protected abstract ProcessorBasedRefactoring getRefactoring(IIpsElement ipsElement);

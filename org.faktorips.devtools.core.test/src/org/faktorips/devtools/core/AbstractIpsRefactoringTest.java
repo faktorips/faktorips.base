@@ -13,36 +13,54 @@
 
 package org.faktorips.devtools.core;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
+import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Provides convenient methods to start Faktor-IPS refactorings and provides a basic model.
@@ -59,17 +77,35 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     protected static final String SUPER_PRODUCT_CMPT_TYPE_NAME = "SuperProductCmptType";
 
-    protected static final String PACKAGE = "somepackage";
+    protected static final String PACKAGE_NAME = "somepackage";
 
     protected static final String POLICY_CMPT_TYPE_NAME = "PolicyCmptType";
 
     protected static final String PRODUCT_CMPT_TYPE_NAME = "ProductCmptType";
 
+    protected static final String OTHER_POLICY_CMPT_TYPE_NAME = "OtherPolicy";
+
+    protected static final String OTHER_PRODUCT_CMPT_TYPE_NAME = "OtherProductType";
+
+    protected static final String TEST_CASE_TYPE_NAME = "TestCaseType";
+
     protected static final String PRODUCT_NAME = "Product";
 
-    protected static final String QUALIFIED_POLICY_CMPT_TYPE_NAME = PACKAGE + "." + POLICY_CMPT_TYPE_NAME;
+    protected static final String TEST_CASE_NAME = "TestCase";
 
-    protected static final String QUALIFIED_PRODUCT_CMPT_TYPE_NAME = PACKAGE + "." + PRODUCT_CMPT_TYPE_NAME;
+    protected static final String QUALIFIED_POLICY_CMPT_TYPE_NAME = PACKAGE_NAME + "." + POLICY_CMPT_TYPE_NAME;
+
+    protected static final String QUALIFIED_PRODUCT_CMPT_TYPE_NAME = PACKAGE_NAME + "." + PRODUCT_CMPT_TYPE_NAME;
+
+    protected static final String ENUM_TYPE_NAME = "EnumType";
+
+    protected static final String ENUM_CONTENT_NAME = "EnumContent";
+
+    protected static final String TABLE_STRUCTURE_NAME = "TableStructure";
+
+    protected static final String TABLE_CONTENTS_NAME = "TableContents";
+
+    protected static final String BUSINESS_FUNCTION_NAME = "BusinessFunction";
 
     protected IIpsProject ipsProject;
 
@@ -84,6 +120,16 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     protected IProductCmptType productCmptType;
 
     protected IProductCmptTypeAttribute productCmptTypeAttribute;
+
+    protected IPolicyCmptType otherPolicyCmptType;
+
+    protected IProductCmptType otherProductCmptType;
+
+    protected IPolicyCmptTypeAssociation policyToSelfAssociation;
+
+    protected IPolicyCmptTypeAssociation otherPolicyToPolicyAssociation;
+
+    protected IProductCmptTypeAssociation otherProductToProductAssociation;
 
     protected ITestCaseType testCaseType;
 
@@ -105,13 +151,38 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     protected IConfigElement productCmptGenerationConfigElement;
 
+    protected ITestCase testCase;
+
+    protected IEnumType enumType;
+
+    protected IEnumAttribute enumAttribute;
+
+    protected IEnumContent enumContent;
+
+    protected ITableStructure tableStructure;
+
+    protected ITableContents tableContents;
+
+    protected IBusinessFunction businessFunction;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        // Create an IPS project.
         ipsProject = newIpsProject();
 
+        createPolicyAndProductModel();
+        createTestModel();
+        createEnumModel();
+        createTableModel();
+        createBusinessModel();
+
+        createProductCmpt();
+        createEnumContent();
+        createTableContents();
+    }
+
+    private void createPolicyAndProductModel() throws CoreException {
         // Create super policy component type.
         superPolicyCmptType = newPolicyCmptType(ipsProject, SUPER_POLICY_CMPT_TYPE_NAME);
         superPolicyCmptType.setAbstract(true);
@@ -148,10 +219,29 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
 
+        // Create another policy component type and another product component type.
+        otherPolicyCmptType = newPolicyCmptType(ipsProject, OTHER_POLICY_CMPT_TYPE_NAME);
+        otherProductCmptType = newProductCmptType(ipsProject, OTHER_PRODUCT_CMPT_TYPE_NAME);
+
+        // Create policy associations.
+        policyToSelfAssociation = policyCmptType.newPolicyCmptTypeAssociation();
+        policyToSelfAssociation.setTarget(policyCmptType.getQualifiedName());
+        policyToSelfAssociation.setTargetRoleSingular("singular");
+        policyToSelfAssociation.setTargetRolePlural("plural");
+        otherPolicyToPolicyAssociation = otherPolicyCmptType.newPolicyCmptTypeAssociation();
+        otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_CMPT_TYPE_NAME);
+
+        // Create product associations.
+        otherProductToProductAssociation = otherProductCmptType.newProductCmptTypeAssociation();
+        otherProductToProductAssociation.setTarget(QUALIFIED_PRODUCT_CMPT_TYPE_NAME);
+    }
+
+    private void createTestModel() throws CoreException {
         // Create a test case type with a test attribute.
-        testCaseType = newTestCaseType(ipsProject, "TestCaseType");
+        testCaseType = newTestCaseType(ipsProject, TEST_CASE_TYPE_NAME);
         testPolicyCmptTypeParameter = testCaseType.newCombinedPolicyCmptTypeParameter();
         testPolicyCmptTypeParameter.setPolicyCmptType(QUALIFIED_POLICY_CMPT_TYPE_NAME);
+        testPolicyCmptTypeParameter.setName("testParameter");
         testAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
         testAttribute.setAttribute(policyCmptTypeAttribute);
         testAttribute.setName("someTestAttribute");
@@ -160,18 +250,51 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         // Create some child test parameters.
         testParameterChild1 = testPolicyCmptTypeParameter.newTestPolicyCmptTypeParamChild();
         testParameterChild1.setPolicyCmptType(QUALIFIED_POLICY_CMPT_TYPE_NAME);
+        testParameterChild1.setName("child1");
+        testParameterChild1.setAssociation(policyToSelfAssociation.getName());
         testParameterChild2 = testParameterChild1.newTestPolicyCmptTypeParamChild();
         testParameterChild2.setPolicyCmptType(QUALIFIED_POLICY_CMPT_TYPE_NAME);
+        testParameterChild2.setName("child2");
+        testParameterChild2.setAssociation(policyToSelfAssociation.getName());
         testParameterChild3 = testParameterChild2.newTestPolicyCmptTypeParamChild();
         testParameterChild3.setPolicyCmptType(QUALIFIED_POLICY_CMPT_TYPE_NAME);
+        testParameterChild3.setName("child3");
+        testParameterChild3.setAssociation(policyToSelfAssociation.getName());
+
+        // Create a test case based on the test case type.
+        testCase = newTestCase(ipsProject, TEST_CASE_NAME);
+        testCase.setTestCaseType(testCaseType.getQualifiedName());
     }
 
-    /**
-     * Creates a product component with a generation containing an <tt>IConfigElement</tt> for the
-     * <tt>policyCmptTypeAttribute</tt> and an <tt>IAttributeValue</tt> for the
-     * <tt>productComponentTypeAttribute</tt>.
-     */
-    protected final void createProductCmpt() throws CoreException {
+    private void createEnumModel() throws CoreException {
+        enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
+        enumType.setEnumContentName(ENUM_CONTENT_NAME);
+        enumType.setContainingValues(false);
+        enumType.setAbstract(false);
+        enumAttribute = enumType.newEnumAttribute();
+        enumAttribute.setName("id");
+        enumAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        enumAttribute.setIdentifier(true);
+        enumAttribute.setUnique(true);
+        enumAttribute.setUsedAsNameInFaktorIpsUi(true);
+    }
+
+    private void createTableModel() throws CoreException {
+        tableStructure = newTableStructure(ipsProject, TABLE_STRUCTURE_NAME);
+        tableStructure.setTableStructureType(TableStructureType.SINGLE_CONTENT);
+    }
+
+    private void createBusinessModel() throws CoreException {
+        businessFunction = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+                BUSINESS_FUNCTION_NAME);
+        businessFunction.newStart(new Point(0, 0));
+        businessFunction.newEnd(new Point(10, 10));
+        IControlFlow controlFlow = businessFunction.newControlFlow();
+        controlFlow.setSource(businessFunction.getStart());
+        controlFlow.setTarget(businessFunction.getEnd());
+    }
+
+    private void createProductCmpt() throws CoreException {
         productCmpt = newProductCmpt(productCmptType, PRODUCT_NAME);
         productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGeneration.setValidFrom(new GregorianCalendar(2010, 3, 10));
@@ -179,15 +302,31 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         attributeValue = productCmptGeneration.newAttributeValue(productCmptTypeAttribute);
     }
 
+    private void createEnumContent() throws CoreException {
+        enumContent = newEnumContent(ipsProject, ENUM_CONTENT_NAME);
+        enumContent.setEnumType(enumType.getQualifiedName());
+    }
+
+    private void createTableContents() throws CoreException {
+        tableContents = newTableContents(ipsProject, TABLE_CONTENTS_NAME);
+        tableContents.setTableStructure(tableStructure.getQualifiedName());
+    }
+
     /**
      * Performs the "Rename" refactoring for the given <tt>IIpsElement</tt> and provided new name.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final void performRenameRefactoring(IIpsElement ipsElement, String newName) throws CoreException {
-        ArgumentCheck.notNull(new Object[] { ipsElement, newName });
+    protected final void performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer, String newName)
+            throws CoreException {
 
-        ProcessorBasedRefactoring renameRefactoring = ipsElement.getRenameRefactoring();
+        ArgumentCheck.notNull(new Object[] { ipsObjectPartContainer, newName });
+
+        printValidationResult(ipsObjectPartContainer);
+
+        saveIpsSourceFiles();
+
+        ProcessorBasedRefactoring renameRefactoring = ipsObjectPartContainer.getRenameRefactoring();
         IIpsRenameProcessor processor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
         processor.setNewName(newName);
 
@@ -200,26 +339,61 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    protected final void performMoveRefactoring(IIpsElement ipsElement, IIpsPackageFragment targetIpsPackageFragment)
-            throws CoreException {
+    protected final void performMoveRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
+            IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
 
-        ArgumentCheck.notNull(new Object[] { ipsElement, targetIpsPackageFragment });
+        ArgumentCheck.notNull(new Object[] { ipsObjectPartContainer, targetIpsPackageFragment });
 
-        ProcessorBasedRefactoring moveRefactoring = ipsElement.getMoveRefactoring();
+        printValidationResult(ipsObjectPartContainer);
+
+        saveIpsSourceFiles();
+
+        ProcessorBasedRefactoring moveRefactoring = ipsObjectPartContainer.getMoveRefactoring();
         IIpsMoveProcessor processor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
         processor.setTargetIpsPackageFragment(targetIpsPackageFragment);
 
         runRefactoring(moveRefactoring);
     }
 
-    /** Actually runs the given refactoring. */
+    /**
+     * The created model must be saved before refactoring is done because source files are copied
+     * during rename or move refactorings.
+     */
+    private void saveIpsSourceFiles() throws CoreException {
+        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+
+        ipsSrcFiles.add(superPolicyCmptType.getIpsSrcFile());
+        ipsSrcFiles.add(superProductCmptType.getIpsSrcFile());
+        ipsSrcFiles.add(policyCmptType.getIpsSrcFile());
+        ipsSrcFiles.add(productCmptType.getIpsSrcFile());
+        ipsSrcFiles.add(testCaseType.getIpsSrcFile());
+        ipsSrcFiles.add(enumType.getIpsSrcFile());
+        ipsSrcFiles.add(tableStructure.getIpsSrcFile());
+        ipsSrcFiles.add(businessFunction.getIpsSrcFile());
+
+        ipsSrcFiles.add(productCmpt.getIpsSrcFile());
+        ipsSrcFiles.add(enumContent.getIpsSrcFile());
+        ipsSrcFiles.add(testCase.getIpsSrcFile());
+        ipsSrcFiles.add(tableContents.getIpsSrcFile());
+
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            ipsSrcFile.save(true, null);
+        }
+    }
+
+    private void printValidationResult(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
+        MessageList validationResult = ipsObjectPartContainer.validate(ipsProject);
+        if (validationResult.containsErrorMsg()) {
+            System.out.println(validationResult.getFirstMessage(Message.ERROR));
+        }
+    }
+
     private void runRefactoring(Refactoring refactoring) throws CoreException {
         PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
                 CheckConditionsOperation.ALL_CONDITIONS);
         ResourcesPlugin.getWorkspace().run(operation, new NullProgressMonitor());
     }
 
-    /** Performs a full build. */
     protected final void performFullBuild() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }

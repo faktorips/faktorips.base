@@ -42,11 +42,6 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.checkInitialConditionsThis(status, pm);
-    }
-
-    @Override
     protected void addIpsSrcFiles() throws CoreException {
         renameMoveHelper.addIpsSrcFiles();
     }

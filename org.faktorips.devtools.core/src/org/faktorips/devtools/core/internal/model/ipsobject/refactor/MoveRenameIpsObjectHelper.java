@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -82,26 +83,16 @@ public final class MoveRenameIpsObjectHelper {
      * Adds message codes to the set of ignored validation message codes that must be ignored by the
      * "Rename Type" and "Move Type" refactorings.
      * <p>
-     * The configuring <tt>IProductCmptType</tt> / configured <tt>IPolicyCmptType</tt> does not
-     * reference the copy of the <tt>IType</tt> that is created during the refactoring so this must
-     * be ignored during refactoring validation.
+     * For example: The configuring <tt>IProductCmptType</tt> / configured <tt>IPolicyCmptType</tt>
+     * does not reference the copy of the <tt>IType</tt> that is created during the refactoring so
+     * this must be ignored during refactoring validation.
      */
     public void addIgnoredValidationMessageCodes(Set<String> ignoredValidationMessageCodes) {
         ignoredValidationMessageCodes.add(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE);
         ignoredValidationMessageCodes.add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH);
         ignoredValidationMessageCodes.add(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE);
         ignoredValidationMessageCodes.add(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION);
-    }
-
-    /**
-     * Checks that the <tt>IType</tt> is valid.
-     * 
-     * @see IpsRefactoringProcessor#checkInitialConditionsThis(RefactoringStatus, IProgressMonitor)
-     */
-    public void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        if (!(toBeRefactored.isValid())) {
-            status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeHelper_msgTypeNotValid, toBeRefactored.getName()));
-        }
+        ignoredValidationMessageCodes.add(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT);
     }
 
     /**
@@ -109,8 +100,8 @@ public final class MoveRenameIpsObjectHelper {
      */
     public void addIpsSrcFiles() throws CoreException {
         for (IDependency dependency : getDependencies()) {
-            refactoringProcessor.addIpsSrcFile(dependencyToProject.get(dependency).findIpsSrcFile(
-                    dependency.getSource()));
+            IIpsSrcFile ipsSrcFile = dependencyToProject.get(dependency).findIpsSrcFile(dependency.getSource());
+            refactoringProcessor.addIpsSrcFile(ipsSrcFile);
         }
     }
 

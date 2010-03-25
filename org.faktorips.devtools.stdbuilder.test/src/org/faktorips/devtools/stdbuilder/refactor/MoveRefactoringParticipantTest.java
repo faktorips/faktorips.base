@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 
@@ -35,48 +34,42 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
 
         IIpsPackageFragmentRoot fragmentRoot = policyCmptType.getIpsPackageFragment().getRoot();
         targetIpsPackageFragment = fragmentRoot.createPackageFragment(TARGET_PACKAGE_NAME, true, null);
-
-        // Source files need to be saved before the refactoring is done.
-        policyCmptType.getIpsSrcFile().save(true, new NullProgressMonitor());
-        productCmptType.getIpsSrcFile().save(true, new NullProgressMonitor());
     }
 
     public void testMovePolicyCmptType() throws CoreException {
-        performFullBuild();
-
         performMoveRefactoring(policyCmptType, targetIpsPackageFragment);
 
-        assertFalse(policyClass.exists());
-        assertFalse(policyInterface.exists());
-
-        // Obtain the moved Java elements.
-        policyClass = getJavaType(TARGET_PACKAGE_NAME, POLICY_CMPT_TYPE_NAME, true);
-        policyInterface = getJavaType(TARGET_PACKAGE_NAME, POLICY_CMPT_TYPE_NAME, false);
-
-        assertTrue(policyClass.exists());
-        assertTrue(policyInterface.exists());
+        checkJavaSourceFiles(policyCmptType, TARGET_PACKAGE_NAME, POLICY_CMPT_TYPE_NAME);
     }
 
     public void testMoveProductCmptType() throws CoreException {
-        performFullBuild();
-
         performMoveRefactoring(productCmptType, targetIpsPackageFragment);
 
-        assertFalse(productClass.exists());
-        assertFalse(productInterface.exists());
-        assertFalse(productGenClass.exists());
-        assertFalse(productGenInterface.exists());
+        checkJavaSourceFiles(productCmptType, TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME);
+    }
 
-        // Obtain the moved Java elements.
-        productClass = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME, true);
-        productInterface = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME, false);
-        productGenClass = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME + "Gen", true);
-        productGenInterface = getJavaType(TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME + "Gen", false);
+    public void testMoveEnumType() throws CoreException {
+        performMoveRefactoring(enumType, targetIpsPackageFragment);
 
-        assertTrue(productClass.exists());
-        assertTrue(productInterface.exists());
-        assertTrue(productGenClass.exists());
-        assertTrue(productGenInterface.exists());
+        checkJavaSourceFiles(enumType, TARGET_PACKAGE_NAME, ENUM_TYPE_NAME);
+    }
+
+    public void testMoveTableStructure() throws CoreException {
+        performMoveRefactoring(tableStructure, targetIpsPackageFragment);
+
+        checkJavaSourceFiles(tableStructure, TARGET_PACKAGE_NAME, TABLE_STRUCTURE_NAME);
+    }
+
+    public void testMoveTestCaseType() throws CoreException {
+        performMoveRefactoring(testCaseType, targetIpsPackageFragment);
+
+        checkJavaSourceFiles(testCaseType, TARGET_PACKAGE_NAME, TEST_CASE_TYPE_NAME);
+    }
+
+    public void testMoveBusinessFunction() throws CoreException {
+        performMoveRefactoring(businessFunction, targetIpsPackageFragment);
+
+        checkJavaSourceFiles(businessFunction, TARGET_PACKAGE_NAME, BUSINESS_FUNCTION_NAME);
     }
 
 }

@@ -18,7 +18,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -63,19 +62,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     private void addIgnoredValidationMessageCodes() {
         getIgnoredValidationMessageCodes().add(IValidationRule.MSGCODE_UNDEFINED_ATTRIBUTE);
-    }
-
-    @Override
-    public void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        if (!(getAttribute().isValid())) {
-            status.addFatalError(NLS.bind(Messages.RenameAttributeProcessor_msgAttributeNotValid, getAttribute()
-                    .getName()));
-        } else {
-            if (!(getAttribute().getType().isValid())) {
-                status.addFatalError(NLS.bind(Messages.RenameTypeMoveTypeHelper_msgTypeNotValid, getAttribute()
-                        .getType().getName()));
-            }
-        }
     }
 
     @Override

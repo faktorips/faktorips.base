@@ -37,9 +37,7 @@ public class Messages extends NLS {
     public static String IpsMoveProcessor_msgTargetLocationEqualsOriginalLocation;
 
     public static String RenameAttributeProcessor_processorName;
-    public static String RenameAttributeProcessor_msgAttributeNotValid;
 
-    public static String RenameTypeMoveTypeHelper_msgTypeNotValid;
     public static String RenameTypeMoveTypeHelper_msgSourceFileAlreadyExists;
 
     public static String RenameTypeProcessor_processorName;

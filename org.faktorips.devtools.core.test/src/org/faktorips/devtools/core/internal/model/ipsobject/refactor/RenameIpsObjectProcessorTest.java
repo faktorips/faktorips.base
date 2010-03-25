@@ -19,6 +19,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
@@ -30,15 +31,7 @@ import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
  */
 public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
 
-    @Override
-    public void testCheckInitialConditionsValid() throws CoreException {
-        super.testCheckInitialConditionsValid();
-    }
-
-    @Override
-    public void testCheckInitialConditionsInvalid() throws CoreException {
-        super.testCheckInitialConditionsInvalid();
-    }
+    private static final String NEW_OBJECT_NAME = "NewObjectName";
 
     public void testCheckFinalConditionsValid() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
@@ -72,10 +65,9 @@ public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
     }
 
     public void testRenameSuperPolicyCmptType() throws CoreException {
-        String newElementName = "NewSuperPolicy";
-        performRenameRefactoring(superPolicyCmptType, newElementName);
+        performRenameRefactoring(superPolicyCmptType, NEW_OBJECT_NAME);
 
-        checkSuperPolicyCmptTypeReferences(newElementName);
+        checkSuperPolicyCmptTypeReferences(NEW_OBJECT_NAME);
     }
 
     public void testRenamePolicyCmptTypeWithInverseAssociation() throws CoreException {
@@ -90,40 +82,99 @@ public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
     }
 
     private void performRenamePolicyCmptType() throws CoreException {
-        String newElementName = "NewPolicy";
-        performRenameRefactoring(policyCmptType, newElementName);
+        performRenameRefactoring(policyCmptType, NEW_OBJECT_NAME);
 
-        checkIpsSrcFiles(POLICY_CMPT_TYPE_NAME, newElementName, policyCmptType.getIpsPackageFragment(), policyCmptType
+        checkIpsSourceFiles(POLICY_CMPT_TYPE_NAME, NEW_OBJECT_NAME, policyCmptType.getIpsPackageFragment(), policyCmptType
                 .getIpsPackageFragment(), IpsObjectType.POLICY_CMPT_TYPE);
 
-        checkPolicyCmptTypeReferences(PACKAGE + "." + newElementName);
+        checkPolicyCmptTypeReferences(PACKAGE_NAME + "." + NEW_OBJECT_NAME);
     }
 
     public void testRenameProductCmptType() throws CoreException {
-        String newElementName = "NewProduct";
-        performRenameRefactoring(productCmptType, newElementName);
+        performRenameRefactoring(productCmptType, NEW_OBJECT_NAME);
 
-        checkIpsSrcFiles(PRODUCT_CMPT_TYPE_NAME, newElementName, productCmptType.getIpsPackageFragment(),
+        checkIpsSourceFiles(PRODUCT_CMPT_TYPE_NAME, NEW_OBJECT_NAME, productCmptType.getIpsPackageFragment(),
                 productCmptType.getIpsPackageFragment(), IpsObjectType.PRODUCT_CMPT_TYPE);
 
-        checkProductCmptTypeReferences(PACKAGE + "." + newElementName);
+        checkProductCmptTypeReferences(PACKAGE_NAME + "." + NEW_OBJECT_NAME);
     }
 
     public void testRenameSuperProductCmptType() throws CoreException {
-        String newElementName = "NewSuperProduct";
-        performRenameRefactoring(superProductCmptType, newElementName);
+        performRenameRefactoring(superProductCmptType, NEW_OBJECT_NAME);
 
-        checkSuperProductCmptTypeReferences(newElementName);
+        checkSuperProductCmptTypeReferences(NEW_OBJECT_NAME);
+    }
+
+    public void testRenameTestCaseType() throws CoreException {
+        performRenameRefactoring(testCaseType, NEW_OBJECT_NAME);
+
+        checkIpsSourceFiles(TEST_CASE_TYPE_NAME, NEW_OBJECT_NAME, testCaseType.getIpsPackageFragment(), testCaseType
+                .getIpsPackageFragment(), IpsObjectType.TEST_CASE_TYPE);
+
+        checkTestCaseTypeReferences(NEW_OBJECT_NAME);
+    }
+
+    public void testRenameEnumType() throws CoreException {
+        performRenameRefactoring(enumType, NEW_OBJECT_NAME);
+
+        checkIpsSourceFiles(ENUM_TYPE_NAME, NEW_OBJECT_NAME, enumType.getIpsPackageFragment(), enumType
+                .getIpsPackageFragment(), IpsObjectType.ENUM_TYPE);
+
+        checkEnumTypeReferences(NEW_OBJECT_NAME);
+    }
+
+    public void testRenameTableStructure() throws CoreException {
+        performRenameRefactoring(tableStructure, NEW_OBJECT_NAME);
+
+        checkIpsSourceFiles(TABLE_STRUCTURE_NAME, NEW_OBJECT_NAME, tableStructure.getIpsPackageFragment(), tableStructure
+                .getIpsPackageFragment(), IpsObjectType.TABLE_STRUCTURE);
+
+        checkTableStructureReferences(NEW_OBJECT_NAME);
+    }
+
+    public void testRenameBusinessFunction() throws CoreException {
+        performRenameRefactoring(businessFunction, NEW_OBJECT_NAME);
+
+        checkIpsSourceFiles(BUSINESS_FUNCTION_NAME, NEW_OBJECT_NAME, businessFunction.getIpsPackageFragment(),
+                businessFunction.getIpsPackageFragment(), BusinessFunctionIpsObjectType.getInstance());
+
+        checkBusinessFunctionReferences(NEW_OBJECT_NAME);
     }
 
     public void testRenameProductCmpt() throws CoreException {
-        String newElementName = "NewProductCmptName";
-        performRenameRefactoring(productCmpt, newElementName);
+        performRenameRefactoring(productCmpt, NEW_OBJECT_NAME);
 
-        checkIpsSrcFiles(PRODUCT_NAME, newElementName, productCmpt.getIpsPackageFragment(), productCmpt
+        checkIpsSourceFiles(PRODUCT_NAME, NEW_OBJECT_NAME, productCmpt.getIpsPackageFragment(), productCmpt
                 .getIpsPackageFragment(), IpsObjectType.PRODUCT_CMPT);
 
-        checkProductCmptReferences(newElementName);
+        checkProductCmptReferences(NEW_OBJECT_NAME);
+    }
+
+    public void testRenameTestCase() throws CoreException {
+        performRenameRefactoring(testCase, NEW_OBJECT_NAME);
+
+        checkIpsSourceFiles(TEST_CASE_NAME, NEW_OBJECT_NAME, testCase.getIpsPackageFragment(), testCase
+                .getIpsPackageFragment(), IpsObjectType.TEST_CASE);
+
+        checkTestCaseReferences(NEW_OBJECT_NAME);
+    }
+
+    public void testRenameEnumContent() throws CoreException {
+        performRenameRefactoring(enumContent, NEW_OBJECT_NAME);
+
+        checkIpsSourceFiles(ENUM_CONTENT_NAME, NEW_OBJECT_NAME, enumContent.getIpsPackageFragment(), enumContent
+                .getIpsPackageFragment(), IpsObjectType.ENUM_CONTENT);
+
+        checkEnumContentReferences(NEW_OBJECT_NAME);
+    }
+
+    public void testRenameTableContent() throws CoreException {
+        performRenameRefactoring(tableContents, NEW_OBJECT_NAME);
+
+        checkIpsSourceFiles(TABLE_CONTENTS_NAME, NEW_OBJECT_NAME, tableContents.getIpsPackageFragment(), tableContents
+                .getIpsPackageFragment(), IpsObjectType.TABLE_CONTENTS);
+
+        checkTableContentsReferences(NEW_OBJECT_NAME);
     }
 
     @Override

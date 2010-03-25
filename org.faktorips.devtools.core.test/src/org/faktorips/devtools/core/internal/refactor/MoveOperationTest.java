@@ -57,9 +57,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration productBGen;
     private IProductCmpt coverage;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -92,10 +89,9 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     /**
      * For this test, one object of the comfort-product of the default test content is moved to a
      * product with the same package, but another name. After that, the new file is expected to be
-     * existant and the references to this object have to be the same as to the source.
+     * existent and the references to this object have to be the same as to the source.
      */
     public void testRenameProduct() throws CoreException, InvocationTargetException, InterruptedException {
-
         IIpsSrcFile target = coverage.getIpsPackageFragment().getIpsSrcFile("Moved" + coverage.getName(),
                 IpsObjectType.PRODUCT_CMPT);
 
@@ -119,11 +115,10 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * For this test, one package is renamed. After that, the new package is expected to be existant
+     * For this test, one package is renamed. After that, the new package is expected to be existent
      * and the references to the contained objects have to be the same as to the source.
      */
     public void testRenamePackage() throws CoreException, InvocationTargetException, InterruptedException {
-
         IIpsPackageFragment sourcePackage = coverage.getIpsPackageFragment();
         IIpsPackageFragment target = sourcePackage.getRoot().getIpsPackageFragment("renamed");
 
@@ -152,11 +147,10 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     /**
      * For this test, one object is moved to a new, non-existing package. After that, the new file
-     * is expected to be existant and the references to this object have to be the same as to the
+     * is expected to be existent and the references to this object have to be the same as to the
      * source.
      */
     public void testMoveProduct() throws CoreException, InvocationTargetException, InterruptedException {
-
         String runtimeId = coverage.getRuntimeId();
 
         IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack")
@@ -188,8 +182,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     /**
      * Test if the references of product components will be correctly updated in ips test cases,
-     * 
-     * @throws Exception
      */
     public void testMoveProductRefByTestCase() throws Exception {
         IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack")
@@ -226,8 +218,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     /**
      * Test if the references of table contents will be correctly updated in product cmpts,
-     * 
-     * @throws Exception
      */
     public void testTableContentRefByProductCmpt() throws Exception {
         // create table content

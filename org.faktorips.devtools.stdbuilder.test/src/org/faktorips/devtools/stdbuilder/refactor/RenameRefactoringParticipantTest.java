@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.IValidationContext;
 
@@ -25,18 +24,7 @@ import org.faktorips.runtime.IValidationContext;
  */
 public class RenameRefactoringParticipantTest extends RefactoringParticipantTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        // Source files need to be saved before the refactoring is done.
-        policyCmptType.getIpsSrcFile().save(true, new NullProgressMonitor());
-        productCmptType.getIpsSrcFile().save(true, new NullProgressMonitor());
-    }
-
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
-        performFullBuild();
-
         // Rename the attribute.
         performRenameRefactoring(policyCmptTypeAttribute, "test");
 
@@ -129,8 +117,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     public void testRenameProductCmptTypeAttribute() throws CoreException {
-        performFullBuild();
-
         // Rename the attribute.
         performRenameRefactoring(productCmptTypeAttribute, "test");
 
@@ -153,14 +139,9 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     public void testRenamePolicyCmptType() throws CoreException {
-        performFullBuild();
-
         performRenameRefactoring(policyCmptType, "RenamedPolicy");
 
-        assertFalse(getJavaType(PACKAGE, POLICY_CMPT_TYPE_NAME, false).exists());
-        assertFalse(getJavaType(PACKAGE, POLICY_CMPT_TYPE_NAME, true).exists());
-        assertTrue(getJavaType(PACKAGE, "RenamedPolicy", false).exists());
-        assertTrue(getJavaType(PACKAGE, "RenamedPolicy", true).exists());
+        checkJavaSourceFiles(policyCmptType, PACKAGE_NAME, "RenamedPolicy");
 
         assertFalse(productClass.getMethod("createPolicy", new String[] {}).exists());
         assertFalse(productInterface.getMethod("createPolicy", new String[] {}).exists());
@@ -169,18 +150,9 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     public void testRenameProductCmptType() throws CoreException {
-        performFullBuild();
-
         performRenameRefactoring(productCmptType, "RenamedProduct");
 
-        assertFalse(getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME, false).exists());
-        assertFalse(getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME, true).exists());
-        assertFalse(getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME + "Gen", false).exists());
-        assertFalse(getJavaType(PACKAGE, PRODUCT_CMPT_TYPE_NAME + "Gen", true).exists());
-        assertTrue(getJavaType(PACKAGE, "RenamedProduct", false).exists());
-        assertTrue(getJavaType(PACKAGE, "RenamedProduct", true).exists());
-        assertTrue(getJavaType(PACKAGE, "RenamedProductGen", false).exists());
-        assertTrue(getJavaType(PACKAGE, "RenamedProductGen", true).exists());
+        checkJavaSourceFiles(productCmptType, PACKAGE_NAME, "RenamedProduct");
 
         assertFalse(policyClass.getMethod("getProduct", new String[0]).exists());
         assertFalse(policyClass.getMethod("getProductGen", new String[0]).exists());
@@ -188,6 +160,30 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(policyClass.getMethod("getRenamedProduct", new String[0]).exists());
         assertTrue(policyClass.getMethod("getRenamedProductGen", new String[0]).exists());
         assertTrue(policyClass.getMethod("setRenamedProduct", new String[] { "QIRenamedProduct;", "Z" }).exists());
+    }
+
+    public void testRenameEnumType() throws CoreException {
+        performRenameRefactoring(enumType, "RenamedEnumType");
+
+        checkJavaSourceFiles(enumType, "", "RenamedEnumType");
+    }
+
+    public void testRenameTableStructure() throws CoreException {
+        performRenameRefactoring(tableStructure, "RenamedTableStructure");
+
+        checkJavaSourceFiles(tableStructure, "", "RenamedTableStructure");
+    }
+
+    public void testRenameTestCaseType() throws CoreException {
+        performRenameRefactoring(testCaseType, "RenamedTestCaseType");
+
+        checkJavaSourceFiles(testCaseType, "", "RenamedTestCaseType");
+    }
+
+    public void testRenameBusinessFunction() throws CoreException {
+        performRenameRefactoring(businessFunction, "RenamedBusinessFunction");
+
+        checkJavaSourceFiles(businessFunction, "", "RenamedBusinessFunction");
     }
 
 }

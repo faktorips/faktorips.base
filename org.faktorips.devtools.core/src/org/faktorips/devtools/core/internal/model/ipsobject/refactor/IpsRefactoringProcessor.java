@@ -83,22 +83,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
             status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsElementDoesNotExist, ipsElement
                     .getName()));
         }
-        checkInitialConditionsThis(status, pm);
         return status;
     }
-
-    /**
-     * Subclass implementation for initial condition checking that is performed in addition to the
-     * default initial condition checking which validates the existence of the <tt>IIpsElement</tt>
-     * to be refactored.
-     * 
-     * @param status The <tt>RefactoringStatus</tt> to add messages to.
-     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
-     * 
-     * @throws CoreException May be thrown at any time.
-     */
-    protected abstract void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm)
-            throws CoreException;
 
     /**
      * {@inheritDoc}
@@ -217,7 +203,10 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     /** Saves all registered <tt>IIpsSrcFile</tt>s. */
     private void saveIpsSourceFiles(IProgressMonitor pm) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
-            ipsSrcFile.save(true, pm);
+            // File may not exist if it has been moved during refactoring.
+            if (ipsSrcFile.exists()) {
+                ipsSrcFile.save(true, pm);
+            }
         }
     }
 
