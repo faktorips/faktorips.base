@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.util.PersistenceUtil;
@@ -34,7 +35,6 @@ import org.w3c.dom.Element;
  * @author Roman Grutza
  */
 public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IPersistentAssociationInfo {
-
     private boolean transientAssociation = false;
     private boolean ownerOfManyToManyAssociation = false;
     private String joinTableName = "";
@@ -42,7 +42,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private String sourceColumnName = "";
     private String joinColumnName = "";
     private FetchType fetchType = FetchType.LAZY;
-    private JoinFetchType joinFetchType = JoinFetchType.INNER;
 
     private IIpsObjectPart policyComponentTypeAssociation;
 
@@ -68,10 +67,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
     public FetchType getFetchType() {
         return fetchType;
-    }
-
-    public JoinFetchType getJoinFetchType() {
-        return joinFetchType;
     }
 
     public String getJoinTableName() {
@@ -142,14 +137,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         this.fetchType = fetchType;
 
         valueChanged(oldValue, fetchType);
-    }
-
-    public void setJoinFetchType(JoinFetchType joinFetchType) {
-        ArgumentCheck.notNull(joinFetchType);
-        JoinFetchType oldValue = this.joinFetchType;
-        this.joinFetchType = joinFetchType;
-
-        valueChanged(oldValue, joinFetchType);
     }
 
     public void setJoinTableName(String newJoinTableName) {
@@ -365,6 +352,16 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         return (IPolicyCmptTypeAssociation)policyComponentTypeAssociation;
     }
 
+    public void initDefaults() {
+        if (getPolicyComponentTypeAssociation().getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL) {
+            fetchType = FetchType.EAGER;
+        } else if (getPolicyComponentTypeAssociation().getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
+            fetchType = FetchType.LAZY;
+        } else {
+            fetchType = FetchType.LAZY;
+        }
+    }
+
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);
@@ -380,10 +377,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         targetColumnName = element.getAttribute(PROPERTY_TARGET_COLUMN_NAME);
         joinTableName = element.getAttribute(PROPERTY_JOIN_TABLE_NAME);
         fetchType = FetchType.valueOf(element.getAttribute(PROPERTY_FETCH_TYPE));
-        String joinFetchTypeAttr = element.getAttribute(PROPERTY_JOIN_FETCH_TYPE);
-        if (StringUtils.isNotEmpty(joinFetchTypeAttr)) {
-            joinFetchType = JoinFetchType.valueOf(joinFetchTypeAttr);
-        }
         joinColumnName = element.getAttribute(PROPERTY_JOIN_COLUMN_NAME);
     }
 
@@ -397,7 +390,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName);
         element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);
         element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);
-        element.setAttribute(PROPERTY_JOIN_FETCH_TYPE, "" + joinFetchType);
         element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName);
     }
 

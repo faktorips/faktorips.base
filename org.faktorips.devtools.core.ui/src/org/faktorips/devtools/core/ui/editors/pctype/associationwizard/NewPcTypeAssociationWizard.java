@@ -640,7 +640,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             if (!configureProductCmptType) {
                 handleConfProdCmptTypeSelectionState();
             }
-
+            if (association.getPolicyCmptType().isPersistentEnabled()) {
+                initPersistentAssociationInfo();
+            }
             boolean saveTargetAutomatically = false;
             if (targetPolicyCmptType != null
                     && !targetPolicyCmptType.getIpsSrcFile().equals(association.getIpsObject().getIpsSrcFile())) {
@@ -681,6 +683,15 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return false;
         }
         return true;
+    }
+
+    private void initPersistentAssociationInfo() throws CoreException {
+        association.getPersistenceAssociatonInfo().initDefaults();
+        IPolicyCmptTypeAssociation inverseAssociation = association.findInverseAssociation(ipsProject);
+        if (inverseAssociation == null) {
+            return;
+        }
+        inverseAssociation.getPersistenceAssociatonInfo().initDefaults();
     }
 
     /**

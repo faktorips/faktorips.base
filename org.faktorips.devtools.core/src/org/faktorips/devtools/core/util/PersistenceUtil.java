@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.BigDecimalDatatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
@@ -52,9 +51,6 @@ public class PersistenceUtil {
     public static boolean isSupportingDecimalPlaces(ValueDatatype valueDatatype) {
         if (valueDatatype instanceof NumericDatatype) {
             return ((NumericDatatype)valueDatatype).hasDecimalPlaces();
-        }
-        if (valueDatatype instanceof BigDecimalDatatype) {
-            return true;
         }
         return false;
     }

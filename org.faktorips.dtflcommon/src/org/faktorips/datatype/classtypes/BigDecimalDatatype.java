@@ -16,6 +16,7 @@ package org.faktorips.datatype.classtypes;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassDatatype;
 
 /**
@@ -23,7 +24,7 @@ import org.faktorips.datatype.ValueClassDatatype;
  * 
  * @author Jan Ortmann
  */
-public class BigDecimalDatatype extends ValueClassDatatype {
+public class BigDecimalDatatype extends ValueClassDatatype implements NumericDatatype {
 
     /**
      * @param clazz
@@ -50,4 +51,17 @@ public class BigDecimalDatatype extends ValueClassDatatype {
         return true;
     }
 
+    public boolean divisibleWithoutRemainder(String dividend, String divisor) {
+    // TODO Joerg impl fehlt!
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean hasDecimalPlaces() {
+        return true;
+    }
+
+    public String subtract(String minuend, String subtrahend) {
+    // TODO Joerg impl fehlt
+        throw new UnsupportedOperationException();
+    }
 }

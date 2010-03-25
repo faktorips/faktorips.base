@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.util.StringUtil;
@@ -70,21 +69,4 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
         javaCodeFragment.appendQuoted(converterName);
         javaCodeFragment.appendln(")");
     }
-
-    public void addAnnotationJoinFetchType(JavaCodeFragment javaCodeFragment, String joinFetchTypeValue) {
-        if (StringUtils.isEmpty(joinFetchTypeValue)) {
-            return;
-        }
-        javaCodeFragment.addImport(IMPORT_JOIN_FETCH);
-        javaCodeFragment.addImport(IMPORT_JOIN_FETCH_TYPE);
-        javaCodeFragment.append(ANNOTATION_JOIN_FETCH);
-        javaCodeFragment.append("(value = JoinFetchType.");
-        javaCodeFragment.append(joinFetchTypeValue);
-        javaCodeFragment.appendln(")");
-    }
-
-    public boolean isSupportingJoinFetchType() {
-        return true;
-    }
-
 }

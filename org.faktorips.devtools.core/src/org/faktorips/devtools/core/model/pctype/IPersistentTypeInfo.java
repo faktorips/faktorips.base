@@ -37,11 +37,6 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     public final static String PROPERTY_TABLE_NAME = "tableName"; //$NON-NLS-1$
 
     /**
-     * The name of the secondary table name property.
-     */
-    public final static String PROPERTY_SECONDARY_TABLE_NAME = "secondaryTableName"; //$NON-NLS-1$
-
-    /**
      * The name of the inheritance strategy property.
      */
     public final static String PROPERTY_INHERITANCE_STRATEGY = "inheritanceStrategy"; //$NON-NLS-1$
@@ -78,6 +73,11 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * defined in this type.
      */
     public final static String PROPERTY_DEFINES_DISCRIMINATOR_COLUMN = "definesDiscriminatorColumn"; //$NON-NLS-1$
+
+    /**
+     * The name of a property that indicates that the table defined in the super type will be used.
+     */
+    public final static String PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE = "useTableDefinedInSupertype"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -121,7 +121,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
 
     /**
      * Validation message code to indicate that the discriminator definition is not allowed here.
-     * Only on the base entity.
+     * Only on the root entity.
      */
     public final static String MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED = MSGCODE_PREFIX
             + "definitionOfDiscriminatorNotAllowed"; //$NON-NLS-1$
@@ -145,7 +145,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
 
     /**
      * Returns <code>true</code> if this persistent type defines the discriminator column. Not that
-     * the discriminator column can only be defined at the base entity. If the current persistent
+     * the discriminator column can only be defined at the root entity. If the current persistent
      * type defines the discriminator column then the column name and datatype must given in this
      * type. The column name and datatype of the discriminator can't be different or overwritten in
      * one of the subclasses.
@@ -153,18 +153,32 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     public boolean isDefinesDiscriminatorColumn();
 
     /**
-     * Search the base entity of this persistent type.
-     * 
-     * @see #isDefinesDiscriminatorColumn
-     */
-    public IPolicyCmptType findBaseEntity() throws CoreException;
-
-    /**
      * Set to <code>true</code> if this type defines the discriminator column name and datatype.
      * Note that the discriminator column name and datatype can only be specified in the base
      * entity.
      */
     public void setDefinesDiscriminatorColumn(boolean definesDiscriminatorColumn);
+
+    /**
+     * Return <code>true</code> if the table defined in the supertype will be used. Or
+     * <code>false</code> if this type defines the table name, in which the type will be persist.
+     * Note that if the directly associate supertype also used the table definition of its super
+     * type then this super types table definition will be used and so on, thus the table definition
+     * can be defined in one of the super types in the inheritance hierarchy.
+     */
+    public boolean isUseTableDefinedInSupertype();
+
+    /**
+     * Set to <code>true</code> if the table definition of the supertype will be used.
+     */
+    public void setUseTableDefinedInSupertype(boolean useTableDefinedInSupertype);
+
+    /**
+     * Search the root entity of this persistent type.
+     * 
+     * @see #isDefinesDiscriminatorColumn
+     */
+    public IPolicyCmptType findRootEntity() throws CoreException;
 
     /**
      * Returns the name of database table. Returns an empty string if the table name has not been
@@ -190,32 +204,6 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * @see ITableNamingStrategy
      */
     public void setTableName(String newTableName);
-
-    /**
-     * Returns the name of the secondary table name. This is only required if the MIXED inheritance
-     * strategy is used for the entity this object belongs to.
-     * 
-     * @return Returns an empty string if the secondary table name has not been set yet.
-     * @see {@link InheritanceStrategy}
-     */
-    public String getSecondaryTableName();
-
-    /**
-     * Sets the secondary table name to use for the {@link IPolicyCmptType} this object is part of.
-     * <p/>
-     * Since there can only exist only one unique secondary table for a {@link IPolicyCmptType}
-     * sub-hierarchy one must ensure that the entities making up the sub-hierarchy use the same
-     * secondary table name.
-     * <p/>
-     * Note that the final table name in the database can differ from the given
-     * <code>newSecondaryTableName</code> by means of an ITableNamingStrategy which is set on a per
-     * IpsProject basis.
-     * 
-     * @param The name of the secondary table, must not be <code>null</code>.
-     * 
-     * @see ITableNamingStrategy
-     */
-    public void setSecondaryTableName(String newSecondaryTableName);
 
     /**
      * Returns the inheritance strategy to use for the {@link IPolicyCmptType} this object is part
@@ -300,8 +288,6 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * </ul>
      * The use of the strategy MIXED enables support for a dedicated (secondary) table which can be
      * used in practice to map a line of business to its own table.
-     * 
-     * TODO JPA InheritanceStrategy.MIXED
      */
     public enum InheritanceStrategy {
         SINGLE_TABLE,

@@ -545,8 +545,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         IPersistentTypeInfo persistenceTypeInfo = getPersistenceTypeInfo();
         ITableNamingStrategy tableNamingStrategy = getIpsProject().getTableNamingStrategy();
 
-        IPolicyCmptType baseEntity = persistenceTypeInfo.findBaseEntity();
-        if (baseEntity != null && baseEntity != this) {
+        IPolicyCmptType rootEntity = persistenceTypeInfo.findRootEntity();
+        if (rootEntity != null && rootEntity != this) {
             IPolicyCmptType pcSupertype = (IPolicyCmptType)findSupertype(getIpsProject());
             if (pcSupertype != null && pcSupertype.isPersistentEnabled()) {
                 IPersistentTypeInfo pcSupertypeInfo = pcSupertype.getPersistenceTypeInfo();

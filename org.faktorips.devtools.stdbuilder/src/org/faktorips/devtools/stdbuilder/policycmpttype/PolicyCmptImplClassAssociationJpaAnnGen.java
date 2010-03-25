@@ -127,24 +127,11 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
             // add special annotation in case of join table needed
             addAnnotationJoinTable(fragment, genAssociation, genInverseAssociation);
-
-            // in case of eager the fetch type specifies the outer or inner join type
-            addAnnotationJoinFetchType(persistenceProviderImpl, fragment, genAssociation, genInverseAssociation);
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
 
         return fragment;
-    }
-
-    private void addAnnotationJoinFetchType(IPersistenceProvider persistenceProviderImpl,
-            JavaCodeFragment fragment,
-            GenAssociation genAssociation,
-            GenAssociation genInverseAssociation) {
-        if (persistenceProviderImpl.isSupportingJoinFetchType()) {
-            persistenceProviderImpl.addAnnotationJoinFetchType(fragment, genAssociation.getAssociation()
-                    .getPersistenceAssociatonInfo().getJoinFetchType().toString());
-        }
     }
 
     private void addAnnotationFor(IPersistenceProvider persistenceProviderImpl,

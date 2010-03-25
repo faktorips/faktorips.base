@@ -22,10 +22,6 @@ public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
         return false;
     }
 
-    public boolean isSupportingJoinFetchType() {
-        return false;
-    }
-
     public boolean isSuppotingOrphanRemoval() {
         return false;
     }
@@ -36,10 +32,6 @@ public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
 
     public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,
             IPersistentAttributeInfo persistentAttributeInfo) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void addAnnotationJoinFetchType(JavaCodeFragment javaCodeFragment, String joinFetchTypeValue) {
         throw new UnsupportedOperationException();
     }
 

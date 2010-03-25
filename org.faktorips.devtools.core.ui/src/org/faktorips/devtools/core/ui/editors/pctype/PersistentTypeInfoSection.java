@@ -93,12 +93,12 @@ public class PersistentTypeInfoSection extends IpsSection {
         setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
         ComboField inheritanceStrategyField = new EnumField(inheritanceStrategyCombo, InheritanceStrategy.class);
 
-        toolkit.createLabel(detailComposite, "Table Name");
-        Text tableNameText = toolkit.createText(detailComposite);
+        Checkbox checkboxTableDefinedInSuperclass = toolkit.createCheckbox(composite);
+        checkboxTableDefinedInSuperclass.setText("Use table defined in supertype");
 
-        //
-        // toolkit.createLabel(detailComposite, "Secondary Table Name");
-        // Text secondaryTableNameText = toolkit.createText(detailComposite);
+        Composite tableNameComposite = toolkit.createLabelEditColumnComposite(composite);
+        toolkit.createLabel(tableNameComposite, "Table Name");
+        Text tableNameText = toolkit.createText(tableNameComposite);
 
         Group discriminatorGroup = toolkit.createGroup(composite, "Descriminator");
 
@@ -126,6 +126,9 @@ public class PersistentTypeInfoSection extends IpsSection {
 
             bindingContext.bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY);
+
+            bindingContext.bindContent(checkboxTableDefinedInSuperclass, ipsObject.getPersistenceTypeInfo(),
+                    IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE);
             bindingContext.bindContent(tableNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_TABLE_NAME);
 

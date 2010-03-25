@@ -52,8 +52,8 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     private boolean tableColumnUnique;
 
     private int tableColumnSize = 255;
-    private int tableColumnScale = 16;
-    private int tableColumnPrecision = 2;
+    private int tableColumnPrecision = 16;
+    private int tableColumnScale = 2;
 
     private String converterQualifiedClassName = "";
     private String sqlColumnDefinition = "";

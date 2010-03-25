@@ -17,6 +17,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -48,7 +49,13 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractAnnotati
     }
 
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
-        if (ipsElement instanceof IPolicyCmptTypeAssociation) {
+        if (ipsElement instanceof IPolicyCmptTypeAttribute) {
+            IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)ipsElement;
+            if (!attribute.getPolicyCmptType().isPersistentEnabled()) {
+                return false;
+            }
+            return attribute.getPersistenceAttributeInfo().isTransient();
+        } else if (ipsElement instanceof IPolicyCmptTypeAssociation) {
             IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)ipsElement;
             if (!association.getPolicyCmptType().isPersistentEnabled()) {
                 return false;

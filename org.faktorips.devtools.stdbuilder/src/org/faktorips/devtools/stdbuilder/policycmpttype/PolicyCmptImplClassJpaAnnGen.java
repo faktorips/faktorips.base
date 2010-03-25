@@ -45,14 +45,12 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
     private final static String ANNOTATION_ENTITY = "@Entity";
     private final static String ANNOTATION_TABLE = "@Table";
-    private final static String ANNOTATION_SECONDARY_TABLE = "@SecondaryTable";
     private static final String ANNOTATION_DISCRIMINATOR_COLUMN = "@DiscriminatorColumn";
     private static final String ANNOTATION_DISCRIMINATOR_VALUE = "@DiscriminatorValue";
     private static final String ANNOTATION_INHERITANCE = "@Inheritance";
 
     private static final String IMPORT_ENTITY = "javax.persistence.Entity";
     private static final String IMPORT_TABLE = "javax.persistence.Table";
-    private static final String IMPORT_SECONDARY_TABLE = "javax.persistence.SecondaryTable";
     private static final String IMPORT_DISCRIMINATOR_COLUMN = "javax.persistence.DiscriminatorColumn";
     private static final String IMPORT_DISCRIMINATOR_TYPE = "javax.persistence.DiscriminatorType";
     private static final String IMPORT_DISCRIMINATOR_VALUE = "javax.persistence.DiscriminatorValue";
@@ -91,9 +89,9 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
         String tableName = getTableNameObeyingNamingStrategy(persistenceTypeInfo.getTableName());
 
-        if (StringUtils.isEmpty(tableName) && inhStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
+        if (StringUtils.isEmpty(tableName) && persistenceTypeInfo.isUseTableDefinedInSupertype()) {
             // note that we must always add the table name annotation, otherwise a default table
-            // will be generated!
+            // may be generated!
             tableName = getTableNameFromSupertype(persistenceTypeInfo);
         }
 
@@ -123,13 +121,6 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
             fragment.addImport(IMPORT_INHERITANCE);
             fragment.addImport(IMPORT_INHERITANCE_TYPE);
         }
-
-        // if (inhStrategy == InheritanceStrategy.MIXED) {
-        // tableName =
-        // getTableNameObeyingNamingStrategy(persistenceTypeInfo.getSecondaryTableName());
-        // fragment.appendln(ANNOTATION_SECONDARY_TABLE + "(name = \"" + tableName + "\")");
-        // fragment.addImport(IMPORT_SECONDARY_TABLE);
-        // }
     }
 
     private String getTableNameFromSupertype(IPersistentTypeInfo persistenceTypeInfo) {

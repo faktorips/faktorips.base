@@ -24,10 +24,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -146,22 +143,6 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         }
 
         persistenceProviderImpl.addAnnotationConverter(fragment, jpaAttributeInfo);
-    }
-
-    private void createSecondaryTableAnnotationIfMixedInheritance(JavaCodeFragment fragment,
-            IPersistentAttributeInfo jpaAttributeInfo) {
-        IPolicyCmptType pcType = jpaAttributeInfo.getPolicyComponentTypeAttribute().getPolicyCmptType();
-        IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
-        InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
-
-        // if (inhStrategy == InheritanceStrategy.MIXED) {
-        // String secondaryTableName = persistenceTypeInfo.getSecondaryTableName();
-        // ITableColumnNamingStrategy tableColumnNamingStrategy = pcType.getIpsProject()
-        // .getTableColumnNamingStrategy();
-        // secondaryTableName = tableColumnNamingStrategy.getTableColumnName(secondaryTableName);
-        //
-        // fragment.append(", table = \"").append(secondaryTableName).append('"');
-        // }
     }
 
     private void createTemporalAnnotationIfTemporalDatatype(JavaCodeFragment fragment,

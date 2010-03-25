@@ -30,11 +30,6 @@ public interface IPersistenceProvider {
     public boolean isSuppotingOrphanRemoval();
 
     /**
-     * Returns <code>true</code> if the persistent provider supports the join fetch type annotation.
-     */
-    public boolean isSupportingJoinFetchType();
-
-    /**
      * Returns <code>true</code> if the persistent provider supports converter.
      */
     public boolean isSupportingConverter();
@@ -44,12 +39,6 @@ public interface IPersistenceProvider {
      * to the given java code fragment.
      */
     public void addAnnotationOrphanRemoval(JavaCodeFragment javaCodeFragment);
-
-    /**
-     * If the join fetch type is supported then this method must be used to add the necessary
-     * annotation to the given java code fragment.
-     */
-    public void addAnnotationJoinFetchType(JavaCodeFragment javaCodeFragment, String joinFetchTypeValue);
 
     /**
      * If converter are supported then this method must be used to add the necessary annotation to
