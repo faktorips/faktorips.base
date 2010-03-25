@@ -31,7 +31,7 @@ import org.faktorips.util.ArgumentCheck;
 public class LockAndSyncLiteralNameAction extends Action {
 
     /** The name of the image for the action. */
-    private final String IMAGE_NAME = "Refresh.gif";
+    private final String IMAGE_NAME = "SyncLiteralNames.gif";
 
     /** The <tt>EnumValuesSection</tt> this action belongs to. */
     private EnumValuesSection enumValuesSection;
