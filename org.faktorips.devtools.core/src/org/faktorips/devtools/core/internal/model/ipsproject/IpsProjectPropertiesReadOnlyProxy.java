@@ -175,13 +175,6 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     /**
-     * Returns the value of the underlying IIpsProjectProperties instance.
-     */
-    public boolean isRulesWithoutReferencesAllowedEnabled() {
-        return propertiesInternal.isRulesWithoutReferencesAllowedEnabled();
-    }
-
-    /**
      * Throws a runtime exceptions since manipulation of this object is disallowed.
      */
     public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config) {
