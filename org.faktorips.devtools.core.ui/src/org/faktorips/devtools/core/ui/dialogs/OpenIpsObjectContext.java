@@ -28,7 +28,7 @@ public class OpenIpsObjectContext implements ISelectIpsObjectContext {
 
     private final boolean onlyProductDefinitionTypes;
 
-    public OpenIpsObjectContext(boolean onlyProductDefinitionTypes) throws CoreException {
+    public OpenIpsObjectContext(boolean onlyProductDefinitionTypes) {
         this.onlyProductDefinitionTypes = onlyProductDefinitionTypes;
     }
 
