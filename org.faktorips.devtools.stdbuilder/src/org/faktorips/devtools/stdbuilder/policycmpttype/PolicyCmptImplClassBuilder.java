@@ -433,7 +433,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     .append("(").append(varAbstractCopy).append(", ").append(varCopyMap).append(");");
         }
 
-        // casted variable newCopy is only necessary if there is at least on association
+        // casted variable newCopy is only necessary if there is at least one association
         String varCopy = "newCopy";
         for (IPolicyCmptTypeAssociation association : getPcType().getPolicyCmptTypeAssociations()) {
             if (association.isAssoziation()) {

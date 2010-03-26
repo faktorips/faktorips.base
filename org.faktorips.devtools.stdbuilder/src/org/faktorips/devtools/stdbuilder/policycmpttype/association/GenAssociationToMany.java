@@ -1057,7 +1057,7 @@ public class GenAssociationToMany extends GenAssociation {
      * <pre>
      * for (IPerson iPerson : persons) {
      *     Person copyPerson = (Person)copyMap.get(person);
-     *     person.copyAssociations(copyPerson, copyMap);
+     *     ((Person)iPerson).copyAssociationsInternal(copyPerson, copyMap);
      * }
      * </pre>
      * 
@@ -1069,7 +1069,14 @@ public class GenAssociationToMany extends GenAssociation {
         String unqTargetInterfName = getUnqualifiedClassName(getTargetPolicyCmptType(), true);
         String varName = StringUtils.uncapitalize(unqTargetInterfName);
         methodsBuilder.append(getForLoopCode(unqTargetInterfName, varName, fieldName));
-        generateSnippetForCopyCompositions(varCopyMap, varName, methodsBuilder);
+        String unqTargetImplName = getUnqualifiedClassName(getTargetPolicyCmptType(), false);
+        String varCopyTarget = "copy" + unqTargetImplName;
+        methodsBuilder.append(unqTargetImplName).append(' ').append(varCopyTarget).append(" = ") //
+                .append('(').append(unqTargetImplName).append(')').append(varCopyMap) //
+                .append(".get(").append(varName).appendln(");");
+        methodsBuilder.append("((").append(unqTargetImplName).append(')').append(varName).append(").") //
+                .append(PolicyCmptImplClassBuilder.METHOD_COPY_ASSOCIATIONS) //
+                .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
         methodsBuilder.appendln("}");
     }
 

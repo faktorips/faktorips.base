@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.internal.DependantObject;
@@ -1007,28 +1006,5 @@ public abstract class GenAssociation extends GenTypePart {
     public abstract void generateCodeForCopyComposition(String varCopy,
             String varCopyMap,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-
-    /**
-     * generate a snippet for the generateCodeForComposition method, this part is equal for *To1 and
-     * *ToMany
-     * 
-     * @param varCopyMap
-     * @param varTarget
-     * @param methodsBuilder
-     * @throws CoreException
-     */
-    protected void generateSnippetForCopyCompositions(String varCopyMap,
-            String varTarget,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String unqTargetImplName = getUnqualifiedClassName(getTargetPolicyCmptType(), false);
-        String varCopyTarget = "copy" + unqTargetImplName;
-        methodsBuilder.append(unqTargetImplName).append(' ').append(varCopyTarget).append(" = ") //
-                .append('(').append(unqTargetImplName).append(')').append(varCopyMap) //
-                .append(".get(").append(varTarget).appendln(");");
-        methodsBuilder.append("((").append(unqTargetImplName).append(')').append(varTarget).append(").") //
-                .append(PolicyCmptImplClassBuilder.METHOD_COPY_ASSOCIATIONS) //
-                .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
-
-    }
 
 }
