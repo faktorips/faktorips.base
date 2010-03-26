@@ -60,7 +60,7 @@ public class TestPolicyCmptTypeParameterWorkbenchAdapter extends IpsObjectPartWo
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Association.gif", true); //$NON-NLS-1$
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("AssociationType-Composition.gif", true); //$NON-NLS-1$
     }
 
 }
