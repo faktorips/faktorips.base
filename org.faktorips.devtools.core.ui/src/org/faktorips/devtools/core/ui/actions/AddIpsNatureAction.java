@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -31,7 +32,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -68,8 +68,6 @@ import org.faktorips.devtools.core.util.ProjectUtil;
  */
 public class AddIpsNatureAction extends ActionDelegate {
 
-    private IStructuredSelection selection = StructuredSelection.EMPTY;
-
     private String sourceFolderName = Messages.AddIpsNatureAction_defaultSourceFolderName;
     private String basePackageName = Messages.AddIpsNatureAction_basePackage_default;
     private String runtimeIdPrefix = Messages.AddIpsNatureAction_defaultRuntimeIdPrefix;
@@ -77,36 +75,52 @@ public class AddIpsNatureAction extends ActionDelegate {
     private boolean isProductDefinitionProject = false;
     private boolean isPersistentProject = false;
 
+    private IJavaProject javaProject = null;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void selectionChanged(IAction action, ISelection newSelection) {
+        javaProject = null;
         if (newSelection instanceof IStructuredSelection) {
-            selection = (IStructuredSelection)newSelection;
-        } else {
-            selection = StructuredSelection.EMPTY;
-        }
-    }
+            Object selected = ((IStructuredSelection)newSelection).getFirstElement();
+            IProject prj = null;
+            if (selected instanceof IAdaptable) {
+                Object adapted = ((IAdaptable)selected).getAdapter(IProject.class);
+                if (adapted == null) {
+                    action.setEnabled(false);
+                }
+                prj = (IProject)adapted;
+            } else if (selected instanceof IProject) {
+                prj = (IProject)selected;
+            }
 
-    private IJavaProject getJavaProject() {
-        if (selection.size() != 1) {
-            return null;
+            if (prj == null) {
+                action.setEnabled(false);
+                return;
+            }
+
+            // only work with Java projects that are not IPS Projects at the same time
+            try {
+                IJavaProject jPrj = (IJavaProject)prj.getNature(JavaCore.NATURE_ID);
+                if (!ProjectUtil.hasIpsNature(prj) && jPrj != null) {
+                    javaProject = jPrj;
+                }
+                action.setEnabled(javaProject != null);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
         }
-        if (selection.getFirstElement() instanceof IJavaProject) {
-            return (IJavaProject)selection.getFirstElement();
-        }
-        return null;
     }
 
     @Override
     public void runWithEvent(IAction action, Event event) {
-        if (selection.size() > 1) {
+        if (javaProject == null) {
             MessageDialog.openInformation(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
                     Messages.AddIpsNatureAction_needToSelectOneSingleJavaProject);
             return;
         }
-        IJavaProject javaProject = getJavaProject();
         if (javaProject == null) {
             MessageDialog.openInformation(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
                     Messages.AddIpsNatureAction_mustSelectAJavaProject);
@@ -395,7 +409,6 @@ public class AddIpsNatureAction extends ActionDelegate {
             int newValidationStatus = IMessageProvider.NONE;
 
             String basePackageName = basePackageText.getText();
-            IJavaProject javaProject = getJavaProject();
             String sourceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_SOURCE, true); //$NON-NLS-1$
             String complianceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true); //$NON-NLS-1$
             if (!JavaConventions.validatePackageName(basePackageName, sourceLevel, complianceLevel).isOK()) {

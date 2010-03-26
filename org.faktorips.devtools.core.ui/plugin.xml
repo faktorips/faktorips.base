@@ -379,7 +379,7 @@
                  tooltip="%createMissingEnumContentsAction.tooltip">
            </action>
         </objectContribution>  
-		<objectContribution adaptable="true" id="addIpsNature" objectClass="org.eclipse.jdt.core.IJavaProject">
+		<objectContribution adaptable="true" id="addIpsNature" objectClass="org.eclipse.core.resources.IProject">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
 			    <separator name="faktorIpsGroup"/>
             </menu>
