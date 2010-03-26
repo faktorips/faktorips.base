@@ -128,12 +128,15 @@ public class AdjustmentDateContentProvider extends DeferredStructuredContentProv
                     IProductCmptTypeAssociation linkAssociation = link.findAssociation(ipsProject);
                     if (linkAssociation != null && !linkAssociation.isAssoziation()) {
                         IProductCmpt target = link.findTarget(ipsProject);
-                        IProgressMonitor recMonitor = new SubProgressMonitor(subMonitor, 1);
-                        List<IProductCmptGeneration> relevantGenerations = getRelevantGenerations(target, generation);
-                        for (IProductCmptGeneration aGeneration : relevantGenerations) {
-                            if (alreadyPassed.add(aGeneration)) {
-                                result.addAll(collectValidFromDates(aGeneration, smallestValidFrom, alreadyPassed,
-                                        ipsProject, recMonitor));
+                        if (target != null) {
+                            IProgressMonitor recMonitor = new SubProgressMonitor(subMonitor, 1);
+                            List<IProductCmptGeneration> relevantGenerations = getRelevantGenerations(target,
+                                    generation);
+                            for (IProductCmptGeneration aGeneration : relevantGenerations) {
+                                if (alreadyPassed.add(aGeneration)) {
+                                    result.addAll(collectValidFromDates(aGeneration, smallestValidFrom, alreadyPassed,
+                                            ipsProject, recMonitor));
+                                }
                             }
                         }
                     }
