@@ -99,6 +99,7 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
         }
         try {
             Composite workArea = createWorkArea(panel);
+            uiToolkit.setDataChangeable(workArea, dataChangeable);
             if (workArea.getLayoutData() == null) {
                 workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
             }
