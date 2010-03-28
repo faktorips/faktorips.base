@@ -234,6 +234,17 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_ATTRIBUTE_NAME_NAME, references.get(1).getName());
     }
 
+    public void testGetEnumAttributeReference() {
+        try {
+            genderEnumContent.getEnumAttributeReference(null);
+        } catch (NullPointerException e) {
+        }
+
+        assertNotNull(genderEnumContent.getEnumAttributeReference(GENDER_ENUM_ATTRIBUTE_ID_NAME));
+        assertNotNull(genderEnumContent.getEnumAttributeReference(GENDER_ENUM_ATTRIBUTE_NAME_NAME));
+        assertNull(genderEnumContent.getEnumAttributeReference("foobar"));
+    }
+
     public void testIsCapableOfContainingValues() throws CoreException {
         assertTrue(genderEnumContent.isCapableOfContainingValues());
         genderEnumContent.setEnumType("foo");

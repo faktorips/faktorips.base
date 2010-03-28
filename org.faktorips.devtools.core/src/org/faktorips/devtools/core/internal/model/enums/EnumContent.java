@@ -270,6 +270,16 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return referencesList;
     }
 
+    public IEnumAttributeReference getEnumAttributeReference(String name) {
+        ArgumentCheck.notNull(name);
+        for (IEnumAttributeReference reference : getEnumAttributeReferences()) {
+            if (reference.getName().equals(name)) {
+                return reference;
+            }
+        }
+        return null;
+    }
+
     public int getEnumAttributeReferencesCount() {
         return enumAttributeReferences.size();
     }

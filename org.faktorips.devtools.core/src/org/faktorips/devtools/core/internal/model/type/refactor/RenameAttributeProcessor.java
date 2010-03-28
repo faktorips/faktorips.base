@@ -21,7 +21,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.internal.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -52,8 +51,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     private Set<IIpsSrcFile> testCaseTypeCmptSrcFiles;
 
     /**
-     * Creates a <tt>RenameAttributeProcessor</tt>.
-     * 
      * @param attribute The <tt>IAttribute</tt> to be refactored.
      */
     public RenameAttributeProcessor(IAttribute attribute) {
@@ -80,15 +77,10 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        /*
-         * TODO AW: Stop broadcasting change events would be good for name changing here, make it
-         * published?
-         */
         getAttribute().setName(getNewName());
 
-        IIpsProject ipsProject = getAttribute().getIpsProject();
-        MessageList validationMessageList = getAttribute().validate(ipsProject);
-        validationMessageList.add(getType().validate(ipsProject));
+        MessageList validationMessageList = getAttribute().validate(getIpsProject());
+        validationMessageList.add(getType().validate(getIpsProject()));
         addValidationMessagesToStatus(validationMessageList, status);
 
         getAttribute().setName(getOriginalName());

@@ -137,6 +137,16 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     public List<IEnumAttributeReference> getEnumAttributeReferences();
 
     /**
+     * Returns the <tt>IEnumAttributeReference</tt> with the given name or <tt>null</tt> if there is
+     * no such reference in this <tt>IEnumContent</tt>.
+     * 
+     * @param name The name of the <tt>IEnumAttributeReference</tt> to obtain.
+     * 
+     * @throws NullPointerException If <tt>name</tt> is <tt>null</tt>.
+     */
+    public IEnumAttributeReference getEnumAttributeReference(String name);
+
+    /**
      * Returns the number of <tt>IEnumAttribute</tt>s that are currently referenced by this
      * <tt>IEnumContent</tt>.
      */

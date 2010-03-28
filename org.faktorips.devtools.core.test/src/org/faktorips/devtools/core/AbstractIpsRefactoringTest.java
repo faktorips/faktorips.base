@@ -69,6 +69,8 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
+    protected static final String ENUM_ATTRIBUTE_NAME = "id";
+
     protected static final String POLICY_CMPT_TYPE_ATTRIBUTE_NAME = "policyAttribute";
 
     protected static final String PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME = "productAttribute";
@@ -272,7 +274,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         enumType.setContainingValues(false);
         enumType.setAbstract(false);
         enumAttribute = enumType.newEnumAttribute();
-        enumAttribute.setName("id");
+        enumAttribute.setName(ENUM_ATTRIBUTE_NAME);
         enumAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         enumAttribute.setIdentifier(true);
         enumAttribute.setUnique(true);
