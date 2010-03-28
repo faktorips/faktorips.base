@@ -55,11 +55,15 @@ public class MethodsSection extends SimpleIpsPartsSection {
         methodsComposite.updateOverrideButtonEnabledState();
     }
 
+    protected EditDialog createEditDialog(IMethod part, Shell shell) {
+        return new MethodEditDialog(part, shell);
+    }
+
     /**
      * A composite that shows a policy component's methods in a viewer and allows to edit methods in
      * a dialog, create new methods and delete methods.
      */
-    private static class MethodsComposite extends IpsPartsComposite {
+    private class MethodsComposite extends IpsPartsComposite {
 
         private Button overrideButton;
 
@@ -128,7 +132,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new MethodEditDialog((IMethod)part, shell);
+            return MethodsSection.this.createEditDialog((IMethod)part, shell);
         }
 
         @Override
@@ -149,11 +153,11 @@ public class MethodsSection extends SimpleIpsPartsSection {
             }
 
             public void dispose() {
-                // Nothing todo.
+                // Nothing to do.
             }
 
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // Nothing todo.
+                // Nothing to do.
             }
 
         }
