@@ -48,15 +48,20 @@ public class CreateHtmlExportAction extends ActionDelegate {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void run(IAction action) {
 		if (selection.size() > 1) {
-			MessageDialog.openInformation(getShell(), "Html Export", "Es muss ein IpsProject ausgewählt sein!");
+			MessageDialog.openInformation(getShell(), Messages.CreateHtmlExportAction_HtmlExport,
+					Messages.CreateHtmlExportAction_SelectJustOneProject);
 			return;
 		}
 		IIpsProject ipsProject = getIpsProject();
 		if (ipsProject == null) {
-			MessageDialog.openInformation(getShell(), "Html Export", "Es muss ein IpsProject ausgewählt sein!");
+			MessageDialog.openInformation(getShell(), Messages.CreateHtmlExportAction_HtmlExport,
+					Messages.CreateHtmlExportAction_SelectOneProject);
 			return;
 		}
 
@@ -67,7 +72,6 @@ public class CreateHtmlExportAction extends ActionDelegate {
 			exportHtml(selected);
 		}
 
-
 	}
 
 	private void exportHtml(String selected) {
@@ -76,24 +80,23 @@ public class CreateHtmlExportAction extends ActionDelegate {
 
 		documentorConfig.setPath(selected);
 		documentorConfig.setIpsProject(getIpsProject());
-		documentorConfig.setLayouter(new HtmlLayouter(".resource"));
+		documentorConfig.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
 
 		documentorConfig.addDocumentorScript(new StandardDocumentorScript());
 		documentorConfig.setLinkedIpsObjectClasses(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
 
-		new Documentor(documentorConfig).run();
+		new Documentor(documentorConfig).execute();
 	}
 
 	private String getDestinationFolder() {
 		DirectoryDialog fd = createFileSaveDialog();
-
 		return fd.open();
 	}
 
 	private DirectoryDialog createFileSaveDialog() {
 		DirectoryDialog fd = new DirectoryDialog(getShell());
-		fd.setText("Export");
-		fd.setFilterPath(getIpsProject().getProject().getLocation() + File.separator + "html");
+		fd.setText(Messages.CreateHtmlExportAction_Export);
+		fd.setFilterPath(getIpsProject().getProject().getLocation() + File.separator + "html"); //$NON-NLS-1$
 		return fd;
 	}
 

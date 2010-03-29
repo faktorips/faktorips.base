@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -12,15 +13,35 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
+/**
+ * Configuration for the Documentator
+ * @author dicker
+ *
+ */
 public class DocumentorConfiguration {
 
-	private IpsObjectType[] linkedIpsObjectTypes = new IpsObjectType[0];
-    private String path;
-    private List<IDocumentorScript> scripts = new ArrayList<IDocumentorScript>();
-    private IIpsProject ipsProject;
-    private ILayouter layouter;
+	/**
+	 * related {@link IpsObjectType}s: Just {@link IIpsObject} of these types are documented
+	 */
+	protected IpsObjectType[] linkedIpsObjectTypes = new IpsObjectType[0];
+	/**
+	 * Path for output
+	 */
+    protected String path;
+    /**
+     * All scripts within this documentation
+     */
+    protected List<IDocumentorScript> scripts = new ArrayList<IDocumentorScript>();
+    /**
+     * {@link IIpsProject}, which will be documented
+     */
+    protected IIpsProject ipsProject;
+    /**
+     * {@link ILayouter} contains the layout for the documentation
+     */
+    protected ILayouter layouter;
     
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+	protected SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
 	public DocumentorConfiguration() {
 		super();
@@ -54,7 +75,7 @@ public class DocumentorConfiguration {
     	return getLinkedObjects(getLinkedIpsObjectTypes());
     }
 
-	public List<IIpsObject> getLinkedObjects(IpsObjectType... ipsObjectTypes) {
+	private List<IIpsObject> getLinkedObjects(IpsObjectType... ipsObjectTypes) {
 		List<IIpsObject> objects = new ArrayList<IIpsObject>();
 
 		List<IIpsSrcFile> srcFiles = getLinkedSource(ipsObjectTypes);
@@ -68,10 +89,12 @@ public class DocumentorConfiguration {
         return objects;
 	}
 
-    public List<IIpsSrcFile> getLinkedSources() {
-        return getLinkedSource(getLinkedIpsObjectTypes());
-    }
-
+	
+	/**
+	 * returns all {@link IIpsSrcFile} within the {@link IpsProject}, which type is within the given array.
+	 * @param ipsObjectTypes
+	 * @return List<IIpsSrcFile>
+	 */
 	public List<IIpsSrcFile> getLinkedSource(IpsObjectType... ipsObjectTypes) {
 		List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         try {

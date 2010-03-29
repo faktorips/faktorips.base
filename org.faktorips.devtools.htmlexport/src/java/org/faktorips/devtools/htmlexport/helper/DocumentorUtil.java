@@ -11,13 +11,33 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
-public class Util {
+/**
+ * 
+ * Utility-Class for the documentation
+ * @author dicker
+ *
+ */
+public class DocumentorUtil {
+	
+    private static final String DEFAULT_PACKAGE_NAME = "(default package)";
+
+	/**
+     * returns the name of tne given ipsPackageFragment. If the ipsPackageFragment is the default package then the DEFAULT_PACKAGE_NAME is returned
+     * @param ipsPackageFragment
+     * @return name of the ipsPckageFragment
+     */
     public static String getIpsPackageName(IIpsPackageFragment ipsPackageFragment) {
         if (ipsPackageFragment.isDefaultPackage())
-            return "(default package)";
+            return DEFAULT_PACKAGE_NAME;
         return ipsPackageFragment.getName();
     }
     
+    /**
+     * returns the {@link IIpsObject} of the given {@link IIpsSrcFile}
+     * @param <T>
+     * @param srcFile
+     * @return
+     */
     @SuppressWarnings("unchecked")
 	public static <T extends IIpsObject> T getIpsObject(IIpsSrcFile srcFile) {
     	try {
@@ -27,7 +47,14 @@ public class Util {
 		}
     }
     
-	public static <T extends IIpsObject> List<T> getIpsObjects(IIpsSrcFile... srcFiles) {
+	
+    /**
+     * returns a list of {@link IIpsObject}s of the given {@link IIpsSrcFile}s
+     * @param <T>
+     * @param srcFiles
+     * @return
+     */
+    public static <T extends IIpsObject> List<T> getIpsObjects(IIpsSrcFile... srcFiles) {
     	List<T> objects = new ArrayList<T>();
 
     	for (IIpsSrcFile srcFile : srcFiles) {
@@ -38,6 +65,12 @@ public class Util {
     	return objects;
     }
 	
+	/**
+	 * converts {@link ImageData}  to a byte[] using the given format
+	 * @param imageData
+	 * @param format
+	 * @return
+	 */
 	public static byte[] convertImageDataToByteArray(ImageData imageData, int format) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		

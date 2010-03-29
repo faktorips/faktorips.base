@@ -3,7 +3,11 @@
  */
 package org.faktorips.devtools.htmlexport.helper.html;
 
-class HtmlAttribute {
+/**
+ * @author dicker
+ *
+ */
+public class HtmlAttribute {
     String name;
     String value;
 

@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.helper.Util;
+import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -281,7 +281,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		List<IProductCmpt> tableContents;
 		try {
 			allTableContentsSrcFiles = object.searchMetaObjectSrcFiles(true);
-			tableContents = Util.getIpsObjects(allTableContentsSrcFiles);
+			tableContents = DocumentorUtil.getIpsObjects(allTableContentsSrcFiles);
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}

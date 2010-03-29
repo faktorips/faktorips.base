@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.htmlexport.AbstractDocumentorScript;
+import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.IGenerator;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
@@ -23,7 +23,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AllPackagesPageEle
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
 
-public class StandardDocumentorScript extends AbstractDocumentorScript {
+public class StandardDocumentorScript implements IDocumentorScript {
 
     private static final String STANDARD_PATH = "";
 

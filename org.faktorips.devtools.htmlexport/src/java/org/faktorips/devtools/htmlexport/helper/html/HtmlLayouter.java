@@ -9,7 +9,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayoutResource;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
-import org.faktorips.devtools.htmlexport.helper.Util;
+import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
@@ -22,10 +22,24 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 
+/**
+ * Html-Layouter
+ * @author dicker
+ *
+ */
 public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 
+	/*
+	 * Name of the css-File 
+	 */
 	private static final String HTML_BASE_CSS = "html/base.css";
+	/*
+	 * path to the resource in the generated site
+	 */
 	private String resourcePath;
+	/*
+	 * path from the actual RootPageElement to the root-folder of the site 
+	 */
 	private String pathToRoot;
 
 	public HtmlLayouter(String resourcePath) {
@@ -34,6 +48,9 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		initBaseResources();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutLinkPageElement(org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement)
+	 */
 	public void layoutLinkPageElement(LinkPageElement pageElement) {
 		String linkBase = pathToRoot + pageElement.getPathFromRoot() + ".html";
 
@@ -42,6 +59,9 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		append(HtmlUtil.createHtmlElementCloseTag("a"));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutListPageElement(org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement)
+	 */
 	public void layoutListPageElement(ListPageElement pageElement) {
 		String listBaseHtmlTag = pageElement.isOrdered() ? "ul" : "ol";
 		append(HtmlUtil.createHtmlElementOpenTag(listBaseHtmlTag, getClasses(pageElement)));
@@ -49,12 +69,18 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		append(HtmlUtil.createHtmlElementCloseTag(listBaseHtmlTag));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutTablePageElement(org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement)
+	 */
 	public void layoutTablePageElement(TablePageElement pageElement) {
 		append(HtmlUtil.createHtmlElementOpenTag("table", getClasses(pageElement)));
 		visitSubElements(pageElement);
 		append(HtmlUtil.createHtmlElementCloseTag("table"));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutWrapperPageElement(org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement)
+	 */
 	public void layoutWrapperPageElement(WrapperPageElement wrapperPageElement) {
 		WrapperType wrapperType = wrapperPageElement.getWrapperType();
 		if (wrapperType == WrapperType.NONE && wrapperPageElement.getStyles().isEmpty()) {
@@ -67,6 +93,11 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		append(HtmlUtil.createHtmlElementCloseTag(wrappingElement));
 	}
 
+	/**
+	 * returns name of the html-element for the given {@link WrapperType}
+	 * @param wrapper
+	 * @return String
+	 */
 	private String getHtmlElementByWrappingType(WrapperType wrapper) {
 		if (wrapper == WrapperType.LISTITEM)
 			return "li";
@@ -79,6 +110,9 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		return "span";
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutRootPageElement(org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement)
+	 */
 	public void layoutRootPageElement(AbstractRootPageElement pageElement) {
 		initRootPage(pageElement);
 		
@@ -88,19 +122,31 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		append(HtmlUtil.createHtmlFoot());
 	}
 
+	/**
+	 * sets the pathToRoot and clears the content
+	 * @param pageElement
+	 */
 	private void initRootPage(AbstractRootPageElement pageElement) {
 		pathToRoot = pageElement.getPathToRoot();
-		clean();
+		clear();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutTextPageElement(org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement)
+	 */
 	public void layoutTextPageElement(TextPageElement pageElement) {
 		if (pageElement.getType() == TextType.WITHOUT_TYPE && pageElement.getStyles().isEmpty()) {
-			append(HtmlUtil.prepareText(pageElement.getText()));
+			append(HtmlUtil.getHtmlText(pageElement.getText()));
 			return;
 		}
 		append(HtmlUtil.createHtmlElement(identifyTagName(pageElement), pageElement.getText(), getClasses(pageElement)));
 	}
 
+	/**
+	 * puts all {@link Style}s of the {@link PageElement} in a String for the html-class-attribute.
+	 * @param pageElement
+	 * @return
+	 */
 	private String getClasses(PageElement pageElement) {
 
 		Set<Style> styles = pageElement.getStyles();
@@ -116,6 +162,11 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		return classes.toString().trim();
 	}
 
+	/**
+	 * returns the name of an html-element according to the given {@link TextPageElement}
+	 * @param textPageElement
+	 * @return
+	 */
 	private String identifyTagName(TextPageElement textPageElement) {
 		return HtmlTextType.getHtmlTextTypeByTextType(textPageElement.getType()).getTagName();
 	}
@@ -143,7 +194,7 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	public void layoutImagePageElement(ImagePageElement imagePageElement) {
 
 		String path = resourcePath + "/images/" + imagePageElement.getPath() + ".png";
-		addLayoutResource(new LayoutResource(path, Util.convertImageDataToByteArray(imagePageElement.getImageData(), SWT.IMAGE_PNG)));
+		addLayoutResource(new LayoutResource(path, DocumentorUtil.convertImageDataToByteArray(imagePageElement.getImageData(), SWT.IMAGE_PNG)));
 		
 		append(HtmlUtil.createImage(pathToRoot + path, imagePageElement.getTitle()));
 	}

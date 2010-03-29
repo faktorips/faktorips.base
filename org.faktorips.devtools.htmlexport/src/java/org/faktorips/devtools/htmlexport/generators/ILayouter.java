@@ -13,60 +13,60 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElem
 public interface ILayouter extends IGenerator {
 
 	/**
-	 * Layout fuer den Root des Dokumentbaumes
+	 * Layout for the Root of a Page
 	 * 
-	 * @param pageElement
+	 * @param pageElement AbstractRootPageElement
 	 */
 	public void layoutRootPageElement(AbstractRootPageElement pageElement);
 
 	/**
-	 * Layout für Text ohne weitere Struktur und mit nur einer Formatierung
+	 * Layout for the Text
 	 * 
-	 * @param pageElement
+	 * @param pageElement TextPageElement
 	 */
 	public void layoutTextPageElement(TextPageElement pageElement);
 
 	/**
-	 * Layout fuer Link
+	 * Layout for a Link
 	 * 
-	 * @param pageElement
+	 * @param pageElement LinkPageElement
 	 */
 	public void layoutLinkPageElement(LinkPageElement pageElement);
 
 	/**
-	 * Layout fuer Liste
+	 * Layout for a List
 	 * 
-	 * @param pageElement
+	 * @param pageElement ListPageElement
 	 */
 	public void layoutListPageElement(ListPageElement pageElement);
 
 	/**
-	 * Layout fuer WrapperElement
+	 * Layout for a Table
 	 * 
-	 * @param wrapperPageElement
+	 * @param pageElement TablePageElement
 	 */
 	public void layoutTablePageElement(TablePageElement pageElement);
 
 	/**
 	 * Layout fuer WrapperElement
 	 * 
-	 * @param wrapperPageElement
+	 * @param pageElement WrapperPageElement
 	 */
-	public void layoutWrapperPageElement(WrapperPageElement wrapperPageElement);
+	public void layoutWrapperPageElement(WrapperPageElement pageElement);
 
 	/**
-	 * loescht den bisherigen Text
+	 * clears the data
 	 */
-	public void clean();
+	public void clear();
 	
 	/**
-	 * Gibt die Resourcen zurueck, die in externen Dateien gespeichert werden
+	 * returns the {@link LayoutResource} for the Page
 	 */
 	public Set<LayoutResource> getLayoutResources();
 
 	/**
-	 * Layout fuer ein Image 
-	 * @param imagePageElement
+	 * Layout for an Image 
+	 * @param pageElement ImagePageElement
 	 */
-	public void layoutImagePageElement(ImagePageElement imagePageElement);
+	public void layoutImagePageElement(ImagePageElement pageElement);
 }

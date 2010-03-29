@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.helper.Util;
+import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -130,7 +130,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 		List<IProductCmpt> productCmpts;
 		try {
 			allProductCmptSrcFiles = getProductCmptType().searchMetaObjectSrcFiles(true);
-			productCmpts = Util.getIpsObjects(allProductCmptSrcFiles);
+			productCmpts = DocumentorUtil.getIpsObjects(allProductCmptSrcFiles);
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}

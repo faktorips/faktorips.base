@@ -1,7 +1,18 @@
 package org.faktorips.devtools.htmlexport.helper.html;
 
+/**
+ * Helper for layouting tables
+ * @author dicker
+ *
+ */
 public class HtmlTable {
-    public class HtmlTableCell {
+    
+	/**
+	 * represents a tablecell.
+	 * @author dicker
+	 *
+	 */
+	public class HtmlTableCell {
         private String text;
         private String classes;
         private boolean headerCell;
@@ -54,12 +65,17 @@ public class HtmlTable {
     private HtmlTableCell[][] htmlTableCells;
     private String tableClasses;
     
+    /**
+     * creates an {@link HtmlTable} with an 2-dimensional Array of Strings, the classes of table and cells for the html-elements
+     * @param cellText
+     * @param tableClasses
+     * @param cellClasses
+     * @throws IllegalArgumentException if the number of columns differs
+     * 
+     */
     public HtmlTable(String[][] cellText, String tableClasses, String cellClasses) {
         this.tableClasses = tableClasses;
-        initTable(cellText, cellClasses);
-    }
-    
-    private void initTable(String[][] cellText, String cellClasses) {
+
         rowCount = cellText.length;
         
         if (rowCount == 0) return;
@@ -81,15 +97,22 @@ public class HtmlTable {
     private void calculateColumnCount(String[][] cellText) {
         columnCount = -1;
         for (String[] row : cellText) {
-            if (columnCount != row.length && columnCount > -1) throw new IllegalArgumentException("Spaltenzahl stimmt nicht überein!");
+            if (columnCount != row.length && columnCount > -1) throw new IllegalArgumentException("The number of columns differ!");
             columnCount = row.length;
         }
     }
     
+    /**
+     * @return true, if the table has no cells
+     */
     public boolean isEmpty() {
         return rowCount == 0 || columnCount == 0;
     }
     
+    /**
+     * returns the complete html of the table
+     * @return
+     */
     public String generate() {
         StringBuilder builder = new StringBuilder();
         builder.append(HtmlUtil.createHtmlElementOpenTag("table", new HtmlAttribute("class", tableClasses)));

@@ -1,5 +1,14 @@
 package org.faktorips.devtools.htmlexport.generators;
 
+/**
+ * A LayoutResource is a part of a page, but not included in the page.
+ * <br/>
+ * If the documentation is layouted in html, then e.g. images and stylesheets are external resources, which are not part of the html-file.
+ * <br/>
+ * A LayoutResource consists of an identifying and describing name and the content of this resource as an byte[].
+ * @author dicker
+ * 
+ */
 public class LayoutResource {
 	private String name;
 	private byte[] content;

@@ -8,7 +8,7 @@ import java.util.Set;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectFilter;
+import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 
@@ -17,7 +17,7 @@ public abstract class AbstractAllPageElement extends AbstractRootPageElement {
     protected IIpsElement baseIpsElement;
     protected String linkTarget;
 
-    protected final static IpsObjectFilter ALL_FILTER = new IpsObjectFilter() {
+    protected final static IpsElementFilter ALL_FILTER = new IpsElementFilter() {
         public boolean accept(IIpsElement object) {
             return true;
         }
@@ -30,9 +30,9 @@ public abstract class AbstractAllPageElement extends AbstractRootPageElement {
     };
 
     protected List<IIpsObject> objects;
-    protected IpsObjectFilter filter = ALL_FILTER;
+    protected IpsElementFilter filter = ALL_FILTER;
 
-    public AbstractAllPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsObjectFilter filter) {
+    public AbstractAllPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
         super();
         this.baseIpsElement = baseIpsElement;
         this.objects = objects;

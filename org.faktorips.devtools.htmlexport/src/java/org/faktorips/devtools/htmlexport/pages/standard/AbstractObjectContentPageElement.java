@@ -16,7 +16,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.helper.Util;
+import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
@@ -70,7 +70,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", "_top",
 				"Overview Project " + config.getIpsProject().getName())));
 
-		addPageElements(new LinkPageElement(object.getIpsPackageFragment(), "classes", Util.getIpsPackageName(object
+		addPageElements(new LinkPageElement(object.getIpsPackageFragment(), "classes", DocumentorUtil.getIpsPackageName(object
 				.getIpsPackageFragment()), true));
 		addPageElements(new TextPageElement(object.getIpsObjectType().getDisplayName() + " " + object.getName(),
 				TextType.HEADING_1));

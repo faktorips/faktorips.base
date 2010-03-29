@@ -1,41 +1,41 @@
 package org.faktorips.devtools.htmlexport.helper.path;
 
+import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
- * Util-Klasse für die Erstellung von Links und Ermittlung relativer Pfade auf Basis eines IIpsElement
+ * Utility, which is used for links und relative links for {@link IIpsElement}s
  * @author dicker
  *
  */
 public interface IpsElementPathUtil {
 
     /**
-     * gibt den relativen Pfad vom <code>IIpsElement</code> ins Root-Verzeichnis
+     * returns relative path to the root from the <code>IIpsElement</code>
      * 
-     * @return relativer Pfad ins Root-Verzeichnis
+     * @return 
      */
     public String getPathToRoot();
 
     /**
-     * gibt den relativen Pfad vom Root-Verzeichnis zum <code>IIpsElement</code>
-     * @param linkedFileType Typ des Pfads
+     * returns relative path from the root to the <code>IIpsElement</code>
+     * @param linkedFileType type of path
      * 
-     * @return relativer Pfad vom Root-Verzeichnis
+     * @return 
      */
     public String getPathFromRoot(LinkedFileType linkedFileType);
 
     /**
-     * Name des IIPSElement in einem Link
+     * name of an {@link IIpsElement} in a link
      * 
      * @param withImage
-     *            true: Darstellung mit Thumb
-     * @return Html-Link-Text
+     *            true: link includes a small image which represents the type of the {@link IpsElement}
+     * @return
      */
     public String getLinkText(boolean withImage);
     
     /**
-     * 
-     * @return IipsElement des PathUtils 
+     * @return {@link IIpsElement}
      */
     public IIpsElement getIpsElement();
 

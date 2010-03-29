@@ -7,30 +7,46 @@ import java.util.Set;
 
 public abstract class AbstractLayouter implements ILayouter {
 
-	protected StringBuilder builder = new StringBuilder();
-	public String charset = "UTF-8";
+	/*
+	 * content of a page 
+	 */
+	protected StringBuilder content = new StringBuilder();
+	
+	/*
+	 * Set of LayoutResources like Images, Stylesheets
+	 */
 	private Set<LayoutResource> layoutResources = new HashSet<LayoutResource>();;
 
 	public AbstractLayouter() {
 		super();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.generators.IGenerator#generate()
+	 */
 	public byte[] generate() {
-		if (Charset.isSupported(charset))
+		if (Charset.isSupported(CHARSET))
 			try {
-				return builder.toString().getBytes(charset);
+				return content.toString().getBytes(CHARSET);
 			} catch (UnsupportedEncodingException e) {
 				throw new RuntimeException(e);
 			}
-		return builder.toString().getBytes();
+		return content.toString().getBytes();
 	}
 
-	public void clean() {
-		builder = new StringBuilder();
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#clear()
+	 */
+	public void clear() {
+		content = new StringBuilder();
 	}
 
+	/**
+	 * appends String to the content
+	 * @param value
+	 */
 	protected void append(String value) {
-		builder.append(value);
+		content.append(value);
 	}
 
 	public Set<LayoutResource> getLayoutResources() {

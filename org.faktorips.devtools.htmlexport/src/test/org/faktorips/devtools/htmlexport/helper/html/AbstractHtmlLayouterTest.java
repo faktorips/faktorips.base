@@ -23,7 +23,7 @@ public abstract class AbstractHtmlLayouterTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        layouter.clean();
+        layouter.clear();
         System.out.println("====================================================");
     }
 

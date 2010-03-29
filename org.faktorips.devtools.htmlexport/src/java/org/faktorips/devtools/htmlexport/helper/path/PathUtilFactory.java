@@ -8,16 +8,21 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * 
- * UtilityKlasse zum Erzeugen von Links von einem <code>IIpsElement</code> zu einem anderen <code>IIpsElement</code>
+ * Utility for choosing the right {@link IpsElementPathUtil}
  * @author dicker
  *
  */
 public class PathUtilFactory {
 
+    /**
+     * returns {@link IpsElementPathUtil} for the given {@link IIpsElement}
+     * @param ipsElement
+     * @return
+     */
     public static IpsElementPathUtil createPathUtil(IIpsElement ipsElement) {
         if (ipsElement instanceof IIpsProject) return new IpsProjectPathUtil();
         if (ipsElement instanceof IIpsPackageFragment) return new IpsPackageFragmentPathUtil((IIpsPackageFragment) ipsElement);
         if (ipsElement instanceof IIpsObject) return new IpsObjectPathUtil((IIpsObject) ipsElement);
-        throw new NotImplementedException("Fuer das IIpsElement vom Typ " + ipsElement.getClass().getCanonicalName() + " gibt es noch kein PathUtil");
+        throw new NotImplementedException("There is no IpsElementPathUtil for the IIpsElement of the type " + ipsElement.getClass().getCanonicalName());
     }
 }

@@ -4,6 +4,11 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
+/**
+ * LinkedFileType defines, whether a link goes to a content or an classes-overview page
+ * @author dicker
+ *
+ */
 public class LinkedFileType {
     private static LinkedFileType PACKAGE_CLASSES_OVERVIEW = new LinkedFileType("package_classes_", "", "classes");
     private static LinkedFileType ELEMENT_CONTENT= new LinkedFileType("element_", "", "content");
@@ -30,6 +35,10 @@ public class LinkedFileType {
         return target;
     }
 
+    /**
+     * @param element
+     * @return {@link LinkedFileType} according to the given {@link IIpsElement}
+     */
     public static LinkedFileType getLinkedFileTypeByIpsElement(IIpsElement element) {
         if (element instanceof IIpsPackageFragment) return PACKAGE_CLASSES_OVERVIEW;
         if (element instanceof IIpsObject) return new LinkedFileType("object_", "." + ((IIpsObject)element).getIpsObjectType().getFileExtension(), "content");
