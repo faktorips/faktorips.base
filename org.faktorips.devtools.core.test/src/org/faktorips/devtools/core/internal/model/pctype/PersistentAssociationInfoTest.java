@@ -129,11 +129,16 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         IPersistentAssociationInfo sourcePersistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         IPersistentAssociationInfo targetPersistenceAssociatonInfo = targetPcAssociation.getPersistenceAssociatonInfo();
 
+        targetPersistenceAssociatonInfo.setFetchType(FetchType.EAGER);
         targetPersistenceAssociatonInfo.setJoinColumnName("JoinColumn");
 
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
         assertEquals(0, ml.getNoOfMessages());
+
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
+
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
         assertEquals(0, ml.getNoOfMessages());
 
         // test target association must be transient or target policy component persist disabled
