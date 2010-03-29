@@ -19,7 +19,6 @@ import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.util.PersistenceUtil;
@@ -44,14 +43,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private FetchType fetchType = FetchType.LAZY;
 
     private IIpsObjectPart policyComponentTypeAssociation;
-
-    private static enum RELATIONSHIP_TYPE {
-        UNKNOWN,
-        ONE_TO_MANY,
-        ONE_TO_ONE,
-        MANY_TO_MANY,
-        MANY_TO_ONE
-    }
 
     /**
      */
@@ -297,8 +288,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             // error inverse not found
             return true;
         }
-        RELATIONSHIP_TYPE relType = evalRelationShipType(inverseAssociation);
-        if (relType == RELATIONSHIP_TYPE.ONE_TO_ONE) {
+        RelationshipType relType = evalBidirectionalRelationShipType(inverseAssociation);
+        if (relType == RelationshipType.ONE_TO_ONE) {
             if (getPolicyComponentTypeAssociation().isCompositionMasterToDetail()) {
                 return false;
             }
@@ -309,43 +300,44 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             }
             return true;
         }
-        if (relType == RELATIONSHIP_TYPE.MANY_TO_MANY) {
+        if (relType == RelationshipType.MANY_TO_MANY) {
             return false;
         }
-        if (relType == RELATIONSHIP_TYPE.ONE_TO_MANY) {
+        if (relType == RelationshipType.ONE_TO_MANY) {
             return false;
         }
-        if (relType == RELATIONSHIP_TYPE.MANY_TO_ONE) {
+        if (relType == RelationshipType.MANY_TO_ONE) {
             return true;
         }
         throw new RuntimeException("'Unsupported relationship type: " + relType.toString());
     }
 
-    private RELATIONSHIP_TYPE evalRelationShipType(IPolicyCmptTypeAssociation inverseAssociation) {
-        int sourceCardinality = getPolicyComponentTypeAssociation().getMaxCardinality();
-        int targetCardinality = inverseAssociation.getMaxCardinality();
+    public RelationshipType evalUnidirectionalRelationShipType() {
+        if (getPolicyComponentTypeAssociation().is1ToMany()) {
+            return RelationshipType.ONE_TO_MANY;
+        } else if (getPolicyComponentTypeAssociation().is1To1()) {
+            return RelationshipType.ONE_TO_ONE;
+        }
+        return RelationshipType.UNKNOWN;
+    }
 
-        // special case max 1 but is qualified, thus child's are stored in a list
-        if (getPolicyComponentTypeAssociation().isQualified()) {
-            sourceCardinality = Integer.MAX_VALUE;
+    public RelationshipType evalBidirectionalRelationShipType(IPolicyCmptTypeAssociation inverseAssociation) {
+        if (inverseAssociation == null) {
+            return RelationshipType.UNKNOWN;
         }
-        if (inverseAssociation.isQualified()) {
-            targetCardinality = Integer.MAX_VALUE;
+        if (getPolicyComponentTypeAssociation().is1ToMany() && inverseAssociation.is1ToMany()) {
+            return RelationshipType.MANY_TO_MANY;
         }
-
-        if (sourceCardinality > 1 && targetCardinality == 1) {
-            return RELATIONSHIP_TYPE.ONE_TO_MANY;
+        if (getPolicyComponentTypeAssociation().is1ToMany() && inverseAssociation.is1To1()) {
+            return RelationshipType.ONE_TO_MANY;
         }
-        if (sourceCardinality > 1 && targetCardinality > 1) {
-            return RELATIONSHIP_TYPE.MANY_TO_MANY;
+        if (getPolicyComponentTypeAssociation().is1To1() && inverseAssociation.is1ToMany()) {
+            return RelationshipType.MANY_TO_ONE;
         }
-        if (sourceCardinality == 1 && targetCardinality == 1) {
-            return RELATIONSHIP_TYPE.ONE_TO_ONE;
+        if (getPolicyComponentTypeAssociation().is1To1() && inverseAssociation.is1To1()) {
+            return RelationshipType.ONE_TO_ONE;
         }
-        if (sourceCardinality == 1 && targetCardinality > 1) {
-            return RELATIONSHIP_TYPE.MANY_TO_ONE;
-        }
-        return RELATIONSHIP_TYPE.UNKNOWN;
+        return RelationshipType.UNKNOWN;
     }
 
     public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation() {
@@ -353,12 +345,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     public void initDefaults() {
-        if (getPolicyComponentTypeAssociation().getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL) {
-            fetchType = FetchType.EAGER;
-        } else if (getPolicyComponentTypeAssociation().getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
+        if (getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier()) {
             fetchType = FetchType.LAZY;
         } else {
-            fetchType = FetchType.LAZY;
+            fetchType = FetchType.EAGER;
         }
     }
 
@@ -410,6 +400,27 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         }
         validateJoinColumn(msgList, inverseAssociation);
         validateJoinTable(msgList, inverseAssociation);
+        validateLazyFetchOnSingleValuedAssociation(msgList, ipsProject, inverseAssociation);
+    }
+
+    private void validateLazyFetchOnSingleValuedAssociation(MessageList msgList,
+            IIpsProject ipsProject,
+            IPolicyCmptTypeAssociation inverseAssociation) {
+        if (ipsProject.getProperties().getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()) {
+            return;
+        }
+        RelationshipType relationshipType = RelationshipType.UNKNOWN;
+        if (inverseAssociation == null) {
+            relationshipType = evalUnidirectionalRelationShipType();
+        } else {
+            relationshipType = evalBidirectionalRelationShipType(inverseAssociation);
+        }
+        if ((relationshipType == RelationshipType.MANY_TO_ONE || relationshipType == RelationshipType.ONE_TO_ONE)
+                && FetchType.LAZY == getFetchType()) {
+            msgList.add(new Message(MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED,
+                    "The lazy fetch type is not supported on single valued associations sides.", Message.ERROR, this,
+                    IPersistentAssociationInfo.PROPERTY_FETCH_TYPE));
+        }
     }
 
     private void validateJoinColumn(MessageList msgList, IPolicyCmptTypeAssociation inverseAssociation) {

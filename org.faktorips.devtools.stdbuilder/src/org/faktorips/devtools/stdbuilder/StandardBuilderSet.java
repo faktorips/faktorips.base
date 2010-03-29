@@ -643,10 +643,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private void initSupportedPersistenceProviderMap() {
         allSupportedPersistenceProvider = new HashMap<String, CachedPersistenceProvider>(2);
-        allSupportedPersistenceProvider.put("eclipseLink1.1", CachedPersistenceProvider
-                .create(EclipseLink1PersistenceProvider.class));
-        allSupportedPersistenceProvider.put("genericJPA2.0", CachedPersistenceProvider
-                .create(GenericJPA2PersistenceProvider.class));
+        allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1,
+                CachedPersistenceProvider.create(EclipseLink1PersistenceProvider.class));
+        allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0,
+                CachedPersistenceProvider.create(GenericJPA2PersistenceProvider.class));
     }
 
     @Override

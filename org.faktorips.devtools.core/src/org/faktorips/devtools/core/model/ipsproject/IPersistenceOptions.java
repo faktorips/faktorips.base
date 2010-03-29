@@ -26,6 +26,10 @@ public interface IPersistenceOptions {
 
     public final static String XML_TAG_NAME = "PersistenceOptions";
 
+    public static final String MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME = "maxTableNameLength";
+    public static final String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength";
+    public static final String ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS = "allowLazyFetchForSingleValuedAssociations";
+
     /**
      * Returns the maximum length allowed for a valid database table name.
      */
@@ -65,4 +69,14 @@ public interface IPersistenceOptions {
      * Sets the strategy used for naming database table columns.
      */
     public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy);
+
+    /**
+     * Returns if the lazy fetching of single value associations (to-one) is allowed or not.
+     */
+    public boolean isAllowLazyFetchForSingleValuedAssociations();
+
+    /**
+     * Sets if the lazy fetching of single value associations (to-one) is allowed or not.
+     */
+    public void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations);
 }

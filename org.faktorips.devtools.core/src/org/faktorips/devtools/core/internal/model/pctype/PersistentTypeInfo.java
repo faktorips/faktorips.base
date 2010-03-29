@@ -197,6 +197,12 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     private void validateTableName(MessageList msgList, IPolicyCmptType rootEntity) {
         if (isUseTableDefinedInSupertype()) {
+            if (StringUtils.isEmpty(getPolicyCmptType().getSupertype())) {
+                msgList.add(new Message(MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED,
+                        "No supertype used, thus it is not possible to use the table defined in the supertyp.",
+                        Message.ERROR, this, IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
+                return;
+            }
             if (!StringUtils.isEmpty(tableName)) {
                 msgList
                         .add(new Message(

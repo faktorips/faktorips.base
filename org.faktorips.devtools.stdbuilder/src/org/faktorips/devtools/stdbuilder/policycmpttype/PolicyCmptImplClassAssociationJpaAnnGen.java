@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.RelationshipType;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
@@ -58,27 +59,19 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
     private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
     private static final String ANNOTATION_MANY_TO_ONE = "@ManyToOne";
 
-    private static enum RELATIONSHIP_TYPE {
-        UNKNOWN,
-        ONE_TO_MANY,
-        ONE_TO_ONE,
-        MANY_TO_MANY,
-        MANY_TO_ONE
-    }
-
-    private static Map<RELATIONSHIP_TYPE, String> importForRelationshipType = new HashMap<RELATIONSHIP_TYPE, String>(4);
-    private static Map<RELATIONSHIP_TYPE, String> annotationForRelationshipType = new HashMap<RELATIONSHIP_TYPE, String>(
+    private static Map<RelationshipType, String> importForRelationshipType = new HashMap<RelationshipType, String>(4);
+    private static Map<RelationshipType, String> annotationForRelationshipType = new HashMap<RelationshipType, String>(
             4);
 
     static {
-        importForRelationshipType.put(RELATIONSHIP_TYPE.ONE_TO_MANY, IMPORT_ONE_TO_MANY);
-        importForRelationshipType.put(RELATIONSHIP_TYPE.ONE_TO_ONE, IMPORT_ONE_TO_ONE);
-        importForRelationshipType.put(RELATIONSHIP_TYPE.MANY_TO_MANY, IMPORT_MANY_TO_MANY);
-        importForRelationshipType.put(RELATIONSHIP_TYPE.MANY_TO_ONE, IMPORT_MANY_TO_ONE);
-        annotationForRelationshipType.put(RELATIONSHIP_TYPE.ONE_TO_MANY, ANNOTATION_ONE_TO_MANY);
-        annotationForRelationshipType.put(RELATIONSHIP_TYPE.ONE_TO_ONE, ANNOTATION_ONE_TO_ONE);
-        annotationForRelationshipType.put(RELATIONSHIP_TYPE.MANY_TO_MANY, ANNOTATION_MANY_TO_MANY);
-        annotationForRelationshipType.put(RELATIONSHIP_TYPE.MANY_TO_ONE, ANNOTATION_MANY_TO_ONE);
+        importForRelationshipType.put(RelationshipType.ONE_TO_MANY, IMPORT_ONE_TO_MANY);
+        importForRelationshipType.put(RelationshipType.ONE_TO_ONE, IMPORT_ONE_TO_ONE);
+        importForRelationshipType.put(RelationshipType.MANY_TO_MANY, IMPORT_MANY_TO_MANY);
+        importForRelationshipType.put(RelationshipType.MANY_TO_ONE, IMPORT_MANY_TO_ONE);
+        annotationForRelationshipType.put(RelationshipType.ONE_TO_MANY, ANNOTATION_ONE_TO_MANY);
+        annotationForRelationshipType.put(RelationshipType.ONE_TO_ONE, ANNOTATION_ONE_TO_ONE);
+        annotationForRelationshipType.put(RelationshipType.MANY_TO_MANY, ANNOTATION_MANY_TO_MANY);
+        annotationForRelationshipType.put(RelationshipType.MANY_TO_ONE, ANNOTATION_MANY_TO_ONE);
     }
 
     public PolicyCmptImplClassAssociationJpaAnnGen(StandardBuilderSet builderSet) {
@@ -107,7 +100,17 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
                     .getPersistenceProviderImplementation();
 
             // add import and annotation depending on the relationship type (e.g. oneToMany)
-            RELATIONSHIP_TYPE relationShip = evalRelationShipType(association, inverseAssociation);
+            RelationshipType relationShip = RelationshipType.UNKNOWN;
+            if (inverseAssociation != null) {
+                relationShip = association.getPersistenceAssociatonInfo().evalBidirectionalRelationShipType(
+                        inverseAssociation);
+            } else {
+                relationShip = association.getPersistenceAssociatonInfo().evalUnidirectionalRelationShipType();
+            }
+            if (relationShip == RelationshipType.UNKNOWN) {
+                throw new RuntimeException("Error evaluation the relationship type!");
+            }
+
             fragment.addImport(importForRelationshipType.get(relationShip));
             fragment.append(annotationForRelationshipType.get(relationShip));
 
@@ -135,7 +138,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
     }
 
     private void addAnnotationFor(IPersistenceProvider persistenceProviderImpl,
-            RELATIONSHIP_TYPE relationShip,
+            RelationshipType relationShip,
             JavaCodeFragment fragment,
             GenAssociation genAssociation,
             GenAssociation genInverseAssociation) {
@@ -158,7 +161,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             case MANY_TO_MANY:
                 break;
             default:
-                throw new RuntimeException("Error unknow relationship type: " + relationShip.toString());
+                // maybe unidirectional association
+                break;
         }
 
         IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
@@ -250,12 +254,12 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         attributesToAppend.add("targetEntity = " + targetQName + ".class");
     }
 
-    private void addAnnotationAttributeCascade(RELATIONSHIP_TYPE relationShip,
+    private void addAnnotationAttributeCascade(RelationshipType relationShip,
             JavaCodeFragment fragment,
             List<String> attributesToAppend,
             GenAssociation genAssociation,
             GenAssociation genInverseAssociation) {
-        if (relationShip == RELATIONSHIP_TYPE.MANY_TO_ONE) {
+        if (relationShip == RelationshipType.MANY_TO_ONE) {
             return;
         }
 
@@ -263,7 +267,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         attributesToAppend.add("cascade=CascadeType.ALL");
     }
 
-    private void addAnnotationAttributeFetch(RELATIONSHIP_TYPE relationShip,
+    private void addAnnotationAttributeFetch(RelationshipType relationShip,
             JavaCodeFragment fragment,
             List<String> attributesToAppend,
             GenAssociation genAssociation,
@@ -280,7 +284,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
      * field of the inverse side. Note that if the relationship is unidirectional then a further
      * table will be used to hold all associations to the target.
      */
-    private void addAnnotationAttributeMappedBy(RELATIONSHIP_TYPE relationShip,
+    private void addAnnotationAttributeMappedBy(RelationshipType relationShip,
             JavaCodeFragment fragment,
             List<String> attributesToAppend,
             GenAssociation genAssociation,
@@ -299,7 +303,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
         // many-to-one side is the owning side, so a join column is defined on that side
         // the mappedBy attribute is not necessary
-        if (relationShip == RELATIONSHIP_TYPE.MANY_TO_ONE) {
+        if (relationShip == RelationshipType.MANY_TO_ONE) {
             return;
         }
 
@@ -357,34 +361,6 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             return false;
         }
         return isTargetPolicyCmptTypePersistenceEnabled(this, pcTypeAssociation);
-    }
-
-    private RELATIONSHIP_TYPE evalRelationShipType(IPolicyCmptTypeAssociation association,
-            IPolicyCmptTypeAssociation inverseAssociation) {
-        int sourceCardinality = association.getMaxCardinality();
-        int targetCardinality = inverseAssociation == null ? 0 : inverseAssociation.getMaxCardinality();
-
-        if (sourceCardinality > 1 && !(targetCardinality > 1)) {
-            return RELATIONSHIP_TYPE.ONE_TO_MANY;
-        }
-        if (sourceCardinality > 1 && targetCardinality > 1) {
-            return RELATIONSHIP_TYPE.MANY_TO_MANY;
-        }
-        if (sourceCardinality == 1 && association.isQualified() && targetCardinality == 1) {
-            // special case max 1 but is qualified, thus child's are stored in a list
-            // and we need an one-to-many annotation
-            return RELATIONSHIP_TYPE.ONE_TO_MANY;
-        }
-        if (sourceCardinality == 1 && targetCardinality == 1) {
-            return RELATIONSHIP_TYPE.ONE_TO_ONE;
-        }
-        if (sourceCardinality == 1 && targetCardinality > 1) {
-            return RELATIONSHIP_TYPE.MANY_TO_ONE;
-        }
-        if (sourceCardinality == 1 && targetCardinality == 0) {
-            return RELATIONSHIP_TYPE.ONE_TO_ONE;
-        }
-        return RELATIONSHIP_TYPE.UNKNOWN;
     }
 
     /*

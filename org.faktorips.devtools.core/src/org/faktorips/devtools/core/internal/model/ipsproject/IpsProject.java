@@ -180,7 +180,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public void setProperties(IIpsProjectProperties properties) throws CoreException {
-        saveProjectProperties(new IpsProjectProperties(this, (IpsProjectProperties)properties));
+        IpsProjectProperties newProjectProperties = new IpsProjectProperties(this, (IpsProjectProperties)properties);
+        newProjectProperties.setPersistenceOptions(properties.getPersistenceOptions());
+        saveProjectProperties(newProjectProperties);
     }
 
     /**

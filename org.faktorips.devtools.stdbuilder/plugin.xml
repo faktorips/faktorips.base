@@ -80,10 +80,19 @@
          </builderSetPropertyDef>
          <builderSetPropertyDef
                defaultValue="none"
-               description="Class implemements the persistence provider"
+               description="The persistence provider implementation, which will be used to generate special vendor specific features."
                label="Persistence provider implementation"
                name="persistenceProviderImplementation"
-               type="string">
+               type="enum">
+            <discreteValues>
+               <!-- see IPersistenceProvider#PROVIDER_IMPLEMENTATION_* -->
+               <value
+                     value="eclipseLink1.1">
+               </value>
+               <value
+                     value="genericJPA2.0">
+               </value>
+            </discreteValues>               
          </builderSetPropertyDef>         
       </builderSet>
    </extension>

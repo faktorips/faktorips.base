@@ -323,4 +323,27 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         msgList = superPcType.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
     }
+
+    public void testValidateUseTableDefinedInSupertype() throws CoreException {
+        MessageList msgList = null;
+        IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
+
+        policyCmptType.setSupertype("");
+        persistenceTypeInfo.setUseTableDefinedInSupertype(false);
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED));
+
+        // no superclass therefore it is not possible to use this definition
+        persistenceTypeInfo.setUseTableDefinedInSupertype(true);
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED));
+
+        PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "supertype");
+        policyCmptType.setSupertype(superPcType.getQualifiedName());
+
+        // no superclass therefore it is not possible to use this definition
+        persistenceTypeInfo.setUseTableDefinedInSupertype(true);
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED));
+    }
 }

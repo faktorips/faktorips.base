@@ -443,10 +443,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         // persistence options
         createPersistenceOptionsDescriptionComment(projectEl);
         Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
-        persistenceOptionsEl.setAttribute("maxTableNameLength", String.valueOf(getPersistenceOptions() //$NON-NLS-1$
-                .getMaxTableNameLength()));
-        persistenceOptionsEl.setAttribute("maxColumnNameLength", String.valueOf(getPersistenceOptions() //$NON-NLS-1$
-                .getMaxColumnNameLenght()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME, String
+                .valueOf(getPersistenceOptions().getMaxTableNameLength()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME, String
+                .valueOf(getPersistenceOptions().getMaxColumnNameLenght()));
+        projectEl.appendChild(persistenceOptionsEl);
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, ""
+                + Boolean.valueOf(getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()));
         projectEl.appendChild(persistenceOptionsEl);
 
         //        Element tableNamingEl = doc.createElement("TableNamingStrategy"); //$NON-NLS-1$
@@ -942,6 +945,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "The table and column naming strategies define how identifier names are transformed into" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "database table and column names. The attributes maxTableNameLength and maxColumnNameLength" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "constrain the maximum possible length of a table or column name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "The attribute " + IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS + " defines if is is allowed to use lazy fetching " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "on the association side which holds a single value (to-one relationship side)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <TableNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1098,4 +1103,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         getPersistenceOptions().setTableNamingStrategy(newStrategy);
     }
 
+    public void setPersistenceOptions(IPersistenceOptions persistenceOptions) {
+        this.persistenceOptions = persistenceOptions;
+    }
 }

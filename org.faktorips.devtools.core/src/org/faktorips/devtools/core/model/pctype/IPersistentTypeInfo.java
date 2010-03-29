@@ -92,13 +92,6 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
             + "PersistenceTypeTableNameInvalid"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this persistence info type has an invalid secondary
-     * table name set.
-     */
-    public final static String MSGCODE_PERSISTENCE_SECONDARY_TABLE_NAME_INVALID = MSGCODE_PREFIX
-            + "PersistenceTypeSecondaryTableNameInvalid"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that this persistence info type has an invalid
      * discriminator set.
      */
@@ -125,6 +118,13 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      */
     public final static String MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED = MSGCODE_PREFIX
             + "definitionOfDiscriminatorNotAllowed"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the table definition defined in the supertype is not
+     * allowed / possible.
+     */
+    public final static String MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED = MSGCODE_PREFIX
+            + "msgcodeUseTableDefinedInSupertypeNotAllowed"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this persistent type info belongs to.

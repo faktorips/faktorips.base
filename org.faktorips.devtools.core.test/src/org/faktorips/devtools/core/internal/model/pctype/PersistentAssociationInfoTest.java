@@ -14,11 +14,14 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.RelationshipType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -387,19 +390,119 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         PersistentAssociationInfo inversePersistenceAssociatonInfo = (PersistentAssociationInfo)targetPcAssociation
                 .getPersistenceAssociatonInfo();
         persistenceAssociatonInfo.initDefaults();
-        assertEquals(FetchType.EAGER, persistenceAssociatonInfo.getFetchType());
-        assertEquals(FetchType.LAZY, inversePersistenceAssociatonInfo.getFetchType());
+        inversePersistenceAssociatonInfo.initDefaults();
+        assertEquals(FetchType.LAZY, persistenceAssociatonInfo.getFetchType());
+        assertEquals(FetchType.EAGER, inversePersistenceAssociatonInfo.getFetchType());
 
         pcAssociation.setAssociationType(AssociationType.ASSOCIATION);
         pcAssociation.setMaxCardinality(1);
         targetPcAssociation.setAssociationType(AssociationType.ASSOCIATION);
         targetPcAssociation.setMaxCardinality(1);
         persistenceAssociatonInfo.initDefaults();
-        assertEquals(FetchType.LAZY, persistenceAssociatonInfo.getFetchType());
-        assertEquals(FetchType.LAZY, inversePersistenceAssociatonInfo.getFetchType());
+        inversePersistenceAssociatonInfo.initDefaults();
+        assertEquals(FetchType.EAGER, persistenceAssociatonInfo.getFetchType());
+        assertEquals(FetchType.EAGER, inversePersistenceAssociatonInfo.getFetchType());
+    }
+
+    public void testValidateLazyFetchForSingleValuedAssociationsAllowed() throws CoreException {
+        MessageList msgList = null;
+
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.getPersistenceOptions().setAllowLazyFetchForSingleValuedAssociations(false);
+        ipsProject.setProperties(properties);
+
+        IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
+
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(1);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(1);
+
+        // eager always allowed
+        persistenceAssociatonInfo.setFetchType(FetchType.EAGER);
+        msgList = persistenceAssociatonInfo.validate(ipsProject);
+        assertNull(msgList
+                .getMessageByCode(IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
+
+        // lazy not allowed in properties
+
+        persistenceAssociatonInfo.setFetchType(FetchType.LAZY);
+        msgList = persistenceAssociatonInfo.validate(ipsProject);
+        assertNotNull(msgList
+                .getMessageByCode(IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
+
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(2);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(1);
+        persistenceAssociatonInfo.setFetchType(FetchType.LAZY);
+        msgList = persistenceAssociatonInfo.validate(ipsProject);
+        assertNull(msgList
+                .getMessageByCode(IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
+
+        // lazy allowed in properties
+        properties = ipsProject.getProperties();
+        properties.getPersistenceOptions().setAllowLazyFetchForSingleValuedAssociations(true);
+        ipsProject.setProperties(properties);
+        assertTrue(ipsProject.getProperties().getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations());
+
+        persistenceAssociatonInfo.setFetchType(FetchType.LAZY);
+        msgList = persistenceAssociatonInfo.validate(ipsProject);
+        assertNull(msgList
+                .getMessageByCode(IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
+    }
+
+    public void testEvalRelationShipType() throws CoreException {
+        IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
+        IPersistentAssociationInfo inversePersistenceAssociatonInfo = targetPcAssociation
+                .getPersistenceAssociatonInfo();
+
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(1);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(1);
+        assertEquals(RelationshipType.ONE_TO_ONE, persistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.ONE_TO_ONE, inversePersistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(pcAssociation));
+
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(2);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(1);
+        assertEquals(RelationshipType.ONE_TO_MANY, persistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.MANY_TO_ONE, inversePersistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(pcAssociation));
+
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(2);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(2);
+        assertEquals(RelationshipType.MANY_TO_MANY, persistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.MANY_TO_MANY, inversePersistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(pcAssociation));
+
+        // now test with qualified asociation (max=1) but is to-many
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "productTyp");
+        pcAssociation.getPolicyCmptType().setProductCmptType(productCmptType.getQualifiedName());
+        pcAssociation.setQualified(true);
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(1);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(1);
+        assertEquals(RelationshipType.ONE_TO_MANY, persistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.MANY_TO_ONE, inversePersistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(pcAssociation));
+
+        // unidirectional
+        pcAssociation.setInverseAssociation("");
+        assertEquals(RelationshipType.UNKNOWN, persistenceAssociatonInfo.evalBidirectionalRelationShipType(null));
     }
 
     public void testColumnNamesUnique() {
-        // TODO Joerg Testfall column names der JoinColumns muessen unique sein!
+        // TODO Joerg Testfall auch die column names der JoinColumns muessen unique sein!
     }
 }

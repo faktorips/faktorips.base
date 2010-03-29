@@ -28,15 +28,12 @@ import org.w3c.dom.NodeList;
  * @author Roman Grutza
  */
 public class PersistenceOptions implements IPersistenceOptions {
-
-    private static final String MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME = "maxTableNameLength";
-    private static final String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength";
-
     private ITableColumnNamingStrategy tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreColumnNamingStrategy();
     private ITableNamingStrategy tableNamingStrategy = new CamelCaseToUpperUnderscoreTableNamingStrategy();
 
     private int maxColumnNameLength = 255;
     private int maxTableNameLength = 255;
+    private boolean allowLazyFetchForSingleValuedAssociations = false;
 
     public PersistenceOptions() {
         this(null);
@@ -48,7 +45,7 @@ public class PersistenceOptions implements IPersistenceOptions {
      * The concrete structure is:
      * 
      * <pre>
-     *       &lt;PersistenceOptions maxColumnNameLength=&quot;255&quot; maxTableNameLength=&quot;255&quot;&gt;
+     *       &lt;PersistenceOptions maxColumnNameLength=&quot;255&quot; maxTableNameLength=&quot;255&quot; allowLazyFetchForSingleValuedAssociations=&quot;false&quot;&gt;
      *         &lt;TableNamingStrategy id=&quot;org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy&quot; /&gt;
      *         &lt;TableColumnNamingStrategy id=&quot;org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy&quot; /&gt;
      *       &lt;/PersistenceOptions&gt;
@@ -60,6 +57,8 @@ public class PersistenceOptions implements IPersistenceOptions {
         }
         maxColumnNameLength = Integer.valueOf(element.getAttribute(MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME));
         maxTableNameLength = Integer.valueOf(element.getAttribute(MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME));
+        allowLazyFetchForSingleValuedAssociations = Boolean.valueOf(element
+                .getAttribute(ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS));
 
         NodeList elementsByTagName = element.getElementsByTagName(ITableNamingStrategy.XML_TAG_NAME);
         if (elementsByTagName.getLength() > 0) {
@@ -114,4 +113,11 @@ public class PersistenceOptions implements IPersistenceOptions {
         maxTableNameLength = length;
     }
 
+    public boolean isAllowLazyFetchForSingleValuedAssociations() {
+        return allowLazyFetchForSingleValuedAssociations;
+    }
+
+    public void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations) {
+        this.allowLazyFetchForSingleValuedAssociations = allowLazyFetchForSingleValuedAssociations;
+    }
 }

@@ -28,6 +28,14 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
  */
 public interface IPersistentAssociationInfo extends IIpsObjectPart {
 
+    public static enum RelationshipType {
+        UNKNOWN,
+        ONE_TO_MANY,
+        ONE_TO_ONE,
+        MANY_TO_MANY,
+        MANY_TO_ONE
+    }
+
     /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "PersistenceAssociation"; //$NON-NLS-1$
 
@@ -133,6 +141,13 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
      */
     public static final String MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN = MSGCODE_PREFIX
             + "OwnerOfAssociationMustNotGiven";
+
+    /**
+     * Validation message code indicates that the lazy fetching is not allowed for single valued
+     * associations (to-one association).
+     */
+    public static final String MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED = MSGCODE_PREFIX
+            + "LazyFetchForSingleValuedAssociationsAllowed";
 
     /**
      * Returns the {@link IPolicyCmptTypeAssociation} this info object belongs to.
@@ -278,6 +293,17 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public void initDefaults();
 
     /**
+     * Evaluates the relationship type for bidirectional associations. If the association is
+     * unidirectional then the RelationshipType.UNKNOWN is returned.
+     */
+    public RelationshipType evalBidirectionalRelationShipType(IPolicyCmptTypeAssociation inverseAssociation);
+
+    /**
+     * Evaluates the relationship type for unidirectional associations.
+     */
+    public RelationshipType evalUnidirectionalRelationShipType();
+
+    /**
      * Determines whether to use cascading load on the database (also fetching dependent objects of
      * the object to load instead of using deferred loading proxies).
      */
@@ -293,4 +319,5 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
         INNER,
         OUTER;
     }
+
 }
