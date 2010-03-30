@@ -79,7 +79,7 @@
                type="boolean">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-               defaultValue="none"
+               defaultValue="genericJPA2.0"
                description="The persistence provider implementation, which will be used to generate special vendor specific features."
                label="Persistence provider implementation"
                name="persistenceProviderImplementation"

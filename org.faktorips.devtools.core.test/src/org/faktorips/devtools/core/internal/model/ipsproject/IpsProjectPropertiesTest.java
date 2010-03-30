@@ -79,6 +79,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             props.setDerivedUnionIsImplementedRuleEnabled((i & 1) == 1);
             props.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled((i & 2) == 2);
             props.setRulesWithoutReferencesAllowedEnabled((i & 1) == 1);
+            props.setPersistenceSupport((i & 1) == 1);
 
             Element projectEl = props.toXml(newDocument());
             props = new IpsProjectProperties();
@@ -88,6 +89,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             assertEquals(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(),
                     (i & 2) == 2);
             assertEquals(props.isRulesWithoutReferencesAllowedEnabled(), (i & 1) == 1);
+            assertEquals(props.isPersistenceSupportEnabled(), (i & 1) == 1);
         }
     }
 
@@ -107,6 +109,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setIpsObjectPath(path);
         props.setPredefinedDatatypesUsed(new String[] { "Integer", "Boolean" });
         props.setMinRequiredVersionNumber("featureId", "versionNumber");
+        props.setPersistenceSupport(true);
 
         Document doc = newDocument();
         Element configEl = doc.createElement("IpsArtefactBuilderSetConfig");
@@ -170,6 +173,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
         assertTrue(props.isResourceExcludedFromProductDefinition("a.xml"));
         assertTrue(props.isResourceExcludedFromProductDefinition("src/a"));
+        assertTrue(props.isPersistenceSupportEnabled());
     }
 
     public void testAddDefinedDatatype() {

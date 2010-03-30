@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
  * @author Joerg Ortmann
  */
 public interface IPersistenceProvider {
-
     public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1 = "eclipseLink1.1";
     public static final String PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0 = "genericJPA2.0";
 
