@@ -122,6 +122,11 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
             + "PersistenceAttrColumnNameDuplicate"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the column name exceeds the max column size
+     */
+    public final static String MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH = MSGCODE_PREFIX + "ColumnNameExceedsMaxLength"; //$NON-NLS-1$
+
+    /**
      * Returns the {@link IPolicyCmptTypeAttribute} this info object belongs to.
      */
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute();

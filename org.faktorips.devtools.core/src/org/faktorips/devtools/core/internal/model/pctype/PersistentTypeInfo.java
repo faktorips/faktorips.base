@@ -196,6 +196,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private void validateTableName(MessageList msgList, IPolicyCmptType rootEntity) {
+        // validate if the table name defined in the supertype should be used
         if (isUseTableDefinedInSupertype()) {
             if (StringUtils.isEmpty(getPolicyCmptType().getSupertype())) {
                 msgList.add(new Message(MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED,
@@ -211,6 +212,19 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                                 Message.ERROR, this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
                 return;
             }
+        }
+
+        // validate max table name length
+        int maxTableNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxTableNameLength();
+        if (StringUtils.isNotBlank(tableName) && tableName.length() > maxTableNameLenght) {
+            msgList
+                    .add(new Message(
+                            MSGCODE_PERSISTENCE_TABLE_NAME_INVALID,
+                            NLS
+                                    .bind(
+                                            "The table name length exceeds the maximum length defined in the persistence options. The table name length is {0} and the maximum length is {1}.",
+                                            tableName.length(), maxTableNameLenght), Message.ERROR, this,
+                            IPersistentTypeInfo.PROPERTY_TABLE_NAME));
         }
 
         // validate none single table strategy
@@ -423,56 +437,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getIpsObject();
-    }
-
-    private final static class TableNameValidator extends PolicyCmptTypeHierarchyVisitor {
-        private final InheritanceStrategy inheritanceStrategy;
-        private final String primaryTableName;
-        private final List<String> tableNames = new ArrayList<String>();
-
-        // If these fields are not null errors exist in the naming of the tables
-        private IPersistentTypeInfo conflictingTypeInfo;
-        private String errorMessage;
-
-        public TableNameValidator(IPersistentTypeInfo typeInfo, String tableName) {
-            inheritanceStrategy = typeInfo.getInheritanceStrategy();
-            primaryTableName = typeInfo.getTableName();
-            if (!PersistenceUtil.isValidDatabaseIdentifier(tableName)) {
-                conflictingTypeInfo = typeInfo;
-            }
-        }
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) {
-            if (conflictingTypeInfo != null) {
-                errorMessage = "The table name is invalid.";
-                return false;
-            }
-
-            String currentTableName = currentType.getPersistenceTypeInfo().getTableName();
-            if (inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE) {
-                // table names must be equal in whole supertype hierarchy
-                if (!primaryTableName.equals(currentType.getPersistenceTypeInfo().getTableName())) {
-                    conflictingTypeInfo = currentType.getPersistenceTypeInfo();
-                    errorMessage = "The table name does not match the table name in the supertype "
-                            + currentType.getUnqualifiedName() + "(" + currentTableName + ")";
-                    return false;
-                }
-            }
-
-            if (inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
-                // each table name must be unique in whole supertype hierarchy
-                if (tableNames.contains(currentTableName)) {
-                    conflictingTypeInfo = currentType.getPersistenceTypeInfo();
-                    errorMessage = "The table name is already defined in the supertype "
-                            + currentType.getUnqualifiedName();
-                    return false;
-                }
-                tableNames.add(currentTableName);
-            }
-
-            return true;
-        }
     }
 
     private final static class DiscriminatorValidator extends PolicyCmptTypeHierarchyVisitor {

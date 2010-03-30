@@ -13,11 +13,13 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -28,15 +30,30 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
+        policyCmptType.getPersistenceTypeInfo().setEnabled(true);
         pcAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        pcAttribute.getPersistenceAttributeInfo().setTransient(false);
     }
 
     public void testValidate() {
         // TODO missing validate test
-        // MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS
-        // MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME
+        // MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS / scale and precision
         // MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME
+    }
 
+    public void testTransient() throws CoreException {
+        IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
+        int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+        String invalidColumnName = StringUtils.repeat("a", maxColumnNameLenght + 1);
+        pAttInfo.setTableColumnName(invalidColumnName);
+
+        MessageList ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH));
+
+        pAttInfo.setTransient(true);
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH));
     }
 
     public void testInitFromXml() throws CoreException {
@@ -90,6 +107,31 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertEquals(DateTimeMapping.DATE_AND_TIME, persistenceAttributeInfoCopy.getTemporalMapping());
         assertEquals("sqlColumnDefinition0", persistenceAttributeInfo.getSqlColumnDefinition());
         assertEquals("converterQualifiedClassName0", persistenceAttributeInfo.getConverterQualifiedClassName());
+    }
 
+    public void testValidateMaxColumnNames() throws CoreException {
+        IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
+        int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+        String columnName = StringUtils.repeat("a", maxColumnNameLenght);
+        pAttInfo.setTableColumnName(columnName);
+
+        MessageList ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH));
+
+        columnName = "invalid" + columnName;
+        pAttInfo.setTableColumnName(columnName);
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH));
+    }
+
+    public void testEmptyTableName() throws CoreException {
+        IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
+        pAttInfo.setTableColumnName("a");
+        MessageList ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME));
+
+        pAttInfo.setTableColumnName("");
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME));
     }
 }

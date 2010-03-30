@@ -19,6 +19,7 @@ import java.util.List;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -254,6 +255,21 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
                     + MIN_TABLE_COLUMN_SCALE + ".." + MAX_TABLE_COLUMN_SCALE + "]", Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE));
         }
+
+        // to get the max length we use the ips project which belongs to this object not the given
+        // project, therefore it is not possible to overwrite this settings by using a different
+        // project
+        int maxColumnNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+        if (StringUtils.isNotBlank(tableColumnName) && tableColumnName.length() > maxColumnNameLenght) {
+            msgList
+                    .add(new Message(
+                            MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH,
+                            NLS
+                                    .bind(
+                                            "The column name length exceeds the maximum length defined in the persistence options. The column name length is {0} and the maximum defined length is {1}.",
+                                            tableColumnName.length(), maxColumnNameLenght), Message.ERROR, this,
+                            IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+        }
     }
 
     private void validateUniqueColumnNameInHierarchy(MessageList msgList) throws CoreException {
@@ -274,15 +290,11 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     private static class ColumnNameCollector extends PolicyCmptTypeHierarchyVisitor {
-
         private List<String> columnNames = new ArrayList<String>();
         private final IPolicyCmptTypeAttribute startAttribute;
-        private InheritanceStrategy lastVisitedTypeInheritanceStrategy;
 
         public ColumnNameCollector(IPolicyCmptTypeAttribute attribute) {
             startAttribute = attribute;
-            lastVisitedTypeInheritanceStrategy = attribute.getPolicyCmptType().getPersistenceTypeInfo()
-                    .getInheritanceStrategy();
         }
 
         private boolean isPersistentAttribute(IPolicyCmptTypeAttribute attribute) {
@@ -293,11 +305,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             InheritanceStrategy currentInheritanceStrategy = currentType.getPersistenceTypeInfo()
                     .getInheritanceStrategy();
-            // if (lastVisitedTypeInheritanceStrategy == InheritanceStrategy.MIXED
-            // && currentInheritanceStrategy == InheritanceStrategy.SINGLE_TABLE) {
-            // // attributes are persisted to two different tables, abort collecting
-            // return false;
-            // }
 
             IPolicyCmptTypeAttribute[] policyCmptTypeAttributes = currentType.getPolicyCmptTypeAttributes();
             for (IPolicyCmptTypeAttribute currentAttribute : policyCmptTypeAttributes) {
@@ -306,13 +313,13 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
                 }
             }
 
+            // TODO Joerg JPA add join column and jointable columns
+
             if (currentInheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
                 // do not collect supertype attributes, since each table of a JOINED_SUBCLASS
                 // hierarchy can have the same column names
                 return false;
             }
-
-            lastVisitedTypeInheritanceStrategy = currentInheritanceStrategy;
             return true;
         }
     }

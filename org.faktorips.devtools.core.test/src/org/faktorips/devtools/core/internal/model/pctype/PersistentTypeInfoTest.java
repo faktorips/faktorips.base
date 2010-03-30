@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
@@ -64,6 +65,17 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         perTypeInfoSub.setTableName("");
         msgList = subPcType.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_TABLE_NAME_INVALID));
+
+        // test max length
+        int maxTableNameLength = ipsProject.getProperties().getPersistenceOptions().getMaxTableNameLength();
+        String tableName = StringUtils.repeat("a", maxTableNameLength);
+        persTypeInfo.setTableName(tableName);
+        msgList = persTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_TABLE_NAME_INVALID));
+
+        persTypeInfo.setTableName("invalid_" + tableName);
+        msgList = persTypeInfo.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_TABLE_NAME_INVALID));
     }
 
     public void testSetEnabled() {
