@@ -39,7 +39,7 @@ public class Migration_3_0_0_ms1 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getTargetVersion() {
-        return "3.0.0.ms1b1"; //$NON-NLS-1$
+        return "3.0.0.ms1c"; //$NON-NLS-1$
     }
 
     @Override
