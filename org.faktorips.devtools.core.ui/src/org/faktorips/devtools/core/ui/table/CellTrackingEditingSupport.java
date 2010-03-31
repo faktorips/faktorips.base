@@ -20,15 +20,15 @@ import org.eclipse.jface.viewers.ICellEditorListener;
 
 /**
  * {@link EditingSupport} that keeps track of the currently open {@link CellEditor}. After
- * {@link #getCellEditor(Object)} has been called by the JFace framework the currently open
+ * {@link #getCellEditor(Object)} has been called by the JFace framework, the currently open
  * {@link CellEditor} can be retrieved using the {@link #getCurrentCellEditor()} method. If the
- * {@link CellEditor} is closed (editing finished or was canceled) the reference to the
- * {@link CellEditor} is set to <code>null</code>.
+ * {@link CellEditor} is closed (editing finished or was canceled) {@link #getCurrentCellEditor()}
+ * returns <code>null</code>.
  * 
  * Moreover this {@link EditingSupport} can hold a {@link AbstractPermanentTraversalStrategy} which
  * can by set using {@link #setTraversalStrategy(AbstractPermanentTraversalStrategy)}. The
- * {@link AbstractPermanentTraversalStrategy} instance will then be added to every
- * {@link CellEditor} creted by this {@link EditingSupport}.
+ * {@link AbstractPermanentTraversalStrategy} instance will then be added as traversal- and
+ * key-listener to every {@link CellEditor} created by this {@link EditingSupport}.
  * 
  * @author Stefan Widmaier
  */
@@ -84,6 +84,11 @@ public abstract class CellTrackingEditingSupport extends EditingSupport {
         return traversalStrategy;
     }
 
+    /**
+     * 
+     * @return the currently active cell editor, or <code>null</code> if no cell editor is active
+     *         for the column (or editing support respectively).
+     */
     protected IpsCellEditor getCurrentCellEditor() {
         return currentCellEditor;
     }
