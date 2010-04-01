@@ -941,7 +941,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void createPersistenceOptionsDescriptionComment(Node parentEl) {
         String s = "PersistenceOptions" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "In this section you can adjust parameters relating the persistance of IPolicyCmptTypes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "In this section you can adjust parameters relating the persistence of IPolicyCmptTypes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "The table and column naming strategies define how identifier names are transformed into" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "database table and column names. The attributes maxTableNameLength and maxColumnNameLength" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "constrain the maximum possible length of a table or column name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
