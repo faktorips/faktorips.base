@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Combo;
@@ -51,7 +50,6 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.LabelField;
-import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -210,10 +208,6 @@ public class BindingContext {
         bindContent(field, object, property);
 
         return field;
-    }
-
-    public void bindContent(StructuredViewer viewer, Object object, String propertyName) {
-        bindContent(new StructuredViewerField(viewer), object, propertyName);
     }
 
     /**
