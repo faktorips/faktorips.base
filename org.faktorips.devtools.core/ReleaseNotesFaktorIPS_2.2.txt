@@ -6,4 +6,4 @@ Documentation of changes to the extension property extension point
 - new extension point with extension point interface with newEditField method in core.ui.
 - default behavior if extension property is defined and no definition for and edit field
   is defined, then a TextField will be created.
-     
+ 
