@@ -16,7 +16,11 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -357,5 +361,82 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persistenceTypeInfo.setUseTableDefinedInSupertype(true);
         msgList = persistenceTypeInfo.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED));
+    }
+
+    public void testDuplicateColumnName() throws CoreException {
+        MessageList ml = null;
+
+        PolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "super");
+        superPolicyCmptType.getPersistenceTypeInfo().setEnabled(true);
+        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+
+        IPersistentTypeInfo superPersTypeInfo = superPolicyCmptType.getPersistenceTypeInfo();
+
+        IPersistentTypeInfo pTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        IPolicyCmptTypeAttribute pcAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
+        pAttInfo.setTableColumnName("a");
+
+        IPersistentAttributeInfo pAttInfo2 = policyCmptType.newPolicyCmptTypeAttribute().getPersistenceAttributeInfo();
+        pAttInfo2.setTableColumnName("b");
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        pAttInfo2.setTableColumnName("a");
+        ml = pTypeInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        // test duplicate column name in persistence type association
+        // a) join column name
+        // b) joint table source and target column name
+        pAttInfo2.setTableColumnName("b");
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        IPersistentAssociationInfo pAssInfo = association.getPersistenceAssociatonInfo();
+
+        pAssInfo.setJoinColumnName("joinColumn");
+        ml = pTypeInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        pAssInfo.setJoinColumnName("a");
+        ml = pTypeInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        pAssInfo.setJoinColumnName("");
+        pAssInfo.setJoinTableName("JoinTable");
+        pAssInfo.setSourceColumnName("source");
+        pAssInfo.setTargetColumnName("target");
+        ml = pTypeInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        pAssInfo.setSourceColumnName("a");
+        pAssInfo.setTargetColumnName("target");
+        ml = pTypeInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        pAssInfo.setSourceColumnName("souce");
+        pAssInfo.setTargetColumnName("a");
+        ml = pTypeInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        pAssInfo.setTargetColumnName("target");
+
+        // test same column name in super type, single table strategy
+        pTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+        superPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttribute.getPersistenceAttributeInfo().setTableColumnName("superA");
+        ml = pTypeInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        policyCmptTypeAttribute.getPersistenceAttributeInfo().setTableColumnName("a");
+        ml = pTypeInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        // test same column name in super type, joined table strategy
+        pTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
+        superPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
+        ml = pTypeInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
     }
 }

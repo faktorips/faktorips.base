@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -508,6 +509,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_COLUMN_NAME_EMPTY,
                 MSGCODE_JOIN_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME, joinColumnName,
                 "join column name");
+        if (!mustBeEmpty) {
+            // validate max join column name length
+            validateMaxColumnNameLength(msgList, joinColumnName, "join column name", MSGCODE_JOIN_COLUMN_NAME_INVALID,
+                    PROPERTY_JOIN_COLUMN_NAME);
+        }
     }
 
     private void validateJoinTableDetails(MessageList msgList, boolean mustBeEmpty) {
@@ -520,6 +526,47 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_TARGET_COLUMN_NAME_EMPTY,
                 MSGCODE_TARGET_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
                 targetColumnName, "target column name");
+
+        // validate max join table columns name source and target length
+        if (!mustBeEmpty) {
+            validateMaxColumnNameLength(msgList, sourceColumnName, "source column name",
+                    MSGCODE_SOURCE_COLUMN_NAME_INVALID, PROPERTY_SOURCE_COLUMN_NAME);
+            validateMaxColumnNameLength(msgList, targetColumnName, "target column name",
+                    MSGCODE_TARGET_COLUMN_NAME_INVALID, PROPERTY_TARGET_COLUMN_NAME);
+        }
+
+        // validate max join table name length
+        if (!mustBeEmpty) {
+            int maxTableNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxTableNameLength();
+            if (joinTableName.length() > maxTableNameLenght) {
+                msgList
+                        .add(new Message(
+                                MSGCODE_JOIN_TABLE_NAME_INVALID,
+                                NLS
+                                        .bind(
+                                                "The join table name length exceeds the maximum length defined in the persistence options. The join table name length is {0} and the maximum length is {1}.",
+                                                joinTableName.length(), maxTableNameLenght), Message.ERROR, this,
+                                IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
+            }
+        }
+    }
+
+    private void validateMaxColumnNameLength(MessageList msgList,
+            String columnName,
+            String propertyName,
+            String messageCode,
+            String property) {
+        int maxColumnNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+        if (columnName.length() > maxColumnNameLenght) {
+            msgList
+                    .add(new Message(
+                            messageCode,
+                            NLS
+                                    .bind(
+                                            "The {0} length exceeds the maximum length defined in the persistence options. The length is {1} and the maximum column length is {2}.",
+                                            new Object[] { propertyName, columnName.length(), maxColumnNameLenght }),
+                            Message.ERROR, this, property));
+        }
     }
 
     private void validateEmptyAndValidDatabaseIdentifier(MessageList msgList,

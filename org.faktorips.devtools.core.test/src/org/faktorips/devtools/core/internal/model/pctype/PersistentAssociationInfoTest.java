@@ -13,12 +13,14 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.RelationshipType;
@@ -507,7 +509,86 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals(RelationshipType.UNKNOWN, persistenceAssociatonInfo.evalBidirectionalRelationShipType(null));
     }
 
-    public void testColumnNamesUnique() {
-        // TODO Joerg Testfall auch die column names der JoinColumns muessen unique sein!
+    // TODO JPA joerg in persistence type info test
+    public void testColumnNamesUnique() throws CoreException {
+        IPolicyCmptTypeAssociation pcAssociation2 = policyCmptType.newPolicyCmptTypeAssociation();
+        IPersistentAssociationInfo persistenceAssociatonInfo1 = pcAssociation.getPersistenceAssociatonInfo();
+        IPersistentAssociationInfo persistenceAssociatonInfo2 = pcAssociation2.getPersistenceAssociatonInfo();
+
+        persistenceAssociatonInfo1.setJoinColumnName("a");
+        persistenceAssociatonInfo1.setSourceColumnName("");
+        persistenceAssociatonInfo1.setTargetColumnName("");
+
+        persistenceAssociatonInfo2.setJoinColumnName("b");
+        persistenceAssociatonInfo2.setSourceColumnName("");
+        persistenceAssociatonInfo2.setTargetColumnName("");
+
+        MessageList ml = persistenceAssociatonInfo1.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        ml = persistenceAssociatonInfo1.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+    }
+
+    public void testValidateMaxColumnAndTableNameLength() throws CoreException {
+        IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
+        IPersistentAssociationInfo inversePersistenceAssociatonInfo = targetPcAssociation
+                .getPersistenceAssociatonInfo();
+
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(1);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(1);
+
+        // test max join column name
+        // note that the join column is only necessary on the inverse association side and therefore
+        // only validated on the inverse side
+        int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+
+        String columnName = StringUtils.repeat("a", maxColumnNameLenght);
+        inversePersistenceAssociatonInfo.setJoinColumnName(columnName);
+
+        MessageList ml = inversePersistenceAssociatonInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_INVALID));
+
+        ml = inversePersistenceAssociatonInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_INVALID));
+
+        inversePersistenceAssociatonInfo.setJoinColumnName("invalid" + columnName);
+        ml = inversePersistenceAssociatonInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_INVALID));
+
+        // test join table max table and source/target column name
+        // note that the join table is only required on the owner n:n relationship side
+        // and therefore only validated on this side
+        inversePersistenceAssociatonInfo.setJoinColumnName("");
+        int maxTableNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxTableNameLength();
+        String joinTableName = StringUtils.repeat("a", maxTableNameLenght);
+        String sourceColumnName = StringUtils.repeat("c", maxColumnNameLenght);
+        String targetColumnName = StringUtils.repeat("d", maxColumnNameLenght);
+
+        pcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        pcAssociation.setMaxCardinality(2);
+        targetPcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        targetPcAssociation.setMaxCardinality(2);
+        persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
+
+        persistenceAssociatonInfo.setJoinTableName(joinTableName);
+        persistenceAssociatonInfo.setSourceColumnName(sourceColumnName);
+        persistenceAssociatonInfo.setTargetColumnName(targetColumnName);
+
+        ml = persistenceAssociatonInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
+
+        persistenceAssociatonInfo.setJoinTableName("invalid" + joinTableName);
+        persistenceAssociatonInfo.setSourceColumnName("invalid" + sourceColumnName);
+        persistenceAssociatonInfo.setTargetColumnName("invalid" + targetColumnName);
+
+        ml = persistenceAssociatonInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
     }
 }

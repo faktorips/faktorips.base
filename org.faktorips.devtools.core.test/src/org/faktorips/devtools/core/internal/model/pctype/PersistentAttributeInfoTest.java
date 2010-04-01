@@ -39,7 +39,6 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     public void testValidate() {
         // TODO missing validate test
         // MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS / scale and precision
-        // MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME
     }
 
     public void testTransient() throws CoreException {
@@ -109,7 +108,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertEquals("converterQualifiedClassName0", persistenceAttributeInfo.getConverterQualifiedClassName());
     }
 
-    public void testValidateMaxColumnNames() throws CoreException {
+    public void testValidateMaxColumnNameLength() throws CoreException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
         String columnName = StringUtils.repeat("a", maxColumnNameLenght);
