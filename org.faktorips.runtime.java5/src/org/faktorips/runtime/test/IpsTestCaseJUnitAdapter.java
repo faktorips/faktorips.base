@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,17 +27,17 @@ import junit.framework.TestCase;
 public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener {
     // The ips test case this adapter works with
     private IpsTestCaseBase ipsTestCase;
-    
+
     // Contains all failures occurred during the test run for this test case
     private List<IpsTestFailure> failures = new ArrayList<IpsTestFailure>();
-    
-    /* 
+
+    /*
      * Format of the failure entries
      */
     private static final String FAILUREFORMAT_FAILUREIN = "Failure in: \"{0}\"";
     private static final String FAILUREFORMAT_OBJECT = ", Object: \"{1}\",";
     private static final String FAILUREFORMAT_ATTRIBUTE = ", Attribute: \"{2}\".";
-    private static final String FAILUREFORMAT_EXPECTED = ", expected: \"{3}\"";    
+    private static final String FAILUREFORMAT_EXPECTED = ", expected: \"{3}\"";
     private static final String FAILUREFORMAT_ACTUAL = " but was: \"{4}\"";
 
     public IpsTestCaseJUnitAdapter(IpsTestCaseBase ipsTestCase) {
@@ -58,66 +58,73 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
     /**
      * Dummy test do prevent JUnit "no test found" warning if selecting this test case.
      */
-    public void testNothing(){
+    public void testNothing() {
     }
-    
+
     /**
      * Runs the ips test case.
      * 
      * {@inheritDoc}
      */
+    @Override
     public void runTest() throws Throwable {
         // if no ips test case found then suppress this test,
-        //   the test is only executable if an ips test case was given
-        if (ipsTestCase == null)
+        // the test is only executable if an ips test case was given
+        if (ipsTestCase == null) {
             return;
-        
+        }
+
         IpsTestResult ipsTestResult = new IpsTestResult();
         ipsTestResult.addListener(this);
         ipsTestCase.run(ipsTestResult);
-        
+
         if (failures.size() > 0) {
             StringBuffer failureBuffer = new StringBuffer(failures.size() * 40);
             for (IpsTestFailure failure : failures) {
                 if (failure.isError()) {
                     throw failure.getThrowable();
                 } else {
-                    if (failureBuffer.length()>0)
+                    if (failureBuffer.length() > 0) {
                         failureBuffer.append(System.getProperty("line.separator"));
+                    }
                     failureBuffer.append(failureToString(failure));
                 }
             }
             fail(failureBuffer.toString());
         }
     }
-    
+
     /*
-     * Creates a string representing the given ips test failure. 
+     * Creates a string representing the given ips test failure.
      */
-    private String failureToString(IpsTestFailure failure){
+    private String failureToString(IpsTestFailure failure) {
         String failureFormat = FAILUREFORMAT_FAILUREIN;
         String failureActual = FAILUREFORMAT_ACTUAL;
         String failureExpected = FAILUREFORMAT_EXPECTED;
         String failureFormatAttribute = FAILUREFORMAT_ATTRIBUTE;
         String failureFormatObject = FAILUREFORMAT_OBJECT;
-        
+
         List<String> failureDetails = new ArrayList<String>(5);
-        failureDetails.add(failure.getTestCase().getQualifiedName());
+        failureDetails.add(failure.getTestCase() != null ? failure.getTestCase().getQualifiedName() : null);
         failureDetails.add(failure.getTestObject());
         failureDetails.add(failure.getTestedAttribute());
-        failureDetails.add(failure.getExpectedValue().toString());
-        failureDetails.add(failure.getActualValue().toString()); 
-        
-        if (failureDetails.size()>3)
-            failureFormat = failureFormat + (failureDetails.get(2)!=null?failureExpected:"");
-        if (failureDetails.size()>4)
-            failureFormat = failureFormat + (failureDetails.get(3)!=null?failureActual:"");
-        if (failureDetails.size()>1)
-            failureFormat = failureFormat + (failureDetails.get(0)!=null?failureFormatObject:"");   
-        if (failureDetails.size()>2)
-            failureFormat = failureFormat + (failureDetails.get(1)!=null?failureFormatAttribute:"");
-        
-        return MessageFormat.format(failureFormat, failureDetails.toArray()); 
+        failureDetails.add(failure.getExpectedValue() != null ? failure.getExpectedValue().toString() : null);
+        failureDetails.add(failure.getActualValue() != null ? failure.getActualValue().toString() : null);
+
+        if (failureDetails.size() > 3) {
+            failureFormat = failureFormat + (failureDetails.get(2) != null ? failureExpected : "");
+        }
+        if (failureDetails.size() > 4) {
+            failureFormat = failureFormat + (failureDetails.get(3) != null ? failureActual : "");
+        }
+        if (failureDetails.size() > 1) {
+            failureFormat = failureFormat + (failureDetails.get(0) != null ? failureFormatObject : "");
+        }
+        if (failureDetails.size() > 2) {
+            failureFormat = failureFormat + (failureDetails.get(1) != null ? failureFormatAttribute : "");
+        }
+
+        return MessageFormat.format(failureFormat, failureDetails.toArray());
     }
 
     /**
