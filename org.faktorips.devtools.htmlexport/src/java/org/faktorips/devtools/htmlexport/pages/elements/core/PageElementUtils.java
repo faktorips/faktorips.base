@@ -6,8 +6,20 @@ import java.util.Set;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
+/**
+ * Utility for {@link PageElement}s
+ * @author dicker
+ *
+ */
 public class PageElementUtils {
 
+	/**
+	 * creates {@link PageElement}s from the given {@link String}s with {@link Style}s and {@link TextType}s
+	 * @param texts
+	 * @param styles
+	 * @param type
+	 * @return array of {@link PageElement}s
+	 */
 	public static PageElement[] createTextPageElements(List<String> texts, Set<Style> styles, TextType type) {
 		PageElement[] textPageElements = new PageElement[texts.size()];
 
@@ -18,11 +30,23 @@ public class PageElementUtils {
 		return textPageElements;
 	}
 
+	/**
+	 * creates {@link PageElement}s from the given {@link String}s
+	 * @param texts
+	 * @return array of {@link PageElement}s
+	 */
 	public static PageElement[] createTextPageElements(List<String> texts) {
 		return createTextPageElements(texts, null, TextType.WITHOUT_TYPE);
 	}
 
-	public static List<LinkPageElement> createLinkPageElements(IIpsObject srcObject, List<? extends IIpsObject> objects, String target, Set<Style> styles) {
+	/**
+	 * creates a {@link List} with link to the given {@link IIpsObject}s with the given target and {@link Style}s
+	 * @param objects
+	 * @param target
+	 * @param styles
+	 * @return {@link List} of {@link LinkPageElement}s
+	 */
+	public static List<LinkPageElement> createLinkPageElements(List<? extends IIpsObject> objects, String target, Set<Style> styles) {
 		List<LinkPageElement> liste = new ArrayList<LinkPageElement>();
 
 		for (IIpsObject object : objects) {

@@ -143,7 +143,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 			return wrapper;
 		}
 
-		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(object, productCmpts,
+		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(productCmpts,
 				"content", new LinkedHashSet<Style>());
 		ListPageElement liste = new ListPageElement(createLinkPageElements);
 
@@ -159,7 +159,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 		try {
 			IPolicyCmptType to = object.getIpsProject().findPolicyCmptType(getProductCmptType().getPolicyCmptType());
 			if (to == null) {
-				addPageElements(TextPageElement.newBlock("Vertragsklasse: keine"));
+				addPageElements(TextPageElement.createParagraph("Vertragsklasse: keine"));
 				return;
 			}
 			addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {

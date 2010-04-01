@@ -14,7 +14,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.HierarchyPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -169,16 +169,16 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 			return;
 		}
 
-		HierarchyPageElement baseElement = new HierarchyPageElement(new HierarchyPageElement(new LinkPageElement(
+		TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(new LinkPageElement(
 				superTypes.get(0), "content", superTypes.get(0).getQualifiedName(), true)));
-		HierarchyPageElement element = baseElement;
+		TreeNodePageElement element = baseElement;
 
 		for (int i = 1; i < superTypes.size(); i++) {
 			if (superTypes.get(i) == object) {
 				element.addPageElements(new TextPageElement(object.getName()));
 				break;
 			}
-			HierarchyPageElement subElement = new HierarchyPageElement(new LinkPageElement(superTypes.get(i),
+			TreeNodePageElement subElement = new TreeNodePageElement(new LinkPageElement(superTypes.get(i),
 					"content", superTypes.get(i).getName(), true));
 			element.addPageElements(subElement);
 			element = subElement;

@@ -23,7 +23,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 
 /**
- * Html-Layouter
+ * Html-Layouter: Layouts the PageElements as Html
  * @author dicker
  *
  */
@@ -171,10 +171,17 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		return HtmlTextType.getHtmlTextTypeByTextType(textPageElement.getType()).getTagName();
 	}
 
-	protected void visitSubElements(ICompositePageElement pageElement) {
-		pageElement.visitSubElements(this);
+	/**
+	 * The Layouter visits the subelements of the given {@link ICompositePageElement} 
+	 * @param compositePageElement
+	 */
+	protected void visitSubElements(ICompositePageElement compositePageElement) {
+		compositePageElement.visitSubElements(this);
 	}
 
+	/**
+	 * initializes the basic resources e.g. the external css-stylesheet-definitions
+	 */
 	protected void initBaseResources() {
 		try {
 			LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), FileHandler.readFile(
@@ -183,17 +190,23 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 			addLayoutResource(cssResource);
 
 		} catch (IOException e) {
-			System.out.println("Resourcen nicht korrekt geladen: " + e.getMessage());
+			System.out.println("Resources aren't loaded correctly: " + e.getMessage());
 		}
 	}
 
+	/*
+	 * return relative path from root to the external css-stylesheet-definitions
+	 */
 	private String getStyleDefinitionPath() {
 		return resourcePath + '/' + HTML_BASE_CSS;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutImagePageElement(org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement)
+	 */
 	public void layoutImagePageElement(ImagePageElement imagePageElement) {
 
-		String path = resourcePath + "/images/" + imagePageElement.getPath() + ".png";
+		String path = resourcePath + "/images/" + imagePageElement.getFileName() + ".png";
 		addLayoutResource(new LayoutResource(path, DocumentorUtil.convertImageDataToByteArray(imagePageElement.getImageData(), SWT.IMAGE_PNG)));
 		
 		append(HtmlUtil.createImage(pathToRoot + path, imagePageElement.getTitle()));

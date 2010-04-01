@@ -6,32 +6,47 @@ import java.util.List;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 
+/**
+ * {@link AbstractCompositePageElement} provides basic functionality for implementations of the {@link ICompositePageElement}
+ * @author dicker
+ *
+ */
 public abstract class AbstractCompositePageElement extends AbstractPageElement implements ICompositePageElement {
-    private List<PageElement> subElements = new ArrayList<PageElement>();
+    /**
+     * the subElements of the CompositePageElement
+     */
+    protected List<PageElement> subElements = new ArrayList<PageElement>();
+    
     protected String title;
     protected final WrapperType wrapperType = WrapperType.NONE;
 
     public abstract void acceptLayouter(ILayouter layouter);
 
+    /**
+     * @return title of the CompositePageElement
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * sets title of the CompositePageElement
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /* (non-Javadoc)
+     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement#build()
+     */
     public abstract void build();
 
-    public void reset() {
-        subElements = new ArrayList<PageElement>();
-    }
-
     /**
-     * fuegt dem Composite neue Elemente hinzu
+     * adds new {@link PageElement}s
      * @param pageElements
      * @return a reference to this object.
-     * @throws ClassCastException wenn nur bestimmte Typen an Elemente zugelassen werden
+     * @throws ClassCastException if the given pageElements don't match restrictions for the CompositePageElement
      */
     public ICompositePageElement addPageElements(PageElement... pageElements) {
         for (PageElement pageElement : pageElements) {
@@ -41,13 +56,16 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     }
 
     /**
-     * Fügt ein {@link PageElement} hinzu. Kann überschrieben werden, um Typ zu überprüfen, um Parent zu setzen und Styles durchzureichen etc. 
+     * adds a {@link PageElement}. Overwrite to check restrictions for subelements 
      * @param pageElement
      */
 	protected void addSubElement(PageElement pageElement) {
 		subElements.add(pageElement);
 	}
 
+    /* (non-Javadoc)
+     * @see org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement#visitSubElements(org.faktorips.devtools.htmlexport.generators.ILayouter)
+     */
     public void visitSubElements(ILayouter layouter) {
         for (PageElement subElement : subElements) {
             subElement.build();
@@ -55,6 +73,10 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         }
     }
 
+	/**
+	 * returns a list of the subelements
+	 * @return 
+	 */
 	public List<PageElement> getSubElements() {
 		return subElements;
 	}

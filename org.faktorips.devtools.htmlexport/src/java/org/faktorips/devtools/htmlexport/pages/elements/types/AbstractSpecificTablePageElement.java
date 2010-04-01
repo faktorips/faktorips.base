@@ -8,17 +8,17 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.AlternateTablePageElementLayout;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.AlternateRowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.ColumnTablePageElementLayout;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.LineTablePageElementLayout;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.RowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 public abstract class AbstractSpecificTablePageElement extends TablePageElement implements DataPageElement {
 	public AbstractSpecificTablePageElement() {
 		super();
-		addLayouts(new LineTablePageElementLayout(0, Style.TABLE_HEADLINE));
-		addLayouts(new AlternateTablePageElementLayout(true));
+		addLayouts(new RowTablePageElementLayout(0, Style.TABLE_HEADLINE));
+		addLayouts(new AlternateRowTablePageElementLayout(true));
 	}
 
 	@Override

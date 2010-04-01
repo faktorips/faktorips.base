@@ -294,7 +294,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 			return wrapper;
 		}
 
-		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(object, tableContents, "content", new LinkedHashSet<Style>());
+		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(tableContents, "content", new LinkedHashSet<Style>());
 		ListPageElement liste = new ListPageElement(createLinkPageElements);
 
 		wrapper.addPageElements(liste);

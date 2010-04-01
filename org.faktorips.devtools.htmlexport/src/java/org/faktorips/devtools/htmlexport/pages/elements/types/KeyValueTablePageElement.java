@@ -3,7 +3,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.AlternateTablePageElementLayout;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.AlternateRowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RegexTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
@@ -12,7 +12,7 @@ public class KeyValueTablePageElement extends TablePageElement {
 
 	public KeyValueTablePageElement() {
 		super(true);
-		addLayouts(new AlternateTablePageElementLayout(false));
+		addLayouts(new AlternateRowTablePageElementLayout(false));
 		addLayouts(new RegexTablePageElementLayout(".{1,3}", Style.CENTER));
 	}
 

@@ -11,7 +11,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.HierarchyPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -117,16 +117,16 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 			return;
 		}
 
-		HierarchyPageElement baseElement = new HierarchyPageElement(new HierarchyPageElement(new LinkPageElement(
+		TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(new LinkPageElement(
 				superTypes.get(0), "content", superTypes.get(0).getQualifiedName(), true)));
-		HierarchyPageElement element = baseElement;
+		TreeNodePageElement element = baseElement;
 
 		for (int i = 1; i < superTypes.size(); i++) {
 			if (superTypes.get(i) == object) {
 				element.addPageElements(new TextPageElement(object.getName()));
 				break;
 			}
-			HierarchyPageElement subElement = new HierarchyPageElement(new LinkPageElement(superTypes.get(i),
+			TreeNodePageElement subElement = new TreeNodePageElement(new LinkPageElement(superTypes.get(i),
 					"content", superTypes.get(i).getName(), true));
 			element.addPageElements(subElement);
 			element = subElement;

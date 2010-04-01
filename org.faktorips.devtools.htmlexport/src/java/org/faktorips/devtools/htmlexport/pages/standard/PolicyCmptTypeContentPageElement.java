@@ -82,7 +82,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 		try {
 			IProductCmptType to = object.getIpsProject().findProductCmptType(getPolicyCmptType().getProductCmptType());
 			if (to == null) {
-				addPageElements(TextPageElement.newBlock("Produktbausteinklasse: keine"));
+				addPageElements(TextPageElement.createParagraph("Produktbausteinklasse: keine"));
 				return;
 			}
 			addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {

@@ -7,29 +7,40 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
+/**
+ * A {@link PageElement} representing an image for an {@link IIpsElement}.
+ * @author dicker
+ *
+ */
 public class ImagePageElement extends AbstractPageElement {
 
 	protected ImageData imageData;
 	protected String title;
-	protected String path;
+	protected String fileName;
 
+	/**
+	 * @param element
+	 * @param title
+	 * @param path
+	 */
 	public ImagePageElement(IIpsElement element, String title, String path) {
 		imageData = createImageDataByIpsElement(element);
 		this.title = title;
-		this.path = path;
+		this.fileName = path;
 	}
 
+	/**
+	 * @param element
+	 */
 	public ImagePageElement(IIpsElement element) {
-		imageData = createImageDataByIpsElement(element);
-		title = element.getName();
-		path = getIpsElementImageName(element);
+		this(element, element.getName(), getIpsElementImageName(element));
 	}
 
 	private ImageData createImageDataByIpsElement(IIpsElement element) {
 		return IpsUIPlugin.getImageHandling().getImage(element, true).getImageData();
 	}
 
-	private String getIpsElementImageName(IIpsElement element) {
+	private static String getIpsElementImageName(IIpsElement element) {
 		if (element instanceof IIpsPackageFragment) {
 			return "ipspackage";
 		}
@@ -46,15 +57,24 @@ public class ImagePageElement extends AbstractPageElement {
 		layouter.layoutImagePageElement(this);
 	}
 
+	/**
+	 * @return {@link ImageData} of the image
+	 */
 	public ImageData getImageData() {
 		return imageData;
 	}
 
+	/**
+	 * @return title of the image
+	 */
 	public String getTitle() {
 		return title;
 	}
 
-	public String getPath() {
-		return path;
+	/**
+	 * @return fileName of the image
+	 */
+	public String getFileName() {
+		return fileName;
 	}
 }

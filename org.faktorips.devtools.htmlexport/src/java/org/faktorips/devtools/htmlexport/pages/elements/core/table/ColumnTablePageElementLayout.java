@@ -2,20 +2,34 @@ package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 
+/**
+ * The {@link RowTablePageElementLayout} layouts table columns and adds specified {@link Style}s to the {@link TableCellPageElement}s of a column. 
+ * @author dicker
+ *
+ */
 public class ColumnTablePageElementLayout extends DefaultTablePageElementLayout {
-	int[] columns;
-	Style[] styles;
+	private int[] columns;
+	private Style[] styles;
 
+	/**
+	 * adds the given {@link Style}s to all cells of the given columns
+	 * @param columns
+	 * @param styles
+	 */
+	public ColumnTablePageElementLayout(int[] columns, Style... styles) {
+		this.columns = columns;
+		this.styles = styles;
+	}
+
+	/**
+	 * adds the given {@link Style}s to all cells of the given column
+	 * @param column
+	 * @param styles
+	 */
 	public ColumnTablePageElementLayout(int column, Style... styles) {
-		setColumns(column);
-		setStyles(styles);
+		this(new int[]{column}, styles);
 	}
 	
-	public ColumnTablePageElementLayout(int[] columns, Style... styles) {
-		setColumns(columns);
-		setStyles(styles);
-	}
-
 	protected boolean isRelatedColumn(int column) {
 		for (int i = 0; i < columns.length; i++) {
 			if (columns[i] == column) return true;
@@ -23,17 +37,11 @@ public class ColumnTablePageElementLayout extends DefaultTablePageElementLayout 
 		return false;
 	}
 	
-	
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.core.table.DefaultTablePageElementLayout#layoutCell(int, int, org.faktorips.devtools.htmlexport.pages.elements.core.table.TableCellPageElement)
+	 */
 	@Override
 	public void layoutCell(int row, int column, TableCellPageElement cellPageElement) {
 		if (isRelatedColumn(column)) cellPageElement.addStyles(styles);
-	}
-	
-	private void setColumns(int... columns) {
-		this.columns = columns;
-	}
-
-	private void setStyles(Style... styles) {
-		this.styles = styles;
 	}
 }

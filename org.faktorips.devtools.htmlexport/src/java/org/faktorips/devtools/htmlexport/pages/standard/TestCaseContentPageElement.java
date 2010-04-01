@@ -11,7 +11,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.HierarchyPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -44,9 +44,9 @@ public class TestCaseContentPageElement extends AbstractObjectContentPageElement
 		addPageElements(createTestCaseTypeHierarchie());
 	}
 
-	private HierarchyPageElement createTestCaseTypeHierarchie() {
+	private TreeNodePageElement createTestCaseTypeHierarchie() {
 		addPageElements(new TextPageElement("Aufbau", TextType.HEADING_2));
-		HierarchyPageElement root = new HierarchyPageElement(new WrapperPageElement(WrapperType.NONE).addPageElements(
+		TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE).addPageElements(
 				new ImagePageElement(object)).addPageElements(new TextPageElement(object.getQualifiedName())));
 
 		ITestObject[] testObjects = object.getTestObjects();
@@ -70,7 +70,7 @@ public class TestCaseContentPageElement extends AbstractObjectContentPageElement
 	}
 
 	private PageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) {
-		HierarchyPageElement testObjectPageElement = new HierarchyPageElement(new WrapperPageElement(WrapperType.BLOCK)
+		TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
 				.addPageElements(new ImagePageElement(testObject)).addPageElements(
 						new TextPageElement(testObject.getTestParameterName())));
 
@@ -87,7 +87,7 @@ public class TestCaseContentPageElement extends AbstractObjectContentPageElement
 	}
 
 	private PageElement createTestRulePageElement(ITestRule testObject) {
-		HierarchyPageElement testObjectPageElement = new HierarchyPageElement(new WrapperPageElement(WrapperType.BLOCK)
+		TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
 				.addPageElements(new ImagePageElement(testObject)).addPageElements(
 						new TextPageElement(testObject.getTestParameterName())));
 
@@ -101,7 +101,7 @@ public class TestCaseContentPageElement extends AbstractObjectContentPageElement
 	}
 
 	private PageElement createTestValuePageElement(ITestValue testObject) {
-		HierarchyPageElement testObjectPageElement = new HierarchyPageElement(new WrapperPageElement(WrapperType.BLOCK)
+		TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
 				.addPageElements(new ImagePageElement(testObject)).addPageElements(
 						new TextPageElement(testObject.getTestParameterName())));
 

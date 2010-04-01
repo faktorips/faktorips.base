@@ -7,9 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -17,23 +19,45 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 
-public class AllPackagesPageElement extends AbstractAllPageElement {
+/**
+ * Lists and links the packages of the given {@link IpsObject}s in a page
+ * @author dicker
+ *
+ */
+public class IpsPackagesListPageElement extends AbstractListPageElement {
 
+	/*
+	 * Comparator, which support the sorting of packages by name
+	 */
 	private Comparator<IIpsObject> packagesComparator = new Comparator<IIpsObject>() {
 		public int compare(IIpsObject arg0, IIpsObject arg1) {
 			return arg0.getIpsPackageFragment().getName().compareTo(arg1.getIpsPackageFragment().getName());
 		}
 	};
 
-	public AllPackagesPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
+	/**
+	 * @see AbstractListPageElement#AbstractListPageElement(IIpsElement, List, IpsElementFilter)
+	 * @param baseIpsElement
+	 * @param objects
+	 * @param filter
+	 */
+	public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
 		super(baseIpsElement, objects, filter);
 		setTitle("All Packages");
 	}
 
-	public AllPackagesPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects) {
+	/**
+	 * @see AbstractListPageElement#AbstractListPageElement(IIpsElement, List)
+	 * @param baseIpsElement
+	 * @param objects
+	 */
+	public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects) {
 		this(baseIpsElement, objects, ALL_FILTER);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement#build()
+	 */
 	@Override
 	public void build() {
 		super.build();
@@ -64,14 +88,10 @@ public class AllPackagesPageElement extends AbstractAllPageElement {
 				continue;
 
 			linkedPackagesNames.add(packageFragment.getName());
-			packageLinks.add(new LinkPageElement(packageFragment, getLinkTarget(), getPackageName(packageFragment),
+			packageLinks.add(new LinkPageElement(packageFragment, getLinkTarget(), DocumentorUtil.getIpsPackageName(packageFragment),
 					true));
 		}
 
 		return packageLinks;
-	}
-
-	private String getPackageName(IIpsPackageFragment packageFragment) {
-		return "".equals(packageFragment.getName()) ? "[default package]" : packageFragment.getName();
 	}
 }

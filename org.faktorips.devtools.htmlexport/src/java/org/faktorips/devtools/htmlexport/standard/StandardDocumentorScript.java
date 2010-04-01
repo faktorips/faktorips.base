@@ -18,8 +18,8 @@ import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AllClassesPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AllPackagesPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectListPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.IpsPackagesListPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
 
@@ -79,7 +79,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writePackagesClassesPage(DocumentorConfiguration config, IIpsPackageFragment ipsPackageFragment, List<IIpsObject> objects) {
-        AllClassesPageElement allClassesPage = new AllClassesPageElement(ipsPackageFragment, objects, new IpsObjectInIIpsPackageFilter(ipsPackageFragment));
+        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(ipsPackageFragment, objects, new IpsObjectInIIpsPackageFilter(ipsPackageFragment));
         allClassesPage.setLinkTarget("content");
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH + HtmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileType.getLinkedFileTypeByIpsElement(ipsPackageFragment)), getPageContent(
@@ -95,14 +95,14 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeAllClassesPage(DocumentorConfiguration config, List<IIpsObject> objects) {
-        AllClassesPageElement allClassesPage = new AllClassesPageElement(config.getIpsProject(), objects);
+        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(config.getIpsProject(), objects);
         allClassesPage.setLinkTarget("content");
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH + "classes.html", getPageContent(config, allClassesPage));
     }
 
     private void writeOverviewPage(DocumentorConfiguration config, List<IIpsObject> objects) {
-        AllPackagesPageElement allPackagesPage = new AllPackagesPageElement(config.getIpsProject(), objects);
+        IpsPackagesListPageElement allPackagesPage = new IpsPackagesListPageElement(config.getIpsProject(), objects);
         allPackagesPage.setLinkTarget("classes");
         allPackagesPage.build();
         writeFileWithOutput(config, allPackagesPage, STANDARD_PATH + "overview.html");

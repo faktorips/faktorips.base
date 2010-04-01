@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
@@ -13,16 +14,33 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 
-public class AllClassesPageElement extends AbstractAllPageElement {
-	public AllClassesPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects) {
+/**
+ * Lists and links given {@link IpsObject}s in a page
+ * @author dicker
+ *
+ */
+public class IpsObjectListPageElement extends AbstractListPageElement {
+	/**
+	 * @param baseIpsElement
+	 * @param objects
+	 */
+	public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects) {
 		this(baseIpsElement, objects, ALL_FILTER);
 	}
 
-	public AllClassesPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
+	/**
+	 * @param baseIpsElement
+	 * @param objects
+	 * @param filter
+	 */
+	public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
 		super(baseIpsElement, objects, filter);
 		setTitle("All Classes");
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement#build()
+	 */
 	@Override
 	public void build() {
 		super.build();
@@ -37,6 +55,10 @@ public class AllClassesPageElement extends AbstractAllPageElement {
 		}
 	}
 
+	/**
+	 * creates a list with {@link LinkPageElement}s to the given objects.
+	 * @return List of {@link PageElement}s
+	 */
 	protected List<PageElement> createClassesList() {
 		Collections.sort(objects, IPS_OBJECT_COMPARATOR);
 
