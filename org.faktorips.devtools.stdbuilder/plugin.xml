@@ -82,12 +82,12 @@
                defaultValue="Generic JPA 2.0"
                description="The persistence provider, which will be used to generate special vendor specific features."
                label="Persistence Provider"
-               name="persistenceProviderImplementation"
+               name="persistenceProvider"
                type="enum">
             <discreteValues>
                <!-- see IPersistenceProvider#PROVIDER_IMPLEMENTATION_* -->
                <value
-                     value="Eclipselink 1.1">
+                     value="EclipseLink 1.1">
                </value>
                <value
                      value="Generic JPA 2.0">

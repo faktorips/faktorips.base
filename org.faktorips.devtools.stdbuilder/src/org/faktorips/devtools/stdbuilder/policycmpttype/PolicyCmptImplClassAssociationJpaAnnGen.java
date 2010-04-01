@@ -123,7 +123,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             addAnnotationAttributeFetch(relationShip, fragment, attributesToAppend, genAssociation,
                     genInverseAssociation);
             addAnnotationAttributesTargetEntity(fragment, attributesToAppend, genAssociation, genInverseAssociation);
-            if (persistenceProviderImpl.isSuppotingOrphanRemoval()) {
+            if (persistenceProviderImpl != null && persistenceProviderImpl.isSuppotingOrphanRemoval()) {
                 attributesToAppend.add(persistenceProviderImpl.getRelationshipAnnotationAttributeOrphanRemoval());
             }
             appendAllAttributes(fragment, attributesToAppend);
@@ -152,7 +152,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
                     if (persistenceProviderImpl == null) {
                         return;
                     }
-                    if (persistenceProviderImpl.isSuppotingOrphanRemoval()) {
+                    if (persistenceProviderImpl != null && persistenceProviderImpl.isSuppotingOrphanRemoval()) {
                         persistenceProviderImpl.addAnnotationOrphanRemoval(fragment);
                     }
                 }
