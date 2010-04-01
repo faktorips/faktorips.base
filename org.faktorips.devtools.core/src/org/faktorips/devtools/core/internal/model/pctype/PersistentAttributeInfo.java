@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -28,8 +25,6 @@ import org.faktorips.devtools.core.model.pctype.IPersistableTypeConverter;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -237,7 +232,10 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
             return;
         }
 
-        validateUniqueColumnNameInHierarchy(msgList);
+        if (StringUtils.isBlank(tableColumnName)) {
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME, "Empty column name.", Message.ERROR, this,
+                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+        }
 
         if (tableColumnSize < MIN_TABLE_COLUMN_SIZE || tableColumnSize > MAX_TABLE_COLUMN_SIZE) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, "The column size exceeds the limit ["
@@ -269,58 +267,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
                                             "The column name length exceeds the maximum length defined in the persistence options. The column name length is {0} and the maximum defined length is {1}.",
                                             tableColumnName.length(), maxColumnNameLenght), Message.ERROR, this,
                             IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
-        }
-    }
-
-    private void validateUniqueColumnNameInHierarchy(MessageList msgList) throws CoreException {
-        if (StringUtils.isBlank(tableColumnName)) {
-            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME, "Empty column name.", Message.ERROR, this,
-                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
-            return;
-        }
-
-        IPolicyCmptTypeAttribute pcTypeAttribute = getPolicyComponentTypeAttribute();
-        ColumnNameCollector columnNameCollector = new ColumnNameCollector(pcTypeAttribute);
-        columnNameCollector.start(pcTypeAttribute.getPolicyCmptType());
-        if (columnNameCollector.columnNames.contains(tableColumnName)) {
-            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, "Duplicate column name "
-                    + pcTypeAttribute.getPersistenceAttributeInfo().getTableColumnName(), Message.ERROR, this,
-                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
-        }
-    }
-
-    private static class ColumnNameCollector extends PolicyCmptTypeHierarchyVisitor {
-        private List<String> columnNames = new ArrayList<String>();
-        private final IPolicyCmptTypeAttribute startAttribute;
-
-        public ColumnNameCollector(IPolicyCmptTypeAttribute attribute) {
-            startAttribute = attribute;
-        }
-
-        private boolean isPersistentAttribute(IPolicyCmptTypeAttribute attribute) {
-            return attribute.getPersistenceAttributeInfo().isPersistentAttribute();
-        }
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            InheritanceStrategy currentInheritanceStrategy = currentType.getPersistenceTypeInfo()
-                    .getInheritanceStrategy();
-
-            IPolicyCmptTypeAttribute[] policyCmptTypeAttributes = currentType.getPolicyCmptTypeAttributes();
-            for (IPolicyCmptTypeAttribute currentAttribute : policyCmptTypeAttributes) {
-                if (isPersistentAttribute(currentAttribute) && startAttribute != currentAttribute) {
-                    columnNames.add(currentAttribute.getPersistenceAttributeInfo().getTableColumnName());
-                }
-            }
-
-            // TODO Joerg JPA add join column and jointable columns
-
-            if (currentInheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
-                // do not collect supertype attributes, since each table of a JOINED_SUBCLASS
-                // hierarchy can have the same column names
-                return false;
-            }
-            return true;
         }
     }
 }

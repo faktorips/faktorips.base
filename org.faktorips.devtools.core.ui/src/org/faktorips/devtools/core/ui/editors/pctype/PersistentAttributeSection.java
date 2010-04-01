@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.util.StringUtil;
 
 public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
@@ -56,8 +57,8 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
         @Override
         public String[] getColumnHeaders() {
-            return new String[] { "Attribute Name", "Column Name", "Converter", "Unique", "Nullable", "Size",
-                    "Precision", "Scale" };
+            return new String[] { "Attribute Name", "Column Name", "Unique", "Nullable", "Size", "Precision", "Scale",
+                    "Column Definition", "Converter" };
         }
 
         public PersistenceAttributesComposite(IIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
@@ -129,25 +130,26 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                                 .getTableName(rawTableColumnName);
                         break;
                     case 2:
-                        // TODO: converter
-                        result = "";
-                        break;
-                    case 3:
                         result = String.valueOf(attributeInfo.getTableColumnUnique());
                         break;
-                    case 4:
+                    case 3:
                         result = String.valueOf(attributeInfo.getTableColumnNullable());
                         break;
-                    case 5:
+                    case 4:
                         result = String.valueOf(attributeInfo.getTableColumnSize());
                         break;
-                    case 6:
+                    case 5:
                         result = String.valueOf(attributeInfo.getTableColumnPrecision());
                         break;
-                    case 7:
+                    case 6:
                         result = String.valueOf(attributeInfo.getTableColumnScale());
                         break;
-
+                    case 7:
+                        result = StringUtil.unqualifiedName(attributeInfo.getSqlColumnDefinition());
+                        break;
+                    case 8:
+                        result = StringUtil.unqualifiedName(attributeInfo.getConverterQualifiedClassName());
+                        break;
                     default:
                         result = "";
                 }

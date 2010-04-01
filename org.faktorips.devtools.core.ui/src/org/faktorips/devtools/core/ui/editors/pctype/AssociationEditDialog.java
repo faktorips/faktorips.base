@@ -275,14 +275,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             @Override
             public void updateUiIfNotDisposed() {
                 IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
-                boolean persistEnabled = associationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
-                        .isPersistentEnabled();
+                boolean persistEnabled = isPersistEnabled(associationInfo);
                 if (!persistEnabled) {
-                    return;
+                    uiToolkit.setDataChangeable(getControl(), false);
                 } else {
                     uiToolkit.setDataChangeable(getControl(), !associationInfo.isTransient());
                 }
             }
+
         });
         // disable join table
         bindingContext.add(new ControlPropertyBinding(joinTableComposite, association.getPersistenceAssociatonInfo(),
@@ -290,9 +290,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             @Override
             public void updateUiIfNotDisposed() {
                 IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
-                boolean persistEnabled = associationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
-                        .isPersistentEnabled();
+                boolean persistEnabled = isPersistEnabled(associationInfo);
                 if (!persistEnabled) {
+                    uiToolkit.setDataChangeable(getControl(), false);
                     return;
                 }
                 if (associationInfo.isTransient()) {
@@ -311,6 +311,13 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         if (!association.getPolicyCmptType().isPersistentEnabled()) {
             uiToolkit.setDataChangeable(c, false);
         }
+    }
+
+    private boolean isPersistEnabled(IPersistentAssociationInfo associationInfo) {
+        if (!isDataChangeable()) {
+            return false;
+        }
+        return associationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled();
     }
 
     private Group createGroupOtherPersistentProps(Composite allPersistentProps) {

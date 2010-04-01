@@ -14,21 +14,30 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -182,6 +191,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             validateInheritanceStrategy(msgList);
             validateTableName(msgList, rootEntityFinder.rooEntity);
             validateDisriminator(msgList, rootEntityFinder.rooEntity);
+            validateUniqueColumnNameInHierarchy(msgList);
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -504,4 +514,131 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
+    private void validateUniqueColumnNameInHierarchy(MessageList msgList) throws CoreException {
+        ColumnNameCollector columnNameCollector = new ColumnNameCollector();
+        columnNameCollector.start(getPolicyCmptType());
+
+        Map<String, Object> persistentObjectesBySameColumnName = columnNameCollector
+                .getPersistentObjectesBySameColumnName();
+        for (Iterator<String> iterator = persistentObjectesBySameColumnName.keySet().iterator(); iterator.hasNext();) {
+            String columnName = iterator.next();
+            addMessagesDuplicateColumnName(msgList, columnName, persistentObjectesBySameColumnName.get(columnName));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    // suppressed because we use either a object which holds the column name or a list of objects
+    // with the same column name
+    private void addMessagesDuplicateColumnName(MessageList msgList,
+            String columnName,
+            Object objectOrObjectsUseSameColumnName) {
+        if (objectOrObjectsUseSameColumnName instanceof List<?>) {
+            List<ObjectProperty> objectsUseSameColumnName = (List<ObjectProperty>)objectOrObjectsUseSameColumnName;
+            String objectsAsString = "";
+            for (Iterator<ObjectProperty> iterator = objectsUseSameColumnName.iterator(); iterator.hasNext();) {
+                objectsAsString += objectPropertyAsString(iterator.next());
+            }
+            for (Iterator<ObjectProperty> iterator = objectsUseSameColumnName.iterator(); iterator.hasNext();) {
+                ObjectProperty objectProperty = iterator.next();
+                if (getPolicyCmptTypeFromObjectProperty(objectProperty).getPersistenceTypeInfo() == this) {
+                    // append the other object property to the message text
+                    addMessageDuplicateColumnName(msgList, objectProperty, columnName
+                            + NLS.bind(". Found duplicate name in {0}.", StringUtils.strip(objectsAsString.replace(
+                                    objectPropertyAsString(objectProperty), ""), ", ")));
+                }
+            }
+        }
+    }
+
+    private IPolicyCmptType getPolicyCmptTypeFromObjectProperty(ObjectProperty objectProperty) {
+        return (IPolicyCmptType)((IIpsObjectPart)objectProperty.getObject()).getIpsObject();
+    }
+
+    private String objectPropertyAsString(ObjectProperty objectProperty) {
+        return NLS.bind(" {0}#{1}, ", getPolicyCmptTypeFromObjectProperty(objectProperty).getUnqualifiedName(),
+                objectProperty.getProperty());
+    }
+
+    private void addMessageDuplicateColumnName(MessageList msgList, ObjectProperty objectProperty, String detailText) {
+        msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, NLS.bind("Duplicate column name {0}",
+                detailText), Message.ERROR, objectProperty));
+    }
+
+    private static class ColumnNameCollector extends PolicyCmptTypeHierarchyVisitor {
+        private Map<String, Object> persistentObjectesBySameColumnName = new HashMap<String, Object>();
+
+        public Map<String, Object> getPersistentObjectesBySameColumnName() {
+            return persistentObjectesBySameColumnName;
+        }
+
+        private boolean isPersistentAttribute(IPolicyCmptTypeAttribute attribute) {
+            return attribute.getPersistenceAttributeInfo().isPersistentAttribute();
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            InheritanceStrategy currentInheritanceStrategy = currentType.getPersistenceTypeInfo()
+                    .getInheritanceStrategy();
+
+            IPolicyCmptTypeAttribute[] policyCmptTypeAttributes = currentType.getPolicyCmptTypeAttributes();
+            for (IPolicyCmptTypeAttribute currentAttribute : policyCmptTypeAttributes) {
+                if (isPersistentAttribute(currentAttribute)) {
+                    addColumnName(currentAttribute.getPersistenceAttributeInfo().getTableColumnName(),
+                            new ObjectProperty(currentAttribute.getPersistenceAttributeInfo(),
+                                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+                }
+            }
+
+            collectAssociationColumnsIfExists(currentType);
+
+            if (currentInheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
+                // do not collect supertype attributes, since each table of a JOINED_SUBCLASS
+                // hierarchy can have the same column names
+                return false;
+            }
+            return true;
+        }
+
+        @SuppressWarnings("unchecked")
+        // suppressed because we use either a object which holds the column name or a list of
+        // objects with the same column name
+        private void addColumnName(String columnName, ObjectProperty objectProperty) {
+            if (StringUtils.isEmpty(columnName)) {
+                return;
+            }
+            Object objectOrObjectsSameColumnName = persistentObjectesBySameColumnName.get(columnName);
+            if (objectOrObjectsSameColumnName == null) {
+                persistentObjectesBySameColumnName.put(columnName, objectProperty);
+            } else {
+                List<ObjectProperty> objectsUseSameColumnName = null;
+                if (objectOrObjectsSameColumnName instanceof ObjectProperty) {
+                    objectsUseSameColumnName = new ArrayList<ObjectProperty>();
+                    persistentObjectesBySameColumnName.put(columnName, objectsUseSameColumnName);
+                    objectsUseSameColumnName.add((ObjectProperty)objectOrObjectsSameColumnName);
+                } else {
+                    objectsUseSameColumnName = (List<ObjectProperty>)objectOrObjectsSameColumnName;
+                }
+                objectsUseSameColumnName.add(objectProperty);
+            }
+        }
+
+        private void collectAssociationColumnsIfExists(IPolicyCmptType currentType) {
+            IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = currentType.getPolicyCmptTypeAssociations();
+            for (int i = 0; i < policyCmptTypeAssociations.length; i++) {
+                IPersistentAssociationInfo pAssInfo = policyCmptTypeAssociations[i].getPersistenceAssociatonInfo();
+                addIfNotEmpty(pAssInfo.getJoinColumnName(), new ObjectProperty(pAssInfo,
+                        IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME));
+                addIfNotEmpty(pAssInfo.getSourceColumnName(), new ObjectProperty(pAssInfo,
+                        IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME));
+                addIfNotEmpty(pAssInfo.getTargetColumnName(), new ObjectProperty(pAssInfo,
+                        IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME));
+            }
+        }
+
+        private void addIfNotEmpty(String columnName, ObjectProperty objectProperty) {
+            if (StringUtils.isNotEmpty(columnName)) {
+                addColumnName(columnName, objectProperty);
+            }
+        }
+    }
 }

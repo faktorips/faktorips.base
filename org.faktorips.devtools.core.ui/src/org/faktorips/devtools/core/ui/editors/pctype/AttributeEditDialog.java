@@ -805,6 +805,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPersistentTypeInfo.PROPERTY_ENABLED, Boolean.TYPE) {
             @Override
             public void updateUiIfNotDisposed() {
+                boolean enabled = isPersistentEnabled();
+                if (!enabled) {
+                    uiToolkit.setDataChangeable(group, false);
+                    return;
+                }
                 uiToolkit.setDataChangeable(persistencePage.getControl(), ((IPersistentTypeInfo)getObject())
                         .isEnabled());
             }
@@ -816,7 +821,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             @Override
             public void updateUiIfNotDisposed() {
                 boolean enabled = isPersistentEnabled();
-                uiToolkit.setDataChangeable(group, enabled);
+                if (!enabled) {
+                    uiToolkit.setDataChangeable(group, false);
+                    return;
+                }
                 if (enabled) {
                     disableDeactiveControls();
                     enableDisableDatatypeDependingControls();
@@ -834,7 +842,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         bindingContext.add(new ControlPropertyBinding(c, attribute, IAttribute.PROPERTY_DATATYPE, String.class) {
             @Override
             public void updateUiIfNotDisposed() {
-                if (isPersistentEnabled()) {
+                boolean enabled = isPersistentEnabled();
+                if (!enabled) {
+                    uiToolkit.setDataChangeable(group, false);
+                    return;
+                }
+                if (enabled) {
                     enableDisableDatatypeDependingControls();
                 }
             }
@@ -842,6 +855,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private boolean isPersistentEnabled() {
+        if (!isDataChangeable()) {
+            return false;
+        }
         boolean enabled = attribute.getPolicyCmptType().isPersistentEnabled();
         if (!enabled) {
             return false;

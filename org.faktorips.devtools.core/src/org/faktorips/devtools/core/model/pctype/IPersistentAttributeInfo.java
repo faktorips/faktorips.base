@@ -114,14 +114,6 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
             + "PersistenceAttrColumnNameEmpty"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this persistence attribute info has a column name
-     * set which is already defined. The conflicting attribute can be in the same type this
-     * attribute info belongs to or in a supertype if SINGLE_TABLE inheritance is used.
-     */
-    public final static String MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME = MSGCODE_PREFIX
-            + "PersistenceAttrColumnNameDuplicate"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the column name exceeds the max column size
      */
     public final static String MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH = MSGCODE_PREFIX + "ColumnNameExceedsMaxLength"; //$NON-NLS-1$

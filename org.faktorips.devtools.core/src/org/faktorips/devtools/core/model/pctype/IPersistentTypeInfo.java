@@ -127,6 +127,15 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
             + "msgcodeUseTableDefinedInSupertypeNotAllowed"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that persistence attribute info or persistence
+     * association info has column names which is already defined. The conflicting attribute can be
+     * in the same type this attribute info belongs to or in a supertype if SINGLE_TABLE inheritance
+     * is used.
+     */
+    public final static String MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME = MSGCODE_PREFIX
+            + "PersistenceAttrColumnNameDuplicate"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this persistent type info belongs to.
      */
     public IPolicyCmptType getPolicyCmptType();
