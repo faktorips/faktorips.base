@@ -123,6 +123,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             addAnnotationAttributeFetch(relationShip, fragment, attributesToAppend, genAssociation,
                     genInverseAssociation);
             addAnnotationAttributesTargetEntity(fragment, attributesToAppend, genAssociation, genInverseAssociation);
+            if (persistenceProviderImpl.isSuppotingOrphanRemoval()) {
+                attributesToAppend.add(persistenceProviderImpl.getRelationshipAnnotationAttributeOrphanRemoval());
+            }
             appendAllAttributes(fragment, attributesToAppend);
 
             // evaluate further attributes depending on the relationship type
@@ -236,7 +239,11 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
     private void appendAllAttributes(JavaCodeFragment fragment, List<String> attributesToAppend) {
         fragment.append('(');
         for (Iterator<String> iterator = attributesToAppend.iterator(); iterator.hasNext();) {
-            fragment.append(iterator.next());
+            String attributeToAppend = iterator.next();
+            if (StringUtils.isEmpty(attributeToAppend)) {
+                continue;
+            }
+            fragment.append(attributeToAppend);
             if (iterator.hasNext()) {
                 fragment.append(",");
             }

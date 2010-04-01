@@ -38,9 +38,16 @@ public interface IPersistenceProvider {
 
     /**
      * If orphan removal is supported then this method must be used to add the necessary annotation
-     * to the given java code fragment.
+     * to the given java code fragment (e.g. PrivateOwned)
      */
     public void addAnnotationOrphanRemoval(JavaCodeFragment javaCodeFragment);
+
+    /**
+     * If orphan removal is supported then this method must be used to get the attribute to the
+     * relationship annotation (e.g. orphanRemoval=true). Returns an empty string ("" or
+     * <code>null</code>) if no attribute is necessary.
+     */
+    public String getRelationshipAnnotationAttributeOrphanRemoval();
 
     /**
      * If converter are supported then this method must be used to add the necessary annotation to

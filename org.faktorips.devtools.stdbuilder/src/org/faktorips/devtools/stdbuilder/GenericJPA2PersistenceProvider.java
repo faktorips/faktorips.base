@@ -16,6 +16,11 @@ package org.faktorips.devtools.stdbuilder;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 
+/**
+ * Persistence provider for standard generic JPA 2 support
+ * 
+ * @author Joerg Ortmann
+ */
 public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
 
     public boolean isSupportingConverter() {
@@ -23,11 +28,15 @@ public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
     }
 
     public boolean isSuppotingOrphanRemoval() {
-        return false;
+        return true;
     }
 
     public void addAnnotationOrphanRemoval(JavaCodeFragment javaCodeFragment) {
-        throw new UnsupportedOperationException();
+        // nothing to do
+    }
+
+    public String getRelationshipAnnotationAttributeOrphanRemoval() {
+        return "orphanRemoval=true";
     }
 
     public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,

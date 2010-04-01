@@ -46,6 +46,11 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
         javaCodeFragment.appendln(ANNOTATION_PRIVATE_OWNED);
     }
 
+    public String getRelationshipAnnotationAttributeOrphanRemoval() {
+        // no attribute needed
+        return null;
+    }
+
     public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,
             IPersistentAttributeInfo persistentAttributeInfo) {
         javaCodeFragment.addImport(IMPORT_CONVERTER);

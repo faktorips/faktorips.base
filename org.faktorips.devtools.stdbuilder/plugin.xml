@@ -79,18 +79,18 @@
                type="boolean">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-               defaultValue="genericJPA2.0"
-               description="The persistence provider implementation, which will be used to generate special vendor specific features."
-               label="Persistence provider implementation"
+               defaultValue="Generic JPA 2.0"
+               description="The persistence provider, which will be used to generate special vendor specific features."
+               label="Persistence Provider"
                name="persistenceProviderImplementation"
                type="enum">
             <discreteValues>
                <!-- see IPersistenceProvider#PROVIDER_IMPLEMENTATION_* -->
                <value
-                     value="eclipseLink1.1">
+                     value="Eclipselink 1.1">
                </value>
                <value
-                     value="genericJPA2.0">
+                     value="Generic JPA 2.0">
                </value>
             </discreteValues>               
          </builderSetPropertyDef>         
