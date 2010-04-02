@@ -65,7 +65,7 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
         assertTrue(propertyDefNames.contains("generateVisitorSupport"));
         assertTrue(propertyDefNames.contains("loggingFrameworkConnector"));
         assertTrue(propertyDefNames.contains("generateJaxbSupport"));
-        assertTrue(propertyDefNames.contains("persistenceProviderImplementation"));
+        assertTrue(propertyDefNames.contains("persistenceProvider"));
 
         IIpsBuilderSetPropertyDef loggingConnectorPropertyDef = builderSetInfo
                 .getPropertyDefinition("loggingFrameworkConnector");
