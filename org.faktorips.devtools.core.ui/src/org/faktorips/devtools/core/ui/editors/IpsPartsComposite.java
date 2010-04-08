@@ -412,12 +412,51 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
 
         if (upButton != null) {
-            upButton.setEnabled(itemSelected && canMove);
+            upButton.setEnabled(itemSelected && canMove && !isFirstElementSelected());
         }
 
         if (downButton != null) {
-            downButton.setEnabled(itemSelected && canMove);
+            downButton.setEnabled(itemSelected && canMove && !isLastElementSelected());
         }
+    }
+
+    /**
+     * In case this partcomposite's viewer is a {@link TableViewer} this method returns
+     * <code>true</code> if the viewers selected element is the first element in the table.
+     * <code>false</code> else.
+     * 
+     * @return <code>true</code> only if the table-viewers selected element is the first element in
+     *         the table.
+     */
+    private boolean isFirstElementSelected() {
+        return isFirstOrLastElementSelected(true);
+    }
+
+    /**
+     * In case this partcomposite's viewer is a {@link TableViewer} this method returns
+     * <code>true</code> if the viewers selected element is the last element in the table.
+     * <code>false</code> else.
+     * 
+     * @return <code>true</code> only if the table-viewers selected element is the last element in
+     *         the table.
+     */
+    private boolean isLastElementSelected() {
+        return isFirstOrLastElementSelected(false);
+    }
+
+    private boolean isFirstOrLastElementSelected(boolean firstElement) {
+        Viewer viewer = getViewer();
+        if (viewer instanceof TableViewer) {
+            IStructuredContentProvider contentProvider = (IStructuredContentProvider)((TableViewer)viewer)
+                    .getContentProvider();
+            Object selectedObject = getSelectedObject();
+            Object[] elements = contentProvider.getElements(null);
+            if (selectedObject != null && elements.length > 0
+                    && elements[firstElement ? 0 : elements.length - 1] == selectedObject) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public final IIpsObjectPart getSelectedPart() {
