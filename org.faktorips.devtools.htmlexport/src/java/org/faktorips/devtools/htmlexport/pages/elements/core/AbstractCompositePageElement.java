@@ -45,7 +45,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     /**
      * adds new {@link PageElement}s
      * @param pageElements
-     * @return a reference to this object.
+     * @return a reference to this ipsObject.
      * @throws ClassCastException if the given pageElements don't match restrictions for the CompositePageElement
      */
     public ICompositePageElement addPageElements(PageElement... pageElements) {

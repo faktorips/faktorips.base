@@ -11,23 +11,36 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AssociationTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
 
+/**
+ * A complete page representing an {@link IType}
+ * 
+ * @author dicker
+ * 
+ * @param <T>
+ */
 public abstract class AbstractTypeContentPageElement<T extends IType> extends AbstractObjectContentPageElement<IType> {
 
-	private class SupertypeHierarchieVisitor extends TypeHierarchyVisitor {
+	/**
+	 * Visitor for superclass hierarchy
+	 * 
+	 * @author dicker
+	 * 
+	 */
+	private class SupertypeHierarchyVisitor extends TypeHierarchyVisitor {
 		List<IType> superTypes = new ArrayList<IType>();
 
-		public SupertypeHierarchieVisitor(IIpsProject ipsProject) {
+		public SupertypeHierarchyVisitor(IIpsProject ipsProject) {
 			super(ipsProject);
 		}
 
@@ -44,53 +57,85 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 		}
 	}
 
+	/**
+	 * creates a page, which represents the given type according to the given
+	 * config
+	 * 
+	 * @param object
+	 * @param config
+	 */
 	public AbstractTypeContentPageElement(IType object, DocumentorConfiguration config) {
 		super(object, config);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractObjectContentPageElement#build()
+	 */
 	@Override
 	public void build() {
 		super.build();
 
-		// Attribute
-		addPageElements(createAttributesTable());
+		addAttributesTable();
 
-		// Assozationen
-		addPageElements(createAssociationsTable());
+		addAssociationsTable();
 
-		// Methoden
-		addPageElements(createMethodsTable());
+		addMethodsTable();
 	}
 
-	protected PageElement createMethodsTable() {
+	/**
+	 * adds a table which represents the methods of the type
+	 */
+	protected void addMethodsTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Methoden", TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_methods, TextType.HEADING_2));
 
-		wrapper.addPageElements(getTableOrAlternativeText(getMethodsTablePageElement(), "keine Methoden vorhanden"));
-		return wrapper;
+		wrapper.addPageElements(getTableOrAlternativeText(getMethodsTablePageElement(), Messages.AbstractTypeContentPageElement_noMethods));
+
+		addPageElements(wrapper);
 	}
 
+	/**
+	 * returns a {@link MethodsTablePageElement} for the type
+	 * 
+	 * @return
+	 */
 	protected MethodsTablePageElement getMethodsTablePageElement() {
-		return new MethodsTablePageElement(object);
+		return new MethodsTablePageElement(getType());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractObjectContentPageElement#addTypeHierarchy()
+	 */
 	@Override
-	protected void addTypeHierarchie() {
-		addPageElements(new TextPageElement("Hierarchie", TextType.HEADING_2));
-		addPageElements(new TextPageElement("Superklasse", TextType.HEADING_3));
-		addSuperTypeHierarchie();
-		addPageElements(new TextPageElement("Subklasse", TextType.HEADING_3));
-		addSubTypeHierarchie();
+	protected void addTypeHierarchy() {
+		addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_hierarchy, TextType.HEADING_2));
+		addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_superclass, TextType.HEADING_3));
+		addSuperTypeHierarchy();
+		addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_subclass, TextType.HEADING_3));
+		addSubTypeHierarchy();
 	}
 
-	protected void addSubTypeHierarchie() {
+	/**
+	 * adds a block with subclasses
+	 */
+	protected void addSubTypeHierarchy() {
 
 		List<PageElement> subTypes = new ArrayList<PageElement>();
-		for (IIpsSrcFile srcFile : config.getLinkedSource(object.getIpsObjectType())) {
+
+		for (IIpsSrcFile srcFile : getConfig().getLinkedSource(getType().getIpsObjectType())) {
 			try {
 				IType type = (IType) srcFile.getIpsObject();
-				if (type.getSupertype().equals(object.getQualifiedName())) {
-					subTypes.add(new LinkPageElement(type, "content", type.getQualifiedName(), true));
+				if (type == null) {
+					continue;
+				}
+				if (type.getSupertype().equals(getType().getQualifiedName())) {
+					subTypes.add(new LinkPageElement(type, "content", type.getQualifiedName(), true)); //$NON-NLS-1$
 				}
 			} catch (CoreException e) {
 				e.printStackTrace();
@@ -103,74 +148,102 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new ListPageElement(subTypes)));
 	}
 
-	protected void addSuperTypeHierarchie() {
-		SupertypeHierarchieVisitor hier = new SupertypeHierarchieVisitor(object.getIpsProject());
+	/**
+	 * adds a block with superclasses
+	 */
+	protected void addSuperTypeHierarchy() {
+		SupertypeHierarchyVisitor hier = new SupertypeHierarchyVisitor(getType().getIpsProject());
 		try {
-			hier.start(object);
+			hier.start(getType());
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 		List<IType> superTypes = hier.getSuperTypes();
 
 		if (superTypes.size() == 1) {
-			addPageElements(new TextPageElement("keine Superklasse"));
+			addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_noSuperclasses));
 			return;
 		}
 
 		TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(new LinkPageElement(
-				superTypes.get(0), "content", superTypes.get(0).getQualifiedName(), true)));
+				superTypes.get(0), "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
 		TreeNodePageElement element = baseElement;
 
 		for (int i = 1; i < superTypes.size(); i++) {
-			if (superTypes.get(i) == object) {
-				element.addPageElements(new TextPageElement(object.getName()));
+			if (superTypes.get(i) == getType()) {
+				element.addPageElements(new TextPageElement(getType().getName()));
 				break;
 			}
-			TreeNodePageElement subElement = new TreeNodePageElement(new LinkPageElement(superTypes.get(i),
-					"content", superTypes.get(i).getName(), true));
+			TreeNodePageElement subElement = new TreeNodePageElement(new LinkPageElement(superTypes.get(i), "content", //$NON-NLS-1$
+					superTypes.get(i).getName(), true));
 			element.addPageElements(subElement);
 			element = subElement;
 		}
 		addPageElements(baseElement);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractObjectContentPageElement#addStructureData()
+	 */
 	@Override
 	protected void addStructureData() {
 		super.addStructureData();
 
 		try {
-			IType to = object.findSupertype(object.getIpsProject());
+			IType to = getType().findSupertype(getType().getIpsProject());
 			if (to == null)
 				return;
 
 			addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
-					new TextPageElement("Erweitert "), new LinkPageElement(to, "content", to.getName(), true) }));
+					new TextPageElement(Messages.AbstractTypeContentPageElement_extends + " "), new LinkPageElement(to, "content", to.getName(), true) }));  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 	}
 
-	protected PageElement createAssociationsTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Beziehungen", TextType.HEADING_2));
-
-		wrapper.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(object),
-				"keine Beziehungen vorhanden"));
-
-		return wrapper;
+	/**
+	 * returns the type
+	 * 
+	 * @return
+	 */
+	protected IType getType() {
+		return getIpsObject();
 	}
 
-	protected PageElement createAttributesTable() {
+	/**
+	 * adds a table with the associations of the type
+	 */
+	protected void addAssociationsTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Attribute", TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_associations, TextType.HEADING_2));
 
 		wrapper
-				.addPageElements(getTableOrAlternativeText(getAttributesTablePageElement(), "keine Attribute vorhanden"));
+				.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(getType()),
+						Messages.AbstractTypeContentPageElement_noAssociations));
 
-		return wrapper;
+		addPageElements(wrapper);
 	}
 
+	/**
+	 * adds a table with the attributes of the type
+	 */
+	protected void addAttributesTable() {
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+		wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_attributes, TextType.HEADING_2));
+
+		wrapper.addPageElements(getTableOrAlternativeText(getAttributesTablePageElement(), Messages.AbstractTypeContentPageElement_noAttributes));
+
+		addPageElements(wrapper);
+	}
+
+	/**
+	 * returns a table with the attributes of the type
+	 * @return
+	 */
 	protected AttributesTablePageElement getAttributesTablePageElement() {
-		return new AttributesTablePageElement(object);
+		return new AttributesTablePageElement(getType());
 	}
 }

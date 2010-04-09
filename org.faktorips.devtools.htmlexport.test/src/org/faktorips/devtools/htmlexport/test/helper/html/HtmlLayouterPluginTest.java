@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
@@ -18,7 +17,7 @@ public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		layouter.clean();
+		layouter.clear();
 		ipsProject = newIpsProject("TestProjekt");
 
 	}
@@ -26,7 +25,6 @@ public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
 	public void testHtmlLayouterLinkPageElement() throws Exception {
 		String text = "text beispiel";
 
-		PolicyCmptType from = newPolicyCmptType(ipsProject, "kranken.sub.KrankenSubBVB");
 		PolicyCmptType to = newPolicyCmptType(ipsProject, "base.BVB");
 
 		String target = "classes";
@@ -41,7 +39,6 @@ public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
 	public void testHtmlLayouterLinkPageElementToRoot() throws Exception {
 		String text = "text beispiel";
 
-		PolicyCmptType from = newPolicyCmptType(ipsProject, "kranken.sub.KrankenSubBVB");
 		PolicyCmptType to = newPolicyCmptType(ipsProject, "BVB");
 
 		String target = "classes";
@@ -56,7 +53,6 @@ public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
 	public void testHtmlLayouterLinkPageElementFromRoot() throws Exception {
 		String text = "text beispiel";
 
-		PolicyCmptType from = newPolicyCmptType(ipsProject, "KrankenSubBVB");
 		PolicyCmptType to = newPolicyCmptType(ipsProject, "base.BVB");
 
 		String target = "classes";
@@ -71,7 +67,6 @@ public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
 	public void testHtmlLayouterLinkPageElementFromRootToRoot() throws Exception {
 		String text = "text beispiel";
 
-		PolicyCmptType from = newPolicyCmptType(ipsProject, "KrankenSubBVB");
 		PolicyCmptType to = newPolicyCmptType(ipsProject, "BVB");
 
 		String target = "classes";
@@ -85,7 +80,6 @@ public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
 	public void testHtmlLayouterLinkPageElementPackage() throws Exception {
 		String text = "text beispiel";
 
-		IIpsElement from = newPolicyCmptType(ipsProject, "kranken.KrankenSubBVB").getIpsPackageFragment();
 		PolicyCmptType to = newPolicyCmptType(ipsProject, "kranken.sub.BVB");
 
 		String target = "classes";

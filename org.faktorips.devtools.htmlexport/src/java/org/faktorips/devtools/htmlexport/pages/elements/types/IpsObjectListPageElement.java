@@ -35,7 +35,7 @@ public class IpsObjectListPageElement extends AbstractListPageElement {
 	 */
 	public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
 		super(baseIpsElement, objects, filter);
-		setTitle("All Classes");
+		setTitle(Messages.IpsObjectListPageElement_allClasses);
 	}
 
 	/* (non-Javadoc)
@@ -48,7 +48,7 @@ public class IpsObjectListPageElement extends AbstractListPageElement {
 
 		List<PageElement> classes = createClassesList();
 
-		addPageElements(new TextPageElement(classes.size() + " Classes"));
+		addPageElements(new TextPageElement(classes.size() + " " + Messages.IpsObjectListPageElement_Classes)); //$NON-NLS-1$
 
 		if (classes.size() > 0) {
 			addPageElements(new ListPageElement(classes));

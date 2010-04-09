@@ -31,9 +31,21 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
 
-public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageElement<ProductCmptType> {
+/**
+ * a page representing an {@link IProductCmptType}
+ * 
+ * @author dicker
+ * 
+ */
+public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageElement<IProductCmptType> {
 
-	public class TableStructureTablePageElement extends AbstractSpecificTablePageElement {
+	/**
+	 * a table representing the table structures of the given productCmptType
+	 * 
+	 * @author dicker
+	 * 
+	 */
+	private class TableStructureTablePageElement extends AbstractSpecificTablePageElement {
 		private IProductCmptType productCmptType;
 
 		public TableStructureTablePageElement(IProductCmptType productCmptType) {
@@ -54,21 +66,21 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 			addSubElement(new TableRowPageElement(new PageElement[] {
 					new TextPageElement(tableStructureUsage.getRoleName()),
 					getTableStructureLinks(tableStructureUsage),
-					new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? "X" : "-"),
+					new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? "X" : "-"), //$NON-NLS-1$ //$NON-NLS-2$
 					new TextPageElement(tableStructureUsage.getDescription()) }));
 		}
 
 		private PageElement getTableStructureLinks(ITableStructureUsage tableStructureUsage) {
 			String[] tableStructures = tableStructureUsage.getTableStructures();
 			if (tableStructures.length == 0)
-				return new TextPageElement("keine Tabellenstrukturen");
+				return new TextPageElement("No" + " " + IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural()); //$NON-NLS-1$ //$NON-NLS-2$
 
 			List<LinkPageElement> links = new ArrayList<LinkPageElement>();
 			for (String tableStructure : tableStructures) {
 				try {
 					IIpsObject ipsObject = tableStructureUsage.getIpsProject().findIpsObject(
 							IpsObjectType.TABLE_STRUCTURE, tableStructure);
-					links.add(new LinkPageElement(ipsObject, "content", tableStructure, true));
+					links.add(new LinkPageElement(ipsObject, "content", tableStructure, true)); //$NON-NLS-1$
 				} catch (CoreException e) {
 					new RuntimeException(e);
 				}
@@ -84,12 +96,12 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 		protected List<String> getHeadline() {
 			List<String> headline = new ArrayList<String>();
 
-			headline.add(ITableStructureUsage.PROPERTY_ROLENAME);
-			headline.add(ITableStructureUsage.PROPERTY_TABLESTRUCTURE);
+			headline.add(Messages.ProductCmptTypeContentPageElement_5);
+			headline.add(Messages.ProductCmptTypeContentPageElement_6);
 
-			addHeadlineAndColumnLayout(headline, ITableStructureUsage.PROPERTY_MANDATORY_TABLE_CONTENT, Style.CENTER);
+			addHeadlineAndColumnLayout(headline, Messages.ProductCmptTypeContentPageElement_7, Style.CENTER);
 
-			headline.add(ITableStructureUsage.PROPERTY_DESCRIPTION);
+			headline.add(Messages.ProductCmptTypeContentPageElement_8);
 
 			return headline;
 		}
@@ -100,32 +112,47 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
 	}
 
+	/**
+	 * creates a page for the given {@link ProductCmptType} with the given
+	 * config
+	 * 
+	 * @param productCmptType
+	 * @param config
+	 */
 	protected ProductCmptTypeContentPageElement(IProductCmptType productCmptType, DocumentorConfiguration config) {
 		super(productCmptType, config);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractTypeContentPageElement#build()
+	 */
 	@Override
 	public void build() {
 		super.build();
 
-		// Tabellenstrukturen
-		addPageElements(createTableStructureTable());
+		addTableStructureTable();
 
-		// Produktbausteine Tabelle
-		addPageElements(createProductCmptList());
+		addProductCmptList();
 	}
 
-	private PageElement createTableStructureTable() {
+	/**
+	 * adds a table with the table structure
+	 */
+	private void addTableStructureTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Tabellenstrukturen", TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(), TextType.HEADING_2));
 
-		wrapper.addPageElements(getTableOrAlternativeText(new TableStructureTablePageElement(getProductCmptType()),
-				"keine Tabellenstrukturen vorhanden"));
-
-		return wrapper;
+		wrapper.addPageElements(new TableStructureTablePageElement(getProductCmptType()));
+		addPageElements(wrapper);
 	}
 
-	private PageElement createProductCmptList() {
+	/**
+	 *  adds a list with the productCmpts
+	 */
+	private void addProductCmptList() {
 		IIpsSrcFile[] allProductCmptSrcFiles;
 		List<IProductCmpt> productCmpts;
 		try {
@@ -136,53 +163,64 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 		}
 
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Produktbausteine", TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural(), TextType.HEADING_2));
 
 		if (productCmpts.size() == 0) {
-			wrapper.addPageElements(new TextPageElement("keine Produktbausteine"));
-			return wrapper;
+			wrapper.addPageElements(new TextPageElement(Messages.ProductCmptTypeContentPageElement_9 + Messages.ProductCmptTypeContentPageElement_10 + IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural()));
+			addPageElements(wrapper);
+			return;
 		}
 
-		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(productCmpts,
-				"content", new LinkedHashSet<Style>());
+		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(productCmpts, Messages.ProductCmptTypeContentPageElement_11,
+				new LinkedHashSet<Style>());
 		ListPageElement liste = new ListPageElement(createLinkPageElements);
 
 		wrapper.addPageElements(liste);
-
-		return wrapper;
+		addPageElements(wrapper);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.standard.AbstractTypeContentPageElement#addStructureData()
+	 */
 	@Override
 	protected void addStructureData() {
 		super.addStructureData();
 
 		try {
-			IPolicyCmptType to = object.getIpsProject().findPolicyCmptType(getProductCmptType().getPolicyCmptType());
+			IPolicyCmptType to = getIpsObject().getIpsProject().findPolicyCmptType(
+					getProductCmptType().getPolicyCmptType());
 			if (to == null) {
-				addPageElements(TextPageElement.createParagraph("Vertragsklasse: keine"));
+				addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + Messages.ProductCmptTypeContentPageElement_12 +Messages.ProductCmptTypeContentPageElement_13));
 				return;
 			}
 			addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
-					new TextPageElement("Vertragsklasse: "), new LinkPageElement(to, "content", to.getName(), true) }));
+					new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() +Messages.ProductCmptTypeContentPageElement_14), new LinkPageElement(to, Messages.ProductCmptTypeContentPageElement_15, to.getName(), true) }));
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 
 	}
 
+	/**
+	 * returns the productCmptType
+	 * @return
+	 */
 	private IProductCmptType getProductCmptType() {
-		return (IProductCmptType) object;
+		return (IProductCmptType) getIpsObject();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.standard.AbstractTypeContentPageElement#getMethodsTablePageElement()
+	 */
 	@Override
 	protected MethodsTablePageElement getMethodsTablePageElement() {
-		return new MethodsTablePageElement(object) {
+		return new MethodsTablePageElement(getIpsObject()) {
 
 			@Override
 			protected List<String> getHeadline() {
 
 				List<String> headline = super.getHeadline();
-				headline.add(IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
+				headline.add(Messages.ProductCmptTypeContentPageElement_16);
 
 				return headline;
 			}
@@ -199,5 +237,4 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
 		};
 	}
-
 }

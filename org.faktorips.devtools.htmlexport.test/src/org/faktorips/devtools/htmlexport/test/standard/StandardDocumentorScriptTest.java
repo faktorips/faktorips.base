@@ -17,7 +17,7 @@ public class StandardDocumentorScriptTest extends AbstractFipsDocTest {
         deletePreviousGeneratedFiles();
         
         createMassivProjekt();
-        documentor.run();
+        documentor.execute();
     }
 
 /*    

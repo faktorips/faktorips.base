@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
@@ -20,69 +21,109 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.ProductGenerationAttributeTable;
 
+/**
+ * A page representing a {@link IProductCmpt}
+ * 
+ * @author dicker
+ * 
+ */
 public class ProductCmptContentPageElement extends AbstractObjectContentPageElement<IProductCmpt> {
 
+	/**
+	 * creates a page for the given {@link IProductCmpt} with the given config
+	 * 
+	 * @param object
+	 * @param config
+	 */
 	protected ProductCmptContentPageElement(IProductCmpt object, DocumentorConfiguration config) {
 		super(object, config);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement#addStructureData()
+	 */
 	@Override
 	protected void addStructureData() {
 		IProductCmptType productCmptType = getProductCmptType();
 
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
-				new TextPageElement("Vorlage: "),
-				new LinkPageElement(productCmptType, "content", productCmptType.getName(), true) }));
+				new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
+				new LinkPageElement(productCmptType, "content", productCmptType.getName(), true) })); //$NON-NLS-1$
 	}
 
+	/**
+	 * returns the {@link IProductCmptType} for the productCmpt
+	 * 
+	 * @return
+	 */
 	protected IProductCmptType getProductCmptType() {
 		try {
-			return object.getIpsProject().findProductCmptType(object.getProductCmptType());
+			return getConfig().getIpsProject().findProductCmptType(getProductCmpt().getProductCmptType());
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	/**
+	 * returns the productCmpt
+	 * 
+	 * @return
+	 */
+	private IProductCmpt getProductCmpt() {
+		return getIpsObject();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractObjectContentPageElement#build()
+	 */
 	@Override
 	public void build() {
 		super.build();
 
-		// Liste mit Generationen
-		addPageElements(createGenerationsList());
+		addGenerationsList();
 
-		// Tabelle mit Generationen / Attributen
-		addPageElements(createGenerationAttributeTable());
+		addGenerationAttributeTable();
 	}
 
-	private PageElement createGenerationAttributeTable() {
+	/**
+	 *adds a table with the attributes of the generations 
+	 */
+	private void addGenerationAttributeTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Attribute", TextType.HEADING_2));
-
-		wrapper.addPageElements(getTableOrAlternativeText(new ProductGenerationAttributeTable(object, getProductCmptType(), config), "keine Anpassungsstufen oder Attribute"));
-
-		return wrapper;
+		wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_attributes, TextType.HEADING_2));
+		
+		wrapper.addPageElements(getTableOrAlternativeText(new ProductGenerationAttributeTable(getProductCmpt(),
+				getProductCmptType(), getConfig()), Messages.ProductCmptContentPageElement_noGenerationsOrAttributes));
+		addPageElements(wrapper);
 	}
 
-	protected PageElement createGenerationsList() {
-		IIpsObjectGeneration[] generations = object.getGenerationsOrderedByValidDate();
+	/**
+	 * adds a list of generations
+	 */
+	private void addGenerationsList() {
+		IIpsObjectGeneration[] generations = getProductCmpt().getGenerationsOrderedByValidDate();
 
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Anpassungsstufen", TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_generations, TextType.HEADING_2));
 
 		if (generations.length == 0) {
-			wrapper.addPageElements(new TextPageElement("keine Anpassungsstufen"));
-			return wrapper;
+			wrapper.addPageElements(new TextPageElement("No generations")); //$NON-NLS-1$
+			addPageElements(wrapper);
+			return;
 		}
 
 		List<String> validFroms = new ArrayList<String>();
 
 		for (IIpsObjectGeneration ipsObjectGeneration : generations) {
 			GregorianCalendar validFrom = ipsObjectGeneration.getValidFrom();
-			validFroms.add(config.getSimpleDateFormat().format(validFrom.getTime()));
+			validFroms.add(getConfig().getSimpleDateFormat().format(validFrom.getTime()));
 		}
 
 		wrapper
 				.addPageElements(new ListPageElement(Arrays.asList(PageElementUtils.createTextPageElements(validFroms))));
-		return wrapper;
+		addPageElements(wrapper);
 	}
 }

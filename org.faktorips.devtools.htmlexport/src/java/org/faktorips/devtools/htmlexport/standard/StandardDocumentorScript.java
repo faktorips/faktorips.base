@@ -20,27 +20,27 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageEle
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsPackagesListPageElement;
-import org.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement;
+import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
 
 public class StandardDocumentorScript implements IDocumentorScript {
 
-    private static final String STANDARD_PATH = "";
+    private static final String STANDARD_PATH = ""; //$NON-NLS-1$
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.IDocumentorScript#execute(org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration)
+	 */
 	public void execute(DocumentorConfiguration config) {
         List<IIpsObject> objects = config.getLinkedObjects();
-        writeBaseFrame(config, objects);
-    }
-
-    private void writeBaseFrame(DocumentorConfiguration config, List<IIpsObject> objects) {
-        writeOverviewPage(config, objects);
-        writeBaseFrameDefinition(config);
-        writeAllClassesPage(config, objects);
-        writeProjectOverviewPage(config);
-        writePackagesClassesPages(config, objects);
-        writeClassesContentPages(config, objects);
         
-        writeResources(config);
+        writeOverviewPage(config, objects);
+		writeBaseFrameDefinition(config);
+		writeAllClassesPage(config, objects);
+		writeProjectOverviewPage(config);
+		writePackagesClassesPages(config, objects);
+		writeClassesContentPages(config, objects);
+		
+		writeResources(config);
     }
 
     private void writeResources(DocumentorConfiguration config) {
@@ -49,8 +49,6 @@ public class StandardDocumentorScript implements IDocumentorScript {
     	for (LayoutResource layoutResource : resources) {
 			FileHandler.writeFile(config, STANDARD_PATH + layoutResource.getName(), layoutResource.getContent());
 		}
-    	
-		
 	}
 
 	private void writeClassesContentPages(DocumentorConfiguration config, List<IIpsObject> objects) {
@@ -60,7 +58,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeClassContentPage(DocumentorConfiguration config, IIpsObject ipsObject) {
-        AbstractRootPageElement objectContentPage = AbstractObjectContentPageElement.getInstance(ipsObject, config);
+        AbstractRootPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsObject, config);
         objectContentPage.build();
         FileHandler.writeFile(config, STANDARD_PATH + HtmlUtil.getPathFromRoot(ipsObject, LinkedFileType.getLinkedFileTypeByIpsElement(ipsObject)), getPageContent(config,
                 objectContentPage));
@@ -80,7 +78,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private void writePackagesClassesPage(DocumentorConfiguration config, IIpsPackageFragment ipsPackageFragment, List<IIpsObject> objects) {
         IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(ipsPackageFragment, objects, new IpsObjectInIIpsPackageFilter(ipsPackageFragment));
-        allClassesPage.setLinkTarget("content");
+        allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH + HtmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileType.getLinkedFileTypeByIpsElement(ipsPackageFragment)), getPageContent(
                 config, allClassesPage));
@@ -96,16 +94,16 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private void writeAllClassesPage(DocumentorConfiguration config, List<IIpsObject> objects) {
         IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(config.getIpsProject(), objects);
-        allClassesPage.setLinkTarget("content");
+        allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
-        FileHandler.writeFile(config, STANDARD_PATH + "classes.html", getPageContent(config, allClassesPage));
+        FileHandler.writeFile(config, STANDARD_PATH + "classes.html", getPageContent(config, allClassesPage)); //$NON-NLS-1$
     }
 
     private void writeOverviewPage(DocumentorConfiguration config, List<IIpsObject> objects) {
         IpsPackagesListPageElement allPackagesPage = new IpsPackagesListPageElement(config.getIpsProject(), objects);
-        allPackagesPage.setLinkTarget("classes");
+        allPackagesPage.setLinkTarget("classes"); //$NON-NLS-1$
         allPackagesPage.build();
-        writeFileWithOutput(config, allPackagesPage, STANDARD_PATH + "overview.html");
+        writeFileWithOutput(config, allPackagesPage, STANDARD_PATH + "overview.html"); //$NON-NLS-1$
     }
 
     private void writeFileWithOutput(DocumentorConfiguration config, AbstractRootPageElement allPackagesPage, String filePath) {
@@ -122,14 +120,14 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeBaseFrameDefinition(DocumentorConfiguration config) {
-        IGenerator baseFrameHtml = new BaseFrameHtmlGenerator("Komponenten", "20%, 80%", "30%, 70%");
-        FileHandler.writeFile(config, STANDARD_PATH + "index.html", baseFrameHtml.generate());
+        IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(Messages.StandardDocumentorScript_documentation + " " + config.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        FileHandler.writeFile(config, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
     }
 
     private void writeProjectOverviewPage(DocumentorConfiguration config) {
         AbstractRootPageElement projectOverviewHtml = new ProjectOverviewPageElement(config);
         projectOverviewHtml.build();
-        FileHandler.writeFile(config, STANDARD_PATH + "summary.html", getPageContent(config, projectOverviewHtml));
+        FileHandler.writeFile(config, STANDARD_PATH + "summary.html", getPageContent(config, projectOverviewHtml)); //$NON-NLS-1$
     }
 
 }

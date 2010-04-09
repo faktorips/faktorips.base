@@ -28,38 +28,56 @@ import org.faktorips.util.message.MessageList;
 
 public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
-	protected IIpsProject project;
-	protected DocumentorConfiguration config;
+	private static final SimpleDateFormat CREATION_TIME_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm"); //$NON-NLS-1$
+	private DocumentorConfiguration config;
 
+	/**
+	 * a page for the overview of an IpsProject, which is defined in the config
+	 * 
+	 * @param config
+	 */
 	public ProjectOverviewPageElement(DocumentorConfiguration config) {
-		this.project = config.getIpsProject();
 		this.config = config;
-		setTitle("Project " + project.getName());
+		setTitle(Messages.ProjectOverviewPageElement_project + " " + getProject().getName()); //$NON-NLS-2$
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement
+	 * #build()
+	 */
 	@Override
 	public void build() {
 		super.build();
 		addPageElements(new TextPageElement(getTitle(), TextType.HEADING_1));
 
-		addPageElements(createIpsObjectPaths());
+		addIpsObjectPaths();
 
 		addMessageListTable();
-		
-		addPageElements(createCreationTime());
+
+		addCreationTime();
 	}
 
-	private PageElement createCreationTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-		return new TextPageElement("Generiert am " + sdf.format(new Date()), TextType.BLOCK).addStyles(Style.SMALL);
+	/**
+	 * adds creation time
+	 */
+	private void addCreationTime() {
+		PageElement createCreationTime = new TextPageElement(Messages.ProjectOverviewPageElement_created + " " //$NON-NLS-2$
+				+ CREATION_TIME_DATE_FORMAT.format(new Date()), TextType.BLOCK).addStyles(Style.SMALL);
+		addPageElements(createCreationTime);
 	}
 
-	private PageElement createIpsObjectPaths() {
+	/**
+	 * adds the paths of the IpsObjects
+	 */
+	private void addIpsObjectPaths() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Pfade", TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_paths, TextType.HEADING_2));
 		IIpsObjectPath objectPath;
 		try {
-			objectPath = project.getIpsObjectPath();
+			objectPath = getProject().getIpsObjectPath();
 
 			wrapper.addPageElements(createArchiveEntriesList(objectPath));
 			wrapper.addPageElements(createReferencedIpsProjectList(objectPath));
@@ -69,16 +87,15 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
-
-		return wrapper;
+		addPageElements(wrapper);
 	}
 
 	private PageElement createArchiveEntriesList(IIpsObjectPath objectPath) {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Archive Entries", TextType.HEADING_3));
+		wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_archiveEntries, TextType.HEADING_3));
 
 		if (objectPath.getArchiveEntries().length == 0)
-			return wrapper.addPageElements(new TextPageElement("keine Archive Entries"));
+			return wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_noArchiveEntries));
 		ListPageElement archiveEntriesList = new ListPageElement();
 		for (IIpsArchiveEntry ipsArchiveEntry : objectPath.getArchiveEntries()) {
 			archiveEntriesList.addPageElements(new TextPageElement(ipsArchiveEntry.getArchivePath().toString()));
@@ -88,9 +105,9 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
 	private PageElement createReferencedIpsProjectList(IIpsObjectPath objectPath) {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Referenzierte Projekte", TextType.HEADING_3));
+		wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_referencedProjects, TextType.HEADING_3));
 		if (objectPath.getReferencedIpsProjects().length == 0)
-			return wrapper.addPageElements(new TextPageElement("keine referenzierten Projekte"));
+			return wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_noReferencedProjects));
 
 		List<String> referencedIpsProjectsName = new ArrayList<String>();
 		for (IIpsProject ipsProject : objectPath.getReferencedIpsProjects()) {
@@ -103,7 +120,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
 	private PageElement createReferencingIpsProjectList(IIpsObjectPath objectPath) {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Referenzierende Projekte", TextType.HEADING_3));
+		wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_referencingProjects, TextType.HEADING_3));
 		IIpsProject[] referencingProjectLeavesOrSelf;
 		try {
 			referencingProjectLeavesOrSelf = objectPath.getIpsProject().findReferencingProjectLeavesOrSelf();
@@ -111,7 +128,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 			throw new RuntimeException(e);
 		}
 		if (referencingProjectLeavesOrSelf.length == 0)
-			return wrapper.addPageElements(new TextPageElement("keine referenzierenden Projekte"));
+			return wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_noReferencingProjects));
 
 		List<String> referencedIpsProjectsName = new ArrayList<String>(referencingProjectLeavesOrSelf.length);
 		for (IIpsProject ipsProject : referencingProjectLeavesOrSelf) {
@@ -124,9 +141,9 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
 	private PageElement createSourceFolders(IIpsObjectPath objectPath) {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Source Folder", TextType.HEADING_3));
+		wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_sourceFolder, TextType.HEADING_3));
 		if (objectPath.getReferencedIpsProjects().length == 0)
-			return wrapper.addPageElements(new TextPageElement("keine Source Folder"));
+			return wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_noSourceFolder));
 
 		List<String> sourceFolder = new ArrayList<String>();
 		for (IIpsSrcFolderEntry folderEntry : objectPath.getSourceFolderEntries()) {
@@ -143,15 +160,15 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 		if (messageListTablePageElement.isEmpty())
 			return;
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
-				new TextPageElement("Validierungsfehler", TextType.HEADING_2), messageListTablePageElement }));
+				new TextPageElement(Messages.ProjectOverviewPageElement_validationErros, TextType.HEADING_2), messageListTablePageElement }));
 	}
 
 	private MessageList validateLinkedObjects() {
-		List<IIpsObject> linkedObjects = config.getLinkedObjects();
+		List<IIpsObject> linkedObjects = getConfig().getLinkedObjects();
 		MessageList ml = new MessageList();
 		for (IIpsObject ipsObject : linkedObjects) {
 			try {
-				ml.add(ipsObject.validate(project));
+				ml.add(ipsObject.validate(getProject()));
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
@@ -159,9 +176,33 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 		return ml;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement
+	 * #getPathToRoot()
+	 */
 	@Override
 	public String getPathToRoot() {
-		return PathUtilFactory.createPathUtil(project).getPathToRoot();
+		return PathUtilFactory.createPathUtil(getProject()).getPathToRoot();
 	}
 
+	/**
+	 * returns the configurated IpsProject
+	 * 
+	 * @return
+	 */
+	protected IIpsProject getProject() {
+		return getConfig().getIpsProject();
+	}
+
+	/**
+	 * returns the config
+	 * 
+	 * @return
+	 */
+	protected DocumentorConfiguration getConfig() {
+		return config;
+	}
 }

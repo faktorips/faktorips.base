@@ -28,7 +28,7 @@ public class DocumentorTest extends AbstractFipsDocTest {
         documentorConfig.setLinkedIpsObjectClasses(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
         
         try {
-            documentor.run();
+            documentor.execute();
         } catch (Exception e) {
             throw e;
         }

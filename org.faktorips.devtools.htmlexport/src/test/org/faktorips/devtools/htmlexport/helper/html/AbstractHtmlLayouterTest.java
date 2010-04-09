@@ -4,10 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
-
-import junit.framework.TestCase;
 
 public abstract class AbstractHtmlLayouterTest extends TestCase {
 

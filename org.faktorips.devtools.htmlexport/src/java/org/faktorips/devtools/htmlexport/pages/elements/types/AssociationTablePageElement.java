@@ -15,14 +15,27 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
+/**
+ * Represents a table with the associations of an {@link IType} as rows and the attributes of the associations as columns
+ * @author dicker
+ *
+ */
 public class AssociationTablePageElement extends AbstractSpecificTablePageElement {
+	
 	protected IType type;
 
+	/**
+	 * Creates an {@link AssociationTablePageElement} for the specified {@link IType}
+	 * @param type
+	 */
 	public AssociationTablePageElement(IType type) {
 		super();
 		this.type = type;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#addDataRows()
+	 */
 	@Override
 	protected void addDataRows() {
 		IAssociation[] associations = type.getAssociations();
@@ -31,13 +44,17 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
 		}
 	}
 
+	/**
+	 * reads the attributes of the association, creates a {@link TableRowPageElement} and adds it to the table. 
+	 * @param association
+	 */
 	private void addAssociation(IAssociation association) {
 		List<String> values = new ArrayList<String>();
 
 		values.add(association.getName());
 
-		// wird durch Link ersetzt
-		values.add("replacement");
+		// will be replaced with the link
+		values.add(""); //$NON-NLS-1$
 
 		values.add(association.getDescription());
 		values.add(association.getAssociationType().getName());
@@ -46,46 +63,50 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
 		values.add(association.getTargetRolePlural());
 		values.add(Integer.toString(association.getMinCardinality()));
 		values.add(Integer.toString(association.getMaxCardinality()));
-		values.add(association.isDerivedUnion() ? "X" : "-");
-		values.add(association.isSubsetOfADerivedUnion() ? "X" : "-");
-		values.add(association.isQualified() ? "X" : "-");
+		values.add(association.isDerivedUnion() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+		values.add(association.isSubsetOfADerivedUnion() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+		values.add(association.isQualified() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		PageElement[] elements = PageElementUtils.createTextPageElements(values);
 
+		
 		try {
 			IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
-			elements[1] = new LinkPageElement(target, "content", target.getName(), true);
+			elements[1] = new LinkPageElement(target, "content", target.getName(), true); //$NON-NLS-1$
 		} catch (CoreException e) {
-			elements[1] = new TextPageElement("");
+			elements[1] = new TextPageElement(""); //$NON-NLS-1$
 		}
-		// TODO Type-spezifisch ableiten
 
 		addSubElement(new TableRowPageElement(elements));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#getHeadline()
+	 */
 	@Override
 	protected List<String> getHeadline() {
 		List<String> headline = new ArrayList<String>();
 
-		headline.add(IAssociation.PROPERTY_NAME);
-		headline.add(IAssociation.PROPERTY_TARGET);
-		headline.add(IAssociation.PROPERTY_DESCRIPTION);
-		headline.add(IAssociation.PROPERTY_ASSOCIATION_TYPE);
-		headline.add(IAssociation.PROPERTY_AGGREGATION_KIND);
-		headline.add(IAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
-		headline.add(IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
+		headline.add(Messages.AssociationTablePageElement_headlineName);
+		headline.add(Messages.AssociationTablePageElement_headlineTarget);
+		headline.add(Messages.AssociationTablePageElement_headlineDescription);
+		headline.add(Messages.AssociationTablePageElement_headlineAssociationType);
+		headline.add(Messages.AssociationTablePageElement_headlineAggregationKind);
+		headline.add(Messages.AssociationTablePageElement_headlineTargetRoleSingular);
+		headline.add(Messages.AssociationTablePageElement_headlineTargetRolePlural);
 
-		addHeadlineAndColumnLayout(headline, IAssociation.PROPERTY_MIN_CARDINALITY, Style.CENTER);
-		addHeadlineAndColumnLayout(headline, IAssociation.PROPERTY_MAX_CARDINALITY, Style.CENTER);
-		addHeadlineAndColumnLayout(headline, IAssociation.PROPERTY_DERIVED_UNION, Style.CENTER);
-		addHeadlineAndColumnLayout(headline, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION, Style.CENTER);
-		addHeadlineAndColumnLayout(headline, IAssociation.PROPERTY_QUALIFIED, Style.CENTER);
-
-		// TODO Type-spezifisch ableiten
+		addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineMinCardinality, Style.CENTER);
+		addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineMaxCardinality, Style.CENTER);
+		addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineDerivedUnion, Style.CENTER);
+		addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineSubsettedDerivedUnion, Style.CENTER);
+		addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineQualified, Style.CENTER);
 
 		return headline;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
+	 */
 	public boolean isEmpty() {
 		return ArrayUtils.isEmpty(type.getAssociations());
 	}

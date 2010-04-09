@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.tablestructure.UniqueKey;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -31,7 +32,13 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTa
 
 public class TableStructureContentPageElement extends AbstractObjectContentPageElement<ITableStructure> {
 
-	public class ForeignKeysTablePageElement extends AbstractSpecificTablePageElement {
+	/**
+	 * a table for foreignKeys of the tableStructure
+	 * 
+	 * @author dicker
+	 * 
+	 */
+	private class ForeignKeysTablePageElement extends AbstractSpecificTablePageElement {
 		private ITableStructure tableStructure;
 
 		public ForeignKeysTablePageElement(ITableStructure tableStructure) {
@@ -54,7 +61,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 			PageElement link = getLinkToReferencedTableStructure(foreignKey);
 
 			cells.add(new TextPageElement(foreignKey.getName()));
-			cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", ")));
+			cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", "))); //$NON-NLS-1$
 			cells.add(link);
 			cells.add(new TextPageElement(foreignKey.getReferencedUniqueKey()));
 			cells.add(new TextPageElement(foreignKey.getDescription()));
@@ -66,9 +73,9 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		private PageElement getLinkToReferencedTableStructure(IForeignKey foreignKey) {
 			PageElement link = null;
 			try {
-				ITableStructure findReferencedTableStructure = foreignKey.findReferencedTableStructure(tableStructure
+				ITableStructure findReferencedTableStructure = foreignKey.findReferencedTableStructure(getConfig()
 						.getIpsProject());
-				link = new LinkPageElement(findReferencedTableStructure, "content", foreignKey
+				link = new LinkPageElement(findReferencedTableStructure, "content", foreignKey //$NON-NLS-1$
 						.getReferencedTableStructure(), true);
 			} catch (CoreException e) {
 			} finally {
@@ -83,11 +90,11 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		protected List<String> getHeadline() {
 			List<String> headline = new ArrayList<String>();
 
-			headline.add(IForeignKey.PROPERTY_NAME);
-			headline.add(IForeignKey.PROPERTY_KEY_ITEMS);
-			headline.add(IForeignKey.PROPERTY_REF_TABLE_STRUCTURE);
-			headline.add(IForeignKey.PROPERTY_REF_UNIQUE_KEY);
-			headline.add(IForeignKey.PROPERTY_DESCRIPTION);
+			headline.add(Messages.TableStructureContentPageElement_2);
+			headline.add(Messages.TableStructureContentPageElement_3);
+			headline.add(Messages.TableStructureContentPageElement_4);
+			headline.add(Messages.TableStructureContentPageElement_5);
+			headline.add(Messages.TableStructureContentPageElement_6);
 
 			return headline;
 		}
@@ -97,7 +104,13 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		}
 	}
 
-	public class ColumnsRangesTablePageElement extends AbstractSpecificTablePageElement {
+	/**
+	 * a table for ColumnRanges of the tableStructure
+	 * 
+	 * @author dicker
+	 * 
+	 */
+	private class ColumnsRangesTablePageElement extends AbstractSpecificTablePageElement {
 		private ITableStructure tableStructure;
 
 		public ColumnsRangesTablePageElement(ITableStructure tableStructure) {
@@ -153,7 +166,13 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 
 	}
 
-	public class ColumnsTablePageElement extends AbstractSpecificTablePageElement {
+	/**
+	 * a table for columns of the tableStructure
+	 * 
+	 * @author dicker
+	 * 
+	 */
+	private class ColumnsTablePageElement extends AbstractSpecificTablePageElement {
 		private ITableStructure tableStructure;
 
 		public ColumnsTablePageElement(ITableStructure tableStructure) {
@@ -201,7 +220,13 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 
 	}
 
-	public class UniqueKeysTablePageElement extends AbstractSpecificTablePageElement {
+	/**
+	 * a table for uniqueKey of the tableStructure
+	 * 
+	 * @author dicker
+	 * 
+	 */
+	private class UniqueKeysTablePageElement extends AbstractSpecificTablePageElement {
 		private ITableStructure tableStructure;
 
 		public UniqueKeysTablePageElement(ITableStructure tableStructure) {
@@ -247,100 +272,117 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 
 	}
 
+	/**
+	 * creates a page for the given {@link ITableStructure} with the config
+	 * 
+	 * @param object
+	 * @param config
+	 */
 	protected TableStructureContentPageElement(ITableStructure object, DocumentorConfiguration config) {
 		super(object, config);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractObjectContentPageElement#build()
+	 */
 	@Override
 	public void build() {
 		super.build();
 
-		// Beschreibung
-		addPageElements(new TextPageElement("Tabellentyp", TextType.HEADING_2));
-		addPageElements(new TextPageElement(object.getTableStructureType().getName(), TextType.BLOCK));
+		addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName(), TextType.HEADING_2));
+		addPageElements(new TextPageElement(getIpsObject().getTableStructureType().getName(), TextType.BLOCK));
 
-		// Spalten
-		addPageElements(createColumnTable());
+		addColumnTable();
 
-		// UniqueKeys
-		addPageElements(createUniqueKeysTable());
+		addUniqueKeysTable();
 
-		// Bereiche
-		addPageElements(createColumnRangesTable());
+		addColumnRangesTable();
 
-		// Fremdschluessel
-		addPageElements(createForeignKeyTable());
-		
-		// Tabelleninhalte
-		addPageElements(createTableContentList());
+		addForeignKeyTable();
+
+		addTableContentList();
 
 	}
 
-	protected PageElement createTableContentList() {
+	/**
+	 * adds a table for the columns
+	 */
+	private void addColumnTable() {
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_7, TextType.HEADING_2));
+		
+		wrapper
+				.addPageElements(getTableOrAlternativeText(new ColumnsTablePageElement(getIpsObject()), Messages.TableStructureContentPageElement_8));
+		addPageElements(wrapper);
+	}
+
+	/**
+	 * adds a table for the unique keys
+	 */
+	private void addUniqueKeysTable() {
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_9, TextType.HEADING_2));
+		
+		wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(getIpsObject()),
+				Messages.TableStructureContentPageElement_10));
+		addPageElements(wrapper);
+	}
+
+	/**
+	 * adds a table for columns ranges
+	 */
+	private void addColumnRangesTable() {
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_11, TextType.HEADING_2));
+		
+		wrapper.addPageElements(getTableOrAlternativeText(new ColumnsRangesTablePageElement(getIpsObject()),
+				Messages.TableStructureContentPageElement_12));
+		addPageElements(wrapper);
+	}
+
+	/**
+	 * adds a table for foreign keys
+	 */
+	private void addForeignKeyTable() {
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_13, TextType.HEADING_2));
+		
+		wrapper.addPageElements(getTableOrAlternativeText(new ForeignKeysTablePageElement(getIpsObject()),
+				Messages.TableStructureContentPageElement_14));
+		addPageElements(wrapper);
+	}
+
+	/**
+	 * adds a list with the table contents of this table structure
+	 */
+	private void addTableContentList() {
 		IIpsSrcFile[] allTableContentsSrcFiles;
 		List<IProductCmpt> tableContents;
 		try {
-			allTableContentsSrcFiles = object.searchMetaObjectSrcFiles(true);
+			allTableContentsSrcFiles = getIpsObject().searchMetaObjectSrcFiles(true);
 			tableContents = DocumentorUtil.getIpsObjects(allTableContentsSrcFiles);
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
 
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Tabelleninhalte", TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_CONTENTS.getDisplayNamePlural(), TextType.HEADING_2));
 
 		if (tableContents.size() == 0) {
-			wrapper.addPageElements(new TextPageElement("keine Tabelleninhalte"));
-			return wrapper;
+			wrapper.addPageElements(new TextPageElement("No " + IpsObjectType.TABLE_CONTENTS.getDisplayNamePlural())); //$NON-NLS-1$
+			addPageElements(wrapper);
+			return;
 		}
 
-		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(tableContents, "content", new LinkedHashSet<Style>());
+		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(tableContents,
+				"content", new LinkedHashSet<Style>()); //$NON-NLS-1$
 		ListPageElement liste = new ListPageElement(createLinkPageElements);
 
 		wrapper.addPageElements(liste);
-
-		return wrapper;
-
+		PageElement createTableContentList = wrapper;
+		addPageElements(createTableContentList);
 	}
-	
-	protected PageElement createColumnTable() {
-
-		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Spalten", TextType.HEADING_2));
-
-		wrapper.addPageElements(getTableOrAlternativeText(new ColumnsTablePageElement(object), "keine Spalten"));
-
-		return wrapper;
-	}
-
-	protected PageElement createUniqueKeysTable() {
-
-		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("UniqueKeys", TextType.HEADING_2));
-
-		wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(object), "keine Unique Keys"));
-
-		return wrapper;
-	}
-
-	protected PageElement createColumnRangesTable() {
-		
-		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Ranges", TextType.HEADING_2));
-
-		wrapper.addPageElements(getTableOrAlternativeText(new ColumnsRangesTablePageElement(object), "keine ranges"));
-
-		return wrapper;
-	}
-
-	protected PageElement createForeignKeyTable() {
-
-		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("ForeignKeys", TextType.HEADING_2));
-
-		wrapper.addPageElements(getTableOrAlternativeText(new ForeignKeysTablePageElement(object), "keine Foreign Keys"));
-
-		return wrapper;
-	}
-
 }

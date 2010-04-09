@@ -14,11 +14,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
@@ -26,14 +23,25 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RegexTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
 
+/**
+ * a page representing an {@link ITestCaseType}
+ * @author dicker
+ *
+ */
 public class TestCaseTypeContentPageElement extends AbstractObjectContentPageElement<ITestCaseType> {
 
+	/**
+	 * a table for the {@link ITestAttribute}s of the {@link ITestCaseType}
+	 * @author dicker
+	 *
+	 */
 	private class TestAttributesTablePageElement extends AbstractSpecificTablePageElement {
 
 		protected ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter;
@@ -41,7 +49,7 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 		public TestAttributesTablePageElement(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter) {
 			super();
 			this.testPolicyCmptTypeParameter = testPolicyCmptTypeParameter;
-			addLayouts(new RegexTablePageElementLayout(".{1}", Style.CENTER));
+			addLayouts(new RegexTablePageElementLayout(".{1}", Style.CENTER)); //$NON-NLS-1$
 		}
 
 		@Override
@@ -75,13 +83,13 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 				String correspondingPolicyCmptType = attribute.getCorrespondingPolicyCmptType();
 
 				if (StringUtils.isEmpty(correspondingPolicyCmptType)) {
-					attributeData.add(new TextPageElement("-"));
+					attributeData.add(new TextPageElement("-")); //$NON-NLS-1$
 					attributeData.add(new TextPageElement(attribute.getDatatype()));
 					return;
 				}
-				IPolicyCmptType policyCmptType = config.getIpsProject().findPolicyCmptType(correspondingPolicyCmptType);
+				IPolicyCmptType policyCmptType = getConfig().getIpsProject().findPolicyCmptType(correspondingPolicyCmptType);
 
-				attributeData.add(new LinkPageElement(policyCmptType, "content", correspondingPolicyCmptType, true));
+				attributeData.add(new LinkPageElement(policyCmptType, "content", correspondingPolicyCmptType, true)); //$NON-NLS-1$
 				attributeData.add(new TextPageElement(policyCmptType.getAttribute(attribute.getAttribute())
 						.getDatatype()));
 			} catch (CoreException e) {
@@ -108,29 +116,45 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 		}
 	}
 
+	/**
+	 * creates a page representing the given {@link ITestCaseType} with the given config
+	 * @param object
+	 * @param config
+	 */
 	protected TestCaseTypeContentPageElement(ITestCaseType object, DocumentorConfiguration config) {
 		super(object, config);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement#build()
+	 */
 	@Override
 	public void build() {
 		super.build();
 
-		addPageElements(createTestCaseTypeHierarchie());
+		addTestCaseTypeParameters();
 	}
 
-	private TreeNodePageElement createTestCaseTypeHierarchie() {
-		addPageElements(new TextPageElement("Aufbau", TextType.HEADING_2));
+	/**
+	 * adds a treeview with the Parameters of the {@link ITestCaseType}
+	 */
+	private void addTestCaseTypeParameters() {
+		addPageElements(new TextPageElement(Messages.TestCaseTypeContentPageElement_parameters, TextType.HEADING_2));
 		TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE).addPageElements(
-				new ImagePageElement(object)).addPageElements(new TextPageElement(object.getQualifiedName())));
-
-		ITestParameter[] testParameters = object.getTestParameters();
+				new ImagePageElement(getIpsObject())).addPageElements(new TextPageElement(getIpsObject().getQualifiedName())));
+		
+		ITestParameter[] testParameters = getIpsObject().getTestParameters();
 		for (ITestParameter testParameter : testParameters) {
 			root.addPageElements(createTestParameterPageElement(testParameter));
 		}
-		return root;
+		addPageElements(root);
 	}
 
+	/**
+	 * creates a PageElement representing the given testParameter
+	 * @param testParameter
+	 * @return
+	 */
 	private PageElement createTestParameterPageElement(ITestParameter testParameter) {
 		if (testParameter instanceof TestValueParameter)
 			return createTestValueParameterPageElement((TestValueParameter) testParameter);
@@ -139,10 +163,10 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 		if (testParameter instanceof TestPolicyCmptTypeParameter)
 			return createTestPolicyCmptTypePageElement((TestPolicyCmptTypeParameter) testParameter);
 
-		return TextPageElement.createParagraph(testParameter.getName() + " " + testParameter.getClass()).addStyles(
+		return TextPageElement.createParagraph(testParameter.getName() + " " + testParameter.getClass()).addStyles( //$NON-NLS-1$
 				Style.BIG).addStyles(Style.BOLD);
 	}
-
+	
 	private PageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter) {
 		IPolicyCmptType policyCmptType;
 		try {
@@ -151,10 +175,10 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 			throw new RuntimeException(e);
 		}
 
-		LinkPageElement linkPageElement = new LinkPageElement(policyCmptType, "content", policyCmptType.getName(), true);
+		LinkPageElement linkPageElement = new LinkPageElement(policyCmptType, "content", policyCmptType.getName(), true); //$NON-NLS-1$
 		TreeNodePageElement testParameterPageElement = new TreeNodePageElement(new WrapperPageElement(
 				WrapperType.BLOCK).addPageElements(linkPageElement).addPageElements(
-				new TextPageElement((" - " + testParameter.getTestParameterType().getName()))));
+				new TextPageElement((" - " + testParameter.getTestParameterType().getName())))); //$NON-NLS-1$
 
 		testParameterPageElement.addPageElements(createKeyValueTableForTestPolicyCmptTypeParameter(testParameter));
 
@@ -171,12 +195,12 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 	private PageElement createTestAttributeTable(ITestPolicyCmptTypeParameter testParameter) {
 
 		ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK).addPageElements(TextPageElement
-				.createParagraph("Testattribute").addStyles(Style.BOLD));
+				.createParagraph(Messages.TestCaseTypeContentPageElement_testAttributes).addStyles(Style.BOLD));
 
 		TestAttributesTablePageElement testAttributesTablePageElement = new TestAttributesTablePageElement(
 				testParameter);
 		if (testAttributesTablePageElement.isEmpty()) {
-			return wrapper.addPageElements(TextPageElement.createParagraph("keine Testattribute"));
+			return wrapper.addPageElements(TextPageElement.createParagraph(Messages.TestCaseTypeContentPageElement_no + Messages.TestCaseTypeContentPageElement_9));
 		}
 
 		return wrapper.addPageElements(testAttributesTablePageElement);
@@ -185,43 +209,43 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 	private KeyValueTablePageElement createKeyValueTableForTestPolicyCmptTypeParameter(
 			ITestPolicyCmptTypeParameter testParameter) {
 		KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
-		keyValueTable.addKeyValueRow(ITestPolicyCmptTypeParameter.PROPERTY_NAME, testParameter.getName());
-		keyValueTable.addKeyValueRow(ITestPolicyCmptTypeParameter.PROPERTY_TEST_PARAMETER_TYPE, testParameter.getTestParameterType().getName());
-		keyValueTable.addKeyValueRow(ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT, testParameter
-				.isRequiresProductCmpt() ? "X" : "-");
-		keyValueTable.addKeyValueRow(ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES, Integer
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter.getTestParameterType().getName());
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_requiresProductCmpt, testParameter
+				.isRequiresProductCmpt() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_minInstances, Integer
 				.toString(testParameter.getMinInstances()));
-		keyValueTable.addKeyValueRow(ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES, Integer
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_maxInstances, Integer
 				.toString(testParameter.getMaxInstances()));
 		return keyValueTable;
 	}
 
 	private PageElement createTestRuleParameterPageElement(TestRuleParameter testParameter) {
-		String name = testParameter.getName() + " - " + testParameter.getTestParameterType().getName();
+		String name = testParameter.getName() + " - " + testParameter.getTestParameterType().getName(); //$NON-NLS-1$
 		TreeNodePageElement testParameterPageElement = new TreeNodePageElement(new WrapperPageElement(
 				WrapperType.BLOCK).addPageElements(new ImagePageElement(testParameter)).addPageElements(
 				new TextPageElement(name)));
 
 		KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
-		keyValueTable.addKeyValueRow(ITestRuleParameter.PROPERTY_NAME, testParameter.getName());
-		keyValueTable.addKeyValueRow(ITestRuleParameter.PROPERTY_TEST_PARAMETER_TYPE, testParameter.getTestParameterType().getName());
-		keyValueTable.addKeyValueRow(ITestRuleParameter.PROPERTY_DESCRIPTION, testParameter.getDescription());
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter.getTestParameterType().getName());
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, testParameter.getDescription());
 
 		testParameterPageElement.addPageElements(keyValueTable);
 		return testParameterPageElement;
 	}
 
 	private PageElement createTestValueParameterPageElement(TestValueParameter testParameter) {
-		String name = testParameter.getName() + " - " + testParameter.getTestParameterType().getName();
+		String name = testParameter.getName() + " - " + testParameter.getTestParameterType().getName(); //$NON-NLS-1$
 		TreeNodePageElement testParameterPageElement = new TreeNodePageElement(new WrapperPageElement(
 				WrapperType.BLOCK).addPageElements(new ImagePageElement(testParameter)).addPageElements(
 				new TextPageElement(name)));
 
 		KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
-		keyValueTable.addKeyValueRow(ITestValueParameter.PROPERTY_NAME, testParameter.getName());
-		keyValueTable.addKeyValueRow(ITestValueParameter.PROPERTY_VALUEDATATYPE, testParameter.getValueDatatype());
-		keyValueTable.addKeyValueRow(ITestValueParameter.PROPERTY_TEST_PARAMETER_TYPE, testParameter.getTestParameterType().getName());
-		keyValueTable.addKeyValueRow(ITestValueParameter.PROPERTY_DESCRIPTION, testParameter.getDescription());
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_valueDatatype, testParameter.getValueDatatype());
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter.getTestParameterType().getName());
+		keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, testParameter.getDescription());
 
 		testParameter.getTestParameterType();
 

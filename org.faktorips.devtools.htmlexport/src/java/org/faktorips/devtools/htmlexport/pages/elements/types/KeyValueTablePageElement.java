@@ -13,7 +13,7 @@ public class KeyValueTablePageElement extends TablePageElement {
 	public KeyValueTablePageElement() {
 		super(true);
 		addLayouts(new AlternateRowTablePageElementLayout(false));
-		addLayouts(new RegexTablePageElementLayout(".{1,3}", Style.CENTER));
+		addLayouts(new RegexTablePageElementLayout(".{1,3}", Style.CENTER)); //$NON-NLS-1$
 	}
 
 	/**
@@ -24,7 +24,7 @@ public class KeyValueTablePageElement extends TablePageElement {
 	 */
 	@Override
 	public KeyValueTablePageElement addPageElements(PageElement... pageElements) {
-		if (pageElements.length % 2 == 1) throw new IllegalArgumentException("Es darf nur eine gerade Anzahl an PageElementen übergeben werden!");
+		if (pageElements.length % 2 == 1) throw new IllegalArgumentException(Messages.KeyValueTablePageElement_justEvenNumberOfPageElementsAllowed);
 		if (pageElements.length == 0) return this;
 
 		for (int i = 0; i < pageElements.length; i+=2) {
@@ -34,14 +34,32 @@ public class KeyValueTablePageElement extends TablePageElement {
 		return this;
 	}
 
+	/**
+	 * adds a row to the table
+	 * @param key
+	 * @param value
+	 * @return this
+	 */
 	public KeyValueTablePageElement addKeyValueRow(String key, String value) {
 		return addKeyValueRow(new TextPageElement(key), new TextPageElement(value));
 	}
 
+	/**
+	 * adds a row to the table
+	 * @param key
+	 * @param valuePageElement
+	 * @return
+	 */
 	public KeyValueTablePageElement addKeyValueRow(String key, PageElement valuePageElement) {
 		return addKeyValueRow(new TextPageElement(key), valuePageElement);
 	}
 		
+	/**
+	 * adds a row to the table
+	 * @param keyPageElement
+	 * @param valuePageElement
+	 * @return
+	 */
 	public KeyValueTablePageElement addKeyValueRow(PageElement keyPageElement, PageElement valuePageElement) {
 		addSubElement(new TableRowPageElement(new PageElement[]{keyPageElement, valuePageElement}));
 		return this;

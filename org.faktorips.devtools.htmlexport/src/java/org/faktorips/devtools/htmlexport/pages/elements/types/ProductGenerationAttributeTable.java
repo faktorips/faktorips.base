@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -14,6 +15,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
+/**
+ * Represents a table with the values of the {@link IAttribute}s of an {@link IProductCmpt} as rows and the generations of the {@link IProductCmpt} as columns
+ * @author dicker
+ *
+ */
 public class ProductGenerationAttributeTable extends AbstractSpecificTablePageElement {
 
 	private final IProductCmpt productCmpt;
@@ -21,6 +27,12 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
 	private final DocumentorConfiguration config;
 
 
+	/**
+	 * Creates a {@link ProductGenerationAttributeTable} for the specified
+	 * @param productCmpt
+	 * @param productCmptType
+	 * @param config
+	 */
 	public ProductGenerationAttributeTable(IProductCmpt productCmpt, IProductCmptType productCmptType,
 			DocumentorConfiguration config) {
 		this.productCmpt = productCmpt;
@@ -28,6 +40,11 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
 		this.config = config;
 	}
 
+	/**
+	 * returns the attributes of the given {@link ProductCmptType}
+	 * @param productCmptType
+	 * @return
+	 */
 	private IAttribute[] findAttributes(IProductCmptType productCmptType) {
 		try {
 			return productCmptType.findAllAttributes(productCmpt.getIpsProject());
@@ -36,6 +53,9 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#addDataRows()
+	 */
 	@Override
 	protected void addDataRows() {
 		for (IAttribute attribute : attributes) {
@@ -43,6 +63,10 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
 		}
 	}
 
+	/**
+	 * adds the row of an attribute with the value of all generations
+	 * @param attribute
+	 */
 	private void addAttributeRow(IAttribute attribute) {
 		PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
 
@@ -51,7 +75,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
 
 		for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
 			IAttributeValue attributeValue = productCmpt.getProductCmptGeneration(i).getAttributeValue(name);
-			String value = attributeValue == null ? "[undefiniert]" : attributeValue.getValue();
+			String value = attributeValue == null ? Messages.ProductGenerationAttributeTable_undefined : attributeValue.getValue();
 			cells[i + 1] = new TextPageElement(value);
 		}
 
@@ -63,7 +87,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
 	protected List<String> getHeadline() {
 		List<String> headline = new ArrayList<String>();
 
-		headline.add("Generation ab:");
+		headline.add(Messages.ProductGenerationAttributeTable_generationFrom);
 
 		for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
 			headline.add(config.getSimpleDateFormat().format(

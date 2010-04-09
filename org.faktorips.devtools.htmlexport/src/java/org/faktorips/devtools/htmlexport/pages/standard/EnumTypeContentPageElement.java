@@ -10,11 +10,9 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -23,13 +21,26 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
 
+/**
+ * A complete page representing an {@link IEnumType}
+ * 
+ * @author dicker
+ * 
+ */
 public class EnumTypeContentPageElement extends AbstractObjectContentPageElement<IEnumType> {
 
-	protected class EnumAttributesTablePageElement extends AbstractSpecificTablePageElement {
+	/**
+	 * a table representing {@link IEnumAttribute}s of a given {@link IEnumType}
+	 * 
+	 * @author dicker
+	 * 
+	 */
+	private class EnumAttributesTablePageElement extends AbstractSpecificTablePageElement {
 
 		protected IEnumType type;
 		private List<IEnumAttribute> attributes;
@@ -64,10 +75,10 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 
 			attributeData.add(attribute.getName());
 			attributeData.add(attribute.getDatatype());
-			attributeData.add(attribute.isIdentifier() ? "X" : "-");
-			attributeData.add(attribute.isUsedAsNameInFaktorIpsUi() ? "X" : "-");
-			attributeData.add(attribute.isUnique() ? "X" : "-");
-			attributeData.add(attribute.isInherited() ? "X" : "-");
+			attributeData.add(attribute.isIdentifier() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+			attributeData.add(attribute.isUsedAsNameInFaktorIpsUi() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+			attributeData.add(attribute.isUnique() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+			attributeData.add(attribute.isInherited() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			attributeData.add(attribute.getDescription());
 
@@ -78,13 +89,13 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 		protected List<String> getHeadline() {
 			List<String> headline = new ArrayList<String>();
 
-			headline.add(IEnumAttribute.PROPERTY_NAME);
-			headline.add(IEnumAttribute.PROPERTY_DATATYPE);
-			addHeadlineAndColumnLayout(headline, IEnumAttribute.PROPERTY_IDENTIFIER, Style.CENTER);
-			addHeadlineAndColumnLayout(headline, IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI, Style.CENTER);
-			addHeadlineAndColumnLayout(headline, IEnumAttribute.PROPERTY_UNIQUE, Style.CENTER);
-			addHeadlineAndColumnLayout(headline, IEnumAttribute.PROPERTY_INHERITED, Style.CENTER);
-			headline.add(IEnumAttribute.PROPERTY_DESCRIPTION);
+			headline.add(Messages.EnumTypeContentPageElement_headlineName);
+			headline.add(Messages.EnumTypeContentPageElement_headlineDatatype);
+			addHeadlineAndColumnLayout(headline, Messages.EnumTypeContentPageElement_headlineIdentifier, Style.CENTER);
+			addHeadlineAndColumnLayout(headline, Messages.EnumTypeContentPageElement_headlineUsedAsNameInFaktorIpsUi, Style.CENTER);
+			addHeadlineAndColumnLayout(headline, Messages.EnumTypeContentPageElement_headlineUnique, Style.CENTER);
+			addHeadlineAndColumnLayout(headline, Messages.EnumTypeContentPageElement_headlineInherited, Style.CENTER);
+			headline.add(Messages.EnumTypeContentPageElement_headlineDescription);
 
 			return headline;
 		}
@@ -94,6 +105,12 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 		}
 	}
 
+	/**
+	 * A visitor to get the supertypes of the given enumType
+	 * 
+	 * @author dicker
+	 * 
+	 */
 	private class SupertypeHierarchieVisitor extends EnumTypeHierachyVisitor {
 		List<IEnumType> superTypes = new ArrayList<IEnumType>();
 
@@ -114,30 +131,42 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 		}
 	}
 
+	/**
+	 * 
+	 * creates a page, which represents the given enumType according to the
+	 * given config
+	 * 
+	 * @param object
+	 * @param config
+	 */
 	protected EnumTypeContentPageElement(IEnumType object, DocumentorConfiguration config) {
 		super(object, config);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractObjectContentPageElement#addTypeHierarchy()
+	 */
 	@Override
-	protected void addTypeHierarchie() {
-		addSuperTypeHierarchie();
-		addSubTypeHierarchie();
+	protected void addTypeHierarchy() {
+		addSuperTypeHierarchy();
+		addSubTypeHierarchy();
 	}
 
-	protected void addSubTypeHierarchie() {
-		List<IIpsSrcFile> allClasses = new ArrayList<IIpsSrcFile>();
-		try {
-			object.getIpsProject().findAllIpsSrcFiles(allClasses, new IpsObjectType[] { object.getIpsObjectType() });
-		} catch (CoreException e) {
-			return;
-		}
+	/**
+	 * adds the subclasses of the enumType
+	 */
+	protected void addSubTypeHierarchy() {
+		List<IIpsSrcFile> allClasses = getConfig().getLinkedSource(getEnumType().getIpsObjectType());
 
 		List<PageElement> subTypes = new ArrayList<PageElement>();
 		for (IIpsSrcFile srcFile : allClasses) {
 			try {
 				IEnumType type = (IEnumType) srcFile.getIpsObject();
-				if (type.getSuperEnumType().equals(object.getQualifiedName())) {
-					subTypes.add(new LinkPageElement(type, "content", type.getQualifiedName(), true));
+				if (type.getSuperEnumType().equals(getEnumType().getQualifiedName())) {
+					subTypes.add(new LinkPageElement(type, "content", type.getQualifiedName(), true)); //$NON-NLS-1$
 				}
 			} catch (CoreException e) {
 				e.printStackTrace();
@@ -148,96 +177,117 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 			return;
 
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
-				new TextPageElement("Unterklassen"), new ListPageElement(subTypes) }));
+				new TextPageElement(Messages.EnumTypeContentPageElement_headline16), new ListPageElement(subTypes) }));
 	}
 
-	protected void addSuperTypeHierarchie() {
-		SupertypeHierarchieVisitor hier = new SupertypeHierarchieVisitor(object.getIpsProject());
+	/**
+	 * returns the enumType
+	 * 
+	 * @return
+	 */
+	private IEnumType getEnumType() {
+		return getIpsObject();
+	}
+
+	/**
+	 * adds the hierarchy of superclasses
+	 */
+	protected void addSuperTypeHierarchy() {
+		SupertypeHierarchieVisitor hier = new SupertypeHierarchieVisitor(getEnumType().getIpsProject());
 		try {
-			hier.start(object);
+			hier.start(getEnumType());
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 		List<IEnumType> superTypes = hier.getSuperTypes();
 
-		if (superTypes.size() > 2) {
-			System.out.println("los gehts!");
-		}
-
 		if (superTypes.size() == 1) {
-			addPageElements(new TextPageElement(object.getName()));
+			addPageElements(new TextPageElement(getEnumType().getName()));
 			return;
 		}
 
 		TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(new LinkPageElement(
-				superTypes.get(0), "content", superTypes.get(0).getQualifiedName(), true)));
+				superTypes.get(0), Messages.EnumTypeContentPageElement_headline17, superTypes.get(0).getQualifiedName(), true)));
 		TreeNodePageElement element = baseElement;
 
 		for (int i = 1; i < superTypes.size(); i++) {
-			if (superTypes.get(i) == object) {
-				element.addPageElements(new TextPageElement(object.getName()));
+			if (superTypes.get(i) == getEnumType()) {
+				element.addPageElements(new TextPageElement(getEnumType().getName()));
 				break;
 			}
-			TreeNodePageElement subElement = new TreeNodePageElement(new LinkPageElement(superTypes.get(i),
-					"content", superTypes.get(i).getName(), true));
+			TreeNodePageElement subElement = new TreeNodePageElement(new LinkPageElement(superTypes.get(i), Messages.EnumTypeContentPageElement_headline18,
+					superTypes.get(i).getName(), true));
 			element.addPageElements(subElement);
 			element = subElement;
 		}
 		addPageElements(baseElement);
 	}
 
-	protected PageElement createAttributesTable() {
-		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Attribute", TextType.HEADING_2));
-
-		wrapper
-				.addPageElements(getTableOrAlternativeText(new EnumAttributesTablePageElement(object),
-						"keine Attribute"));
-
-		return wrapper;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractObjectContentPageElement#build()
+	 */
 	@Override
 	public void build() {
 		super.build();
 
-		// Attribute
-		addPageElements(createAttributesTable());
+		addAttributesTable();
 
-		// Werte oder EnumContents
-		if (object.isContainingValues())
-			addPageElements(createValuesTable());
+		if (getEnumType().isContainingValues())
+			addValuesTable();
 		else {
-			addPageElements(createEnumContentsList());
+			addEnumContentsList();
 		}
 
 	}
 
-	protected PageElement createEnumContentsList() {
+	/**
+	 * adds table representing the attributes of the enumType
+	 */
+	protected void addAttributesTable() {
+		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+		wrapper.addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_headline19, TextType.HEADING_2));
+
+		wrapper.addPageElements(getTableOrAlternativeText(new EnumAttributesTablePageElement(getEnumType()),
+				Messages.EnumTypeContentPageElement_headline20));
+
+		addPageElements(wrapper);
+	}
+
+	/**
+	 * adds list representing the enumContents of the enumType
+	 */
+	protected void addEnumContentsList() {
 		try {
-			IEnumContent enumContent = object.findEnumContent(config.getIpsProject());
+			IEnumContent enumContent = getEnumType().findEnumContent(getConfig().getIpsProject());
 
 			ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK)
-					.addPageElements(new TextPageElement("EnumContent", TextType.HEADING_2));
+					.addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_headline21, TextType.HEADING_2));
 
 			if (enumContent == null) {
-				return wrapper.addPageElements(TextPageElement.createParagraph("Kein EnumContent"));
+				addPageElements(wrapper.addPageElements(TextPageElement.createParagraph(Messages.EnumTypeContentPageElement_headline22)));
+				return;
 			}
-			return wrapper.addPageElements(new LinkPageElement(enumContent, "content", enumContent.getQualifiedName(),
-					true));
+			addPageElements(wrapper.addPageElements(new LinkPageElement(enumContent, Messages.EnumTypeContentPageElement_headline23, enumContent
+					.getQualifiedName(), true)));
 
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected PageElement createValuesTable() {
+	/**
+	 * adds table representing the values of the enumType
+	 */
+	protected void addValuesTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Werte", TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_headline24, TextType.HEADING_2));
 
-		wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(object), "keine Werte"));
+		wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getEnumType()), Messages.EnumTypeContentPageElement_headline25));
 
-		return wrapper;
+		addPageElements(wrapper);
 	}
 
 }

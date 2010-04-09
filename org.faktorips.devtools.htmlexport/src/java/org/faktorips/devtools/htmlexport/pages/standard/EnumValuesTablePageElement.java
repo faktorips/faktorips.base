@@ -15,28 +15,57 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
 
+/**
+ * <p>
+ * EnumValuesTablePageElement is table which represents the values of
+ * {@link IEnumType}s or {@link IEnumContent}s.
+ * </p>
+ * <p>
+ * The rows contain the enumValues and the columns contain the values of an
+ * enumAttribute
+ * </p>
+ * 
+ * @author dicker
+ * 
+ */
 class EnumValuesTablePageElement extends AbstractSpecificTablePageElement {
 
 	private List<IEnumAttribute> enumAttributes;
 	private List<IEnumValue> enumValues;
 
+	/**
+	 * creates an EnumValuesTablePageElement basing on the given
+	 * {@link IEnumType}
+	 * 
+	 * @param type
+	 */
 	public EnumValuesTablePageElement(IEnumType type) {
 		super();
-		getEnumAttributes(type);
+		initEnumAttributes(type);
 		enumValues = type.getEnumValues();
 	}
 
+	/**
+	 * creates an EnumValuesTablePageElement basing on the given
+	 * {@link IEnumContent}
+	 * 
+	 * @param content
+	 */
 	public EnumValuesTablePageElement(IEnumContent content) {
 		super();
 		try {
-			getEnumAttributes(content.findEnumType(content.getIpsProject()));
+			initEnumAttributes(content.findEnumType(content.getIpsProject()));
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
 		enumValues = content.getEnumValues();
 	}
 
-	private void getEnumAttributes(IEnumType type) {
+	/**
+	 * finds the enumAttributes and initializes the List
+	 * @param type
+	 */
+	private void initEnumAttributes(IEnumType type) {
 		try {
 			enumAttributes = type.findAllEnumAttributesIncludeSupertypeOriginals(true, type.getIpsProject());
 		} catch (CoreException e) {
@@ -44,6 +73,9 @@ class EnumValuesTablePageElement extends AbstractSpecificTablePageElement {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#addDataRows()
+	 */
 	@Override
 	protected void addDataRows() {
 		for (IEnumValue value : enumValues) {
@@ -51,10 +83,19 @@ class EnumValuesTablePageElement extends AbstractSpecificTablePageElement {
 		}
 	}
 
+	/**
+	 * adds a row for the given {@link IEnumValue}
+	 * @param value
+	 */
 	protected void addValueRow(IEnumValue value) {
 		addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getValueData(value))));
 	}
 
+	/**
+	 * returns the data of the attributes of the given {@link IEnumValue}
+	 * @param value
+	 * @return
+	 */
 	protected List<String> getValueData(IEnumValue value) {
 		List<String> valueData = new ArrayList<String>();
 
@@ -65,6 +106,9 @@ class EnumValuesTablePageElement extends AbstractSpecificTablePageElement {
 		return valueData;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#getHeadline()
+	 */
 	@Override
 	protected List<String> getHeadline() {
 		List<String> headline = new ArrayList<String>();
@@ -76,6 +120,9 @@ class EnumValuesTablePageElement extends AbstractSpecificTablePageElement {
 		return headline;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
+	 */
 	public boolean isEmpty() {
 		return enumAttributes.isEmpty() || enumValues.isEmpty();
 	}

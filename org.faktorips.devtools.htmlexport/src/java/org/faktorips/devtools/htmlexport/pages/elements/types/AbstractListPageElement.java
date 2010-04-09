@@ -14,7 +14,7 @@ import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 
 /**
- * Creates a page which lists links to the pages of the given {@link IpsObject}s. The {@link IpsObject}s will be filtered and sorted on the page.
+ * Creates a list with links to the pages of the given {@link IpsObject}s. The {@link IpsObject}s will be filtered and sorted on the page.
  * @author dicker
  *
  */

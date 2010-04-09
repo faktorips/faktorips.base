@@ -79,7 +79,7 @@ public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTest
         deletePreviousGeneratedFiles();
         
         long start = System.currentTimeMillis();
-        documentor.run();
+        documentor.execute();
         System.out.println("=====================\nMODELL: " + (System.currentTimeMillis() - start) + "\n=====================");
     }
 
@@ -90,7 +90,7 @@ public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTest
         deletePreviousGeneratedFiles();
 
         long start = System.currentTimeMillis();
-        documentor.run();
+        documentor.execute();
         System.out.println("=====================\nPRODUKTE: " + (System.currentTimeMillis() - start) + "\n=====================");
     }
 

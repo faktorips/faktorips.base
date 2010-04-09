@@ -43,7 +43,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
 	 */
 	public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
 		super(baseIpsElement, objects, filter);
-		setTitle("All Packages");
+		setTitle(Messages.IpsPackagesListPageElement_allPackages);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
 
 		List<PageElement> list = createPackageList();
 
-		addPageElements(new TextPageElement(list.size() + " Packages"));
+		addPageElements(new TextPageElement(list.size() + " " + Messages.IpsPackagesListPageElement_packages)); //$NON-NLS-1$
 
 		if (list.size() > 0) {
 			addPageElements(new ListPageElement(list));

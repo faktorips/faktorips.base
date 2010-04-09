@@ -9,16 +9,28 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
+/**
+ * Represents a table with the attributes of an {@link IType} as rows and the attributes of the attribute as columns
+ * @author dicker
+ *
+ */
 public class AttributesTablePageElement extends AbstractSpecificTablePageElement {
 
 	protected IType type;
 	
+	/**
+	 * Creates an {@link AttributesTablePageElement} for the specified {@link IType}
+	 * @param type
+	 */
 	public AttributesTablePageElement(IType type) {
 		super();
 		this.type = type;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#addDataRows()
+	 */
 	@Override
 	protected void addDataRows() {
 		IAttribute[] attributes = type.getAttributes();
@@ -28,11 +40,20 @@ public class AttributesTablePageElement extends AbstractSpecificTablePageElement
 	}
 	
 
+	/**
+	 * adds a row for the given {@link IAttribute}
+	 * @param attribute
+	 */
 	protected void addAttributeRow(IAttribute attribute) {
 		addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getAttributeData(attribute))));
 	}
 
 	
+	/**
+	 * returns a list with the values of the attributes of the attribute
+	 * @param attribute
+	 * @return
+	 */
 	protected List<String> getAttributeData(IAttribute attribute) {
 		List<String> attributeData = new ArrayList<String>();
 
@@ -45,19 +66,25 @@ public class AttributesTablePageElement extends AbstractSpecificTablePageElement
 		return attributeData;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#getHeadline()
+	 */
 	@Override
 	protected List<String> getHeadline() {
 		List<String> headline = new ArrayList<String>();
 
-		headline.add(IAttribute.PROPERTY_NAME);
-		headline.add(IAttribute.PROPERTY_DATATYPE);
-		headline.add(IAttribute.PROPERTY_MODIFIER);
-		headline.add(IAttribute.PROPERTY_DEFAULT_VALUE);
-		headline.add(IAttribute.PROPERTY_DESCRIPTION);
+		headline.add(Messages.AttributesTablePageElement_headlineName);
+		headline.add(Messages.AttributesTablePageElement_headlineDatatype);
+		headline.add(Messages.AttributesTablePageElement_headlineModifier);
+		headline.add(Messages.AttributesTablePageElement_headlineDefaultValue);
+		headline.add(Messages.AttributesTablePageElement_headlineDescription);
 
 		return headline;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
+	 */
 	public boolean isEmpty() {
 		return ArrayUtils.isEmpty(type.getAttributes());
 	}

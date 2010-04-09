@@ -3,8 +3,8 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -19,32 +19,57 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.ValidationRuleTablePageElement;
 
-public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageElement<PolicyCmptType> {
+/**
+ * A page representing an {@link IPolicyCmptType}
+ * 
+ * @author dicker
+ * 
+ */
+public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageElement<IPolicyCmptType> {
 
+	/**
+	 * creates a page for the given object according to the given config
+	 * 
+	 * @param object
+	 * @param config
+	 */
 	PolicyCmptTypeContentPageElement(IPolicyCmptType object, DocumentorConfiguration config) {
 		super(object, config);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractTypeContentPageElement#build()
+	 */
 	@Override
 	public void build() {
 		super.build();
 
 		// Regeln hinzufügen
-		addPageElements(createValidationRuleTable());
+		addValidationRuleTable();
 	}
 
-	private PageElement createValidationRuleTable() {
+	private void addValidationRuleTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement("Regeln", TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.PolicyCmptTypeContentPageElement_rules, TextType.HEADING_2));
 
-		wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getPolicyCmptType()), "keine Regeln vorhanden"));
-		
-		return wrapper;
+		wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getPolicyCmptType()),
+				Messages.PolicyCmptTypeContentPageElement_noValidationrules));
+
+		addPageElements(wrapper);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractTypeContentPageElement#getAttributesTablePageElement()
+	 */
 	@Override
 	protected AttributesTablePageElement getAttributesTablePageElement() {
-		return new AttributesTablePageElement(object) {
+		return new AttributesTablePageElement(getIpsObject()) {
 
 			@Override
 			protected List<String> getAttributeData(IAttribute attribute) {
@@ -52,9 +77,9 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 
 				PolicyCmptTypeAttribute polAttribute = (PolicyCmptTypeAttribute) attribute;
 
-				attributeData.add(polAttribute.isProductRelevant() ? "X" : "-");
+				attributeData.add(polAttribute.isProductRelevant() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 				attributeData.add(polAttribute.getAttributeType().getName());
-				attributeData.add(polAttribute.isOverwrite() ? "X" : "-");
+				attributeData.add(polAttribute.isOverwrite() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 
 				return attributeData;
 			}
@@ -63,11 +88,11 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 			protected List<String> getHeadline() {
 				List<String> headline = super.getHeadline();
 
-				addHeadlineAndColumnLayout(headline, PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT, Style.CENTER);
-				
-				headline.add(PolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE);
+				addHeadlineAndColumnLayout(headline, Messages.PolicyCmptTypeContentPageElement_productRelevant, Style.CENTER);
 
-				addHeadlineAndColumnLayout(headline, PolicyCmptTypeAttribute.PROPERTY_OVERWRITES, Style.CENTER);
+				headline.add(Messages.PolicyCmptTypeContentPageElement_attributeType);
+
+				addHeadlineAndColumnLayout(headline, Messages.PolicyCmptTypeContentPageElement_overwrite, Style.CENTER);
 
 				return headline;
 			}
@@ -75,26 +100,34 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 		};
 	}
 
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.htmlexport.pages.standard.AbstractTypeContentPageElement#addStructureData()
+	 */
 	@Override
 	protected void addStructureData() {
 		super.addStructureData();
 
 		try {
-			IProductCmptType to = object.getIpsProject().findProductCmptType(getPolicyCmptType().getProductCmptType());
+			IProductCmptType to = getIpsObject().getIpsProject().findProductCmptType(
+					getPolicyCmptType().getProductCmptType());
 			if (to == null) {
-				addPageElements(TextPageElement.createParagraph("Produktbausteinklasse: keine"));
+				addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": " + Messages.PolicyCmptTypeContentPageElement_none)); //$NON-NLS-1$
 				return;
 			}
 			addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
-					new TextPageElement("Produktbausteinklasse: "),
-					new LinkPageElement(to, "content", to.getName(), true) }));
+					new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
+					new LinkPageElement(to, "content", to.getName(), true) })); //$NON-NLS-1$
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 
 	}
 
+	/**
+	 * returns the policyCmptType
+	 * @return
+	 */
 	private IPolicyCmptType getPolicyCmptType() {
-		return ((IPolicyCmptType) object);
+		return ((IPolicyCmptType) getType());
 	}
 }

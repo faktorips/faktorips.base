@@ -1,7 +1,6 @@
 package org.faktorips.devtools.htmlexport.helper.path;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
