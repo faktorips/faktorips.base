@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,7 +24,6 @@ import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.team.internal.ccvs.ui.ResourceEditionNode;
 import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
@@ -36,26 +35,24 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  * <p>
  * For each product component (local, remote and a common ancestor (also remote)) a structure is
  * created based on their contents. The <code>StrucureMergeViewer</code> (by default
- * <code>StructureDiffViewer</code>) calls the <code>Differencer</code>, which compares the
- * created structures. As a result a tree of <code>DiffNode</code>s is created and displayed in
- * the <code>StructureDiffViewer</code> (topviewer in the compare window). Each
- * <code>DiffNode</code> in the result structure represents a difference/change between local and
- * remote ipsobject. By doubleclicking such a node, a text representation of the ipsobject
- *  is displayed in the content mergeviewer (parallel scrollable textviewers at the bottom
- * of the compare window).
+ * <code>StructureDiffViewer</code>) calls the <code>Differencer</code>, which compares the created
+ * structures. As a result a tree of <code>DiffNode</code>s is created and displayed in the
+ * <code>StructureDiffViewer</code> (topviewer in the compare window). Each <code>DiffNode</code> in
+ * the result structure represents a difference/change between local and remote ipsobject. By
+ * doubleclicking such a node, a text representation of the ipsobject is displayed in the content
+ * mergeviewer (parallel scrollable textviewers at the bottom of the compare window).
  * 
  * @author Stefan Widmaier
  */
 public abstract class AbstractCompareItemCreator implements IStructureCreator {
 
-
     /**
-     * Returns a tree of <code>AbstractCompareItem</code>s for the given input. This tree is
-     * created on the basis of an <code>IIpsSrcFile</code> that might point to a local file or a
-     * remote file (<code>IpsSrcFileImmutable</code>).
+     * Returns a tree of <code>AbstractCompareItem</code>s for the given input. This tree is created
+     * on the basis of an <code>IIpsSrcFile</code> that might point to a local file or a remote file
+     * (<code>IpsSrcFileImmutable</code>).
      * <p>
-     * If the given input is a <code>ResourceNode</code>, an <code>IIpsSrcFile</code> is
-     * created on the contained resource (local file). If the given input is a
+     * If the given input is a <code>ResourceNode</code>, an <code>IIpsSrcFile</code> is created on
+     * the contained resource (local file). If the given input is a
      * <code>ISynchronizeModelElement</code>, an <code>IIpsSrcFile</code> is created on the
      * contained resource (local file). If the given Input is a <code>BufferedContent</code>,
      * <code>IEncodedStreamContentAccessor</code> and <code>ITypedElement</code>, an
@@ -74,10 +71,9 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
                 final IEncodedStreamContentAccessor remoteContent = (IEncodedStreamContentAccessor)input;
                 InputStream is = remoteContent.getContents();
                 String name = ((ITypedElement)input).getName();
-                // FIXME workaround for retrieving filename without using internal classes
-                if (input instanceof ResourceEditionNode) {
-                    ResourceEditionNode revision = (ResourceEditionNode)input;
-                    name = revision.getRemoteResource().getName();
+                if (input instanceof ITypedElement) {
+                    ITypedElement revision = (ITypedElement)input;
+                    name = revision.getName();
                 }
                 IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable(name, is);
                 return getStructureForIpsSrcFile(srcFile);
@@ -104,9 +100,9 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
     }
 
     /**
-     * Returns a tree of <code>AbstractCompareItem</code>s. Each
-     * <code>AbstractCompareItem</code> represents a structural entity: the IpsSrcFile, 
-     * the contained IpsObject, and its IpsObjectParts.
+     * Returns a tree of <code>AbstractCompareItem</code>s. Each <code>AbstractCompareItem</code>
+     * represents a structural entity: the IpsSrcFile, the contained IpsObject, and its
+     * IpsObjectParts.
      */
     protected abstract IStructureComparator getStructureForIpsSrcFile(IIpsSrcFile file);
 
@@ -122,12 +118,13 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
      * string-representation of the given <code>AbstractCompareItem</code> is returned.
      * <p>
      * This method is called by the compareframework for byte-wise comparison of CompareItems (@see
-     * org.eclipse.compare.structuremergeviewer.Differencer). It ist NOT used for text comparision 
-     * (RangeDifferencing) in <code>TextMergeViewer</code>, where the document contained in 
+     * org.eclipse.compare.structuremergeviewer.Differencer). It ist NOT used for text comparision
+     * (RangeDifferencing) in <code>TextMergeViewer</code>, where the document contained in
      * compareItems is used.
      * 
      * @see AbstractCompareItem#getContentString()
-     * @see AbstractCompareItem#getContentStringWithoutWhiteSpace() {@inheritDoc}
+     * @see AbstractCompareItem#getContentStringWithoutWhiteSpace()
+     * 
      */
     public String getContents(Object node, boolean ignoreWhitespace) {
         if (node instanceof AbstractCompareItem) {
@@ -143,6 +140,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
      * Empty implementation. Nothing to be saved. {@inheritDoc}
      */
     public void save(IStructureComparator node, Object input) {
+        // Empty implementation. Nothing to be saved.
     }
 
 }
