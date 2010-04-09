@@ -187,8 +187,6 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * Returns true if the given CompareItem contains an <code>IIpsElement</code> of type
      * <code>IIpsObjectGeneration</code>, false otherwise.
      * 
-     * @param item
-     * @return
      */
     protected boolean needsTextSeparator() {
         return getIpsElement() instanceof IIpsObjectGeneration;
@@ -216,7 +214,6 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     /**
      * Adds the given ProductCmptCompareItem to the list of children.
      * 
-     * @param child
      */
     private void addChild(AbstractCompareItem child) {
         children.add(child);
@@ -230,9 +227,10 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * <code>AbstractCompareItemCreator</code> method <code>getContents()</code> for comparing
      * contents.
      * <p>
-     * Returns null.
      * 
-     * @see ProductCmptCompareItemCreator#getContents(Object, boolean) {@inheritDoc}
+     * @return null.
+     * 
+     * @see ProductCmptCompareItemCreator#getContents(Object, boolean)
      */
     public InputStream getContents() throws CoreException {
         return null;
@@ -314,7 +312,6 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * Returns true if this <code>ProductCmptCompareItem</code> is the root of a tree, false
      * otherwise. A ProductCmptCompareItem is a root if it does not have a parent.
      * 
-     * @return
      */
     public boolean isRoot() {
         return isRoot;
@@ -324,7 +321,6 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * Returns the parent of this <code>ProductCmptCompareItem</code>, <code>null</code> if this
      * <code>ProductCmptCompareItem</code> is the root of a tree.
      * 
-     * @return
      */
     public AbstractCompareItem getParent() {
         return parent;
@@ -361,8 +357,8 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     }
 
     /**
-     * {@inheritDoc} Sets the range (offset and length) of this compareItem's textrepresentation
-     * relative to the document (srcFile).
+     * Sets the range (offset and length) of this compareItem's textrepresentation relative to the
+     * document (srcFile).
      */
     protected void setRange(int offset, int length) {
         range.setOffset(offset);
