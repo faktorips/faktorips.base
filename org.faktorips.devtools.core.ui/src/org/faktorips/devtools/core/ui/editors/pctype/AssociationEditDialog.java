@@ -248,13 +248,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         if (!ipsProject.getProperties().isPersistenceSupportEnabled()) {
             return;
         }
-        final TabItem persistencePage = new TabItem(tabFolder, SWT.NONE);
+        TabItem persistencePage = new TabItem(tabFolder, SWT.NONE);
         persistencePage.setText("Persistence");
 
         Composite c = createTabItemComposite(tabFolder, 1, false);
         persistencePage.setControl(c);
 
-        Checkbox checkTransient = uiToolkit.createCheckbox(c, "The association is transient");
+        final Checkbox checkTransient = uiToolkit.createCheckbox(c, "The association is transient");
+        checkTransient.setEnabled(false);
         bindingContext.bindContent(checkTransient, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_TRANSIENT);
 
@@ -269,6 +270,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createVerticalSpacer(allPersistentProps, 12);
         createGroupOtherPersistentProps(allPersistentProps);
 
+        // persistence is enabled initialize enable / disable bindings
         // disable all persistent controls if attribute is marked as transient
         bindingContext.add(new ControlPropertyBinding(allPersistentProps, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
@@ -277,12 +279,12 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                 boolean persistEnabled = isPersistEnabled(associationInfo);
                 if (!persistEnabled) {
+                    uiToolkit.setDataChangeable(checkTransient, false);
                     uiToolkit.setDataChangeable(getControl(), false);
                 } else {
                     uiToolkit.setDataChangeable(getControl(), !associationInfo.isTransient());
                 }
             }
-
         });
         // disable join table
         bindingContext.add(new ControlPropertyBinding(joinTableComposite, association.getPersistenceAssociatonInfo(),
@@ -307,10 +309,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 }
             }
         });
-
-        if (!association.getPolicyCmptType().isPersistentEnabled()) {
-            uiToolkit.setDataChangeable(c, false);
-        }
     }
 
     private boolean isPersistEnabled(IPersistentAssociationInfo associationInfo) {

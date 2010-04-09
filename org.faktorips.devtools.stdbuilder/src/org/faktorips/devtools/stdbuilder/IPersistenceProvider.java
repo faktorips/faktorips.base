@@ -22,8 +22,8 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
  * @author Joerg Ortmann
  */
 public interface IPersistenceProvider {
-    public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1 = "eclipseLink1.1";
-    public static final String PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0 = "genericJPA2.0";
+    public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1 = "EclipseLink 1.1";
+    public static final String PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0 = "Generic JPA 2.0";
 
     /**
      * Returns <code>true</code> if the persistent provider supports orphan removal (private owned)

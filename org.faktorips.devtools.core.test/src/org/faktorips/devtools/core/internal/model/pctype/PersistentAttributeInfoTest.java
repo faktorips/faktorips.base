@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -31,7 +32,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        policyCmptType.getPersistenceTypeInfo().setEnabled(true);
+        policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
         pcAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         pcAttribute.getPersistenceAttributeInfo().setTransient(false);
     }

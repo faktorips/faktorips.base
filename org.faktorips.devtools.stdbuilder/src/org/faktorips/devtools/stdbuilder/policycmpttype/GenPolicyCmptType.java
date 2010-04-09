@@ -239,7 +239,7 @@ public class GenPolicyCmptType extends GenType {
         }
     }
 
-    private boolean isGenerateChangeListenerSupport() {
+    public boolean isGenerateChangeListenerSupport() {
         return getBuilderSet().getConfig().getPropertyValueAsBoolean(
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
     }

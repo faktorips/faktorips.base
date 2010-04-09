@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -800,13 +801,13 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
         policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicyWithPerstence");
         assertNotNull(policyCmptType.getPersistenceTypeInfo());
-        policyCmptType.getPersistenceTypeInfo().setEnabled(true);
+        policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
 
         // per default the policy component type should persist
         assertTrue(policyCmptType.isPersistentEnabled());
-        policyCmptType.getPersistenceTypeInfo().setEnabled(false);
+        policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
         assertFalse(policyCmptType.isPersistentEnabled());
-        policyCmptType.getPersistenceTypeInfo().setEnabled(false);
+        policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
     }
 
     private class AggregateRootBuilderSet extends EmptyBuilderSet {

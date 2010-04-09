@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.util.PersistenceUtil;
@@ -60,9 +59,6 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         IPersistentAttributeInfo jpaAttributeInfo = attribute.getPersistenceAttributeInfo();
 
         String tableColumnName = jpaAttributeInfo.getTableColumnName();
-        ITableColumnNamingStrategy tableColumnNamingStrategy = ipsElement.getIpsProject()
-                .getTableColumnNamingStrategy();
-        tableColumnName = tableColumnNamingStrategy.getTableColumnName(tableColumnName);
 
         boolean isNullable = jpaAttributeInfo.getTableColumnNullable();
         boolean isUnique = jpaAttributeInfo.getTableColumnUnique();

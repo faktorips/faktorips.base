@@ -58,18 +58,25 @@ public class GenAssociationTo1 extends GenAssociation {
      * </pre>
      */
     public void generateSignatureSetObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String methodName = getMethodNameSetObject();
+        generateSignatureSetObject(methodsBuilder, false);
+    }
+
+    public void generateSignatureSetObject(JavaCodeFragmentBuilder methodsBuilder, boolean internalName)
+            throws CoreException {
+        String methodName = internalName ? getMethodNameSetObjectInternal() : getMethodNameSetObject();
         String paramName = getParamNameForSetObject();
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[] { paramName },
                 new String[] { targetInterfaceName });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getMethodNameAddOrSetObject() {
         return getMethodNameSetObject();
+    }
+
+    @Override
+    public String getMethodNameAddOrSetObjectInternal() {
+        return getMethodNameSetObjectInternal();
     }
 
     /**
@@ -79,6 +86,10 @@ public class GenAssociationTo1 extends GenAssociation {
     @Override
     public String getMethodNameSetObject() {
         return getMethodNameSetObject(association);
+    }
+
+    private String getMethodNameSetObjectInternal() {
+        return getMethodNameSetObject(association) + "Internal";
     }
 
     /**
@@ -186,7 +197,7 @@ public class GenAssociationTo1 extends GenAssociation {
         if (generatesInterface) {
             generateMethodGetRefObject(builder);
             if (!association.isDerivedUnion() && !association.getAssociationType().isCompositionDetailToMaster()) {
-                generateMethodSetObject(builder);
+                generateMethodSetObjectInterface(builder);
                 generateNewChildMethodsIfApplicable(builder, generatesInterface);
             }
         } else {
@@ -221,18 +232,17 @@ public class GenAssociationTo1 extends GenAssociation {
      * }
      * </pre>
      */
-    protected void generateMethodSetRefObjectForComposition(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateMethodSetRefObjectForComposition(JavaCodeFragmentBuilder builder, boolean internal)
+            throws CoreException {
         if (association.isCompositionDetailToMaster()) {
             return; // setter defined in base class.
         }
 
         String paramName = getParamNameForSetObject();
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        generateSignatureSetObject(builder);
+        generateSignatureSetObject(builder, internal);
 
         builder.openBracket();
-
-        generateChangeListenerSupportBeforeChange(builder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
 
         if (target.isDependantType() && inverseAssociation != null) {
             builder.appendln("if(" + fieldName + " != null) {");
@@ -249,8 +259,61 @@ public class GenAssociationTo1 extends GenAssociation {
         builder.appendClassName(targetImplClassName);
         builder.append(")" + paramName + ";");
 
-        generateChangeListenerSupportAfterChange(builder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         builder.closeBracket();
+    }
+
+    protected void generateMethodSetRefObjectForComposition(JavaCodeFragmentBuilder builder) throws CoreException {
+        if (!getGenPolicyCmptType().isGenerateChangeListenerSupport()) {
+            generateMethodSetRefObjectForComposition(builder, false);
+        } else {
+            generateMethodSetRefObjectWithChangeListenerSupport(builder);
+            generateMethodSetRefObjectForComposition(builder, true);
+        }
+
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public void setCoverage(ICoverage newObject) {
+     *   setCoverageInternal(newObject);
+     *   notifyChangeListeners(new AssociationChangedEvent(this, ASSOCIATION_COVERAGE, null, newObject));
+     * }
+     * </pre>
+     */
+    private void generateMethodSetRefObjectWithChangeListenerSupport(JavaCodeFragmentBuilder builder)
+            throws CoreException {
+        String paramName = getParamNameForSetObject();
+
+        // generate set method which delegates to the internal set method
+        // and notifies all change listener
+        generateSignatureSetObject(builder, false);
+        builder.openBracket();
+
+        generateChangeListenerSupportBeforeChange(builder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
+
+        builder.append(getMethodNameSetObjectInternal());
+        builder.append("(");
+        builder.append(paramName);
+        builder.appendln(");");
+
+        generateChangeListenerSupportAfterChange(builder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
+
+        builder.closeBracket();
+    }
+
+    protected void generateMethodSetRefObjectForAssociation(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        if (!getGenPolicyCmptType().isGenerateChangeListenerSupport()) {
+            generateMethodSetRefObjectForAssociation(methodsBuilder, false);
+        } else {
+            generateMethodSetRefObjectWithChangeListenerSupport(methodsBuilder);
+
+            // generate internal set method without change listener support
+            generateMethodSetRefObjectForAssociation(methodsBuilder, true);
+        }
     }
 
     /**
@@ -272,14 +335,14 @@ public class GenAssociationTo1 extends GenAssociation {
      *     }
      * }
      * </pre>
+     * 
+     * If internal is set to <code>true</code> then the method name will be setCoverageInternal
      */
-    protected void generateMethodSetRefObjectForAssociation(JavaCodeFragmentBuilder methodsBuilder)
+    protected void generateMethodSetRefObjectForAssociation(JavaCodeFragmentBuilder methodsBuilder, boolean internal)
             throws CoreException {
-
         String paramName = getParamNameForSetObject();
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        generateSignatureSetObject(methodsBuilder);
-
+        generateSignatureSetObject(methodsBuilder, internal);
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + " == ");
         methodsBuilder.append(fieldName);
@@ -293,7 +356,6 @@ public class GenAssociationTo1 extends GenAssociation {
             methodsBuilder.append(" = null;");
             methodsBuilder.append(generateCodeToCleanupOldReference("oldRefObject"));
         }
-        generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         methodsBuilder.append(fieldName);
         methodsBuilder.append(" = (");
         methodsBuilder.appendClassName(targetImplClassName);
@@ -308,7 +370,6 @@ public class GenAssociationTo1 extends GenAssociation {
                 }
             }
         }
-        generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         methodsBuilder.closeBracket();
     }
 
@@ -423,7 +484,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * public void setCoverage(ICoverage newObject);
      * </pre>
      */
-    protected void generateMethodSetObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodSetObjectInterface(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_SET_OBJECT", association.getTargetRoleSingular(), methodsBuilder);
         generateSignatureSetObject(methodsBuilder);
         methodsBuilder.appendln(";");

@@ -162,8 +162,9 @@ public abstract class GenAssociation extends GenTypePart {
      * [Javadoc]
      * public ICoverage newCoverage() {
      *     ICoverage newCoverage = new Coverage();
-     *     addCoverage(newCoverage); // for toMany associations, setCoverage(newCoverage) for to1
+     *     addCoverageInternal(newCoverage); // for toMany associations, setCoverageInternal(newCoverage) for to1
      *     newCoverage.initialize();
+     *     notfiyChangeListener(...); // if change listener support should be supported
      *     return newCoverage;
      * }
      * </pre>
@@ -173,21 +174,43 @@ public abstract class GenAssociation extends GenTypePart {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureNewChild(inclProductCmptArg, methodsBuilder);
-        String addOrSetMethod = getMethodNameAddOrSetObject();
+        String addOrSetMethod;
+        if (getGenPolicyCmptType().isGenerateChangeListenerSupport()) {
+            addOrSetMethod = getMethodNameAddOrSetObjectInternal();
+        } else {
+            addOrSetMethod = getMethodNameAddOrSetObject();
+        }
+
         String varName = "new" + association.getTargetRoleSingular();
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(targetImplClassName);
-        methodsBuilder.append(" " + varName + " = new ");
+        methodsBuilder.append(" ");
+        methodsBuilder.append(varName);
+        methodsBuilder.append(" = new ");
         methodsBuilder.appendClassName(targetImplClassName);
         if (inclProductCmptArg) {
-            methodsBuilder.appendln("("
-                    + getParamNameForProductCmptInNewChildMethod(target.findProductCmptType(getIpsProject())) + ");");
+            methodsBuilder.append("(");
+            methodsBuilder.append(getParamNameForProductCmptInNewChildMethod(target
+                    .findProductCmptType(getIpsProject())));
+            methodsBuilder.appendln(");");
         } else {
             methodsBuilder.appendln("();");
         }
-        methodsBuilder.appendln(addOrSetMethod + "(" + varName + ");");
-        methodsBuilder.appendln(varName + "." + ((GenPolicyCmptType)getGenType()).getMethodNameInitialize() + "();");
-        methodsBuilder.appendln("return " + varName + ";");
+        methodsBuilder.append(addOrSetMethod);
+        methodsBuilder.append("(");
+        methodsBuilder.append(varName);
+        methodsBuilder.appendln(");");
+        methodsBuilder.append(varName);
+        methodsBuilder.append(".");
+        methodsBuilder.append(getGenPolicyCmptType().getMethodNameInitialize());
+        methodsBuilder.appendln("();");
+        // notfiyChangeListener
+        if (getGenPolicyCmptType().isGenerateChangeListenerSupport()) {
+            generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, varName);
+        }
+        methodsBuilder.append("return ");
+        methodsBuilder.append(varName);
+        methodsBuilder.appendln(";");
         methodsBuilder.closeBracket();
     }
 
@@ -196,6 +219,13 @@ public abstract class GenAssociation extends GenTypePart {
      * object in a to1 association respectively.
      */
     public abstract String getMethodNameAddOrSetObject();
+
+    /**
+     * Returns the name of the internal method that adds an object to a toMany association or that
+     * sets the object in a to1 association respectively. The internal method could be used to add
+     * or set the object without trigger a change listener event.
+     */
+    public abstract String getMethodNameAddOrSetObjectInternal();
 
     /**
      * Code sample without product component argument:
@@ -282,7 +312,7 @@ public abstract class GenAssociation extends GenTypePart {
             ChangeEventType eventType,
             String paramName) throws CoreException {
 
-        ((GenPolicyCmptType)getGenType()).generateChangeListenerSupportBeforeChange(methodsBuilder, eventType,
+        getGenPolicyCmptType().generateChangeListenerSupportBeforeChange(methodsBuilder, eventType,
                 getQualifiedClassName(target, true), fieldName, paramName, getStaticConstantAssociationName());
     }
 
@@ -290,7 +320,7 @@ public abstract class GenAssociation extends GenTypePart {
             ChangeEventType eventType,
             String paramName) throws CoreException {
 
-        ((GenPolicyCmptType)getGenType()).generateChangeListenerSupportAfterChange(methodsBuilder, eventType,
+        getGenPolicyCmptType().generateChangeListenerSupportAfterChange(methodsBuilder, eventType,
                 getQualifiedClassName(target, true), fieldName, paramName, getStaticConstantAssociationName());
     }
 
@@ -1148,4 +1178,7 @@ public abstract class GenAssociation extends GenTypePart {
 
     }
 
+    protected GenPolicyCmptType getGenPolicyCmptType() {
+        return (GenPolicyCmptType)getGenType();
+    }
 }

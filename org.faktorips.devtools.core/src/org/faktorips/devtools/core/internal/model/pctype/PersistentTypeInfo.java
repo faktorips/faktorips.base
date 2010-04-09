@@ -65,7 +65,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private String discriminatorColumnName = "";
 
     // per default the persistent is disabled
-    private boolean enabled = false;
+    private PersistentType persistentType = PersistentType.NONE;
 
     // specifies if the associate type defines the discriminator or not
     // note that only the root entity (root entity) can define the discriminator
@@ -78,18 +78,27 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         super(pcType, id);
     }
 
+    public PersistentType getPersistentType() {
+        return persistentType;
+    }
+
     public boolean isEnabled() {
-        return enabled;
+        return persistentType == PersistentType.ENTITY || persistentType == PersistentType.MAPPED_SUPERCLASS;
     }
 
     public boolean isDefinesDiscriminatorColumn() {
         return definesDiscriminatorColumn;
     }
 
-    public void setEnabled(boolean enabled) {
-        boolean oldValue = this.enabled;
-        this.enabled = enabled;
-        valueChanged(oldValue, enabled);
+    public void setPersistentType(PersistentType persistentType) {
+        if (persistentType != PersistentType.ENTITY) {
+            setTableName("");
+            setDefinesDiscriminatorColumn(false);
+            setDiscriminatorValue("");
+        }
+        PersistentType oldValue = this.persistentType;
+        this.persistentType = persistentType;
+        valueChanged(oldValue, persistentType);
     }
 
     public void setDefinesDiscriminatorColumn(boolean definesDiscriminatorColumn) {
@@ -181,7 +190,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     @Override
     public void validateThis(MessageList msgList, IIpsProject ipsProject) {
-        if (!enabled) {
+        if (persistentType == PersistentType.NONE) {
             return;
         }
         try {
@@ -206,6 +215,16 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private void validateTableName(MessageList msgList, IPolicyCmptType rootEntity) {
+        if (getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
+            // in case of mapped superclass the table names must be empty
+            if (!StringUtils.isEmpty(tableName)) {
+                msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID,
+                        "The table name must empty because the policy component type is marked as mapped superclass.",
+                        Message.ERROR, this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
+            }
+            return;
+        }
+
         // validate if the table name defined in the supertype should be used
         if (isUseTableDefinedInSupertype()) {
             if (StringUtils.isEmpty(getPolicyCmptType().getSupertype())) {
@@ -267,6 +286,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (isUseTableDefinedInSupertype()) {
             return;
         }
+
         if (!PersistenceUtil.isValidDatabaseIdentifier(tableName)) {
             msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, "The table name is invalid", Message.ERROR,
                     this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
@@ -274,12 +294,25 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     public IPolicyCmptType findRootEntity() throws CoreException {
-        RooEntityFinder baseEntityFinder = new RooEntityFinder();
-        baseEntityFinder.start(getPolicyCmptType());
-        return baseEntityFinder.rooEntity;
+        RooEntityFinder rooEntityFinder = new RooEntityFinder();
+        rooEntityFinder.start(getPolicyCmptType());
+        return rooEntityFinder.rooEntity;
     }
 
-    private void validateDisriminator(MessageList msgList, IPolicyCmptType baseEntity) throws CoreException {
+    private void validateDisriminator(MessageList msgList, IPolicyCmptType rootEntity) throws CoreException {
+        if (getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
+            if (isDefinesDiscriminatorColumn()) {
+                String text = "The discriminator definition is not allowed here because this type is marked as mapped superclass.";
+                msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
+            }
+            if (StringUtils.isNotEmpty(discriminatorValue)) {
+                String text = "The discriminator value must be empty because this type is marked as mapped superclass.";
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
+            }
+        }
+
         // check if this type not defines the discriminator column
         // but the discriminator details are not empty
         if (!isDefinesDiscriminatorColumn()) {
@@ -296,19 +329,21 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             }
         }
 
-        if (baseEntity == null) {
+        if (rootEntity == null) {
             // there must always be a root entity, maybe an error
             return;
         }
 
-        if (getPolicyCmptType().hasSupertype()
-                && !baseEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()
+        if (rootEntity != getPolicyCmptType()
+                && !rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()
                 && (inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)
                 && getPolicyCmptType().getAttributes().length > 0) {
+            // TODO JPA Joerg wenn das mit getPolicyCmptType().getAttributes().length > 0 stimmt
+            // zus. noch transiente attribute ausschliessen
             String text = NLS
                     .bind(
                             "The discriminator definition is missing, the discriminator must be defined in the root entity {0}.",
-                            baseEntity.getUnqualifiedName());
+                            rootEntity.getUnqualifiedName());
             msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
             return;
@@ -316,7 +351,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         // discriminator necessary if single table or joined table inheritance strategy
         // and the root entity defines a discriminator
-        if (isDefinesDiscriminatorColumn() && baseEntity != getPolicyCmptType()) {
+        if (isDefinesDiscriminatorColumn() && rootEntity != getPolicyCmptType()) {
             String text = "The discriminator definition is not allowed here because this type is not the root entity.";
             msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
@@ -327,7 +362,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (getPolicyCmptType().isAbstract()) {
             discrValueMustBeEmpty = true;
         } else {
-            if (baseEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
+            if (rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
                 discrValueMustBeEmpty = false;
             } else {
                 discrValueMustBeEmpty = true;
@@ -350,14 +385,14 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             }
         }
 
-        if (!baseEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
+        if (!rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
             // discriminator not defined in hierarchy,
             // skip next validation steps
             return;
         }
 
         if (!discrValueMustBeEmpty
-                && !baseEntity.getPersistenceTypeInfo().getDiscriminatorDatatype().isParsableToDiscriminatorDatatype(
+                && !rootEntity.getPersistenceTypeInfo().getDiscriminatorDatatype().isParsableToDiscriminatorDatatype(
                         discriminatorValue)) {
             String text = "The discriminator value does not conform to the specified descriminator datatype.";
             msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
@@ -393,8 +428,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 + Boolean.valueOf(definesDiscriminatorColumn).toString());
         element.setAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, "" //$NON-NLS-1$
                 + Boolean.valueOf(useTableDefinedInSupertype).toString());
-        element.setAttribute(PROPERTY_ENABLED, "" //$NON-NLS-1$
-                + Boolean.valueOf(enabled).toString());
+        element.setAttribute(PROPERTY_PERSISTENT_TYPE, "" + persistentType); //$NON-NLS-1$
     }
 
     @Override
@@ -405,9 +439,26 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         discriminatorColumnName = element.getAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME);
         discriminatorDatatype = DiscriminatorDatatype.valueOf(element.getAttribute(PROPERTY_DISCRIMINATOR_DATATYPE));
         discriminatorValue = element.getAttribute(PROPERTY_DISCRIMINATOR_VALUE);
-        enabled = Boolean.valueOf(element.getAttribute(PROPERTY_ENABLED));
+        initPersistentTypeWithWorkaround(element);
         definesDiscriminatorColumn = Boolean.valueOf(element.getAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
         useTableDefinedInSupertype = Boolean.valueOf(element.getAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
+    }
+
+    /*
+     * Read persistent type, note that this method is downwardly compatible to v 3.0.0.ms1. In the
+     * older version the persistent could only be enabled or disabled using the 'enabled' attribute.
+     */
+    private void initPersistentTypeWithWorkaround(Element element) {
+        String attrPersistentType = element.getAttribute(PROPERTY_PERSISTENT_TYPE);
+        if (StringUtils.isNotEmpty(attrPersistentType)) {
+            persistentType = PersistentType.valueOf(attrPersistentType);
+        } else {
+            if (Boolean.valueOf(element.getAttribute("enabled"))) {
+                persistentType = PersistentType.ENTITY;
+            } else {
+                persistentType = PersistentType.NONE;
+            }
+        }
     }
 
     /**
@@ -426,15 +477,10 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             InheritanceStrategy supertypeStrategy = currentType.getPersistenceTypeInfo().getInheritanceStrategy();
-            if (supertypeStrategy == inheritanceStrategy) {
+            if (supertypeStrategy == inheritanceStrategy
+                    || (currentType.getPersistenceTypeInfo().getPersistentType() != PersistentType.ENTITY)) {
                 return true;
             }
-            // the only case where one can combine different inheritance strategies:
-            // subclass is MIXED, superclass is SINGLE_TABLE
-            // if (supertypeStrategy == InheritanceStrategy.SINGLE_TABLE
-            // && inheritanceStrategy == InheritanceStrategy.MIXED) {
-            // return true;
-            // }
 
             String text = "Invalid combination of inheritance strategies. Resolve by changing strategy for either "
                     + currentType.getUnqualifiedName() + "(" + supertypeStrategy + ") or "
@@ -501,12 +547,12 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             IPersistentTypeInfo persistenceTypeInfo = currentType.getPersistenceTypeInfo();
 
             if (StringUtils.isEmpty(currentType.getSupertype())) {
-                if (persistenceTypeInfo.isEnabled()) {
+                if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
                     rooEntity = currentType;
                 }
                 return false;
             } else {
-                if (persistenceTypeInfo.isEnabled()) {
+                if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
                     rooEntity = currentType;
                 }
             }

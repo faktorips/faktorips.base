@@ -362,11 +362,11 @@ public interface IPolicyCmptType extends IType {
     public IPersistentTypeInfo getPersistenceTypeInfo();
 
     /**
-     * Returns true if the policy component type should persistent. Returns <code>false</code> ff
+     * Returns true if the policy component type should persistent. Returns <code>false</code> if
      * the type shouldn't persists, and therefore no persistent type info is necessary.
      * 
      * @see #getPersistenceTypeInfo()
-     * @see PersistentTypeInfo#setEnabled(boolean)
+     * @see PersistentTypeInfo#isEnabled()
      */
     public boolean isPersistentEnabled();
 }

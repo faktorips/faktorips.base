@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -25,6 +26,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -35,6 +38,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.StringUtil;
 
 public class PersistentAttributeSection extends SimpleIpsPartsSection {
@@ -117,6 +121,12 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
             public String getColumnText(Object element, int columnIndex) {
                 IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)element;
+                ValueDatatype valueDatatype = null;
+                try {
+                    valueDatatype = attribute.findDatatype(attribute.getIpsProject());
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
                 IPersistentAttributeInfo attributeInfo = attribute.getPersistenceAttributeInfo();
 
                 String result = "";
@@ -130,19 +140,31 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                                 .getTableName(rawTableColumnName);
                         break;
                     case 2:
-                        result = String.valueOf(attributeInfo.getTableColumnUnique());
+                        if (!isUseSqlDefinition(attributeInfo)) {
+                            result = String.valueOf(attributeInfo.getTableColumnUnique());
+                        }
                         break;
                     case 3:
-                        result = String.valueOf(attributeInfo.getTableColumnNullable());
+                        if (!isUseSqlDefinition(attributeInfo)) {
+                            result = String.valueOf(attributeInfo.getTableColumnNullable());
+                        }
                         break;
                     case 4:
-                        result = String.valueOf(attributeInfo.getTableColumnSize());
+                        if (!isUseSqlDefinition(attributeInfo) && PersistenceUtil.isSupportingLenght(valueDatatype)) {
+                            result = String.valueOf(attributeInfo.getTableColumnSize());
+                        }
                         break;
                     case 5:
-                        result = String.valueOf(attributeInfo.getTableColumnPrecision());
+                        if (!isUseSqlDefinition(attributeInfo)
+                                && PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
+                            result = String.valueOf(attributeInfo.getTableColumnPrecision());
+                        }
                         break;
                     case 6:
-                        result = String.valueOf(attributeInfo.getTableColumnScale());
+                        if (!isUseSqlDefinition(attributeInfo)
+                                && PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
+                            result = String.valueOf(attributeInfo.getTableColumnScale());
+                        }
                         break;
                     case 7:
                         result = StringUtil.unqualifiedName(attributeInfo.getSqlColumnDefinition());
@@ -154,6 +176,10 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                         result = "";
                 }
                 return (result == null ? "" : result);
+            }
+
+            private boolean isUseSqlDefinition(IPersistentAttributeInfo attributeInfo) {
+                return StringUtils.isNotEmpty(attributeInfo.getSqlColumnDefinition());
             }
         }
 

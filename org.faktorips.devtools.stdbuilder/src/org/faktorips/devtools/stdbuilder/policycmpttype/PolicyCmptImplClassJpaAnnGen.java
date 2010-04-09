@@ -18,12 +18,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -44,12 +44,14 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     }
 
     private final static String ANNOTATION_ENTITY = "@Entity";
+    private final static String ANNOTATION_MAPPED_SUPERCLASS = "@MappedSuperclass";
     private final static String ANNOTATION_TABLE = "@Table";
     private static final String ANNOTATION_DISCRIMINATOR_COLUMN = "@DiscriminatorColumn";
     private static final String ANNOTATION_DISCRIMINATOR_VALUE = "@DiscriminatorValue";
     private static final String ANNOTATION_INHERITANCE = "@Inheritance";
 
     private static final String IMPORT_ENTITY = "javax.persistence.Entity";
+    private static final String IMPORT_MAPPED_SUPERCLASS = "javax.persistence.MappedSuperclass";
     private static final String IMPORT_TABLE = "javax.persistence.Table";
     private static final String IMPORT_DISCRIMINATOR_COLUMN = "javax.persistence.DiscriminatorColumn";
     private static final String IMPORT_DISCRIMINATOR_TYPE = "javax.persistence.DiscriminatorType";
@@ -65,11 +67,6 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
     /**
      * {@inheritDoc}
-     * 
-     * Note that any attributes regarding table or column names are based on a naming strategy. This
-     * strategy is set on a per IpsProject basis.
-     * 
-     * @see ITableNamingStrategy, ITableColumnNamingStrategy
      */
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
@@ -77,17 +74,24 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
         IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
 
-        fragment.addImport(IMPORT_ENTITY);
-        fragment.appendln(ANNOTATION_ENTITY);
-        addAnnotationsForInheritanceStrategy(fragment, persistenceTypeInfo);
-        addAnnotationsForDescriminator(fragment, persistenceTypeInfo);
+        if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
+            fragment.addImport(IMPORT_ENTITY);
+            fragment.appendln(ANNOTATION_ENTITY);
+            addAnnotationsForInheritanceStrategy(fragment, persistenceTypeInfo);
+            addAnnotationsForDescriminator(fragment, persistenceTypeInfo);
+        } else if (persistenceTypeInfo.getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
+            fragment.addImport(IMPORT_MAPPED_SUPERCLASS);
+            fragment.appendln(ANNOTATION_MAPPED_SUPERCLASS);
+        } else {
+            throw new RuntimeException("Unknown persistent type: " + persistenceTypeInfo.getPersistentType());
+        }
 
         return fragment;
     }
 
     private void addAnnotationsForInheritanceStrategy(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {
         InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
-        String tableName = getTableNameObeyingNamingStrategy(persistenceTypeInfo.getTableName());
+        String tableName = persistenceTypeInfo.getTableName();
 
         if (StringUtils.isEmpty(tableName) && persistenceTypeInfo.isUseTableDefinedInSupertype()) {
             // note that we must always add the table name annotation, otherwise a default table
@@ -145,11 +149,6 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
             }
             return true;
         }
-    }
-
-    private String getTableNameObeyingNamingStrategy(String tableName) {
-        ITableNamingStrategy tableNamingStrategy = getStandardBuilderSet().getIpsProject().getTableNamingStrategy();
-        return tableNamingStrategy.getTableName(tableName);
     }
 
     private void addAnnotationsForDescriminator(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {

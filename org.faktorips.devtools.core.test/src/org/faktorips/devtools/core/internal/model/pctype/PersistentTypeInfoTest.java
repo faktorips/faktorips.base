@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -34,7 +35,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        policyCmptType.getPersistenceTypeInfo().setEnabled(true);
+        policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
     }
 
     public void testValidate_InvalidTableNames() throws CoreException {
@@ -59,7 +60,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         PolicyCmptType subPcType = newPolicyCmptType(ipsProject, "subtype");
         subPcType.setSupertype(policyCmptType.getQualifiedName());
         IPersistentTypeInfo perTypeInfoSub = subPcType.getPersistenceTypeInfo();
-        perTypeInfoSub.setEnabled(true);
+        perTypeInfoSub.setPersistentType(PersistentType.ENTITY);
         persTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
         perTypeInfoSub.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
         perTypeInfoSub.setTableName("subtypetablename");
@@ -82,10 +83,11 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_TABLE_NAME_INVALID));
     }
 
-    public void testSetEnabled() {
+    public void testSetPersistentType() {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        persTypeInfo.setPersistentType(PersistentType.ENTITY);
         persTypeInfo.getIpsSrcFile().markAsClean();
-        persTypeInfo.setEnabled(!persTypeInfo.isEnabled());
+        persTypeInfo.setPersistentType(PersistentType.NONE);
         assertTrue(persTypeInfo.getIpsSrcFile().isDirty());
     }
 
@@ -166,7 +168,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     public void testToXml() throws CoreException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
-        persTypeInfo.setEnabled(true);
+        persTypeInfo.setPersistentType(PersistentType.ENTITY);
         persTypeInfo.setDefinesDiscriminatorColumn(true);
         persTypeInfo.setUseTableDefinedInSupertype(true);
         persTypeInfo.setDescription("persistence descr");
@@ -192,14 +194,25 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertTrue(copy.isUseTableDefinedInSupertype());
     }
 
-    public void testFindBaseEntity() throws CoreException {
+    public void testFindRootEntityWithMappedSuperclass() throws CoreException {
+        IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
+
+        PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "SuperPolicy1");
+        superPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.MAPPED_SUPERCLASS);
+
+        policyCmptType.setSupertype(superPcType.getQualifiedName());
+
+        assertEquals(policyCmptType, persTypeInfo.findRootEntity());
+    }
+
+    public void testFindRootEntity() throws CoreException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
         assertEquals(policyCmptType, persTypeInfo.findRootEntity());
 
-        policyCmptType.getPersistenceTypeInfo().setEnabled(false);
+        policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
         assertNull(persTypeInfo.findRootEntity());
 
-        policyCmptType.getPersistenceTypeInfo().setEnabled(true);
+        policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
         policyCmptType.setAbstract(true);
         assertEquals(policyCmptType, persTypeInfo.findRootEntity());
 
@@ -209,7 +222,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         // with supertype but supertype should not persist
         assertEquals(policyCmptType, persTypeInfo.findRootEntity());
 
-        superPcType.getPersistenceTypeInfo().setEnabled(true);
+        superPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
         assertEquals(superPcType, persTypeInfo.findRootEntity());
         assertEquals(superPcType, superPcType.getPersistenceTypeInfo().findRootEntity());
 
@@ -228,9 +241,9 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         IPersistentTypeInfo persistenceTypeInfoSuper = superPcType.getPersistenceTypeInfo();
         IPersistentTypeInfo persistenceTypeInfo1 = policyCmptType.getPersistenceTypeInfo();
         IPersistentTypeInfo persistenceTypeInfo2 = policyCmptType2.getPersistenceTypeInfo();
-        persistenceTypeInfoSuper.setEnabled(true);
-        persistenceTypeInfo1.setEnabled(true);
-        persistenceTypeInfo2.setEnabled(true);
+        persistenceTypeInfoSuper.setPersistentType(PersistentType.ENTITY);
+        persistenceTypeInfo1.setPersistentType(PersistentType.ENTITY);
+        persistenceTypeInfo2.setPersistentType(PersistentType.ENTITY);
 
         persistenceTypeInfoSuper.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
         persistenceTypeInfo1.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
@@ -340,6 +353,64 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
     }
 
+    public void testDiscriminatorDefinitionForMappedSuperclass() throws CoreException {
+        MessageList msgList = null;
+        IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        persistenceTypeInfo.setPersistentType(PersistentType.MAPPED_SUPERCLASS);
+        persistenceTypeInfo.setDefinesDiscriminatorColumn(true);
+
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED));
+
+        persistenceTypeInfo.setDefinesDiscriminatorColumn(false);
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED));
+
+        persistenceTypeInfo.setDiscriminatorValue("X");
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        // test if discriminator definition is not necessary if superclass is marked as mapped
+        // superclass
+        persistenceTypeInfo.setDefinesDiscriminatorColumn(false);
+        persistenceTypeInfo.setDiscriminatorValue("");
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+
+        // if a subclass exists then the discriminator is necessary,
+        // but the error is marked on the subclass
+        PolicyCmptType subType = newPolicyCmptType(ipsProject, "subtype");
+        subType.setSupertype(policyCmptType.getQualifiedName());
+        subType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        subType.newAttribute(); // TODO JPA Joerg sind attribte fuer diese Validierung wirklich
+        // notwendig -> Test mit Eclipselink und Hibernate
+        msgList = subType.getPersistenceTypeInfo().validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+
+        PolicyCmptType subSubType = newPolicyCmptType(ipsProject, "subsubtype");
+        subSubType.setSupertype(subType.getQualifiedName());
+        subSubType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        subSubType.newAttribute();
+        msgList = subType.getPersistenceTypeInfo().validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+        msgList = subSubType.getPersistenceTypeInfo().validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
+    }
+
+    public void testTableNameForMappedSuperclass() throws CoreException {
+        MessageList msgList = null;
+        IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        persistenceTypeInfo.setPersistentType(PersistentType.MAPPED_SUPERCLASS);
+        persistenceTypeInfo.setTableName("notValid");
+
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_TABLE_NAME_INVALID));
+
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_TABLE_NAME_INVALID));
+        persistenceTypeInfo.setTableName("");
+    }
+
     public void testValidateUseTableDefinedInSupertype() throws CoreException {
         MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
@@ -367,7 +438,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         MessageList ml = null;
 
         PolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "super");
-        superPolicyCmptType.getPersistenceTypeInfo().setEnabled(true);
+        superPolicyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
         policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
 
         IPersistentTypeInfo superPersTypeInfo = superPolicyCmptType.getPersistenceTypeInfo();
@@ -438,5 +509,35 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         superPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
         ml = pTypeInfo.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+    }
+
+    public void testValidateInheritanceStrategy() throws CoreException {
+        MessageList msgList = null;
+        IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        persistenceTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+
+        policyCmptType.setSupertype("");
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID));
+
+        PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "supertype");
+        policyCmptType.setSupertype(superPcType.getQualifiedName());
+
+        superPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        superPcType.getPersistenceTypeInfo().setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
+        persistenceTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID));
+
+        // if supertype is mapped superclass then ignore the inheritance strategy of the supertype
+        superPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.MAPPED_SUPERCLASS);
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID));
+
+        // if supertypes persistence is not enabled then ignore the inheritance strategy of the
+        // supertype
+        superPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID));
     }
 }

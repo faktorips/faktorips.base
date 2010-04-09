@@ -124,7 +124,11 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
                     genInverseAssociation);
             addAnnotationAttributesTargetEntity(fragment, attributesToAppend, genAssociation, genInverseAssociation);
             if (persistenceProviderImpl != null && persistenceProviderImpl.isSuppotingOrphanRemoval()) {
-                attributesToAppend.add(persistenceProviderImpl.getRelationshipAnnotationAttributeOrphanRemoval());
+                String attributeOrphanRemoval = persistenceProviderImpl
+                        .getRelationshipAnnotationAttributeOrphanRemoval();
+                if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
+                    attributesToAppend.add(attributeOrphanRemoval);
+                }
             }
             appendAllAttributes(fragment, attributesToAppend);
 
@@ -149,9 +153,6 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         switch (relationShip) {
             case ONE_TO_MANY:
                 if (!association.isAssoziation()) {
-                    if (persistenceProviderImpl == null) {
-                        return;
-                    }
                     if (persistenceProviderImpl != null && persistenceProviderImpl.isSuppotingOrphanRemoval()) {
                         persistenceProviderImpl.addAnnotationOrphanRemoval(fragment);
                     }
@@ -240,9 +241,6 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         fragment.append('(');
         for (Iterator<String> iterator = attributesToAppend.iterator(); iterator.hasNext();) {
             String attributeToAppend = iterator.next();
-            if (StringUtils.isEmpty(attributeToAppend)) {
-                continue;
-            }
             fragment.append(attributeToAppend);
             if (iterator.hasNext()) {
                 fragment.append(",");

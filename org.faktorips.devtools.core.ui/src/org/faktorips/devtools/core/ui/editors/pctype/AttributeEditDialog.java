@@ -172,6 +172,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private EnumField temporalMappingField;
 
+    private Text sqlColumnDefinition;
+
+    private Checkbox uniqueCheckbox;
+
+    private Checkbox nullableCheckbox;
+
     /**
      * @param parentShell
      * @param title
@@ -758,12 +764,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME);
 
         uiToolkit.createFormLabel(workArea, "Is an unique attribute:");
-        Checkbox uniqueCheckbox = uiToolkit.createCheckbox(workArea);
+        uniqueCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(uniqueCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE);
 
         uiToolkit.createFormLabel(workArea, "Is a nullable attribute:");
-        Checkbox nullableCheckbox = uiToolkit.createCheckbox(workArea);
+        nullableCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(nullableCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
 
@@ -790,7 +796,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
 
         uiToolkit.createFormLabel(workArea, "SQL column definition:");
-        Text sqlColumnDefinition = uiToolkit.createText(workArea);
+        sqlColumnDefinition = uiToolkit.createText(workArea);
         bindingContext.bindContent(sqlColumnDefinition, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION);
 
@@ -802,11 +808,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         // disable all tab page controls if policy component type shouldn't persist
         bindingContext.add(new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
-                IPersistentTypeInfo.PROPERTY_ENABLED, Boolean.TYPE) {
+                "enabled", Boolean.TYPE) {
             @Override
             public void updateUiIfNotDisposed() {
-                boolean enabled = isPersistentEnabled();
-                if (!enabled) {
+                if (!isPersistentEnabled()) {
+                    uiToolkit.setDataChangeable(persistencePage.getControl(), false);
+                    return;
+                }
+                if (attribute.getPersistenceAttributeInfo().isTransient()) {
                     uiToolkit.setDataChangeable(group, false);
                     return;
                 }
@@ -820,25 +829,26 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPersistentAttributeInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
             @Override
             public void updateUiIfNotDisposed() {
-                boolean enabled = isPersistentEnabled();
-                if (!enabled) {
+                if (!isPersistentEnabled()) {
                     uiToolkit.setDataChangeable(group, false);
                     return;
                 }
-                if (enabled) {
-                    disableDeactiveControls();
-                    enableDisableDatatypeDependingControls();
+                if (attribute.getPersistenceAttributeInfo().isTransient()) {
+                    uiToolkit.setDataChangeable(group, false);
+                    return;
                 }
+                disableUnsupportedControls();
+                enableOrDisableDatatypeDependingControls();
             }
 
-            private void disableDeactiveControls() {
+            private void disableUnsupportedControls() {
                 if (!ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportConverter()) {
                     converterQualifiedName.setEnabled(false);
                 }
 
             }
         });
-
+        // datatype depending enabled or disabled controls
         bindingContext.add(new ControlPropertyBinding(c, attribute, IAttribute.PROPERTY_DATATYPE, String.class) {
             @Override
             public void updateUiIfNotDisposed() {
@@ -847,8 +857,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     uiToolkit.setDataChangeable(group, false);
                     return;
                 }
+                if (attribute.getPersistenceAttributeInfo().isTransient()) {
+                    uiToolkit.setDataChangeable(group, false);
+                    return;
+                }
                 if (enabled) {
-                    enableDisableDatatypeDependingControls();
+                    enableOrDisableDatatypeDependingControls();
                 }
             }
         });
@@ -858,21 +872,31 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (!isDataChangeable()) {
             return false;
         }
-        boolean enabled = attribute.getPolicyCmptType().isPersistentEnabled();
-        if (!enabled) {
-            return false;
-        }
-        return !attribute.getPersistenceAttributeInfo().isTransient();
+        return attribute.getPolicyCmptType().isPersistentEnabled();
     }
 
-    private void enableDisableDatatypeDependingControls() {
+    private void enableOrDisableDatatypeDependingControls() {
         try {
             ValueDatatype datatype = attribute.findDatatype(ipsProject);
 
             boolean hasDecimalPlaces = PersistenceUtil.isSupportingDecimalPlaces(datatype);
             boolean hasLength = PersistenceUtil.isSupportingLenght(datatype);
             boolean needsTemporalType = PersistenceUtil.isSupportingTemporalType(datatype);
+            boolean canBeNullable = true;
+            boolean canBeUnique = true;
 
+            // if a column definition is given, then all properties are specified using the sql
+            // definition
+            if (StringUtils.isNotEmpty(sqlColumnDefinition.getText())) {
+                hasDecimalPlaces = false;
+                hasLength = false;
+                needsTemporalType = false;
+                canBeNullable = false;
+                canBeUnique = false;
+            }
+
+            uiToolkit.setDataChangeable(nullableCheckbox, canBeNullable);
+            uiToolkit.setDataChangeable(uniqueCheckbox, canBeUnique);
             uiToolkit.setDataChangeable(precisionField.getControl(), hasDecimalPlaces);
             uiToolkit.setDataChangeable(scaleField.getControl(), hasDecimalPlaces);
             uiToolkit.setDataChangeable(sizeField.getControl(), hasLength);

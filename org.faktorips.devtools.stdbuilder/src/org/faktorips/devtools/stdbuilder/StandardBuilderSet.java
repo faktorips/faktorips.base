@@ -135,7 +135,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     /**
      * Configuration property contains the persistence provider implementation.
      */
-    public final static String CONFIG_PROPERTY_PERSISTENCE_PROVIDER_IMPLEMENTAION = "persistenceProviderImplementation";
+    public final static String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider";
 
     private TableImplBuilder tableImplBuilder;
 
@@ -660,7 +660,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public IPersistenceProvider getPersistenceProviderImplementation() {
         String persistenceProviderKey = (String)getConfig().getPropertyValue(
-                CONFIG_PROPERTY_PERSISTENCE_PROVIDER_IMPLEMENTAION);
+                CONFIG_PROPERTY_PERSISTENCE_PROVIDER);
         if (StringUtils.isEmpty(persistenceProviderKey) || "none".equalsIgnoreCase(persistenceProviderKey)) {
             return null;
         }

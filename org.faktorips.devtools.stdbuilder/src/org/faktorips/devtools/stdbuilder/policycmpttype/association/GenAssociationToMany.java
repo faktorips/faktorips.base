@@ -64,6 +64,11 @@ public class GenAssociationToMany extends GenAssociation {
         return getMethodNameAddObject();
     }
 
+    @Override
+    public String getMethodNameAddOrSetObjectInternal() {
+        return getMethodNameAddObjectInternal();
+    }
+
     /**
      * Returns the name of the parameter for the method that tests if an object is references in a
      * multi-value association, e.g. objectToTest.
@@ -125,7 +130,12 @@ public class GenAssociationToMany extends GenAssociation {
      * </pre>
      */
     public void generateSignatureAddObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String methodName = getMethodNameAddObject();
+        generateSignatureAddObject(methodsBuilder, false);
+    }
+
+    public void generateSignatureAddObject(JavaCodeFragmentBuilder methodsBuilder, boolean internal)
+            throws CoreException {
+        String methodName = internal ? getMethodNameAddObjectInternal() : getMethodNameAddObject();
         String paramName = getParamNameForAddObject();
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[] { paramName },
                 new String[] { targetInterfaceName });
@@ -137,6 +147,14 @@ public class GenAssociationToMany extends GenAssociation {
      */
     public String getMethodNameAddObject() {
         return getLocalizedText("METHOD_ADD_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
+    }
+
+    /**
+     * Returns the name of the internal method adding an object to a multi-value association, e.g.
+     * addCoverage().
+     */
+    public String getMethodNameAddObjectInternal() {
+        return getMethodNameAddObject() + "Internal";
     }
 
     /**
@@ -400,8 +418,50 @@ public class GenAssociationToMany extends GenAssociation {
      * </pre>
      */
     protected void generateMethodAddObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        if (!getGenPolicyCmptType().isGenerateChangeListenerSupport()) {
+            generateMethodAddObject(methodsBuilder, false);
+        } else {
+            generateMethodAddObjectWithChangeListenerSupport(methodsBuilder);
+            generateMethodAddObject(methodsBuilder, true);
+        }
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public void addCoverage(ICoverage objectToAdd) {
+     *   addCoverageInternal(objectToAdd);
+     *   notifyChangeListeners(new AssociationChangedEvent(this, ASSOCIATION_COVERAGE, null, objectToAdd));
+     * }
+     * </pre>
+     */
+    private void generateMethodAddObjectWithChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String paramName = getParamNameForAddObject();
+
+        // generate add method which delegates to the internal add method
+        // and notifies all change listener
+        generateSignatureAddObject(methodsBuilder, false);
+        methodsBuilder.openBracket();
+
+        generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, paramName);
+
+        methodsBuilder.append(getMethodNameAddObjectInternal());
+        methodsBuilder.append("(");
+        methodsBuilder.append(paramName);
+        methodsBuilder.appendln(");");
+
+        generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, paramName);
+
+        methodsBuilder.closeBracket();
+    }
+
+    protected void generateMethodAddObject(JavaCodeFragmentBuilder methodsBuilder, boolean internal)
+            throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        generateSignatureAddObject(methodsBuilder);
+        generateSignatureAddObject(methodsBuilder, internal);
         String paramName = getParamNameForAddObject();
         methodsBuilder.openBracket();
         methodsBuilder.append("if (" + paramName + " == null)");
@@ -421,7 +481,6 @@ public class GenAssociationToMany extends GenAssociation {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
             }
         }
-        generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, paramName);
         methodsBuilder.append(fieldName);
         methodsBuilder.append(".add(");
         methodsBuilder.append(paramName);
@@ -437,7 +496,6 @@ public class GenAssociationToMany extends GenAssociation {
 
             }
         }
-        generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, paramName);
         methodsBuilder.closeBracket();
     }
 

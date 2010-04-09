@@ -244,6 +244,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         inverseAssociation.setTarget(getPolicyCmptType().getQualifiedName());
         inverseAssociation.setAssociationType(getAssociationType().getCorrespondingAssociationType());
 
+        // we must set the default role name to ensure that both sides are linked together using
+        // their names
+        inverseAssociation.setTargetRoleSingular(inverseAssociation.getDefaultTargetRoleSingular());
         setInverseAssociation(inverseAssociation.getName());
         inverseAssociation.setInverseAssociation(getName());
 

@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -276,9 +277,18 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
      * </tr>
      * </table>
      * Note that if this relationship side the owner of a many-to-many association then return
-     * always <code>false</code>.
+     * always <code>false</code>. If the associated policy component type association is a derived
+     * union or the inverse of a derived union association then return <code>false</code>.
      */
     public boolean isJoinColumnRequired(IPolicyCmptTypeAssociation inverseAssociation) {
+        if (getPolicyComponentTypeAssociation().isDerivedUnion()) {
+            // derived union association
+            return false;
+        }
+        if (inverseAssociation != null && inverseAssociation.isDerivedUnion()) {
+            // inverse of a derived union association
+            return false;
+        }
         if (isOwnerOfManyToManyAssociation()) {
             return false;
         }
@@ -437,21 +447,22 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private void validateTransientMismatch(MessageList msgList, IPolicyCmptTypeAssociation inverseAssociation) {
         boolean transientMismatch = false;
         if (inverseAssociation == null) {
-            // different error, skip join table validation
+            // different error
             return;
         }
 
-        if (isTransient() || !getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()) {
+        if (isTransient() || !isPersistentTypeEntity(getPolicyComponentTypeAssociation())) {
+            // source side is transient or not marked as entity
             if (inverseAssociation.getPersistenceAssociatonInfo().isTransient()) {
                 return;
             }
-
-            if (inverseAssociation.getPolicyCmptType().getPersistenceTypeInfo().isEnabled()) {
+            if (isPersistentTypeEntity(inverseAssociation)) {
                 transientMismatch = true;
             }
         } else {
+            // source side is marked as entity
             if (inverseAssociation.getPersistenceAssociatonInfo().isTransient()
-                    || !inverseAssociation.getPolicyCmptType().isPersistentEnabled()) {
+                    || !isPersistentTypeEntity(inverseAssociation)) {
                 transientMismatch = true;
             }
         }
@@ -459,10 +470,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             msgList
                     .add(new Message(
                             MSGCODE_TRANSIENT_MISMATCH,
-                            "In case of transient association, the target side must also be marked as transient and vise versa.",
+                            "If the association is marked as transient or if the persistent type is not entity, then target side must also be marked as transient and vise versa.",
                             Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
             return;
         }
+    }
+
+    private boolean isPersistentTypeEntity(IPolicyCmptTypeAssociation association) {
+        return association.getPolicyCmptType().getPersistenceTypeInfo().getPersistentType() == IPersistentTypeInfo.PersistentType.ENTITY;
     }
 
     private void validateJoinTable(MessageList msgList, IPolicyCmptTypeAssociation inverseAssociation) {

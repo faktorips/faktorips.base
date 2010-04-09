@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.RelationshipType;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -38,8 +39,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         super.setUp();
         PolicyCmptType targetPolicyCmptType = newPolicyCmptType(ipsProject, "Policy2");
 
-        targetPolicyCmptType.getPersistenceTypeInfo().setEnabled(true);
-        policyCmptType.getPersistenceTypeInfo().setEnabled(true);
+        targetPolicyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
 
         pcAssociation = policyCmptType.newPolicyCmptTypeAssociation();
         targetPcAssociation = targetPolicyCmptType.newPolicyCmptTypeAssociation();
@@ -162,14 +163,14 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         sourcePersistenceAssociatonInfo.setTransient(true);
         targetPersistenceAssociatonInfo.setTransient(false);
         targetPersistenceAssociatonInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
-                .getPersistenceTypeInfo().setEnabled(false);
+                .getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
         assertEquals(0, ml.getNoOfMessages());
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
         assertEquals(0, ml.getNoOfMessages());
 
         targetPersistenceAssociatonInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
-                .getPersistenceTypeInfo().setEnabled(true);
+                .getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
 
         // no transient mismatch in case of unidirectional association
 
@@ -590,5 +591,55 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
+    }
+
+    public void testValidateDerivedUnionJoinColumnNotNecessary() throws CoreException {
+        // join column is only necessary for none derived union associations
+        MessageList ml = null;
+        PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "super");
+        superPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        superPcType.setAbstract(true);
+        targetPcAssociation.getPolicyCmptType().setSupertype(superPcType.getQualifiedName());
+
+        IPolicyCmptTypeAssociation derivedUnionAss = policyCmptType.newPolicyCmptTypeAssociation();
+        derivedUnionAss.setDerivedUnion(true);
+        derivedUnionAss.setTarget(superPcType.getQualifiedName());
+        derivedUnionAss.setTargetRoleSingular("derivedUnion");
+        derivedUnionAss.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        // unidirectional derived union
+        ml = derivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
+        // assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+
+        IPolicyCmptTypeAssociation invDerivedUnion = superPcType.newPolicyCmptTypeAssociation();
+        invDerivedUnion.setTarget(policyCmptType.getQualifiedName());
+        invDerivedUnion.setTargetRoleSingular("invDerivedUnion");
+        invDerivedUnion.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        invDerivedUnion.setInverseAssociation("derivedUnion");
+        derivedUnionAss.setInverseAssociation("invDerivedUnion");
+
+        // bidirectional derived union
+        ml = derivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+
+        ml = invDerivedUnion.getPersistenceAssociatonInfo().validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+
+        // test join column is necessary on derived union implementation
+        // a) unidirectional
+        IPolicyCmptTypeAssociation implDerivedUnionAss = policyCmptType.newPolicyCmptTypeAssociation();
+        implDerivedUnionAss.setSubsettedDerivedUnion("derivedUnion");
+        implDerivedUnionAss.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        implDerivedUnionAss.setTarget(targetPcAssociation.getPolicyCmptType().getQualifiedName());
+        implDerivedUnionAss.setTargetRoleSingular("implDerivedUnion");
+        ml = implDerivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+
+        // a) bidirectional, join column must be defined on the owner side
+        IPolicyCmptTypeAssociation inverseImplDerivedUnionAss = implDerivedUnionAss.newInverseAssociation();
+        ml = inverseImplDerivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+        ml = implDerivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
     }
 }

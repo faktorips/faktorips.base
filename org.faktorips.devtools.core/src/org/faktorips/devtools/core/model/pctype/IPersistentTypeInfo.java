@@ -63,10 +63,10 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     public final static String PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS = "notJoinedSubclass"; //$NON-NLS-1$
 
     /**
-     * The name of a property that indicates that the persistent is enabled for the policy component
-     * type
+     * The name of a property that indicates the persistent type: Entity, MappedSuperclass or no
+     * persistent enabled. See enumeration this#PersistentType.
      */
-    public final static String PROPERTY_ENABLED = "enabled"; //$NON-NLS-1$
+    public final static String PROPERTY_PERSISTENT_TYPE = "persistentType"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates that the discriminator column name and datatype is
@@ -141,16 +141,23 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     public IPolicyCmptType getPolicyCmptType();
 
     /**
-     * Return <code>true</code> if the persistence type info in enabled. Returns <code>false</code>
-     * if the associate policy component type should not be persist.
+     * Returns the persistence type: entity, mapped superclass, or none if the persistent is
+     * disabled.
+     */
+    public PersistentType getPersistentType();
+
+    /**
+     * Returns <code>true</code> if the persistent is enabled. In this case the persistent type is
+     * equal to entity or mapped superclass. If the persistent type is none then return
+     * <code>false</code>.
      */
     public boolean isEnabled();
 
     /**
-     * Set to <code>true</code> if the associate policy component type should persist. Set to
-     * <code>false</code> if the policy component type doesn't need persistent type info.
+     * Sets the persistent type to enable/disable the persistent or annotate the appropriate policy
+     * component type as mapped superclass.
      */
-    public void setEnabled(boolean enabled);
+    public void setPersistentType(PersistentType persistentType);
 
     /**
      * Returns <code>true</code> if this persistent type defines the discriminator column. Not that
@@ -335,4 +342,14 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
         }
     }
 
+    /**
+     * Defines the possible persistent types. If the persistent type is 'none' then persistent is
+     * disabled. The type mapped superclass specifies a special behavior that all subclasses of this
+     * type inherits the attributes (and also the column definitions) of their supertype.
+     */
+    public static enum PersistentType {
+        NONE,
+        ENTITY,
+        MAPPED_SUPERCLASS
+    }
 }
