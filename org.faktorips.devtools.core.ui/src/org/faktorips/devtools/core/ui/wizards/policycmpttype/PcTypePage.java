@@ -171,13 +171,20 @@ public class PcTypePage extends TypePage {
                 }
             }
         }
-        // show info message:
-        // configured by product components,
-        // because instances of the superclass are configured by product components
-        IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(getSuperType());
-        if (superPcType != null) {
-            if (superPcType.isConfigurableByProductCmptType()) {
-                setMessage(Messages.PcTypePage_infoConfigurateByProductCmptType, INFORMATION);
+
+        /*
+         * Super-type may not be set after all.
+         */
+        if (!StringUtils.isEmpty(getSuperType())) {
+            /*
+             * show info message: configured by product components, because instances of the
+             * superclass are configured by product components
+             */
+            IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(getSuperType());
+            if (superPcType != null) {
+                if (superPcType.isConfigurableByProductCmptType()) {
+                    setMessage(Messages.PcTypePage_infoConfigurateByProductCmptType, INFORMATION);
+                }
             }
         }
     }
