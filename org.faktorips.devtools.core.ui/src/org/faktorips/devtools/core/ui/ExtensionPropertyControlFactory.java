@@ -159,8 +159,8 @@ public class ExtensionPropertyControlFactory {
                  * Set edit-field back to null to ensure the extPropData will be configured
                  * correctly even if #createControls(ArrayList, Composite, UIToolkit,
                  * IIpsObjectPartContainer) is called multiple times. (Previously the edit-field
-                 * would be initialized but the partContainer was null and would never be set.
-                 * Binding would then fail with an NPE.)
+                 * would be initialized but the partContainer was null and would never be set, even
+                 * if createControls() would be called again. Binding would then fail with an NPE.)
                  */
                 extPropData[i].editField = null;
             }
