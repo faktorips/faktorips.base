@@ -17,16 +17,14 @@
 		value="**/MessageList*.class,
 			   **/Message*.class,
 			   **/MsgReplacementParameter*.class,
-			   **/ObjectProperty*.class,
-			   **/IEnumValue.class"/>
+			   **/ObjectProperty*.class"/>
 	
 	<property name="clientJarSrcDir" location="../src"/>
 	<property name="clientJarSrc" 
 		value="**/MessageList.java,
 			   **/Message.java,
 			   **/MsgReplacementParameter.java,
-			   **/ObjectProperty.java,
-		   	   **/IEnumValue.java"/>
+			   **/ObjectProperty.java"/>
 	
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
