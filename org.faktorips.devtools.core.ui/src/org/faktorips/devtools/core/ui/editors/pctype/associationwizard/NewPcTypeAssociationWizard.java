@@ -122,7 +122,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         ipsProject = association.getIpsProject();
         extFactoryAssociation = new ExtensionPropertyControlFactory(association.getClass());
         extFactoryInverseAssociation = new ExtensionPropertyControlFactory(association.getClass());
-        extFactoryProductCmptTypeAssociation = new ExtensionPropertyControlFactory(association.getClass());
+        extFactoryProductCmptTypeAssociation = new ExtensionPropertyControlFactory(IProductCmptTypeAssociation.class);
 
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }

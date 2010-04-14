@@ -155,6 +155,14 @@ public class ExtensionPropertyControlFactory {
         for (int i = 0; i < extPropData.length; i++) {
             if (extPropData[i].editField != null) {
                 context.removeBindings(extPropData[i].editField.getControl());
+                /*
+                 * Set edit-field back to null to ensure the extPropData will be configured
+                 * correctly even if #createControls(ArrayList, Composite, UIToolkit,
+                 * IIpsObjectPartContainer) is called multiple times. (Previously the edit-field
+                 * would be initialized but the partContainer was null and would never be set.
+                 * Binding would then fail with an NPE.)
+                 */
+                extPropData[i].editField = null;
             }
         }
     }
