@@ -25,7 +25,7 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
 
 /**
- * The runtime repository gives access to the information about products and tables.
+ * The runtime repository gives access to the information about products, enums and tables.
  * 
  * @author Jan Ortmann
  */
@@ -59,7 +59,7 @@ public interface IRuntimeRepository {
      * is only included once even if it is referenced from two others. The list is computed lazy on
      * the first request.
      */
-    List<IRuntimeRepository> getAllReferencedRepositories();
+    public List<IRuntimeRepository> getAllReferencedRepositories();
 
     /**
      * Returns the product component identified by the given id. Returns <code>null</code> if the id
@@ -82,14 +82,14 @@ public interface IRuntimeRepository {
     public IProductComponent getProductComponent(String id);
 
     /**
-     * Returns the product component identified by the given id. Same as findProductComponent(String
+     * Returns the product component identified by the given id. Same as getProductComponent(String
      * id) but throws an exception if the product component is not found.
      * 
      * @param id The id of the product component to find.
      * @return The product component identified by the id or <code>null</code>.
      * @throws ProductCmptNotFoundException if no product component with the given id exists.
      * 
-     * @see #findProductComponent(String)
+     * @see #getProductComponent(String)
      */
     public IProductComponent getExistingProductComponent(String id) throws ProductCmptNotFoundException;
 

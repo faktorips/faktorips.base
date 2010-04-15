@@ -150,9 +150,11 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     protected abstract IIpsArtefactBuilder[] createBuilders() throws CoreException;
 
     public void afterBuildProcess(int buildKind) throws CoreException {
+        // could be implemented in subclass
     }
 
     public void beforeBuildProcess(int buildKind) throws CoreException {
+        // could be implemented in subclass
     }
 
     public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass) {

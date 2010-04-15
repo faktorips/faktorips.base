@@ -206,12 +206,16 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
      * 
      * @param fragment the {@link JavaCodeFragment} to add the new instance expression for the
      *            provided {@link IEnumType}
-     * @throws CoreException
+     * @param enumType the enum type
+     * @param exprCompiler the expression compiler
+     * @param value the value
+     * @throws CoreException thrown in case of exception
      */
     protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
             EnumTypeDatatypeAdapter enumType,
             ExprCompiler exprCompiler,
             String value) throws CoreException {
+        // could be implemented in subclass
     }
 
     private CompilationResult compileEnumDatatypeValueIdentifier(String enumTypeName, String valueName, Locale locale) {

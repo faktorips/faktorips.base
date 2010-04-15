@@ -82,7 +82,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Template method to extend the <tt>generateCodeForJavatype()</tt> method. */
     protected void generateCodeForJavatype(TypeSection mainSection) throws CoreException {
-
+        // could be implemented in subclass
     }
 
     /** A hook to generate code that is not based on attributes, associations, rules and methods. */
@@ -138,7 +138,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
      *             and propagated by this method
      */
     protected void generateInnerClasses() throws CoreException {
-
+        // could be implemented in subclass
     }
 
     /**
@@ -149,7 +149,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
      *             and propagated by this method
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
-
+        // could be implemented in subclass
     }
 
     /**
@@ -165,7 +165,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
      * @param builder The builder to use to generate the annotations via its annotation method.
      */
     protected void generateTypeAnnotations(JavaCodeFragmentBuilder builder) throws CoreException {
-
+        // could be implemented in subclass
     }
 
     /**

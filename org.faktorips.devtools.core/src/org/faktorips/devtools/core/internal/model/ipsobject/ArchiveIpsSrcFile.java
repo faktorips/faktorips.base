@@ -63,7 +63,7 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile
     }
 
     public void save(boolean force, IProgressMonitor monitor) throws CoreException {
-
+        // not possible => nothing to do
     }
 
     public boolean isHistoric() {

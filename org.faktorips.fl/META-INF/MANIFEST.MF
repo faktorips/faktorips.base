@@ -4,7 +4,6 @@ Bundle-Name: Faktor-IPS Formula Language
 Bundle-SymbolicName: org.faktorips.fl
 Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
-Bundle-Localization: plugin
 Require-Bundle: org.faktorips.util,
  org.faktorips.dtflcommon,
  org.faktorips.valuetypes,

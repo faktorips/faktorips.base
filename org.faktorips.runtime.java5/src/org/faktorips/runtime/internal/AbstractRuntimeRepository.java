@@ -58,7 +58,7 @@ import org.faktorips.runtime.test.IpsTestSuite;
  */
 public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
-    private static final String ROOTIPSTESTSUITENAME = "ipstest";
+    private static final String ROOTIPSTESTSUITENAME = "ipstest"; //$NON-NLS-1$
 
     // The name of the repository
     private String name;
@@ -104,7 +104,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     public final void addDirectlyReferencedRepository(IRuntimeRepository repository) {
         if (!(repository instanceof AbstractRuntimeRepository)) {
             throw new IllegalArgumentException(
-                    "AbstractRuntimeRepository does not support Repositories not derived from AbstractRuntimeRepository!");
+                    "AbstractRuntimeRepository does not support Repositories not derived from AbstractRuntimeRepository!"); //$NON-NLS-1$
         }
         repositories.add(repository);
     }
@@ -521,8 +521,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     private IpsTestSuite getTestSuite(HashMap<String, IpsTestSuite> suites, String testCaseQName) {
-        String suiteQName = "";
-        if (testCaseQName.indexOf(".") >= 0) {
+        String suiteQName = ""; //$NON-NLS-1$
+        if (testCaseQName.indexOf(".") >= 0) { //$NON-NLS-1$
             suiteQName = removeLastSegment(testCaseQName);
         }
 
@@ -558,7 +558,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             }
         }
         throw new IllegalArgumentException(
-                "The provided product component generation instance is not hosted in this repository or in the referenced repositories");
+                "The provided product component generation instance is not hosted in this repository or in the referenced repositories"); //$NON-NLS-1$
     }
 
     protected abstract IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation);
@@ -575,7 +575,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             }
         }
         throw new IllegalArgumentException(
-                "The provided product component generation instance is not hosted in this repository or in the referenced repositories");
+                "The provided product component generation instance is not hosted in this repository or in the referenced repositories"); //$NON-NLS-1$
     }
 
     protected abstract int getNumberOfProductComponentGenerationsInternal(IProductComponent productCmpt);
@@ -592,7 +592,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             }
         }
         throw new IllegalArgumentException(
-                "The provided product component generation instance is not hosted in this repository or in the referenced repositories");
+                "The provided product component generation instance is not hosted in this repository or in the referenced repositories"); //$NON-NLS-1$
     }
 
     protected abstract IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation);
@@ -607,7 +607,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
         URL xmlFile = modelObjectClass.getResource(modelObjectClass.getName().substring(
                 modelObjectClass.getName().lastIndexOf('.') + 1)
-                + ".xml");
+                + ".xml"); //$NON-NLS-1$
         IModelType modelType = new ModelType(this);
         XMLInputFactory factory = XMLInputFactory.newInstance();
         try {
@@ -621,10 +621,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             modelType.initFromXml(parser);
         } catch (IOException e) {
             throw new RuntimeException(
-                    "Error loading model type info for " + modelObjectClass.getName() + " from XML.", e);
+                    "Error loading model type info for " + modelObjectClass.getName() + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (XMLStreamException e) {
             throw new RuntimeException(
-                    "Error loading model type info for " + modelObjectClass.getName() + " from XML.", e);
+                    "Error loading model type info for " + modelObjectClass.getName() + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
         modelTypes.put(modelObjectClass, modelType);
         return modelType;
@@ -663,7 +663,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
 
-    @SuppressWarnings("unchecked")
     public Object getEnumValue(String uniqueId) {
         int index = uniqueId.indexOf('#');
         if (index == -1) {
@@ -695,7 +694,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             return null;
         }
         try {
-            Method enumValueIdMethod = clazz.getDeclaredMethod("getEnumValueId", new Class[0]);
+            Method enumValueIdMethod = clazz.getDeclaredMethod("getEnumValueId", new Class[0]); //$NON-NLS-1$
             enumValueIdMethod.setAccessible(true);
             for (T enumValue : enumValues) {
                 Object idValue = enumValueIdMethod.invoke(enumValue, new Object[0]);
@@ -707,7 +706,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             throwUnableToCallMethodException(e);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(
-                    "The provided enumeration class doesn't provide an identifing method getEnumValueId.", e);
+                    "The provided enumeration class doesn't provide an identifing method getEnumValueId.", e); //$NON-NLS-1$
         } catch (IllegalAccessException e) {
             throwUnableToCallMethodException(e);
         } catch (InvocationTargetException e) {
@@ -717,7 +716,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     private void throwUnableToCallMethodException(Exception e) throws IllegalStateException {
-        throw new IllegalStateException("Unable to call the getEnumValueId of the provided enumeration value.", e);
+        throw new IllegalStateException("Unable to call the getEnumValueId of the provided enumeration value.", e); //$NON-NLS-1$
     }
 
     /**
@@ -788,7 +787,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * @param repository the runtime repository that needs to be used by the XmlAdapters that are
      *            collected by this method
      * 
-     * @see #getAllInternalEnumXmlAdapters()
+     * @see #getAllInternalEnumXmlAdapters(IRuntimeRepository)
      * @see #addEnumValueLookupService(IEnumValueLookupService)
      * @see IEnumValueLookupService#getXmlAdapter()
      */

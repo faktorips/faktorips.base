@@ -83,7 +83,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      */
     @Override
     protected void generateInnerClasses() throws CoreException {
-
+        // could be implemented in subclass
     }
 
     @Override
