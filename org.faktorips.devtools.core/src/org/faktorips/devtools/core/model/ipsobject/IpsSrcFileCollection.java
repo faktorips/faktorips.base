@@ -124,7 +124,7 @@ public class IpsSrcFileCollection {
                 newItem.setDuplicateName(true);
                 item.setDuplicateName(true);
             }
-            if (baseMetaClass != null) {
+            if (metaClassName != null) {
                 newItem.setInstanceOfMetaClass(metaClassName.equals(newItem.getDefiningMetaClass()));
             }
         }
@@ -158,7 +158,7 @@ public class IpsSrcFileCollection {
 
         private boolean duplicateName = false;
 
-        private boolean instanceOfSubtype = false;
+        private boolean instanceOfMetaClass = false;
 
         /**
          * Get the name of defining meta class
@@ -201,14 +201,14 @@ public class IpsSrcFileCollection {
          * <code>false</code> otherwise.
          */
         public boolean isInstanceOfMetaClass() {
-            return instanceOfSubtype;
+            return instanceOfMetaClass;
         }
 
         /**
          * @see #isInstanceOfMetaClass()
          */
-        public void setInstanceOfMetaClass(boolean instanceOfSubtype) {
-            this.instanceOfSubtype = instanceOfSubtype;
+        public void setInstanceOfMetaClass(boolean instanceOfMetaClass) {
+            this.instanceOfMetaClass = instanceOfMetaClass;
         }
 
     }
