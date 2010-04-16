@@ -49,7 +49,7 @@ public class LinkPageElement extends AbstractCompositePageElement {
 
     	
     	addPageElements(new ImagePageElement(to));	
-        addPageElements(new TextPageElement(" " + text));
+        addPageElements(new TextPageElement(" " + text)); //$NON-NLS-1$
     }
 
 	/**

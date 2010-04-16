@@ -31,20 +31,20 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class AbstractObjectContentPageElement<T extends IIpsObject> extends AbstractRootPageElement {
 
-	private T ipsObject;
+	private T documentedIpsObject;
 	private DocumentorConfiguration config;
 
 	/**
-	 * creates a page, which represents the given ipsObject according to the
+	 * creates a page, which represents the given documentedIpsObject according to the
 	 * given config
 	 * 
-	 * @param ipsObject
+	 * @param documentedIpsObject
 	 * @param config
 	 */
-	protected AbstractObjectContentPageElement(T ipsObject, DocumentorConfiguration config) {
-		this.ipsObject = ipsObject;
+	protected AbstractObjectContentPageElement(T documentedIpsObject, DocumentorConfiguration config) {
+		this.documentedIpsObject = documentedIpsObject;
 		this.config = config;
-		setTitle(ipsObject.getName());
+		setTitle(documentedIpsObject.getName());
 	}
 
 	/*
@@ -61,27 +61,28 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", "_top", //$NON-NLS-1$ //$NON-NLS-2$
 				Messages.AbstractObjectContentPageElement_overviewProject + " " + getConfig().getIpsProject().getName()))); //$NON-NLS-1$
 
-		addPageElements(new LinkPageElement(getIpsObject().getIpsPackageFragment(), "classes", DocumentorUtil //$NON-NLS-1$
-				.getIpsPackageName(getIpsObject().getIpsPackageFragment()), true));
-		addPageElements(new TextPageElement(getIpsObject().getIpsObjectType().getDisplayName() + " " //$NON-NLS-1$
-				+ getIpsObject().getName(), TextType.HEADING_1));
+		addPageElements(new LinkPageElement(getDocumentedIpsObject().getIpsPackageFragment(), "classes", DocumentorUtil //$NON-NLS-1$
+				.getIpsPackageName(getDocumentedIpsObject().getIpsPackageFragment()), true));
+		addPageElements(new TextPageElement(getDocumentedIpsObject().getIpsObjectType().getDisplayName() + " " //$NON-NLS-1$
+				+ getDocumentedIpsObject().getName(), TextType.HEADING_1));
 
 		addTypeHierarchy();
 
-		addPageElements(new TextPageElement(getIpsObject().getName(), TextType.HEADING_2));
+		addPageElements(new TextPageElement(getDocumentedIpsObject().getName(), TextType.HEADING_2));
+		
 		addStructureData();
 
-		if (!getIpsObject().getIpsProject().equals(getConfig().getIpsProject())) {
+		if (!getDocumentedIpsObject().getIpsProject().equals(getConfig().getIpsProject())) {
 			addPageElements(TextPageElement.createParagraph(Messages.AbstractObjectContentPageElement_project + ": " //$NON-NLS-1$
-					+ getIpsObject().getIpsProject().getName()));
+					+ getDocumentedIpsObject().getIpsProject().getName()));
 		}
 		addPageElements(TextPageElement.createParagraph(Messages.AbstractObjectContentPageElement_projectFolder + ": " //$NON-NLS-1$
-				+ getIpsObject().getIpsSrcFile().getIpsPackageFragment()));
+				+ getDocumentedIpsObject().getIpsSrcFile().getIpsPackageFragment()));
 
-		addPageElements(new TextPageElement(Messages.description, TextType.HEADING_2));
+		addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_description, TextType.HEADING_2));
 		addPageElements(new TextPageElement(
-				StringUtils.isBlank(getIpsObject().getDescription()) ? Messages.AbstractObjectContentPageElement_noDescription
-						: getIpsObject().getDescription(), TextType.BLOCK));
+				StringUtils.isBlank(getDocumentedIpsObject().getDescription()) ? Messages.AbstractObjectContentPageElement_noDescription
+						: getDocumentedIpsObject().getDescription(), TextType.BLOCK));
 
 		addValidationErrors();
 	}
@@ -93,7 +94,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	private void addValidationErrors() {
 		try {
 
-			MessageList messageList = getIpsObject().validate(getIpsObject().getIpsProject());
+			MessageList messageList = getDocumentedIpsObject().validate(getDocumentedIpsObject().getIpsProject());
 			if (messageList.isEmpty())
 				return;
 
@@ -135,7 +136,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	 */
 	@Override
 	public String getPathToRoot() {
-		return PathUtilFactory.createPathUtil(getIpsObject()).getPathToRoot();
+		return PathUtilFactory.createPathUtil(getDocumentedIpsObject()).getPathToRoot();
 	}
 
 	/**
@@ -154,12 +155,12 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	}
 
 	/**
-	 * returns the ipsObject
+	 * returns the documentedIpsObject
 	 * 
 	 * @return
 	 */
-	protected T getIpsObject() {
-		return ipsObject;
+	protected T getDocumentedIpsObject() {
+		return documentedIpsObject;
 	}
 
 	/**

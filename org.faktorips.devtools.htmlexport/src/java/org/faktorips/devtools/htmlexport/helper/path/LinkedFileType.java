@@ -10,8 +10,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  *
  */
 public class LinkedFileType {
-    private static LinkedFileType PACKAGE_CLASSES_OVERVIEW = new LinkedFileType("package_classes_", "", "classes");
-    private static LinkedFileType ELEMENT_CONTENT= new LinkedFileType("element_", "", "content");
+    private static LinkedFileType PACKAGE_CLASSES_OVERVIEW = new LinkedFileType("package_classes_", "", "classes"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private static LinkedFileType ELEMENT_CONTENT= new LinkedFileType("element_", "", "content"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     private LinkedFileType(String prefix, String suffix, String target) {
         this.prefix = prefix;
@@ -41,7 +41,7 @@ public class LinkedFileType {
      */
     public static LinkedFileType getLinkedFileTypeByIpsElement(IIpsElement element) {
         if (element instanceof IIpsPackageFragment) return PACKAGE_CLASSES_OVERVIEW;
-        if (element instanceof IIpsObject) return new LinkedFileType("object_", "." + ((IIpsObject)element).getIpsObjectType().getFileExtension(), "content");
+        if (element instanceof IIpsObject) return new LinkedFileType("object_", "." + ((IIpsObject)element).getIpsObjectType().getFileExtension(), "content"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         return ELEMENT_CONTENT;
     }
 }

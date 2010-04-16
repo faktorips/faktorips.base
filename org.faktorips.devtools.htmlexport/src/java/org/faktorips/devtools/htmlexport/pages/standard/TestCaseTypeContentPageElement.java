@@ -141,9 +141,9 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 	private void addTestCaseTypeParameters() {
 		addPageElements(new TextPageElement(Messages.TestCaseTypeContentPageElement_parameters, TextType.HEADING_2));
 		TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE).addPageElements(
-				new ImagePageElement(getIpsObject())).addPageElements(new TextPageElement(getIpsObject().getQualifiedName())));
+				new ImagePageElement(getDocumentedIpsObject())).addPageElements(new TextPageElement(getDocumentedIpsObject().getQualifiedName())));
 		
-		ITestParameter[] testParameters = getIpsObject().getTestParameters();
+		ITestParameter[] testParameters = getDocumentedIpsObject().getTestParameters();
 		for (ITestParameter testParameter : testParameters) {
 			root.addPageElements(createTestParameterPageElement(testParameter));
 		}
@@ -200,7 +200,7 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 		TestAttributesTablePageElement testAttributesTablePageElement = new TestAttributesTablePageElement(
 				testParameter);
 		if (testAttributesTablePageElement.isEmpty()) {
-			return wrapper.addPageElements(TextPageElement.createParagraph(Messages.TestCaseTypeContentPageElement_no + Messages.TestCaseTypeContentPageElement_9));
+			return wrapper.addPageElements(TextPageElement.createParagraph(Messages.TestCaseTypeContentPageElement_noTestAttributes));
 		}
 
 		return wrapper.addPageElements(testAttributesTablePageElement);

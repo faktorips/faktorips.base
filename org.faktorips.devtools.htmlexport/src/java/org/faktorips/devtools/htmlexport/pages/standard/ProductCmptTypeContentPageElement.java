@@ -73,7 +73,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 		private PageElement getTableStructureLinks(ITableStructureUsage tableStructureUsage) {
 			String[] tableStructures = tableStructureUsage.getTableStructures();
 			if (tableStructures.length == 0)
-				return new TextPageElement("No" + " " + IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural()); //$NON-NLS-1$ //$NON-NLS-2$
+				return new TextPageElement("No " + IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural()); //$NON-NLS-1$
 
 			List<LinkPageElement> links = new ArrayList<LinkPageElement>();
 			for (String tableStructure : tableStructures) {
@@ -96,12 +96,12 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 		protected List<String> getHeadline() {
 			List<String> headline = new ArrayList<String>();
 
-			headline.add(Messages.ProductCmptTypeContentPageElement_5);
-			headline.add(Messages.ProductCmptTypeContentPageElement_6);
+			headline.add(Messages.ProductCmptTypeContentPageElement_roleName);
+			headline.add(IpsObjectType.TABLE_STRUCTURE.getDisplayName()); //$NON-NLS-1$
 
-			addHeadlineAndColumnLayout(headline, Messages.ProductCmptTypeContentPageElement_7, Style.CENTER);
+			addHeadlineAndColumnLayout(headline, IpsObjectType.TABLE_CONTENTS.getDisplayName() + Messages.ProductCmptTypeContentPageElement_mandatory, Style.CENTER);
 
-			headline.add(Messages.ProductCmptTypeContentPageElement_8);
+			headline.add(Messages.ProductCmptTypeContentPageElement_description);
 
 			return headline;
 		}
@@ -143,35 +143,38 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 	 */
 	private void addTableStructureTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(), TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(),
+				TextType.HEADING_2));
 
-		wrapper.addPageElements(new TableStructureTablePageElement(getProductCmptType()));
+		wrapper.addPageElements(new TableStructureTablePageElement(getDocumentedIpsObject()));
 		addPageElements(wrapper);
 	}
 
 	/**
-	 *  adds a list with the productCmpts
+	 * adds a list with the productCmpts
 	 */
 	private void addProductCmptList() {
 		IIpsSrcFile[] allProductCmptSrcFiles;
 		List<IProductCmpt> productCmpts;
 		try {
-			allProductCmptSrcFiles = getProductCmptType().searchMetaObjectSrcFiles(true);
+			allProductCmptSrcFiles = getDocumentedIpsObject().searchMetaObjectSrcFiles(true);
 			productCmpts = DocumentorUtil.getIpsObjects(allProductCmptSrcFiles);
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
 
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement(IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural(), TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural(),
+				TextType.HEADING_2));
 
 		if (productCmpts.size() == 0) {
-			wrapper.addPageElements(new TextPageElement(Messages.ProductCmptTypeContentPageElement_9 + Messages.ProductCmptTypeContentPageElement_10 + IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural()));
+			wrapper.addPageElements(new TextPageElement(Messages.ProductCmptTypeContentPageElement_no
+					+ IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural())); //$NON-NLS-1$
 			addPageElements(wrapper);
 			return;
 		}
 
-		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(productCmpts, Messages.ProductCmptTypeContentPageElement_11,
+		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(productCmpts, "content", //$NON-NLS-1$
 				new LinkedHashSet<Style>());
 		ListPageElement liste = new ListPageElement(createLinkPageElements);
 
@@ -179,48 +182,49 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 		addPageElements(wrapper);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.htmlexport.pages.standard.AbstractTypeContentPageElement#addStructureData()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractTypeContentPageElement#addStructureData()
 	 */
 	@Override
 	protected void addStructureData() {
 		super.addStructureData();
 
 		try {
-			IPolicyCmptType to = getIpsObject().getIpsProject().findPolicyCmptType(
-					getProductCmptType().getPolicyCmptType());
+			IPolicyCmptType to = getDocumentedIpsObject().getIpsProject().findPolicyCmptType(
+					getDocumentedIpsObject().getPolicyCmptType());
 			if (to == null) {
-				addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + Messages.ProductCmptTypeContentPageElement_12 +Messages.ProductCmptTypeContentPageElement_13));
+				addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
+						+ ": " + Messages.ProductCmptTypeContentPageElement_none)); //$NON-NLS-1$
 				return;
 			}
-			addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
-					new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() +Messages.ProductCmptTypeContentPageElement_14), new LinkPageElement(to, Messages.ProductCmptTypeContentPageElement_15, to.getName(), true) }));
+			addPageElements(new WrapperPageElement(
+					WrapperType.BLOCK,
+					new PageElement[] {
+							new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), new LinkPageElement(to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	/**
-	 * returns the productCmptType
-	 * @return
-	 */
-	private IProductCmptType getProductCmptType() {
-		return (IProductCmptType) getIpsObject();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.htmlexport.pages.standard.AbstractTypeContentPageElement#getMethodsTablePageElement()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.faktorips.devtools.htmlexport.pages.standard.
+	 * AbstractTypeContentPageElement#getMethodsTablePageElement()
 	 */
 	@Override
 	protected MethodsTablePageElement getMethodsTablePageElement() {
-		return new MethodsTablePageElement(getIpsObject()) {
+		return new MethodsTablePageElement(getDocumentedIpsObject()) {
 
 			@Override
 			protected List<String> getHeadline() {
 
 				List<String> headline = super.getHeadline();
-				headline.add(Messages.ProductCmptTypeContentPageElement_16);
+				headline.add(Messages.ProductCmptTypeContentPageElement_formulaName);
 
 				return headline;
 			}

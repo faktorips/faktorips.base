@@ -56,8 +56,8 @@ public class HtmlTable {
         }
         
         private String getElementName() {
-            if (isHeaderCell()) return "th";
-            return "td";
+            if (isHeaderCell()) return "th"; //$NON-NLS-1$
+            return "td"; //$NON-NLS-1$
         }
     }
 
@@ -97,7 +97,7 @@ public class HtmlTable {
     private void calculateColumnCount(String[][] cellText) {
         columnCount = -1;
         for (String[] row : cellText) {
-            if (columnCount != row.length && columnCount > -1) throw new IllegalArgumentException("The number of columns differ!");
+            if (columnCount != row.length && columnCount > -1) throw new IllegalArgumentException("The number of columns differ!"); //$NON-NLS-1$
             columnCount = row.length;
         }
     }
@@ -115,21 +115,21 @@ public class HtmlTable {
      */
     public String generate() {
         StringBuilder builder = new StringBuilder();
-        builder.append(HtmlUtil.createHtmlElementOpenTag("table", new HtmlAttribute("class", tableClasses)));
+        builder.append(HtmlUtil.createHtmlElementOpenTag("table", new HtmlAttribute("class", tableClasses))); //$NON-NLS-1$ //$NON-NLS-2$
         for (int i = 0; i < htmlTableCells.length; i++) {
             generateRow(builder, i);
             
         }
-        builder.append(HtmlUtil.createHtmlElementCloseTag("table"));
+        builder.append(HtmlUtil.createHtmlElementCloseTag("table")); //$NON-NLS-1$
         return builder.toString();
 
     }
 
     private void generateRow(StringBuilder builder, int i) {
-        builder.append(HtmlUtil.createHtmlElementOpenTag("tr", ""));
+        builder.append(HtmlUtil.createHtmlElementOpenTag("tr", "")); //$NON-NLS-1$ //$NON-NLS-2$
         for (HtmlTableCell cell : htmlTableCells[i]) {
             builder.append(cell.generate());
         }
-        builder.append(HtmlUtil.createHtmlElementCloseTag("tr"));
+        builder.append(HtmlUtil.createHtmlElementCloseTag("tr")); //$NON-NLS-1$
     }
 }

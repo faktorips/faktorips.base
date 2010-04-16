@@ -23,6 +23,6 @@ public class PathUtilFactory {
         if (ipsElement instanceof IIpsProject) return new IpsProjectPathUtil();
         if (ipsElement instanceof IIpsPackageFragment) return new IpsPackageFragmentPathUtil((IIpsPackageFragment) ipsElement);
         if (ipsElement instanceof IIpsObject) return new IpsObjectPathUtil((IIpsObject) ipsElement);
-        throw new NotImplementedException("There is no IpsElementPathUtil for the IIpsElement of the type " + ipsElement.getClass().getCanonicalName());
+        throw new NotImplementedException("There is no IpsElementPathUtil for the IIpsElement of the type " + ipsElement.getClass().getCanonicalName()); //$NON-NLS-1$
     }
 }

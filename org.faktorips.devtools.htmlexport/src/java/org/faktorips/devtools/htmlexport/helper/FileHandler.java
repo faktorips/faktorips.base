@@ -52,7 +52,7 @@ public class FileHandler {
 	 */
 	public static byte[] readFile(String bundleName, String fileName) throws IOException {
 		if (Platform.getBundle(bundleName) == null)
-			throw new IOException("Bundle not found");
+			throw new IOException("Bundle not found"); //$NON-NLS-1$
 
 		BufferedInputStream in = null;
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -62,7 +62,7 @@ public class FileHandler {
 			URL resource = bundle.getResource(fileName);
 
 			if (resource == null) {
-				throw new IOException(fileName + " not found in " + bundleName);
+				throw new IOException(fileName + " not found in " + bundleName); //$NON-NLS-1$
 			}
 			in = new BufferedInputStream(resource.openStream());
 			byte[] buffer = new byte[8 * 1024];

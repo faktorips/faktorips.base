@@ -42,7 +42,7 @@ public class ImagePageElement extends AbstractPageElement {
 
 	private static String getIpsElementImageName(IIpsElement element) {
 		if (element instanceof IIpsPackageFragment) {
-			return "ipspackage";
+			return "ipspackage"; //$NON-NLS-1$
 		}
 		if (element instanceof IIpsObject) {
 			IIpsObject object = (IIpsObject) element;

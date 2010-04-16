@@ -90,11 +90,11 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		protected List<String> getHeadline() {
 			List<String> headline = new ArrayList<String>();
 
-			headline.add(Messages.TableStructureContentPageElement_2);
-			headline.add(Messages.TableStructureContentPageElement_3);
-			headline.add(Messages.TableStructureContentPageElement_4);
-			headline.add(Messages.TableStructureContentPageElement_5);
-			headline.add(Messages.TableStructureContentPageElement_6);
+			headline.add(Messages.TableStructureContentPageElement_name);
+			headline.add(Messages.TableStructureContentPageElement_keyItems);
+			headline.add(Messages.TableStructureContentPageElement_referenced + IpsObjectType.TABLE_STRUCTURE.getDisplayName());
+			headline.add(Messages.TableStructureContentPageElement_referencedUniqueKey);
+			headline.add(Messages.TableStructureContentPageElement_description);
 
 			return headline;
 		}
@@ -293,7 +293,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		super.build();
 
 		addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName(), TextType.HEADING_2));
-		addPageElements(new TextPageElement(getIpsObject().getTableStructureType().getName(), TextType.BLOCK));
+		addPageElements(new TextPageElement(getDocumentedIpsObject().getTableStructureType().getName(), TextType.BLOCK));
 
 		addColumnTable();
 
@@ -312,10 +312,10 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 	 */
 	private void addColumnTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_7, TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_columns, TextType.HEADING_2));
 		
 		wrapper
-				.addPageElements(getTableOrAlternativeText(new ColumnsTablePageElement(getIpsObject()), Messages.TableStructureContentPageElement_8));
+				.addPageElements(getTableOrAlternativeText(new ColumnsTablePageElement(getDocumentedIpsObject()), Messages.TableStructureContentPageElement_noColumns));
 		addPageElements(wrapper);
 	}
 
@@ -324,10 +324,10 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 	 */
 	private void addUniqueKeysTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_9, TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_uniqueKeys, TextType.HEADING_2));
 		
-		wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(getIpsObject()),
-				Messages.TableStructureContentPageElement_10));
+		wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(getDocumentedIpsObject()),
+				Messages.TableStructureContentPageElement_noUniqueKeys));
 		addPageElements(wrapper);
 	}
 
@@ -336,10 +336,10 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 	 */
 	private void addColumnRangesTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_11, TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_columnRanges, TextType.HEADING_2));
 		
-		wrapper.addPageElements(getTableOrAlternativeText(new ColumnsRangesTablePageElement(getIpsObject()),
-				Messages.TableStructureContentPageElement_12));
+		wrapper.addPageElements(getTableOrAlternativeText(new ColumnsRangesTablePageElement(getDocumentedIpsObject()),
+				Messages.TableStructureContentPageElement_noColumnRanges));
 		addPageElements(wrapper);
 	}
 
@@ -348,10 +348,10 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 	 */
 	private void addForeignKeyTable() {
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_13, TextType.HEADING_2));
+		wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_foreignKeys, TextType.HEADING_2));
 		
-		wrapper.addPageElements(getTableOrAlternativeText(new ForeignKeysTablePageElement(getIpsObject()),
-				Messages.TableStructureContentPageElement_14));
+		wrapper.addPageElements(getTableOrAlternativeText(new ForeignKeysTablePageElement(getDocumentedIpsObject()),
+				Messages.TableStructureContentPageElement_noForeignKeys));
 		addPageElements(wrapper);
 	}
 
@@ -362,7 +362,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		IIpsSrcFile[] allTableContentsSrcFiles;
 		List<IProductCmpt> tableContents;
 		try {
-			allTableContentsSrcFiles = getIpsObject().searchMetaObjectSrcFiles(true);
+			allTableContentsSrcFiles = getDocumentedIpsObject().searchMetaObjectSrcFiles(true);
 			tableContents = DocumentorUtil.getIpsObjects(allTableContentsSrcFiles);
 		} catch (CoreException e) {
 			throw new RuntimeException(e);

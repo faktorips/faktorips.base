@@ -120,7 +120,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeBaseFrameDefinition(DocumentorConfiguration config) {
-        IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(Messages.StandardDocumentorScript_documentation + " " + config.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(Messages.StandardDocumentorScript_documentation + " " + config.getIpsProject().getName(), "20%, 80%", "30%, 70%");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         FileHandler.writeFile(config, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
     }
 

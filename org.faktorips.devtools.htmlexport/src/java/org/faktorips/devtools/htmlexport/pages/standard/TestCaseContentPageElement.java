@@ -60,9 +60,9 @@ public class TestCaseContentPageElement extends AbstractObjectContentPageElement
 	private void addTestCaseTypeParameters() {
 		addPageElements(new TextPageElement(Messages.TestCaseContentPageElement_parameters, TextType.HEADING_2));
 		TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE).addPageElements(
-				new ImagePageElement(getIpsObject())).addPageElements(new TextPageElement(getIpsObject().getQualifiedName())));
+				new ImagePageElement(getDocumentedIpsObject())).addPageElements(new TextPageElement(getDocumentedIpsObject().getQualifiedName())));
 		
-		ITestObject[] testObjects = getIpsObject().getTestObjects();
+		ITestObject[] testObjects = getDocumentedIpsObject().getTestObjects();
 		for (ITestObject testObject : testObjects) {
 			root.addPageElements(createTestObjectPageElement(testObject));
 		}
@@ -123,7 +123,7 @@ public class TestCaseContentPageElement extends AbstractObjectContentPageElement
 						new TextPageElement(testObject.getTestParameterName())));
 
 		KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
-		keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_name, testObject.getName());
+		keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_name, testObject.getName()); //$NON-NLS-1$
 		keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_value, testObject.getValue());
 		try {
 			keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_testParameterType, testObject

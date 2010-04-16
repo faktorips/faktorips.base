@@ -55,7 +55,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement(Messages.PolicyCmptTypeContentPageElement_rules, TextType.HEADING_2));
 
-		wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getPolicyCmptType()),
+		wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getDocumentedIpsObject()),
 				Messages.PolicyCmptTypeContentPageElement_noValidationrules));
 
 		addPageElements(wrapper);
@@ -69,7 +69,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 	 */
 	@Override
 	protected AttributesTablePageElement getAttributesTablePageElement() {
-		return new AttributesTablePageElement(getIpsObject()) {
+		return new AttributesTablePageElement(getDocumentedIpsObject()) {
 
 			@Override
 			protected List<String> getAttributeData(IAttribute attribute) {
@@ -107,9 +107,13 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 	protected void addStructureData() {
 		super.addStructureData();
 
+		addPageElements(TextPageElement.createParagraph("Abstract Type" + ": " + (getDocumentedIpsObject().isAbstract() ? "X" : "-"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
 		try {
-			IProductCmptType to = getIpsObject().getIpsProject().findProductCmptType(
-					getPolicyCmptType().getProductCmptType());
+			
+			
+			IProductCmptType to = getDocumentedIpsObject().getIpsProject().findProductCmptType(
+					getDocumentedIpsObject().getProductCmptType());
 			if (to == null) {
 				addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": " + Messages.PolicyCmptTypeContentPageElement_none)); //$NON-NLS-1$
 				return;
@@ -121,13 +125,5 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 			e.printStackTrace();
 		}
 
-	}
-
-	/**
-	 * returns the policyCmptType
-	 * @return
-	 */
-	private IPolicyCmptType getPolicyCmptType() {
-		return ((IPolicyCmptType) getType());
 	}
 }

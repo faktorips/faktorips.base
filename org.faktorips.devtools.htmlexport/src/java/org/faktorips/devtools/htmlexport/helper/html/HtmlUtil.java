@@ -18,7 +18,7 @@ import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
  *
  */
 public class HtmlUtil {
-	private static final DateFormat META_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	private static final DateFormat META_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //$NON-NLS-1$
 	
 	
 	
@@ -32,17 +32,17 @@ public class HtmlUtil {
 	public static String createDocFrame(String title, String colDefinition, String rowsDefinition) {
 		StringBuilder builder = new StringBuilder();
 
-		builder.append(createHtmlHead(title, null).replaceFirst("<body>", ""));
-		builder.append("<frameset cols=\"");
+		builder.append(createHtmlHead(title, null).replaceFirst("<body>", "")); //$NON-NLS-1$ //$NON-NLS-2$
+		builder.append("<frameset cols=\""); //$NON-NLS-1$
 		builder.append(colDefinition);
-		builder.append("\"><frameset rows=\"");
+		builder.append("\"><frameset rows=\""); //$NON-NLS-1$
 		builder.append(rowsDefinition);
 		builder
-				.append("\"><frame src=\"overview.html\" name=\"overview\"><frame src=\"classes.html\" name=\"classes\"></frameset><frame src=\"summary.html\" name=\"content\">");
+				.append("\"><frame src=\"overview.html\" name=\"overview\"><frame src=\"classes.html\" name=\"classes\"></frameset><frame src=\"summary.html\" name=\"content\">"); //$NON-NLS-1$
 		builder
-				.append("<noframes><h2>Frame Alert</h2><p>This document is designed to be viewed only with the frames feature.</p></noframes>");
-		builder.append("</frameset>");
-		builder.append(createHtmlElementCloseTag("html"));
+				.append("<noframes><h2>Frame Alert</h2><p>This document is designed to be viewed only with the frames feature.</p></noframes>"); //$NON-NLS-1$
+		builder.append("</frameset>"); //$NON-NLS-1$
+		builder.append(createHtmlElementCloseTag("html")); //$NON-NLS-1$
 		return builder.toString();
 	}
 
@@ -55,21 +55,21 @@ public class HtmlUtil {
 	public static String createHtmlHead(String title, String stylePath) {
 		StringBuilder builder = new StringBuilder();
 
-		builder.append("<?xml version=\"1.0\" ?>\n");
+		builder.append("<?xml version=\"1.0\" ?>\n"); //$NON-NLS-1$
 		builder
-				.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
-		builder.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><title>");
+				.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"); //$NON-NLS-1$
+		builder.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><title>"); //$NON-NLS-1$
 		builder.append(title);
-		builder.append("</title>");
-		builder.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />");
-		builder.append("<meta name=\"date\" content=\"" + META_DATE_FORMAT.format(new Date()) + "\" />");
+		builder.append("</title>"); //$NON-NLS-1$
+		builder.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"); //$NON-NLS-1$
+		builder.append("<meta name=\"date\" content=\"" + META_DATE_FORMAT.format(new Date()) + "\" />"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (!StringUtils.isBlank(stylePath)) {
-			builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+			builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""); //$NON-NLS-1$
 			builder.append(stylePath);
-			builder.append("\" />");
+			builder.append("\" />"); //$NON-NLS-1$
 		}
 
-		builder.append("</head><body>");
+		builder.append("</head><body>"); //$NON-NLS-1$
 
 		return builder.toString();
 	}
@@ -83,16 +83,16 @@ public class HtmlUtil {
 	 */
 	public static String createList(Collection<String> items, String listClasses, String itemClasses) {
 		if (items.size() == 0)
-			return "";
+			return ""; //$NON-NLS-1$
 
 		StringBuilder builder = new StringBuilder();
-		builder.append(createHtmlElementOpenTag("ul", listClasses));
+		builder.append(createHtmlElementOpenTag("ul", listClasses)); //$NON-NLS-1$
 
 		for (String string : items) {
-			builder.append(createHtmlElement("li", string, itemClasses));
+			builder.append(createHtmlElement("li", string, itemClasses)); //$NON-NLS-1$
 		}
 
-		builder.append(createHtmlElementCloseTag("ul"));
+		builder.append(createHtmlElementCloseTag("ul")); //$NON-NLS-1$
 
 		return builder.toString();
 	}
@@ -120,7 +120,7 @@ public class HtmlUtil {
 	 */
 	public static String createHtmlElement(String element, HtmlAttribute... attribute) {
 		StringBuilder builder = createHtmlElementOpenTagBase(element, attribute);
-		builder.append("/>");
+		builder.append("/>"); //$NON-NLS-1$
 		return builder.toString();
 	}
 
@@ -130,7 +130,7 @@ public class HtmlUtil {
 	 * @return 
 	 */
 	public static String getHtmlText(String text) {
-		return StringUtils.replace(text, "\n", "\n<br/>");
+		return StringUtils.replace(text, "\n", "\n<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class HtmlUtil {
 		if (StringUtils.isBlank(classes)) {
 			return createHtmlElementOpenTag(element, new HtmlAttribute[] {});
 		}
-		HtmlAttribute classesAttr = new HtmlAttribute("class", classes);
+		HtmlAttribute classesAttr = new HtmlAttribute("class", classes); //$NON-NLS-1$
 		return createHtmlElementOpenTag(element, classesAttr);
 	}
 
@@ -169,9 +169,9 @@ public class HtmlUtil {
 				continue;
 			builder.append(' ');
 			builder.append(attribute.getName());
-			builder.append("=\"");
+			builder.append("=\""); //$NON-NLS-1$
 			builder.append(attribute.getValue());
-			builder.append("\"");
+			builder.append("\""); //$NON-NLS-1$
 		}
 		return builder;
 	}
@@ -183,7 +183,7 @@ public class HtmlUtil {
 	 */
 	public static String createHtmlElementCloseTag(String element) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("</");
+		builder.append("</"); //$NON-NLS-1$
 		builder.append(element);
 		builder.append('>');
 		return builder.toString();
@@ -197,18 +197,18 @@ public class HtmlUtil {
 	 * @return
 	 */
 	public static String createLinkOpenTag(String href, String target, String classes) {
-		HtmlAttribute hrefAttr = new HtmlAttribute("href", href);
-		HtmlAttribute targetAttr = (target == null ? null : new HtmlAttribute("target", target));
+		HtmlAttribute hrefAttr = new HtmlAttribute("href", href); //$NON-NLS-1$
+		HtmlAttribute targetAttr = (target == null ? null : new HtmlAttribute("target", target)); //$NON-NLS-1$
 
 		StringBuilder builder = new StringBuilder();
 
 		if (StringUtils.isBlank(classes)) {
-			builder.append(createHtmlElementOpenTag("a", hrefAttr, targetAttr));
+			builder.append(createHtmlElementOpenTag("a", hrefAttr, targetAttr)); //$NON-NLS-1$
 			return builder.toString();
 		}
 
-		HtmlAttribute classAttr = new HtmlAttribute("class", classes);
-		builder.append(createHtmlElementOpenTag("a", hrefAttr, classAttr, targetAttr));
+		HtmlAttribute classAttr = new HtmlAttribute("class", classes); //$NON-NLS-1$
+		builder.append(createHtmlElementOpenTag("a", hrefAttr, classAttr, targetAttr)); //$NON-NLS-1$
 		return builder.toString();
 	}
 
@@ -220,7 +220,7 @@ public class HtmlUtil {
 	 */
 	public static String getPathFromRoot(IIpsElement ipsElement, LinkedFileType linkedFileType) {
 		IpsElementPathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
-		return pathUtil.getPathFromRoot(linkedFileType) + ".html";
+		return pathUtil.getPathFromRoot(linkedFileType) + ".html"; //$NON-NLS-1$
 	}
 
 	/**
@@ -230,8 +230,8 @@ public class HtmlUtil {
 	 * @return
 	 */
 	public static String createImage(String src, String alt) {
-		HtmlAttribute[] attribute = new HtmlAttribute[] { new HtmlAttribute("src", src), new HtmlAttribute("alt", alt) };
-		return createHtmlElement("img", attribute).toString();
+		HtmlAttribute[] attribute = new HtmlAttribute[] { new HtmlAttribute("src", src), new HtmlAttribute("alt", alt) }; //$NON-NLS-1$ //$NON-NLS-2$
+		return createHtmlElement("img", attribute).toString(); //$NON-NLS-1$
 
 	}
 
@@ -267,6 +267,6 @@ public class HtmlUtil {
 	 * @return
 	 */
 	public static String createHtmlFoot() {
-		return createHtmlElementCloseTag("body") + createHtmlElementCloseTag("html");
+		return createHtmlElementCloseTag("body") + createHtmlElementCloseTag("html"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

@@ -29,7 +29,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageEl
  * 
  * @param <T>
  */
-public abstract class AbstractTypeContentPageElement<T extends IType> extends AbstractObjectContentPageElement<IType> {
+public abstract class AbstractTypeContentPageElement<T extends IType> extends AbstractObjectContentPageElement<T> {
 
 	/**
 	 * Visitor for superclass hierarchy
@@ -64,7 +64,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	 * @param object
 	 * @param config
 	 */
-	public AbstractTypeContentPageElement(IType object, DocumentorConfiguration config) {
+	public AbstractTypeContentPageElement(T object, DocumentorConfiguration config) {
 		super(object, config);
 	}
 
@@ -103,7 +103,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	 * @return
 	 */
 	protected MethodsTablePageElement getMethodsTablePageElement() {
-		return new MethodsTablePageElement(getType());
+		return new MethodsTablePageElement(getDocumentedIpsObject());
 	}
 
 	/*
@@ -128,13 +128,13 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
 		List<PageElement> subTypes = new ArrayList<PageElement>();
 
-		for (IIpsSrcFile srcFile : getConfig().getLinkedSource(getType().getIpsObjectType())) {
+		for (IIpsSrcFile srcFile : getConfig().getLinkedSource(getDocumentedIpsObject().getIpsObjectType())) {
 			try {
 				IType type = (IType) srcFile.getIpsObject();
 				if (type == null) {
 					continue;
 				}
-				if (type.getSupertype().equals(getType().getQualifiedName())) {
+				if (type.getSupertype().equals(getDocumentedIpsObject().getQualifiedName())) {
 					subTypes.add(new LinkPageElement(type, "content", type.getQualifiedName(), true)); //$NON-NLS-1$
 				}
 			} catch (CoreException e) {
@@ -152,9 +152,9 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	 * adds a block with superclasses
 	 */
 	protected void addSuperTypeHierarchy() {
-		SupertypeHierarchyVisitor hier = new SupertypeHierarchyVisitor(getType().getIpsProject());
+		SupertypeHierarchyVisitor hier = new SupertypeHierarchyVisitor(getDocumentedIpsObject().getIpsProject());
 		try {
-			hier.start(getType());
+			hier.start(getDocumentedIpsObject());
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -170,8 +170,8 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 		TreeNodePageElement element = baseElement;
 
 		for (int i = 1; i < superTypes.size(); i++) {
-			if (superTypes.get(i) == getType()) {
-				element.addPageElements(new TextPageElement(getType().getName()));
+			if (superTypes.get(i) == getDocumentedIpsObject()) {
+				element.addPageElements(new TextPageElement(getDocumentedIpsObject().getName()));
 				break;
 			}
 			TreeNodePageElement subElement = new TreeNodePageElement(new LinkPageElement(superTypes.get(i), "content", //$NON-NLS-1$
@@ -193,7 +193,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 		super.addStructureData();
 
 		try {
-			IType to = getType().findSupertype(getType().getIpsProject());
+			IType to = getDocumentedIpsObject().findSupertype(getDocumentedIpsObject().getIpsProject());
 			if (to == null)
 				return;
 
@@ -205,15 +205,6 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	}
 
 	/**
-	 * returns the type
-	 * 
-	 * @return
-	 */
-	protected IType getType() {
-		return getIpsObject();
-	}
-
-	/**
 	 * adds a table with the associations of the type
 	 */
 	protected void addAssociationsTable() {
@@ -221,7 +212,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 		wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_associations, TextType.HEADING_2));
 
 		wrapper
-				.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(getType()),
+				.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(getDocumentedIpsObject()),
 						Messages.AbstractTypeContentPageElement_noAssociations));
 
 		addPageElements(wrapper);
@@ -244,6 +235,6 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	 * @return
 	 */
 	protected AttributesTablePageElement getAttributesTablePageElement() {
-		return new AttributesTablePageElement(getType());
+		return new AttributesTablePageElement(getDocumentedIpsObject());
 	}
 }

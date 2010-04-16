@@ -41,7 +41,7 @@ public class DocumentorConfiguration {
      */
     protected ILayouter layouter;
     
-	protected SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+	protected SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy"); //$NON-NLS-1$
 
 	public DocumentorConfiguration() {
 		super();

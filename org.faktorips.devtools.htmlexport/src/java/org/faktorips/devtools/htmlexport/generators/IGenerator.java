@@ -12,5 +12,5 @@ public interface IGenerator {
 	 */
     public byte[] generate();
     
-    public final String CHARSET = "UTF-8";
+    public final String CHARSET = "UTF-8"; //$NON-NLS-1$
 }

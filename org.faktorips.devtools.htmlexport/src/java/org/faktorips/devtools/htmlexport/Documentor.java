@@ -25,7 +25,7 @@ public class Documentor {
 
 	private void setDocumentorConfiguration(DocumentorConfiguration config) {
 		if (config == null)
-			throw new IllegalArgumentException("The DocumentorConfiguration must not be null");
+			throw new IllegalArgumentException("The DocumentorConfiguration must not be null"); //$NON-NLS-1$
 		this.config = config;
 	}
 

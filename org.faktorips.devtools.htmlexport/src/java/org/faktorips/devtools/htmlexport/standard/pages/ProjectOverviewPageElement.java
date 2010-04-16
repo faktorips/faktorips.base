@@ -38,7 +38,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 	 */
 	public ProjectOverviewPageElement(DocumentorConfiguration config) {
 		this.config = config;
-		setTitle(Messages.ProjectOverviewPageElement_project + " " + getProject().getName()); //$NON-NLS-2$
+		setTitle(Messages.ProjectOverviewPageElement_project + " " + getProject().getName()); //$NON-NLS-1$
 	}
 
 	/*
@@ -64,7 +64,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 	 * adds creation time
 	 */
 	private void addCreationTime() {
-		PageElement createCreationTime = new TextPageElement(Messages.ProjectOverviewPageElement_created + " " //$NON-NLS-2$
+		PageElement createCreationTime = new TextPageElement(Messages.ProjectOverviewPageElement_created + " "  //$NON-NLS-1$
 				+ CREATION_TIME_DATE_FORMAT.format(new Date()), TextType.BLOCK).addStyles(Style.SMALL);
 		addPageElements(createCreationTime);
 	}

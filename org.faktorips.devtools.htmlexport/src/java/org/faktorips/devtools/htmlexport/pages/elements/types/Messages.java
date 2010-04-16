@@ -21,8 +21,8 @@ public class Messages extends NLS {
 	public static String AttributesTablePageElement_headlineDescription;
 	public static String AttributesTablePageElement_headlineModifier;
 	public static String AttributesTablePageElement_headlineName;
-	public static String IpsObjectListPageElement_allClasses;
-	public static String IpsObjectListPageElement_Classes;
+	public static String IpsObjectListPageElement_allObjects;
+	public static String IpsObjectListPageElement_objects;
 	public static String IpsPackagesListPageElement_allPackages;
 	public static String IpsPackagesListPageElement_packages;
 	public static String KeyValueTablePageElement_justEvenNumberOfPageElementsAllowed;

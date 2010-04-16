@@ -167,7 +167,7 @@ public class TableContentsContentPageElement extends AbstractObjectContentPageEl
 	private ITableStructure findTableStructure() {
 		ITableStructure tableStructure;
 		try {
-			tableStructure = getTableContent().findTableStructure(getConfig().getIpsProject());
+			tableStructure = getDocumentedIpsObject().findTableStructure(getConfig().getIpsProject());
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
@@ -179,7 +179,7 @@ public class TableContentsContentPageElement extends AbstractObjectContentPageEl
 	 * @return
 	 */
 	private ITableContents getTableContent() {
-		return getIpsObject();
+		return getDocumentedIpsObject();
 	}
 
 }

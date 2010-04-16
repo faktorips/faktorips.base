@@ -9,7 +9,7 @@ import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
  *
  */
 public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsPackageFragment> {
-    private static String PACKAGE_INDEX_FILE_NAME = "package_index.html";
+    private static String PACKAGE_INDEX_FILE_NAME = "package_index.html"; //$NON-NLS-1$
 
     public IpsPackageFragmentPathUtil(IIpsPackageFragment ipsElement) {
         super(ipsElement);
@@ -29,7 +29,7 @@ public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsP
      * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getPathToRoot()
      */
     public String getPathToRoot() {
-        if (getIpsElement().isDefaultPackage()) return "";
+        if (getIpsElement().isDefaultPackage()) return ""; //$NON-NLS-1$
         return getPackageFragmentPathToRoot(getIpsElement());
     }
 

@@ -11,7 +11,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> {
 
-    private static final String INDEX_HTML = "indes.html";
+    private static final String INDEX_HTML = "indes.html"; //$NON-NLS-1$
 
     /* (non-Javadoc)
      * @see org.faktorips.devtools.htmlexport.helper.path.AbstractIpsElementPathUtil#getPathFromRoot(org.faktorips.devtools.htmlexport.helper.path.LinkedFileType)
@@ -24,7 +24,7 @@ public class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> 
      * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getPathToRoot()
      */
     public String getPathToRoot() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
@@ -32,7 +32,7 @@ public class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> 
      */
     @Override
     protected IIpsPackageFragment getIpsPackageFragment() {
-        throw new NotImplementedException("An IpsProject has no IpsPackageFragment");
+        throw new NotImplementedException("An IpsProject has no IpsPackageFragment"); //$NON-NLS-1$
     }
 
 }

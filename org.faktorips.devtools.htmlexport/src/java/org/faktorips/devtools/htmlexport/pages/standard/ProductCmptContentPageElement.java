@@ -58,19 +58,10 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 	 */
 	protected IProductCmptType getProductCmptType() {
 		try {
-			return getConfig().getIpsProject().findProductCmptType(getProductCmpt().getProductCmptType());
+			return getConfig().getIpsProject().findProductCmptType(getDocumentedIpsObject().getProductCmptType());
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	/**
-	 * returns the productCmpt
-	 * 
-	 * @return
-	 */
-	private IProductCmpt getProductCmpt() {
-		return getIpsObject();
 	}
 
 	/*
@@ -95,7 +86,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_attributes, TextType.HEADING_2));
 		
-		wrapper.addPageElements(getTableOrAlternativeText(new ProductGenerationAttributeTable(getProductCmpt(),
+		wrapper.addPageElements(getTableOrAlternativeText(new ProductGenerationAttributeTable(getDocumentedIpsObject(),
 				getProductCmptType(), getConfig()), Messages.ProductCmptContentPageElement_noGenerationsOrAttributes));
 		addPageElements(wrapper);
 	}
@@ -104,7 +95,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 	 * adds a list of generations
 	 */
 	private void addGenerationsList() {
-		IIpsObjectGeneration[] generations = getProductCmpt().getGenerationsOrderedByValidDate();
+		IIpsObjectGeneration[] generations = getDocumentedIpsObject().getGenerationsOrderedByValidDate();
 
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_generations, TextType.HEADING_2));

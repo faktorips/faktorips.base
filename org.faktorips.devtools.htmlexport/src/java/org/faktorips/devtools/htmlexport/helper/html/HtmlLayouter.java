@@ -32,7 +32,7 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	/*
 	 * Name of the css-File 
 	 */
-	private static final String HTML_BASE_CSS = "html/base.css";
+	private static final String HTML_BASE_CSS = "html/base.css"; //$NON-NLS-1$
 	/*
 	 * path to the resource in the generated site
 	 */
@@ -52,18 +52,18 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutLinkPageElement(org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement)
 	 */
 	public void layoutLinkPageElement(LinkPageElement pageElement) {
-		String linkBase = pathToRoot + pageElement.getPathFromRoot() + ".html";
+		String linkBase = pathToRoot + pageElement.getPathFromRoot() + ".html"; //$NON-NLS-1$
 
 		append(HtmlUtil.createLinkOpenTag(linkBase, pageElement.getTarget(), getClasses(pageElement)));
 		visitSubElements(pageElement);
-		append(HtmlUtil.createHtmlElementCloseTag("a"));
+		append(HtmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
 	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutListPageElement(org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement)
 	 */
 	public void layoutListPageElement(ListPageElement pageElement) {
-		String listBaseHtmlTag = pageElement.isOrdered() ? "ul" : "ol";
+		String listBaseHtmlTag = pageElement.isOrdered() ? "ul" : "ol"; //$NON-NLS-1$ //$NON-NLS-2$
 		append(HtmlUtil.createHtmlElementOpenTag(listBaseHtmlTag, getClasses(pageElement)));
 		visitSubElements(pageElement);
 		append(HtmlUtil.createHtmlElementCloseTag(listBaseHtmlTag));
@@ -73,9 +73,9 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutTablePageElement(org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement)
 	 */
 	public void layoutTablePageElement(TablePageElement pageElement) {
-		append(HtmlUtil.createHtmlElementOpenTag("table", getClasses(pageElement)));
+		append(HtmlUtil.createHtmlElementOpenTag("table", getClasses(pageElement))); //$NON-NLS-1$
 		visitSubElements(pageElement);
-		append(HtmlUtil.createHtmlElementCloseTag("table"));
+		append(HtmlUtil.createHtmlElementCloseTag("table")); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
@@ -100,14 +100,14 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	 */
 	private String getHtmlElementByWrappingType(WrapperType wrapper) {
 		if (wrapper == WrapperType.LISTITEM)
-			return "li";
+			return "li"; //$NON-NLS-1$
 		if (wrapper == WrapperType.TABLEROW)
-			return "tr";
+			return "tr"; //$NON-NLS-1$
 		if (wrapper == WrapperType.TABLECELL)
-			return "td";
+			return "td"; //$NON-NLS-1$
 		if (wrapper == WrapperType.BLOCK)
-			return "div";
-		return "span";
+			return "div"; //$NON-NLS-1$
+		return "span"; //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
@@ -185,12 +185,12 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	protected void initBaseResources() {
 		try {
 			LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), FileHandler.readFile(
-					"org.faktorips.devtools.htmlexport", HTML_BASE_CSS));
+					"org.faktorips.devtools.htmlexport", HTML_BASE_CSS)); //$NON-NLS-1$
 
 			addLayoutResource(cssResource);
 
 		} catch (IOException e) {
-			System.out.println("Resources aren't loaded correctly: " + e.getMessage());
+			System.out.println("Resources aren't loaded correctly: " + e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
@@ -206,7 +206,7 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	 */
 	public void layoutImagePageElement(ImagePageElement imagePageElement) {
 
-		String path = resourcePath + "/images/" + imagePageElement.getFileName() + ".png";
+		String path = resourcePath + "/images/" + imagePageElement.getFileName() + ".png"; //$NON-NLS-1$ //$NON-NLS-2$
 		addLayoutResource(new LayoutResource(path, DocumentorUtil.convertImageDataToByteArray(imagePageElement.getImageData(), SWT.IMAGE_PNG)));
 		
 		append(HtmlUtil.createImage(pathToRoot + path, imagePageElement.getTitle()));

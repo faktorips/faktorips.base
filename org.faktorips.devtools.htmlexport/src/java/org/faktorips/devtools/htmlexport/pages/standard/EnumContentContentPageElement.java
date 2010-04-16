@@ -59,17 +59,9 @@ public class EnumContentContentPageElement extends AbstractObjectContentPageElem
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement(Messages.EnumContentContentPageElement_values, TextType.HEADING_2));
 
-		wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getEnumContent()), Messages.EnumContentContentPageElement_noValues));
+		wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getDocumentedIpsObject()), Messages.EnumContentContentPageElement_noValues));
 
 		addPageElements(wrapper);
-	}
-
-	/**
-	 * returns the enumContent
-	 * @return
-	 */
-	private IEnumContent getEnumContent() {
-		return getIpsObject();
 	}
 
 	/**
