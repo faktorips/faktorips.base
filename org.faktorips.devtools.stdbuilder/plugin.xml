@@ -125,5 +125,13 @@
             </instanceof></enablement>
       </moveParticipant>
    </extension>
+   <extension
+         point="org.faktorips.devtools.core.pullUpParticipants">
+      <pullUpParticipant
+            class="org.faktorips.devtools.stdbuilder.refactor.PullUpRefactoringParticipant"
+            id="org.faktorips.devtools.stdbuilder.pullUpParticipant"
+            name="StdBuilderPullUpParticipant">
+      </pullUpParticipant>
+   </extension>
 
 </plugin>

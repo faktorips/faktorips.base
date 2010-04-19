@@ -22,6 +22,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -177,6 +178,11 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     @Override
     public ProcessorBasedRefactoring getRenameRefactoring() {
         return new ProcessorBasedRefactoring(new RenameAttributeProcessor(this));
+    }
+
+    @Override
+    public ProcessorBasedRefactoring getPullUpRefactoring() {
+        return new ProcessorBasedRefactoring(new PullUpAttributeProcessor(this));
     }
 
 }

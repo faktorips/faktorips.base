@@ -262,6 +262,10 @@ public abstract class RefactoringParticipantHelper {
         targetJavaElements = newJavaElements;
     }
 
+    protected final List<IJavaElement> getOriginalJavaElements() {
+        return originalJavaElements;
+    }
+
     /**
      * Subclass implementation that is responsible for returning an appropriate JDT refactoring for
      * the given Java element. May return <tt>null</tt> if no refactoring has to be performed.

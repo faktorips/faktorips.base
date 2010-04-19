@@ -214,14 +214,20 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
             getGeneratedJavaElementsForType(javaElements, generatedJavaType, forInterface);
 
         } else if (ipsElement instanceof IIpsObjectPart) {
-            if (forInterface) {
-                getGeneratorsByPart().get(ipsElement).getGeneratedJavaElementsForPublishedInterface(javaElements,
-                        generatedJavaType, ipsElement);
-            } else {
-                getGeneratorsByPart().get(ipsElement).getGeneratedJavaElementsForImplementation(javaElements,
-                        generatedJavaType, ipsElement);
+            GenTypePart genTypePart = getGenTypePart(ipsElement);
+            if (genTypePart != null) {
+                if (forInterface) {
+                    genTypePart.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType,
+                            ipsElement);
+                } else {
+                    genTypePart.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsElement);
+                }
             }
         }
+    }
+
+    private GenTypePart getGenTypePart(IIpsElement ipsElement) {
+        return getGeneratorsByPart().get(ipsElement);
     }
 
     /**

@@ -129,7 +129,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         private void createContextMenu() {
-            IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
+            final IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
             final IWorkbenchAction renameAction = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
             IActionBars actionBars = editorSite.getActionBars();
             actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
@@ -142,6 +142,9 @@ public class AttributesSection extends SimpleIpsPartsSection {
                     manager.add(new Separator());
                     MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
                     refactorSubmenu.add(renameAction);
+                    // TODO AW: Pull Up not yet working
+                    // refactorSubmenu.add(new PullUpAction(editorSite.getShell(),
+                    // getPartsComposite()));
                     manager.add(refactorSubmenu);
                 }
             });

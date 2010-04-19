@@ -74,7 +74,7 @@ public class RenameRefactoringParticipant extends RenameParticipant {
     }
 
     /** The <tt>RefactoringParticipantHelper</tt> for this participant. */
-    private final class RenameParticipantHelper extends RefactoringParticipantHelper {
+    private class RenameParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
         protected Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
@@ -99,7 +99,8 @@ public class RenameRefactoringParticipant extends RenameParticipant {
                     javaRefactoringContributionId = IJavaRefactorings.RENAME_TYPE;
                     break;
                 default:
-                    throw new RuntimeException("This kind of Java element is not supported.");
+                    throw new RuntimeException(
+                            "This kind of Java element is not supported by the rename refactoring participant.");
             }
 
             RefactoringContribution contribution = RefactoringCore
@@ -122,11 +123,7 @@ public class RenameRefactoringParticipant extends RenameParticipant {
                 IIpsPackageFragment targetIpsPackageFragment = ipsObject.getIpsPackageFragment();
                 String newName = getArguments().getNewName();
                 success = initTargetJavaElements(ipsObject, targetIpsPackageFragment, newName, builderSet);
-
-            } else {
-                success = false;
             }
-
             return success;
         }
 

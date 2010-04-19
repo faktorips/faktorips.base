@@ -17,6 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -27,14 +30,21 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 import org.faktorips.util.ArgumentCheck;
@@ -54,16 +64,22 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
     /** The UI composite for the section. */
     EnumAttributesComposite enumAttributesComposite;
 
+    private IpsObjectEditorPage page;
+
     /**
      * Creates a new <tt>EnumAttributesSection</tt> containing the <tt>IEnumAttribute</tt>s of the
      * given <tt>IEnumType</tt>.
      * 
+     * @param page The <tt>IpsObjectEditorPage</tt> this section belongs to.
      * @param enumType The <tt>IEnumType</tt> to show the <tt>IEnumAttribute</tt>s from.
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      */
-    public EnumAttributesSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
+    public EnumAttributesSection(IpsObjectEditorPage page, IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(enumType, parent, Messages.EnumAttributesSection_title, toolkit);
+        ArgumentCheck.notNull(page);
+        this.page = page;
+        ((EnumAttributesComposite)getPartsComposite()).createContextMenu();
     }
 
     @Override
@@ -92,7 +108,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * these attributes in a dialog, to create new attributes, move attributes and to delete
      * attributes.
      */
-    private static class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
+    private class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
 
         /** The <tt>IEnumType</tt> being edited by the editor. */
         private IEnumType enumType;
@@ -118,6 +134,27 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             ArgumentCheck.notNull(enumType);
             this.enumType = enumType;
             addSelectionChangedListener(this);
+        }
+
+        private void createContextMenu() {
+            IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
+            final IWorkbenchAction renameAction = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
+            IActionBars actionBars = editorSite.getActionBars();
+            actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
+                    getPartsComposite()));
+
+            MenuManager manager = new MenuManager();
+            manager.setRemoveAllWhenShown(true);
+            manager.addMenuListener(new IMenuListener() {
+                public void menuAboutToShow(IMenuManager manager) {
+                    MenuManager refactorSubmenu = new MenuManager(Messages.EnumAttributesSection_submenuRefactor);
+                    refactorSubmenu.add(renameAction);
+                    // TODO AW: Rename of enumeration attributes not yet working.
+                    // manager.add(refactorSubmenu);
+                }
+            });
+            Menu contextMenu = manager.createContextMenu(getViewer().getControl());
+            getViewer().getControl().setMenu(contextMenu);
         }
 
         @Override

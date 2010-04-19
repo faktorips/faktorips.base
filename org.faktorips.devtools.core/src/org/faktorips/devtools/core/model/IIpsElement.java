@@ -116,4 +116,6 @@ public interface IIpsElement extends IAdaptable {
      */
     public ProcessorBasedRefactoring getMoveRefactoring();
 
+    public ProcessorBasedRefactoring getPullUpRefactoring();
+
 }

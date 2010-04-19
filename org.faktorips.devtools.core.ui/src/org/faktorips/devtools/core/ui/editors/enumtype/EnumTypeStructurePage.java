@@ -50,7 +50,7 @@ public class EnumTypeStructurePage extends EnumTypeEditorPage {
     @Override
     protected void createContentForSingleStructurePage(Composite parentContainer, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, parentContainer, 1, true, GridData.FILL_HORIZONTAL);
-        enumAttributesSection = new EnumAttributesSection(enumType, members, toolkit);
+        enumAttributesSection = new EnumAttributesSection(this, enumType, members, toolkit);
         try {
             enumValuesSection = new EnumValuesSection(enumType, parentContainer, toolkit);
         } catch (CoreException e) {
@@ -60,7 +60,7 @@ public class EnumTypeStructurePage extends EnumTypeEditorPage {
 
     @Override
     protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        enumAttributesSection = new EnumAttributesSection(enumType, parentContainer, toolkit);
+        enumAttributesSection = new EnumAttributesSection(this, enumType, parentContainer, toolkit);
     }
 
     @Override

@@ -55,39 +55,39 @@ import org.faktorips.util.message.MessageList;
 public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProviderActivation,
         ISelectionProvider, IDataChangeableReadWriteAccess {
 
-    // the object the parts belong to.
+    /** The object the parts belong to. */
     private IIpsObject ipsObject;
 
-    // buttons
     protected Button newButton;
     protected Button editButton;
     protected Button deleteButton;
     protected Button upButton;
     protected Button downButton;
 
-    // flag that controls if a new part can be created.
+    /** Flag that controls if a new part can be created. */
     private boolean canCreate;
 
-    // flag that controls if a part can be edited.
+    /** Flag that controls if a part can be edited. */
     private boolean canEdit;
 
-    // flag that controls if a part can be deleted.
+    /** Flag that controls if a part can be deleted. */
     private boolean canDelete;
 
-    // flag that controls if parts can be moved.
+    /** Flag that controls if parts can be moved. */
     private boolean canMove;
 
-    // Table to show the content
+    /** Table to show the content */
     private Table table;
 
-    // listener to start editing on double click.
+    /** Listener to start editing on double click. */
     private MouseAdapter editDoubleClickListener;
 
-    // flag that control if the edit button is shown (edit is also possible
-    // via double click.
+    /**
+     * Flag that control if the edit button is shown (edit is also possible via double click.
+     */
     private boolean showEditButton;
 
-    // the table view of this composite
+    /** The table view of this composite */
     private TableViewer viewer;
 
     private UIToolkit uiToolkit;
@@ -128,6 +128,11 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     public boolean isDataChangeable() {
         return canCreate || canEdit || canMove || canDelete;
+    }
+
+    /** Determines whether the refactor context menu is shown. */
+    public boolean isRefactoringSupported() {
+        return false;
     }
 
     public void setDataChangeable(boolean flag) {

@@ -23,6 +23,8 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.RenameResourceAction;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
@@ -46,7 +48,10 @@ public class RenameAction extends IpsRefactoringAction {
         Object selected = selection.getFirstElement();
 
         // Open refactoring wizard if supported for selection.
-        if (selected instanceof IAttribute || selected instanceof IIpsObject) {
+        if (selected instanceof IAttribute
+                || (selected instanceof IEnumAttribute && !(selected instanceof IEnumLiteralNameAttribute))
+                || selected instanceof IIpsObject) {
+
             Refactoring refactoring = ((IIpsElement)selected).getRenameRefactoring();
 
             // Check initial conditions.

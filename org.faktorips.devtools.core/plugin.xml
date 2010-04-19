@@ -14,6 +14,7 @@
    <extension-point id="loggingFrameworkConnector" name="Logging Framework Connector" schema="schema/loggingFrameworkConnector.exsd"/>
    <extension-point id="ipsobjecttype" name="ipsObjectType" schema="schema/ipsobjecttype.exsd"/>
    <extension-point id="flFunctionResolverFactory" name="factory for formula language function resolvers" schema="schema/flFunctionResolverFactory.exsd"/>
+   <extension-point id="pullUpParticipants" name="Pull Up Participants" schema="schema/pullUpParticipants.exsd"/>
    
 <!-- 
     Product Definition Perspective
