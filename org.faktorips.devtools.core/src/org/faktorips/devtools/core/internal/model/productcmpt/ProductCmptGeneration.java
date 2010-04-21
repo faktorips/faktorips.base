@@ -82,6 +82,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     public ProductCmptGeneration() {
+        // default constructor
     }
 
     /**
@@ -114,6 +115,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
+    /**
+     * 
+     * @throws CoreException in case of exception throws core exception
+     */
     public void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details)
             throws CoreException {
         addRelatedProductCmptQualifiedNameTypes(dependencies, details);
