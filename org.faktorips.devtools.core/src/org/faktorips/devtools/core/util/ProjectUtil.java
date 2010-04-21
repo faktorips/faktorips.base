@@ -13,7 +13,10 @@
 
 package org.faktorips.devtools.core.util;
 
+import java.io.ByteArrayInputStream;
+
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -262,10 +265,11 @@ public class ProjectUtil {
      * @param folderName The name of the new folder.
      * @param outputFolderForMergableJavaFiles The Folder for mergable java files.
      * @param outputFolderForDerivedJavaFiles The folder for derived java files.
+     * @return IFolder
      * @throws CoreException if the creation of the folder fails or if the IPSObjectPath could not
      *             be set.
      */
-    public static void createIpsSourceFolderEntry(IIpsProject ipsProject,
+    public static IFolder createIpsSourceFolderEntry(IIpsProject ipsProject,
             String folderName,
             IFolder outputFolderForMergableJavaFiles,
             IFolder outputFolderForDerivedJavaFiles) throws CoreException {
@@ -278,7 +282,7 @@ public class ProjectUtil {
             path.removeSrcFolderEntry(srcFolder);
         }
 
-        String packageName = ipsProject.getName() + "." + folderName;
+        String packageName = ipsProject.getName() + "." + folderName; //$NON-NLS-1$
 
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(srcFolder);
         entry.setSpecificBasePackageNameForMergableJavaClasses(packageName);
@@ -288,6 +292,7 @@ public class ProjectUtil {
 
         ipsProject.setIpsObjectPath(path);
 
+        return srcFolder;
     }
 
     /**
@@ -409,6 +414,26 @@ public class ProjectUtil {
         String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\."); //$NON-NLS-1$
         return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
                 || Integer.parseInt(targetVersion[0]) > 1;
+    }
+
+    /**
+     * Creates a hidden file <code>.keepme</code> in the given folder.
+     * 
+     * @param folder parent folder
+     * @return boolean true if done else false
+     */
+    public static boolean createKeepMeFile(IFolder folder) {
+        IFile outFile = folder.getFile(".keepme"); //$NON-NLS-1$
+        String content = "// force e.g. CVS to keep empty folders"; //$NON-NLS-1$
+        byte[] stringBytes = content.getBytes();
+        ByteArrayInputStream bais = new ByteArrayInputStream(stringBytes);
+        try {
+            outFile.create(bais, true, new NullProgressMonitor());
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+        return true;
     }
 
 }
