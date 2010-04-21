@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -48,6 +49,14 @@ import org.faktorips.util.StringUtil;
  */
 public class MoveOperationTest extends AbstractIpsPluginTest {
 
+    private static final String POLICY_CMPT_TYPE_QNAME = "data.coverages.PolicyCmptType"; //$NON-NLS-1$
+    private static final String PRODUCT_B_QNAME = "data.products.ProductB"; //$NON-NLS-1$
+    private static final String PRODUCT_A_QNAME = "data.products.ProductA"; //$NON-NLS-1$
+    private static final String COVERAGE_QNAME = "data.coverages.Coverage"; //$NON-NLS-1$
+    private static final String COVERAGE_TYPE_NAME = "CoverageType"; //$NON-NLS-1$
+    private static final String COVERAGE_TYPE_QNAME = "model." + COVERAGE_TYPE_NAME; //$NON-NLS-1$
+    private static final String PRODUCT_QNAME = "model.Product"; //$NON-NLS-1$
+
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot ipsRoot;
 
@@ -57,61 +66,63 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration productBGen;
     private IProductCmpt coverage;
 
-    /**
-     * {@inheritDoc}
-     */
+    private IPolicyCmptType policyCmptType;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
         ipsProject = newIpsProject();
         ipsRoot = ipsProject.getIpsPackageFragmentRoots()[0];
-        IProductCmptType productCmptType1 = newProductCmptType(ipsProject, "model.Product");
-        IProductCmptType productCmptType2 = newProductCmptType(ipsProject, "model.CoverageType");
+        IProductCmptType productCmptType1 = newProductCmptType(ipsProject, PRODUCT_QNAME);
+        IProductCmptType productCmptType2 = newProductCmptType(ipsProject, COVERAGE_TYPE_QNAME);
         IProductCmptTypeAssociation relation = productCmptType1.newProductCmptTypeAssociation();
         relation.setTarget(productCmptType2.getQualifiedName());
-        relation.setTargetRoleSingular("CoverageType");
+        relation.setTargetRoleSingular(COVERAGE_TYPE_NAME);
         productCmptType1.getIpsSrcFile().save(true, null);
 
-        coverage = newProductCmpt(productCmptType2, "data.coverages.Coverage");
+        coverage = newProductCmpt(productCmptType2, COVERAGE_QNAME);
 
-        productA = newProductCmpt(productCmptType1, "data.products.ProductA");
+        productA = newProductCmpt(productCmptType1, PRODUCT_A_QNAME);
         productAGen = productA.getProductCmptGeneration(0);
-        productAGen.newLink("CoverageType").setTarget(coverage.getQualifiedName());
+        productAGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
         productA.getIpsSrcFile().save(true, null);
 
-        productB = newProductCmpt(productCmptType1, "data.products.ProductB");
+        productB = newProductCmpt(productCmptType1, PRODUCT_B_QNAME);
         productBGen = productB.getProductCmptGeneration(0);
-        productBGen.newLink("CoverageType").setTarget(coverage.getQualifiedName());
+        productBGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
         productB.getIpsSrcFile().save(true, null);
 
         IProductCmptGeneration[] refs = ipsProject.findReferencingProductCmptGenerations(coverage
                 .getQualifiedNameType());
         assertEquals(2, refs.length);
+
+        policyCmptType = newPolicyCmptType(ipsProject, POLICY_CMPT_TYPE_QNAME);
+        policyCmptType.getIpsSrcFile().save(true, null);
     }
 
     /**
      * For this test, one object of the comfort-product of the default test content is moved to a
      * product with the same package, but another name. After that, the new file is expected to be
-     * existant and the references to this object have to be the same as to the source.
+     * existent and the references to this object have to be the same as to the source.
      */
     public void testRenameProduct() throws CoreException, InvocationTargetException, InterruptedException {
+        String targetName = "Moved" + coverage.getName(); //$NON-NLS-1$
+        IIpsSrcFile targetFile = coverage.getIpsPackageFragment().getIpsSrcFile(targetName, IpsObjectType.PRODUCT_CMPT);
 
-        IIpsSrcFile target = coverage.getIpsPackageFragment().getIpsSrcFile("Moved" + coverage.getName(),
-                IpsObjectType.PRODUCT_CMPT);
-
-        assertFalse(target.exists());
+        assertFalse(targetFile.exists());
         assertTrue(coverage.getIpsSrcFile().exists());
 
         IProductCmptGeneration[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage
                 .getQualifiedNameType());
 
-        MoveOperation move = new MoveOperation(coverage, coverage.getIpsPackageFragment().getName() + "." + "Moved"
-                + coverage.getName());
+        String targetQName = coverage.getIpsPackageFragment().getName() + '.' + targetName;
+        MoveOperation move = new MoveOperation(coverage, targetQName);
         move.run(null);
 
-        assertTrue(target.exists());
+        assertTrue(targetFile.exists());
         assertFalse(coverage.getIpsSrcFile().exists());
-        IProductCmpt targetObject = (IProductCmpt)target.getIpsObject();
+        IProductCmpt targetObject = (IProductCmpt)targetFile.getIpsObject();
         IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
                 targetObject.getQualifiedNameType());
 
@@ -119,11 +130,10 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * For this test, one package is renamed. After that, the new package is expected to be existant
+     * For this test, one package is renamed. After that, the new package is expected to be existent
      * and the references to the contained objects have to be the same as to the source.
      */
     public void testRenamePackage() throws CoreException, InvocationTargetException, InterruptedException {
-
         IIpsPackageFragment sourcePackage = coverage.getIpsPackageFragment();
         IIpsPackageFragment target = sourcePackage.getRoot().getIpsPackageFragment("renamed");
 
@@ -148,15 +158,17 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
                 targetObject.getQualifiedNameType());
 
         assertEquals(sourceRefs.length, targetRefs.length);
+
+        assertFalse(sourcePackage.getIpsSrcFile(policyCmptType.getName(), IpsObjectType.POLICY_CMPT_TYPE).exists());
+        assertNotNull(target.getIpsSrcFile(policyCmptType.getName(), IpsObjectType.POLICY_CMPT_TYPE));
     }
 
     /**
      * For this test, one object is moved to a new, non-existing package. After that, the new file
-     * is expected to be existant and the references to this object have to be the same as to the
+     * is expected to be existent and the references to this object have to be the same as to the
      * source.
      */
     public void testMoveProduct() throws CoreException, InvocationTargetException, InterruptedException {
-
         String runtimeId = coverage.getRuntimeId();
 
         IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack")
@@ -188,8 +200,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     /**
      * Test if the references of product components will be correctly updated in ips test cases,
-     * 
-     * @throws Exception
      */
     public void testMoveProductRefByTestCase() throws Exception {
         IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack")
@@ -226,8 +236,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     /**
      * Test if the references of table contents will be correctly updated in product cmpts,
-     * 
-     * @throws Exception
      */
     public void testTableContentRefByProductCmpt() throws Exception {
         // create table content
@@ -269,7 +277,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
      * objects have to be the same as to the source.
      */
     public void testMovePackage() throws CoreException, InvocationTargetException, InterruptedException {
-
         IIpsPackageFragment sourcePackage = coverage.getIpsPackageFragment();
         ITestCase testCase = (ITestCase)sourcePackage.createIpsFile(IpsObjectType.TEST_CASE, "testcase", true, null)
                 .getIpsObject();
@@ -307,6 +314,9 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertEquals(sourceRefs.length, targetRefs.length);
         assertTrue(target.getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("tablecontents")).exists());
         assertTrue(target.getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testcase")).exists());
+
+        assertFalse(sourcePackage.getIpsSrcFile(policyCmptType.getName(), IpsObjectType.POLICY_CMPT_TYPE).exists());
+        assertNotNull(target.getIpsSrcFile(policyCmptType.getName(), IpsObjectType.POLICY_CMPT_TYPE));
     }
 
     public void testMovePackageWithUnsupportetFile() throws Exception {
