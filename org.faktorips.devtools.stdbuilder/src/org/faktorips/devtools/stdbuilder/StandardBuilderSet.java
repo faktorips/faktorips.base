@@ -92,50 +92,50 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * 
      * @see ICopySupport
      */
-    public final static String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport";
+    public final static String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of delta computation.
      * 
      * @see IDeltaSupport
      */
-    public final static String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport";
+    public final static String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of the visitor support.
      * 
      * @see IDeltaSupport
      */
-    public final static String CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT = "generateVisitorSupport";
+    public final static String CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT = "generateVisitorSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that is supposed to be used to read a configuration value from the
      * IIpsArtefactBuilderSetConfig object provided by the initialize method of an
      * IIpsArtefactBuilderSet instance.
      */
-    public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener";
+    public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the use of typesafe collections, if supported by
      * the target java version.
      */
-    public final static String CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS = "useTypesafeCollections";
+    public final static String CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS = "useTypesafeCollections"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the use of enums, if supported by the target
      * java version.
      */
-    public final static String CONFIG_PROPERTY_USE_ENUMS = "useJavaEnumTypes";
+    public final static String CONFIG_PROPERTY_USE_ENUMS = "useJavaEnumTypes"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of JAXB support.
      */
-    public final static String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport";
+    public final static String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property contains the persistence provider implementation.
      */
-    public final static String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider";
+    public final static String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider"; //$NON-NLS-1$
 
     private TableImplBuilder tableImplBuilder;
 
@@ -167,7 +167,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
         initSupportedPersistenceProviderMap();
 
-        version = "3.0.0";
+        version = "3.0.0"; //$NON-NLS-1$
         // Following code sections sets the version to the stdbuilder-plugin/bundle version.
         // Most of the time we hardwire the version of the generated code here, but from time to
         // time
@@ -217,7 +217,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             return getGenerator((IProductCmptType)type);
         }
 
-        throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
+        throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass())); //$NON-NLS-1$
     }
 
     public GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException {
@@ -262,19 +262,19 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         code.appendClassName(tableImplBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
         // create get instance method by using the qualified name of the table content
         code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
-                + "\").findRowNullRowReturnedForEmtpyResult(");
+                + "\").findRowNullRowReturnedForEmtpyResult("); //$NON-NLS-1$
 
         // TODO pk: findRow is not correct in general. JO: Why?
         for (int i = 0; i < argResults.length; i++) {
             if (i > 0) {
-                code.append(", ");
+                code.append(", "); //$NON-NLS-1$
             }
             code.append(argResults[i].getCodeFragment());
             result.addMessages(argResults[i].getMessages());
         }
-        code.append(").get");
+        code.append(").get"); //$NON-NLS-1$
         code.append(StringUtils.capitalize(fct.findAccessedColumn().getName()));
-        code.append("()");
+        code.append("()"); //$NON-NLS-1$
 
         return result;
     }
@@ -363,7 +363,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                          * parameter identifier, this parameter identifier will also be used as
                          * parameter inside the formula method which uses this code fragment
                          */
-                        String code = param.getName() + "_" + attributeName;
+                        String code = param.getName() + "_" + attributeName; //$NON-NLS-1$
                         return new CompilationResultImpl(code, compile.getDatatype());
                     }
                 } catch (CoreException ignored) {
@@ -411,7 +411,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
         }
 
-        throw new IllegalArgumentException("Unexpected kind id " + kind + " for the IpsObjectType: " + objectType);
+        throw new IllegalArgumentException("Unexpected kind id " + kind + " for the IpsObjectType: " + objectType); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
@@ -659,15 +659,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * Returns the persistence provider or <code>null</code> if no
      */
     public IPersistenceProvider getPersistenceProviderImplementation() {
-        String persistenceProviderKey = (String)getConfig().getPropertyValue(
-                CONFIG_PROPERTY_PERSISTENCE_PROVIDER);
-        if (StringUtils.isEmpty(persistenceProviderKey) || "none".equalsIgnoreCase(persistenceProviderKey)) {
+        String persistenceProviderKey = (String)getConfig().getPropertyValue(CONFIG_PROPERTY_PERSISTENCE_PROVIDER);
+        if (StringUtils.isEmpty(persistenceProviderKey) || "none".equalsIgnoreCase(persistenceProviderKey)) { //$NON-NLS-1$
             return null;
         }
         CachedPersistenceProvider pProviderCached = allSupportedPersistenceProvider.get(persistenceProviderKey);
         if (pProviderCached == null) {
-            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unknow persistence provider  \"" + persistenceProviderKey
-                    + "\". Supported provider are: " + allSupportedPersistenceProvider.keySet().toString()));
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unknow persistence provider  \"" + persistenceProviderKey //$NON-NLS-1$
+                    + "\". Supported provider are: " + allSupportedPersistenceProvider.keySet().toString())); //$NON-NLS-1$
             return null;
         }
 
