@@ -108,10 +108,6 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
 
     private boolean dataChangeable;
 
-    /**
-     * @param uiToolkit
-     * @param label the label before the table or <code>null</code>
-     */
     public ParametersEditControl(Composite parent, UIToolkit uiToolkit, int style, String label, IIpsProject ipsProject) {
         super(parent, style);
         this.ipsProject = ipsProject;
@@ -176,8 +172,8 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         if (indc.length == 0) {
             return false;
         }
-        for (int i = 0; i < indc.length; i++) {
-            if (up && indc[i] == 0 || !up && indc[i] == getTable().getItems().length - 1) {
+        for (int element : indc) {
+            if (up && element == 0 || !up && element == getTable().getItems().length - 1) {
                 return false;
             }
         }
@@ -448,8 +444,8 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             public void widgetSelected(SelectionEvent e) {
                 int index = getTable().getSelectionIndices()[0];
                 IParameter[] selected = getSelectedElements();
-                for (int i = 0; i < selected.length; i++) {
-                    selected[i].delete();
+                for (IParameter element : selected) {
+                    element.delete();
                 }
                 restoreSelection(index);
             }

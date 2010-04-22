@@ -93,6 +93,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
                 }
 
                 public void widgetDefaultSelected(SelectionEvent e) {
+                    // nothing to do
                 }
             });
             updateOverrideButtonEnabledState();

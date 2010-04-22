@@ -39,7 +39,7 @@ public abstract class TypeEditorPage extends IpsObjectEditorPage {
      * Creates a new <code>TypeEditorPage</code>.
      * 
      * @param editor The <code>TypeEditor</code> this page belongs to.
-     * @param twoSectionsWhenTrueOtherwiseFour
+     * @param twoSectionsWhenTrueOtherwiseFour 2 or 4 sections
      * @param title The title shown at the top of the page when the page is selected.
      * @param pageId A unique ID for the page.
      */

@@ -50,9 +50,9 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
         try {
             List<IMethod> selected = new ArrayList<IMethod>();
             IMethod[] method = type.findOverrideMethodCandidates(false, type.getIpsProject());
-            for (int i = 0; i < method.length; i++) {
-                if (method[i].isAbstract()) {
-                    selected.add(method[i]);
+            for (IMethod element : method) {
+                if (element.isAbstract()) {
+                    selected.add(element);
                 }
             }
             setInitialElementSelections(selected);
@@ -65,9 +65,9 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
     public IMethod[] getSelectedMethods() {
         List<Object> methods = new ArrayList<Object>();
         Object[] checked = getResult();
-        for (int i = 0; i < checked.length; i++) {
-            if (checked[i] instanceof IMethod) {
-                methods.add(checked[i]);
+        for (Object element : checked) {
+            if (element instanceof IMethod) {
+                methods.add(element);
             }
         }
         return methods.toArray(new IMethod[methods.size()]);

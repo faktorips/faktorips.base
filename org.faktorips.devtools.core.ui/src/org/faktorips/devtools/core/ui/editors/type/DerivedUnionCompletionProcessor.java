@@ -45,9 +45,9 @@ public class DerivedUnionCompletionProcessor extends AbstractCompletionProcessor
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {
         IAssociation[] derivedUnionCandidates = association.findDerivedUnionCandidates(association.getIpsProject());
-        for (int i = 0; i < derivedUnionCandidates.length; i++) {
-            if (derivedUnionCandidates[i].getName().toLowerCase().startsWith(prefix.toLowerCase())) {
-                addToResult(result, derivedUnionCandidates[i], documentOffset);
+        for (IAssociation derivedUnionCandidate : derivedUnionCandidates) {
+            if (derivedUnionCandidate.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
+                addToResult(result, derivedUnionCandidate, documentOffset);
             }
         }
     }
