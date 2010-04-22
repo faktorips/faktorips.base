@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -34,7 +33,7 @@ public class TestPolicyCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAd
                 // related
                 try {
                     ITestPolicyCmpt cmpt = policyCmptLink.findTarget();
-                    if (cmpt != null && StringUtils.isNotEmpty(cmpt.getProductCmpt())) {
+                    if (cmpt != null && cmpt.hasProductCmpt()) {
                         return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("LinkProductCmpt.gif", true); //$NON-NLS-1$
                     }
                 } catch (CoreException e) {

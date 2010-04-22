@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -401,7 +400,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         List<ITestPolicyCmpt> result = new ArrayList<ITestPolicyCmpt>(testPolicyCmpts.length);
         for (int i = 0; i < testPolicyCmpts.length; i++) {
             IProductCmpt productCmpt = testPolicyCmpts[i].findProductCmpt(testPolicyCmpts[i].getIpsProject());
-            if (productCmpt != null && StringUtils.isNotEmpty(testPolicyCmpts[i].getProductCmpt())) {
+            if (productCmpt != null && testPolicyCmpts[i].hasProductCmpt()) {
                 result.add(testPolicyCmpts[i]);
             }
         }

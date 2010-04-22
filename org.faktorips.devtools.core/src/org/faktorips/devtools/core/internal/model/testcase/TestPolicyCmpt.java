@@ -573,9 +573,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                     PROPERTY_TESTPOLICYCMPTTYPE);
             list.add(msg);
         } else {
-            // check if the param defines the requirement for a product component but not product
+            // check if the param defines the requirement for a product component but no product
             // component is specified
-            if (param.isRequiresProductCmpt() && StringUtils.isEmpty(getProductCmpt())) {
+            if (param.isRequiresProductCmpt() && !hasProductCmpt()) {
                 String text = Messages.TestPolicyCmpt_ValidationError_ProductCmptRequired;
                 Message msg = new Message(MSGCODE_PRODUCT_CMPT_IS_REQUIRED, text, Message.ERROR, this,
                         PROPERTY_PRODUCTCMPT);
@@ -636,23 +636,26 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
 
         // check if the product component exists
-        if (StringUtils.isNotEmpty(productCmpt) && productCmptObj == null) {
+        if (hasProductCmpt() && productCmptObj == null) {
             String text = NLS.bind(Messages.TestPolicyCmpt_ValidationWarning_ProductComponentNotExists, productCmpt,
                     testPolicyCmptType);
             Message msg = new Message(MSGCODE_PRODUCT_CMPT_NOT_EXISTS, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT);
             list.add(msg);
         }
 
-        // check if a product component is not required but the test policy cmpt defines a product
-        // cmpt
-        if (param != null && StringUtils.isNotEmpty(productCmpt) && !param.isRequiresProductCmpt()) {
-            String text = NLS.bind(
-                    Messages.TestPolicyCmpt_ValidationError_ProductCmptNotRequiredButIsRelatedToProductCmpt,
-                    testPolicyCmptType);
-            Message msg = new Message(MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED, text, Message.ERROR, this,
-                    PROPERTY_PRODUCTCMPT);
-            list.add(msg);
-        }
+        // // check if a product component is not required but the test policy cmpt defines a
+        // product
+        // // cmpt
+        // if (param != null && StringUtils.isNotEmpty(productCmpt) &&
+        // !param.isRequiresProductCmpt()) {
+        // String text = NLS.bind(
+        // Messages.TestPolicyCmpt_ValidationError_ProductCmptNotRequiredButIsRelatedToProductCmpt,
+        // testPolicyCmptType);
+        // Message msg = new Message(MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED, text, Message.ERROR,
+        // this,
+        // PROPERTY_PRODUCTCMPT);
+        // list.add(msg);
+        // }
 
         // validate the min and max occurence defined in the test policy component type
         // parameter, get all possible link defined in the parameter and check the min and may
@@ -684,7 +687,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
 
         // check that only one, the product component or the policy cmpt type is given
-        if (StringUtils.isNotEmpty(policyCmptType) && StringUtils.isNotEmpty(productCmpt)) {
+        if (StringUtils.isNotEmpty(policyCmptType) && hasProductCmpt()) {
             String text = Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_PolicyCmptTypeNotAllowedIfProductCmptIsSet;
             Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN, text, Message.ERROR, this,
                     ITestPolicyCmpt.PROPERTY_POLICYCMPTTYPE);
@@ -733,17 +736,17 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             IProductCmpt productCmptCandidateObj,
             IIpsProject ipsProject) throws CoreException {
         // abort validation if no product cmpt was found/or specified
-        // or if the parameter wasn't found or if the param isn't product relevant
-        if (param == null || productCmptCandidateObj == null || !param.isRequiresProductCmpt()) {
+        // or if the parameter wasn't found
+        if (param == null || productCmptCandidateObj == null) {
             return;
         }
 
-        // if this is the root element, check only the correct policy cmpt type of the specified
+        // if this is the root element, only check the policy component type of the specified
         // product cmpt
         IPolicyCmptType policyCmptType = param.findPolicyCmptType(ipsProject);
         IPolicyCmptType policyCmptTypeOfCandidate = productCmptCandidateObj.findPolicyCmptType(ipsProject);
         if (policyCmptType != null && !policyCmptType.equals(policyCmptTypeOfCandidate)) {
-            // maybe the policy cmpt type of the product cmpt candidate is an subtype of the
+            // maybe the policy cmpt type of the product cmpt candidate is a subtype of the
             // specified type in the test case type param
             if (policyCmptTypeOfCandidate == null || !policyCmptTypeOfCandidate.isSubtypeOf(policyCmptType, ipsProject)) {
                 String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowedRoot,
@@ -756,27 +759,36 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
 
         if (!isRoot()) {
-            // this is a child test policy cmpt, check allowed product depending on parent product
-            // cmpt
+            /*
+             * this is a child test policy cmpt, check allowed product depending on parent product
+             * cmpt
+             */
             ITestPolicyCmpt parentPolicyCmpt = getParentTestPolicyCmpt();
             if (parentPolicyCmpt == null) {
                 // no further validation possible because parent policy cmpt not found
                 return;
+            } else {
+                IPolicyCmptType parentPolicyCmptType = parentPolicyCmpt.findPolicyCmptType();
+                if (!parentPolicyCmptType.isConfigurableByProductCmptType()) {
+                    // No further validation possible as parent policyCmptType is not product
+                    // relevant
+                    return;
+                }
             }
 
-            // if parent product cmpt not found, add warning
-            // check allowed product cmpt by using parent product cmpt
             ITestPolicyCmptTypeParameter parentParameter = param.getParentTestPolicyCmptTypeParam();
-            if (parentParameter == null || !parentParameter.isRequiresProductCmpt()) {
-                // no further validation possible because parent policy cmpt isn't product relevant
+            if (parentParameter == null) {
+                /*
+                 * No further validation possible because parent policyTypeparameter not found
+                 */
                 return;
             }
 
-            if (!parentParameter.isRequiresProductCmpt()) {
-                // parent isn't product relevant no further validation of allowed target possible
-                return;
-            }
-
+            /*
+             * Add warning and abort validation in all cases in which no parentProductCmpt was
+             * found, even if parent does not require/define a product component. Add warning to
+             * inform user, that validation could not be completed due to errors in parent.
+             */
             IProductCmpt productCmptOfParent = parentPolicyCmpt.findProductCmpt(ipsProject);
             if (productCmptOfParent == null) {
                 String text = NLS
@@ -789,6 +801,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                 return;
             }
 
+            /*
+             * Check allowed product cmpt by using parent product cmpt.
+             */
             IPolicyCmptTypeAssociation association = param.findAssociation(ipsProject);
             if (association == null) {
                 // no further validation because association not found
@@ -802,7 +817,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                 return;
             }
 
-            if (!productCmptOfParent.isUsedAsTargetProductCmpt(ipsProject, productCmptCandidateObj)) {
+            // if no association between parentProdCmpt and childProdCmpt exists, add error
+            if (!productCmptOfParent.isReferencingProductCmpt(ipsProject, productCmptCandidateObj)) {
                 String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowed,
                         productCmptCandidateObj.getName());
                 Message msg = new Message(MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK, text, Message.ERROR, this,
@@ -814,7 +830,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) throws CoreException {
-        if (StringUtils.isEmpty(getProductCmpt())) {
+        if (!hasProductCmpt()) {
             // no product cmpt is set, therefore no attribute could be searched,
             // currently an attributes (from sublcasses) could only be searched if an product cmpt
             // was set
@@ -844,6 +860,10 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return null;
+    }
+
+    public boolean hasProductCmpt() {
+        return !StringUtils.isEmpty(getProductCmpt());
     }
 
     public String getPolicyCmptType() {

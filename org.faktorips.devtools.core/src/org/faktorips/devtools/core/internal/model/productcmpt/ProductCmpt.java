@@ -345,7 +345,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
-    public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
+    public boolean isReferencingProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
         int numOfGenerations = getNumOfGenerations();
         for (int i = 0; i < numOfGenerations; i++) {
             IProductCmptGeneration generation = (IProductCmptGeneration)getGeneration(i);
@@ -357,6 +357,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             }
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
+        return isReferencingProductCmpt(ipsProjectToSearch, productCmptCandidate);
     }
 
     /*

@@ -308,4 +308,16 @@ public interface ITestPolicyCmpt extends ITestObject {
      * policy cmpt type wasn't found.
      */
     public IPolicyCmptType findPolicyCmptType();
+
+    /**
+     * If {@link #getProductCmpt()} would return <code>null</code> or "" (empty string) this method
+     * returns <code>false</code>. For all qualified-name values aside from <code>null</code> and ""
+     * (empty string) this method returns <code>true</code>, regardless of the existence of a
+     * product component with the specified name.
+     * 
+     * @return <code>true</code> if the qualified name of a product component is specified in this
+     *         {@link ITestPolicyCmpt}, <code>false</code> otherwise.
+     * @since FIPS 3.0.0
+     */
+    public boolean hasProductCmpt();
 }

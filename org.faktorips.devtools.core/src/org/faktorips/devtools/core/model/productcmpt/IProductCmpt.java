@@ -179,8 +179,19 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
     public void setRuntimeId(String runtimeId);
 
     /**
-     * Returns <code>true</code> if the given policy cmpt type is used as target inside at least one
-     * generation of this product cmpt.
+     * Returns <code>true</code> if the given policy component type is used as target in at least
+     * one generation of this product component.
+     * 
+     * @since FIPS 3.0.0
      */
-    public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate);
+    public boolean isReferencingProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate);
+
+    /**
+     * Returns <code>true</code> if the given policy component type is used as target in at least
+     * one generation of this product component. Deprecated since FIPS 3.0.0.
+     * 
+     * @deprecated use {@link #isReferencingProductCmpt(IIpsProject, IProductCmpt)} instead
+     */
+    @Deprecated
+    boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate);
 }

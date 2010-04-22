@@ -625,7 +625,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         // check if the requires product flag is only true if the related test policy cmpt is
         // configurable by product cmpt type
         if (policyCmptTypeFound != null && requiresProductCmpt
-                && !policyCmptTypeFound.isConfigurableByProductCmptType() && policyCmptTypeFound != null) {
+                && !policyCmptTypeFound.isConfigurableByProductCmptType()) {
             String text = NLS
                     .bind(
                             Messages.TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct,

@@ -174,7 +174,7 @@ public class TestCase extends IpsObject implements ITestCase {
         if (cmpt == null) {
             return;
         }
-        if (StringUtils.isNotEmpty(cmpt.getProductCmpt())) {
+        if (cmpt.hasProductCmpt()) {
             IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
                     new QualifiedNameType(cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT));
             dependencies.add(dependency);
@@ -230,7 +230,7 @@ public class TestCase extends IpsObject implements ITestCase {
         List<String> relatedProductCmpts = new ArrayList<String>();
         ITestPolicyCmpt[] allTestPolicyCmpt = getAllTestPolicyCmpt();
         for (int i = 0; i < allTestPolicyCmpt.length; i++) {
-            if (StringUtils.isNotEmpty(allTestPolicyCmpt[i].getProductCmpt())) {
+            if (allTestPolicyCmpt[i].hasProductCmpt()) {
                 relatedProductCmpts.add(allTestPolicyCmpt[i].getProductCmpt());
             }
         }

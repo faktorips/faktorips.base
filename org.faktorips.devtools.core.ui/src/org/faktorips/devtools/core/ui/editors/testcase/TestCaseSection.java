@@ -247,7 +247,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * State class contains the enable state of all actions (for buttons and context menu)
      */
     private class TreeActionEnableState {
-        boolean productCmptEnable = false;
+        boolean productCmptChangeEnable = false;
+        boolean productCmptRemoveEnable = false;
         boolean removeEnable = false;
         boolean addEnable = false;
         boolean moveEnable = false;
@@ -754,8 +755,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /*
      * Action to change the product cmpt
      */
-    private class ProductCmptAction extends IpsAction {
-        public ProductCmptAction() {
+    private class ProductCmptChangeAction extends IpsAction {
+        public ProductCmptChangeAction() {
             super(treeViewer);
             setText(Messages.TestCaseSection_ChangeProductCmpt);
         }
@@ -766,7 +767,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
-            return actionEnableState.productCmptEnable;
+            return actionEnableState.productCmptChangeEnable;
         }
 
         /**
@@ -776,6 +777,37 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         public void run(IStructuredSelection selection) {
             try {
                 changeProductCmpt();
+            } catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
+
+    /*
+     * Action to reset the product cmpt, or set the product cmpt to null respectively
+     */
+    private class ProductCmptRemoveAction extends IpsAction {
+        public ProductCmptRemoveAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseSection_RemoveProductComponentAction_Text);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.productCmptRemoveEnable;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void run(IStructuredSelection selection) {
+            try {
+                resetProductCmptToNull();
             } catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
@@ -885,7 +917,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             if (firstElement instanceof ITestPolicyCmpt) {
                 try {
                     ITestPolicyCmpt tpct = (ITestPolicyCmpt)firstElement;
-                    if (StringUtils.isNotEmpty(tpct.getProductCmpt())) {
+                    if (tpct.hasProductCmpt()) {
                         // open the product cmpt
                         IProductCmpt cmpt = tpct.findProductCmpt(tpct.getIpsProject());
                         IpsUIPlugin.getDefault().openEditor(cmpt);
@@ -1352,13 +1384,24 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 actionEnableState.removeEnable = true;
                 // root elements couldn't be deleted
                 actionEnableState.moveEnable = !((ITestPolicyCmpt)selection).isRoot();
+
+                IPolicyCmptType paramType = param.findPolicyCmptType(ipsProject);
                 if (param != null) {
                     // type parameter exists,
                     // enable add button only if links are defined
                     actionEnableState.addEnable = param.getTestPolicyCmptTypeParamChilds().length > 0;
-                    // product component select button is only enabled if the type parameter
-                    // specified this
-                    actionEnableState.productCmptEnable = param.isRequiresProductCmpt();
+                    // product component select button is enabled for product configurable
+                    // policyCmptTypes
+                    actionEnableState.productCmptChangeEnable = paramType == null
+                            || paramType.isConfigurableByProductCmptType();
+                    /*
+                     * product component remove button is only enabled if the type parameter
+                     * specifies that a product component is not required (formally: if
+                     * isRequiresProductCmpt()==false) and if no product component is set at the
+                     * same time.
+                     */
+                    actionEnableState.productCmptRemoveEnable = !param.isRequiresProductCmpt()
+                            && testPolicyCmpt.hasProductCmpt();
                     // open in new editor is always enabled for ITestPolicyCmpt
                     actionEnableState.openInNewEditorEnable = true;
                 }
@@ -1491,7 +1534,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         manager.add(new Separator());
         manager.add(new AddAction());
         manager.add(new RemoveAction());
-        manager.add(new ProductCmptAction());
+        manager.add(new ProductCmptChangeAction());
+        manager.add(new ProductCmptRemoveAction());
         manager.add(new Separator());
         manager.add(new MoveAction(true));
         manager.add(new MoveAction(false));
@@ -1956,24 +2000,21 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // ignored, the validation shows the unknown type failure message
             return;
         }
-        String productCmptQualifiedNames[] = null;
-        if (testTypeParam.isRequiresProductCmpt()) {
-            IPolicyCmptType policyCmptType = testTypeParam.findPolicyCmptType(testTypeParam.getIpsProject());
-            if (policyCmptType == null) {
-                // policy cmpt type not found, this is a validation error
-                return;
-            }
-            IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
-            if (productCmptType == null) {
-                // policy cmpt type not found, this is a validation error
-                return;
-            }
-            productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam, testPolicyCmpt
-                    .getParentTestPolicyCmpt(), false);
-            if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0) {
-                // chancel
-                return;
-            }
+        IPolicyCmptType policyCmptType = testTypeParam.findPolicyCmptType(testTypeParam.getIpsProject());
+        if (policyCmptType == null) {
+            // policy cmpt type not found, this is a validation error
+            return;
+        }
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
+        if (productCmptType == null) {
+            // policy cmpt type not found, this is a validation error
+            return;
+        }
+        String[] productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam, testPolicyCmpt
+                .getParentTestPolicyCmpt(), false);
+        if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0) {
+            // cancel
+            return;
         }
         testPolicyCmpt.setProductCmpt(productCmptQualifiedNames[0]);
         // reset the stored policy cmpt type, because the policy cmpt type can now
@@ -1998,6 +2039,17 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             Object selectedObj = ((IStructuredSelection)selection).getFirstElement();
             if (selectedObj instanceof ITestPolicyCmpt) {
                 changeProductCmpt((ITestPolicyCmpt)selectedObj);
+                treeViewer.setSelection(selection);
+            }
+        }
+    }
+
+    private void resetProductCmptToNull() {
+        ISelection selection = treeViewer.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            Object selectedObj = ((IStructuredSelection)selection).getFirstElement();
+            if (selectedObj instanceof ITestPolicyCmpt) {
+                ((ITestPolicyCmpt)selectedObj).setProductCmpt(null);
                 treeViewer.setSelection(selection);
             }
         }
