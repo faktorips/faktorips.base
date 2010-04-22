@@ -17,20 +17,24 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
+import org.eclipse.ltk.ui.refactoring.RefactoringUI;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -46,7 +50,7 @@ import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 public class ModelExplorerDropListener extends IpsElementDropListener {
 
     public ModelExplorerDropListener() {
-
+        // nothing to do
     }
 
     public void dragEnter(DropTargetEvent event) {
@@ -107,14 +111,13 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                         IIpsMoveProcessor moveProcessor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
                         moveProcessor.setTargetIpsPackageFragment((IIpsPackageFragment)target);
 
-                        final IWorkspaceRunnable workspaceOperation = new PerformRefactoringOperation(moveRefactoring,
-                                CheckConditionsOperation.ALL_CONDITIONS);
+                        final PerformRefactoringOperation workspaceOperation = new PerformRefactoringOperation(
+                                moveRefactoring, CheckConditionsOperation.ALL_CONDITIONS);
                         ProgressMonitorDialog dialog = new ProgressMonitorDialog(event.display.getActiveShell());
                         dialog.run(true, false, new IRunnableWithProgress() {
 
                             public void run(IProgressMonitor monitor) throws InvocationTargetException,
                                     InterruptedException {
-
                                 try {
                                     ResourcesPlugin.getWorkspace().run(workspaceOperation, monitor);
                                 } catch (CoreException e) {
@@ -122,7 +125,15 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                                 }
                             }
                         });
+
+                        // TODO CD: besser den Dialog an zentraler Stelle aufrufen und nicht hier
+                        // manuell
+                        final RefactoringStatus status = workspaceOperation.getConditionStatus();
+                        if (status.hasWarning()) {
+                            proceed(status, event.display);
+                        }
                     }
+
                     return;
                 }
             }
@@ -159,7 +170,20 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         }
     }
 
-    private Object getTarget(DropTargetEvent event) throws CoreException {
+    private boolean proceed(RefactoringStatus status, Display display) {
+        final Dialog dialog = RefactoringUI.createRefactoringStatusDialog(status, display.getActiveShell(),
+                "Refactoring Status", false); //$NON-NLS-1$
+        final int[] result = new int[1];
+        Runnable r = new Runnable() {
+            public void run() {
+                result[0] = dialog.open();
+            }
+        };
+        display.syncExec(r);
+        return result[0] == IDialogConstants.OK_ID;
+    }
+
+    private Object getTarget(DropTargetEvent event) {
         if (event.item == null) {
             return null;
         }

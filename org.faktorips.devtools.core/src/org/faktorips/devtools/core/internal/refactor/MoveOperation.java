@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -154,7 +155,7 @@ public class MoveOperation implements IRunnableWithProgress {
      * returned, all references of other products to the moved/renamed one are updated to refer to
      * the new name.
      * 
-     * @param source The product to rename.
+     * @param sources The product to rename.
      * @param target The new location/name.
      * @throws CoreException If the source does not exist or is modified or if the target already
      *             exists.
@@ -225,7 +226,7 @@ public class MoveOperation implements IRunnableWithProgress {
      * 
      * @param targetFullPath The full location path (absolute) of the target
      */
-    private String[] getTargetNames(Object[] sources, String target, String targetFulPath) {
+    private String[] getTargetNames(Object[] sources, String target, String targetFullPath) {
         String[] result = new String[sources.length];
 
         for (int i = 0; i < sources.length; i++) {
@@ -246,9 +247,9 @@ public class MoveOperation implements IRunnableWithProgress {
                     result[i] = prefix + ((IIpsElement)sources[i]).getName();
                 }
             } else if (sources[i] instanceof IFile) {
-                result[i] = targetFulPath;
+                result[i] = targetFullPath;
             } else if (sources[i] instanceof File) {
-                result[i] = targetFulPath;
+                result[i] = targetFullPath;
             }
         }
 
@@ -415,16 +416,23 @@ public class MoveOperation implements IRunnableWithProgress {
         }
     }
 
-    private void copyNoneIpsElement(String fileName, String targetName) {
-        IContainer targetFolder = getTargetContainer(targetName);
-        CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getShell());
-        operation.copyFiles(new String[] { fileName }, targetFolder);
+    private void copyNoneIpsElement(final String fileName, final String targetName) {
+        Display.getDefault().syncExec(new Runnable() {
+            public void run() {
+                CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getDisplay().getActiveShell());
+                operation.copyFiles(new String[] { fileName }, getTargetContainer(targetName));
+            }
+        });
+
     }
 
-    private void moveNoneIpsElement(IFile sourceFile, String targetName) {
-        IContainer targetFolder = getTargetContainer(targetName);
-        MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(Display.getCurrent().getActiveShell());
-        operation.copyResources(new IResource[] { sourceFile }, targetFolder);
+    private void moveNoneIpsElement(final IFile sourceFile, final String targetName) {
+        Display.getDefault().syncExec(new Runnable() {
+            public void run() {
+                MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(getDisplay().getActiveShell());
+                operation.copyResources(new IResource[] { sourceFile }, getTargetContainer(targetName));
+            }
+        });
     }
 
     private IContainer getTargetContainer(String targetName) {
@@ -513,9 +521,7 @@ public class MoveOperation implements IRunnableWithProgress {
         pack.getEnclosingResource().delete(true, monitor);
     }
 
-    private void moveProductCmpt(IProductCmpt cmpt, String newName, String newRuntimeId, IProgressMonitor monitor)
-            throws CoreException {
-
+    private void moveProductCmpt(IProductCmpt cmpt, String newName, String newRuntimeId, IProgressMonitor monitor) {
         IIpsSrcFile file = createTarget(cmpt, newName);
         move(cmpt, file, newRuntimeId, monitor);
     }
@@ -652,7 +658,8 @@ public class MoveOperation implements IRunnableWithProgress {
             String runtimeId = source.getRuntimeId();
 
             // create a tmpTargetFile to avoid case problems with windows file systems
-            String tmpFileName = "" + new Date().getTime() + "." + targetFile.getIpsObjectType().getFileExtension();
+            String tmpFileName = StringUtils.EMPTY + new Date().getTime()
+                    + "." + targetFile.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
             IIpsSrcFile tmpTargetFile = targetFile.getIpsPackageFragment().getIpsSrcFile(tmpFileName);
             String qualifiedTargetName = targetFile.getQualifiedNameType().getName();
 
@@ -765,7 +772,8 @@ public class MoveOperation implements IRunnableWithProgress {
      * Resets the product component of all test policy cmpt of the given test case, if the product
      * component equals the old name, to the new name.
      * 
-     * @throws CoreException
+     * @throws CoreException thrown in all cases of errors, especially on failures while the save
+     *             operation on the given testCase
      */
     private void fixRelations(ITestCase testCase, String oldName, String newName, IProgressMonitor monitor)
             throws CoreException {
@@ -998,18 +1006,8 @@ public class MoveOperation implements IRunnableWithProgress {
         return product.getQualifiedName() + "." + product.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
     }
 
-    private Shell getShell() {
-        Display display = getDisplay();
-        if (display != null) {
-            return display.getActiveShell();
-        } else {
-            return new Shell((Display)null);
-        }
-
-    }
-
     private Display getDisplay() {
-        return Display.getCurrent();
+        Display display = Display.getCurrent();
+        return display != null?display:Display.getDefault();
     }
-
 }
