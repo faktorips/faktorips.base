@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
@@ -101,12 +102,12 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 		protected List<String> getHeadline() {
 			List<String> headline = new ArrayList<String>();
 
-			headline.add(ITestAttribute.PROPERTY_NAME);
-			headline.add(ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
-			headline.add(ITestAttribute.PROPERTY_ATTRIBUTE);
-			headline.add(ITestAttribute.PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE);
-			headline.add(ITestAttribute.PROPERTY_DATATYPE);
-			headline.add(ITestAttribute.PROPERTY_DESCRIPTION);
+			headline.add(Messages.TestCaseTypeContentPageElement_name);
+			headline.add(Messages.TestCaseTypeContentPageElement_testAttributeType);
+			headline.add(Messages.TestCaseTypeContentPageElement_attribute);
+			headline.add(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName());
+			headline.add(Messages.TestCaseTypeContentPageElement_datatype);
+			headline.add(Messages.TestCaseTypeContentPageElement_description);
 
 			return headline;
 		}

@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.tablestructure.UniqueKey;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -150,12 +149,12 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		protected List<String> getHeadline() {
 			List<String> headline = new ArrayList<String>();
 
-			headline.add(IColumnRange.PROPERTY_NAME);
-			headline.add(IColumnRange.PROPERTY_PARAMETER_NAME);
-			headline.add(IColumnRange.PROPERTY_RANGE_TYPE);
-			headline.add(IColumnRange.PROPERTY_FROM_COLUMN);
-			headline.add(IColumnRange.PROPERTY_TO_COLUMN);
-			headline.add(IColumnRange.PROPERTY_DESCRIPTION);
+			headline.add(Messages.TableStructureContentPageElement_name);
+			headline.add(Messages.TableStructureContentPageElement_parameterName);
+			headline.add(Messages.TableStructureContentPageElement_columnRangeName);
+			headline.add(Messages.TableStructureContentPageElement_fromColumn);
+			headline.add(Messages.TableStructureContentPageElement_toColumn);
+			headline.add(Messages.TableStructureContentPageElement_description);
 
 			return headline;
 		}
@@ -207,9 +206,9 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		protected List<String> getHeadline() {
 			List<String> headline = new ArrayList<String>();
 
-			headline.add(IColumn.PROPERTY_NAME);
-			headline.add(IColumn.PROPERTY_DATATYPE);
-			headline.add(IColumn.PROPERTY_DESCRIPTION);
+			headline.add(Messages.TableStructureContentPageElement_name);
+			headline.add(Messages.TableStructureContentPageElement_datatype);
+			headline.add(Messages.TableStructureContentPageElement_description);
 
 			return headline;
 		}
@@ -260,8 +259,8 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 		protected List<String> getHeadline() {
 			List<String> headline = new ArrayList<String>();
 
-			headline.add(UniqueKey.PROPERTY_NAME);
-			headline.add(UniqueKey.PROPERTY_DESCRIPTION);
+			headline.add(Messages.TableStructureContentPageElement_name);
+			headline.add(Messages.TableStructureContentPageElement_description);
 
 			return headline;
 		}
