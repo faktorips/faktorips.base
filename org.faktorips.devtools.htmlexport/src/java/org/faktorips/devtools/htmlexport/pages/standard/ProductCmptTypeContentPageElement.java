@@ -217,7 +217,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 	 * AbstractTypeContentPageElement#getMethodsTablePageElement()
 	 */
 	@Override
-	protected MethodsTablePageElement getMethodsTablePageElement() {
+	MethodsTablePageElement getMethodsTablePageElement() {
 		return new MethodsTablePageElement(getDocumentedIpsObject()) {
 
 			@Override

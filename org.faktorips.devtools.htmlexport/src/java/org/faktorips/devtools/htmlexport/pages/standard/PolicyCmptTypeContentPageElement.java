@@ -68,7 +68,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 	 * AbstractTypeContentPageElement#getAttributesTablePageElement()
 	 */
 	@Override
-	protected AttributesTablePageElement getAttributesTablePageElement() {
+	AttributesTablePageElement getAttributesTablePageElement() {
 		return new AttributesTablePageElement(getDocumentedIpsObject()) {
 
 			@Override

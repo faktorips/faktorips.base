@@ -102,7 +102,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	 * 
 	 * @return
 	 */
-	protected MethodsTablePageElement getMethodsTablePageElement() {
+	MethodsTablePageElement getMethodsTablePageElement() {
 		return new MethodsTablePageElement(getDocumentedIpsObject());
 	}
 
@@ -234,7 +234,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 	 * returns a table with the attributes of the type
 	 * @return
 	 */
-	protected AttributesTablePageElement getAttributesTablePageElement() {
+	AttributesTablePageElement getAttributesTablePageElement() {
 		return new AttributesTablePageElement(getDocumentedIpsObject());
 	}
 }

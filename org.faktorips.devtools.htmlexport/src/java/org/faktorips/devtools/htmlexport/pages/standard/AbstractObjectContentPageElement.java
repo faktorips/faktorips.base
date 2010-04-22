@@ -146,7 +146,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	 * @param alternativeText
 	 * @return
 	 */
-	protected PageElement getTableOrAlternativeText(AbstractSpecificTablePageElement tablePageElement,
+	PageElement getTableOrAlternativeText(AbstractSpecificTablePageElement tablePageElement,
 			String alternativeText) {
 		if (tablePageElement.isEmpty()) {
 			return new TextPageElement(alternativeText);

@@ -10,7 +10,7 @@
 			<action
 		    class="org.faktorips.devtools.htmlexport.actions.CreateHtmlExportAction"
 		    enablesFor="*"
-		    icon="icons/AddIpsNature.gif"
+		    icon="icons/sample.gif"
 		    id="createHtmlExport"
 		    label="%createHtmlExport"
 		    menubarPath="faktorIPSMenu/faktorIpsGroup"/>

@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Html Export Plug-in
+Bundle-Name: Faktor-IPS Html Export Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.faktorips.devtools.htmlexport.Activator
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -43,3 +44,4 @@ Export-Package: org.faktorips.devtools.htmlexport;
    org.faktorips.devtools.core.model.ipsobject",
  org.faktorips.devtools.htmlexport.standard;uses:="org.faktorips.devtools.htmlexport.documentor,org.faktorips.devtools.htmlexport",
  org.faktorips.devtools.htmlexport.standard.pages;uses:="org.faktorips.devtools.htmlexport.pages.elements,org.faktorips.devtools.core.model.ipsproject"
+Bundle-Vendor: Faktor Zehn AG

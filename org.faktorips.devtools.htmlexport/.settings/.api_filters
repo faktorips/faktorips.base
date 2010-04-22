@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.faktorips.devtools.htmlexport" version="2">
+    <resource path="src/java/org/faktorips/devtools/htmlexport/generators/ILayouter.java" type="org.faktorips.devtools.htmlexport.generators.ILayouter">
+        <filter id="643846161">
+            <message_arguments>
+                <message_argument value="TablePageElement"/>
+                <message_argument value="ILayouter"/>
+                <message_argument value="layoutTablePageElement(TablePageElement)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>
