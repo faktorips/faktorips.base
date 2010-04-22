@@ -40,7 +40,6 @@ import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
@@ -384,8 +383,8 @@ public class MoveOperation implements IRunnableWithProgress {
                 currMonitor.done();
             }
         };
+        getDisplay().asyncExec(run);
 
-        BusyIndicator.showWhile(getDisplay(), run);
     }
 
     private void moveType(IType type, String targetName, IProgressMonitor pm) throws CoreException {
@@ -417,7 +416,7 @@ public class MoveOperation implements IRunnableWithProgress {
     }
 
     private void copyNoneIpsElement(final String fileName, final String targetName) {
-        Display.getDefault().syncExec(new Runnable() {
+        getDisplay().asyncExec(new Runnable() {
             public void run() {
                 CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getDisplay().getActiveShell());
                 operation.copyFiles(new String[] { fileName }, getTargetContainer(targetName));
@@ -427,7 +426,7 @@ public class MoveOperation implements IRunnableWithProgress {
     }
 
     private void moveNoneIpsElement(final IFile sourceFile, final String targetName) {
-        Display.getDefault().syncExec(new Runnable() {
+        getDisplay().asyncExec(new Runnable() {
             public void run() {
                 MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(getDisplay().getActiveShell());
                 operation.copyResources(new IResource[] { sourceFile }, getTargetContainer(targetName));
@@ -1008,6 +1007,6 @@ public class MoveOperation implements IRunnableWithProgress {
 
     private Display getDisplay() {
         Display display = Display.getCurrent();
-        return display != null?display:Display.getDefault();
+        return display != null ? display : Display.getDefault();
     }
 }
