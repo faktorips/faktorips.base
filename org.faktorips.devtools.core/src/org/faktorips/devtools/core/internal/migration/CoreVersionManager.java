@@ -54,6 +54,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
      * {@inheritDoc}
      */
     public void setFeatureId(String featureId) {
+        // this version manager supports the core faktor-ips feature. No need to maintain its id
     }
 
     /**
@@ -121,9 +122,6 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
         return getMigrationOperations(projectToMigrate, version);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     private AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate,
             String versionToStart) throws CoreException {
 
@@ -140,8 +138,8 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
                 String underscoreVersion = version.replace('.', '_');
                 underscoreVersion = underscoreVersion.replace('-', '_');
                 String packageName = QNameUtil.getPackageName(getClass().getName());
-                migrationClassName = packageName + ".Migration_" + underscoreVersion;
-                Class<?> clazz = Class.forName(migrationClassName, true, loader); //$NON-NLS-1$
+                migrationClassName = packageName + ".Migration_" + underscoreVersion; //$NON-NLS-1$
+                Class<?> clazz = Class.forName(migrationClassName, true, loader);
                 Constructor<?> constructor = clazz.getConstructor(new Class[] { IIpsProject.class, String.class });
                 migrationOperation = (AbstractIpsProjectMigrationOperation)constructor.newInstance(new Object[] {
                         projectToMigrate, getFeatureId() });
@@ -152,8 +150,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
             throw new CoreException(new IpsStatus(e));
         }
 
-        return (AbstractIpsProjectMigrationOperation[])operations
-                .toArray(new AbstractIpsProjectMigrationOperation[operations.size()]);
+        return operations.toArray(new AbstractIpsProjectMigrationOperation[operations.size()]);
     }
 
     /**

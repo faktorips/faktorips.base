@@ -57,15 +57,15 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
 
     @Override
     public String getDescription() {
-        return "The handling of literal names in Faktor-IPS enumerations has changed."
-                + " Attributes of enumeration types are no longer checked \"to be used as literal name\"."
-                + " Instead, there will be a special literal name enumeration attribute. This special"
-                + " enumeration attribute will be managed by Faktor-IPS automatically, so users should not"
-                + " have to worry about it."
-                + " From now on, each enumeration type that does define enumeration values directly in the model"
-                + " while not being abstract will have such an enumeration literal name attribute. The migration"
-                + " will create these attributes now where necessary while removing the old \"use as literal name\" flags."
-                + "Due to changes in the way enumeration contents are stored in XML, all enumeration contents need to be migrated, too.";
+        return "The handling of literal names in Faktor-IPS enumerations has changed." //$NON-NLS-1$
+                + " Attributes of enumeration types are no longer checked \"to be used as literal name\"." //$NON-NLS-1$
+                + " Instead, there will be a special literal name enumeration attribute. This special" //$NON-NLS-1$
+                + " enumeration attribute will be managed by Faktor-IPS automatically, so users should not" //$NON-NLS-1$
+                + " have to worry about it." //$NON-NLS-1$
+                + " From now on, each enumeration type that does define enumeration values directly in the model" //$NON-NLS-1$
+                + " while not being abstract will have such an enumeration literal name attribute. The migration" //$NON-NLS-1$
+                + " will create these attributes now where necessary while removing the old \"use as literal name\" flags." //$NON-NLS-1$
+                + "Due to changes in the way enumeration contents are stored in XML, all enumeration contents need to be migrated, too."; //$NON-NLS-1$
     }
 
     @Override
@@ -132,7 +132,7 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
                  * literal name property was inherited however so we need to also search the
                  * supertype hierarchy. This won't work cross-project however.
                  */
-                String oldLiteralAttributeName = "";
+                String oldLiteralAttributeName = ""; //$NON-NLS-1$
                 List<IEnumType> searchedTypes = new ArrayList<IEnumType>(5);
                 searchedTypes.add(enumType);
                 searchedTypes.addAll(enumType.findAllSuperEnumTypes(ipsProject));
@@ -144,10 +144,10 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
                         doc = builder.parse(is);
                     } catch (IOException e) {
                         throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                                "IO error while parsing input file.", e));
+                                "IO error while parsing input file.", e)); //$NON-NLS-1$
                     } catch (SAXException e) {
                         throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                                "SAX error while parsing input file.", e));
+                                "SAX error while parsing input file.", e)); //$NON-NLS-1$
                     }
                     Element rootElement = doc.getDocumentElement();
                     NodeList children = rootElement.getChildNodes();
@@ -155,14 +155,14 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
                         Node currentItem = children.item(i);
                         if (currentItem.getNodeName().equals(IEnumAttribute.XML_TAG)) {
                             NamedNodeMap attributes = currentItem.getAttributes();
-                            Node literalNameNode = attributes.getNamedItem("literalName");
+                            Node literalNameNode = attributes.getNamedItem("literalName"); //$NON-NLS-1$
                             // Theoretically not possible to be null.
                             if (literalNameNode == null) {
                                 continue;
                             }
                             Boolean literalNameBoolean = Boolean.parseBoolean(literalNameNode.getTextContent());
                             if (literalNameBoolean.booleanValue()) {
-                                Node nameNode = attributes.getNamedItem("name");
+                                Node nameNode = attributes.getNamedItem("name"); //$NON-NLS-1$
                                 // Theoretically not possible to be null.
                                 if (nameNode != null) {
                                     oldLiteralAttributeName = nameNode.getTextContent();

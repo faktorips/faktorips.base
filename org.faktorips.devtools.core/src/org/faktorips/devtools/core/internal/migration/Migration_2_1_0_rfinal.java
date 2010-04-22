@@ -36,9 +36,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.internal.core.SourceType;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
-import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -66,7 +64,7 @@ public class Migration_2_1_0_rfinal extends AbstractIpsProjectMigrationOperation
      */
     @Override
     public String getDescription() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -87,18 +85,15 @@ public class Migration_2_1_0_rfinal extends AbstractIpsProjectMigrationOperation
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws BadLocationException
-     * @throws MalformedTreeException
      */
     @Override
     public MessageList migrate(final IProgressMonitor monitor) throws CoreException {
         renameExecRuleMethods(monitor);
-        updateIpsProjectFile(monitor);
+        updateIpsProjectFile();
         return new MessageList();
     }
 
-    private void updateIpsProjectFile(IProgressMonitor monitor) throws CoreException {
+    private void updateIpsProjectFile() throws CoreException {
         IIpsProjectProperties properties = getIpsProject().getProperties();
         IIpsArtefactBuilderSetInfo builderSetInfo = getIpsProject().getIpsModel().getIpsArtefactBuilderSetInfo(
                 properties.getBuilderSetId());
@@ -117,11 +112,9 @@ public class Migration_2_1_0_rfinal extends AbstractIpsProjectMigrationOperation
      * Renames the execRule-Methods so that the execRule part is removed and the Method starts with
      * a lower case. Next the method body of the execRule-Methods a copied to the new methods and
      * the execRule-Methods are deleted.
-     * 
-     * @throws CoreException
      */
     private void renameExecRuleMethods(final IProgressMonitor monitor) throws CoreException {
-        Job job = new Job("Migration220") {
+        Job job = new Job("Migration220") { //$NON-NLS-1$
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                 try {
@@ -145,9 +138,9 @@ public class Migration_2_1_0_rfinal extends AbstractIpsProjectMigrationOperation
                                                 TypeDeclaration typeDecl = (TypeDeclaration)abstractDeclaration;
                                                 for (MethodDeclaration methodDecl : typeDecl.getMethods()) {
                                                     String methodName = methodDecl.getName().getFullyQualifiedName();
-                                                    if (methodName.startsWith("execRule")) {
+                                                    if (methodName.startsWith("execRule")) { //$NON-NLS-1$
                                                         String newMethodName = StringUtils.uncapitalize(methodName
-                                                                .substring("execRule".length(), methodName.length()));
+                                                                .substring("execRule".length(), methodName.length())); //$NON-NLS-1$
                                                         for (MethodDeclaration methodDecl2 : typeDecl.getMethods()) {
                                                             if (methodDecl2.getName().getFullyQualifiedName().equals(
                                                                     newMethodName)) {
@@ -182,7 +175,7 @@ public class Migration_2_1_0_rfinal extends AbstractIpsProjectMigrationOperation
                 } catch (Exception e) {
                     return new IpsStatus(e);
                 }
-                return new IpsStatus(IStatus.OK, "");
+                return new IpsStatus(IStatus.OK, ""); //$NON-NLS-1$
             }
         };
         getIpsProject().getProject().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
@@ -190,7 +183,7 @@ public class Migration_2_1_0_rfinal extends AbstractIpsProjectMigrationOperation
         job.setRule(getIpsProject().getProject());
         job.schedule(5000);
 
-        job = new Job("Migration220PostBuild") {
+        job = new Job("Migration220PostBuild") { //$NON-NLS-1$
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
@@ -199,7 +192,7 @@ public class Migration_2_1_0_rfinal extends AbstractIpsProjectMigrationOperation
                 } catch (CoreException e) {
                     return new IpsStatus(e);
                 }
-                return new IpsStatus(IStatus.OK, "");
+                return new IpsStatus(IStatus.OK, ""); //$NON-NLS-1$
             }
         };
         job.setPriority(Job.BUILD);

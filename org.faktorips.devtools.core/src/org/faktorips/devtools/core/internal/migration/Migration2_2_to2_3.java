@@ -71,9 +71,8 @@ import org.faktorips.util.ArgumentCheck;
 @SuppressWarnings("restriction")
 public class Migration2_2_to2_3 {
 
-    /** Prohibit instantiation. */
     private Migration2_2_to2_3() {
-
+        // Prohibit instantiation.
     }
 
     /**
@@ -133,12 +132,12 @@ public class Migration2_2_to2_3 {
 
         // Start the progress monitor if available (now we know how much work needs to be done).
         if (monitor != null) {
-            monitor.beginTask("Migration", enumTableStructures.size() + enumTableContents.size());
+            monitor.beginTask("Migration", enumTableStructures.size() + enumTableContents.size()); //$NON-NLS-1$
         }
 
         MultiStatus status = new MultiStatus(IpsPlugin.PLUGIN_ID, 0,
-                "At least one exception occurred while migrating the ips project: \"" + ipsProject.getName()
-                        + "\" from faktor ips version 2.2 to 2.3.", null);
+                "At least one exception occurred while migrating the ips project: \"" + ipsProject.getName() //$NON-NLS-1$
+                        + "\" from faktor ips version 2.2 to 2.3.", null); //$NON-NLS-1$
         // Add enumeration types for the table structures and replace the table contents.
         addForTableStructures(enumTableStructures, monitor, status);
         replaceTableContents(enumTableContents, ipsProject, monitor);
@@ -178,7 +177,7 @@ public class Migration2_2_to2_3 {
                                     TypeDeclaration typeDecl = (TypeDeclaration)abstractDeclaration;
                                     for (MethodDeclaration methodDecl : typeDecl.getMethods()) {
                                         String methodName = methodDecl.getName().getFullyQualifiedName();
-                                        if (methodName.startsWith("initPropertiesFromXml")) {
+                                        if (methodName.startsWith("initPropertiesFromXml")) { //$NON-NLS-1$
                                             List parameterList = methodDecl.parameters();
                                             if (parameterList.size() == 1) {
                                                 SingleVariableDeclaration parameter = (SingleVariableDeclaration)parameterList
@@ -187,7 +186,7 @@ public class Migration2_2_to2_3 {
                                                 if (paramType instanceof SimpleType) {
                                                     SimpleType paraTypeSimple = (SimpleType)paramType;
                                                     if (paraTypeSimple.getName().getFullyQualifiedName().equals(
-                                                            "HashMap")) {
+                                                            "HashMap")) { //$NON-NLS-1$
                                                         methodDecl.delete();
                                                         modified = true;
                                                     }
@@ -197,7 +196,7 @@ public class Migration2_2_to2_3 {
                                                     Type hashTable = paraType.getType();
                                                     if (hashTable instanceof SimpleType) {
                                                         if (((SimpleType)hashTable).getName().getFullyQualifiedName()
-                                                                .equals("Map")) {
+                                                                .equals("Map")) { //$NON-NLS-1$
                                                             methodDecl.delete();
                                                             modified = true;
                                                         }
@@ -288,7 +287,7 @@ public class Migration2_2_to2_3 {
         try {
             IFile correspondingFile = currentTableStructure.getIpsSrcFile().getCorrespondingFile();
             String correspondingFileName = correspondingFile.getName();
-            String markedAsOldFileName = "Old_" + correspondingFileName;
+            String markedAsOldFileName = "Old_" + correspondingFileName; //$NON-NLS-1$
             InputStream correspondingFileContents;
             correspondingFileContents = correspondingFile.getContents(true);
             IContainer correspondingFileContainer = correspondingFile.getParent();
@@ -340,7 +339,7 @@ public class Migration2_2_to2_3 {
                 List<IEnumAttributeValue> enumAttributeValues = newEnumValue.getEnumAttributeValues();
                 for (int i = 0; i < enumAttributeValues.size(); i++) {
                     IEnumAttributeValue currentEnumAttributeValue = enumAttributeValues.get(i);
-                    String value = "";
+                    String value = ""; //$NON-NLS-1$
                     if (i == enumAttributeValues.size() - 1) {
                         /*
                          * The last enumeration attribute value is the literal name attribute value.

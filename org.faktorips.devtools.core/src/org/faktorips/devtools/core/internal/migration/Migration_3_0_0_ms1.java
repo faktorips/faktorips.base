@@ -34,7 +34,7 @@ public class Migration_3_0_0_ms1 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getDescription() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     @Override

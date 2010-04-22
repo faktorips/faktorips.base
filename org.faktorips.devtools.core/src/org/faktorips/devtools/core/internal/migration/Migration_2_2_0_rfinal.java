@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrat
 import org.faktorips.util.message.MessageList;
 
 /**
- * Empty Migration 
+ * Empty Migration
  * 
  */
 public class Migration_2_2_0_rfinal extends AbstractIpsProjectMigrationOperation {
@@ -35,6 +35,7 @@ public class Migration_2_2_0_rfinal extends AbstractIpsProjectMigrationOperation
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
         return "Some bugs fixed."; //$NON-NLS-1$
     }
@@ -42,6 +43,7 @@ public class Migration_2_2_0_rfinal extends AbstractIpsProjectMigrationOperation
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getTargetVersion() {
         return "2.2.1.rfinal"; //$NON-NLS-1$
     }
@@ -49,6 +51,7 @@ public class Migration_2_2_0_rfinal extends AbstractIpsProjectMigrationOperation
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isEmpty() {
         return true;
     }
@@ -56,6 +59,7 @@ public class Migration_2_2_0_rfinal extends AbstractIpsProjectMigrationOperation
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException {
         return new MessageList();
     }

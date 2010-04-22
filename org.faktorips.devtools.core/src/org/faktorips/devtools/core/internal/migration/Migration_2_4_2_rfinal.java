@@ -34,7 +34,7 @@ public class Migration_2_4_2_rfinal extends AbstractIpsProjectMigrationOperation
 
     @Override
     public String getDescription() {
-        return "Bug fixes";
+        return "Bug fixes"; //$NON-NLS-1$
     }
 
     @Override

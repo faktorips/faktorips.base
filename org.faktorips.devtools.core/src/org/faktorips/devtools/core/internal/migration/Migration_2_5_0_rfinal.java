@@ -40,13 +40,13 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Joerg Ortmann
  */
-public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
+public class Migration_2_5_0_rfinal extends AbstractIpsProjectMigrationOperation {
     public static final String MSGCODE_TARGET_POLICY_CMPT_NOT_EXISTS = "TargetPolicyCmptNotExists"; //$NON-NLS-1$
     public static final String MSGCODE_NO_MASTER_TO_DETAIL_CANDIDATE_NOT_EXISTS = "NoMasterToDetailCandidateNotExists"; //$NON-NLS-1$
     public static final String MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE = "MasterToDetailCandidatesNotUnique"; //$NON-NLS-1$
     public static final String MSGCODE_SUBSETTED_DERIVED_UNION_NOT_FOUND = "SubsettedDerivedUnionNotFound"; //$NON-NLS-1$
 
-    public Migration_2_5_0_rc2(IIpsProject projectToMigrate, String featureId) {
+    public Migration_2_5_0_rfinal(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
@@ -58,7 +58,7 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getTargetVersion() {
-        return "2.5.0.rfinal"; //$NON-NLS-1$
+        return "3.0.0.ms1"; //$NON-NLS-1$
     }
 
     @Override

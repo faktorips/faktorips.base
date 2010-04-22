@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -56,6 +56,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isEmpty() {
         return false;
     }
@@ -63,15 +64,16 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
         MessageList messages = new MessageList();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
         try {
-            monitor.beginTask("Migrate project: " + getIpsProject().getName(), countPackages() * 10);
-            for (int i = 0; i < roots.length; i++) {
-                IIpsPackageFragment[] packs = roots[i].getIpsPackageFragments();
-                for (int j = 0; j < packs.length; j++) {
-                    migrate(packs[j], messages, new SubProgressMonitor(monitor, 10));
+            monitor.beginTask("Migrate project: " + getIpsProject().getName(), countPackages() * 10); //$NON-NLS-1$
+            for (IIpsPackageFragmentRoot root : roots) {
+                IIpsPackageFragment[] packs = root.getIpsPackageFragments();
+                for (IIpsPackageFragment pack : packs) {
+                    migrate(pack, messages, new SubProgressMonitor(monitor, 10));
                     if (monitor.isCanceled()) {
                         return messages;
                     }
@@ -82,12 +84,12 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         }
         return messages;
     }
-    
+
     private int countPackages() throws CoreException {
         int packs = 0;
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
-        for (int i = 0; i < roots.length; i++) {
-            packs = packs+ roots[i].getIpsPackageFragments().length;
+        for (IIpsPackageFragmentRoot root : roots) {
+            packs = packs + root.getIpsPackageFragments().length;
         }
         return packs;
     }
@@ -95,15 +97,15 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
     protected void migrate(IIpsPackageFragment pack, MessageList list, IProgressMonitor monitor) throws CoreException {
         IFolder folder = (IFolder)pack.getCorrespondingResource();
         IResource[] members = folder.members();
-        monitor.beginTask("Migrate package " + pack.getName(), members.length);
-        for (int i = 0; i < members.length; i++) {
+        monitor.beginTask("Migrate package " + pack.getName(), members.length); //$NON-NLS-1$
+        for (IResource member : members) {
             try {
-                if (members[i] instanceof IFile) {
-                    IFile file = (IFile)members[i];
+                if (member instanceof IFile) {
+                    IFile file = (IFile)member;
                     boolean wasMigrated = migrate(file);
                     if (!wasMigrated) {
                         IIpsSrcFile srcFile = pack.getIpsSrcFile(file.getName());
-                        if (srcFile!=null) {
+                        if (srcFile != null) {
                             migrate(srcFile);
                         }
                         if (monitor.isCanceled()) {
@@ -112,9 +114,9 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
                     }
                 }
             } catch (Exception e) {
-                String text = "An error occured while migrating file " + members[i];
+                String text = "An error occured while migrating file " + member; //$NON-NLS-1$
                 System.err.println(text);
-                list.add(Message.newError("", text));
+                list.add(Message.newError("", text)); //$NON-NLS-1$
                 IpsPlugin.log(new IpsStatus(text, e));
             }
             monitor.worked(1);
@@ -126,7 +128,8 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * Migrate the ips source file using XSLT.
      * 
      * @param srcFile The ips source file to migrate
-     * @param oldContent The old content which will be transformed as new content for ips source file
+     * @param oldContent The old content which will be transformed as new content for ips source
+     *            file
      * @param xslFile The stylesheet which is used to process the given content via XSLT
      * 
      * @throws CoreException If there was an exception during the transformation
@@ -149,7 +152,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
             throw new CoreException(new IpsStatus(e));
         }
     }
-    
+
     /**
      * This template method is called for all files in an ips package fragments. Subclasses must
      * implement their migration logic here.
