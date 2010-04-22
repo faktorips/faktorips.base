@@ -59,6 +59,13 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     private String association = ""; //$NON-NLS-1$
 
+    /**
+     * Flag indicating whether or not a Product Component must be defined for this Parameter's
+     * TestPolicyCmpt. If requiresProductCmpt is <code>true</code> a Product Component must be given
+     * when creating a TestPolicyCmpt, though it may be replaced later on with another applicable
+     * Product Component. If requiresProductCmpt is <code>false</code> a TestPolicyCmpt may be
+     * defined without a Product Component. A Product Component can be applied or removed later on.
+     */
     private boolean requiresProductCmpt = false;
 
     private List<ITestAttribute> testAttributes = new ArrayList<ITestAttribute>(0);
