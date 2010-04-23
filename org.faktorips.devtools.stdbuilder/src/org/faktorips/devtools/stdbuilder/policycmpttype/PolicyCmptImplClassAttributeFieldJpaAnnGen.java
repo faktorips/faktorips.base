@@ -134,7 +134,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         if (persistenceProviderImpl == null) {
             return;
         }
-        if (!persistenceProviderImpl.isSupportingConverter()) {
+        if (!persistenceProviderImpl.isSupportingConverters()) {
             return;
         }
 

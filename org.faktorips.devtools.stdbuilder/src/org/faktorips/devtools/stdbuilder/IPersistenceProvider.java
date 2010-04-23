@@ -22,19 +22,20 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
  * @author Joerg Ortmann
  */
 public interface IPersistenceProvider {
-    public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1 = "EclipseLink 1.1";
-    public static final String PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0 = "Generic JPA 2.0";
+
+    public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1 = "EclipseLink 1.1"; //$NON-NLS-1$
+    public static final String PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0 = "Generic JPA 2.0"; //$NON-NLS-1$
 
     /**
-     * Returns <code>true</code> if the persistent provider supports orphan removal (private owned)
-     * annotation.
+     * Returns <code>true</code> if the persistent provider supports the orphan removal (private
+     * owned) annotation.
      */
-    public boolean isSuppotingOrphanRemoval();
+    public boolean isSupportingOrphanRemoval();
 
     /**
-     * Returns <code>true</code> if the persistent provider supports converter.
+     * Returns <code>true</code> if the persistent provider supports converters.
      */
-    public boolean isSupportingConverter();
+    public boolean isSupportingConverters();
 
     /**
      * If orphan removal is supported then this method must be used to add the necessary annotation
@@ -50,7 +51,7 @@ public interface IPersistenceProvider {
     public String getRelationshipAnnotationAttributeOrphanRemoval();
 
     /**
-     * If converter are supported then this method must be used to add the necessary annotation to
+     * If converters are supported then this method must be used to add the necessary annotation to
      * the given java code fragment.
      */
     public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,

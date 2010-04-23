@@ -23,11 +23,11 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
  */
 public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
 
-    public boolean isSupportingConverter() {
+    public boolean isSupportingConverters() {
         return false;
     }
 
-    public boolean isSuppotingOrphanRemoval() {
+    public boolean isSupportingOrphanRemoval() {
         return true;
     }
 
@@ -36,7 +36,7 @@ public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
     }
 
     public String getRelationshipAnnotationAttributeOrphanRemoval() {
-        return "orphanRemoval=true";
+        return "orphanRemoval=true"; //$NON-NLS-1$
     }
 
     public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,

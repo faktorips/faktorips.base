@@ -24,20 +24,20 @@ import org.faktorips.util.StringUtil;
  */
 public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
     // orphanRemoval annotation constants
-    private static final String IMPORT_PRIVATE_OWNED = "org.eclipse.persistence.annotations.PrivateOwned";
-    private static final String ANNOTATION_PRIVATE_OWNED = "@PrivateOwned";
+    private static final String IMPORT_PRIVATE_OWNED = "org.eclipse.persistence.annotations.PrivateOwned"; //$NON-NLS-1$
+    private static final String ANNOTATION_PRIVATE_OWNED = "@PrivateOwned"; //$NON-NLS-1$
 
     // converter annotation constants
-    private static final String IMPORT_CONVERTER = "org.eclipse.persistence.annotations.Converter";
-    private static final String IMPORT_CONVERT = "org.eclipse.persistence.annotations.Convert";
-    private static final String ANNOTATION_CONVERTER = "@Converter";
-    private static final String ANNOTATION_CONVERT = "@Convert";
+    private static final String IMPORT_CONVERTER = "org.eclipse.persistence.annotations.Converter"; //$NON-NLS-1$
+    private static final String IMPORT_CONVERT = "org.eclipse.persistence.annotations.Convert"; //$NON-NLS-1$
+    private static final String ANNOTATION_CONVERTER = "@Converter"; //$NON-NLS-1$
+    private static final String ANNOTATION_CONVERT = "@Convert"; //$NON-NLS-1$
 
-    public boolean isSupportingConverter() {
+    public boolean isSupportingConverters() {
         return true;
     }
 
-    public boolean isSuppotingOrphanRemoval() {
+    public boolean isSupportingOrphanRemoval() {
         return true;
     }
 
@@ -58,15 +58,15 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
 
         String converterName = StringUtil.unqualifiedName(persistentAttributeInfo.getConverterQualifiedClassName());
         javaCodeFragment.append(ANNOTATION_CONVERTER);
-        javaCodeFragment.append("(name=");
+        javaCodeFragment.append("(name="); //$NON-NLS-1$
         javaCodeFragment.appendQuoted(converterName);
-        javaCodeFragment.append(", converterClass=");
+        javaCodeFragment.append(", converterClass="); //$NON-NLS-1$
         javaCodeFragment.appendClassName(persistentAttributeInfo.getConverterQualifiedClassName());
-        javaCodeFragment.append(".class");
-        javaCodeFragment.append(")");
+        javaCodeFragment.append(".class"); //$NON-NLS-1$
+        javaCodeFragment.append(")"); //$NON-NLS-1$
         javaCodeFragment.append(ANNOTATION_CONVERT);
-        javaCodeFragment.append("(");
+        javaCodeFragment.append("("); //$NON-NLS-1$
         javaCodeFragment.appendQuoted(converterName);
-        javaCodeFragment.appendln(")");
+        javaCodeFragment.appendln(")"); //$NON-NLS-1$
     }
 }
