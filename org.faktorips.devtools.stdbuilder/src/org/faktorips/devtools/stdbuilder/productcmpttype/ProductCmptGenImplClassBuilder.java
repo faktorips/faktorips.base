@@ -76,7 +76,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
-    public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId";
+    public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId"; //$NON-NLS-1$
 
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
@@ -154,21 +154,21 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("CLASS", ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+        appendLocalizedJavaDoc("CLASS", ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()) //$NON-NLS-1$
                 .getUnqualifiedClassNameForProductCmptTypeGen(true), getIpsObject(), builder);
     }
 
     @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getIpsObject(), builder);
-        builder.append("public ");
+        appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getIpsObject(), builder); //$NON-NLS-1$
+        builder.append("public "); //$NON-NLS-1$
         builder.append(getUnqualifiedClassName());
         builder.append('(');
         builder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
                 .getQualifiedName(false));
-        builder.append(" productCmpt)");
+        builder.append(" productCmpt)"); //$NON-NLS-1$
         builder.openBracket();
-        builder.appendln("super(productCmpt);");
+        builder.appendln("super(productCmpt);"); //$NON-NLS-1$
         builder.closeBracket();
     }
 
@@ -202,9 +202,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         productCmptGenInterfaceBuilder.generateSignatureTypeSafeGetProductCmpt(getProductCmptType(), methodsBuilder);
         methodsBuilder.openBracket();
         String productCmptType = productCmptInterfaceBuilder.getQualifiedClassName(getIpsSrcFile());
-        methodsBuilder.append("return (");
+        methodsBuilder.append("return ("); //$NON-NLS-1$
         methodsBuilder.appendClassName(productCmptType);
-        methodsBuilder.appendln(")" + MethodNames.GET_PRODUCT_COMPONENT + "();");
+        methodsBuilder.appendln(")" + MethodNames.GET_PRODUCT_COMPONENT + "();"); //$NON-NLS-1$//$NON-NLS-2$
         methodsBuilder.closeBracket();
     }
 
@@ -244,11 +244,11 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
-        builder.methodBegin(Modifier.PROTECTED, "void", "doInitPropertiesFromXml", new String[] { "configMap" },
-                new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName() + ", "
-                        + Element.class.getName() + ">" : Map.class.getName() });
+        builder.methodBegin(Modifier.PROTECTED, "void", "doInitPropertiesFromXml", new String[] { "configMap" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName() + ", " //$NON-NLS-1$//$NON-NLS-2$
+                        + Element.class.getName() + ">" : Map.class.getName() }); //$NON-NLS-1$
 
-        builder.appendln("super.doInitPropertiesFromXml(configMap);");
+        builder.appendln("super.doInitPropertiesFromXml(configMap);"); //$NON-NLS-1$
 
         boolean attributeFound = false;
         GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
@@ -290,35 +290,35 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     private void generateDefineLocalVariablesForXmlExtraction(JavaCodeFragmentBuilder builder) {
         builder.appendClassName(Element.class);
-        builder.appendln(" configElement = null;");
+        builder.appendln(" configElement = null;"); //$NON-NLS-1$
         builder.appendClassName(String.class);
-        builder.appendln(" value = null;");
+        builder.appendln(" value = null;"); //$NON-NLS-1$
     }
 
     private void generateGetElementFromConfigMapAndIfStatement(String attributeName, JavaCodeFragmentBuilder builder) {
         if (isUseTypesafeCollections()) {
-            builder.append("configElement = configMap.get(\"");
+            builder.append("configElement = configMap.get(\""); //$NON-NLS-1$
         } else {
-            builder.append("configElement = (");
+            builder.append("configElement = ("); //$NON-NLS-1$
             builder.appendClassName(Element.class);
-            builder.append(")configMap.get(\"");
+            builder.append(")configMap.get(\""); //$NON-NLS-1$
         }
         builder.append(attributeName);
-        builder.appendln("\");");
-        builder.append("if (configElement != null) ");
+        builder.appendln("\");"); //$NON-NLS-1$
+        builder.append("if (configElement != null) "); //$NON-NLS-1$
         builder.openBracket();
     }
 
     private void generateExtractValueFromXml(String memberVar, DatatypeHelper helper, JavaCodeFragmentBuilder builder)
             throws CoreException {
 
-        builder.append("value = ");
+        builder.append("value = "); //$NON-NLS-1$
         builder.appendClassName(ValueToXmlHelper.class);
-        builder.append(".getValueFromElement(configElement, \"Value\");");
+        builder.append(".getValueFromElement(configElement, \"Value\");"); //$NON-NLS-1$
         builder.append(memberVar);
-        builder.append(" = ");
-        builder.append(getCodeToGetValueFromExpression(helper, "value"));
-        builder.appendln(";");
+        builder.append(" = "); //$NON-NLS-1$
+        builder.append(getCodeToGetValueFromExpression(helper, "value")); //$NON-NLS-1$
+        builder.appendln(";"); //$NON-NLS-1$
     }
 
     private JavaCodeFragment getCodeToGetValueFromExpression(DatatypeHelper helper, String expression)
@@ -329,7 +329,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             IEnumType enumType = enumHelper.getEnumType();
             if (!enumType.isContainingValues()) {
                 return enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumType, expression,
-                        new JavaCodeFragment("getRepository()"));
+                        new JavaCodeFragment("getRepository()")); //$NON-NLS-1$
             }
         }
         return helper.newInstanceFromExpression(expression);
@@ -371,7 +371,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragment frag) throws CoreException {
 
         frag.append(attribute.getFieldNameSetOfAllowedValues());
-        frag.append(" = ");
+        frag.append(" = "); //$NON-NLS-1$
         if (helper.getDatatype().isEnum()) {
             if (helper.getDatatype() instanceof EnumTypeDatatypeAdapter) {
                 EnumTypeDatatypeAdapter enumAdapter = (EnumTypeDatatypeAdapter)helper.getDatatype();
@@ -388,20 +388,20 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * Helper method for {@link #generateExtractAnyValueSetFromXml}.
      */
     private void generateCreateUnrestrictedValueSet(DatatypeHelper helper, JavaCodeFragment frag) {
-        frag.append("new ");
+        frag.append("new "); //$NON-NLS-1$
         frag.appendClassName(UnrestrictedValueSet.class);
         if (isUseTypesafeCollections()) {
-            frag.append("<");
+            frag.append("<"); //$NON-NLS-1$
             frag.appendClassName(helper.getJavaClassName());
-            frag.append(">");
+            frag.append(">"); //$NON-NLS-1$
         }
-        frag.append("();");
+        frag.append("();"); //$NON-NLS-1$
     }
 
     /**
      * Helper method for {@link #generateExtractAnyValueSetFromXml}.
      */
-    private void generateCreateValueSetContainingAllEnumValueForFipsEnumDatatype(GenPolicyCmptTypeAttribute attribute,
+    private void generateCreateValueSetContainingAllEnumValueForFipsEnumDatatype(@SuppressWarnings("unused") GenPolicyCmptTypeAttribute attribute,
             DatatypeHelper helper,
             EnumTypeDatatypeAdapter enumAdapter,
             JavaCodeFragment frag) throws CoreException {
@@ -410,33 +410,33 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         JavaCodeFragment code = new JavaCodeFragment();
         if (enumAdapter.getEnumType().isContainingValues()) {
             code.appendClassName(Arrays.class);
-            code.append(".asList(");
+            code.append(".asList("); //$NON-NLS-1$
             code.appendClassName(javaEnumName);
-            code.append(".values())");
+            code.append(".values())"); //$NON-NLS-1$
         } else {
-            code.append("getRepository().getEnumValues(");
+            code.append("getRepository().getEnumValues("); //$NON-NLS-1$
             code.appendClassName(javaEnumName);
-            code.append(".class)");
+            code.append(".class)"); //$NON-NLS-1$
         }
-        frag.append(helper.newEnumValueSetInstance(code, new JavaCodeFragment("true"), isUseTypesafeCollections()));
-        frag.append(";");
+        frag.append(helper.newEnumValueSetInstance(code, new JavaCodeFragment("true"), isUseTypesafeCollections())); //$NON-NLS-1$
+        frag.append(";"); //$NON-NLS-1$
     }
 
     /**
      * Helper method for {@link #generateExtractAnyValueSetFromXml}.
      */
-    private void generateCreateValueSetContainingAllEnumValueForRegisteredEnumClass(GenPolicyCmptTypeAttribute attribute,
+    private void generateCreateValueSetContainingAllEnumValueForRegisteredEnumClass(@SuppressWarnings("unused") GenPolicyCmptTypeAttribute attribute,
             DatatypeHelper helper,
-            JavaCodeFragment frag) throws CoreException {
+            JavaCodeFragment frag) {
         // TODO
-        frag.append("new ");
+        frag.append("new "); //$NON-NLS-1$
         frag.appendClassName(UnrestrictedValueSet.class);
         if (isUseTypesafeCollections()) {
-            frag.append("<");
+            frag.append("<"); //$NON-NLS-1$
             frag.appendClassName(helper.getJavaClassName());
-            frag.append(">");
+            frag.append(">"); //$NON-NLS-1$
         }
-        frag.append("();");
+        frag.append("();"); //$NON-NLS-1$
     }
 
     private void generateExtractEnumSetFromXml(GenPolicyCmptTypeAttribute attribute,
@@ -444,36 +444,36 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragment frag) throws CoreException {
 
         frag.appendClassName(EnumValues.class);
-        frag.append(" values = ");
+        frag.append(" values = "); //$NON-NLS-1$
         frag.appendClassName(ValueToXmlHelper.class);
-        frag.appendln(".getEnumValueSetFromElement(configElement, \"ValueSet\");");
-        frag.append("if (values != null)");
+        frag.appendln(".getEnumValueSetFromElement(configElement, \"ValueSet\");"); //$NON-NLS-1$
+        frag.append("if (values != null)"); //$NON-NLS-1$
         frag.appendOpenBracket();
         frag.appendClassName(ArrayList.class);
         if (isUseTypesafeCollections()) {
-            frag.append("<");
+            frag.append("<"); //$NON-NLS-1$
             frag.appendClassName(helper.getJavaClassName());
-            frag.append(">");
+            frag.append(">"); //$NON-NLS-1$
         }
-        frag.append(" enumValues = new ");
+        frag.append(" enumValues = new "); //$NON-NLS-1$
         frag.appendClassName(ArrayList.class);
         if (isUseTypesafeCollections()) {
-            frag.append("<");
+            frag.append("<"); //$NON-NLS-1$
             frag.appendClassName(helper.getJavaClassName());
-            frag.append(">");
+            frag.append(">"); //$NON-NLS-1$
         }
-        frag.append("();");
-        frag.append("for (int i = 0; i < values.getNumberOfValues(); i++)");
+        frag.append("();"); //$NON-NLS-1$
+        frag.append("for (int i = 0; i < values.getNumberOfValues(); i++)"); //$NON-NLS-1$
         frag.appendOpenBracket();
-        frag.append("enumValues.add(");
-        frag.append(getCodeToGetValueFromExpression(helper, "values.getValue(i)"));
-        frag.appendln(");");
+        frag.append("enumValues.add("); //$NON-NLS-1$
+        frag.append(getCodeToGetValueFromExpression(helper, "values.getValue(i)")); //$NON-NLS-1$
+        frag.appendln(");"); //$NON-NLS-1$
         frag.appendCloseBracket();
         frag.append(attribute.getFieldNameSetOfAllowedValues());
-        frag.append(" = ");
-        frag.append(helper.newEnumValueSetInstance(new JavaCodeFragment("enumValues"), new JavaCodeFragment(
-                "values.containsNull()"), isUseTypesafeCollections()));
-        frag.appendln(";");
+        frag.append(" = "); //$NON-NLS-1$
+        frag.append(helper.newEnumValueSetInstance(new JavaCodeFragment("enumValues"), new JavaCodeFragment( //$NON-NLS-1$
+                "values.containsNull()"), isUseTypesafeCollections())); //$NON-NLS-1$
+        frag.appendln(";"); //$NON-NLS-1$
         frag.appendCloseBracket();
     }
 
@@ -482,22 +482,22 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragment frag) throws CoreException {
 
         frag.appendClassName(Range.class);
-        frag.append(" range = ");
+        frag.append(" range = "); //$NON-NLS-1$
         frag.appendClassName(ValueToXmlHelper.class);
-        frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
-        frag.append("if (range != null)");
+        frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");"); //$NON-NLS-1$
+        frag.append("if (range != null)"); //$NON-NLS-1$
         frag.appendOpenBracket();
         frag.append(attribute.getFieldNameSetOfAllowedValues());
-        frag.append(" = ");
-        JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance(new JavaCodeFragment("range.getLower()"),
-                new JavaCodeFragment("range.getUpper()"), new JavaCodeFragment("range.getStep()"),
-                new JavaCodeFragment("range.containsNull()"), isUseTypesafeCollections());
+        frag.append(" = "); //$NON-NLS-1$
+        JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance(new JavaCodeFragment("range.getLower()"), //$NON-NLS-1$
+                new JavaCodeFragment("range.getUpper()"), new JavaCodeFragment("range.getStep()"), //$NON-NLS-1$ //$NON-NLS-2$
+                new JavaCodeFragment("range.containsNull()"), isUseTypesafeCollections()); //$NON-NLS-1$
         if (newRangeInstanceFrag == null) {
-            throw new CoreException(new IpsStatus("The " + helper + " for the datatype "
-                    + helper.getDatatype().getName() + " doesn't support ranges."));
+            throw new CoreException(new IpsStatus("The " + helper + " for the datatype " //$NON-NLS-1$ //$NON-NLS-2$
+                    + helper.getDatatype().getName() + " doesn't support ranges.")); //$NON-NLS-1$
         }
         frag.append(newRangeInstanceFrag);
-        frag.appendln(";");
+        frag.appendln(";"); //$NON-NLS-1$
         frag.appendCloseBracket();
     }
 
@@ -551,12 +551,12 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
-        String[] argNames = new String[] { "elementsMap" };
-        String[] argTypes = new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<"
-                + String.class.getName() + ", " + List.class.getName() + "<" + Element.class.getName() + ">>"
-                : Map.class.getName() };
-        builder.methodBegin(Modifier.PROTECTED, "void", "doInitReferencesFromXml", argNames, argTypes);
-        builder.appendln("super.doInitReferencesFromXml(elementsMap);");
+        String[] argNames = new String[] { "elementsMap" }; //$NON-NLS-1$
+        String[] argTypes = new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" //$NON-NLS-1$
+                + String.class.getName() + ", " + List.class.getName() + "<" + Element.class.getName() + ">>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        : Map.class.getName() };
+        builder.methodBegin(Modifier.PROTECTED, "void", "doInitReferencesFromXml", argNames, argTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.appendln("super.doInitReferencesFromXml(elementsMap);"); //$NON-NLS-1$
 
         // before the first association we define a temp variable as follows:
         // Element associationElements = null;
@@ -587,27 +587,27 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 if (associationFound == false) {
                     builder.appendClassName(List.class);
                     if (isUseTypesafeCollections()) {
-                        builder.append("<");
+                        builder.append("<"); //$NON-NLS-1$
                         builder.appendClassName(Element.class);
-                        builder.append(">");
+                        builder.append(">"); //$NON-NLS-1$
                     }
-                    builder.append(" ");
+                    builder.append(" "); //$NON-NLS-1$
                     associationFound = true;
                 }
-                builder.append("associationElements = ");
+                builder.append("associationElements = "); //$NON-NLS-1$
                 if (!isUseTypesafeCollections()) {
-                    builder.append("(");
+                    builder.append("("); //$NON-NLS-1$
                     builder.appendClassName(List.class);
-                    builder.append(") ");
+                    builder.append(") "); //$NON-NLS-1$
                 }
-                builder.append("elementsMap.get(");
+                builder.append("elementsMap.get("); //$NON-NLS-1$
                 builder.appendQuoted(ass.getName());
-                builder.appendln(");");
-                builder.append("if (associationElements != null) {");
+                builder.appendln(");"); //$NON-NLS-1$
+                builder.append("if (associationElements != null) {"); //$NON-NLS-1$
                 IPolicyCmptTypeAssociation policyCmptTypeAssociation = ass
                         .findMatchingPolicyCmptTypeAssociation(getIpsProject());
                 getGenerator(ass).generateCodeForMethodDoInitReferencesFromXml(policyCmptTypeAssociation, builder);
-                builder.appendln("}");
+                builder.appendln("}"); //$NON-NLS-1$
             }
         }
         builder.methodEnd();
@@ -654,31 +654,32 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
-        String[] argNames = new String[] { "tableUsageMap" };
-        String[] argTypes = new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<"
-                + String.class.getName() + ", " + Element.class.getName() + ">" : Map.class.getName() };
-        builder.methodBegin(Modifier.PROTECTED, "void", "doInitTableUsagesFromXml", argNames, argTypes);
-        builder.appendln("super.doInitTableUsagesFromXml(tableUsageMap);");
+        String[] argNames = new String[] { "tableUsageMap" }; //$NON-NLS-1$
+        String string = "<"; //$NON-NLS-1$
+        String[] argTypes = new String[] { isUseTypesafeCollections() ? Map.class.getName() + string
+                + String.class.getName() + ", " + Element.class.getName() + ">" : Map.class.getName() }; //$NON-NLS-1$ //$NON-NLS-2$
+        builder.methodBegin(Modifier.PROTECTED, "void", "doInitTableUsagesFromXml", argNames, argTypes); //$NON-NLS-1$//$NON-NLS-2$
+        builder.appendln("super.doInitTableUsagesFromXml(tableUsageMap);"); //$NON-NLS-1$
         builder.appendClassName(Element.class);
-        builder.appendln(" element = null;");
+        builder.appendln(" element = null;"); //$NON-NLS-1$
         for (int i = 0; i < tsus.length; i++) {
             if (isUseTypesafeCollections()) {
-                builder.append("element = tableUsageMap.get(\"");
+                builder.append("element = tableUsageMap.get(\""); //$NON-NLS-1$
             } else {
-                builder.append("element = (");
+                builder.append("element = ("); //$NON-NLS-1$
                 builder.appendClassName(Element.class);
-                builder.append(")tableUsageMap.get(\"");
+                builder.append(")tableUsageMap.get(\""); //$NON-NLS-1$
             }
             builder.append(tsus[i].getRoleName());
-            builder.appendln("\");");
-            builder.appendln("if (element != null){");
+            builder.appendln("\");"); //$NON-NLS-1$
+            builder.appendln("if (element != null){"); //$NON-NLS-1$
             builder.append(getTableStructureUsageRoleName(tsus[i]));
-            builder.appendln(" = ");
+            builder.appendln(" = "); //$NON-NLS-1$
             builder.appendClassName(ValueToXmlHelper.class);
-            builder.append(".getValueFromElement(element, \"TableContentName\");");
-            builder.appendln("}");
+            builder.append(".getValueFromElement(element, \"TableContentName\");"); //$NON-NLS-1$
+            builder.appendln("}"); //$NON-NLS-1$
         }
-        builder.appendln("}");
+        builder.appendln("}"); //$NON-NLS-1$
     }
 
     /**
@@ -783,8 +784,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      *      return null;
      *  }
      * </pre>
-     * 
-     * @throws CoreException
      */
     private void generateMethodGetLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -801,7 +800,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 }
             }
         }
-        methodsBuilder.appendln("return null;");
+        methodsBuilder.appendln("return null;"); //$NON-NLS-1$
         methodsBuilder.closeBracket();
     }
 
@@ -813,8 +812,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * </pre>
      */
     private void generateSignatureGetLink(JavaCodeFragmentBuilder methodsBuilder) {
-        methodsBuilder.signature(Modifier.PUBLIC, Java5ClassNames.ILink_QualifiedName + "<? extends "
-                + IProductComponent.class.getName() + ">", "getLink", new String[] { "linkName", "target" },
+        methodsBuilder.signature(Modifier.PUBLIC, Java5ClassNames.ILink_QualifiedName + "<? extends " //$NON-NLS-1$
+                + IProductComponent.class.getName() + ">", "getLink", new String[] { "linkName", "target" }, //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
                 new String[] { String.class.getName(), IProductComponent.class.getName() });
     }
 
@@ -830,20 +829,18 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      *      return list;
      *  }
      * </pre>
-     * 
-     * @throws CoreException
      */
     private void generateMethodGetLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         appendOverrideAnnotation(methodsBuilder, false);
         generateSignatureGetLinks(methodsBuilder);
         methodsBuilder.openBracket();
-        methodsBuilder.appendClassName(List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends "
-                + IProductComponent.class.getName() + ">>");
-        methodsBuilder.append(" list = new ");
-        methodsBuilder.appendClassName(ArrayList.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName
-                + "<? extends " + IProductComponent.class.getName() + ">>");
-        methodsBuilder.appendln("();");
+        methodsBuilder.appendClassName(List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends " //$NON-NLS-1$//$NON-NLS-2$
+                + IProductComponent.class.getName() + ">>"); //$NON-NLS-1$
+        methodsBuilder.append(" list = new "); //$NON-NLS-1$
+        methodsBuilder.appendClassName(ArrayList.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName //$NON-NLS-1$
+                + "<? extends " + IProductComponent.class.getName() + ">>"); //$NON-NLS-1$ //$NON-NLS-2$
+        methodsBuilder.appendln("();"); //$NON-NLS-1$
         IAssociation[] associations = getProductCmptType().getAssociations();
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)associations[i];
@@ -854,7 +851,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 }
             }
         }
-        methodsBuilder.appendln("return list;");
+        methodsBuilder.appendln("return list;"); //$NON-NLS-1$
         methodsBuilder.closeBracket();
     }
 
@@ -866,10 +863,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * </pre>
      */
     private void generateSignatureGetLinks(JavaCodeFragmentBuilder methodsBuilder) {
-        String returnType = List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends "
-                + IProductComponent.class.getName() + ">>";
+        String returnType = List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends " //$NON-NLS-1$ //$NON-NLS-2$
+                + IProductComponent.class.getName() + ">>"; //$NON-NLS-1$
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
-                "getLinks", new String[0], new String[0]);
+                "getLinks", new String[0], new String[0]); //$NON-NLS-1$
     }
 
     @Override
