@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -53,22 +53,20 @@ import org.faktorips.util.memento.Memento;
  */
 public class AssociationsSection extends SimpleIpsPartsSection {
 
-    public AssociationsSection(
-            IPolicyCmptType pcType, 
-            Composite parent,
-            UIToolkit toolkit) {
+    public AssociationsSection(IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
         super(pcType, parent, Messages.AssociationsSection_title, toolkit);
     }
-    
+
     public IPolicyCmptType getPcType() {
         return (IPolicyCmptType)getIpsObject();
     }
 
-	/** 
+    /**
      * {@inheritDoc}
-	 */
+     */
+    @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new AssociationsComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);
+        return new AssociationsComposite(getIpsObject(), parent, toolkit);
     }
 
     /*
@@ -83,14 +81,16 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             return (selected instanceof IPolicyCmptTypeAssociation);
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             if (selected instanceof IPolicyCmptTypeAssociation) {
@@ -104,19 +104,18 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             }
         }
     }
-    
+
     /**
-     * A composite that shows a policy component's associations in a viewer and 
-     * allows to edit associations in a dialog, create new associations and delete associations.
+     * A composite that shows a policy component's associations in a viewer and allows to edit
+     * associations in a dialog, create new associations and delete associations.
      */
     private class AssociationsComposite extends IpsPartsComposite {
-    	private Button wizardNewButton;
-        private OpenTargetPcTypeInEditorAction openAction ;
-        
-        AssociationsComposite(IIpsObject pdObject, Composite parent,
-                UIToolkit toolkit) {
-        	// create default buttons without the new button, 
-        	//   because the new button will be overridden with wizard functionality
+        private Button wizardNewButton;
+        private OpenTargetPcTypeInEditorAction openAction;
+
+        AssociationsComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
+            // create default buttons without the new button,
+            // because the new button will be overridden with wizard functionality
             super(pdObject, parent, false, true, true, true, true, toolkit);
             openAction = new OpenTargetPcTypeInEditorAction(getViewer());
             buildContextMenu();
@@ -126,23 +125,24 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             final MenuManager menuManager = new MenuManager();
             menuManager.setRemoveAllWhenShown(true);
             // display menu only if one element is selected
-            menuManager.addMenuListener(new IMenuListener(){
+            menuManager.addMenuListener(new IMenuListener() {
                 public void menuAboutToShow(IMenuManager manager) {
                     ISelection selection = getViewer().getSelection();
-                    if (selection.isEmpty()){
+                    if (selection.isEmpty()) {
                         return;
                     }
                     menuManager.add(openAction);
                 }
             });
-            
+
             Menu menu = menuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(menu);
         }
-        
-        /** 
+
+        /**
          * {@inheritDoc}
          */
+        @Override
         protected IStructuredContentProvider createContentProvider() {
             return new RelationContentProvider();
         }
@@ -150,35 +150,40 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected ILabelProvider createLabelProvider() {
             return new AssociationsLabelProvider();
         }
-        
-        /** 
-         * {@inheritDoc}
-         */
-        protected IIpsObjectPart newIpsPart() {
-            return getPcType().newPolicyCmptTypeAssociation();
-        }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
+        protected IIpsObjectPart newIpsPart() {
+            return getPcType().newPolicyCmptTypeAssociation();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public void setDataChangeable(boolean flag) {
             super.setDataChangeable(flag);
             getUiToolkit().setDataChangeable(wizardNewButton, flag);
         }
 
-        /** 
-         * {@inheritDoc}
-         */
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new AssociationEditDialog((IPolicyCmptTypeAssociation)part, shell);
-        }
-        
         /**
          * {@inheritDoc}
          */
+        @Override
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
+            return new AssociationEditDialog((IPolicyCmptTypeAssociation)part, shell);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getPcType().moveAssociations(indexes, up);
         }
@@ -186,31 +191,35 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
-        	createNewWizardButton(buttons, toolkit);
-        	super.createButtons(buttons, toolkit);
-    		return true;
+            createNewWizardButton(buttons, toolkit);
+            super.createButtons(buttons, toolkit);
+            return true;
         }
-        
+
         /**
          * Creates the "New..." button to initiate the new-relation-wizard.
          */
         private void createNewWizardButton(Composite buttons, UIToolkit toolkit) {
-        	wizardNewButton = toolkit.createButton(buttons, Messages.AssociationsSection_newButton);
-        	wizardNewButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-    		wizardNewButton.addSelectionListener(new SelectionListener() {
-    			public void widgetSelected(SelectionEvent e) {
-    				try {
-    					newWizardClicked();
-    				} catch (Exception ex) {
-    					IpsPlugin.logAndShowErrorDialog(ex);
-    				}
-    			}
-    			public void widgetDefaultSelected(SelectionEvent e) {
-    			}
-    		});
+            wizardNewButton = toolkit.createButton(buttons, Messages.AssociationsSection_newButton);
+            wizardNewButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                    | GridData.VERTICAL_ALIGN_BEGINNING));
+            wizardNewButton.addSelectionListener(new SelectionListener() {
+                public void widgetSelected(SelectionEvent e) {
+                    try {
+                        newWizardClicked();
+                    } catch (Exception ex) {
+                        IpsPlugin.logAndShowErrorDialog(ex);
+                    }
+                }
+
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    // nothing to do
+                }
+            });
         }
-		
+
         /**
          * Open the new-association-wizard
          */
@@ -219,9 +228,10 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             boolean dirty = file.isDirty();
             Memento memento = getIpsObject().newMemento();
             IIpsObjectPart newRelation = newIpsPart();
-            WizardDialog dialog = new WizardDialog(getShell(), new NewPcTypeAssociationWizard((IPolicyCmptTypeAssociation)newRelation));
+            WizardDialog dialog = new WizardDialog(getShell(), new NewPcTypeAssociationWizard(
+                    (IPolicyCmptTypeAssociation)newRelation));
             dialog.open();
-            if (dialog.getReturnCode()==Window.CANCEL) {
+            if (dialog.getReturnCode() == Window.CANCEL) {
                 getIpsObject().setState(memento);
                 if (!dirty) {
                     file.markAsClean();
@@ -229,25 +239,28 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             }
             refresh();
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         protected void openLink() {
             openAction.run();
         }
 
         private class RelationContentProvider implements IStructuredContentProvider {
-    		public Object[] getElements(Object inputElement) {
-    			 return getPcType().getPolicyCmptTypeAssociations();
-    		}
-    		public void dispose() {
-    			// nothing todo
-    		}
-    		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-    			// nothing todo
-    		}
-    	}
+            public Object[] getElements(Object inputElement) {
+                return getPcType().getPolicyCmptTypeAssociations();
+            }
 
-	}
+            public void dispose() {
+                // nothing todo
+            }
+
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // nothing todo
+            }
+        }
+
+    }
 }
