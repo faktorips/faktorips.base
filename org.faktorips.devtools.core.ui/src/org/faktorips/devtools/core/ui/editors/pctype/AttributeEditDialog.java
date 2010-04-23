@@ -178,10 +178,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private Checkbox nullableCheckbox;
 
-    /**
-     * @param parentShell
-     * @param title
-     */
     public AttributeEditDialog(IPolicyCmptTypeAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
@@ -758,17 +754,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         final Group group = uiToolkit.createGroup(checkComposite, "Persistent Properties");
         Composite workArea = uiToolkit.createLabelEditColumnComposite(group);
 
-        uiToolkit.createFormLabel(workArea, "Table column name:");
+        uiToolkit.createFormLabel(workArea, "Column name:");
         Text columnNameText = uiToolkit.createText(workArea);
         bindingContext.bindContent(columnNameText, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME);
 
-        uiToolkit.createFormLabel(workArea, "Is an unique attribute:");
+        uiToolkit.createFormLabel(workArea, "Unique:");
         uniqueCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(uniqueCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE);
 
-        uiToolkit.createFormLabel(workArea, "Is a nullable attribute:");
+        uiToolkit.createFormLabel(workArea, "Nullable:");
         nullableCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(nullableCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
@@ -808,21 +804,21 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         // disable all tab page controls if policy component type shouldn't persist
         bindingContext.add(new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
-                "enabled", Boolean.TYPE) {
-            @Override
-            public void updateUiIfNotDisposed() {
-                if (!isPersistentEnabled()) {
-                    uiToolkit.setDataChangeable(persistencePage.getControl(), false);
-                    return;
-                }
-                if (attribute.getPersistenceAttributeInfo().isTransient()) {
-                    uiToolkit.setDataChangeable(group, false);
-                    return;
-                }
-                uiToolkit.setDataChangeable(persistencePage.getControl(), ((IPersistentTypeInfo)getObject())
-                        .isEnabled());
-            }
-        });
+                "enabled", Boolean.TYPE) { //$NON-NLS-1$
+                    @Override
+                    public void updateUiIfNotDisposed() {
+                        if (!isPersistentEnabled()) {
+                            uiToolkit.setDataChangeable(persistencePage.getControl(), false);
+                            return;
+                        }
+                        if (attribute.getPersistenceAttributeInfo().isTransient()) {
+                            uiToolkit.setDataChangeable(group, false);
+                            return;
+                        }
+                        uiToolkit.setDataChangeable(persistencePage.getControl(), ((IPersistentTypeInfo)getObject())
+                                .isEnabled());
+                    }
+                });
 
         // disable property controls if attribute is marked as transient
         bindingContext.add(new ControlPropertyBinding(c, attribute.getPersistenceAttributeInfo(),
