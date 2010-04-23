@@ -30,15 +30,15 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IAssociation) {
             IAssociation association = (IAssociation)ipsObjectPart;
-            String baseName = "";
+            String baseName = ""; //$NON-NLS-1$
             if (association.getAssociationType() == AssociationType.AGGREGATION) {
-                baseName = "AssociationType-Aggregation.gif";
+                baseName = "AssociationType-Aggregation.gif"; //$NON-NLS-1$
             } else if (association.getAssociationType() == AssociationType.ASSOCIATION) {
-                baseName = "AssociationType-Association.gif";
+                baseName = "AssociationType-Association.gif"; //$NON-NLS-1$
             } else if (association.getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
-                baseName = "AssociationType-CompositionDetailToMaster.gif";
+                baseName = "AssociationType-CompositionDetailToMaster.gif"; //$NON-NLS-1$
             } else if (association.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL) {
-                baseName = "AssociationType-Composition.gif";
+                baseName = "AssociationType-Composition.gif"; //$NON-NLS-1$
             }
             if (association instanceof IPolicyCmptTypeAssociation) {
                 try {
@@ -58,7 +58,7 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("AssociationType-Association.gif", true);
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("AssociationType-Association.gif", true); //$NON-NLS-1$
     }
 
     @Override

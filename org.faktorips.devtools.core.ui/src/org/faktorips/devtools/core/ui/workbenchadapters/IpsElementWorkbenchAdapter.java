@@ -56,7 +56,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
             IIpsElement ipsElement = (IIpsElement)o;
             return getLabel(ipsElement);
         } else {
-            return "";
+            return ""; //$NON-NLS-1$
         }
     }
 
