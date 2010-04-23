@@ -155,6 +155,15 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                                 attributes[i].getName(), productCmptType.getQualifiedName());
                         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
                     }
+                    // We use "this." to access the product component type instance variable because
+                    // the compiled
+                    // formula code is also interpreted. When it is interpreted, it does not run
+                    // inside a method
+                    // of the product component generation class and so we can't access the product
+                    // component genertaion
+                    // attributes via this. So when we interpret the code, we introduce a new
+                    // parameter (thiz) and replace
+                    // "this." with "thiz."
                     String code = "this." + getParameterAttributGetterName(attributes[i], productCmptType) + "()"; //$NON-NLS-1$ //$NON-NLS-2$
                     return new CompilationResultImpl(code, attrDatatype);
                 }
