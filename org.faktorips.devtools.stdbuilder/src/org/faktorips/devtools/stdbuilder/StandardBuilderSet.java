@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -352,8 +351,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             }
 
             @Override
-            protected CompilationResult compile(IParameter param, String attributeName, Locale locale) {
-                CompilationResult compile = super.compile(param, attributeName, locale);
+            protected CompilationResult compile(IParameter param, String attributeName) {
+                CompilationResult compile = super.compile(param, attributeName);
                 try {
                     Datatype datatype = param.findDatatype(getIpsProject());
                     if (datatype instanceof IType) {
