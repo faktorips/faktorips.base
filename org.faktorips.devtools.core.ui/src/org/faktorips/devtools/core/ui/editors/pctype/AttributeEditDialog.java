@@ -797,10 +797,15 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION);
 
         uiToolkit.createFormLabel(workArea, "Datatype converter class:");
-        final Text converterQualifiedName = uiToolkit.createText(workArea);
-
-        bindingContext.bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
-                IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
+        if (ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportConverter()) {
+            final Text converterQualifiedName = uiToolkit.createText(workArea);
+            bindingContext.bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
+                    IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
+        } else {
+            final Text converterQualifiedName = uiToolkit.createText(workArea);
+            converterQualifiedName.setEnabled(false);
+            converterQualifiedName.setText("Not supported by persistence provider.");
+        }
 
         // disable all tab page controls if policy component type shouldn't persist
         bindingContext.add(new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
@@ -833,16 +838,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     uiToolkit.setDataChangeable(group, false);
                     return;
                 }
-                disableUnsupportedControls();
                 enableOrDisableDatatypeDependingControls();
             }
 
-            private void disableUnsupportedControls() {
-                if (!ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportConverter()) {
-                    converterQualifiedName.setEnabled(false);
-                }
-
-            }
         });
         // datatype depending enabled or disabled controls
         bindingContext.add(new ControlPropertyBinding(c, attribute, IAttribute.PROPERTY_DATATYPE, String.class) {
