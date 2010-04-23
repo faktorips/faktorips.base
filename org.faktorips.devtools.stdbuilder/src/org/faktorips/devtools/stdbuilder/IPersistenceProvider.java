@@ -33,11 +33,6 @@ public interface IPersistenceProvider {
     public boolean isSupportingOrphanRemoval();
 
     /**
-     * Returns <code>true</code> if the persistent provider supports converters.
-     */
-    public boolean isSupportingConverters();
-
-    /**
      * If orphan removal is supported then this method must be used to add the necessary annotation
      * to the given java code fragment (e.g. PrivateOwned)
      */
@@ -49,6 +44,11 @@ public interface IPersistenceProvider {
      * <code>null</code>) if no attribute is necessary.
      */
     public String getRelationshipAnnotationAttributeOrphanRemoval();
+
+    /**
+     * Returns <code>true</code> if the persistent provider supports converters.
+     */
+    public boolean isSupportingConverters();
 
     /**
      * If converters are supported then this method must be used to add the necessary annotation to
