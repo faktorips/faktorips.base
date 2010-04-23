@@ -81,11 +81,6 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testCompreTo() throws Exception {
-        try {
-            genderAdapter.compareTo(new Object());
-            fail("ClassCastException is expected.");
-        } catch (ClassCastException e) {
-        }
         assertEquals(0, genderAdapter.compareTo(genderAdapter));
         assertTrue(genderAdapter.compareTo(paymentModeAdapter) < 0);
         assertTrue(paymentModeAdapter.compareTo(genderAdapter) > 0);

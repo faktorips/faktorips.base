@@ -542,7 +542,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
             return ml;
         }
 
-        public int compareTo(Object o) {
+        public int compareTo(Datatype o) {
             return -1;
         }
 
