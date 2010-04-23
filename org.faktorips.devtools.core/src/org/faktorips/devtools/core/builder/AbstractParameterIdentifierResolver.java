@@ -53,7 +53,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     private IFormula formula;
     private ExprCompiler exprCompiler;
 
-    public AbstractParameterIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
+    public AbstractParameterIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) {
         ArgumentCheck.notNull(formula, this);
         ArgumentCheck.notNull(exprCompiler, this);
         this.formula = formula;
@@ -110,7 +110,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         IParameter[] params = getParameters();
         for (int i = 0; i < params.length; i++) {
             if (params[i].getName().equals(paramName)) {
-                CompilationResult result = compile(params[i], attributeName, locale);
+                CompilationResult result = compile(params[i], attributeName);
                 addCurrentIdentifer(result, identifier);
                 return result;
             }
@@ -123,7 +123,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             addCurrentIdentifer(result, identifier);
             return result;
         }
-        result = compileEnumDatatypeValueIdentifier(paramName, attributeName, locale);
+        result = compileEnumDatatypeValueIdentifier(paramName, attributeName);
         if (result != null) {
             // the identifier is an enum datatype, thus it must not be added to the result as know
             // parameter identifier
@@ -155,14 +155,14 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                                 attributes[i].getName(), productCmptType.getQualifiedName());
                         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
                     }
-                    String code = getParameterAttributGetterName(attributes[i], productCmptType) + "()"; //$NON-NLS-1$
+                    String code = "this." + getParameterAttributGetterName(attributes[i], productCmptType) + "()"; //$NON-NLS-1$ //$NON-NLS-2$
                     return new CompilationResultImpl(code, attrDatatype);
                 }
             }
         } catch (CoreException e) {
             String text = NLS.bind(
                     Messages.AbstractParameterIdentifierResolver_msgExceptionWhileResolvingIdentifierAtThis,
-                    identifier, productCmptType.getQualifiedName());
+                    identifier, productCmptType == null ? "null" : productCmptType.getQualifiedName()); //$NON-NLS-1$
             IpsPlugin.log(new IpsStatus(text, e));
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
         }
@@ -171,10 +171,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
 
     /**
      * Returns the compilation result for the a parameter and attribute name
-     * 
-     * @see #compile(String, Locale)
      */
-    protected CompilationResult compile(IParameter param, String attributeName, Locale locale) {
+    protected CompilationResult compile(IParameter param, String attributeName) {
         Datatype datatype;
         try {
             datatype = param.findDatatype(ipsproject);
@@ -190,7 +188,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
         }
         if (datatype instanceof IType) {
-            return compileTypeAttributeIdentifier(param, (IType)datatype, attributeName, locale);
+            return compileTypeAttributeIdentifier(param, (IType)datatype, attributeName);
         }
         if (datatype instanceof ValueDatatype) {
             return new CompilationResultImpl(param.getName(), datatype);
@@ -218,8 +216,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         // could be implemented in subclass
     }
 
-    private CompilationResult compileEnumDatatypeValueIdentifier(String enumTypeName, String valueName, Locale locale) {
-
+    private CompilationResult compileEnumDatatypeValueIdentifier(String enumTypeName, String valueName) {
         try {
             Map<String, EnumDatatype> enumDatatypes = createEnumMap();
             EnumDatatype enumType = enumDatatypes.get(enumTypeName);
@@ -250,10 +247,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return null;
     }
 
-    private CompilationResult compileTypeAttributeIdentifier(IParameter param,
-            IType type,
-            String attributeName,
-            Locale locale) {
+    private CompilationResult compileTypeAttributeIdentifier(IParameter param, IType type, String attributeName) {
 
         if (StringUtils.isEmpty(attributeName)) {
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
