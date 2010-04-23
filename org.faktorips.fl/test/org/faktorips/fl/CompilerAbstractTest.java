@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,18 +23,18 @@ import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.Message;
 
-
 /**
  *
  */
 public abstract class CompilerAbstractTest extends TestCase {
-    
+
     protected ExprCompiler compiler;
     private ExprEvaluator processor;
 
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         compiler = new ExprCompiler();
@@ -42,24 +42,23 @@ public abstract class CompilerAbstractTest extends TestCase {
         compiler.setLocale(Locale.ENGLISH);
         processor = new ExprEvaluator(compiler);
     }
-    
+
     /**
-     * Compiles the given expression and tests if the compilation was successfull
-     * and if the datatype is the expected one. After that the expression is executed
-     * and it is tested if it returns the expected value.
+     * Compiles the given expression and tests if the compilation was successfull and if the
+     * datatype is the expected one. After that the expression is executed and it is tested if it
+     * returns the expected value.
      */
-    protected CompilationResult execAndTestSuccessfull(
-            String expression,
+    protected CompilationResult execAndTestSuccessfull(String expression,
             Object expectedValue,
             Datatype expectedDatatype) throws Exception {
-        
+
         CompilationResult result = compiler.compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }
         assertTrue(result.successfull());
         assertEquals(expectedDatatype, result.getDatatype());
-        
+
         Object value = processor.evaluate(expression);
         if (!ObjectUtils.equals(value, expectedValue)) {
             System.out.println(result);
@@ -68,25 +67,25 @@ public abstract class CompilerAbstractTest extends TestCase {
         return result;
     }
 
-    protected CompilationResult execAndTestSuccessfull(
-            String expression,
+    protected CompilationResult execAndTestSuccessfull(String expression,
             Object expectedValue,
             String[] parameterNames,
             Datatype[] parameterTypes,
             Object[] parameterValues,
             Datatype expectedDatatype) throws Exception {
-        
+
         final Map parameterMap = new HashMap();
         for (int i = 0; i < parameterNames.length; i++) {
             parameterMap.put(parameterNames[i], parameterTypes[i]);
         }
-        IdentifierResolver resolver = new IdentifierResolver(){
+        IdentifierResolver resolver = new IdentifierResolver() {
             public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
                 Object paramDatatype = parameterMap.get(identifier);
-                if(paramDatatype != null){
+                if (paramDatatype != null) {
                     return new CompilationResultImpl(identifier, (Datatype)paramDatatype);
                 }
-                return new CompilationResultImpl(new Message("", "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
+                return new CompilationResultImpl(new Message("",
+                        "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
             }
         };
         compiler.setIdentifierResolver(resolver);
@@ -103,25 +102,22 @@ public abstract class CompilerAbstractTest extends TestCase {
         }
         assertEquals(expectedValue, value);
         return result;
-
     }
-    
+
     /**
-     * Compiles the given expression and tests if the compilation was successfull
-     * and if the datatype is the expected one. After that the expression is executed
-     * and it is tested if it returns the expected value.
+     * Compiles the given expression and tests if the compilation was successfull and if the
+     * datatype is the expected one. After that the expression is executed and it is tested if it
+     * returns the expected value.
      */
-    protected CompilationResult execAndTestSuccessfull(
-            String expression,
-            boolean expectedValue) throws Exception {
-        
+    protected CompilationResult execAndTestSuccessfull(String expression, boolean expectedValue) throws Exception {
+
         CompilationResult result = compiler.compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }
         assertTrue(result.successfull());
         assertEquals(Datatype.PRIMITIVE_BOOLEAN, result.getDatatype());
-        
+
         Object value = processor.evaluate(expression);
         if (!(value instanceof Boolean)) {
             System.out.println();
@@ -132,8 +128,8 @@ public abstract class CompilerAbstractTest extends TestCase {
     }
 
     /**
-     * Compiles the given expression and tests if the compilation failed and 
-     * the compilation result contains a message with the indicated message code.
+     * Compiles the given expression and tests if the compilation failed and the compilation result
+     * contains a message with the indicated message code.
      */
     protected CompilationResult execAndTestFail(String expression, String expectedMessageCode) throws Exception {
         CompilationResult result = compiler.compile(expression);

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,16 +13,16 @@
 
 package org.faktorips.fl;
 
+import bsh.Interpreter;
+
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.util.ArgumentCheck;
-
-import bsh.Interpreter;
 
 /**
  * The <code>ExprEvaluator</code> evaluates a given expression and returns it's result.
  * <p>
  * Technically this is done by first compiling the expression to Java sourcecode using the
- * {@link ExprCompiler}. After that a java bean shell {@link http://www.beanshell.org} interpreter
+ * {@link ExprCompiler}. After that a java bean shell {@link "http://www.beanshell.org"} interpreter
  * interpretes the expression and the result is return by the evaluate method of this class.
  * 
  * @author Jan Ortmann
@@ -33,7 +33,7 @@ public class ExprEvaluator {
     private ExprCompiler compiler;
 
     private ClassLoader classLoader;
-    
+
     /**
      * Constructs a new processor for the given compiler.
      */
@@ -49,7 +49,7 @@ public class ExprEvaluator {
         this(compiler);
         this.classLoader = classLoader;
     }
-    
+
     /**
      * Evaluates and returns the result of the given expression.
      */
@@ -69,8 +69,9 @@ public class ExprEvaluator {
     }
 
     /**
-     * Evaluates and returns the result of the given expression. If the expression contains any variables the variables can be specified 
-     * with the variables parameter and the values of the variables can be specified by means of the variableValues parameter.
+     * Evaluates and returns the result of the given expression. If the expression contains any
+     * variables the variables can be specified with the variables parameter and the values of the
+     * variables can be specified by means of the variableValues parameter.
      */
     public Object evaluate(String expression, String[] variables, Object[] variableValues) throws Exception {
 
@@ -91,22 +92,22 @@ public class ExprEvaluator {
         sb.append(fragment.getSourcecode());
         return i.eval(sb.toString());
     }
-    
+
     /**
      * Evaluates and return the result of the given java code fragment
      */
     public Object evaluate(JavaCodeFragment javaCodeFragment) throws Exception {
         Interpreter i = new Interpreter(); // Construct an interpreter
-        if (classLoader != null){
+        if (classLoader != null) {
             i.setClassLoader(classLoader);
         }
-        
+
         StringBuffer sb = new StringBuffer();
         sb.append(javaCodeFragment);
 
         // execute the expression.
         return i.eval(sb.toString());
-    }    
+    }
 
     /**
      * Compiles expression to Java and returns the CompilationResult.
