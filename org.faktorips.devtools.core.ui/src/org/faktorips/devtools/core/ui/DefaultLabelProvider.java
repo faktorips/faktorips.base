@@ -14,10 +14,6 @@
 package org.faktorips.devtools.core.ui;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -47,17 +43,8 @@ import org.faktorips.fl.FlFunction;
  */
 public class DefaultLabelProvider extends LabelProvider {
 
-    private ImageDescriptor datatypeImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "Datatype.gif");
-
-    private ImageDescriptor functionImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "Function.gif");
-
-    private ResourceManager resourceManager;
-
     public DefaultLabelProvider() {
         super();
-        resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
     /**
@@ -86,9 +73,9 @@ public class DefaultLabelProvider extends LabelProvider {
             }
         }
         if (element instanceof Datatype) {
-            return (Image)resourceManager.get(datatypeImageDescriptor);
+            return IpsUIPlugin.getImageHandling().getSharedImage("Datatype.gif", true);
         } else if (element instanceof FlFunction) {
-            return (Image)resourceManager.get(functionImageDescriptor);
+            return IpsUIPlugin.getImageHandling().getSharedImage("Function.gif", true);
         } else if (element instanceof EnumTypeDatatypeAdapter) {
             return getImage(((EnumTypeDatatypeAdapter)element).getEnumType());
         }
@@ -118,7 +105,5 @@ public class DefaultLabelProvider extends LabelProvider {
     @Override
     public void dispose() {
         super.dispose();
-
-        resourceManager.dispose();
     }
 }

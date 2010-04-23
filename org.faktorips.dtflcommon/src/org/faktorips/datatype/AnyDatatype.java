@@ -91,7 +91,7 @@ public class AnyDatatype implements Datatype {
     /**
      * {@inheritDoc}
      */
-    public int compareTo(Object o) {
+    public int compareTo(Datatype o) {
         return 0;
     }
 

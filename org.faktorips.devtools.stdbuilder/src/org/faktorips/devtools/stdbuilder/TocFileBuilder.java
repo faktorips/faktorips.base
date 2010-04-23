@@ -112,16 +112,16 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         this.generateEntriesForModelTypes = generateEntriesForModelTypes;
     }
 
-    public void setEnumXmlAdapterBuilder(EnumXmlAdapterBuilder enumXmlAdapterBuilder){
+    public void setEnumXmlAdapterBuilder(EnumXmlAdapterBuilder enumXmlAdapterBuilder) {
         this.enumXmlAdapterBuilder = enumXmlAdapterBuilder;
     }
-    
+
     public void setProductCmptTypeImplClassBuilder(ProductCmptImplClassBuilder builder) {
-        this.productCmptTypeImplClassBuilder = builder;
+        productCmptTypeImplClassBuilder = builder;
     }
 
     public void setProductCmptGenImplClassBuilder(ProductCmptGenImplClassBuilder builder) {
-        this.productCmptGenImplClassBuilder = builder;
+        productCmptGenImplClassBuilder = builder;
     }
 
     public void setProductCmptBuilder(ProductCmptBuilder builder) {
@@ -129,7 +129,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     public void setTableImplBuilder(TableImplBuilder builder) {
-        this.tableImplClassBuilder = builder;
+        tableImplClassBuilder = builder;
     }
 
     public void setTestCaseTypeClassBuilder(TestCaseTypeClassBuilder testCaseTypeClassBuilder) {
@@ -174,8 +174,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         IpsObjectType type = ipsSrcFile.getIpsObjectType();
         return IpsObjectType.PRODUCT_CMPT.equals(type) || IpsObjectType.TABLE_CONTENTS.equals(type)
                 || IpsObjectType.TEST_CASE.equals(type) || IpsObjectType.ENUM_CONTENT.equals(type)
-                || IpsObjectType.ENUM_TYPE.equals(type)
-                || (generateEntriesForModelTypes && type.isEntityType());
+                || IpsObjectType.ENUM_TYPE.equals(type) || (generateEntriesForModelTypes && type.isEntityType());
     }
 
     /**
@@ -184,6 +183,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * 
      * {@inheritDoc}
      */
+    @Override
     public void beforeBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException {
         if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
             tocFileMap.clear();
@@ -217,7 +217,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (int i = 0; i < srcRoots.length; i++) {
             IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoots[i];
-            Long oldModStamp = (Long)packFrgmtRootTocModStamps.get(root);
+            Long oldModStamp = packFrgmtRootTocModStamps.get(root);
             if (oldModStamp.longValue() != getToc(root).getModificationStamp()) {
                 saveToc(root);
             }
@@ -298,7 +298,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public MutableClRuntimeRepositoryToc getToc(IIpsPackageFragmentRoot root) throws CoreException {
         IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
         IFile tocFile = builderSet.getRuntimeRepositoryTocFile(root);
-        MutableClRuntimeRepositoryToc toc = (MutableClRuntimeRepositoryToc)tocFileMap.get(tocFile);
+        MutableClRuntimeRepositoryToc toc = tocFileMap.get(tocFile);
         if (toc == null) {
             toc = new MutableClRuntimeRepositoryToc();
             if (tocFile != null && tocFile.exists()) {
@@ -513,17 +513,19 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     public boolean isGenerateJaxbSupport() {
-        return getBuilderSet().getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
+        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
     }
-    
+
     public TocEntryObject createTocEntry(IEnumType enumType) throws CoreException {
-        if(!isGenerateJaxbSupport() || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())){
+        if (!isGenerateJaxbSupport() || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             return null;
         }
         if (enumType.isContainingValues() || enumType.isAbstract()) {
             return null;
         }
-        TocEntryObject entry = TocEntryObject.createEnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumXmlAdapterBuilder.getQualifiedClassName(enumType));
+        TocEntryObject entry = TocEntryObject.createEnumXmlAdapterTocEntry(enumType.getQualifiedName(),
+                enumXmlAdapterBuilder.getQualifiedClassName(enumType));
         return entry;
     }
 
@@ -533,18 +535,20 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public TocEntryObject createTocEntry(IType type) throws CoreException {
         String javaImplClass;
         String xmlResourceName;
+        String generationImplClassName = "";
         if (type instanceof IPolicyCmptType) {
             javaImplClass = policyCmptImplClassBuilder.getQualifiedClassName(type);
             xmlResourceName = policyModelTypeXmlBuilder.getXmlResourcePath(type);
         } else if (type instanceof IProductCmptType) {
             javaImplClass = productCmptTypeImplClassBuilder.getQualifiedClassName(type);
             xmlResourceName = productModelTypeXmlBuilder.getXmlResourcePath(type);
+            generationImplClassName = productCmptGenImplClassBuilder.getQualifiedClassName(type);
         } else {
             throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
         }
         String id = type.getQualifiedName(); // for model types, the qualified name is also the id.
         TocEntryObject entry = TocEntryObject.createModelTypeTocEntry(id, type.getQualifiedName(), xmlResourceName,
-                javaImplClass);
+                javaImplClass, generationImplClassName);
         return entry;
     }
 
@@ -559,6 +563,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean buildsDerivedArtefacts() {
         return true;
     }

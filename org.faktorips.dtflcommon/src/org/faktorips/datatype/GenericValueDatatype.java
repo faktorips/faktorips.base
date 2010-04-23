@@ -390,7 +390,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
      * {@inheritDoc}
      */
     // TODO pk: this cannot be right
-    public int compareTo(Object o) {
+    public int compareTo(Datatype o) {
         return 0;
     }
 

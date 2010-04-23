@@ -22,29 +22,31 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrat
 import org.faktorips.util.message.MessageList;
 
 /**
- * Migration from version 2.5.0.rfinal to version 2.5.1.rfinal
+ * Migration from version 2.5.0.rc2 to version 2.5.0.rc3
  * 
- * @author dirmeier
+ * @author Peter Kuntz
  */
-public class Migration_2_5_0_rfinal extends AbstractIpsProjectMigrationOperation {
+public class Migration_2_5_0_rc3 extends AbstractIpsProjectMigrationOperation {
 
-    public Migration_2_5_0_rfinal(IIpsProject projectToMigrate, String featureId) {
+    public Migration_2_5_0_rc3(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return "The generated method newCopy() in policy component types has changed to recognice"
+                + "associated copied components. This migration does not change the code or model but"
+                + "triggers a full build.";
     }
 
     @Override
     public String getTargetVersion() {
-        return "2.5.1.rfinal"; //$NON-NLS-1$
+        return "2.5.0.rfinal"; //$NON-NLS-1$
     }
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return false;
     }
 
     @Override

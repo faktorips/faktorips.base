@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
 
 /**
@@ -720,7 +721,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * <pre>
      * if (person != null)
      *   Person copyPerson = (Person)copyMap.get(person);
-     *   ((Person)person).copyAssociations(copyPerson, copyMap);
+     *   person.copyAssociationsInternal(copyPerson, copyMap);
      * }
      * </pre> {@inheritDoc}
      * 
@@ -730,7 +731,14 @@ public class GenAssociationTo1 extends GenAssociation {
     public void generateCodeForCopyComposition(String varCopy, String varCopyMap, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         methodsBuilder.append("if (").append(fieldName).append(" != null)").openBracket();
-        generateSnippetForCopyCompositions(varCopyMap, fieldName, methodsBuilder);
+        String unqTargetImplName = getUnqualifiedClassName(getTargetPolicyCmptType(), false);
+        String varCopyTarget = "copy" + unqTargetImplName;
+        methodsBuilder.append(unqTargetImplName).append(' ').append(varCopyTarget).append(" = ") //
+                .append('(').append(unqTargetImplName).append(')').append(varCopyMap) //
+                .append(".get(").append(fieldName).appendln(");");
+        methodsBuilder.append(fieldName).append(".") //
+                .append(PolicyCmptImplClassBuilder.METHOD_COPY_ASSOCIATIONS) //
+                .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
         methodsBuilder.closeBracket();
     }
 

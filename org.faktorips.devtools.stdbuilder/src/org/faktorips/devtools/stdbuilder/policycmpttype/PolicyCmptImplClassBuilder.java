@@ -319,7 +319,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         boolean isAbstract = getPcType().isAbstract();
         int modifier = Modifier.PUBLIC;
         if (isAbstract) {
-            modifier |= Modifier.ABSTRACT;
+            // Empty boddy instead of abstract method --> MTB#156
+            // modifier |= Modifier.ABSTRACT;
         }
 
         methodsBuilder.addImport(Map.class);
@@ -328,7 +329,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 new String[] { getHashMapFragment(false).getSourcecode() });
 
         if (isAbstract) {
-            methodsBuilder.appendln(';');
+            // Empty boddy instead of abstract method --> MTB#156
+            // methodsBuilder.appendln(';');
+            methodsBuilder.openBracket();
+            methodsBuilder
+                    .appendln("throw new RuntimeException(\"This method has to be abstract. It needs to have an empty body because of a bug in JMerge.\");");
+            methodsBuilder.closeBracket();
         } else {
             methodsBuilder.openBracket();
 
@@ -469,7 +475,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     .append("(").append(varAbstractCopy).append(", ").append(varCopyMap).append(");");
         }
 
-        // casted variable newCopy is only necessary if there is at least on association
+        // casted variable newCopy is only necessary if there is at least one association
         String varCopy = "newCopy";
         for (IPolicyCmptTypeAssociation association : getPcType().getPolicyCmptTypeAssociations()) {
             if (association.isAssoziation()) {

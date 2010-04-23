@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -280,7 +281,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return false;
     }
 
-    public int compareTo(Object o) {
+    public int compareTo(Datatype o) {
         EnumDatatype other = (EnumDatatype)o;
         return getQualifiedName().compareTo(other.getQualifiedName());
     }
