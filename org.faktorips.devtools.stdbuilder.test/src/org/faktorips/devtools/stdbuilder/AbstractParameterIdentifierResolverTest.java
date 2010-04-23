@@ -77,7 +77,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
     private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
         IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
         for (int i = 0; i < builders.length; i++) {
-            if (((JavaSourceFileBuilder)builders[i]).getKindId().equals(DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE)) {
+            if (((JavaSourceFileBuilder)builders[i]).getKindId().equals(
+                    DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE)) {
                 return (PolicyCmptInterfaceBuilder)builders[i];
             }
         }
@@ -156,7 +157,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         attribute.setDatatype(Datatype.INTEGER.getName());
         result = resolver.compile("a", null, locale);
         assertTrue(result.successfull());
-        assertEquals("getA()", result.getCodeFragment().getSourcecode());
+        assertEquals("this.getA()", result.getCodeFragment().getSourcecode());
     }
 
     public void testCompileWithEnumsInWorkspaceButNotInParameters() throws Exception {
