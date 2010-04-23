@@ -644,7 +644,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodDoInitTableUsagesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         IProductCmptType type = getProductCmptType();
-        if (type == null) {
+        if (type == null || !type.isValid()) {
             return;
         }
         ITableStructureUsage[] tsus = type.getTableStructureUsages();
