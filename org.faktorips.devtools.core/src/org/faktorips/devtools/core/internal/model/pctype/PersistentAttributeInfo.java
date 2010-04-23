@@ -167,7 +167,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         ArgumentCheck.notNull(sqlColumnDefinition);
         String oldValue = this.sqlColumnDefinition;
         this.sqlColumnDefinition = sqlColumnDefinition;
-        valueChanged(oldValue, tableColumnName);
+        valueChanged(oldValue, sqlColumnDefinition);
     }
 
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute() {
