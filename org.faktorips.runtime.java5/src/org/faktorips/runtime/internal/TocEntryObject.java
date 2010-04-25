@@ -97,7 +97,7 @@ public class TocEntryObject extends TocEntry {
             newEntry = createTestCaseTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
         } else if (ENUM_CONTENT_ENTRY_TYPE.equals(entryType)) {
             newEntry = createEnumContentTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
-        } else if(ENUM_XML_ADAPTER_TYPE.equals(entryType)){
+        } else if (ENUM_XML_ADAPTER_TYPE.equals(entryType)) {
             newEntry = createEnumXmlAdapterTocEntry(ipsObjectId, implementationClassName);
         } else if (FORMULA_TEST_ENTRY_TYPE.equals(entryType)) {
             String kindId = entryElement.getAttribute(PROPERTY_KIND_ID);
@@ -188,7 +188,7 @@ public class TocEntryObject extends TocEntry {
     }
 
     /**
-     * Creates an entry that referes to a model type.
+     * Creates an entry that refers to a model type.
      */
     public final static TocEntryObject createModelTypeTocEntry(String ipsObjectId,
             String ipsObjectQualifiedName,
@@ -202,8 +202,7 @@ public class TocEntryObject extends TocEntry {
      * Creates an entry that referes to an enumeration xml adapter.
      */
     public final static TocEntryObject createEnumXmlAdapterTocEntry(String ipsObjectId, String implementationClassName) {
-        return new TocEntryObject(ENUM_XML_ADAPTER_TYPE, ipsObjectId, "", "", "", "",
-                implementationClassName, null);
+        return new TocEntryObject(ENUM_XML_ADAPTER_TYPE, ipsObjectId, "", "", "", "", implementationClassName, null);
     }
 
     /**
@@ -417,18 +416,18 @@ public class TocEntryObject extends TocEntry {
     public Element toXml(Document doc) {
         Element entryElement = doc.createElement(AbstractReadonlyTableOfContents.TOC_ENTRY_XML_ELEMENT);
         super.addToXml(entryElement);
-        
+
         entryElement.setAttribute(PROPERTY_ENTRYTYPE, entryType);
         entryElement.setAttribute(PROPERTY_IPS_OBJECT_ID, ipsObjectId);
         entryElement.setAttribute(PROPERTY_IPS_OBJECT_QNAME, ipsObjectQualifiedName);
         entryElement.setAttribute(PROPERTY_KIND_ID, kindId);
         entryElement.setAttribute(PROPERTY_VERSION_ID, versionId);
         entryElement.setAttribute(PROPERTY_VALID_TO, validTo != null ? validTo.toIsoFormat() : "");
-        
+
         for (TocEntryGeneration generationEntry : generationEntries) {
             entryElement.appendChild(generationEntry.toXml(doc));
         }
-        
+
         return entryElement;
     }
 
