@@ -69,7 +69,7 @@ public abstract class EnumTypeEditorPage extends TypeEditorPage {
     protected ContentsChangeListener changeListener;
 
     public EnumTypeEditorPage(TypeEditor editor, IEnumType type, boolean twoSectionsWhenTrueOtherwiseFour, String title) {
-        super(editor, twoSectionsWhenTrueOtherwiseFour, title, "EnumTypeEditorPage");
+        super(editor, twoSectionsWhenTrueOtherwiseFour, title, "EnumTypeEditorPage"); //$NON-NLS-1$
 
         enumType = type;
         changeListener = new ContentsChangeListener() {

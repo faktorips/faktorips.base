@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
  * 
  * @author Alexander Weickmann
  */
-public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
+public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest {
 
     private static final String NEW_OBJECT_NAME = "NewObjectName";
 
@@ -61,7 +61,7 @@ public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
     }
 
     public void testRenamePolicyCmptType() throws CoreException {
-        performRenamePolicyCmptType();
+        performRenamePolicyCmptType(NEW_OBJECT_NAME);
     }
 
     public void testRenameSuperPolicyCmptType() throws CoreException {
@@ -78,16 +78,16 @@ public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
         association.setTargetRolePlural("foobar");
         otherPolicyToPolicyAssociation.setInverseAssociation(association.getName());
 
-        performRenamePolicyCmptType();
+        performRenamePolicyCmptType(NEW_OBJECT_NAME);
     }
 
-    private void performRenamePolicyCmptType() throws CoreException {
-        performRenameRefactoring(policyCmptType, NEW_OBJECT_NAME);
+    private void performRenamePolicyCmptType(String newName) throws CoreException {
+        performRenameRefactoring(policyCmptType, newName);
 
-        checkIpsSourceFiles(POLICY_CMPT_TYPE_NAME, NEW_OBJECT_NAME, policyCmptType.getIpsPackageFragment(), policyCmptType
+        checkIpsSourceFiles(POLICY_CMPT_TYPE_NAME, newName, policyCmptType.getIpsPackageFragment(), policyCmptType
                 .getIpsPackageFragment(), IpsObjectType.POLICY_CMPT_TYPE);
 
-        checkPolicyCmptTypeReferences(PACKAGE_NAME + "." + NEW_OBJECT_NAME);
+        checkPolicyCmptTypeReferences(PACKAGE_NAME + "." + newName);
     }
 
     public void testRenameProductCmptType() throws CoreException {
@@ -126,8 +126,8 @@ public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
     public void testRenameTableStructure() throws CoreException {
         performRenameRefactoring(tableStructure, NEW_OBJECT_NAME);
 
-        checkIpsSourceFiles(TABLE_STRUCTURE_NAME, NEW_OBJECT_NAME, tableStructure.getIpsPackageFragment(), tableStructure
-                .getIpsPackageFragment(), IpsObjectType.TABLE_STRUCTURE);
+        checkIpsSourceFiles(TABLE_STRUCTURE_NAME, NEW_OBJECT_NAME, tableStructure.getIpsPackageFragment(),
+                tableStructure.getIpsPackageFragment(), IpsObjectType.TABLE_STRUCTURE);
 
         checkTableStructureReferences(NEW_OBJECT_NAME);
     }
@@ -175,6 +175,11 @@ public class RenameIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
                 .getIpsPackageFragment(), IpsObjectType.TABLE_CONTENTS);
 
         checkTableContentsReferences(NEW_OBJECT_NAME);
+    }
+
+    public void testRenameOnlyLetterCaseChanged() throws CoreException {
+        String newName = POLICY_CMPT_TYPE_NAME.toLowerCase();
+        performRenamePolicyCmptType(newName);
     }
 
     @Override

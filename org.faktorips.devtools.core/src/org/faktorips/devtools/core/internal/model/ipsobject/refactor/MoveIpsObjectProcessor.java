@@ -38,11 +38,11 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
     private final MoveRenameIpsObjectHelper renameMoveHelper;
 
     /**
-     * @param toBeRefactored The <tt>IIpsObject</tt> to be moved.
+     * @param toBeMoved The <tt>IIpsObject</tt> to be moved.
      */
     public MoveIpsObjectProcessor(IpsObject toBeMoved) {
         super(toBeMoved);
-        renameMoveHelper = new MoveRenameIpsObjectHelper(this, toBeMoved);
+        renameMoveHelper = new MoveRenameIpsObjectHelper(toBeMoved);
         renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
 
@@ -56,7 +56,7 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
 
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.validateUserInputThis(getTargetIpsPackageFragment(), getIpsElement().getName(), status, pm);
+        renameMoveHelper.validateUserInputThis(getTargetIpsPackageFragment(), getIpsElement().getName(), status);
     }
 
     @Override
@@ -65,7 +65,7 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
             CheckConditionsContext context) throws CoreException {
 
         MessageList validationMessageList = renameMoveHelper.checkFinalConditionsThis(getTargetIpsPackageFragment(),
-                getIpsElement().getName(), status, pm, context);
+                getIpsElement().getName(), status, pm);
         addValidationMessagesToStatus(validationMessageList, status);
     }
 
@@ -76,7 +76,7 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
 
     @Override
     public String getIdentifier() {
-        return "org.faktorips.devtools.core.internal.model.type.refactor.MoveIpsObjectProcessor";
+        return "org.faktorips.devtools.core.internal.model.type.refactor.MoveIpsObjectProcessor"; //$NON-NLS-1$
     }
 
     @Override

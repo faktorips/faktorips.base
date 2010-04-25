@@ -55,7 +55,7 @@ public class RenameRefactoringParticipant extends RenameParticipant {
     public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws OperationCanceledException {
 
-        return refactoringHelper.checkConditions(pm, context);
+        return refactoringHelper.checkConditions(pm);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class RenameRefactoringParticipant extends RenameParticipant {
 
     @Override
     public String getName() {
-        return "StandardBuilder Rename Participant";
+        return "StandardBuilder Rename Participant"; //$NON-NLS-1$
     }
 
     /** The <tt>RefactoringParticipantHelper</tt> for this participant. */
@@ -100,7 +100,7 @@ public class RenameRefactoringParticipant extends RenameParticipant {
                     break;
                 default:
                     throw new RuntimeException(
-                            "This kind of Java element is not supported by the rename refactoring participant.");
+                            "This kind of Java element is not supported by the rename refactoring participant."); //$NON-NLS-1$
             }
 
             RefactoringContribution contribution = RefactoringCore

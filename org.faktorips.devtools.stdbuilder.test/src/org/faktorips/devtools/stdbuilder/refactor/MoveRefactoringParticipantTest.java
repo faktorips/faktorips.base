@@ -39,37 +39,37 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     public void testMovePolicyCmptType() throws CoreException {
         performMoveRefactoring(policyCmptType, targetIpsPackageFragment);
 
-        checkJavaSourceFiles(policyCmptType, TARGET_PACKAGE_NAME, POLICY_CMPT_TYPE_NAME);
+        checkJavaSourceFilesPolicyCmptType(TARGET_PACKAGE_NAME, POLICY_CMPT_TYPE_NAME);
     }
 
     public void testMoveProductCmptType() throws CoreException {
         performMoveRefactoring(productCmptType, targetIpsPackageFragment);
 
-        checkJavaSourceFiles(productCmptType, TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME);
+        checkJavaSourceFilesProductCmptType(TARGET_PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME);
     }
 
     public void testMoveEnumType() throws CoreException {
         performMoveRefactoring(enumType, targetIpsPackageFragment);
 
-        checkJavaSourceFiles(enumType, TARGET_PACKAGE_NAME, ENUM_TYPE_NAME);
+        checkJavaSourceFilesEnumType(TARGET_PACKAGE_NAME, ENUM_TYPE_NAME);
     }
 
     public void testMoveTableStructure() throws CoreException {
         performMoveRefactoring(tableStructure, targetIpsPackageFragment);
 
-        checkJavaSourceFiles(tableStructure, TARGET_PACKAGE_NAME, TABLE_STRUCTURE_NAME);
+        checkJavaSourceFilesTableStructure(TARGET_PACKAGE_NAME, TABLE_STRUCTURE_NAME);
     }
 
     public void testMoveTestCaseType() throws CoreException {
         performMoveRefactoring(testCaseType, targetIpsPackageFragment);
 
-        checkJavaSourceFiles(testCaseType, TARGET_PACKAGE_NAME, TEST_CASE_TYPE_NAME);
+        checkJavaSourceFilesTestCaseType(TARGET_PACKAGE_NAME, TEST_CASE_TYPE_NAME);
     }
 
     public void testMoveBusinessFunction() throws CoreException {
         performMoveRefactoring(businessFunction, targetIpsPackageFragment);
 
-        checkJavaSourceFiles(businessFunction, TARGET_PACKAGE_NAME, BUSINESS_FUNCTION_NAME);
+        checkJavaSourceFilesBusinessFunction(TARGET_PACKAGE_NAME, BUSINESS_FUNCTION_NAME);
     }
 
 }

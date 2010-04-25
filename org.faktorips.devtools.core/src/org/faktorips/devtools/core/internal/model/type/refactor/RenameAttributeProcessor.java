@@ -228,7 +228,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     @Override
     public String getIdentifier() {
-        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor";
+        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor"; //$NON-NLS-1$
     }
 
     @Override

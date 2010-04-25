@@ -19,6 +19,7 @@ abstract class PolicyCmptTypeEditorPage extends TypeEditorPage {
 
     public PolicyCmptTypeEditorPage(PolicyCmptTypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour,
             String title, String pageId) {
+
         super(editor, twoSectionsWhenTrueOtherwiseFour, title, pageId);
     }
 

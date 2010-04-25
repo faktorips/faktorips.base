@@ -22,7 +22,8 @@ import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 public class PolicyCmptTypeBehaviourPage extends PolicyCmptTypeEditorPage {
 
     public PolicyCmptTypeBehaviourPage(PolicyCmptTypeEditor editor) {
-        super(editor, true, Messages.BehaviourPage_title, "PolicyCmptTypeBehaviourPage");
+        super(editor, true, Messages.BehaviourPage_title, "PolicyCmptTypeBehaviourPage"); //$NON-NLS-1$
+        setNumberlayoutColumns(2);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class PolicyCmptTypeBehaviourPage extends PolicyCmptTypeEditorPage {
 
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-        // Nothing todo.
+        // Nothing to do.
     }
 
 }

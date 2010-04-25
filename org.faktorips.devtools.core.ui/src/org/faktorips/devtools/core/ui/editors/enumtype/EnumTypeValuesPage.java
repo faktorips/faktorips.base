@@ -63,7 +63,7 @@ public class EnumTypeValuesPage extends EnumTypeEditorPage {
 
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-
+        // No general page info section necessary.
     }
 
 }

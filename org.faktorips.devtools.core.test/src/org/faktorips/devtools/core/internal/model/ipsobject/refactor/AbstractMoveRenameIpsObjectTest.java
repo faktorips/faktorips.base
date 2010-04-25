@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
  * 
  * @author Alexander Weickmann
  */
-public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest {
+public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsRefactoringTest {
 
     protected static final String OTHER_PRODUCT_NAME = "OtherProduct";
 
@@ -169,8 +169,8 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         assertEquals(newQualifiedName, tableContents.getTableStructure());
     }
 
-    protected void checkBusinessFunctionReferences(String newQualifiedName) {
-
+    protected void checkBusinessFunctionReferences(@SuppressWarnings("unused") String newQualifiedName) {
+        // Currently there are no known business function references.
     }
 
     protected void checkProductCmptReferences(String newQualifiedName) {
@@ -181,16 +181,16 @@ public abstract class MoveRenameIpsObjectTest extends AbstractIpsRefactoringTest
         assertEquals(newQualifiedName, links[0].getTarget());
     }
 
-    protected void checkTestCaseReferences(String newQualifiedName) {
-
+    protected void checkTestCaseReferences(@SuppressWarnings("unused") String newQualifiedName) {
+        // Currently there are no known test case references.
     }
 
-    protected void checkEnumContentReferences(String newQualifiedName) {
-
+    protected void checkEnumContentReferences(@SuppressWarnings("unused") String newQualifiedName) {
+        // Currently there are no known enumeration content references.
     }
 
-    protected void checkTableContentsReferences(String newQualifiedName) {
-
+    protected void checkTableContentsReferences(@SuppressWarnings("unused") String newQualifiedName) {
+        // Currently there are no known table contents references.
     }
 
     protected abstract ProcessorBasedRefactoring getRefactoring(IIpsElement ipsElement);

@@ -13,15 +13,12 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
-import java.io.IOException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
@@ -50,11 +47,10 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         assertTrue(refactoringHelper.initializeTargetJavaElementsCalled);
     }
 
-    public void testCheckConditions() throws CoreException, IOException {
+    public void testCheckConditions() throws CoreException {
         refactoringHelper.initialize(policyCmptType);
         performFullBuild();
-        RefactoringStatus status = refactoringHelper.checkConditions(new NullProgressMonitor(),
-                new CheckConditionsContext());
+        RefactoringStatus status = refactoringHelper.checkConditions(new NullProgressMonitor());
 
         assertFalse(status.hasFatalError());
         assertEquals(0, status.getEntries().length);

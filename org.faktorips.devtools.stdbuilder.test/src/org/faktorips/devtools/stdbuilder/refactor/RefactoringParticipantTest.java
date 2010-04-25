@@ -21,15 +21,9 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -88,7 +82,7 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         // Configure the builder set to generate JAXB support.
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel configModel = ipsProjectProperties.getBuilderSetConfig();
-        configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT, "true", null);
+        configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT, "true", null); //$NON-NLS-1$
         ipsProjectProperties.setBuilderSetConfig(configModel);
         ipsProject.setProperties(ipsProjectProperties);
 
@@ -100,17 +94,17 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
     }
 
     private void setUpFolders() {
-        modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model"));
-        internalFolder = modelFolder.getFolder("internal");
+        modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model")); //$NON-NLS-1$
+        internalFolder = modelFolder.getFolder("internal"); //$NON-NLS-1$
     }
 
     private void setUpPolicyAndProductTypes() throws CoreException {
-        policyInterface = getJavaType(PACKAGE_NAME, "I" + POLICY_CMPT_TYPE_NAME, true, false);
+        policyInterface = getJavaType(PACKAGE_NAME, "I" + POLICY_CMPT_TYPE_NAME, true, false); //$NON-NLS-1$
         policyClass = getJavaType(PACKAGE_NAME, POLICY_CMPT_TYPE_NAME, false, false);
-        productInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME, true, false);
+        productInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME, true, false); //$NON-NLS-1$
         productClass = getJavaType(PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME, false, false);
-        productGenInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME + "Gen", true, false);
-        productGenClass = getJavaType(PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME + "Gen", false, false);
+        productGenInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME + "Gen", true, false); //$NON-NLS-1$ //$NON-NLS-2$
+        productGenClass = getJavaType(PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME + "Gen", false, false); //$NON-NLS-1$
         enumTypeJavaType = getJavaType(PACKAGE_NAME, ENUM_TYPE_NAME, true, false);
         enumTypeXmlAdapterClass = getJavaType(PACKAGE_NAME, ENUM_TYPE_NAME + "XmlAdapter", false, true);
     }
@@ -128,9 +122,7 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         businessFunctionClass = getJavaType(PACKAGE_NAME, BUSINESS_FUNCTION_NAME, true, false);
     }
 
-    protected void checkJavaSourceFiles(IPolicyCmptType policyCmptType, String targetPackageName, String newName)
-            throws CoreException {
-
+    protected void checkJavaSourceFilesPolicyCmptType(String targetPackageName, String newName) throws CoreException {
         assertFalse(policyInterface.exists());
         assertFalse(policyClass.exists());
 
@@ -141,9 +133,7 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         assertTrue(policyClass.exists());
     }
 
-    protected void checkJavaSourceFiles(IProductCmptType productCmptType, String targetPackageName, String newName)
-            throws CoreException {
-
+    protected void checkJavaSourceFilesProductCmptType(String targetPackageName, String newName) throws CoreException {
         assertFalse(productClass.exists());
         assertFalse(productInterface.exists());
         assertFalse(productGenClass.exists());
@@ -160,9 +150,7 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         assertTrue(productGenInterface.exists());
     }
 
-    protected void checkJavaSourceFiles(IEnumType enumType, String targetPackageName, String newName)
-            throws CoreException {
-
+    protected void checkJavaSourceFilesEnumType(String targetPackageName, String newName) throws CoreException {
         assertFalse(enumTypeJavaType.exists());
         assertFalse(enumTypeXmlAdapterClass.exists());
 
@@ -173,9 +161,7 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         assertTrue(enumTypeXmlAdapterClass.exists());
     }
 
-    protected void checkJavaSourceFiles(ITableStructure tableStructure, String targetPackageName, String newName)
-            throws CoreException {
-
+    protected void checkJavaSourceFilesTableStructure(String targetPackageName, String newName) throws CoreException {
         assertFalse(tableStructureClass.exists());
         assertFalse(tableStructureRowClass.exists());
 
@@ -186,9 +172,7 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         assertTrue(tableStructureRowClass.exists());
     }
 
-    protected void checkJavaSourceFiles(ITestCaseType testCaseType, String targetPackageName, String newName)
-            throws CoreException {
-
+    protected void checkJavaSourceFilesTestCaseType(String targetPackageName, String newName) throws CoreException {
         assertFalse(testCaseClass.exists());
 
         testCaseClass = getJavaType(targetPackageName, newName, false, false);
@@ -196,9 +180,7 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         assertTrue(testCaseClass.exists());
     }
 
-    protected void checkJavaSourceFiles(IBusinessFunction businessFunction, String targetPackageName, String newName)
-            throws CoreException {
-
+    protected void checkJavaSourceFilesBusinessFunction(String targetPackageName, String newName) throws CoreException {
         assertFalse(businessFunctionClass.exists());
 
         businessFunctionClass = getJavaType(targetPackageName, newName, true, false);
@@ -217,7 +199,7 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
      * @param derivedSource Flag indicating whether the Java source file is a derived resource or
      *            not.
      */
-    private IType getJavaType(String packageName, String typeName, boolean publishedSource, boolean derivedSource)
+    protected IType getJavaType(String packageName, String typeName, boolean publishedSource, boolean derivedSource)
             throws CoreException {
 
         IIpsSrcFolderEntry srcFolderEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];

@@ -42,7 +42,7 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
      */
     public RenameIpsObjectProcessor(IpsObject toBeRefactored) {
         super(toBeRefactored);
-        renameMoveHelper = new MoveRenameIpsObjectHelper(this, toBeRefactored);
+        renameMoveHelper = new MoveRenameIpsObjectHelper(toBeRefactored);
         renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
 
@@ -56,7 +56,7 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
 
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.validateUserInputThis(getIpsObject().getIpsPackageFragment(), getNewName(), status, pm);
+        renameMoveHelper.validateUserInputThis(getIpsObject().getIpsPackageFragment(), getNewName(), status);
     }
 
     @Override
@@ -65,7 +65,7 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
             CheckConditionsContext context) throws CoreException {
 
         MessageList validationMessageList = renameMoveHelper.checkFinalConditionsThis(getIpsObject()
-                .getIpsPackageFragment(), getNewName(), status, pm, context);
+                .getIpsPackageFragment(), getNewName(), status, pm);
         addValidationMessagesToStatus(validationMessageList, status);
     }
 
@@ -80,7 +80,7 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
 
     @Override
     public String getIdentifier() {
-        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameIpsObjectProcessor";
+        return "org.faktorips.devtools.core.internal.model.type.refactor.RenameIpsObjectProcessor"; //$NON-NLS-1$
     }
 
     @Override

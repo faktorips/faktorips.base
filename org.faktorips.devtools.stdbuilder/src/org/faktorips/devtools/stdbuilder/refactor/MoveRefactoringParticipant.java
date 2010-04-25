@@ -58,7 +58,7 @@ public class MoveRefactoringParticipant extends MoveParticipant {
     public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws OperationCanceledException {
 
-        return refactoringHelper.checkConditions(pm, context);
+        return refactoringHelper.checkConditions(pm);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class MoveRefactoringParticipant extends MoveParticipant {
 
     @Override
     public String getName() {
-        return "StandardBuilder Move Participant";
+        return "StandardBuilder Move Participant"; //$NON-NLS-1$
     }
 
     /** The <tt>RefactoringParticipantHelper</tt> for this participant. */

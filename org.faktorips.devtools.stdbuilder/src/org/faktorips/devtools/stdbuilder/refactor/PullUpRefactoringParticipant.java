@@ -36,6 +36,8 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.PullUpArguments;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
+// There's no other way to perform the Java pull up refactoring.
+@SuppressWarnings("restriction")
 public class PullUpRefactoringParticipant extends RefactoringParticipant {
 
     private PullUpParticipantHelper refactoringHelper;
@@ -50,7 +52,7 @@ public class PullUpRefactoringParticipant extends RefactoringParticipant {
     public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws OperationCanceledException {
 
-        return refactoringHelper.checkConditions(pm, context);
+        return refactoringHelper.checkConditions(pm);
     }
 
     @Override
@@ -60,7 +62,7 @@ public class PullUpRefactoringParticipant extends RefactoringParticipant {
 
     @Override
     public String getName() {
-        return "StandardBuilder Pull Up Participant";
+        return "StandardBuilder Pull Up Participant"; //$NON-NLS-1$
     }
 
     @Override
@@ -82,7 +84,7 @@ public class PullUpRefactoringParticipant extends RefactoringParticipant {
 
             if (!(originalJavaElement instanceof IMember && targetJavaElement instanceof IMember)) {
                 throw new RuntimeException(
-                        "This kind of Java element is not supported by the pull up refactoring participant.");
+                        "This kind of Java element is not supported by the pull up refactoring participant."); //$NON-NLS-1$
             }
 
             IMember originalJavaMember = (IMember)originalJavaElement;
@@ -117,7 +119,7 @@ public class PullUpRefactoringParticipant extends RefactoringParticipant {
                 IType originalType = attribute.getType();
                 IType targetType = originalType.findSupertype(originalType.getIpsProject());
                 if (targetType == null) {
-                    throw new RuntimeException("There is no supertype to pull up to.");
+                    throw new RuntimeException("There is no supertype to pull up to."); //$NON-NLS-1$
                 }
                 IAttribute targetAttribute = targetType.newAttribute();
                 // Temporary copy.

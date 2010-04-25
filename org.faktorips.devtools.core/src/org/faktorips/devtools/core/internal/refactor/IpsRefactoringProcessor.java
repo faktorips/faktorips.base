@@ -129,6 +129,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
             IProgressMonitor pm,
             CheckConditionsContext context) throws CoreException {
 
+        // Empty base implementation that may be overwritten by subclasses.
     }
 
     /**

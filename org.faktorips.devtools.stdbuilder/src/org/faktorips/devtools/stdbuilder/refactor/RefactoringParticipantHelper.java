@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.refactor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -33,12 +32,14 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
+import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 
@@ -71,9 +72,7 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @see RefactoringParticipant#checkConditions(IProgressMonitor, CheckConditionsContext)
      */
-    public final RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
-            throws OperationCanceledException {
-
+    public final RefactoringStatus checkConditions(IProgressMonitor pm) throws OperationCanceledException {
         RefactoringStatus status = new RefactoringStatus();
 
         for (int i = 0; i < originalJavaElements.size(); i++) {
@@ -151,7 +150,7 @@ public abstract class RefactoringParticipantHelper {
     }
 
     /** Executes the given <tt>Refactoring</tt>. */
-    private void performRefactoring(final Refactoring refactoring, final IProgressMonitor pm) throws CoreException {
+    private void performRefactoring(final Refactoring refactoring, final IProgressMonitor pm) {
         Display.getDefault().syncExec(new Runnable() {
             public void run() {
                 IWorkspaceRunnable operation = new PerformRefactoringOperation(refactoring,
@@ -173,8 +172,6 @@ public abstract class RefactoringParticipantHelper {
      * <tt>IIpsElement</tt>. Else the subclass implementation is called to initialize the
      * <tt>IJavaElement</tt>s that will be generated for the <tt>IIpsElement</tt> after the
      * refactoring has finished and <tt>true</tt> is returned.
-     * 
-     * @see RefactoringParticipant#initialize(Object)
      */
     public final boolean initialize(Object element) {
         if (!(element instanceof IIpsElement)) {
@@ -218,31 +215,42 @@ public abstract class RefactoringParticipantHelper {
 
         ArgumentCheck.notNull(new Object[] { ipsObject, targetIpsPackageFragment, newName, builderSet });
 
-        // Create a copy of the object's source file.
-        IResource sourceFileResource = ipsObject.getIpsSrcFile().getCorrespondingResource();
-        IPath destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getFullPath();
-        String targetSrcFileName = newName + "." + ipsObject.getIpsObjectType().getFileExtension();
-        IPath destinationPath = destinationFolder.append(targetSrcFileName);
+        Change undoDeleteChange = new NullChange();
         try {
-            sourceFileResource.copy(destinationPath, true, new NullProgressMonitor());
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return false;
-        }
+            // 1) Create temporary copy with time stamp to avoid file system problems.
+            IIpsSrcFile tempSrcFile = RefactorUtil.copyIpsSrcFileToTemporary(ipsObject.getIpsSrcFile(),
+                    targetIpsPackageFragment, newName, null);
+            IPath originalResourcePath = ipsObject.getIpsSrcFile().getCorrespondingResource().getFullPath();
 
-        IIpsSrcFile copiedSrcFile = targetIpsPackageFragment.getIpsSrcFile(targetSrcFileName);
-        try {
-            IIpsObject copiedIpsObject = copiedSrcFile.getIpsObject();
-            targetJavaElements = builderSet.getGeneratedJavaElements(copiedIpsObject);
+            // 2) Delete original source file with delete refactoring for undo possibility.
+            DeleteResourceChange deleteResourceChange = new DeleteResourceChange(originalResourcePath, true);
+            undoDeleteChange = deleteResourceChange.perform(null);
+
+            // 3) Copy the temporary file to create the target file.
+            IIpsSrcFile targetSrcFile = RefactorUtil.copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName,
+                    null);
+
+            // 4) Delete the temporary file, we don't need it any longer.
+            tempSrcFile.getCorrespondingResource().delete(true, null);
+
+            // 5) Obtain the generated Java elements for the target IPS object.
+            IIpsObject targetIpsObject = targetSrcFile.getIpsObject();
+            targetJavaElements = builderSet.getGeneratedJavaElements(targetIpsObject);
+
+            // 6) Clean up by deleting the target source file.
+            targetSrcFile.getCorrespondingResource().delete(true, null);
+
         } catch (CoreException e) {
+            // The participant won't be initialized if a CoreException occurs.
             IpsPlugin.log(e);
             return false;
+
         } finally {
+            // Roll-back by performing the undo change of the delete refactoring.
             try {
-                copiedSrcFile.getCorrespondingResource().delete(true, new NullProgressMonitor());
+                undoDeleteChange.perform(new NullProgressMonitor());
             } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return false;
+                throw new RuntimeException(e);
             }
         }
 
@@ -257,9 +265,9 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @throws NullPointerException If <tt>targetJavaElements</tt> is <tt>null</tt>.
      */
-    protected final void setTargetJavaElements(List<IJavaElement> newJavaElements) {
-        ArgumentCheck.notNull(newJavaElements);
-        targetJavaElements = newJavaElements;
+    protected final void setTargetJavaElements(List<IJavaElement> targetJavaElements) {
+        ArgumentCheck.notNull(targetJavaElements);
+        this.targetJavaElements = targetJavaElements;
     }
 
     protected final List<IJavaElement> getOriginalJavaElements() {

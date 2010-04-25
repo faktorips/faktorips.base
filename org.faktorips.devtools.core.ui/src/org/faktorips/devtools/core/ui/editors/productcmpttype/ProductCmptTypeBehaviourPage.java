@@ -24,7 +24,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 public class ProductCmptTypeBehaviourPage extends ProductCmptTypeEditorPage {
 
     public ProductCmptTypeBehaviourPage(ProductCmptTypeEditor editor) {
-        super(editor, true, Messages.BehaviourPage_title_behaviour, "PolicyCmptTypeBehaviourPage");
+        super(editor, true, Messages.BehaviourPage_title_behaviour, "PolicyCmptTypeBehaviourPage"); //$NON-NLS-1$
+        setNumberlayoutColumns(2);
     }
 
     private IProductCmptType getProductCmptType() {
@@ -46,7 +47,7 @@ public class ProductCmptTypeBehaviourPage extends ProductCmptTypeEditorPage {
 
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-        // Nothing todo.
+        // Nothing to do.
     }
 
 }

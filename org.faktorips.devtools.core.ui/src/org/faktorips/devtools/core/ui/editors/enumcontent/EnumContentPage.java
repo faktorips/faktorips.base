@@ -69,7 +69,7 @@ public class EnumContentPage extends TypeEditorPage implements ContentsChangeLis
      * @param editor The <tt>EnumContentEditor</tt> this page belongs to.
      */
     public EnumContentPage(EnumContentEditor editor) {
-        super(editor, false, Messages.EnumContentValuesPage_title, "EnumContentPage");
+        super(editor, false, Messages.EnumContentValuesPage_title, "EnumContentPage"); //$NON-NLS-1$
         enumContent = editor.getEnumContent();
         enumContent.getIpsModel().addChangeListener(this);
     }
@@ -149,7 +149,7 @@ public class EnumContentPage extends TypeEditorPage implements ContentsChangeLis
 
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-
+        // No general page info section necessary.
     }
 
     public void contentsChanged(ContentChangeEvent event) {

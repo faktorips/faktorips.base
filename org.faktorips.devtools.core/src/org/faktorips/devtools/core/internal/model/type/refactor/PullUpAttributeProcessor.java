@@ -33,22 +33,22 @@ public class PullUpAttributeProcessor extends IpsRefactoringProcessor {
 
     @Override
     protected void addIpsSrcFiles() throws CoreException {
-
+        // TODO AW: Implement method for pull up attribute.
     }
 
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-
+        // TODO AW: Implement method for pull up attribute.
     }
 
     @Override
     public String getIdentifier() {
-        return "org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeProcessor";
+        return "org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeProcessor"; //$NON-NLS-1$
     }
 
     @Override
     public String getProcessorName() {
-        return "Pull Up Attribute Processor";
+        return "Pull Up Attribute Processor"; //$NON-NLS-1$
     }
 
     @Override
@@ -57,9 +57,10 @@ public class PullUpAttributeProcessor extends IpsRefactoringProcessor {
 
         RefactoringParticipant[] participants = new RefactoringParticipant[1];
         IExtensionRegistry registry = Platform.getExtensionRegistry();
+        // TODO AW: Move the following identifier strings to some interface.
         IConfigurationElement[] elements = registry
-                .getConfigurationElementsFor("org.faktorips.devtools.core.pullUpParticipants");
-        participants[0] = (RefactoringParticipant)elements[0].createExecutableExtension("class");
+                .getConfigurationElementsFor("org.faktorips.devtools.core.pullUpParticipants"); //$NON-NLS-1$
+        participants[0] = (RefactoringParticipant)elements[0].createExecutableExtension("class"); //$NON-NLS-1$
         participants[0].initialize(this, getIpsElement(), new PullUpArguments(true));
         return participants;
     }

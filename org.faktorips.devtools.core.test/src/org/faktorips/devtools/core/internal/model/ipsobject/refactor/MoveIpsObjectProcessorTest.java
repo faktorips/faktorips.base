@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
  * 
  * @author Alexander Weickmann
  */
-public class MoveIpsObjectProcessorTest extends MoveRenameIpsObjectTest {
+public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest {
 
     private static final String TARGET_PACKAGE_NAME = "level.targetipspackage";
 

@@ -27,13 +27,15 @@ public abstract class TypeEditorPage extends IpsObjectEditorPage {
 
     /*
      * TODO AW: Needs to be renamed because the number of sections will be defined by subclasses.
-     * The enum type editor for example has (apart from the general info section) two sections: the
-     * attributes section and the values section. If in the ips preferences two sections is set,
-     * then the values section will be shown on a second tab. So the enum type editor would have
-     * oneSectionWhenTrueOtherwiseTwo. This is a thing that needs also be changed in the ips
-     * preferences to be a more general setting. FS#1379
+     * The enumeration type editor for example has (apart from the general info section) two
+     * sections: the attributes section and the values section. If in the IPS preferences two
+     * sections is set, then the values section will be shown on a second tab. So the enumeration
+     * type editor would have oneSectionWhenTrueOtherwiseTwo. This is a thing that needs also be
+     * changed in the IPS preferences to be a more general setting. FS#1379
      */
     private boolean twoSectionsWhenTrueOtherwiseFour;
+
+    private int numberlayoutColumns;
 
     /**
      * Creates a new <code>TypeEditorPage</code>.
@@ -46,19 +48,26 @@ public abstract class TypeEditorPage extends IpsObjectEditorPage {
     public TypeEditorPage(TypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour, String title, String pageId) {
         super(editor, pageId, title);
         this.twoSectionsWhenTrueOtherwiseFour = twoSectionsWhenTrueOtherwiseFour;
+        numberlayoutColumns = 1;
     }
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-        formBody.setLayout(createPageLayout(1, false));
-
+        formBody.setLayout(createPageLayout(numberlayoutColumns, false));
         createGeneralPageInfoSection(formBody, toolkit);
-
         if (twoSectionsWhenTrueOtherwiseFour) {
             createContentForSplittedStructurePage(formBody, toolkit);
         } else {
             createContentForSingleStructurePage(formBody, toolkit);
         }
+    }
+
+    protected final int getNumberlayoutColumns() {
+        return numberlayoutColumns;
+    }
+
+    protected final void setNumberlayoutColumns(int numberlayoutColumns) {
+        this.numberlayoutColumns = numberlayoutColumns;
     }
 
     /**
