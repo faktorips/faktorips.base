@@ -15,6 +15,7 @@ package org.faktorips.datatype;
 
 import junit.framework.TestCase;
 
+import org.faktorips.datatype.classtypes.BigDecimalDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.datatype.classtypes.DoubleDatatype;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
@@ -26,6 +27,41 @@ import org.faktorips.datatype.classtypes.MoneyDatatype;
  * @author Thorsten Guenther
  */
 public class NumericDatatypeTest extends TestCase {
+
+    private class DatatypeWithDecinalPlacesTest<T extends NumericDatatype> extends TestCase {
+        private T datatype;
+
+        public DatatypeWithDecinalPlacesTest(T datatype) {
+            this.datatype = datatype;
+            if (!datatype.hasDecimalPlaces()) {
+                throw new RuntimeException("Not supported! Class tests only datatypes with decimal places.");
+            }
+        }
+
+        public void testDivisibleWithoutRemainderDecimal() {
+            assertTrue(datatype.divisibleWithoutRemainder("10", "2"));
+            assertFalse(datatype.divisibleWithoutRemainder("9", "2"));
+
+            assertFalse(datatype.divisibleWithoutRemainder("10", "0"));
+
+            assertTrue(datatype.divisibleWithoutRemainder("2.4", "1.2"));
+            assertFalse(datatype.divisibleWithoutRemainder("2.41", "1.2"));
+
+            try {
+                datatype.divisibleWithoutRemainder("10", null);
+                fail();
+            } catch (NullPointerException e) {
+                // success
+            }
+            try {
+                datatype.divisibleWithoutRemainder(null, "2");
+                fail();
+            } catch (NullPointerException e) {
+                // success
+            }
+        }
+
+    }
 
     public void testDivisibleWithoutRemainderPrimitiveInteger() {
         PrimitiveIntegerDatatype datatype = new PrimitiveIntegerDatatype();
@@ -51,29 +87,18 @@ public class NumericDatatypeTest extends TestCase {
     }
 
     public void testDivisibleWithoutRemainderDecimal() {
-        DecimalDatatype datatype = new DecimalDatatype();
-        assertTrue(datatype.divisibleWithoutRemainder("10", "2"));
-        assertFalse(datatype.divisibleWithoutRemainder("9", "2"));
+        DatatypeWithDecinalPlacesTest<NumericDatatype> bigDecimalDatatypeTest = new DatatypeWithDecinalPlacesTest<NumericDatatype>(
+                new BigDecimalDatatype());
+        DatatypeWithDecinalPlacesTest<NumericDatatype> decimalDatatypeTest = new DatatypeWithDecinalPlacesTest<NumericDatatype>(
+                new DecimalDatatype());
 
-        assertFalse(datatype.divisibleWithoutRemainder("10", "0"));
+        decimalDatatypeTest.testDivisibleWithoutRemainderDecimal();
+        bigDecimalDatatypeTest.testDivisibleWithoutRemainderDecimal();
+
+        // decimal only special test case for the null value
+        DecimalDatatype datatype = new DecimalDatatype();
         assertTrue(datatype.divisibleWithoutRemainder("10", ""));
         assertTrue(datatype.divisibleWithoutRemainder("", "2"));
-
-        assertTrue(datatype.divisibleWithoutRemainder("2.4", "1.2"));
-        assertFalse(datatype.divisibleWithoutRemainder("2.41", "1.2"));
-
-        try {
-            datatype.divisibleWithoutRemainder("10", null);
-            fail();
-        } catch (NullPointerException e) {
-            // success
-        }
-        try {
-            datatype.divisibleWithoutRemainder(null, "2");
-            fail();
-        } catch (NullPointerException e) {
-            // success
-        }
     }
 
     private void defaultTests(NumericDatatype datatype) {
@@ -119,6 +144,7 @@ public class NumericDatatypeTest extends TestCase {
         assertHasDecimalPlaces(true, new MoneyDatatype());
         assertHasDecimalPlaces(false, new PrimitiveIntegerDatatype());
         assertHasDecimalPlaces(false, new PrimitiveLongDatatype());
+        assertHasDecimalPlaces(true, new BigDecimalDatatype());
     }
 
     private void assertHasDecimalPlaces(boolean hasDecimalPlaces, NumericDatatype numericDatatype) {

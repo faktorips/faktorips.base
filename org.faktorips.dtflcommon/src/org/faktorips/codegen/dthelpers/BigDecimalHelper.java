@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.BigDecimalDatatype;
+import org.faktorips.valueset.BigDecimalRange;
 
 /**
  * DatatypeHelper for {@link BigDecimal}.
@@ -66,4 +67,36 @@ public class BigDecimalHelper extends AbstractDatatypeHelper {
         return code;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
+     */
+    @Override
+    public String getRangeJavaClassName(boolean useTypesafeCollections) {
+        return BigDecimalRange.class.getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
+            JavaCodeFragment upperBoundExp,
+            JavaCodeFragment stepExp,
+            JavaCodeFragment containsNullExp,
+            boolean useTypesafeCollections) {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
+        frag.append(".valueOf(");
+        frag.append(lowerBoundExp);
+        frag.append(", ");
+        frag.append(upperBoundExp);
+        frag.append(", ");
+        frag.append(stepExp);
+        frag.append(", ");
+        frag.append(containsNullExp);
+        frag.append(")");
+        return frag;
+    }
 }

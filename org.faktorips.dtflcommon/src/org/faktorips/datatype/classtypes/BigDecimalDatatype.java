@@ -16,6 +16,7 @@ package org.faktorips.datatype.classtypes;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassDatatype;
 
 /**
@@ -23,7 +24,7 @@ import org.faktorips.datatype.ValueClassDatatype;
  * 
  * @author Jan Ortmann
  */
-public class BigDecimalDatatype extends ValueClassDatatype {
+public class BigDecimalDatatype extends ValueClassDatatype implements NumericDatatype {
 
     /**
      * @param clazz
@@ -32,9 +33,6 @@ public class BigDecimalDatatype extends ValueClassDatatype {
         super(BigDecimal.class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String value) {
         if (StringUtils.isEmpty(value)) {
@@ -43,10 +41,34 @@ public class BigDecimalDatatype extends ValueClassDatatype {
         return new BigDecimal(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return true;
+    }
+
+    public boolean divisibleWithoutRemainder(String dividend, String divisor) {
+        if (dividend == null || divisor == null) {
+            throw new NullPointerException("dividend and divisor both can not be null.");
+        }
+        BigDecimal a = (BigDecimal)getValue(dividend);
+        BigDecimal b = (BigDecimal)getValue(divisor);
+        try {
+            a.divide(b, 0, BigDecimal.ROUND_UNNECESSARY);
+        } catch (ArithmeticException e) {
+            return false;
+        }
+        return true;
+
+    }
+
+    public boolean hasDecimalPlaces() {
+        return true;
+    }
+
+    public String subtract(String minuend, String subtrahend) {
+        if (minuend == null || subtrahend == null) {
+            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+        }
+        return ((BigDecimal)getValue(minuend)).subtract((BigDecimal)getValue(subtrahend)).toString();
+
     }
 }
