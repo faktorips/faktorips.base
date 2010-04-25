@@ -28,10 +28,10 @@ import org.faktorips.datatype.classtypes.MoneyDatatype;
  */
 public class NumericDatatypeTest extends TestCase {
 
-    private class DatatypeWithDecinalPlacesTest<T extends NumericDatatype> extends TestCase {
+    private class TestDatatypeWithDecinalPlaces<T extends NumericDatatype> extends TestCase {
         private T datatype;
 
-        public DatatypeWithDecinalPlacesTest(T datatype) {
+        public TestDatatypeWithDecinalPlaces(T datatype) {
             this.datatype = datatype;
             if (!datatype.hasDecimalPlaces()) {
                 throw new RuntimeException("Not supported! Class tests only datatypes with decimal places.");
@@ -87,9 +87,9 @@ public class NumericDatatypeTest extends TestCase {
     }
 
     public void testDivisibleWithoutRemainderDecimal() {
-        DatatypeWithDecinalPlacesTest<NumericDatatype> bigDecimalDatatypeTest = new DatatypeWithDecinalPlacesTest<NumericDatatype>(
+        TestDatatypeWithDecinalPlaces<NumericDatatype> bigDecimalDatatypeTest = new TestDatatypeWithDecinalPlaces<NumericDatatype>(
                 new BigDecimalDatatype());
-        DatatypeWithDecinalPlacesTest<NumericDatatype> decimalDatatypeTest = new DatatypeWithDecinalPlacesTest<NumericDatatype>(
+        TestDatatypeWithDecinalPlaces<NumericDatatype> decimalDatatypeTest = new TestDatatypeWithDecinalPlaces<NumericDatatype>(
                 new DecimalDatatype());
 
         decimalDatatypeTest.testDivisibleWithoutRemainderDecimal();
