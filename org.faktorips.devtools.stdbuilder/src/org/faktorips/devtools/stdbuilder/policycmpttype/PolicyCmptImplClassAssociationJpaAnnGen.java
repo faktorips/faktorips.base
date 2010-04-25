@@ -264,7 +264,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             List<String> attributesToAppend,
             GenAssociation genAssociation,
             GenAssociation genInverseAssociation) {
-        if (relationShip == RelationshipType.MANY_TO_ONE) {
+        if (genAssociation.getAssociation().isAssoziation() || relationShip == RelationshipType.MANY_TO_ONE) {
+            // no cascade type if association type is association or the relationShip type is many
+            // to one
             return;
         }
 
