@@ -22,7 +22,7 @@ public interface AnnotationGeneratorFactory {
      * Returns <code>true</code> if the factory is required for the given project, as the
      * appropriate annotations have to be generated.
      */
-    public boolean isRequiredFor(IIpsProject ipsProject) throws CoreException;
+    public boolean isRequiredFor(IIpsProject ipsProject);
 
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException;
 

@@ -1361,13 +1361,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         getGenPolicyCmptType().getBuilderSet().addAnnotations(
                 AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION, association, memberVarsBuilder);
 
-        // TODO: JAXB annotation generation should be handled by the line above (create subclass of
-        // AnnotationGenerator and add it to the Standard Builder Set)
-        if (isGenerateJaxbSuppert()) {
-            memberVarsBuilder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
-            memberVarsBuilder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", fieldName + ".id");
-        }
-
         memberVarsBuilder.append("private ");
         memberVarsBuilder.appendClassName(getTargetQualifiedName(association, false));
         memberVarsBuilder.append(' ');

@@ -224,19 +224,6 @@ public class GenAssociationToMany extends GenAssociation {
             getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
                     association, builder);
 
-            // TODO: introduce Generator for JAXB
-            if (isGenerateJaxbSupport()) {
-                if (!isCompositionDetailToMaster()) {
-                    builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
-                            + "\", type=" + targetImplClassName + ".class");
-                    if (!isCompositionMasterToDetail()) {
-                        builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
-                    }
-                }
-                builder.annotationLn("javax.xml.bind.annotation.XmlElementWrapper", "name", association
-                        .getTargetRolePlural());
-            }
-
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
                     + (isUseTypesafeCollections() ? "<" + targetInterfaceName + ">" : ""), fieldName,
                     initialValueExpression);

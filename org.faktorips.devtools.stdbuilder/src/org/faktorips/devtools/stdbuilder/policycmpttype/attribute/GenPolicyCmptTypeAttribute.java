@@ -199,16 +199,6 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD,
                 getAttribute(), memberVarsBuilders);
 
-        // TODO: JAXB annotation generation should be handled by the line above (create subclass of
-        // AnnotationGenerator and add it to the Standard Builder Set)
-        if (isGenerateJaxbSupport()) {
-            String annotationParam = "name=\"" + getAttribute().getName() + "\"";
-            if (!getDatatypeHelper().getDatatype().isPrimitive()) {
-                annotationParam += ",nillable=true";
-            }
-            memberVarsBuilders.annotationLn("javax.xml.bind.annotation.XmlElement", annotationParam);
-        }
-
         memberVarsBuilders.varDeclaration(java.lang.reflect.Modifier.PRIVATE, getJavaClassName(), fieldName,
                 initialValueExpression);
     }

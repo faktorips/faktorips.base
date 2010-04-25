@@ -54,7 +54,8 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJpaAnnotationGeneratorFactory;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -159,11 +160,17 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private final String version;
 
     private final Map<IType, GenType> ipsObjectTypeGenerators;
+    private final AnnotationGeneratorFactory[] annotationGeneratorFactories;
 
     private Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap;
 
     public StandardBuilderSet() {
         ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
+
+        annotationGeneratorFactories = new AnnotationGeneratorFactory[] {
+                new PolicyCmptImplClassJpaAnnGenFactory(this), // JPA support
+                new PolicyCmptImplClassJaxbAnnGenFactory(this) }; // Jaxb support
+
         initSupportedPersistenceProviderMap();
 
         version = "3.0.0"; //$NON-NLS-1$
@@ -533,6 +540,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             ArrayList<IAnnotationGenerator> annotationGenerators = new ArrayList<IAnnotationGenerator>();
             for (AnnotationGeneratorFactory annotationGeneratorFactory : factories) {
                 IAnnotationGenerator annotationGenerator = annotationGeneratorFactory.createAnnotationGenerator(type);
+                if (annotationGenerator == null) {
+                    continue;
+                }
                 annotationGenerators.add(annotationGenerator);
             }
             annotationGeneratorsMap.put(type, annotationGenerators);
@@ -541,18 +551,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private List<AnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {
         List<AnnotationGeneratorFactory> factories = new ArrayList<AnnotationGeneratorFactory>();
-        PolicyCmptImplClassJpaAnnotationGeneratorFactory jpaFactory = new PolicyCmptImplClassJpaAnnotationGeneratorFactory(
-                this);
-
-        try {
-            if (jpaFactory.isRequiredFor(getIpsProject())) {
-                factories.add(jpaFactory);
+        for (int i = 0; i < annotationGeneratorFactories.length; i++) {
+            if (annotationGeneratorFactories[i].isRequiredFor(getIpsProject())) {
+                factories.add(annotationGeneratorFactories[i]);
             }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
         }
-
-        // TODO Add JAXB annotation factory
         return factories;
     }
 
@@ -564,7 +567,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      *            {@link AnnotatedJavaElementType} for a list of possible types.
      * @param ipsElement The IPS element to create the annotations for.
      */
-    public JavaCodeFragment addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) {
+    public JavaCodeFragment addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         List<IAnnotationGenerator> generators = annotationGeneratorsMap.get(type);
         if (generators == null) {
