@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrat
 import org.faktorips.util.message.MessageList;
 
 /**
- * Migration from version 3.0.0.ms1 to version 3.0.0.ms1b1.
+ * Migration from version 3.0.0.ms1 to version 3.0.0.ms2.
  * 
  * @author Joerg Ortmann
  */
@@ -39,7 +39,7 @@ public class Migration_3_0_0_ms1 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getTargetVersion() {
-        return "3.0.0.ms1c"; //$NON-NLS-1$
+        return "3.0.0.ms2"; //$NON-NLS-1$
     }
 
     @Override
