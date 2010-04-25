@@ -94,6 +94,10 @@ public abstract class GenAssociation extends GenTypePart {
         return association.isAssoziation();
     }
 
+    public String getTargetImplClassName() {
+        return targetImplClassName;
+    }
+
     /**
      * Generates a method to create a new child object if the association is a composite and the
      * target is not abstract. If the target is configurable by product a second method with the
@@ -1158,4 +1162,5 @@ public abstract class GenAssociation extends GenTypePart {
     protected GenPolicyCmptType getGenPolicyCmptType() {
         return (GenPolicyCmptType)getGenType();
     }
+
 }
