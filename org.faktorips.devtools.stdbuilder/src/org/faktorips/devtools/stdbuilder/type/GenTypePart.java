@@ -55,10 +55,6 @@ public abstract class GenTypePart extends DefaultJavaGeneratorForIpsPart {
         return genType.getBuilderSet().isUseTypesafeCollections();
     }
 
-    protected boolean isGenerateJaxbSupport() {
-        return genType.getBuilderSet().isGenerateJaxbSupport();
-    }
-
     public String getQualifiedClassName(IPolicyCmptType target, boolean forInterface) throws CoreException {
         return genType.getBuilderSet().getGenerator(target).getQualifiedName(forInterface);
     }
