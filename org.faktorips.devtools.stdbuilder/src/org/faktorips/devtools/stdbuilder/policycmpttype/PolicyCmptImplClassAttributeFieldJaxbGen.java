@@ -42,7 +42,7 @@ public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractAnnotation
         }
 
         String annotationParam = "name=\"" + attribute.getName() + "\"";
-        if (genAttribute.getDatatype().isPrimitive()) {
+        if (!genAttribute.getDatatype().isPrimitive()) {
             annotationParam += ",nillable=true";
         }
         builder.annotationLn("javax.xml.bind.annotation.XmlElement", annotationParam);

@@ -48,18 +48,20 @@ public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotation
         if (association.is1To1()) {
             // toOne
             if (association.isCompositionDetailToMaster()) {
-                builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
                 builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", fieldName + ".id");
             } else {
-                builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + fieldName + ".id\", type="
-                        + targetImplClassName + ".class");
+                builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
+                        + "\", type=" + targetImplClassName + ".class");
+            }
+            if (!association.isCompositionMasterToDetail()) {
+                builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
             }
         } else {
             // toMany
             if (!association.isCompositionDetailToMaster()) {
                 builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
                         + "\", type=" + targetImplClassName + ".class");
-                if (association.isAssoziation()) {
+                if (!association.isCompositionMasterToDetail()) {
                     builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
                 }
             }
