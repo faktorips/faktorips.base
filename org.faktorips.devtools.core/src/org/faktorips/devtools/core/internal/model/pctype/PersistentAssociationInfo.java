@@ -191,6 +191,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         return inverseAssociation == null && getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier();
     }
 
+    public boolean isForeignKeyColumnDefinedOnTargetSide() throws CoreException {
+        return isForeignKeyColumnDefinedOnTargetSide(getPolicyComponentTypeAssociation().findInverseAssociation(
+                getPolicyComponentTypeAssociation().getIpsProject()));
+    }
+
     /**
      * Returns <code>true</code> if the foreign key is defined on the target side.
      */
@@ -304,7 +309,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             if (getPolicyComponentTypeAssociation().isCompositionMasterToDetail()) {
                 return false;
             }
-            if (getPolicyComponentTypeAssociation().isAssoziation()
+            if (inverseAssociation != null && getPolicyComponentTypeAssociation().isAssoziation()
                     && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
                 // target join column is defined on the target side
                 return false;

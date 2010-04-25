@@ -266,6 +266,14 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public boolean isJoinTableRequired() throws CoreException;
 
     /**
+     * @return <code>true</code> if the foreign key column is defined on the target side.
+     *         <code>false</code> otherwise.
+     * 
+     * @throws CoreException if errors occur during retrieval of the corresponding inverse relation.
+     */
+    public boolean isForeignKeyColumnDefinedOnTargetSide() throws CoreException;
+
+    /**
      * Returns true if the association is transient.
      */
     public boolean isTransient();
