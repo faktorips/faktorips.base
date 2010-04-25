@@ -174,15 +174,6 @@ public class GenAssociationTo1 extends GenAssociation {
             getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
                     association, builder);
 
-            // TODO: introduce Generator for JAXB annotations
-            if (isGenerateJaxbSupport()) {
-                builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
-                        + "\", type=" + targetImplClassName + ".class");
-                if (!isCompositionMasterToDetail()) {
-                    builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
-                }
-            }
-
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetInterfaceName, fieldName,
                     new JavaCodeFragment("null"));
         }
@@ -736,7 +727,7 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(unqTargetImplName).append(' ').append(varCopyTarget).append(" = ") //
                 .append('(').append(unqTargetImplName).append(')').append(varCopyMap) //
                 .append(".get(").append(fieldName).appendln(");");
-        methodsBuilder.append(fieldName).append(".") //
+        methodsBuilder.append("((").append(unqTargetImplName).append(')').append(fieldName).append(").") //
                 .append(PolicyCmptImplClassBuilder.METHOD_COPY_ASSOCIATIONS) //
                 .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
         methodsBuilder.closeBracket();
