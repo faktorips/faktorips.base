@@ -14,9 +14,15 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -25,16 +31,19 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Section to display the persistence properties of the associations specific to an
@@ -45,6 +54,33 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
  * @author Roman Grutza
  */
 public class PersistentAssociationSection extends SimpleIpsPartsSection {
+
+    private ResourceManager resourceManager;
+
+    private static final Map<Integer, AttrPropertyAndLabel> columnProperties = new HashMap<Integer, AttrPropertyAndLabel>();
+
+    static {
+        columnProperties.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET, "Association Target"));
+        columnProperties.put(1, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME,
+                "Join Table Name"));
+        columnProperties.put(2, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
+                "Source Column Name"));
+        columnProperties.put(3, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
+                "Target Column Name"));
+        columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME,
+                "Join Column Name"));
+        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE, "Fetch Type"));
+    }
+
+    private static class AttrPropertyAndLabel {
+        private String property;
+        private String label;
+
+        public AttrPropertyAndLabel(String property, String label) {
+            this.property = property;
+            this.label = label;
+        }
+    }
 
     public PersistentAssociationSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
         super(ipsObject, parent, "Associations", toolkit);
@@ -58,6 +94,13 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
     @Override
     protected void performRefresh() {
         bindingContext.updateUI();
+    }
+
+    private ResourceManager getResourceManager() {
+        if (resourceManager == null) {
+            resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        }
+        return resourceManager;
     }
 
     public class PersistenceAssociationsComposite extends PersistenceComposite {
@@ -83,8 +126,11 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
         @Override
         public String[] getColumnHeaders() {
-            return new String[] { "Association Target", "Join Table Name", "Source Column Name", "Target Column Name",
-                    "Fetch Type" };
+            String[] result = new String[columnProperties.size()];
+            for (int i = 0; i < columnProperties.size(); i++) {
+                result[i] = columnProperties.get(i).label;
+            }
+            return result;
         }
 
         private class PersistentAssociationContentProvider implements IStructuredContentProvider {
@@ -112,6 +158,41 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         private class PersistentAssociationLabelProvider extends LabelProvider implements ITableLabelProvider {
 
             public Image getColumnImage(Object element, int columnIndex) {
+                IPersistentAssociationInfo persistenceAssociationInfo = ((IPolicyCmptTypeAssociation)element)
+                        .getPersistenceAssociatonInfo();
+                MessageList msgList;
+                try {
+                    msgList = persistenceAssociationInfo.validate(persistenceAssociationInfo.getIpsProject());
+                    String property = columnProperties.get(columnIndex).property;
+                    if (property == null) {
+                        return null;
+                    }
+                    Image image = getOverlayImageFor(msgList.getMessagesFor(persistenceAssociationInfo, property));
+                    if (image != null) {
+                        return image;
+                    }
+                    // if there is no message for the given property
+                    // check for messages for the object only
+                    if (columnIndex == 0) {
+                        image = getOverlayImageFor(msgList.getMessagesFor(persistenceAssociationInfo));
+                        if (image != null) {
+                            return image;
+                        }
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+                return null;
+
+            }
+
+            private Image getOverlayImageFor(MessageList messages) {
+                if (messages.getNoOfMessages() > 0) {
+                    ImageDescriptor descriptor = IpsProblemOverlayIcon.getOverlay(messages.getSeverity());
+                    if (descriptor != null) {
+                        return (Image)getResourceManager().get(descriptor);
+                    }
+                }
                 return null;
             }
 
@@ -119,27 +200,38 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)element;
                 IPersistentAssociationInfo jpaAssociationInfo = association.getPersistenceAssociatonInfo();
 
+                String property = columnProperties.get(columnIndex).property;
                 String result = "";
-                ITableNamingStrategy tableNamingStrategy = jpaAssociationInfo.getIpsProject().getTableNamingStrategy();
-                switch (columnIndex) {
-                    case 0:
-                        result = association.getTarget();
-                        break;
-                    case 1:
-                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getJoinTableName());
-                        break;
-                    case 2:
-                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getSourceColumnName());
-                        break;
-                    case 3:
-                        result = tableNamingStrategy.getTableName(jpaAssociationInfo.getTargetColumnName());
-                        break;
-                    case 4:
-                        result = jpaAssociationInfo.getFetchType().toString();
-                        break;
 
-                    default:
-                        result = "";
+                boolean joinTableReq = false;
+                boolean foreignKeyColumnReq = false;
+                try {
+                    joinTableReq = jpaAssociationInfo.isJoinTableRequired();
+                    foreignKeyColumnReq = !jpaAssociationInfo.isForeignKeyColumnDefinedOnTargetSide();
+                } catch (Exception e) {
+                    IpsPlugin.log(e);
+                }
+
+                if (IAssociation.PROPERTY_TARGET.equals(property)) {
+                    result = association.getTarget();
+                } else if (IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME.equals(property)) {
+                    if (joinTableReq) {
+                        result = jpaAssociationInfo.getJoinTableName();
+                    }
+                } else if (IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME.equals(property)) {
+                    if (joinTableReq) {
+                        result = jpaAssociationInfo.getSourceColumnName();
+                    }
+                } else if (IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME.equals(property)) {
+                    if (joinTableReq) {
+                        result = jpaAssociationInfo.getTargetColumnName();
+                    }
+                } else if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME.equals(property)) {
+                    if (!joinTableReq && foreignKeyColumnReq) {
+                        result = jpaAssociationInfo.getJoinColumnName();
+                    }
+                } else if (IPersistentAssociationInfo.PROPERTY_FETCH_TYPE.equals(property)) {
+                    result = jpaAssociationInfo.getFetchType().toString();
                 }
                 return (result == null ? "" : result);
             }
