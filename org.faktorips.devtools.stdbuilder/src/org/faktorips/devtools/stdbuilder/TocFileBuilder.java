@@ -547,8 +547,11 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
         }
         String id = type.getQualifiedName(); // for model types, the qualified name is also the id.
+        // TocEntryObject entry = TocEntryObject.createModelTypeTocEntry(id,
+        // type.getQualifiedName(), xmlResourceName,
+        // javaImplClass, generationImplClassName);
         TocEntryObject entry = TocEntryObject.createModelTypeTocEntry(id, type.getQualifiedName(), xmlResourceName,
-                javaImplClass, generationImplClassName);
+                javaImplClass);
         return entry;
     }
 
