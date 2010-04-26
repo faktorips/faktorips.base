@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,18 +23,17 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
-
 /**
  *
  */
 public abstract class MinMaxNativeTypes extends AbstractFlFunction {
-    
+
     protected String functionName = null;
     private String errorCodeSuffix = null;
     private Datatype functionDatatype = null;
-    
+
     public MinMaxNativeTypes(String name, String description, Datatype datatype, boolean isMax) {
-        super(name, description, datatype, new Datatype[] {datatype, datatype});
+        super(name, description, datatype, new Datatype[] { datatype, datatype });
         ArgumentCheck.notNull(datatype);
         functionDatatype = datatype;
         functionName = isMax ? "max" : "min";
@@ -44,35 +43,36 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean match(String name, Datatype[] otherArgTypes) {
         if (!this.getName().equals(name)) {
             return false;
         }
         Datatype[] args = getArgTypes();
-        if(args.length != otherArgTypes.length){
+        if (args.length != otherArgTypes.length) {
             return false;
         }
         for (int i = 0; i < otherArgTypes.length; i++) {
-            if(args[i].equals(otherArgTypes[i])){
+            if (args[i].equals(otherArgTypes[i])) {
                 continue;
             }
             ValueDatatype argType = (ValueDatatype)args[i];
-            if(argType.isPrimitive()){
-                if(argType.getWrapperType().equals(otherArgTypes[i])){
+            if (argType.isPrimitive()) {
+                if (argType.getWrapperType().equals(otherArgTypes[i])) {
                     continue;
                 }
-            } else if(otherArgTypes[i] instanceof ValueDatatype) {
+            } else if (otherArgTypes[i] instanceof ValueDatatype) {
                 ValueDatatype other = (ValueDatatype)otherArgTypes[i];
-                if(argType.equals(other.getWrapperType())){
-                   continue; 
+                if (argType.equals(other.getWrapperType())) {
+                    continue;
                 }
             }
             return false;
         }
         return true;
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public CompilationResult compile(CompilationResult[] argResults) {
@@ -81,20 +81,20 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         ConversionCodeGenerator ccg = compiler.getConversionCodeGenerator();
         Datatype datatype1 = argResults[0].getDatatype();
         Datatype datatype2 = argResults[1].getDatatype();
-        
+
         CompilationResult first = convertIfNecessay(datatype1, ccg, argResults[0]);
-        if(first == null){
+        if (first == null) {
             return createErrorCompilationResult(datatype1);
         }
         CompilationResult second = convertIfNecessay(datatype2, ccg, argResults[1]);
-        if(second == null){
+        if (second == null) {
             return createErrorCompilationResult(datatype2);
         }
-        
-        //Math.max(value1, value2)
+
+        // Math.max(value1, value2)
         JavaCodeFragment fragment = new JavaCodeFragment();
         writeBody(fragment, first, second);
-        
+
         CompilationResultImpl result = new CompilationResultImpl(fragment, functionDatatype);
         result.addMessages(argResults[0].getMessages());
         result.addMessages(argResults[1].getMessages());
@@ -102,20 +102,24 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         addIdentifier(argResults[1].getResolvedIdentifiers(), result);
         return result;
     }
-    
+
     protected abstract void writeBody(JavaCodeFragment fragment, CompilationResult first, CompilationResult second);
-    
-    private CompilationResult createErrorCompilationResult(Datatype datatype){
+
+    private CompilationResult createErrorCompilationResult(Datatype datatype) {
         String code = ExprCompiler.PREFIX + errorCodeSuffix;
-        String text = Messages.INSTANCE.getString(code, new Object[]{datatype});
+        String text = Messages.INSTANCE.getString(code, new Object[] { datatype });
         Message msg = Message.newError(code, text);
         return new CompilationResultImpl(msg);
 
     }
-    private CompilationResult convertIfNecessay(Datatype datatype, ConversionCodeGenerator ccg, CompilationResult argResult){
+
+    private CompilationResult convertIfNecessay(Datatype datatype,
+            ConversionCodeGenerator ccg,
+            CompilationResult argResult) {
         if (!functionDatatype.equals(datatype)) {
             if (ccg.canConvert(datatype, functionDatatype)) {
-                JavaCodeFragment converted = ccg.getConversionCode(datatype, functionDatatype, argResult.getCodeFragment());
+                JavaCodeFragment converted = ccg.getConversionCode(datatype, functionDatatype, argResult
+                        .getCodeFragment());
                 CompilationResultImpl newResult = new CompilationResultImpl(converted, functionDatatype);
                 newResult.addMessages(argResult.getMessages());
                 return newResult;
@@ -124,10 +128,10 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         }
         return argResult;
     }
-    
-    private void addIdentifier(String[] identifiers, CompilationResultImpl compilationResult){
-        for (int i = 0; i < identifiers.length; i++) {
-            compilationResult.addIdentifierUsed(identifiers[i]);
+
+    private void addIdentifier(String[] identifiers, CompilationResultImpl compilationResult) {
+        for (String identifier : identifiers) {
+            compilationResult.addIdentifierUsed(identifier);
         }
     }
 }

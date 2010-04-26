@@ -122,8 +122,8 @@ public class UIToolkit {
         // composite
         if (c instanceof Composite) {
             Control[] children = ((Composite)c).getChildren();
-            for (int i = 0; i < children.length; i++) {
-                setDataChangeable(children[i], changeable);
+            for (Control element : children) {
+                setDataChangeable(element, changeable);
             }
         }
     }
@@ -626,9 +626,9 @@ public class UIToolkit {
         if (datatype.isSupportingNames()) {
             String[] ids = datatype.getAllValueIds(true);
             ArrayList<String> nameList = new ArrayList<String>(ids.length);
-            for (int i = 0; i < ids.length; i++) {
+            for (String id : ids) {
                 String formatedText = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                        datatype, ids[i]);
+                        datatype, id);
                 nameList.add(formatedText);
             }
             setComboValues(newCombo, nameList.toArray(new String[ids.length]));

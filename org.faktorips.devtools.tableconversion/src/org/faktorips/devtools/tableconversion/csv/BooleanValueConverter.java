@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,15 +32,16 @@ public class BooleanValueConverter extends AbstractValueConverter {
 
     /**
      * The only supported type for externalDataValue is String.
-     *  
+     * 
      * {@inheritDoc}
      */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
             return Boolean.valueOf((String)externalDataValue).toString();
         }
-        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue.getClass() //$NON-NLS-1$
-                .getName(), getSupportedDatatype().getQualifiedName()));
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                "" + externalDataValue, externalDataValue.getClass() //$NON-NLS-1$
+                        .getName(), getSupportedDatatype().getQualifiedName()));
         return externalDataValue.toString();
     }
 

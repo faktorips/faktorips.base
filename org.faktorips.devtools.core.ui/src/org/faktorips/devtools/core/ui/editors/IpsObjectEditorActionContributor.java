@@ -45,6 +45,7 @@ public class IpsObjectEditorActionContributor extends EditorActionBarContributor
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         super.dispose();
         toggleWorkingModeAction.dispose();

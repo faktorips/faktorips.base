@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,9 +23,11 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * A test implementation of the {@link IIpsArtefactBuilderSetInfo} interface. Returns the {@link IIpsArtefactBuilderSet} instances provided to the
- * constructor in the create(IIpsProject) according to the {@link IIpsProject} provided to the method. Therefor it is necessary to set the 
- * ips-project to the builder set otherwise a NullPointerException is thrown when the create(IIpsProject) method is called.
+ * A test implementation of the {@link IIpsArtefactBuilderSetInfo} interface. Returns the
+ * {@link IIpsArtefactBuilderSet} instances provided to the constructor in the create(IIpsProject)
+ * according to the {@link IIpsProject} provided to the method. Therefor it is necessary to set the
+ * ips-project to the builder set otherwise a NullPointerException is thrown when the
+ * create(IIpsProject) method is called.
  * 
  * @author Peter Erzberger
  */
@@ -33,37 +35,37 @@ public class TestArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
 
     private IIpsArtefactBuilderSet[] builderSets;
     private String builderSetId;
-    
+
     /**
-     * Creates an info object for the provided builder set. The IIpsProject for this builderSet must be set to avoid runtime exceptions.
+     * Creates an info object for the provided builder set. The IIpsProject for this builderSet must
+     * be set to avoid runtime exceptions.
      */
     public TestArtefactBuilderSetInfo(IIpsArtefactBuilderSet builderSet) {
         ArgumentCheck.notNull(builderSet, this);
         ArgumentCheck.notNull(builderSet.getIpsProject(), "The ips project of the provided builder set must be set.");
-        this.builderSets = new IIpsArtefactBuilderSet[]{builderSet};
+        this.builderSets = new IIpsArtefactBuilderSet[] { builderSet };
         this.builderSetId = builderSet.getId();
     }
 
     /**
-     * Creates an info object witht the provided builder set and their common builderSetId. It is assumed that all builder sets have the same
-     * builderSetId.
+     * Creates an info object witht the provided builder set and their common builderSetId. It is
+     * assumed that all builder sets have the same builderSetId.
      */
     public TestArtefactBuilderSetInfo(String builderSetId, IIpsArtefactBuilderSet[] builderSets) {
         ArgumentCheck.notNull(builderSets, this);
         ArgumentCheck.notNull(builderSetId, this);
-        for (int i = 0; i < builderSets.length; i++) {
-            ArgumentCheck.notNull(builderSets[i].getIpsProject(),
-                    "The ips project of the provided builder set with the id: " + builderSets[i].getId()
-                            + " must be set.");
+        for (IIpsArtefactBuilderSet builderSet : builderSets) {
+            ArgumentCheck.notNull(builderSet.getIpsProject(),
+                    "The ips project of the provided builder set with the id: " + builderSet.getId() + " must be set.");
         }
         this.builderSets = builderSets;
         this.builderSetId = builderSetId;
     }
 
     public IIpsArtefactBuilderSet create(IIpsProject ipsProject) {
-        for (int i = 0; i < builderSets.length; i++) {
-            if(builderSets[i].getIpsProject().equals(ipsProject)){
-                return builderSets[i];
+        for (IIpsArtefactBuilderSet builderSet : builderSets) {
+            if (builderSet.getIpsProject().equals(ipsProject)) {
+                return builderSet;
             }
         }
         return null;

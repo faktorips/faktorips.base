@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
@@ -92,8 +91,8 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         processor.doComputeCompletionProposals("TestEnumType.", 0, results);
         assertEquals(3, results.size());
         ArrayList<String> expectedValues = new ArrayList<String>();
-        for (Iterator<?> iter = results.iterator(); iter.hasNext();) {
-            proposal = (CompletionProposal)iter.next();
+        for (Object name : results) {
+            proposal = (CompletionProposal)name;
             expectedValues.add(proposal.getDisplayString());
         }
         assertTrue(expectedValues.contains("1"));

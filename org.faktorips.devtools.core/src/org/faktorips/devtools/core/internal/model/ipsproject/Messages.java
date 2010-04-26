@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,17 +20,17 @@ import org.eclipse.osgi.util.NLS;
  * @author Thorsten Guenther
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.ipsproject.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.ipsproject.messages"; //$NON-NLS-1$
 
-	private Messages() {
-	}
+    private Messages() {
+    }
 
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	public static String DefaultIpsProjectNamingConventions_error;
+    public static String DefaultIpsProjectNamingConventions_error;
 
     public static String DefaultIpsProjectNamingConventions_msgMissingName;
 
@@ -68,7 +68,7 @@ public class Messages extends NLS {
 
     public static String IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject;
 
-	public static String IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_BUSINESS;
+    public static String IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_BUSINESS;
 
     public static String IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_COOPERATE;
 
@@ -84,11 +84,11 @@ public class Messages extends NLS {
 
     public static String IpsProjectProperties_msgUnknownDatatype;
 
-	public static String IpsProjectProperties_msgUnknownBuilderSetId;
+    public static String IpsProjectProperties_msgUnknownBuilderSetId;
 
-	public static String IpsProject_msgMissingDotIpsprojectFile;
+    public static String IpsProject_msgMissingDotIpsprojectFile;
 
-	public static String IpsProject_msgUnparsableDotIpsprojectFile;
+    public static String IpsProject_msgUnparsableDotIpsprojectFile;
 
     public static String IpsProject_msgNoFeatureManager;
 
@@ -109,5 +109,5 @@ public class Messages extends NLS {
     public static String IpsProjectProperties_msgMissingMinFeatureId;
 
     public static String IpsProject_msgRuntimeIDCollision;
-    
+
 }

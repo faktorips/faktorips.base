@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,32 +18,29 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 
-public class TableContentsContentProvider implements IStructuredContentProvider{
+public class TableContentsContentProvider implements IStructuredContentProvider {
 
-    public TableContentsContentProvider(){
+    public TableContentsContentProvider() {
     }
-    
+
     public Object[] getElements(Object inputElement) {
-        if(inputElement instanceof ITableContents){
-            ITableContents table= (ITableContents) inputElement;
-            return ((ITableContentsGeneration) table.getFirstGeneration()).getRows();
+        if (inputElement instanceof ITableContents) {
+            ITableContents table = (ITableContents)inputElement;
+            return ((ITableContentsGeneration)table.getFirstGeneration()).getRows();
         }
         return new Object[0];
     }
 
     /**
-     * Empty implementation.
-     * {@inheritDoc}
+     * Empty implementation. {@inheritDoc}
      */
     public void dispose() {
     }
 
     /**
-     * Empty implementation.
-     * {@inheritDoc}
+     * Empty implementation. {@inheritDoc}
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
     }
-
 
 }

@@ -50,8 +50,8 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
         try {
             // return the functions of all table structures which are based by the used table
             // contents
-            for (int i = 0; i < tableContentUsages.length; i++) {
-                ITableContents tableContents = tableContentUsages[i].findTableContents(ipsProject);
+            for (ITableContentUsage tableContentUsage : tableContentUsages) {
+                ITableContents tableContents = tableContentUsage.findTableContents(ipsProject);
                 if (tableContents == null) {
                     // ignore if the table content wasn't found (validation error)
                     continue;
@@ -59,7 +59,7 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
                 ITableStructure table = tableContents.findTableStructure(ipsProject);
                 if (table != null) {
                     // only add the access-function if the content has a structure...
-                    addTableAccessFunction(functions, table, tableContents, tableContentUsages[i].getStructureUsage());
+                    addTableAccessFunction(functions, table, tableContents, tableContentUsage.getStructureUsage());
                 }
             }
         } catch (CoreException e) {

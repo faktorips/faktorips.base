@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,42 +28,44 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
     private IProdDefProperty property;
     private IPropertyValue value;
-    
+
     public PropertyTypeMismatchEntry(GenerationToTypeDelta delta, IProdDefProperty property, IPropertyValue value) {
         super(delta);
         this.property = property;
         this.value = value;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public ProdDefPropertyType getPropertyType() {
         return value.getPropertyType();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return property.getPropertyName();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public DeltaType getDeltaType() {
         return DeltaType.PROPERTY_TYPE_MISMATCH;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
-        String desc = Messages.PropertyTypeMismatchEntry_desc; 
-        return NLS.bind(desc, new Object[]{getPropertyName(), property.getProdDefPropertyType().getName(), value.getPropertyType().getName()}); //$NON-NLS-1$
+        String desc = Messages.PropertyTypeMismatchEntry_desc;
+        return NLS.bind(desc, new Object[] { getPropertyName(), property.getProdDefPropertyType().getName(),
+                value.getPropertyType().getName() });
     }
-    
+
     /**
      * {@inheritDoc}
      */

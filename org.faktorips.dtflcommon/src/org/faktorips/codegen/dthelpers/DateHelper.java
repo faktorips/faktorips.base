@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -43,14 +43,15 @@ public class DateHelper extends AbstractDatatypeHelper {
 
     /**
      * Overridden Method.
-     *
+     * 
      * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
      */
+    @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         if (StringUtils.isEmpty(expression)) {
             return nullExpression();
         }
-        JavaCodeFragment fragment = new JavaCodeFragment();        
+        JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(DateUtil.class);
         fragment.append(".parseIsoDateStringToDate(");
         fragment.append(expression);
@@ -60,22 +61,22 @@ public class DateHelper extends AbstractDatatypeHelper {
 
     /**
      * Overridden Method.
-     *
+     * 
      * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
      */
     public JavaCodeFragment nullExpression() {
-    		return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null");
     }
 
     /**
      * Overridden Method.
-     *
+     * 
      * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
      */
     public JavaCodeFragment newInstance(String value) {
-    	if(value == null){
-    		return valueOfExpression(value);
-    	}
+        if (value == null) {
+            return valueOfExpression(value);
+        }
         StringBuffer buf = new StringBuffer();
         buf.append('"').append(value).append('"');
         return valueOfExpression(buf.toString());
@@ -83,13 +84,14 @@ public class DateHelper extends AbstractDatatypeHelper {
 
     /**
      * Overridden Method.
-     *
+     * 
      * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
      */
+    @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-        if(useTypesafeCollections){
-            return Java5ClassNames.DefaultRange_QualifiedName+"<"+Date.class.getName()+">";
-        }else{
+        if (useTypesafeCollections) {
+            return Java5ClassNames.DefaultRange_QualifiedName + "<" + Date.class.getName() + ">";
+        } else {
             return DateRange.class.getName();
         }
     }
@@ -97,6 +99,7 @@ public class DateHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,

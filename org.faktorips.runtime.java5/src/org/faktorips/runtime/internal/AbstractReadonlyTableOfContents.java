@@ -113,9 +113,10 @@ public abstract class AbstractReadonlyTableOfContents {
     public abstract Set<TocEntryObject> getEnumContentTocEntries();
 
     /**
-     * Returns all toc entries that link to an enumeration xml adapter. 
+     * Returns all toc entries that link to an enumeration xml adapter.
      */
     public abstract Set<TocEntryObject> getEnumXmlAdapterTocEntries();
+
     /**
      * {@inheritDoc}
      */

@@ -126,21 +126,20 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         List<ITestValueParameter> missing = new ArrayList<ITestValueParameter>();
         ITestValueParameter[] params = testCaseType.getTestValueParameters();
         List<ITestValue> values = Arrays.asList(testCase.getTestValues());
-        for (int i = 0; i < params.length; i++) {
+        for (ITestValueParameter param : params) {
             boolean found = false;
             int idxInTestCase = 0;
-            for (Iterator<ITestValue> iter = values.iterator(); iter.hasNext();) {
-                ITestValue value = iter.next();
-                if (value.getTestValueParameter().equals(params[i].getName())) {
+            for (ITestValue value : values) {
+                if (value.getTestValueParameter().equals(param.getName())) {
                     found = true;
                     // check if the order is equal
-                    checkSortOrder(params[i], value);
+                    checkSortOrder(param, value);
                     break;
                 }
                 idxInTestCase++;
             }
             if (!found) {
-                missing.add(params[i]);
+                missing.add(param);
             }
         }
         testValueParametersWithMissingTestValue = missing.toArray(new ITestValueParameter[0]);
@@ -161,13 +160,12 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             return;
         }
 
-        for (int i = 0; i < params.length; i++) {
+        for (ITestRuleParameter param : params) {
             int idxInTestCase = 0;
-            for (Iterator<ITestRule> iter = rules.iterator(); iter.hasNext();) {
-                ITestRule rule = iter.next();
-                if (rule.getTestRuleParameter().equals(params[i].getName())) {
+            for (ITestRule rule : rules) {
+                if (rule.getTestRuleParameter().equals(param.getName())) {
                     // check if the order is equal
-                    checkSortOrder(params[i], rule);
+                    checkSortOrder(param, rule);
                     break;
                 }
             }
@@ -248,8 +246,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         // list)
         List<IIpsObjectPart> elementsToRemove = new ArrayList<IIpsObjectPart>();
         String prevTestRuleParam = null;
-        for (Iterator<ITestObject> iter = testObjects.iterator(); iter.hasNext();) {
-            ITestObject element = iter.next();
+        for (ITestObject element : testObjects) {
             if (element instanceof ITestRule) {
                 String testRuleParam = ((ITestRule)element).getTestRuleParameter();
                 if (testRuleParam.equals(prevTestRuleParam)) {
@@ -258,22 +255,21 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
                 prevTestRuleParam = testRuleParam;
             }
         }
-        for (Iterator<IIpsObjectPart> iter = elementsToRemove.iterator(); iter.hasNext();) {
-            testObjects.remove(iter.next());
+        for (IIpsObjectPart iIpsObjectPart : elementsToRemove) {
+            testObjects.remove(iIpsObjectPart);
         }
 
         // Removes test rule parameter which have no test rule (test rules are optional)
         elementsToRemove = new ArrayList<IIpsObjectPart>();
-        for (Iterator<ITestParameter> iter = testParams.iterator(); iter.hasNext();) {
-            ITestParameter element = iter.next();
+        for (ITestParameter element : testParams) {
             if (element instanceof ITestRuleParameter) {
                 if (testCase.getTestRule(element.getName()).length == 0) {
                     elementsToRemove.add(element);
                 }
             }
         }
-        for (Iterator<IIpsObjectPart> iter = elementsToRemove.iterator(); iter.hasNext();) {
-            testParams.remove(iter.next());
+        for (IIpsObjectPart iIpsObjectPart : elementsToRemove) {
+            testParams.remove(iIpsObjectPart);
         }
     }
 
@@ -336,15 +332,13 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
 
         // remove root parameter, because root parameter will be added by the user
         List<ITestPolicyCmptTypeParameter> toRemove = new ArrayList<ITestPolicyCmptTypeParameter>();
-        for (Iterator<ITestPolicyCmptTypeParameter> iterator = missingTestPolicyCmptTypeParameter.iterator(); iterator
-                .hasNext();) {
-            ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = iterator.next();
+        for (ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter : missingTestPolicyCmptTypeParameter) {
             if (testPolicyCmptTypeParameter.isRoot()) {
                 toRemove.add(testPolicyCmptTypeParameter);
             }
         }
-        for (Iterator<ITestPolicyCmptTypeParameter> iterator = toRemove.iterator(); iterator.hasNext();) {
-            missingTestPolicyCmptTypeParameter.remove(iterator.next());
+        for (ITestPolicyCmptTypeParameter iTestPolicyCmptTypeParameter : toRemove) {
+            missingTestPolicyCmptTypeParameter.remove(iTestPolicyCmptTypeParameter);
         }
 
         testPolicyCmptTypeParametersWithMissingTestPolicyCmpt = missingTestPolicyCmptTypeParameter
@@ -362,26 +356,24 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         List<ITestAttribute> testAttributes = new ArrayList<ITestAttribute>();
         testAttributes.addAll(Arrays.asList(param.getTestAttributes()));
         ITestAttributeValue[] testAttrValues = cmpt.getTestAttributeValues();
-        for (int i = 0; i < testAttrValues.length; i++) {
+        for (ITestAttributeValue testAttrValue : testAttrValues) {
             // ignore if the test attribute wasn't found, this was already checked on the test case
             // side
-            ITestAttribute testAttr = testAttrValues[i].findTestAttribute(testCase.getIpsProject());
+            ITestAttribute testAttr = testAttrValue.findTestAttribute(testCase.getIpsProject());
             if (testAttr != null) {
                 testAttributes.remove(testAttr);
             }
         }
         // add the resulting list of test attributes (these objects wasn't found by the test case
         // side)
-        for (Iterator<ITestAttribute> iter = testAttributes.iterator(); iter.hasNext();) {
-            ITestAttribute testAttr = iter.next();
+        for (ITestAttribute testAttr : testAttributes) {
             if (!missingTestAttributes.contains(testAttr)) {
                 missingTestAttributes.add(testAttr);
             }
         }
 
         // if there are missing test attributes, store the corresponding test policy cmpt
-        for (Iterator<ITestAttribute> iter = testAttributes.iterator(); iter.hasNext();) {
-            ITestAttribute testAttr = iter.next();
+        for (ITestAttribute testAttr : testAttributes) {
             List<ITestPolicyCmpt> cmptWithMissingTestAttrList = testAttributes2TestPolicyCmpt.get(testAttr);
             if (cmptWithMissingTestAttrList == null) {
                 cmptWithMissingTestAttrList = new ArrayList<ITestPolicyCmpt>(1);
@@ -399,14 +391,14 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     private void computeTestValueWithMissingTestParameter() throws CoreException {
         List<ITestValue> missing = new ArrayList<ITestValue>();
         ITestValue[] testValues = testCase.getTestValues();
-        for (int i = 0; i < testValues.length; i++) {
-            ITestParameter testParameter = testCaseType.getTestParameterByName(testValues[i].getTestValueParameter());
+        for (ITestValue testValue : testValues) {
+            ITestParameter testParameter = testCaseType.getTestParameterByName(testValue.getTestValueParameter());
             if (testParameter == null) {
                 // not found by name
-                missing.add(testValues[i]);
+                missing.add(testValue);
             } else if (!(testParameter instanceof ITestValueParameter)) {
                 // wrong instanceof
-                missing.add(testValues[i]);
+                missing.add(testValue);
             }
         }
         testValuesWithMissingTestValueParam = missing.toArray(new ITestValue[0]);
@@ -418,14 +410,14 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     private void computeTestRuleWithMissingTestParameter() throws CoreException {
         List<ITestRule> missing = new ArrayList<ITestRule>();
         ITestRule[] testRules = testCase.getTestRuleObjects();
-        for (int i = 0; i < testRules.length; i++) {
-            ITestParameter testParameter = testCaseType.getTestParameterByName(testRules[i].getTestRuleParameter());
+        for (ITestRule testRule : testRules) {
+            ITestParameter testParameter = testCaseType.getTestParameterByName(testRule.getTestRuleParameter());
             if (testParameter == null) {
                 // not found by name
-                missing.add(testRules[i]);
+                missing.add(testRule);
             } else if (!(testParameter instanceof ITestRuleParameter)) {
                 // wrong instanceof
-                missing.add(testRules[i]);
+                missing.add(testRule);
             }
         }
         testRulesWithMissingTestRuleParam = missing.toArray(new ITestRule[0]);
@@ -444,12 +436,11 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         List<ITestPolicyCmpt> allTestPolicyCmpt = new ArrayList<ITestPolicyCmpt>();
 
         ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
-        for (int i = 0; i < testPolicyCmpts.length; i++) {
+        for (ITestPolicyCmpt cmpt : testPolicyCmpts) {
             // store only root objects in the list of test case objetcs, don't care about child
             // elements
             // this is done by validation inside the test case
-            allTestPolicyCmpt.add(testPolicyCmpts[i]);
-            ITestPolicyCmpt cmpt = testPolicyCmpts[i];
+            allTestPolicyCmpt.add(cmpt);
             computeTestPolicyCmptStructWithMissingTestParameter(cmpt, missingTestPolicyCmpts,
                     missingTestPolicyCmptLinks, missingTestAttributeValues, allTestPolicyCmpt);
         }
@@ -520,14 +511,14 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         List<ITestPolicyCmptLink> objects = new ArrayList<ITestPolicyCmptLink>();
 
         ITestPolicyCmptTypeParameter prevParam = null;
-        for (int i = 0; i < testPolicyCmptLinks.length; i++) {
-            objects.add(testPolicyCmptLinks[i]);
-            ITestPolicyCmptTypeParameter param = testPolicyCmptLinks[i].findTestPolicyCmptTypeParameter(ipsProject);
+        for (ITestPolicyCmptLink testPolicyCmptLink : testPolicyCmptLinks) {
+            objects.add(testPolicyCmptLink);
+            ITestPolicyCmptTypeParameter param = testPolicyCmptLink.findTestPolicyCmptTypeParameter(ipsProject);
             if (param == null) {
-                missingTestPolicyCmptLink.add(testPolicyCmptLinks[i]);
+                missingTestPolicyCmptLink.add(testPolicyCmptLink);
             } else {
-                if (testPolicyCmptLinks[i].isComposition()) {
-                    ITestPolicyCmpt cmpt = testPolicyCmptLinks[i].findTarget();
+                if (testPolicyCmptLink.isComposition()) {
+                    ITestPolicyCmpt cmpt = testPolicyCmptLink.findTarget();
                     if (cmpt == null) {
                         // ignore error if target of link not found
                         continue;
@@ -560,10 +551,10 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         ArgumentCheck.isTrue(parent == parentPrev);
         ITestPolicyCmptTypeParameter[] childs = parent.getTestPolicyCmptTypeParamChilds();
         boolean prevBefore = false;
-        for (int i = 0; i < childs.length; i++) {
-            if (childs[i] == prevParam) {
+        for (ITestPolicyCmptTypeParameter child : childs) {
+            if (child == prevParam) {
                 prevBefore = true;
-            } else if (childs[i] == param && !prevBefore) {
+            } else if (child == param && !prevBefore) {
                 return true;
             }
         }
@@ -576,10 +567,10 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     private void computeTestAttributeValuesWithMissingTestAttribute(ITestPolicyCmpt cmpt,
             List<ITestAttributeValue> missingTestAttributeValue) throws CoreException {
         ITestAttributeValue testAttributeValues[] = cmpt.getTestAttributeValues();
-        for (int i = 0; i < testAttributeValues.length; i++) {
-            ITestAttribute testAttribute = testAttributeValues[i].findTestAttribute(testCase.getIpsProject());
+        for (ITestAttributeValue testAttributeValue : testAttributeValues) {
+            ITestAttribute testAttribute = testAttributeValue.findTestAttribute(testCase.getIpsProject());
             if (testAttribute == null) {
-                missingTestAttributeValue.add(testAttributeValues[i]);
+                missingTestAttributeValue.add(testAttributeValue);
                 // indicate a different sort oder of the test attributes
                 addDifferentTestAttributeSortOrder(cmpt);
             }

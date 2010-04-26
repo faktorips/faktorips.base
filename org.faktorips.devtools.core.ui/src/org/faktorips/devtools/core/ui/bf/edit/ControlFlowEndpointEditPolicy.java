@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,27 +18,26 @@ import org.eclipse.gef.GraphicalEditPart;
 
 /**
  * In addition to the standard connection end point edit policy this policy increases the line width
- * of the connection figure when it is selected.  
+ * of the connection figure when it is selected.
  * 
  * @author Peter Erzberger
  */
-public class ControlFlowEndpointEditPolicy extends
-		org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy {
+public class ControlFlowEndpointEditPolicy extends org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy {
 
     @Override
-	protected void addSelectionHandles() {
-		super.addSelectionHandles();
-		getConnectionFigure().setLineWidth(2);
-	}
+    protected void addSelectionHandles() {
+        super.addSelectionHandles();
+        getConnectionFigure().setLineWidth(2);
+    }
 
-	protected PolylineConnection getConnectionFigure() {
-		return (PolylineConnection) ((GraphicalEditPart) getHost()).getFigure();
-	}
+    protected PolylineConnection getConnectionFigure() {
+        return (PolylineConnection)((GraphicalEditPart)getHost()).getFigure();
+    }
 
-	@Override
-	protected void removeSelectionHandles() {
-		super.removeSelectionHandles();
-		getConnectionFigure().setLineWidth(0);
-	}
+    @Override
+    protected void removeSelectionHandles() {
+        super.removeSelectionHandles();
+        getConnectionFigure().setLineWidth(0);
+    }
 
 }

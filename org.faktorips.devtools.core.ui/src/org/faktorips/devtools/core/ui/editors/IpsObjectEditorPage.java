@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.layout.GridData;
@@ -117,9 +116,9 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         }
 
         Control[] childs = ((Composite)container).getChildren();
-        for (int i = 0; i < childs.length; i++) {
-            if (childs[i] instanceof Composite) {
-                registerSelectionProviderActivation(childs[i]);
+        for (Control child : childs) {
+            if (child instanceof Composite) {
+                registerSelectionProviderActivation(child);
             }
         }
 
@@ -199,11 +198,11 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
 
     private void refresh(Composite composite) {
         Control[] children = composite.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i] instanceof IpsSection) {
-                ((IpsSection)children[i]).refresh();
-            } else if (children[i] instanceof Composite) {
-                refresh((Composite)children[i]);
+        for (Control element : children) {
+            if (element instanceof IpsSection) {
+                ((IpsSection)element).refresh();
+            } else if (element instanceof Composite) {
+                refresh((Composite)element);
             }
         }
     }
@@ -267,8 +266,8 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
 
         List<IDataChangeableStateChangeListener> listeners = new ArrayList<IDataChangeableStateChangeListener>(
                 dataChangeableStateChangeListeners);
-        for (Iterator<IDataChangeableStateChangeListener> it = listeners.iterator(); it.hasNext();) {
-            it.next().dataChangeableStateHasChanged(this);
+        for (IDataChangeableStateChangeListener iDataChangeableStateChangeListener : listeners) {
+            iDataChangeableStateChangeListener.dataChangeableStateHasChanged(this);
         }
     }
 

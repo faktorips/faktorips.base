@@ -33,6 +33,7 @@ public class BooleanDatatype extends ValueClassDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValue(String s) {
         if (s == null) {
             return null;

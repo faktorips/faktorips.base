@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,25 +21,25 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Jan Ortmann
  */
-public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest  {
-
+public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
 
     private IType type;
     private IType supertype;
     private IType superSupertype;
     private IIpsProject ipsProject;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "Type");
         supertype = newProductCmptType(ipsProject, "Supertype");
         superSupertype = newProductCmptType(ipsProject, "SuperSupertype");
-        
+
         type.setSupertype("Supertype");
         supertype.setSupertype("SuperSupertype");
     }
-    
+
     public void test_NoCycle() throws CoreException {
         MyVisitor visitor = new MyVisitor(ipsProject);
         visitor.start(type);
@@ -57,20 +57,20 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest  {
         assertEquals(type, types[0]);
         assertEquals(supertype, types[1]);
         assertFalse(visitor.cycleDetected());
-        
+
         visitor.stopVisitingAfterThisType = null;
         visitor.start(superSupertype);
         types = visitor.getVisitedTypes();
         assertEquals(1, types.length);
         assertEquals(superSupertype, types[0]);
         assertFalse(visitor.cycleDetected());
-        
+
         visitor.start(null);
         types = visitor.getVisitedTypes();
         assertEquals(0, types.length);
         assertFalse(visitor.cycleDetected());
     }
-    
+
     public void test_WithCycle() throws CoreException {
         superSupertype.setSupertype("Type");
         MyVisitor visitor = new MyVisitor(ipsProject);
@@ -81,18 +81,17 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest  {
         assertEquals(supertype, types[1]);
         assertEquals(superSupertype, types[2]);
         assertTrue(visitor.cycleDetected());
-        
+
         visitor.start(null);
         types = visitor.getVisitedTypes();
         assertEquals(0, types.length);
         assertFalse(visitor.cycleDetected());
     }
-    
-    
+
     public class MyVisitor extends TypeHierarchyVisitor {
 
         private IType stopVisitingAfterThisType = null;
-        
+
         public MyVisitor(IIpsProject ipsProject) {
             super(ipsProject);
         }
@@ -100,12 +99,13 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest  {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean visit(IType currentType) throws CoreException {
-            if (stopVisitingAfterThisType==null) {
+            if (stopVisitingAfterThisType == null) {
                 return true;
             }
-            return currentType!=stopVisitingAfterThisType;
+            return currentType != stopVisitingAfterThisType;
         }
-        
+
     }
 }

@@ -152,18 +152,18 @@ public class ClassLoaderProvider {
         }
 
         IClasspathEntry[] entry = currentProject.getRawClasspath();
-        for (int i = 0; i < entry.length; i++) {
-            if (entry[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+        for (IClasspathEntry element : entry) {
+            if (element.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                 IPath jarPath;
                 // evaluate the correct path of the classpath entry;
                 // if the entry path contains no device
                 // then the root path will be added in front of the path,
                 // otherwise the path is already an absolute path (e.g. external libraries)
                 // Remark: IPath#isAbsolute didn't work in this case
-                if (StringUtils.isEmpty(entry[i].getPath().getDevice())) {
-                    jarPath = root.append(entry[i].getPath());
+                if (StringUtils.isEmpty(element.getPath().getDevice())) {
+                    jarPath = root.append(element.getPath());
                 } else {
-                    jarPath = entry[i].getPath();
+                    jarPath = element.getPath();
                 }
 
                 IPath currentPath;
@@ -184,8 +184,8 @@ public class ClassLoaderProvider {
 
         String[] requiredProjectNames = currentProject.getRequiredProjectNames();
         if (requiredProjectNames != null && requiredProjectNames.length > 0) {
-            for (int i = 0; i < requiredProjectNames.length; i++) {
-                accumulateClasspath(currentProject.getJavaModel().getJavaProject(requiredProjectNames[i]), urlsList);
+            for (String requiredProjectName : requiredProjectNames) {
+                accumulateClasspath(currentProject.getJavaModel().getJavaProject(requiredProjectName), urlsList);
             }
         }
     }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -60,6 +60,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addPages() {
         super.addPages();
 
@@ -73,6 +74,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean performFinish() {
         return true;
     }
@@ -83,7 +85,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     public IpsObjectUIController getController() {
         return controller;
     }
-    
+
     /**
      * Returns the the test case type the new parameter will be created for.
      */
@@ -113,42 +115,45 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     /**
      * Returns the new created test parameter.
      */
-    public ITestParameter getNewCreatedTestParameter(){
+    public ITestParameter getNewCreatedTestParameter() {
         return newTestParameter;
     }
-    
+
     /**
      * Creates and returns a new child test parameter.<br>
      * The given association specifies the new child name.
      */
     public ITestParameter newTestParameter(String association) {
-        if (memento != null)
+        if (memento != null) {
             testCaseType.setState(memento);
+        }
         memento = testCaseType.newMemento();
 
         newTestParameter = parentTestPolicyCmptTypeParameter.newTestPolicyCmptTypeParamChild();
 
         newTestParameter.setAssociation(association);
-        
+
         try {
-            IPolicyCmptTypeAssociation modelAssociation = newTestParameter.findAssociation(testCaseType.getIpsProject());
-            if (modelAssociation != null){
-                IPolicyCmptType pcType = modelAssociation.findTargetPolicyCmptType(parentTestPolicyCmptTypeParameter.getIpsProject());
-                if (pcType != null){
+            IPolicyCmptTypeAssociation modelAssociation = newTestParameter
+                    .findAssociation(testCaseType.getIpsProject());
+            if (modelAssociation != null) {
+                IPolicyCmptType pcType = modelAssociation.findTargetPolicyCmptType(parentTestPolicyCmptTypeParameter
+                        .getIpsProject());
+                if (pcType != null) {
                     newTestParameter.setPolicyCmptType(pcType.getQualifiedName());
                 }
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-        
-  
+
         newTestParameter.setName(association);
         // set the same role like the parent
         ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter)newTestParameter.getParent();
-        if (parent != null)
+        if (parent != null) {
             newTestParameter.setTestParameterType(parent.getTestParameterType());
-        
+        }
+
         controller = new IpsObjectUIController(newTestParameter);
         childParamSelectWizardPage.connectToModel(controller, newTestParameter);
         detailWizardPage.connectToModel(controller, newTestParameter);
@@ -163,11 +168,13 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
      * {@inheritDoc}
      */
     public boolean isPageValid(int pageNo) {
-        if (pageNo < pageDisplayedMax)
+        if (pageNo < pageDisplayedMax) {
             return true;
+        }
 
-        if (newTestParameter == null)
+        if (newTestParameter == null) {
             return false;
+        }
 
         try {
             return newTestParameter.isValid();
@@ -181,8 +188,9 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
      * {@inheritDoc}
      */
     public void postAsyncRunnable(Runnable r) {
-        if (!getShell().isDisposed())
+        if (!getShell().isDisposed()) {
             getShell().getDisplay().asyncExec(r);
+        }
     }
 
     /**

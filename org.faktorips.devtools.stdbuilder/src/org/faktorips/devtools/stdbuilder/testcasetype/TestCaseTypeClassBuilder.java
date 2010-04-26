@@ -853,8 +853,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment childCodeFragment = new JavaCodeFragment();
         ITestAttribute[] testAttributes = parameter.getTestAttributes();
         boolean valueDeclAvailable = false;
-        for (int i = 0; i < testAttributes.length; i++) {
-            if (StringUtils.isEmpty(testAttributes[i].getAttribute())) {
+        for (ITestAttribute testAttribute2 : testAttributes) {
+            if (StringUtils.isEmpty(testAttribute2.getAttribute())) {
                 extensionAttrExists = true;
 
                 if (!valueDeclAvailable) {
@@ -864,11 +864,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 }
 
                 childCodeFragment.append("if (");
-                childCodeFragment.append(testAttributes[i].isInputAttribute() ? "input" : "!input");
+                childCodeFragment.append(testAttribute2.isInputAttribute() ? "input" : "!input");
                 childCodeFragment.append("){");
 
-                String testAttribute = testAttributes[i].getName();
-                ValueDatatype datatype = testAttributes[i].findDatatype(getIpsProject());
+                String testAttribute = testAttribute2.getName();
+                ValueDatatype datatype = testAttribute2.findDatatype(getIpsProject());
                 if (datatype == null) {
                     // ignore, should be catched by a validation error
                     continue;
@@ -909,9 +909,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParamChilds = parameter.getTestPolicyCmptTypeParamChilds();
-        for (int i = 0; i < testPolicyCmptTypeParamChilds.length; i++) {
+        for (ITestPolicyCmptTypeParameter testPolicyCmptTypeParamChild : testPolicyCmptTypeParamChilds) {
             extensionAttrExists = extensionAttrExists
-                    | (buildXmlCallbackBodyFor(body, testPolicyCmptTypeParamChilds[i], currentPath));
+                    | (buildXmlCallbackBodyFor(body, testPolicyCmptTypeParamChild, currentPath));
         }
         return extensionAttrExists;
     }

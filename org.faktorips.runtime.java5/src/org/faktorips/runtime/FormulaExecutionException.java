@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,10 +13,9 @@
 
 package org.faktorips.runtime;
 
-
 /**
  * Exception that indicates that the execution of a formula has changed.
- *  
+ * 
  * @author Jan Ortmann
  */
 public class FormulaExecutionException extends RuntimeException {
@@ -24,8 +23,8 @@ public class FormulaExecutionException extends RuntimeException {
     private static final long serialVersionUID = -8311998096392381687L;
 
     public FormulaExecutionException(String productCmptGeneration, String formula, String params, Throwable cause) {
-        super("Formula execution failed. ProductCmptGeneration: " + productCmptGeneration 
-                + ",  formula: " + formula + ", params: " + params, cause);
+        super("Formula execution failed. ProductCmptGeneration: " + productCmptGeneration + ",  formula: " + formula
+                + ", params: " + params, cause);
     }
 
 }

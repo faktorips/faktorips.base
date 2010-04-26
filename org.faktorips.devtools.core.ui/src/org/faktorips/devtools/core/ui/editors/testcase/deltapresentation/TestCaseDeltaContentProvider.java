@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.editors.testcase.deltapresentation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -194,8 +193,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     private void addMissingTestAttributesOrTestAttributesValue(TestCaseDeltaWrapperObject wrapperObject,
             ArrayList<Object> result) {
         if (wrapperObject.isHasToBeDeletedTestAttributes()) {
-            for (Iterator<ITestAttribute> iter = missingTestAttributes.iterator(); iter.hasNext();) {
-                ITestAttribute testAttr = iter.next();
+            for (ITestAttribute testAttr : missingTestAttributes) {
                 ITestPolicyCmpt[] testPolicyCmptsWithMissingTestAttr = in
                         .getTestPolicyCmptForMissingTestAttribute(testAttr);
                 if (Arrays.asList(testPolicyCmptsWithMissingTestAttr).contains(wrapperObject.getBaseObject())) {
@@ -203,8 +201,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                 }
             }
         } else if (wrapperObject.isHasNewTestAttributes()) {
-            for (Iterator<ITestAttributeValue> iter = missingTestAttributeValues.iterator(); iter.hasNext();) {
-                ITestAttributeValue testAttrValue = iter.next();
+            for (ITestAttributeValue testAttrValue : missingTestAttributeValues) {
                 if (testAttrValue.getParent().equals(wrapperObject.getBaseObject())) {
                     result.add(testAttrValue);
                 }
@@ -303,12 +300,12 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             // search the childs
             if (object instanceof ITestPolicyCmpt) {
                 ITestPolicyCmptLink[] testPolicyCmptLinks = ((ITestPolicyCmpt)object).getTestPolicyCmptLinks();
-                for (int i = 0; i < testPolicyCmptLinks.length; i++) {
-                    if (checkVisibility(testPolicyCmptLinks[i], deltaType)) {
+                for (ITestPolicyCmptLink testPolicyCmptLink : testPolicyCmptLinks) {
+                    if (checkVisibility(testPolicyCmptLink, deltaType)) {
                         return true;
                     }
-                    if (testPolicyCmptLinks[i].isComposition()) {
-                        if (isFilterFor(testPolicyCmptLinks[i].findTarget(), deltaType)) {
+                    if (testPolicyCmptLink.isComposition()) {
+                        if (isFilterFor(testPolicyCmptLink.findTarget(), deltaType)) {
                             return true;
                         }
                     }
@@ -329,11 +326,11 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                 }
                 ITestPolicyCmptLink[] testLinks = parentTestPolicyCmpt.getTestPolicyCmptLinks(dummyAssociation
                         .getName());
-                for (int i = 0; i < testLinks.length; i++) {
-                    if (checkVisibility(testLinks[i], deltaType)) {
+                for (ITestPolicyCmptLink testLink : testLinks) {
+                    if (checkVisibility(testLink, deltaType)) {
                         return true;
                     }
-                    if (isFilterFor(testLinks[i].findTarget(), deltaType)) {
+                    if (isFilterFor(testLink.findTarget(), deltaType)) {
                         return true;
                     }
                 }
@@ -389,8 +386,8 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
          */
         private boolean isTestAttributeValueInList(ITestPolicyCmpt cmpt) {
             ITestAttributeValue[] testAttrValue = cmpt.getTestAttributeValues();
-            for (int i = 0; i < testAttrValue.length; i++) {
-                if (missingTestAttributeValues.contains(testAttrValue[i])) {
+            for (ITestAttributeValue element : testAttrValue) {
+                if (missingTestAttributeValues.contains(element)) {
                     return true;
                 }
             }
@@ -401,9 +398,9 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
          * Check if the given test policy cmpt has missing test attributes (to be added)
          */
         private boolean isTestAttributeInList(ITestPolicyCmpt cmpt) {
-            for (Iterator<ITestAttribute> iter = missingTestAttributes.iterator(); iter.hasNext();) {
+            for (ITestAttribute iTestAttribute : missingTestAttributes) {
                 ITestPolicyCmpt[] testPolicyCmptsWithMissingTestAttr = in
-                        .getTestPolicyCmptForMissingTestAttribute(iter.next());
+                        .getTestPolicyCmptForMissingTestAttribute(iTestAttribute);
                 if (Arrays.asList(testPolicyCmptsWithMissingTestAttr).contains(cmpt)) {
                     return true;
                 }

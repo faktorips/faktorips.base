@@ -318,7 +318,6 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
     /**
      * Test for findAllMetaObjects(..)
      * 
-     * @throws CoreException
      */
     public void testFindAllMetaObjects() throws CoreException {
         String testCaseTypeQName = "pack.MyTestCaseType";

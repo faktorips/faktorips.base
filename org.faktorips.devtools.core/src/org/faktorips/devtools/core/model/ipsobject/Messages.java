@@ -33,9 +33,9 @@ public class Messages extends NLS {
     }
 
     public static String IpsObjectType_nameEnumContent;
-    
+
     public static String IpsObjectType_nameEnumType;
-    
+
     public static String IpsObjectType_nameBusinessFunction;
 
     public static String IpsObjectType_namePolicyClass;
@@ -52,24 +52,24 @@ public class Messages extends NLS {
 
     public static String IpsObjectType_nameTestCase;
 
-	public static String IpsObjectType_nameEnumContentPlural;
+    public static String IpsObjectType_nameEnumContentPlural;
 
-	public static String IpsObjectType_nameEnumTypePlural;
+    public static String IpsObjectType_nameEnumTypePlural;
 
-	public static String IpsObjectType_nameBusinessFunctionPlural;
+    public static String IpsObjectType_nameBusinessFunctionPlural;
 
-	public static String IpsObjectType_namePolicyClassPlural;
+    public static String IpsObjectType_namePolicyClassPlural;
 
-	public static String IpsObjectType_nameProductClassPlural;
+    public static String IpsObjectType_nameProductClassPlural;
 
-	public static String IpsObjectType_nameTableStructurePlural;
+    public static String IpsObjectType_nameTableStructurePlural;
 
-	public static String IpsObjectType_nameProductComponentPlural;
+    public static String IpsObjectType_nameProductComponentPlural;
 
-	public static String IpsObjectType_nameTableContentsPlural;
+    public static String IpsObjectType_nameTableContentsPlural;
 
-	public static String IpsObjectType_nameTestCaseTypePlural;
+    public static String IpsObjectType_nameTestCaseTypePlural;
 
-	public static String IpsObjectType_nameTestCasePlural;
+    public static String IpsObjectType_nameTestCasePlural;
 
 }

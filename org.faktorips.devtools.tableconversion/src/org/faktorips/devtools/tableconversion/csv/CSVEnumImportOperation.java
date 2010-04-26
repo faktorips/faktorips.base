@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import au.com.bytecode.opencsv.CSVReader;
+
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,8 +36,6 @@ import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * Operation to import IPS enum types or contents from a CSV file.

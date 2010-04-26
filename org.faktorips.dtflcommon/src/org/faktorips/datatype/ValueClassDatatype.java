@@ -118,6 +118,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
      * 
      * @deprecated see {@link #getValue(String)}
      */
+    @Deprecated
     public String valueToString(Object value) {
         return value.toString();
     }
@@ -170,6 +171,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasNullObject() {
         return false;
     }
@@ -215,5 +217,6 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
      *             42 you can change the datatype from integer to string without converting the
      *             integer object to a string object.
      */
+    @Deprecated
     public abstract Object getValue(String value);
 }

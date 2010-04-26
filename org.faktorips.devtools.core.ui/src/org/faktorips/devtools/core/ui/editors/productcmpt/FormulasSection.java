@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -60,92 +60,95 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class FormulasSection extends IpsSection {
 
-	// Generation which holds the informations to display
-	private IProductCmptGeneration generation;
+    // Generation which holds the informations to display
+    private IProductCmptGeneration generation;
 
-	// Pane which serves as parent for all controlls created inside this
-	private Composite rootPane;
+    // Pane which serves as parent for all controlls created inside this
+    private Composite rootPane;
 
-	// Toolkit to handle common ui-operations
-	private UIToolkit toolkit;
+    // Toolkit to handle common ui-operations
+    private UIToolkit toolkit;
 
-	// List of controls displaying data (needed to enable/disable).
-	private List<TextButtonControl> editControls = new ArrayList<TextButtonControl>();
+    // List of controls displaying data (needed to enable/disable).
+    private List<TextButtonControl> editControls = new ArrayList<TextButtonControl>();
 
-	// Controller to handle update of ui and model automatically.
-	private CompositeUIController uiMasterController;
+    // Controller to handle update of ui and model automatically.
+    private CompositeUIController uiMasterController;
 
-	// Label which is displayed if no formulas are defined.
-	private Label noFormulasLabel;
+    // Label which is displayed if no formulas are defined.
+    private Label noFormulasLabel;
 
-	public FormulasSection(IProductCmptGeneration generation, Composite parent,
-			UIToolkit toolkit) {
-		super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
-		ArgumentCheck.notNull(generation);
+    public FormulasSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
+        super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        ArgumentCheck.notNull(generation);
 
-		this.generation = generation;
-		initControls();
-		setText(Messages.FormulasSection_calculationFormulas);
-	}
+        this.generation = generation;
+        initControls();
+        setText(Messages.FormulasSection_calculationFormulas);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void initClientComposite(Composite client, UIToolkit toolkit) {
-		GridLayout layout = new GridLayout(1, true);
-		layout.marginHeight = 2;
-		layout.marginWidth = 1;
-		client.setLayout(layout);
-		rootPane = toolkit.createLabelEditColumnComposite(client);
-		rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout workAreaLayout = (GridLayout) rootPane.getLayout();
-		workAreaLayout.marginHeight = 5;
-		workAreaLayout.marginWidth = 5;
-		this.toolkit = toolkit;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initClientComposite(Composite client, UIToolkit toolkit) {
+        GridLayout layout = new GridLayout(1, true);
+        layout.marginHeight = 2;
+        layout.marginWidth = 1;
+        client.setLayout(layout);
+        rootPane = toolkit.createLabelEditColumnComposite(client);
+        rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout workAreaLayout = (GridLayout)rootPane.getLayout();
+        workAreaLayout.marginHeight = 5;
+        workAreaLayout.marginWidth = 5;
+        this.toolkit = toolkit;
 
-		// following line forces the paint listener to draw a light grey border around
+        // following line forces the paint listener to draw a light grey border around
         // the text control. Can only be understood by looking at the FormToolkit.PaintBorder class.
-		rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-		toolkit.getFormToolkit().paintBordersFor(rootPane);
-		createEditControls();
-	}
+        rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+        toolkit.getFormToolkit().paintBordersFor(rootPane);
+        createEditControls();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void performRefresh() {
-		uiMasterController.updateUI();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void performRefresh() {
+        uiMasterController.updateUI();
+    }
 
-	/**
-	 * Create the ui-elements
-	 */
-	private void createEditControls() {
-		uiMasterController = new CompositeUIController();
+    /**
+     * Create the ui-elements
+     */
+    private void createEditControls() {
+        uiMasterController = new CompositeUIController();
         IpsObjectUIController ctrl = new IpsObjectUIController(generation.getIpsObject());
-		uiMasterController.add(ctrl);
-	
-		IFormula[] formulas = generation.getFormulas();
-        Arrays.sort(formulas, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation.getIpsProject()));
+        uiMasterController.add(ctrl);
+
+        IFormula[] formulas = generation.getFormulas();
+        Arrays.sort(formulas, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
+                .getIpsProject()));
 
         ITableContentUsage usages[] = generation.getTableContentUsages();
 
         // handle the "no formulas defined" label
-		if (formulas.length + usages.length == 0 && noFormulasLabel == null) {
+        if (formulas.length + usages.length == 0 && noFormulasLabel == null) {
             noFormulasLabel = toolkit.createLabel(rootPane, Messages.FormulasSection_noFormulasDefined);
-        }
-        else if (formulas.length + usages.length > 0 && noFormulasLabel != null) {
+        } else if (formulas.length + usages.length > 0 && noFormulasLabel != null) {
             noFormulasLabel.dispose();
             noFormulasLabel = null;
         }
-	
+
         // create table content usages fields
-        for (int i = 0; i < usages.length; i++) {
+        for (final ITableContentUsage usage : usages) {
             try {
-                // create label as hyperlink to open the corresponding table content in a new new editor
-                Hyperlink hyperlink = toolkit.createHyperlink(rootPane, StringUtils.capitalize(usages[i].getStructureUsage()));
-                final ITableContentUsage usage = usages[i];
+                // create label as hyperlink to open the corresponding table content in a new new
+                // editor
+                Hyperlink hyperlink = toolkit.createHyperlink(rootPane, StringUtils.capitalize(usage
+                        .getStructureUsage()));
                 hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
+                    @Override
                     public void linkActivated(HyperlinkEvent event) {
                         try {
                             ITableContents tc = usage.findTableContents(generation.getIpsProject());
@@ -159,72 +162,73 @@ public class FormulasSection extends IpsSection {
                 });
 
                 // use description of table structure usage as tooltip
-                ITableStructureUsage tsu = findTableStructureUsage(usages[i].getStructureUsage());
+                ITableStructureUsage tsu = findTableStructureUsage(usage.getStructureUsage());
                 if (tsu != null) {
                     hyperlink.setToolTipText(tsu.getDescription());
                 }
-                
-                TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(generation.getIpsProject(), rootPane, toolkit, tsu);
-                ctrl.add(new TextButtonField(tcuControl), usages[i], ITableContentUsage.PROPERTY_TABLE_CONTENT);
+
+                TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(generation.getIpsProject(),
+                        rootPane, toolkit, tsu);
+                ctrl.add(new TextButtonField(tcuControl), usage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
                 addFocusControl(tcuControl.getTextControl());
                 this.editControls.add(tcuControl);
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
 
         // create formula edit fields
-        for (int i = 0; i < formulas.length; i++) {
-			Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(formulas[i].getName()));
-             // use description of formula attribute as tooltip
-            label.setToolTipText(formulas[i].getDescription());
-            
-            FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, formulas[i], this.getShell(), this);
-            ctrl.add(new TextField(evc.getTextControl()), formulas[i], IFormula.PROPERTY_EXPRESSION);
+        for (IFormula formula : formulas) {
+            Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(formula.getName()));
+            // use description of formula attribute as tooltip
+            label.setToolTipText(formula.getDescription());
+
+            FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, formula, this.getShell(), this);
+            ctrl.add(new TextField(evc.getTextControl()), formula, IFormula.PROPERTY_EXPRESSION);
             addFocusControl(evc.getTextControl());
-			this.editControls.add(evc);
-	
-			try {
-                FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formulas[i]);
+            this.editControls.add(evc);
+
+            try {
+                FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
                 ContentAssistHandler.createHandlerForText(evc.getTextControl(), CompletionUtil
                         .createContentAssistant(completionProcessor));
-                IMethod signature = formulas[i].findFormulaSignature(generation.getIpsProject());
-                if (signature != null){
+                IMethod signature = formula.findFormulaSignature(generation.getIpsProject());
+                if (signature != null) {
                     label.setToolTipText(signature.getDescription());
                 }
-			} catch (CoreException e) {
-				IpsPlugin.logAndShowErrorDialog(e);
-			}
-		}
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
 
-		rootPane.layout(true);
-		rootPane.redraw();
-	}
-    
+        rootPane.layout(true);
+        rootPane.redraw();
+    }
+
     private ITableStructureUsage findTableStructureUsage(String rolename) throws CoreException {
         IIpsProject ipsProject = generation.getIpsProject();
-        org.faktorips.devtools.core.model.productcmpttype.IProductCmptType type = generation.findProductCmptType(ipsProject);
-        if (type==null) {
+        org.faktorips.devtools.core.model.productcmpttype.IProductCmptType type = generation
+                .findProductCmptType(ipsProject);
+        if (type == null) {
             return null;
         }
         return type.findTableStructureUsage(rolename, ipsProject);
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setEnabled(boolean enabled) {
-		// to get the disabled look, we have to disable all the input-fields
-		// manually :-(
-		for (Iterator<TextButtonControl> iter = editControls.iterator(); iter.hasNext();) {
-			Control element = iter.next();
-			element.setEnabled(enabled);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEnabled(boolean enabled) {
+        // to get the disabled look, we have to disable all the input-fields
+        // manually :-(
+        for (Iterator<TextButtonControl> iter = editControls.iterator(); iter.hasNext();) {
+            Control element = iter.next();
+            element.setEnabled(enabled);
 
-		}
-		rootPane.layout(true);
-		rootPane.redraw();
-	}
-
+        }
+        rootPane.layout(true);
+        rootPane.redraw();
+    }
 
 }

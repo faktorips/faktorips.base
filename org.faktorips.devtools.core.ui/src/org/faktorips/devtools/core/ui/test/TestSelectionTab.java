@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -34,12 +34,12 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Joerg Ortmann
  */
-public class TestSelectionTab extends AbstractLaunchConfigurationTab implements  ITestConfigurationChangeListener{
-    
+public class TestSelectionTab extends AbstractLaunchConfigurationTab implements ITestConfigurationChangeListener {
+
     private UIToolkit toolkit = new UIToolkit(null);
-    
+
     private TestSelectionComposite testSuiteSelectionComposite;
-    
+
     private Text parameterText;
 
     private Text projectText;
@@ -54,26 +54,26 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
         main.setLayout(new GridLayout(1, true));
         main.setFont(parent.getFont());
         setControl(main);
-        
+
         Group projectGroup = toolkit.createGroup(main, Messages.TestSelectionTab_labelGroupProject);
         projectGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         Composite projectDescr = toolkit.createLabelEditColumnComposite(projectGroup);
         toolkit.createLabel(projectDescr, Messages.TestSelectionTab_labelProject);
         projectText = toolkit.createText(projectDescr);
         projectText.setEditable(false);
-        
+
         Group tocGroup = toolkit.createGroup(main, Messages.TestSelectionTab_labelGroupTestSelection);
         tocGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         testSuiteSelectionComposite = new TestSelectionComposite(tocGroup);
         testSuiteSelectionComposite.addChangeListener(this);
         testSuiteSelectionComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         Group parameterGroup = toolkit.createGroup(main, Messages.TestSelectionTab_groupParameter);
         parameterGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         Composite parameterComp = toolkit.createLabelEditColumnComposite(parameterGroup);
         toolkit.createLabel(parameterComp, Messages.TestSelectionTab_labelMaxHeapSize);
         parameterText = toolkit.createText(parameterComp);
-        parameterText.addModifyListener(basicModifyListener);  
+        parameterText.addModifyListener(basicModifyListener);
     }
 
     /**
@@ -91,9 +91,9 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
             String packageFragmentRoot = configuration.getAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
             String testCases = configuration.getAttribute(IpsTestRunner.ATTR_TESTCASES, ""); //$NON-NLS-1$
             String maxHeapSize = configuration.getAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
-            
+
             project = IpsTestRunner.getIpsProjectFromTocPath(packageFragmentRoot);
-            if (project != null){
+            if (project != null) {
                 projectText.setText(project.getName());
                 testSuiteSelectionComposite.initContent(project, packageFragmentRoot, testCases);
             } else {
@@ -102,8 +102,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
                 setErrorMessage(Messages.TestSelectionTab_ErrorUnknownProjekt);
             }
             parameterText.setText(maxHeapSize);
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -113,10 +112,12 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
      */
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
         try {
-            if (project != null){
-                configuration.setAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, testSuiteSelectionComposite.getPackageFragmentRootText());
-                configuration.setAttribute(IpsTestRunner.ATTR_TESTCASES, testSuiteSelectionComposite.getTestCasesText());
-                configuration.setAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, parameterText.getText());  
+            if (project != null) {
+                configuration.setAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, testSuiteSelectionComposite
+                        .getPackageFragmentRootText());
+                configuration
+                        .setAttribute(IpsTestRunner.ATTR_TESTCASES, testSuiteSelectionComposite.getTestCasesText());
+                configuration.setAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, parameterText.getText());
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -138,7 +139,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     public void testConfigurationHasChanged() {
         updateLaunchConfigurationDialog();
     }
-    
+
     /**
      * Modify listener that simply updates the owning launch configuration dialog.
      */
@@ -146,5 +147,5 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
         public void modifyText(ModifyEvent evt) {
             updateLaunchConfigurationDialog();
         }
-    };    
+    };
 }

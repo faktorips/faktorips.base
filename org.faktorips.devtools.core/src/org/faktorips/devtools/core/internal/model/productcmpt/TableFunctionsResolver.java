@@ -46,9 +46,9 @@ public class TableFunctionsResolver implements FunctionResolver {
         List<FlFunction> functions = new ArrayList<FlFunction>();
         try {
             IIpsSrcFile[] tableContentFiles = project.findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
-            for (int t = 0; t < tableContentFiles.length; t++) {
+            for (IIpsSrcFile tableContentFile : tableContentFiles) {
 
-                ITableContents tableContents = (ITableContents)tableContentFiles[t].getIpsObject();
+                ITableContents tableContents = (ITableContents)tableContentFile.getIpsObject();
                 ITableStructure table = tableContents.findTableStructure(project);
                 if (table != null) {
                     // only add the access-function if the content has a structure...

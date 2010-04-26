@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -139,9 +138,7 @@ public class SameOperationValidator {
                 OPERATION_CHECKED, validParentChildOperation, invalidParentChildOperation);
         storeOperations(root.getStructure().getChildProductCmptStructureTblUsageReference(root), objectOperations,
                 messageList, OPERATION_CHECKED, validParentChildOperation, invalidParentChildOperation);
-        for (Iterator<IProductCmptStructureReference> iterator = invalidParentChildOperation.iterator(); iterator
-                .hasNext();) {
-            IProductCmptStructureReference elem = iterator.next();
+        for (IProductCmptStructureReference elem : invalidParentChildOperation) {
             messageList
                     .add(new Message(
                             "", Messages.SameOperationValidator_SameOperationValidator_errorMsgParentChildOperationMismatch, Message.ERROR, elem)); //$NON-NLS-1$
@@ -230,14 +227,14 @@ public class SameOperationValidator {
 
     private IProductCmptStructureReference otherOperationOnSameObjectExists(Map<ParentProductCmptChildOperation, Object> listOfPerformedOperation,
             ParentProductCmptChildOperation performedOperation) {
-        for (int i = 0; i < ALL_OPERATIONS.length; i++) {
-            if (ALL_OPERATIONS[i].equals(performedOperation.getOperation())) {
+        for (String element : ALL_OPERATIONS) {
+            if (element.equals(performedOperation.getOperation())) {
                 continue;
             }
 
             IProductCmptStructureReference productCmptStructureReference = (IProductCmptStructureReference)listOfPerformedOperation
-                    .get(new ParentProductCmptChildOperation(performedOperation.getParentProductCmpt(),
-                            ALL_OPERATIONS[i], performedOperation.getChild()));
+                    .get(new ParentProductCmptChildOperation(performedOperation.getParentProductCmpt(), element,
+                            performedOperation.getChild()));
             if (productCmptStructureReference != null) {
                 return productCmptStructureReference;
             }

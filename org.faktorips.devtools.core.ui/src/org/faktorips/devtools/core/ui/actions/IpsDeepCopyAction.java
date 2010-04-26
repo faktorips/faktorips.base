@@ -117,9 +117,9 @@ public class IpsDeepCopyAction extends IpsAction {
                 IViewReference[] views = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
                         .getActivePage().getViewReferences();
                 IViewPart pe = null;
-                for (int i = 0; i < views.length; i++) {
-                    if (views[i].getId().equals(ProductStructureExplorer.EXTENSION_ID)) {
-                        pe = views[i].getView(true);
+                for (IViewReference view : views) {
+                    if (view.getId().equals(ProductStructureExplorer.EXTENSION_ID)) {
+                        pe = view.getView(true);
                         break;
                     }
                 }

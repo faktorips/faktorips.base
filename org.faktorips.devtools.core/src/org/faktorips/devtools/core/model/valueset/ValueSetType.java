@@ -82,9 +82,9 @@ public class ValueSetType extends DefaultEnumValue {
      */
     public final static ValueSetType getValueSetTypeByName(String name) {
         ValueSetType[] types = getValueSetTypes();
-        for (int i = 0; i < types.length; i++) {
-            if (types[i].getName().equals(name)) {
-                return types[i];
+        for (ValueSetType type2 : types) {
+            if (type2.getName().equals(name)) {
+                return type2;
             }
         }
         return null;
@@ -106,8 +106,8 @@ public class ValueSetType extends DefaultEnumValue {
     public final static List<ValueSetType> getValueSetTypesAsList() {
         EnumValue[] values = getEnumType().getValues();
         List<ValueSetType> types = new ArrayList<ValueSetType>();
-        for (int i = 0; i < values.length; i++) {
-            types.add((ValueSetType)values[i]);
+        for (EnumValue value : values) {
+            types.add((ValueSetType)value);
         }
         return types;
     }

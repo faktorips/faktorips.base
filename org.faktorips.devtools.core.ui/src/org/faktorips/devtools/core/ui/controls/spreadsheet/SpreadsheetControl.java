@@ -736,8 +736,8 @@ public class SpreadsheetControl extends Composite {
                 case SWT.Move:
                     boolean disable = (tableEvent_ && item_ == null);
                     MenuItem mitems[] = popupMenu_.getItems();
-                    for (int i = 0; i < mitems.length; i++) {
-                        mitems[i].setEnabled(!disable);
+                    for (MenuItem mitem : mitems) {
+                        mitem.setEnabled(!disable);
                     }
                     break;
 

@@ -76,10 +76,9 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
 
     private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
         IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
-        for (int i = 0; i < builders.length; i++) {
-            if (((JavaSourceFileBuilder)builders[i]).getKindId().equals(
-                    DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE)) {
-                return (PolicyCmptInterfaceBuilder)builders[i];
+        for (IIpsArtefactBuilder builder : builders) {
+            if (((JavaSourceFileBuilder)builder).getKindId().equals(DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE)) {
+                return (PolicyCmptInterfaceBuilder)builder;
             }
         }
         return null;

@@ -1028,9 +1028,9 @@ public class JavaCodeFragmentBuilder {
         fragment.appendln("/**");
         if (StringUtils.isNotEmpty(text)) {
             String[] lines = StringUtils.split(text, SystemUtils.LINE_SEPARATOR);
-            for (int i = 0; i < lines.length; i++) {
+            for (String line : lines) {
                 fragment.append(" * ");
-                fragment.appendln(lines[i]);
+                fragment.appendln(line);
             }
         }
         if (annotations != null) {
@@ -1038,9 +1038,9 @@ public class JavaCodeFragmentBuilder {
             if (StringUtils.isNotEmpty(text)) {
                 fragment.appendln(" * ");
             }
-            for (int i = 0; i < annotations.length; i++) {
+            for (String annotation : annotations) {
                 fragment.append(" * @");
-                fragment.appendln(annotations[i]);
+                fragment.appendln(annotation);
             }
         }
         fragment.appendln(" */");
@@ -1263,8 +1263,8 @@ public class JavaCodeFragmentBuilder {
         if (annotations == null) {
             return this;
         }
-        for (int i = 0; i < annotations.length; i++) {
-            annotationLn(annotations[i]);
+        for (Class<?> annotation : annotations) {
+            annotationLn(annotation);
         }
         return this;
     }
@@ -1279,8 +1279,8 @@ public class JavaCodeFragmentBuilder {
         if (annotations == null) {
             return this;
         }
-        for (int i = 0; i < annotations.length; i++) {
-            annotationLn(annotations[i]);
+        for (String annotation : annotations) {
+            annotationLn(annotation);
         }
         return this;
     }

@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.controls.parametertable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -86,8 +85,7 @@ public abstract class ChangeParametersControl extends Composite implements IData
 
         private ParameterInfo[] removeMarkedAsDeleted(List<ParameterInfo> paramInfos) {
             List<ParameterInfo> result = new ArrayList<ParameterInfo>(paramInfos.size());
-            for (Iterator<ParameterInfo> iter = paramInfos.iterator(); iter.hasNext();) {
-                ParameterInfo info = iter.next();
+            for (ParameterInfo info : paramInfos) {
                 if (!info.isDeleted()) {
                     result.add(info);
                 }
@@ -570,11 +568,11 @@ public abstract class ChangeParametersControl extends Composite implements IData
             public void widgetSelected(SelectionEvent e) {
                 int index = getTable().getSelectionIndices()[0];
                 ParameterInfo[] selected = getSelectedElements();
-                for (int i = 0; i < selected.length; i++) {
-                    if (selected[i].isAdded()) {
-                        fParameterInfos.remove(selected[i]);
+                for (ParameterInfo element : selected) {
+                    if (element.isAdded()) {
+                        fParameterInfos.remove(element);
                     } else {
-                        selected[i].markAsDeleted();
+                        element.markAsDeleted();
                     }
                 }
                 restoreSelection(index);
@@ -826,8 +824,7 @@ public abstract class ChangeParametersControl extends Composite implements IData
         List<ParameterInfo> res = new ArrayList<ParameterInfo>(elements.size());
         List<ParameterInfo> deleted = new ArrayList<ParameterInfo>();
         ParameterInfo floating = null;
-        for (Iterator<ParameterInfo> iter = elements.iterator(); iter.hasNext();) {
-            ParameterInfo curr = iter.next();
+        for (ParameterInfo curr : elements) {
             if (move.contains(curr)) {
                 res.add(curr);
             } else if ((curr).isDeleted()) {
@@ -844,8 +841,8 @@ public abstract class ChangeParametersControl extends Composite implements IData
         }
         res.addAll(deleted);
         elements.clear();
-        for (Iterator<ParameterInfo> iter = res.iterator(); iter.hasNext();) {
-            elements.add(iter.next());
+        for (ParameterInfo parameterInfo : res) {
+            elements.add(parameterInfo);
         }
     }
 
@@ -859,8 +856,8 @@ public abstract class ChangeParametersControl extends Composite implements IData
             return false;
         }
         int invalid = up ? 0 : notDeleted.size() - 1;
-        for (int i = 0; i < indc.length; i++) {
-            if (indc[i] == invalid) {
+        for (int element : indc) {
+            if (element == invalid) {
                 return false;
             }
         }
@@ -872,8 +869,7 @@ public abstract class ChangeParametersControl extends Composite implements IData
             return null;
         }
         List<ParameterInfo> result = new ArrayList<ParameterInfo>(fParameterInfos.size());
-        for (Iterator<ParameterInfo> iter = fParameterInfos.iterator(); iter.hasNext();) {
-            ParameterInfo info = iter.next();
+        for (ParameterInfo info : fParameterInfos) {
             if (!info.isDeleted()) {
                 result.add(info);
             }

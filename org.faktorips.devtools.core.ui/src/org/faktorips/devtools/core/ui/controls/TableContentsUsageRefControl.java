@@ -61,11 +61,11 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         // search in all found table contents if the table structure is
         // a configurated table structures in the table structure usage
-        for (int i = 0; i < structures.length; i++) {
-            for (int j = 0; j < allTableContents.length; j++) {
-                String tableStructure = allTableContents[j].getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
-                if (tableStructure != null && tableStructure.equals(structures[i])) {
-                    result.add(allTableContents[j]);
+        for (String structure : structures) {
+            for (IIpsSrcFile allTableContent : allTableContents) {
+                String tableStructure = allTableContent.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
+                if (tableStructure != null && tableStructure.equals(structure)) {
+                    result.add(allTableContent);
                 }
             }
         }

@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
@@ -99,9 +98,9 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
         List<Datatype> foundTypes = new ArrayList<Datatype>();
         Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid, includePrimitives, excludedDatatypes,
                 includeAbstract);
-        for (int i = 0; i < types.length; i++) {
-            if (types[i].getName().toLowerCase().startsWith(prefix)) {
-                foundTypes.add(types[i]);
+        for (Datatype type : types) {
+            if (type.getName().toLowerCase().startsWith(prefix)) {
+                foundTypes.add(type);
             }
         }
 
@@ -115,8 +114,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
 
         });
 
-        for (Iterator<Datatype> it = foundTypes.iterator(); it.hasNext();) {
-            Datatype datatype = it.next();
+        for (Datatype datatype : foundTypes) {
             String qName = datatype.getQualifiedName();
             String displayText = datatype.getName();
             Image image = labelProvider.getImage(datatype);

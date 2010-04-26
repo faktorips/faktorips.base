@@ -112,14 +112,14 @@ public class IpsSrcFileCollection {
         }
 
         Map<String, CollectionItem> itemsByName = new HashMap<String, CollectionItem>();
-        for (int i = 0; i < files.length; i++) {
-            CollectionItem item = itemsByName.get(files[i].getName());
+        for (IIpsSrcFile file : files) {
+            CollectionItem item = itemsByName.get(file.getName());
             CollectionItem newItem = new CollectionItem();
-            collection.put(files[i], newItem);
-            newItem.setDefiningMetaClass(getMetaClassName(files[i]));
+            collection.put(file, newItem);
+            newItem.setDefiningMetaClass(getMetaClassName(file));
             if (item == null) {
                 newItem.setDuplicateName(false);
-                itemsByName.put(files[i].getName(), newItem);
+                itemsByName.put(file.getName(), newItem);
             } else {
                 newItem.setDuplicateName(true);
                 item.setDuplicateName(true);

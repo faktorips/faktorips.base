@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,28 +24,26 @@ import org.faktorips.util.message.Message;
 public class ExtSystemsMessageUtil {
 
     public static Message createConvertExtToIntLostValueErrorMessage(String value, String convertedValue) {
-        String msg = NLS.bind(Messages.Messages_extToIntInformationLostError, new String[]{value, convertedValue});
+        String msg = NLS.bind(Messages.Messages_extToIntInformationLostError, new String[] { value, convertedValue });
         return new Message("", msg, Message.ERROR); //$NON-NLS-1$
     }
 
     public static Message createConvertExtToIntErrorMessage(String value, String externalType, String internalType) {
-        String msg = NLS.bind(Messages.Messages_extToIntError, new String[] { value,
-                externalType, internalType });
+        String msg = NLS.bind(Messages.Messages_extToIntError, new String[] { value, externalType, internalType });
         return new Message("", msg, Message.ERROR); //$NON-NLS-1$
     }
 
     public static Message createConvertExtToIntInformation(String value, String externalType, String internalType) {
-        String msgText = NLS.bind(Messages.Messages_extToIntInformationAutoConvert,
-                new Object[] { value,
-                externalType, internalType });
+        String msgText = NLS.bind(Messages.Messages_extToIntInformationAutoConvert, new Object[] { value, externalType,
+                internalType });
         return new Message("", msgText, Message.INFO); //$NON-NLS-1$
     }
 
     public static Message createConvertIntToExtErrorMessage(String ipsValue, String internalType, String externalType) {
-        String msg = NLS.bind(Messages.Messages_intToExtError, new String[]{ipsValue, internalType, externalType});
+        String msg = NLS.bind(Messages.Messages_intToExtError, new String[] { ipsValue, internalType, externalType });
         return new Message("", msg, Message.ERROR); //$NON-NLS-1$
     }
-    
-    private ExtSystemsMessageUtil(){
+
+    private ExtSystemsMessageUtil() {
     }
 }

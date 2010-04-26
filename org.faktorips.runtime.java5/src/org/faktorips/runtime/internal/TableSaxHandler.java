@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,25 +32,25 @@ public class TableSaxHandler extends DefaultHandler {
 
     // the table which will be filled
     private Table table;
-    
-    // contains all column values, 
+
+    // contains all column values,
     private List<String> columns = new ArrayList<String>(20);
-    
+
     // buffer to store the characters inside the value node
     private StringBuffer textBuffer = null;
 
     // true if the parser is inside the row node
     private boolean insideRowNode;
-    
+
     // true if the parser is inside the value node
     private boolean insideValueNode;
-    
+
     // true if the current value node represents the null value
     private boolean nullValue;
-    
-    //the product repository to get product information from
+
+    // the product repository to get product information from
     private IRuntimeRepository productRepository;
-    
+
     public TableSaxHandler(Table table, IRuntimeRepository productRepository) {
         this.table = table;
         this.productRepository = productRepository;
@@ -59,6 +59,7 @@ public class TableSaxHandler extends DefaultHandler {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (ROW.equals(qName)) {
             insideRowNode = false;
@@ -75,35 +76,38 @@ public class TableSaxHandler extends DefaultHandler {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (ROW.equals(qName)) {
             insideRowNode = true;
-        } else if (isColumnValueNode(qName)){
+        } else if (isColumnValueNode(qName)) {
             insideValueNode = true;
             nullValue = Boolean.valueOf(attributes.getValue("isNull")).booleanValue();
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void characters(char[] buf, int offset, int len) throws SAXException {
         if (!insideValueNode) {
             // ignore characters which are not inside a value node
             return;
         }
         String s = new String(buf, offset, len);
-        if (textBuffer == null){
+        if (textBuffer == null) {
             textBuffer = new StringBuffer(s);
         } else {
             textBuffer.append(s);
         }
     }
-    
+
     /*
-     * Returns <code>true</code> if the given node is the column value node otherwise <code>false</code>
+     * Returns <code>true</code> if the given node is the column value node otherwise
+     * <code>false</code>
      */
-    private boolean isColumnValueNode(String nodeName){
+    private boolean isColumnValueNode(String nodeName) {
         return VALUE.equals(nodeName) && insideRowNode;
     }
 }

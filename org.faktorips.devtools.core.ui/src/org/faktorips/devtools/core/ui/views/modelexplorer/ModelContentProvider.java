@@ -153,9 +153,9 @@ public class ModelContentProvider implements ITreeContentProvider {
     private Object[] getProjectContent(IIpsProject project) throws CoreException {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
         List<IIpsPackageFragmentRoot> existingRoots = new ArrayList<IIpsPackageFragmentRoot>();
-        for (int i = 0; i < roots.length; i++) {
-            if (roots[i].exists()) {
-                existingRoots.add(roots[i]);
+        for (IIpsPackageFragmentRoot root : roots) {
+            if (root.exists()) {
+                existingRoots.add(root);
             }
         }
 
@@ -221,9 +221,9 @@ public class ModelContentProvider implements ITreeContentProvider {
                 // check if one of the archive entries in the ips object path is the given file
                 IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
                 IIpsArchiveEntry[] archiveEntries = ipsProject.getIpsObjectPath().getArchiveEntries();
-                for (int i = 0; i < archiveEntries.length; i++) {
+                for (IIpsArchiveEntry archiveEntrie : archiveEntries) {
                     // TODO pk archivelocation not valid for external files 25-09-2008
-                    IPath archivePath = archiveEntries[i].getArchivePath();
+                    IPath archivePath = archiveEntrie.getArchivePath();
                     IFile archiveFile = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
                     if (resource.equals(archiveFile)) {
                         return true;
@@ -252,8 +252,8 @@ public class ModelContentProvider implements ITreeContentProvider {
                 return true;
             }
 
-            for (int i = 0; i < entries.length; i++) {
-                if (resource.getFullPath().equals(entries[i].getOutputLocation())) {
+            for (IClasspathEntry entrie : entries) {
+                if (resource.getFullPath().equals(entrie.getOutputLocation())) {
                     return true;
                 }
             }
@@ -293,9 +293,9 @@ public class ModelContentProvider implements ITreeContentProvider {
             // same time contain subfolders (subpackages) (this prevents empty or newly created
             // packagefragments from being hidden in the view)
             List<IIpsPackageFragment> filteredFragments = new ArrayList<IIpsPackageFragment>();
-            for (int i = 0; i < fragments.length; i++) {
-                if (hasChildren(fragments[i]) || fragments[i].getChildIpsPackageFragments().length == 0) {
-                    filteredFragments.add(fragments[i]);
+            for (IIpsPackageFragment fragment : fragments) {
+                if (hasChildren(fragment) || fragment.getChildIpsPackageFragments().length == 0) {
+                    filteredFragments.add(fragment);
                 }
             }
             return filteredFragments.toArray();
@@ -353,13 +353,13 @@ public class ModelContentProvider implements ITreeContentProvider {
         IIpsElement[] files = fragment.getChildren();
 
         List<IIpsElement> pcts = new ArrayList<IIpsElement>();
-        for (int i = 0, size = files.length; i < size; i++) {
-            if (files[i] instanceof IIpsSrcFile) {
-                IFile file = ((IIpsSrcFile)files[i]).getCorrespondingFile();
+        for (IIpsElement file2 : files) {
+            if (file2 instanceof IIpsSrcFile) {
+                IFile file = ((IIpsSrcFile)file2).getCorrespondingFile();
                 if (file != null && !file.isSynchronized(IResource.DEPTH_ZERO)) {
                     file.getParent().refreshLocal(IResource.DEPTH_ONE, null);
                 }
-                pcts.add(files[i]);
+                pcts.add(file2);
             }
         }
         /*
@@ -380,14 +380,14 @@ public class ModelContentProvider implements ITreeContentProvider {
     private Object[] filter(Object[] elements) {
         List<Object> filtered = new ArrayList<Object>();
 
-        for (int i = 0; i < elements.length; i++) {
+        for (Object element : elements) {
 
-            if (elements[i] instanceof IIpsElement) {
-                if (configuration.isAllowedIpsElement((IIpsElement)elements[i])) {
-                    filtered.add(elements[i]);
+            if (element instanceof IIpsElement) {
+                if (configuration.isAllowedIpsElement((IIpsElement)element)) {
+                    filtered.add(element);
                 }
-            } else if (elements[i] instanceof IResource) {
-                IResource resource = (IResource)elements[i];
+            } else if (element instanceof IResource) {
+                IResource resource = (IResource)element;
 
                 // filter out hidden files and folders, except the ".ipsproject"-file and
                 // ".sortorder"-file

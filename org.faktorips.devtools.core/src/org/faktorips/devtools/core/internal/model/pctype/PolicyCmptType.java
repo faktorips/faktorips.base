@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -348,8 +347,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
         // for easy finding attributes by name put them in a map with the name as key
         Map<String, IAttribute> toExclude = new HashMap<String, IAttribute>();
-        for (Iterator<? extends IAttribute> iter = attributes.iterator(); iter.hasNext();) {
-            IPolicyCmptTypeAttribute attr = (IPolicyCmptTypeAttribute)iter.next();
+        for (IAttribute attribute : attributes) {
+            IPolicyCmptTypeAttribute attr = (IPolicyCmptTypeAttribute)attribute;
             if (attr.isOverwrite()) {
                 toExclude.put(attr.getName(), attr);
             }
@@ -410,8 +409,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
             IPolicyCmptTypeAssociation[] relations = currentType.getPolicyCmptTypeAssociations();
-            for (int i = 0; i < relations.length; i++) {
-                IPolicyCmptTypeAssociation each = relations[i];
+            for (IPolicyCmptTypeAssociation each : relations) {
                 if (each.getAssociationType().isCompositionDetailToMaster()) {
                     root = false;
                     return false; // stop the visit, we have the result

@@ -156,9 +156,8 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         MessageList msgList = new MessageList();
 
         String[] names = builderSetConfig.getPropertyNames();
-        for (int i = 0; i < names.length; i++) {
-            Message msg = validateIpsBuilderSetPropertyValue(ipsProject, names[i], builderSetConfig
-                    .getPropertyValue(names[i]));
+        for (String name : names) {
+            Message msg = validateIpsBuilderSetPropertyValue(ipsProject, name, builderSetConfig.getPropertyValue(name));
             if (msg != null) {
                 msgList.add(msg);
             }
@@ -199,9 +198,9 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             ILog logger) {
         IConfigurationElement[] builderSetPropertyDefElements = element.getChildren("builderSetPropertyDef");
         Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = new HashMap<String, IIpsBuilderSetPropertyDef>();
-        for (int j = 0; j < builderSetPropertyDefElements.length; j++) {
+        for (IConfigurationElement builderSetPropertyDefElement : builderSetPropertyDefElements) {
             IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef.loadExtensions(
-                    builderSetPropertyDefElements[j], registry, builderSetId, logger, ipsModel);
+                    builderSetPropertyDefElement, registry, builderSetId, logger, ipsModel);
             if (propertyDef != null) {
                 builderSetPropertyDefs.put(propertyDef.getName(), propertyDef);
             }
@@ -220,8 +219,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
         IExtension[] extensions = point.getExtensions();
 
-        for (int i = 0; i < extensions.length; i++) {
-            IExtension extension = extensions[i];
+        for (IExtension extension : extensions) {
             IConfigurationElement[] configElements = extension.getConfigurationElements();
             if (configElements.length > 0) {
                 IConfigurationElement element = configElements[0];

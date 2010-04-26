@@ -221,9 +221,9 @@ public abstract class Type extends BaseIpsObject implements IType {
         } else {
             List<IAssociation> result = new ArrayList<IAssociation>();
             IAssociation[] associations = getAssociationsForTarget(target);
-            for (int i = 0; i < associations.length; i++) {
-                if (associations[i].getAssociationType() == associationType) {
-                    result.add(associations[i]);
+            for (IAssociation association : associations) {
+                if (association.getAssociationType() == associationType) {
+                    result.add(association);
                 }
             }
             return result.toArray(new IAssociation[result.size()]);
@@ -360,10 +360,10 @@ public abstract class Type extends BaseIpsObject implements IType {
             override.setDatatype(methods[i].getDatatype());
             override.setName(methods[i].getName());
             IParameter[] params = methods[i].getParameters();
-            for (int j = 0; j < params.length; j++) {
+            for (IParameter param : params) {
                 IParameter newParam = override.newParameter();
-                newParam.setName(params[j].getName());
-                newParam.setDatatype(params[j].getDatatype());
+                newParam.setName(param.getName());
+                newParam.setDatatype(param.getDatatype());
             }
             newMethods[i] = override;
         }
@@ -414,8 +414,8 @@ public abstract class Type extends BaseIpsObject implements IType {
                 validator.start(this);
             }
             IMethod[] methods = getMethods();
-            for (int i = 0; i < methods.length; i++) {
-                if (methods[i].isAbstract()) {
+            for (IMethod method : methods) {
+                if (method.isAbstract()) {
                     String text = Messages.Type_msg_AbstractMissmatch;
                     list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this, PROPERTY_ABSTRACT));
                     break;
@@ -441,8 +441,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                 list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this,
                         IType.PROPERTY_SUPERTYPE));
             } else {
-                for (Iterator<IType> it = collector.supertypes.iterator(); it.hasNext();) {
-                    IType supertype = it.next();
+                for (IType supertype : collector.supertypes) {
                     MessageList superResult = supertype.validate(ipsProject);
                     if (!superResult.isEmpty()) {
                         if (superResult.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND) != null) {
@@ -464,9 +463,9 @@ public abstract class Type extends BaseIpsObject implements IType {
             throws CoreException {
 
         IMethod[] methods = findOverrideMethodCandidates(true, ipsProject);
-        for (int i = 0; i < methods.length; i++) {
-            String text = NLS.bind(Messages.Type_msg_MustOverrideAbstractMethod, methods[i].getName(), methods[i]
-                    .getType().getQualifiedName());
+        for (IMethod method : methods) {
+            String text = NLS.bind(Messages.Type_msg_MustOverrideAbstractMethod, method.getName(), method.getType()
+                    .getQualifiedName());
             list.add(new Message(MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
         }
     }
@@ -517,8 +516,8 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     private void addMethodDatatypeDependencies(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details) {
-        for (Iterator<? extends IMethod> it = methods.iterator(); it.hasNext();) {
-            Method method = (Method)it.next();
+        for (IMethod method2 : methods) {
+            Method method = (Method)method2;
             method.dependsOn(dependencies, details);
         }
     }
@@ -526,33 +525,33 @@ public abstract class Type extends BaseIpsObject implements IType {
     private void addAttributeDatatypeDependencies(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details) {
         IAttribute[] attributes = getAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            String datatype = attributes[i].getDatatype();
+        for (IAttribute attribute : attributes) {
+            String datatype = attribute.getDatatype();
             IDependency dependency = new DatatypeDependency(getQualifiedNameType(), datatype);
             dependencies.add(dependency);
-            addDetails(details, dependency, attributes[i], IAttribute.PROPERTY_DATATYPE);
+            addDetails(details, dependency, attribute, IAttribute.PROPERTY_DATATYPE);
         }
     }
 
     private void addQualifiedNameTypesForRelationTargets(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details) {
         IAssociation[] relations = getAssociations();
-        for (int i = 0; i < relations.length; i++) {
-            String targetQName = relations[i].getTarget();
+        for (IAssociation relation : relations) {
+            String targetQName = relation.getTarget();
             // an additional condition "&& this.isAggregateRoot()" will _not_ be helpful, because
             // this method is called recursively for the detail and so on. But this detail is not an
             // aggregate root and the recursion will terminate too early.
-            if (relations[i].getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
+            if (relation.getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
                 IDependency dependency = IpsObjectDependency.createCompostionMasterDetailDependency(
                         getQualifiedNameType(), new QualifiedNameType(targetQName, getIpsObjectType()));
 
                 dependencies.add(dependency);
-                addDetails(details, dependency, relations[i], IAssociation.PROPERTY_TARGET);
+                addDetails(details, dependency, relation, IAssociation.PROPERTY_TARGET);
             } else {
                 IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
                         new QualifiedNameType(targetQName, getIpsObjectType()));
                 dependencies.add(dependency);
-                addDetails(details, dependency, relations[i], IAssociation.PROPERTY_TARGET);
+                addDetails(details, dependency, relation, IAssociation.PROPERTY_TARGET);
             }
         }
     }
@@ -682,9 +681,9 @@ public abstract class Type extends BaseIpsObject implements IType {
         @Override
         protected boolean visit(IType currentType) {
             IAssociation[] associations = currentType.getAssociationsForTarget(associationTarget);
-            for (int i = 0; i < associations.length; i++) {
-                if (associations[i].getAssociationType() == associationType) {
-                    associationsFound.add(associations[i]);
+            for (IAssociation association : associations) {
+                if (association.getAssociationType() == associationType) {
+                    associationsFound.add(association);
                 }
             }
             // Always continue because we search for all matching association.
@@ -865,8 +864,8 @@ public abstract class Type extends BaseIpsObject implements IType {
         @Override
         protected boolean visit(IType currentType) throws CoreException {
             IAssociation[] associations = currentType.getAssociations();
-            for (int i = 0; i < associations.length; i++) {
-                candidateSubsets.add(associations[i]);
+            for (IAssociation association : associations) {
+                candidateSubsets.add(association);
             }
             for (int i = 0; i < associations.length; i++) {
                 if (associations[i].isDerivedUnion()) {

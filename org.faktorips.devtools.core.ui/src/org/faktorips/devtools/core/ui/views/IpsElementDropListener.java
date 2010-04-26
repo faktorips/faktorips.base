@@ -78,8 +78,8 @@ public abstract class IpsElementDropListener implements DropTargetListener {
             return null;
         }
         ArrayList<Object> elements = new ArrayList<Object>();
-        for (int i = 0; i < filenames.length; i++) {
-            Path path = new Path(filenames[i]);
+        for (String filename : filenames) {
+            Path path = new Path(filename);
 
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
             IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
@@ -95,7 +95,7 @@ public abstract class IpsElementDropListener implements DropTargetListener {
                     }
                 }
             } else {
-                elements.add(filenames[i]);
+                elements.add(filename);
             }
             if (container != null) {
                 if (container.exists()) {

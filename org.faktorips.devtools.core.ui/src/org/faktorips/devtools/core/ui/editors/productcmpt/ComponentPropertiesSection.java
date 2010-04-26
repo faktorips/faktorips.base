@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -92,7 +92,8 @@ public class ComponentPropertiesSection extends IpsSection {
      * @param parent The parent to link the ui-items to.
      * @param toolkit The toolkit to use for easier ui-handling
      */
-    public ComponentPropertiesSection(IProductCmpt product, Composite parent, UIToolkit toolkit, ProductCmptEditor editor) {
+    public ComponentPropertiesSection(IProductCmpt product, Composite parent, UIToolkit toolkit,
+            ProductCmptEditor editor) {
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.product = product;
         extFactory = new ExtensionPropertyControlFactory(product.getClass());
@@ -104,6 +105,7 @@ public class ComponentPropertiesSection extends IpsSection {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         GridLayout layout = new GridLayout(1, true);
         layout.marginHeight = 2;
@@ -112,7 +114,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
         rootPane = toolkit.createLabelEditColumnComposite(client);
         rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
-        GridLayout workAreaLayout = (GridLayout) rootPane.getLayout();
+        GridLayout workAreaLayout = (GridLayout)rootPane.getLayout();
         workAreaLayout.marginHeight = 5;
         workAreaLayout.marginWidth = 5;
 
@@ -127,9 +129,10 @@ public class ComponentPropertiesSection extends IpsSection {
         if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
             Hyperlink link = toolkit.createHyperlink(rootPane, Messages.ProductAttributesSection_template);
             link.addHyperlinkListener(new HyperlinkAdapter() {
+                @Override
                 public void linkActivated(HyperlinkEvent event) {
                     try {
-                        if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()){
+                        if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
                             // if the property changed while the editor is open
                             return;
                         }
@@ -150,7 +153,8 @@ public class ComponentPropertiesSection extends IpsSection {
         toolkit.setDataChangeable(productCmptTypeControl.getTextControl(), false);
         IpsObjectField field = new IpsObjectField(productCmptTypeControl);
 
-        // create label and text control for the runtime id representing the displayed product component
+        // create label and text control for the runtime id representing the displayed product
+        // component
         toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelRuntimeId);
         runtimeIdText = toolkit.createText(rootPane);
         editControls.add(runtimeIdText);
@@ -213,13 +217,14 @@ public class ComponentPropertiesSection extends IpsSection {
             }
         });
 
-        extFactory.createControls(rootPane,toolkit,product);
+        extFactory.createControls(rootPane, toolkit, product);
         extFactory.bind(bindingContext);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void performRefresh() {
         if (uiMasterController != null) {
             uiMasterController.updateUI();
@@ -231,6 +236,7 @@ public class ComponentPropertiesSection extends IpsSection {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);
         updateRuntimeIdEnableState();
@@ -242,7 +248,8 @@ public class ComponentPropertiesSection extends IpsSection {
     }
 
     private void updateRuntimeIdEnableState() {
-        getToolkit().setDataChangeable(runtimeIdText, isDataChangeable() & IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+        getToolkit().setDataChangeable(runtimeIdText,
+                isDataChangeable() & IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
     }
 
     private class MyModifyListener implements ModifyListener {

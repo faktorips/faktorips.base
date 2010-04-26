@@ -161,8 +161,8 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         // not only the changed IpsObject has to be updated in the dependency graph but also all
         // dependants of it
         graph.update(a.getQualifiedNameType());
-        for (int i = 0; i < dependants.length; i++) {
-            graph.update(((IpsObjectDependency)dependants[i]).getTargetAsQNameType());
+        for (IDependency dependant : dependants) {
+            graph.update(((IpsObjectDependency)dependant).getTargetAsQNameType());
         }
 
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);

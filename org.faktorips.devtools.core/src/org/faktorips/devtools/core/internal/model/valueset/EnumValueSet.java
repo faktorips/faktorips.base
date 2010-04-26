@@ -118,8 +118,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return false;
         }
 
-        for (Iterator<String> it = values.iterator(); it.hasNext();) {
-            String each = it.next();
+        for (String each : values) {
             if (datatype.isParsable(each) && datatype.areValuesEqual(each, value)) {
                 return true;
             }
@@ -411,8 +410,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         ValueDatatype type = getValueDatatype();
         if (type != null && type instanceof EnumDatatype && ((EnumDatatype)type).isSupportingNames()) {
             List<String> result = new ArrayList<String>(values.size());
-            for (Iterator<String> iter = values.iterator(); iter.hasNext();) {
-                String id = iter.next();
+            for (String id : values) {
                 String formatedEnumText = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
                         .formatValue(type, id);
                 result.add(formatedEnumText);
@@ -441,10 +439,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
         Element tagElement = doc.createElement(XML_TAG);
-        for (Iterator<String> iter = values.iterator(); iter.hasNext();) {
+        for (String value : values) {
             Element valueElement = doc.createElement(XML_VALUE);
             tagElement.appendChild(valueElement);
-            String value = iter.next();
             ValueToXmlHelper.addValueToElement(value, valueElement, "Data");
         }
         element.appendChild(tagElement);
@@ -467,8 +464,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     public void addValuesFromDatatype(EnumDatatype datatype) {
         String[] valueIds = datatype.getAllValueIds(true);
-        for (int i = 0; i < valueIds.length; i++) {
-            addValue(valueIds[i]);
+        for (String valueId : valueIds) {
+            addValue(valueId);
         }
     }
 

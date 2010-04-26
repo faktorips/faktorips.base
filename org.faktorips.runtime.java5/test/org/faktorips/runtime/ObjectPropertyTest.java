@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,7 +27,7 @@ public class ObjectPropertyTest extends TestCase {
 
         ObjectProperty op3 = new ObjectProperty(new Integer(2), "toString");
         assertFalse(op1.hashCode() == op3.hashCode());
-        
+
     }
 
     /*
@@ -37,10 +37,10 @@ public class ObjectPropertyTest extends TestCase {
         ObjectProperty op1 = new ObjectProperty(new Integer(1), "toString");
         ObjectProperty op2 = new ObjectProperty(new Integer(1), "toString");
         assertEquals(op1, op2);
-        
+
         ObjectProperty op3 = new ObjectProperty(new Integer(2), "toString");
         assertTrue(!op1.equals(op3));
-        
+
     }
 
 }

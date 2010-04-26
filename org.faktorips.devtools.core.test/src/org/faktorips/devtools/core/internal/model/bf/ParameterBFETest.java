@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,6 +28,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
     private TestContentsChangeListener listener;
     private BusinessFunction bf;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -117,7 +118,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
         p.setName("policy");
         MessageList msgList = p.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
-        
+
         p.setDatatype(Datatype.STRING.getQualifiedName());
         msgList = p.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
@@ -129,28 +130,28 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
         p.setDatatype(Datatype.STRING.getQualifiedName());
         MessageList msgList = p.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_DOES_NOT_EXISIT));
-        
+
         p.setDatatype("abc");
         msgList = p.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_DOES_NOT_EXISIT));
     }
-    
-    public void testValidateDuplicateNames() throws Exception{
+
+    public void testValidateDuplicateNames() throws Exception {
         IParameterBFE p1 = bf.newParameter();
         p1.setName("p1");
         IParameterBFE p2 = bf.newParameter();
         p2.setName("p2");
-        
+
         MessageList msgList = p1.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_DUBLICATE));
-        
+
         msgList = p2.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_DUBLICATE));
-        
+
         p2.setName("p1");
         msgList = p1.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_DUBLICATE));
-        
+
         msgList = p2.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_DUBLICATE));
     }

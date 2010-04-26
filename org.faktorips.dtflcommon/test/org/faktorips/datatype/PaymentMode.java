@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,12 +24,11 @@ public class PaymentMode implements NullObjectSupport {
 
     private String id;
     private String name;
-    
 
     public final static PaymentMode[] getAllPaymentModes() {
-        return new PaymentMode[]{MONTHLY, ANNUAL};
+        return new PaymentMode[] { MONTHLY, ANNUAL };
     }
-    
+
     public final static boolean isParsable(String id) {
         try {
             PaymentMode.getPaymentMode(id);
@@ -38,9 +37,9 @@ public class PaymentMode implements NullObjectSupport {
             return false;
         }
     }
-    
+
     public final static PaymentMode getPaymentMode(String id) {
-        if (id==null) {
+        if (id == null) {
             return null;
         }
         if (ANNUAL.id.equals(id)) {
@@ -51,32 +50,33 @@ public class PaymentMode implements NullObjectSupport {
         }
         throw new IllegalArgumentException("The id " + id + " does not identify a PaymentMode");
     }
-    
+
     PaymentMode(String id, String name) {
         this.id = id;
         this.name = name;
     }
-    
+
     public String getId() {
         return id;
     }
-    
-    public boolean isSupportingNames(){
-    	return true;
+
+    public boolean isSupportingNames() {
+        return true;
     }
-    
-    public String getName(){
-    	return name;
+
+    public String getName() {
+        return name;
     }
-    
+
+    @Override
     public String toString() {
         return id;
     }
 
     public boolean isNull() {
-        return this==PaymentMode.NULL;
+        return this == PaymentMode.NULL;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -89,7 +89,7 @@ public class PaymentMode implements NullObjectSupport {
         PaymentModeNull() {
             super("null", "No Payment");
         }
-        
+
     }
 
 }

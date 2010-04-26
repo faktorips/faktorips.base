@@ -34,7 +34,8 @@ public class BusinessFunctionRefControl extends IpsObjectRefControl {
     private IBusinessFunction currentBusinessFunction;
 
     public BusinessFunctionRefControl(Composite parent, UIToolkit toolkit) {
-        super(null, parent, toolkit, Messages.BusinessFunctionRefControl_dialogMessage, Messages.BusinessFunctionRefControl_title);
+        super(null, parent, toolkit, Messages.BusinessFunctionRefControl_dialogMessage,
+                Messages.BusinessFunctionRefControl_title);
     }
 
     public void setCurrentBusinessFunction(IBusinessFunction businessFunction) {

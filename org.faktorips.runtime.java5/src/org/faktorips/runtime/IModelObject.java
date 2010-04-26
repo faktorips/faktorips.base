@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,10 +25,10 @@ public interface IModelObject {
      * method returns an empty list. Note that also messages like warnings or informations can be
      * returned for valid objects.
      * 
-     * @param context provides additional external information that might be necessary to execute the
-     *            validation. E.g. the business context, the locale to provide locale specific
+     * @param context provides additional external information that might be necessary to execute
+     *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information. The parameter must not be <code>null</code>.
-     *            
+     * 
      * @throws NullPointerException if context is <code>null</code>.
      */
     public MessageList validate(IValidationContext context);

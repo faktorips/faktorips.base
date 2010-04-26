@@ -20,7 +20,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -86,8 +85,8 @@ public class BeanTableCellModifier implements ICellModifier {
             // error wrong initializing of the delegate cell editor
             throw new RuntimeException("Wrong index of delegate cell editor!");
         }
-        for (int i = 0; i < datatypesRows.length; i++) {
-            rowCellEditors.add(createCellEditor(uiToolkit, datatypesRows[i], dm.getColumn()));
+        for (ValueDatatype datatypesRow : datatypesRows) {
+            rowCellEditors.add(createCellEditor(uiToolkit, datatypesRow, dm.getColumn()));
         }
         dm.setCellEditors(rowCellEditors.toArray(new CellEditor[rowCellEditors.size()]));
     }
@@ -208,10 +207,10 @@ public class BeanTableCellModifier implements ICellModifier {
         }
         BeanInfo beanInfo = Introspector.getBeanInfo(element.getClass());
         PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
-        for (int i = 0; i < properties.length; i++) {
-            if (properties[i].getName().equals(property)) {
-                propertyDescriptors.put(element.getClass().getName() + property, properties[i]);
-                return properties[i];
+        for (PropertyDescriptor propertie : properties) {
+            if (propertie.getName().equals(property)) {
+                propertyDescriptors.put(element.getClass().getName() + property, propertie);
+                return propertie;
             }
         }
         return null;
@@ -243,8 +242,8 @@ public class BeanTableCellModifier implements ICellModifier {
     }
 
     private void notifyColumnChangeListener(ColumnIdentifier columnIdentifier, Object value) {
-        for (Iterator<ColumnChangeListener> iter = columnChangeListeners.iterator(); iter.hasNext();) {
-            iter.next().valueChanged(columnIdentifier, value);
+        for (ColumnChangeListener columnChangeListener : columnChangeListeners) {
+            columnChangeListener.valueChanged(columnIdentifier, value);
         }
     }
 }

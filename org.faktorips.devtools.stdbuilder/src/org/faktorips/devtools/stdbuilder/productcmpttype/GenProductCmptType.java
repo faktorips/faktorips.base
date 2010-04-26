@@ -144,44 +144,44 @@ public class GenProductCmptType extends GenType {
 
     private void createGeneratorsForProdAttributes() throws CoreException {
         IProductCmptTypeAttribute[] attrs = getProductCmptType().getProductCmptTypeAttributes();
-        for (int i = 0; i < attrs.length; i++) {
-            if (attrs[i].isValid()) {
-                GenProductCmptTypeAttribute generator = new GenProductCmptTypeAttribute(this, attrs[i]);
+        for (IProductCmptTypeAttribute attr : attrs) {
+            if (attr.isValid()) {
+                GenProductCmptTypeAttribute generator = new GenProductCmptTypeAttribute(this, attr);
                 genProductCmptTypeAttributes.add(generator);
-                getGeneratorsByPart().put(attrs[i], generator);
+                getGeneratorsByPart().put(attr, generator);
             }
         }
     }
 
     private void createGeneratorsForProdAssociations() throws CoreException {
         IProductCmptTypeAssociation[] ass = getProductCmptType().getProductCmptTypeAssociations();
-        for (int i = 0; i < ass.length; i++) {
-            if (ass[i].isValid()) {
-                GenProdAssociation generator = createGenerator(ass[i]);
+        for (IProductCmptTypeAssociation as : ass) {
+            if (as.isValid()) {
+                GenProdAssociation generator = createGenerator(as);
                 genProdAssociations.add(generator);
-                getGeneratorsByPart().put(ass[i], generator);
+                getGeneratorsByPart().put(as, generator);
             }
         }
     }
 
     private void createGeneratorsForMethods() throws CoreException {
         IProductCmptTypeMethod[] methods = getProductCmptType().getProductCmptTypeMethods();
-        for (int i = 0; i < methods.length; i++) {
-            if (methods[i].isValid()) {
-                GenProductCmptTypeMethod generator = new GenProductCmptTypeMethod(this, methods[i]);
+        for (IProductCmptTypeMethod method : methods) {
+            if (method.isValid()) {
+                GenProductCmptTypeMethod generator = new GenProductCmptTypeMethod(this, method);
                 genMethods.add(generator);
-                getGeneratorsByPart().put(methods[i], generator);
+                getGeneratorsByPart().put(method, generator);
             }
         }
     }
 
     private void createGeneratorsForTableStructureUsages() throws CoreException {
         ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
-        for (int i = 0; i < tsus.length; i++) {
-            if (tsus[i].isValid()) {
-                GenTableStructureUsage generator = new GenTableStructureUsage(this, tsus[i]);
+        for (ITableStructureUsage tsu : tsus) {
+            if (tsu.isValid()) {
+                GenTableStructureUsage generator = new GenTableStructureUsage(this, tsu);
                 genTableStructureUsages.add(generator);
-                getGeneratorsByPart().put(tsus[i], generator);
+                getGeneratorsByPart().put(tsu, generator);
             }
         }
     }

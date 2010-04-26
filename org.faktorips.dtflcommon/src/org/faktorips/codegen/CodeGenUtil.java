@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,13 +23,13 @@ import org.faktorips.datatype.PrimitiveIntegerDatatype;
  * A collection of util methods related to sourcecode generation.
  */
 public class CodeGenUtil {
-    
-    public final static JavaCodeFragment convertPrimitiveToWrapper (Datatype type, JavaCodeFragment expression) {
+
+    public final static JavaCodeFragment convertPrimitiveToWrapper(Datatype type, JavaCodeFragment expression) {
         if (type instanceof PrimitiveBooleanDatatype) {
-            return new PrimitiveBooleanHelper((PrimitiveBooleanDatatype)type).toWrapper(expression); 
+            return new PrimitiveBooleanHelper((PrimitiveBooleanDatatype)type).toWrapper(expression);
         }
         if (type instanceof PrimitiveIntegerDatatype) {
-            return new PrimitiveIntegerHelper((PrimitiveIntegerDatatype)type).toWrapper(expression); 
+            return new PrimitiveIntegerHelper((PrimitiveIntegerDatatype)type).toWrapper(expression);
         }
         throw new IllegalArgumentException("Can't convert dataype " + type);
     }

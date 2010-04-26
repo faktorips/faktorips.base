@@ -463,8 +463,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         table.newColumn("d");
         table.newColumn("e");
 
-        for (int i = 0; i < rows.length; i++) {
-            createRow(gen1, rows[i]);
+        for (String[] row : rows) {
+            createRow(gen1, row);
         }
 
         MessageList messageList = table.validate(project);

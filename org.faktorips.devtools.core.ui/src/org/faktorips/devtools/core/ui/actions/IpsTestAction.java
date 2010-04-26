@@ -202,8 +202,8 @@ public class IpsTestAction extends IpsAction {
         IIpsPackageFragmentRoot root = null;
         IIpsPackageFragmentRoot[] rootsFromProject;
         rootsFromProject = ipsProject.getIpsPackageFragmentRoots();
-        for (int i = 0; i < rootsFromProject.length; i++) {
-            root = rootsFromProject[i];
+        for (IIpsPackageFragmentRoot element : rootsFromProject) {
+            root = element;
             IIpsProject project = root.getIpsProject();
             String tocFilePackage = getRepPckNameFromPckFrgmtRoot(root);
             if (tocFilePackage != null) {
@@ -223,8 +223,7 @@ public class IpsTestAction extends IpsAction {
         Collections.sort(selectedPathElements);
 
         String previousElement = "#none#"; //$NON-NLS-1$
-        for (Iterator<String> iter = selectedPathElements.iterator(); iter.hasNext();) {
-            String currElement = iter.next();
+        for (String currElement : selectedPathElements) {
             // add element only if it is not included in the previous element
             if (!currElement.startsWith(previousElement)) {
                 previousElement = currElement;
@@ -246,8 +245,7 @@ public class IpsTestAction extends IpsAction {
         }
 
         String previousElement = selectedPathElements.get(0);
-        for (Iterator<String> iter = selectedPathElements.iterator(); iter.hasNext();) {
-            String currElement = iter.next();
+        for (String currElement : selectedPathElements) {
             String prevProject = previousElement.substring(0, previousElement.indexOf(SEPARATOR));
             if (!currElement.startsWith(prevProject)) {
                 MessageDialog.openInformation(null, Messages.IpsTestAction_titleCantRunTest,
@@ -277,8 +275,7 @@ public class IpsTestAction extends IpsAction {
             // create the strings containing the roots and packages format for the root string:
             // {root1}{root2}{...}{rootn}
             // format for the packages string: {pck1}{pck2}{...}{pckn}
-            for (Iterator<String> iter = selectedPathElements.iterator(); iter.hasNext();) {
-                String selectedPathElement = iter.next();
+            for (String selectedPathElement : selectedPathElements) {
                 // cut the project from the front of the given string
                 String withoutProject = selectedPathElement.substring(selectedPathElement.indexOf(SEPARATOR)
                         + SEPARATOR.length());

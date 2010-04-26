@@ -103,8 +103,7 @@ public class BindingContext {
     public void updateUI() {
         // defensive copy to avoid concurrent modification exceptions
         List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
-        for (Iterator<FieldPropertyMapping> it = copy.iterator(); it.hasNext();) {
-            FieldPropertyMapping mapping = it.next();
+        for (FieldPropertyMapping mapping : copy) {
             try {
                 mapping.setControlValue();
             } catch (Exception e) {
@@ -372,8 +371,7 @@ public class BindingContext {
 
         // exceptions
         Set<Object> disposedPmos = new HashSet<Object>();
-        for (Iterator<FieldPropertyMapping> it = mappingsCopy.iterator(); it.hasNext();) {
-            FieldPropertyMapping mapping = it.next();
+        for (FieldPropertyMapping mapping : mappingsCopy) {
             if (mapping.getField().removeChangeListener(listener)) {
                 ;
             }
@@ -387,8 +385,7 @@ public class BindingContext {
         List<ControlPropertyBinding> controlsCopy = new ArrayList<ControlPropertyBinding>(controlBindings);
 
         // modification exceptions
-        for (Iterator<ControlPropertyBinding> it = controlsCopy.iterator(); it.hasNext();) {
-            ControlPropertyBinding mapping = it.next();
+        for (ControlPropertyBinding mapping : controlsCopy) {
             disposeObjectIfNeccessary(disposedPmos, mapping);
         }
     }
@@ -410,8 +407,8 @@ public class BindingContext {
      */
     protected void showValidationStatus(List<FieldPropertyMapping> propertyMappings) {
         ArrayList<IIpsObject> copy = new ArrayList<IIpsObject>(ipsObjects);
-        for (Iterator<IIpsObject> it = copy.iterator(); it.hasNext();) {
-            showValidationStatus(it.next(), propertyMappings);
+        for (IIpsObject iIpsObject : copy) {
+            showValidationStatus(iIpsObject, propertyMappings);
         }
     }
 
@@ -425,8 +422,7 @@ public class BindingContext {
     protected MessageList showValidationStatus(IIpsObject ipsObject, List<FieldPropertyMapping> propertyMappings) {
         try {
             MessageList list = ipsObject.validate(ipsObject.getIpsProject());
-            for (Iterator<FieldPropertyMapping> it = propertyMappings.iterator(); it.hasNext();) {
-                FieldPropertyMapping mapping = it.next();
+            for (FieldPropertyMapping mapping : propertyMappings) {
                 Control c = mapping.getField().getControl();
                 if (c == null || c.isDisposed()) {
                     continue;
@@ -454,8 +450,7 @@ public class BindingContext {
 
     private void applyControlBindings() {
         List<ControlPropertyBinding> copy = new ArrayList<ControlPropertyBinding>(controlBindings);
-        for (Iterator<ControlPropertyBinding> it = copy.iterator(); it.hasNext();) {
-            ControlPropertyBinding binding = it.next();
+        for (ControlPropertyBinding binding : copy) {
             try {
                 binding.updateUI();
             } catch (Exception e) {
@@ -472,8 +467,7 @@ public class BindingContext {
             List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
 
             // exceptions
-            for (Iterator<FieldPropertyMapping> it = copy.iterator(); it.hasNext();) {
-                FieldPropertyMapping mapping = it.next();
+            for (FieldPropertyMapping mapping : copy) {
                 if (e.field == mapping.getField()) {
                     try {
                         mapping.setPropertyValue();
@@ -499,8 +493,7 @@ public class BindingContext {
             List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
 
             // exceptions
-            for (Iterator<FieldPropertyMapping> it = copy.iterator(); it.hasNext();) {
-                FieldPropertyMapping mapping = it.next();
+            for (FieldPropertyMapping mapping : copy) {
                 if (mapping.getObject() instanceof IIpsObjectPartContainer) {
                     if (event.isAffected((IIpsObjectPartContainer)mapping.getObject())) {
                         try {
@@ -525,8 +518,7 @@ public class BindingContext {
             List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
 
             // exceptions
-            for (Iterator<FieldPropertyMapping> it = copy.iterator(); it.hasNext();) {
-                FieldPropertyMapping mapping = it.next();
+            for (FieldPropertyMapping mapping : copy) {
                 if (mapping.getObject() == evt.getSource()) {
                     try {
                         mapping.setControlValue();

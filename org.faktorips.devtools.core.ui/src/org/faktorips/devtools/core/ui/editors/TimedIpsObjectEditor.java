@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.editors;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -100,8 +99,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     private void notifyGenerationChanged() {
         List<IActiveGenerationChangedListener> copy = new ArrayList<IActiveGenerationChangedListener>(
                 activeGenerationChangedListeners);
-        for (Iterator<IActiveGenerationChangedListener> it = copy.iterator(); it.hasNext();) {
-            IActiveGenerationChangedListener listener = it.next();
+        for (IActiveGenerationChangedListener listener : copy) {
             listener.activeGenerationChanged(generation);
         }
     }

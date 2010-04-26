@@ -66,5 +66,5 @@ public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {
     public String getDisplayTextForValue(String id) {
         return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(getEnumDatatype(), id);
     }
-    
+
 }

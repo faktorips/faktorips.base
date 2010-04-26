@@ -26,11 +26,11 @@ public class IpsObjectTypeTest extends AbstractIpsPluginTest {
     public void testNewObject() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         IpsObjectType[] types = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
-        for (int i = 0; i < types.length; i++) {
+        for (IpsObjectType type : types) {
             IIpsPackageFragment pack = ipsProject.getIpsPackageFragmentRoots()[0].createPackageFragment("test", true,
                     null);
             // pack.createIpsFile(...) calls newObject() !!!
-            IIpsSrcFile file = pack.createIpsFile(types[i], "TestObject", true, null);
+            IIpsSrcFile file = pack.createIpsFile(type, "TestObject", true, null);
             assertNotNull(file.getIpsObject());
         }
     }

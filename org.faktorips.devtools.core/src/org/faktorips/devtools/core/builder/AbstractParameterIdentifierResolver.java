@@ -82,8 +82,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     private Map<String, EnumDatatype> createEnumMap() throws CoreException {
         EnumDatatype[] enumtypes = formula.getEnumDatatypesAllowedInFormula();
         Map<String, EnumDatatype> enumDatatypes = new HashMap<String, EnumDatatype>(enumtypes.length);
-        for (int i = 0; i < enumtypes.length; i++) {
-            enumDatatypes.put(enumtypes[i].getName(), enumtypes[i]);
+        for (EnumDatatype enumtype : enumtypes) {
+            enumDatatypes.put(enumtype.getName(), enumtype);
         }
         return enumDatatypes;
     }
@@ -108,9 +108,9 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             attributeName = identifier.substring(pos + 1);
         }
         IParameter[] params = getParameters();
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].getName().equals(paramName)) {
-                CompilationResult result = compile(params[i], attributeName);
+        for (IParameter param : params) {
+            if (param.getName().equals(paramName)) {
+                CompilationResult result = compile(param, attributeName);
                 addCurrentIdentifer(result, identifier);
                 return result;
             }
@@ -146,13 +146,13 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         try {
             productCmptType = getProductCmptType();
             IAttribute[] attributes = productCmptType.findAllAttributes(ipsproject);
-            for (int i = 0; i < attributes.length; i++) {
-                if (attributes[i].getName().equals(identifier)) {
-                    Datatype attrDatatype = attributes[i].findDatatype(ipsproject);
+            for (IAttribute attribute : attributes) {
+                if (attribute.getName().equals(identifier)) {
+                    Datatype attrDatatype = attribute.findDatatype(ipsproject);
                     if (attrDatatype == null) {
                         String text = NLS.bind(
                                 Messages.AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute,
-                                attributes[i].getName(), productCmptType.getQualifiedName());
+                                attribute.getName(), productCmptType.getQualifiedName());
                         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
                     }
                     // We use "this." to access the product component type instance variable because
@@ -164,7 +164,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                     // attributes via this. So when we interpret the code, we introduce a new
                     // parameter (thiz) and replace
                     // "this." with "thiz."
-                    String code = "this." + getParameterAttributGetterName(attributes[i], productCmptType) + "()"; //$NON-NLS-1$ //$NON-NLS-2$
+                    String code = "this." + getParameterAttributGetterName(attribute, productCmptType) + "()"; //$NON-NLS-1$ //$NON-NLS-2$
                     return new CompilationResultImpl(code, attrDatatype);
                 }
             }
@@ -233,16 +233,15 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 return null;
             }
             String[] valueIds = enumType.getAllValueIds(true);
-            for (int i = 0; i < valueIds.length; i++) {
-                String enumValueName = valueIds[i];
+            for (String enumValueName : valueIds) {
                 if (ObjectUtils.equals(enumValueName, valueName)) {
                     JavaCodeFragment frag = new JavaCodeFragment();
                     frag.getImportDeclaration().add(enumType.getJavaClassName());
                     if (enumType instanceof EnumTypeDatatypeAdapter) {
-                        addNewInstanceForEnumType(frag, (EnumTypeDatatypeAdapter)enumType, exprCompiler, valueIds[i]);
+                        addNewInstanceForEnumType(frag, (EnumTypeDatatypeAdapter)enumType, exprCompiler, enumValueName);
                     } else {
                         DatatypeHelper helper = ipsproject.getDatatypeHelper(enumType);
-                        frag.append(helper.newInstance(valueIds[i]));
+                        frag.append(helper.newInstance(enumValueName));
                     }
                     return new CompilationResultImpl(frag, enumType);
                 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -34,37 +33,37 @@ import org.faktorips.devtools.core.ui.views.modeldescription.DefaultModelDescrip
 import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
 
 /**
- * A page for presenting the properties of a {@link ITestCase}. This page is
- * connected to a {@link TestCaseEditor} similiar to the outline view.
- *
+ * A page for presenting the properties of a {@link ITestCase}. This page is connected to a
+ * {@link TestCaseEditor} similiar to the outline view.
+ * 
  * @author Joerg Ortmann
  */
-public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage implements ITestCaseDetailAreaRedrawListener {
+public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage implements
+        ITestCaseDetailAreaRedrawListener {
 
     private TestCaseEditor editor;
     private ITestCase testCase;
 
     public TestCaseModelDescriptionPage(TestCaseEditor editor) throws CoreException {
-    	super();
+        super();
         this.editor = editor;
         this.testCase = editor.getTestCase();
         super.setTitle(testCase.getName());
-        
+
         this.editor.addDetailAreaRedrawListener(this);
-        
+
         updateDescriptionItems(Arrays.asList(testCase.getTestObjects()));
     }
 
     private void updateDescriptionItems(List<ITestObject> visibleTestObjects) throws CoreException {
         ArrayList<DescriptionItem> desrList = new ArrayList<DescriptionItem>(visibleTestObjects.size());
         Set<IIpsObjectPart> uniqueTestObjects = new HashSet<IIpsObjectPart>(visibleTestObjects.size());
-        for (Iterator<ITestObject> iter = visibleTestObjects.iterator(); iter.hasNext();) {
-            ITestObject testObject = iter.next();
+        for (ITestObject testObject : visibleTestObjects) {
             ITestParameter parameter = testObject.findTestParameter(testCase.getIpsProject());
-            if (parameter == null){
+            if (parameter == null) {
                 continue;
             }
-            if (testObject instanceof ITestPolicyCmpt){
+            if (testObject instanceof ITestPolicyCmpt) {
                 // description of test policy cmpt are currently not supported
                 // only test attributes
                 addChildTestObjetcs(testCase.getIpsProject(), (ITestPolicyCmpt)testObject, desrList, uniqueTestObjects);
@@ -72,7 +71,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
                 addUniqueDescriptionItem(parameter, desrList, uniqueTestObjects, parameter.getName());
             }
         }
-        
+
         super.setDescriptionItems(desrList.toArray(new DescriptionItem[desrList.size()]));
     }
 
@@ -101,8 +100,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
         }
         // add description for attributes
         ITestAttributeValue[] testAttributeValues = cmpt.getTestAttributeValues();
-        for (int i = 0; i < testAttributeValues.length; i++) {
-            ITestAttributeValue value = testAttributeValues[i];
+        for (ITestAttributeValue value : testAttributeValues) {
             ITestAttribute attribute = value.findTestAttribute(ipsProject);
             if (attribute == null) {
                 continue;
@@ -110,9 +108,9 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             addUniqueDescriptionItem(attribute, desrList, uniqueTestObjects, parameterName);
         }
         ITestPolicyCmptLink[] testPolicyCmptLinks = cmpt.getTestPolicyCmptLinks();
-        for (int i = 0; i < testPolicyCmptLinks.length; i++) {
-            if (testPolicyCmptLinks[i].isComposition()) {
-                ITestPolicyCmpt target = testPolicyCmptLinks[i].findTarget();
+        for (ITestPolicyCmptLink testPolicyCmptLink : testPolicyCmptLinks) {
+            if (testPolicyCmptLink.isComposition()) {
+                ITestPolicyCmpt target = testPolicyCmptLink.findTarget();
                 if (target == null) {
                     continue;
                 }
@@ -131,6 +129,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         super.dispose();
         editor.removeDetailAreaRedrawListener(this);

@@ -480,8 +480,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                             return;
                         }
                     }
-                    for (Iterator<FailureDetails> iter = failureDetailsList.iterator(); iter.hasNext();) {
-                        FailureDetails failureDetails = iter.next();
+                    for (FailureDetails failureDetails : failureDetailsList) {
                         storeActualAsExpectedValue(failureDetails,
                                 failureDetailsToStoreInExpResultToString(failureDetails.getFailureDetails()));
                     }
@@ -1213,8 +1212,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Recursive search the given childs for the given target object.
      */
     private TreeItem searchChildsByLabel(String labelPath, TreeItem[] childs) {
-        for (int i = 0; i < childs.length; i++) {
-            TreeItem currItem = childs[i];
+        for (TreeItem child : childs) {
+            TreeItem currItem = child;
             if (currItem.getText().equals(labelPath)) {
                 return currItem;
             }
@@ -1235,8 +1234,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
         String currPathItem = hierarchyPath.next();
         TreeItem currItem = null;
-        for (int i = 0; i < childs.length; i++) {
-            currItem = childs[i];
+        for (TreeItem child : childs) {
+            currItem = child;
             if (currItem.getText().equals(currPathItem)) {
                 if (hierarchyPath.hasNext()) {
                     currItem = searchChildsByHierarchyPath(hierarchyPath, currItem.getItems());
@@ -1255,8 +1254,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return null;
         }
 
-        for (int i = 0; i < childs.length; i++) {
-            TreeItem currItem = childs[i];
+        for (TreeItem child : childs) {
+            TreeItem currItem = child;
             if (testPolicyCmpt != null && currItem.getData() instanceof ITestPolicyCmpt) {
                 ITestPolicyCmpt elem = (ITestPolicyCmpt)currItem.getData();
                 if (elem == testPolicyCmpt) {
@@ -1303,8 +1302,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 } else if (domainObject instanceof TestCaseTypeRule) {
                     // show all test rule objects if the corresponding parameter is chosen
                     ITestRule[] testRules = testCase.getTestRule(((TestCaseTypeRule)domainObject).getName());
-                    for (int i = 0; i < testRules.length; i++) {
-                        objectsToDisplay.add(testRules[i]);
+                    for (ITestRule testRule : testRules) {
+                        objectsToDisplay.add(testRule);
                     }
                 } else if (domainObject instanceof ITestRule) {
                     // in case of a rule selection don't
@@ -1427,8 +1426,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private boolean isNoTestPolicyCmptExistsFor(TestCaseTypeAssociation association) throws CoreException {
         ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
-        for (int i = 0; i < testPolicyCmpts.length; i++) {
-            if (association.getName().equals(testPolicyCmpts[i].getTestParameterName())) {
+        for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
+            if (association.getName().equals(testPolicyCmpt.getTestParameterName())) {
                 return false;
             }
         }
@@ -1818,12 +1817,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
                     ITestPolicyCmptLink newAssociation = null;
                     // add a new child based on the selected association and selected target
-                    for (int i = 0; i < finalSelectedTargetsQualifiedNames.length; i++) {
+                    for (String finalSelectedTargetsQualifiedName : finalSelectedTargetsQualifiedNames) {
                         if (finalChooseProductCmpts) {
-                            newAssociation = addNewLink(associationType, finalSelectedTargetsQualifiedNames[i], null,
+                            newAssociation = addNewLink(associationType, finalSelectedTargetsQualifiedName, null,
                                     targetName);
                         } else {
-                            newAssociation = addNewLink(associationType, null, finalSelectedTargetsQualifiedNames[i],
+                            newAssociation = addNewLink(associationType, null, finalSelectedTargetsQualifiedName,
                                     targetName);
                         }
                     }
@@ -1833,11 +1832,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 } else {
                     ITestPolicyCmptLink newLink = null;
                     // composition relation will be added
-                    for (int i = 0; i < finalSelectedTargetsQualifiedNames.length; i++) {
+                    for (String finalSelectedTargetsQualifiedName : finalSelectedTargetsQualifiedNames) {
                         if (finalChooseProductCmpts) {
-                            newLink = addNewLink(associationType, finalSelectedTargetsQualifiedNames[i], null, ""); //$NON-NLS-1$
+                            newLink = addNewLink(associationType, finalSelectedTargetsQualifiedName, null, ""); //$NON-NLS-1$
                         } else {
-                            newLink = addNewLink(associationType, null, finalSelectedTargetsQualifiedNames[i], ""); //$NON-NLS-1$
+                            newLink = addNewLink(associationType, null, finalSelectedTargetsQualifiedName, ""); //$NON-NLS-1$
                         }
                     }
                     ITestPolicyCmpt newTestPolicyCmpt = newLink.findTarget();
@@ -1926,11 +1925,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 itemsSameLevel = currTreeItem.getParent().getItems();
             }
             TreeItem prevItem = null;
-            for (int i = 0; i < itemsSameLevel.length; i++) {
-                if (itemsSameLevel[i].equals(currTreeItem)) {
+            for (TreeItem element : itemsSameLevel) {
+                if (element.equals(currTreeItem)) {
                     break;
                 }
-                prevItem = itemsSameLevel[i];
+                prevItem = element;
             }
             if (prevItem != null) {
                 return prevItem;
@@ -2232,11 +2231,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // TODO joerg getSubtypeHierarchy better performance using IpsSrcFiles
         IPolicyCmptType[] allSubtypes = policyCmptType.getSubtypeHierarchy().getAllSubtypes(policyCmptType);
         List<IIpsSrcFile> allIpsSrcFilesSubtypes = new ArrayList<IIpsSrcFile>();
-        for (int i = 0; i < allSubtypes.length; i++) {
-            if (allSubtypes[i].isAbstract()) {
+        for (IPolicyCmptType allSubtype : allSubtypes) {
+            if (allSubtype.isAbstract()) {
                 continue;
             }
-            allIpsSrcFilesSubtypes.add(allSubtypes[i].getIpsSrcFile());
+            allIpsSrcFilesSubtypes.add(allSubtype.getIpsSrcFile());
         }
         if (!policyCmptType.isAbstract()) {
             allIpsSrcFilesSubtypes.add(policyCmptType.getIpsSrcFile());
@@ -2332,10 +2331,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // this must be the root node
             // find and return the correspondinf test object in the test case
             ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
-            for (int i = 0; i < testPolicyCmpts.length; i++) {
+            for (ITestPolicyCmpt testPolicyCmpt2 : testPolicyCmpts) {
                 if (testCaseTypeAssociation.getTestPolicyCmptTypeParam().getName().equals(
-                        testPolicyCmpts[i].getTestParameterName())) {
-                    return testPolicyCmpts[i];
+                        testPolicyCmpt2.getTestParameterName())) {
+                    return testPolicyCmpt2;
                 }
             }
         }
@@ -3094,8 +3093,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 registerTestRunListener();
 
                 String titleMessage = Messages.TestCaseSection_SectionTitleToolTip_StoredExpectedResults;
-                for (Iterator<String[]> iter = failureDetailsList.iterator(); iter.hasNext();) {
-                    final String[] failureDetails = iter.next();
+                for (String[] failureDetails : failureDetailsList) {
                     final String formatedMessage = failureDetailsToStoreInExpResultToString(failureDetails);
                     titleMessage += titleMessage.length() > 0 ? "\n" + formatedMessage : formatedMessage; //$NON-NLS-1$
                     form.getContent().setBackground(fFailureColor);
@@ -3162,14 +3160,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if (content instanceof Form) {
             Form contentForm = (Form)content;
             Control[] childs = contentForm.getChildren();
-            for (int i = 0; i < childs.length; i++) {
-                if (childs[i] instanceof Label) {
-                    return childs[i];
-                } else if (childs[i] instanceof Canvas) {
-                    Control[] childChilds = ((Canvas)childs[i]).getChildren();
-                    for (int j = 0; j < childChilds.length; j++) {
-                        if (childChilds[j] instanceof Label) {
-                            return childChilds[j];
+            for (Control child : childs) {
+                if (child instanceof Label) {
+                    return child;
+                } else if (child instanceof Canvas) {
+                    Control[] childChilds = ((Canvas)child).getChildren();
+                    for (Control childChild : childChilds) {
+                        if (childChild instanceof Label) {
+                            return childChild;
                         }
                     }
                 }

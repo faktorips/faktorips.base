@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -34,8 +34,8 @@ public class AbstractModelElement implements IModelElement {
     private Map<String, Object> extPropertyValues = new HashMap<String, Object>();
     private String name = null;
     private AbstractRuntimeRepository repository;
-    
-    public AbstractModelElement(AbstractRuntimeRepository repository){
+
+    public AbstractModelElement(AbstractRuntimeRepository repository) {
         this.repository = repository;
     }
 
@@ -104,7 +104,7 @@ public class AbstractModelElement implements IModelElement {
         }
         if (isNull) {
             extPropertyValues.put(id, null);
-        }else{
+        } else {
             for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
                 switch (event) {
                     case XMLStreamConstants.CHARACTERS:
@@ -135,7 +135,7 @@ public class AbstractModelElement implements IModelElement {
     protected AbstractRuntimeRepository getAbstractRepository() {
         return repository;
     }
-    
+
     /**
      * Loads the class indicated by the given name using the repository's class loader.
      */

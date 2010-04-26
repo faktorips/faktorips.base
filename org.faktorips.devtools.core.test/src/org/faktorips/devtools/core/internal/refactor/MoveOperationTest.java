@@ -248,8 +248,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         // add ref to table content
         coverage.newGeneration();
         IIpsObjectGeneration[] generations = coverage.getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length; i++) {
-            ITableContentUsage tableContentUsage = ((IProductCmptGeneration)generations[i]).newTableContentUsage();
+        for (IIpsObjectGeneration generation : generations) {
+            ITableContentUsage tableContentUsage = ((IProductCmptGeneration)generation).newTableContentUsage();
             tableContentUsage.setTableContentName(tableContent.getQualifiedName());
         }
 
@@ -263,10 +263,10 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(file.exists());
 
         // assert references to moved table content in product componet
-        for (int i = 0; i < generations.length; i++) {
-            ITableContentUsage[] tableContentUsages = ((IProductCmptGeneration)generations[i]).getTableContentUsages();
-            for (int j = 0; j < tableContentUsages.length; j++) {
-                assertEquals(target.getIpsObject().getQualifiedName(), tableContentUsages[j].getTableContentName());
+        for (IIpsObjectGeneration generation : generations) {
+            ITableContentUsage[] tableContentUsages = ((IProductCmptGeneration)generation).getTableContentUsages();
+            for (ITableContentUsage tableContentUsage : tableContentUsages) {
+                assertEquals(target.getIpsObject().getQualifiedName(), tableContentUsage.getTableContentName());
             }
         }
     }

@@ -141,9 +141,9 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
     private IPolicyCmptTypeAttribute[] getElements() throws CoreException {
         IPolicyCmptTypeAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
         List<IPolicyCmptTypeAttribute> attributesInDialog = new ArrayList<IPolicyCmptTypeAttribute>();
-        for (int i = 0; i < attributes.length; i++) {
-            if (isAllowedAttribute(attributes[i])) {
-                attributesInDialog.add(attributes[i]);
+        for (IPolicyCmptTypeAttribute attribute : attributes) {
+            if (isAllowedAttribute(attribute)) {
+                attributesInDialog.add(attribute);
             }
         }
         if (showSubtypes) {
@@ -151,17 +151,16 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
                 subtypeHierarchy = policyCmptType.getSubtypeHierarchy();
             }
             IPolicyCmptType[] allSubtypes = subtypeHierarchy.getAllSubtypes(policyCmptType);
-            for (int i = 0; i < allSubtypes.length; i++) {
-                attributes = allSubtypes[i].getPolicyCmptTypeAttributes();
-                for (int j = 0; j < attributes.length; j++) {
-                    if (isAllowedAttribute(attributes[j])) {
-                        attributesInDialog.add(attributes[j]);
+            for (IPolicyCmptType allSubtype : allSubtypes) {
+                attributes = allSubtype.getPolicyCmptTypeAttributes();
+                for (IPolicyCmptTypeAttribute attribute : attributes) {
+                    if (isAllowedAttribute(attribute)) {
+                        attributesInDialog.add(attribute);
                     }
                 }
             }
         }
-        return attributesInDialog.toArray(new IPolicyCmptTypeAttribute[attributesInDialog
-                .size()]);
+        return attributesInDialog.toArray(new IPolicyCmptTypeAttribute[attributesInDialog.size()]);
     }
 
     /*

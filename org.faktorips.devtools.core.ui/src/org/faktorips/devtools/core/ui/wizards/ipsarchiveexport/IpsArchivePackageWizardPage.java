@@ -145,9 +145,9 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                 if (element instanceof IJavaModel) {
                     Object[] children = super.getChildren(element);
                     List<Object> result = new ArrayList<Object>(children.length);
-                    for (int i = 0; i < children.length; i++) {
-                        if (children[i] instanceof IJavaProject) {
-                            IProject project = ((IJavaProject)children[i]).getProject();
+                    for (Object element2 : children) {
+                        if (element2 instanceof IJavaProject) {
+                            IProject project = ((IJavaProject)element2).getProject();
                             try {
                                 if (project.hasNature(IIpsProject.NATURE_ID)) {
                                     IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(
@@ -168,15 +168,15 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                     try {
                         IIpsPackageFragmentRoot[] roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
                         List<Object> rootResult = new ArrayList<Object>(roots.length);
-                        for (int i = 0; i < roots.length; i++) {
-                            if (roots[i].getIpsArchive() != null) {
+                        for (IIpsPackageFragmentRoot root : roots) {
+                            if (root.getIpsArchive() != null) {
                                 continue;
                             }
-                            rootResult.add(roots[i]);
+                            rootResult.add(root);
                             // store elements for product definition view
-                            elementsInTree.put(roots[i], roots[i]);
+                            elementsInTree.put(root, root);
                             // store to be mapped objects
-                            elementsInTree.put(roots[i].getEnclosingResource(), roots[i]);
+                            elementsInTree.put(root.getEnclosingResource(), root);
                         }
                         return rootResult.toArray();
                     } catch (CoreException e) {
@@ -394,10 +394,9 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         if (selection == null || selection.isEmpty()) {
             String[] selectedElements = settings.getArray(SELECTED_TREE_ELEMENTS);
             List<Object> prevSelectedObject = new ArrayList<Object>(selectedElements.length);
-            for (int i = 0; i < selectedElements.length; i++) {
-                for (Iterator<Object> iter = elementsInTree.values().iterator(); iter.hasNext();) {
-                    Object objectInTree = iter.next();
-                    if (labelProvider.getText(objectInTree).equals(selectedElements[i])) {
+            for (String selectedElement : selectedElements) {
+                for (Object objectInTree : elementsInTree.values()) {
+                    if (labelProvider.getText(objectInTree).equals(selectedElement)) {
                         prevSelectedObject.add(objectInTree);
                         continue;
                     }
@@ -416,8 +415,8 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         if (!destinationNamesCombo.getText().equals(directoryNames[0])) {
             destinationNamesCombo.add(destinationNamesCombo.getText());
         }
-        for (int i = 0; i < directoryNames.length; i++) {
-            destinationNamesCombo.add(directoryNames[i]);
+        for (String directoryName : directoryNames) {
+            destinationNamesCombo.add(directoryName);
         }
 
         // restore options

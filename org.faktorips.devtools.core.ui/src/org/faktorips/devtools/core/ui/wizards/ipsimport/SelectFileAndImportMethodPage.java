@@ -238,8 +238,8 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
 
         toolkit.createFormLabel(filenameComposite, Messages.SelectFileAndImportMethodPage_labelFileFormat);
         Combo fileFormatControl = toolkit.createCombo(filenameComposite);
-        for (int i = 0; i < formats.length; i++) {
-            fileFormatControl.add(formats[i].getName());
+        for (ITableFormat format : formats) {
+            fileFormatControl.add(format.getName());
         }
         fileFormatControl.select(0);
         fileFormatField = new ComboField(fileFormatControl);

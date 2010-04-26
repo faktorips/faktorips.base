@@ -97,8 +97,8 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
 
         String[] packNames = archive.getNonEmptyPackages();
         List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>(packNames.length);
-        for (int i = 0; i < packNames.length; i++) {
-            list.add(new ArchiveIpsPackageFragment(this, packNames[i]));
+        for (String packName : packNames) {
+            list.add(new ArchiveIpsPackageFragment(this, packName));
         }
 
         return list;

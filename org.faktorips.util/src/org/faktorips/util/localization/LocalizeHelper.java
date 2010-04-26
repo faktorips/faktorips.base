@@ -381,14 +381,14 @@ public class LocalizeHelper {
         }
 
         File[] files = dir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].getName().equalsIgnoreCase("messages" + langPostfix + ".properties")) {
-                String name = files[i].getAbsolutePath().substring(ignorePathPrefixLength);
+        for (File file : files) {
+            if (file.getName().equalsIgnoreCase("messages" + langPostfix + ".properties")) {
+                String name = file.getAbsolutePath().substring(ignorePathPrefixLength);
 
                 name = name.substring(0, name.lastIndexOf(langPostfix + ".properties"));
-                propertyFiles.put(name, files[i]);
-            } else if (files[i].isDirectory()) {
-                findProperties(files[i], propertyFiles, ignorePathPrefixLength, langPostfix);
+                propertyFiles.put(name, file);
+            } else if (file.isDirectory()) {
+                findProperties(file, propertyFiles, ignorePathPrefixLength, langPostfix);
             }
         }
     }

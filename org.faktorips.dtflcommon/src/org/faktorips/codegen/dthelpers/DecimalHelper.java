@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,77 +31,83 @@ public class DecimalHelper extends AbstractDatatypeHelper {
         super();
     }
 
-	/**
-	 * Constructs a new helper for the given decimal datatype.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if datatype is <code>null</code>.
-	 */
-	public DecimalHelper(DecimalDatatype datatype) {
-		super(datatype);
-	}
+    /**
+     * Constructs a new helper for the given decimal datatype.
+     * 
+     * @throws IllegalArgumentException if datatype is <code>null</code>.
+     */
+    public DecimalHelper(DecimalDatatype datatype) {
+        super(datatype);
+    }
 
-	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
-	 */
-	public JavaCodeFragment newInstance(String value) {
-		if (StringUtils.isEmpty(value)) {
-			return nullExpression();
-		}
-		JavaCodeFragment fragment = new JavaCodeFragment();
-		fragment.appendClassName(Decimal.class);		
-		fragment.append(".valueOf(");
-		fragment.appendQuoted(value);
-		fragment.append(')');
-		return fragment;
-	}
+    /**
+     * Overridden method.
+     * 
+     * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
+     */
+    public JavaCodeFragment newInstance(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return nullExpression();
+        }
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(Decimal.class);
+        fragment.append(".valueOf(");
+        fragment.appendQuoted(value);
+        fragment.append(')');
+        return fragment;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
-	 */
-	protected JavaCodeFragment valueOfExpression(String expression) {
-		JavaCodeFragment fragment = new JavaCodeFragment();
-		fragment.appendClassName(Decimal.class);		
-		fragment.append(".valueOf(");
-		fragment.append(expression);
-		fragment.append(')');
-		return fragment;
-	}
-	
-	/**
-	 * Methode der Oberklasse wird ueberschrieben, weil bei diesem Datentyp
-	 * valueOf-Methode selbst Null-Expression zurueckgeben kann
-	 */
-	public JavaCodeFragment newInstanceFromExpression(String expression) {	
-	    return valueOfExpression(expression);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
+     */
+    @Override
+    protected JavaCodeFragment valueOfExpression(String expression) {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(Decimal.class);
+        fragment.append(".valueOf(");
+        fragment.append(expression);
+        fragment.append(')');
+        return fragment;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
-	 */
-	public JavaCodeFragment nullExpression() {
-		JavaCodeFragment fragment = new JavaCodeFragment();
-		fragment.appendClassName(Decimal.class);
-		fragment.append(".NULL");
-		return fragment;
-	}
+    /**
+     * Methode der Oberklasse wird ueberschrieben, weil bei diesem Datentyp valueOf-Methode selbst
+     * Null-Expression zurueckgeben kann
+     */
+    @Override
+    public JavaCodeFragment newInstanceFromExpression(String expression) {
+        return valueOfExpression(expression);
+    }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
+     */
+    public JavaCodeFragment nullExpression() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(Decimal.class);
+        fragment.append(".NULL");
+        return fragment;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
      */
+    @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-            return DecimalRange.class.getName();
+        return DecimalRange.class.getName();
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,14 +21,13 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.util.ArgumentCheck;
 
-
 /**
  *
  */
 public class Round extends AbstractFlFunction {
-    
+
     private final static String[] ROUNDING_MODES = new String[7];
-    
+
     static {
         ROUNDING_MODES[BigDecimal.ROUND_CEILING] = "ROUND_CEILING"; //$NON-NLS-1$
         ROUNDING_MODES[BigDecimal.ROUND_DOWN] = "ROUND_DOWN"; //$NON-NLS-1$
@@ -38,28 +37,28 @@ public class Round extends AbstractFlFunction {
         ROUNDING_MODES[BigDecimal.ROUND_HALF_UP] = "ROUND_HALF_UP"; //$NON-NLS-1$
         ROUNDING_MODES[BigDecimal.ROUND_UP] = "ROUND_UP"; //$NON-NLS-1$
     }
-    
+
     private int roundingMode;
-    
+
     /**
      * Constructs a new round function with the given name and rounding mode.
      * 
      * @param name The function name.
      * @param roundingMode One of the rounding modes defined by <code>BigDecimal</code>.
      * 
-     * @throws IllegalArgumentException if name is <code>null</code> or the roundingMode
-     * is illegal.
+     * @throws IllegalArgumentException if name is <code>null</code> or the roundingMode is illegal.
      */
     public Round(String name, String description, int roundingMode) {
-        super(name, description, Datatype.DECIMAL, new Datatype[] {Datatype.DECIMAL, Datatype.PRIMITIVE_INT});
-        if (roundingMode<0 || roundingMode > ROUNDING_MODES.length-1) {
+        super(name, description, Datatype.DECIMAL, new Datatype[] { Datatype.DECIMAL, Datatype.PRIMITIVE_INT });
+        if (roundingMode < 0 || roundingMode > ROUNDING_MODES.length - 1) {
             throw new IllegalArgumentException("Illegal rounding mode " + roundingMode); //$NON-NLS-1$
         }
         this.roundingMode = roundingMode;
     }
 
-    /** 
+    /**
      * Overridden method.
+     * 
      * @see org.faktorips.fl.FlFunction#compile(org.faktorips.codegen.JavaCodeFragment[])
      */
     public CompilationResult compile(CompilationResult[] argResults) {

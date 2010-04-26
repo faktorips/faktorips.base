@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,40 +21,38 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * Page to show an error for the move/rename which makes operation impossible.    
+ * Page to show an error for the move/rename which makes operation impossible.
  * 
  * @author Thorsten Guenther
  */
 public class ErrorPage extends WizardPage {
-	
-	/**
-	 * The page-id to identify this page.
-	 */
-	private static final String PAGE_ID = "MoveWizard.error"; //$NON-NLS-1$
 
-	/**
-	 * Creates a new page to select the objects to copy.
-	 */
-	protected ErrorPage(String text) {
-		super(PAGE_ID, Messages.ErrorPage_error, null);
-		
-		super.setDescription(text);
-		setPageComplete(false);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void createControl(Composite parent) {
+    /**
+     * The page-id to identify this page.
+     */
+    private static final String PAGE_ID = "MoveWizard.error"; //$NON-NLS-1$
+
+    /**
+     * Creates a new page to select the objects to copy.
+     */
+    protected ErrorPage(String text) {
+        super(PAGE_ID, Messages.ErrorPage_error, null);
+
+        super.setDescription(text);
+        setPageComplete(false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
 
-		Composite root = toolkit.createComposite(parent);
-		root.setLayout(new GridLayout(1, false));
-		root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		setControl(root);
+        Composite root = toolkit.createComposite(parent);
+        root.setLayout(new GridLayout(1, false));
+        root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        setControl(root);
 
-		toolkit.createLabel(root, this.getDescription());
-	}
+        toolkit.createLabel(root, this.getDescription());
+    }
 }
-
-

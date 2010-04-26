@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -117,8 +116,8 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(msg);
         ObjectProperty[] op = msg.getInvalidObjectProperties();
         List<Object> invalidObjects = new ArrayList<Object>();
-        for (int i = 0; i < op.length; i++) {
-            invalidObjects.add(op[i].getObject());
+        for (ObjectProperty element : op) {
+            invalidObjects.add(element.getObject());
         }
         assertEquals(2, invalidObjects.size());
         assertTrue(invalidObjects.contains(attr1)); // this has once been a bug
@@ -644,8 +643,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(a2, all.get(1));
         assertEquals(a1, all.get(2));
 
-        for (Iterator<IAttribute> it = all.iterator(); it.hasNext();) {
-            IAttribute attribute = it.next();
+        for (IAttribute attribute : all) {
             if (attribute == a1Supertype) {
                 fail("the attribute is expected to be overridden.");
             }

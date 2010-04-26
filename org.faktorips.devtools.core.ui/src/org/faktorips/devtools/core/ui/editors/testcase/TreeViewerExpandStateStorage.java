@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -78,8 +77,7 @@ public class TreeViewerExpandStateStorage {
 
     public void restoreExpandedStatus() {
         treeViewer.collapseAll();
-        for (Iterator<String> iter = expandedItems.iterator(); iter.hasNext();) {
-            String itemPath = iter.next();
+        for (String itemPath : expandedItems) {
             searchAndExpandInTree(itemPath, treeViewer.getTree().getItems(), ""); //$NON-NLS-1$
         }
 
@@ -116,12 +114,11 @@ public class TreeViewerExpandStateStorage {
         List<Object> elementsToUncheck = new ArrayList<Object>();
         elementsToUncheck.addAll(Arrays.asList(checkboxTreeViewer.getCheckedElements()));
         // 2. remove all previous checked elements
-        for (int i = 0; i < checkedElements.length; i++) {
-            elementsToUncheck.remove(checkedElements[i]);
+        for (Object checkedElement : checkedElements) {
+            elementsToUncheck.remove(checkedElement);
         }
         // 3. the result contains all unchecked elements
-        for (Iterator<Object> iterator = elementsToUncheck.iterator(); iterator.hasNext();) {
-            Object object = iterator.next();
+        for (Object object : elementsToUncheck) {
             if (!(object instanceof TestCaseTypeAssociation)) {
                 // don't change check state of TestCaseTypeAssociation
                 // otherwise all child's are also unchecked
@@ -134,20 +131,20 @@ public class TreeViewerExpandStateStorage {
             TreeItem childs[],
             String parent,
             TreeItemActionStrategy strategy) {
-        for (int i = 0; i < childs.length; i++) {
-            if (childs[i].isDisposed()) {
+        for (TreeItem child : childs) {
+            if (child.isDisposed()) {
                 continue;
             }
-            String pathOfChild = getItemPath(parent, childs[i]);
+            String pathOfChild = getItemPath(parent, child);
             if (pathOfChild != null && !pathOfChild.startsWith(parent)) {
                 return false;
             }
 
             if (itemPath.equals(pathOfChild)) {
-                strategy.execute(childs[i]);
+                strategy.execute(child);
                 return true;
             }
-            TreeItem subChilds[] = childs[i].getItems();
+            TreeItem subChilds[] = child.getItems();
             if (searchAndProcessInTree(itemPath, subChilds, pathOfChild, strategy)) {
                 return true;
             }
@@ -156,8 +153,7 @@ public class TreeViewerExpandStateStorage {
     }
 
     private void checkExpandedStatus(ArrayList<String> expandedItems, TreeItem childs[], String parent) {
-        for (int i = 0; i < childs.length; i++) {
-            TreeItem item = childs[i];
+        for (TreeItem item : childs) {
             String itemPath = getItemPath(parent, item);
             if (item.isDisposed() || itemPath == null) {
                 continue;

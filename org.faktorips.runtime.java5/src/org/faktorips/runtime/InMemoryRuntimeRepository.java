@@ -87,8 +87,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         if (versionId == null) {
             throw new RuntimeException("Not implemented yet.");
         }
-        for (Iterator<IProductComponent> it = productCmpts.values().iterator(); it.hasNext();) {
-            IProductComponent cmpt = it.next();
+        for (IProductComponent cmpt : productCmpts.values()) {
             if (kindId.equals(cmpt.getKindId()) && versionId.equals(cmpt.getVersionId())) {
                 return cmpt;
             }
@@ -101,8 +100,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      */
     @Override
     public void getAllProductComponents(String kindId, List<IProductComponent> result) {
-        for (Iterator<IProductComponent> it = productCmpts.values().iterator(); it.hasNext();) {
-            IProductComponent cmpt = it.next();
+        for (IProductComponent cmpt : productCmpts.values()) {
             if (kindId.equals(cmpt.getKindId())) {
                 result.add(cmpt);
             }
@@ -138,8 +136,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      */
     @Override
     public ITable getTableInternal(Class<?> tableClass) {
-        for (Iterator<ITable> it = tables.iterator(); it.hasNext();) {
-            ITable table = it.next();
+        for (ITable table : tables) {
             if (tableClass.isAssignableFrom(table.getClass())) {
                 return table;
             }
@@ -251,8 +248,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         long effectiveTime = effectiveDate.getTimeInMillis();
         long foundGenValidFrom = Long.MIN_VALUE;
         long genValidFrom;
-        for (Iterator<IProductComponentGeneration> it = genSortedSet.iterator(); it.hasNext();) {
-            IProductComponentGeneration gen = it.next();
+        for (IProductComponentGeneration gen : genSortedSet) {
             genValidFrom = gen.getValidFrom(effectiveDate.getTimeZone()).getTime();
             if (effectiveTime >= genValidFrom && genValidFrom > foundGenValidFrom) {
                 foundGen = gen;
@@ -307,8 +303,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     protected void getIpsTestCasesStartingWith(String qNamePrefix,
             List<IpsTest2> result,
             IRuntimeRepository runtimeRepository) {
-        for (Iterator<String> iter = testCasesByQName.keySet().iterator(); iter.hasNext();) {
-            String qName = iter.next();
+        for (String qName : testCasesByQName.keySet()) {
             if (qName.startsWith(qNamePrefix)) {
                 result.add(testCasesByQName.get(qName));
             }
@@ -347,8 +342,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         if (successor == null) {
             return null;
         }
-        for (Iterator<IProductComponentGeneration> it = successor.iterator(); it.hasNext();) {
-            IProductComponentGeneration next = it.next();
+        for (IProductComponentGeneration next : successor) {
             if (next.equals(generation)) {
                 continue;
             }

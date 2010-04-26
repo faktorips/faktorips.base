@@ -312,6 +312,7 @@ public class Message {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         switch (severity) {
@@ -351,6 +352,7 @@ public class Message {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof Message)) {
             return false;
@@ -379,6 +381,7 @@ public class Message {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return text.hashCode();
     }

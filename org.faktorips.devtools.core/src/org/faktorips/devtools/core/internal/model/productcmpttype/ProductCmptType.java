@@ -218,8 +218,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException {
         ProdDefPropertyType[] types = ProdDefPropertyType.values();
-        for (int i = 0; i < types.length; i++) {
-            IProdDefProperty prop = findProdDefProperty(types[i], propName, ipsProject);
+        for (ProdDefPropertyType type : types) {
+            IProdDefProperty prop = findProdDefProperty(type, propName, ipsProject);
             if (prop != null) {
                 return prop;
             }
@@ -421,8 +421,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     public IProductCmptTypeMethod[] findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException {
         ArrayList<IProductCmptTypeMethod> overloadedMethods = new ArrayList<IProductCmptTypeMethod>();
-        for (Iterator<? extends IMethod> it = methods.iterator(); it.hasNext();) {
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+        for (IMethod method2 : methods) {
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)method2;
             if (method.isFormulaSignatureDefinition() && method.isOverloadsFormula()) {
                 IProductCmptTypeMethod overloadedMethod = method.findOverloadedFormulaMethod(ipsProject);
                 if (overloadedMethod != null) {
@@ -440,8 +440,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (StringUtils.isEmpty(formulaName)) {
             return null;
         }
-        for (Iterator<? extends IMethod> it = methods.iterator(); it.hasNext();) {
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+        for (IMethod method2 : methods) {
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)method2;
             if (method.isFormulaSignatureDefinition() && formulaName.equalsIgnoreCase(method.getFormulaName())) {
                 return method;
             }
@@ -452,8 +452,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptTypeMethod[] getFormulaSignatures() {
 
         ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
-        for (Iterator<? extends IMethod> it = methods.iterator(); it.hasNext();) {
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+        for (IMethod method2 : methods) {
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)method2;
             if (method.isFormulaSignatureDefinition()) {
                 result.add(method);
             }
@@ -479,11 +479,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         IMethod[] candidates = super.findOverrideMethodCandidates(onlyNotImplementedAbstractMethods, ipsProject);
         List<IProductCmptTypeMethod> overloadedMethods = Arrays.asList(findSignaturesOfOverloadedFormulas(ipsProject));
         ArrayList<IMethod> result = new ArrayList<IMethod>(candidates.length);
-        for (int i = 0; i < candidates.length; i++) {
-            if (overloadedMethods.contains(candidates[i])) {
+        for (IMethod candidate : candidates) {
+            if (overloadedMethods.contains(candidate)) {
                 continue;
             }
-            result.add(candidates[i]);
+            result.add(candidate);
         }
         return result.toArray(new IMethod[result.size()]);
     }
@@ -517,9 +517,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
             throws CoreException {
         ArrayList<IProductCmptTypeMethod> overloadedSupertypeFormulaSignatures = new ArrayList<IProductCmptTypeMethod>();
         IProductCmptTypeMethod[] formulaSignatures = getFormulaSignatures();
-        for (int i = 0; i < formulaSignatures.length; i++) {
-            if (formulaSignatures[i].isOverloadsFormula()) {
-                IProductCmptTypeMethod method = formulaSignatures[i].findOverloadedFormulaMethod(ipsProject);
+        for (IProductCmptTypeMethod formulaSignature : formulaSignatures) {
+            if (formulaSignature.isOverloadsFormula()) {
+                IProductCmptTypeMethod method = formulaSignature.findOverloadedFormulaMethod(ipsProject);
                 if (method != null) {
                     overloadedSupertypeFormulaSignatures.add(method);
                 }
@@ -528,12 +528,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         IProductCmptTypeMethod[] nonFormulas = getNonFormulaProductCmptTypeMethods();
         for (IProductCmptTypeMethod overloadedMethod : overloadedSupertypeFormulaSignatures) {
-            for (int i = 0; i < nonFormulas.length; i++) {
-                if (nonFormulas[i].isSameSignature(overloadedMethod)) {
+            for (IProductCmptTypeMethod nonFormula : nonFormulas) {
+                if (nonFormula.isSameSignature(overloadedMethod)) {
                     String text = NLS.bind(Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden,
                             overloadedMethod.getFormulaName());
                     msgList.add(new Message(MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN, text, Message.ERROR,
-                            nonFormulas[i], IIpsElement.PROPERTY_NAME));
+                            nonFormula, IIpsElement.PROPERTY_NAME));
                 }
             }
         }
@@ -785,8 +785,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
             boolean onlyFormulas = true;
             boolean onlyFormulasInSameType = true;
             IProductCmptType prodType = null;
-            for (int i = 0; i < invalidObjProperties.length; i++) {
-                Object obj = invalidObjProperties[i].getObject();
+            for (ObjectProperty invalidObjPropertie : invalidObjProperties) {
+                Object obj = invalidObjPropertie.getObject();
                 if (!(obj instanceof IProductCmptTypeMethod)) {
                     onlyFormulas = false;
                     onlyFormulasInSameType = false;

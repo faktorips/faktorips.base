@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,7 +19,6 @@ import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-
 
 /**
  * Extension of {@link PropertyChangeSupport} providing special methods to fire
@@ -47,15 +46,15 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
     }
 
     /**
-     * Fire an existing AssociationChangedEvent to any registered listeners.
-     * No event is fired if the given event's added and removed targets are
-     * equal or both null.
-     * @param evt  The AssociationChangedEvent object.
+     * Fire an existing AssociationChangedEvent to any registered listeners. No event is fired if
+     * the given event's added and removed targets are equal or both null.
+     * 
+     * @param evt The AssociationChangedEvent object.
      */
     public void fireAssociationChange(AssociationChangedEvent evt) {
         Object addedAssociationTarget = evt.getAddedAssociationTarget();
         Object removedAssociationTarget = evt.getRemovedAssociationTarget();
-        if(addedAssociationTarget==null && removedAssociationTarget==null){
+        if (addedAssociationTarget == null && removedAssociationTarget == null) {
             return;
         }
         firePropertyChange(evt);

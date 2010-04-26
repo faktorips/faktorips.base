@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,8 +17,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * This class is copied from "org.eclipse.ui.internal.ide" as we must register the shared images
- * but can't access the internal constants. 
+ * This class is copied from "org.eclipse.ui.internal.ide" as we must register the shared images but
+ * can't access the internal constants.
  */
 public final class IDEInternalWorkbenchImages {
 
@@ -114,7 +114,7 @@ public final class IDEInternalWorkbenchImages {
     public final static String IMG_ETOOL_DEF_PERSPECTIVE = "IMG_ETOOL_DEF_PERSPECTIVE"; //$NON-NLS-1$
 
     public final static String IMG_ETOOL_DEF_PERSPECTIVE_HOVER = "IMG_ETOOL_DEF_PERSPECTIVE_HOVER"; //$NON-NLS-1$
-    
+
     public final static String IMG_ETOOL_PROBLEM_CATEGORY = "IMG_ETOOL_PROBLEM_CATEGORY"; //$NON-NLS-1$
 
     // local toolbars
@@ -151,12 +151,12 @@ public final class IDEInternalWorkbenchImages {
     public final static String IMG_LCL_REMBKMRK_TSK = "IMG_LCL_REMBKMRK_TSK"; //$NON-NLS-1$
 
     public final static String IMG_LCL_SHOWSYNC_RN = "IMG_LCL_SHOWSYNC_RN"; //$NON-NLS-1$
-    
+
     public final static String IMG_LCL_FLAT_LAYOUT = "IMG_LCL_FLAT_LAYOUT"; //$NON-NLS-1$
-    
+
     public final static String IMG_LCL_HIERARCHICAL_LAYOUT = "IMG_LCL_HIERARCHICAL_LAYOUT"; //$NON-NLS-1$
 
-    //wizard images
+    // wizard images
     public final static String IMG_WIZBAN_NEWPRJ_WIZ = "IMG_WIZBAN_NEWPRJ_WIZ"; //$NON-NLS-1$
 
     public final static String IMG_WIZBAN_NEWFOLDER_WIZ = "IMG_WIZBAN_NEWFOLDER_WIZ"; //$NON-NLS-1$
@@ -172,9 +172,9 @@ public final class IDEInternalWorkbenchImages {
     public final static String IMG_WIZBAN_EXPORTZIP_WIZ = "IMG_WIZBAN_EXPORTZIP_WIZ"; //$NON-NLS-1$
 
     public final static String IMG_WIZBAN_RESOURCEWORKINGSET_WIZ = "IMG_WIZBAN_EXPORTZIP_WIZ"; //$NON-NLS-1$
-    
+
     public final static String IMG_DLGBAN_SAVEAS_DLG = "IMG_DLGBAN_SAVEAS_DLG"; //$NON-NLS-1$
-    
+
     public final static String IMG_DLGBAN_QUICKFIX_DLG = "IMG_DLGBAN_QUICKFIX_DLG"; //$NON-NLS-1$
 
     public final static String IMG_VIEW_DEFAULTVIEW_MISC = "IMG_VIEW_DEFAULTVIEW_MISC"; //$NON-NLS-1$
@@ -191,8 +191,8 @@ public final class IDEInternalWorkbenchImages {
     public final static String IMG_OBJS_INCOMPLETE_TSK = "IMG_OBJS_INCOMPLETE_TSK"; //$NON-NLS-1$
 
     public final static String IMG_OBJS_BRKPT_TSK = "IMG_OBJS_BRKPT_TSK"; //$NON-NLS-1$
-    
-    //problems images
+
+    // problems images
     public static final String IMG_OBJS_ERROR_PATH = "IMG_OBJS_ERROR_PATH"; //$NON-NLS-1$
 
     public static final String IMG_OBJS_WARNING_PATH = "IMG_OBJS_WARNING_PATH"; //$NON-NLS-1$
@@ -250,22 +250,19 @@ public final class IDEInternalWorkbenchImages {
 
     public final static String IMG_OBJS_DND_OFFSCREEN_MASK = "IMG_OBJS_DND_OFFSCREEN_MASK"; //$NON-NLS-1$
 
-    //Quick fix images
+    // Quick fix images
     public static final String IMG_DLCL_QUICK_FIX_DISABLED = "IMG_DLCL_QUICK_FIX_DISABLED";//$NON-NLS-1$
 
     public static final String IMG_ELCL_QUICK_FIX_ENABLED = "IMG_ELCL_QUICK_FIX_ENABLED"; //$NON-NLS-1$
-    
 
     /**
-     * Returns the image descriptor for the workbench image with the given
-     * symbolic name. Use this method to retrieve image descriptors for any
-     * of the images named in this class.
-     *
+     * Returns the image descriptor for the workbench image with the given symbolic name. Use this
+     * method to retrieve image descriptors for any of the images named in this class.
+     * 
      * @param symbolicName the symbolic name of the image
      * @return the image descriptor, or <code>null</code> if none
      */
     public static ImageDescriptor getImageDescriptor(String symbolicName) {
-        return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-                symbolicName);
+        return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(symbolicName);
     }
 }

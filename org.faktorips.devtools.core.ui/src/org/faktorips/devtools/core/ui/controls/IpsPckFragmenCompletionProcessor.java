@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
  * @author Joerg Ortmann
  */
 public class IpsPckFragmenCompletionProcessor extends AbstractCompletionProcessor {
-    
+
     private IpsPckFragmentRefControl control;
 
     public IpsPckFragmenCompletionProcessor(IpsPckFragmentRefControl control) {
@@ -34,20 +34,24 @@ public class IpsPckFragmenCompletionProcessor extends AbstractCompletionProcesso
         setComputeProposalForEmptyPrefix(true);
     }
 
-    public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
+    @Override
+    public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl,
+            int documentOffset) {
         if (control != null) {
             IIpsPackageFragmentRoot ipsPckFragmentRoot = control.getIpsPckFragmentRoot();
-            if (ipsPckFragmentRoot != null){
+            if (ipsPckFragmentRoot != null) {
                 setIpsProject(ipsPckFragmentRoot.getIpsProject());
             }
         }
         return super.computeCompletionProposals(contentAssistSubjectControl, documentOffset);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result) throws Exception {
+    @Override
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
+            throws Exception {
         IIpsPackageFragmentRoot ipsPckFragmentRoot = control.getIpsPckFragmentRoot();
 
         if (ipsPckFragmentRoot == null) {

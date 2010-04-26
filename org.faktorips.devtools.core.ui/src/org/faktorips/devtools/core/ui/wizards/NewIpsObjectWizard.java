@@ -134,9 +134,9 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
                 } else {
                     monitor.beginTask("Creating object", 4); //$NON-NLS-1$
                 }
-                for (int i = 0; i < pages.length; i++) {
-                    if (pages[i] instanceof AbstractIpsObjectNewWizardPage) {
-                        AbstractIpsObjectNewWizardPage page = (AbstractIpsObjectNewWizardPage)pages[i];
+                for (IWizardPage page2 : pages) {
+                    if (page2 instanceof AbstractIpsObjectNewWizardPage) {
+                        AbstractIpsObjectNewWizardPage page = (AbstractIpsObjectNewWizardPage)page2;
                         if (page.canCreateIpsSrcFile()) {
                             IIpsSrcFile srcFile = page.createIpsSrcFile(new SubProgressMonitor(monitor, 2));
                             if (srcFile == null) {

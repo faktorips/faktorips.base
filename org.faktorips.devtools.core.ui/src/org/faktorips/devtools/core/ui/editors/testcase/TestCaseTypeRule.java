@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -97,17 +96,16 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
         // delegate the validation to the test rules
         HashMap<String, Message> messages = new HashMap<String, Message>();
         ITestRule[] testRules = testCase.getTestRule(testRuleParameter.getName());
-        for (int i = 0; i < testRules.length; i++) {
-            MessageList msgList = testRules[i].validate(ipsProject);
-            for (Iterator<Message> iter = msgList.iterator(); iter.hasNext();) {
-                Message msg = iter.next();
+        for (ITestRule testRule : testRules) {
+            MessageList msgList = testRule.validate(ipsProject);
+            for (Message msg : msgList) {
                 messages.put(msg.getCode(), msg);
             }
         }
 
         // add the unique test rule messages to the list of messages
-        for (Iterator<Message> iter = messages.values().iterator(); iter.hasNext();) {
-            list.add(iter.next());
+        for (Message message : messages.values()) {
+            list.add(message);
         }
     }
 

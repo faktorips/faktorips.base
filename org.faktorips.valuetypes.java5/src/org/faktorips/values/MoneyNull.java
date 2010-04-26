@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,8 +24,8 @@ package org.faktorips.values;
 class MoneyNull extends Money implements NullObject {
 
     private static final long serialVersionUID = -3546233368167459967L;
-    static final String STRING_REPRESENTATION = "MoneyNull"; 
-    
+    static final String STRING_REPRESENTATION = "MoneyNull";
+
     MoneyNull() {
         super(0, null);
     }
@@ -46,12 +46,12 @@ class MoneyNull extends Money implements NullObject {
     }
 
     @Override
-    public Money max(Money value){
+    public Money max(Money value) {
         return Money.NULL;
     }
 
     @Override
-    public Money min(Money value){
+    public Money min(Money value) {
         return Money.NULL;
     }
 
@@ -60,7 +60,7 @@ class MoneyNull extends Money implements NullObject {
      */
     @Override
     public Money add(Money m) {
-        if (m==null) {
+        if (m == null) {
             throw new NullPointerException();
         }
         return this;
@@ -71,7 +71,7 @@ class MoneyNull extends Money implements NullObject {
      */
     @Override
     public Money subtract(Money m) {
-        if (m==null) {
+        if (m == null) {
             throw new NullPointerException();
         }
         return this;
@@ -94,7 +94,7 @@ class MoneyNull extends Money implements NullObject {
 
     @Override
     public Money multiply(Decimal d, int roundingMode) {
-        if (d==null) {
+        if (d == null) {
             throw new NullPointerException();
         }
         return Money.NULL;
@@ -112,7 +112,7 @@ class MoneyNull extends Money implements NullObject {
 
     @Override
     public Money divide(Decimal d, int roundingMode) {
-        if (d==null) {
+        if (d == null) {
             throw new NullPointerException();
         }
         return this;
@@ -120,7 +120,7 @@ class MoneyNull extends Money implements NullObject {
 
     @Override
     public boolean greaterThan(Money other) {
-        if (other==null) {
+        if (other == null) {
             throw new NullPointerException();
         }
         return false;
@@ -128,7 +128,7 @@ class MoneyNull extends Money implements NullObject {
 
     @Override
     public boolean greaterThanOrEqual(Money other) {
-        if (other==null) {
+        if (other == null) {
             throw new NullPointerException();
         }
         return false;
@@ -136,7 +136,7 @@ class MoneyNull extends Money implements NullObject {
 
     @Override
     public boolean lessThan(Money other) {
-        if (other==null) {
+        if (other == null) {
             throw new NullPointerException();
         }
         return false;
@@ -144,7 +144,7 @@ class MoneyNull extends Money implements NullObject {
 
     @Override
     public boolean lessThanOrEqual(Money other) {
-        if (other==null) {
+        if (other == null) {
             throw new NullPointerException();
         }
         return false;
@@ -163,11 +163,9 @@ class MoneyNull extends Money implements NullObject {
         return ((Money)o).isNull();
     }
 
-
     @Override
     public String toString() {
         return STRING_REPRESENTATION;
     }
-
 
 }

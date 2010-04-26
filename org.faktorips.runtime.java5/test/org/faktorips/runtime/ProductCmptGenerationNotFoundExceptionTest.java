@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,8 +24,8 @@ import junit.framework.TestCase;
 public class ProductCmptGenerationNotFoundExceptionTest extends TestCase {
 
     public void testToString() {
-        ProductCmptGenerationNotFoundException e = new ProductCmptGenerationNotFoundException("MotorProducts", "MotorProduct", 
-                new GregorianCalendar(2007, 0, 1), false);
+        ProductCmptGenerationNotFoundException e = new ProductCmptGenerationNotFoundException("MotorProducts",
+                "MotorProduct", new GregorianCalendar(2007, 0, 1), false);
         e.toString();
     }
 }

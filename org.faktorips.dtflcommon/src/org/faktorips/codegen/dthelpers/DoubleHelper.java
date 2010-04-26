@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -43,6 +43,7 @@ public class DoubleHelper extends AbstractDatatypeHelper {
      * 
      * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
      */
+    @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         return newInstance(expression);
     }
@@ -77,13 +78,15 @@ public class DoubleHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-            return DoubleRange.class.getName();
+        return DoubleRange.class.getName();
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,

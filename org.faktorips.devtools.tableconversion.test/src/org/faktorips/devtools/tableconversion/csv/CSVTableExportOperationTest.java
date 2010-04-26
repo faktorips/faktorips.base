@@ -24,7 +24,6 @@ import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
-
 public class CSVTableExportOperationTest extends AbstractTableTest {
 
     private ITableFormat format;
@@ -78,7 +77,7 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
         IColumn col = getStructure().newColumn();
 
         MessageList ml = new MessageList();
-        CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml );
+        CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,10 +29,9 @@ import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 public class DeltaContentProvider implements ITreeContentProvider {
 
     private IGenerationToTypeDelta delta;
-    
+
     public DeltaContentProvider() {
     }
-
 
     /**
      * {@inheritDoc}
@@ -40,15 +39,15 @@ public class DeltaContentProvider implements ITreeContentProvider {
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         delta = (IGenerationToTypeDelta)newInput;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public Object[] getElements(Object inputElement) {
         List<DeltaType> elements = new ArrayList<DeltaType>();
-        for (int i = 0; i < DeltaType.ALL_TYPES.length; i++) {
-            if (delta.getEntries(DeltaType.ALL_TYPES[i]).length>0) {
-                elements.add(DeltaType.ALL_TYPES[i]);
+        for (DeltaType element : DeltaType.ALL_TYPES) {
+            if (delta.getEntries(element).length > 0) {
+                elements.add(element);
             }
         }
         return elements.toArray();
@@ -65,7 +64,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getChildren(Object parentElement) {
-        if (! (parentElement instanceof DeltaType)) {
+        if (!(parentElement instanceof DeltaType)) {
             return new Object[0];
         }
         return delta.getEntries((DeltaType)parentElement);

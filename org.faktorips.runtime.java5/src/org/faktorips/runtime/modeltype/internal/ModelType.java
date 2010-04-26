@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -61,14 +61,14 @@ public class ModelType extends AbstractModelElement implements IModelType {
     public IModelTypeAssociation getDeclaredAssociation(String name) {
         return associationsByName.get(name);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public List<IModelTypeAssociation> getDeclaredAssociations() {
         return Collections.unmodifiableList(associations);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -90,20 +90,21 @@ public class ModelType extends AbstractModelElement implements IModelType {
      */
     public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException {
         IModelTypeAttribute attr = attributesByName.get(name);
-        if (attr==null) {
-            throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute "  + name);
+        if (attr == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
         }
         return attr;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException {
         AttributeFinder finder = new AttributeFinder(name);
         finder.visitHierarchy(this);
-        if (finder.attribute==null) {
-            throw new IllegalArgumentException("The type " + this + "(or one of it's supertypes) hasn't got an attribute "  + name);
+        if (finder.attribute == null) {
+            throw new IllegalArgumentException("The type " + this
+                    + "(or one of it's supertypes) hasn't got an attribute " + name);
         }
         return finder.attribute;
     }
@@ -123,7 +124,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
         attrCollector.visitHierarchy(this);
         return attrCollector.result;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -161,6 +162,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
@@ -247,43 +249,43 @@ public class ModelType extends AbstractModelElement implements IModelType {
     static class AttributeCollector extends TypeHierarchyVisitor {
 
         List<IModelTypeAttribute> result = new ArrayList<IModelTypeAttribute>(30);
-        
+
         @Override
         public boolean visitType(IModelType type) {
             result.addAll(type.getDeclaredAttributes());
             return true;
         }
-        
+
     }
-    
+
     static class AttributeFinder extends TypeHierarchyVisitor {
 
         private String attrName;
         private IModelTypeAttribute attribute = null;
-        
+
         public AttributeFinder(String attrName) {
             super();
             this.attrName = attrName;
         }
 
-
         @Override
         public boolean visitType(IModelType type) {
             attribute = ((ModelType)type).attributesByName.get(attrName);
-            return attribute==null;
+            return attribute == null;
         }
-        
+
     }
+
     static class AssociationsCollector extends TypeHierarchyVisitor {
 
         List<IModelTypeAssociation> result = new ArrayList<IModelTypeAssociation>();
-        
+
         @Override
         public boolean visitType(IModelType type) {
             result.addAll(type.getDeclaredAssociations());
             return true;
         }
-        
+
     }
-    
+
 }

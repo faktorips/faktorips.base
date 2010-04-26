@@ -35,8 +35,8 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
     }
 
     /**
-     * Creates and new BigDecimalRange with the provided lower and upper bounds, the step increment and
-     * an indicator saying if the null value is contained.
+     * Creates and new BigDecimalRange with the provided lower and upper bounds, the step increment
+     * and an indicator saying if the null value is contained.
      */
     public final static BigDecimalRange valueOf(String lower, String upper, String step, boolean containsNull) {
         return new BigDecimalRange(new BigDecimal(lower), new BigDecimal(upper), new BigDecimal(step), containsNull);

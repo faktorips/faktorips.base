@@ -103,8 +103,8 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
         super.validateThis(list, ipsProject);
         // datatype specified
         if (StringUtils.isEmpty(datatype)) {
-            list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, Messages.DecisionBFE_datatypeNotSpecified, Message.ERROR,
-                    this));
+            list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, Messages.DecisionBFE_datatypeNotSpecified,
+                    Message.ERROR, this));
             return;
         }
         // datatype exists

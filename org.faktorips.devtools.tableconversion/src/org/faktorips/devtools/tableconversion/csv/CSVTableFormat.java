@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import au.com.bytecode.opencsv.CSVReader;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -22,8 +24,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.util.message.MessageList;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * Table format for comma separated values (CSV).

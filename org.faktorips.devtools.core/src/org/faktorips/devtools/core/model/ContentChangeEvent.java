@@ -85,8 +85,8 @@ public class ContentChangeEvent {
     private ContentChangeEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
         ipsSrcFile = file;
         movedParts = new ArrayList<IIpsObjectPart>();
-        for (int i = 0; i < parts.length; i++) {
-            movedParts.add(parts[i]);
+        for (IIpsObjectPart part2 : parts) {
+            movedParts.add(part2);
         }
         type = TYPE_PARTS_CHANGED_POSITIONS;
     }

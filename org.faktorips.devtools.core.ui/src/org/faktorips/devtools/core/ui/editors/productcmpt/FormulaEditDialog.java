@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -117,8 +116,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         if (messages.getNoOfMessages() > 0) {
             // get only message wich are not for the dummy formula test case
             // (getTransientFormulaTestCases)
-            for (Iterator<Message> iter = messages.iterator(); iter.hasNext();) {
-                Message msg = iter.next();
+            for (Message msg : messages) {
                 if (isNotMessageForDummyFormulaTestCase(msg)) {
                     relevantMessages.add(msg);
                 }
@@ -147,14 +145,14 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      */
     private boolean isNotMessageForDummyFormulaTestCase(Message msg) {
         ObjectProperty[] props = msg.getInvalidObjectProperties();
-        for (int i = 0; i < props.length; i++) {
-            if (props[i].getObject() instanceof IFormulaTestInputValue) {
-                IFormulaTestInputValue inputValue = (IFormulaTestInputValue)props[i].getObject();
+        for (ObjectProperty prop : props) {
+            if (prop.getObject() instanceof IFormulaTestInputValue) {
+                IFormulaTestInputValue inputValue = (IFormulaTestInputValue)prop.getObject();
                 if (inputValue.getParent().equals(getTransientFormulaTestCases())) {
                     return false;
                 }
-            } else if (props[i].getObject() instanceof IFormulaTestCase) {
-                if (props[i].getObject().equals(getTransientFormulaTestCases())) {
+            } else if (prop.getObject() instanceof IFormulaTestCase) {
+                if (prop.getObject().equals(getTransientFormulaTestCases())) {
                     return false;
                 }
             }

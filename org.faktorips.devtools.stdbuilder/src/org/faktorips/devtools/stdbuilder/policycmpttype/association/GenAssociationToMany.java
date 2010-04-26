@@ -129,12 +129,11 @@ public class GenAssociationToMany extends GenAssociation {
      * public void addCoverage(ICoverage objectToAdd)
      * </pre>
      */
-    public void generateSignatureAddObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureAddObject(JavaCodeFragmentBuilder methodsBuilder) {
         generateSignatureAddObject(methodsBuilder, false);
     }
 
-    public void generateSignatureAddObject(JavaCodeFragmentBuilder methodsBuilder, boolean internal)
-            throws CoreException {
+    public void generateSignatureAddObject(JavaCodeFragmentBuilder methodsBuilder, boolean internal) {
         String methodName = internal ? getMethodNameAddObjectInternal() : getMethodNameAddObject();
         String paramName = getParamNameForAddObject();
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[] { paramName },
@@ -172,7 +171,7 @@ public class GenAssociationToMany extends GenAssociation {
      * public void removeCoverage(ICoverage objectToRemove)
      * </pre>
      */
-    public void generateSignatureRemoveObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureRemoveObject(JavaCodeFragmentBuilder methodsBuilder) {
         String methodName = getMethodNameRemoveObject();
         String paramName = getParamNameForRemoveObject();
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[] { paramName },
@@ -273,8 +272,7 @@ public class GenAssociationToMany extends GenAssociation {
      * }
      * </pre>
      */
-    private void generateMethodGetNumOfForNoneContainerAssociation(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    private void generateMethodGetNumOfForNoneContainerAssociation(JavaCodeFragmentBuilder methodsBuilder) {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetNumOfRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
@@ -376,7 +374,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodBuilder.openBracket();
         methodBuilder.append("return ");
         if (isUseTypesafeCollections()) {
-
+            // do not cast
         } else {
             methodBuilder.append("(");
             methodBuilder.appendClassName(targetInterfaceName);
@@ -574,7 +572,7 @@ public class GenAssociationToMany extends GenAssociation {
      * public int getNumOfCoverages();
      * </pre>
      */
-    protected void generateMethodGetNumOfRefObjects(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodGetNumOfRefObjects(JavaCodeFragmentBuilder methodsBuilder) {
         appendLocalizedJavaDoc("METHOD_GET_NUM_OF", association.getTargetRolePlural(), methodsBuilder);
         generateSignatureGetNumOfRefObjects(methodsBuilder);
         methodsBuilder.appendln(";");
@@ -638,7 +636,7 @@ public class GenAssociationToMany extends GenAssociation {
      * public void addCoverage(ICoverage objectToAdd);
      * </pre>
      */
-    protected void generateMethodAddObjectInterface(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodAddObjectInterface(JavaCodeFragmentBuilder methodsBuilder) {
         appendLocalizedJavaDoc("METHOD_ADD_OBJECT", association.getTargetRoleSingular(), methodsBuilder);
         generateSignatureAddObject(methodsBuilder);
         methodsBuilder.appendln(";");
@@ -652,7 +650,7 @@ public class GenAssociationToMany extends GenAssociation {
      * public void removeCoverage(ICoverage objectToRemove);
      * </pre>
      */
-    protected void generateMethodRemoveObjectInterface(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodRemoveObjectInterface(JavaCodeFragmentBuilder methodsBuilder) {
         appendLocalizedJavaDoc("METHOD_REMOVE_OBJECT", association.getTargetRoleSingular(), methodsBuilder);
         generateSignatureRemoveObject(methodsBuilder);
         methodsBuilder.appendln(";");
@@ -763,8 +761,8 @@ public class GenAssociationToMany extends GenAssociation {
     /**
      * {@inheritDoc}
      * 
-     * @throws CoreException
      */
+    @Override
     public void generateCodeForRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder, String paramName)
             throws CoreException {
         String fieldName = getFieldNameForAssociation();
@@ -965,6 +963,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.closeBracket();
     }
 
+    @Override
     public void generateCodeForContainerAssociationImplementation(List<IAssociation> associations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -1002,6 +1001,7 @@ public class GenAssociationToMany extends GenAssociation {
      * }
      * </pre>
      */
+    @Override
     public void generateCodeForValidateDependants(JavaCodeFragment body) throws CoreException {
         IPolicyCmptType target = getTargetPolicyCmptType();
         body.append("if(");
@@ -1025,6 +1025,7 @@ public class GenAssociationToMany extends GenAssociation {
         }
     }
 
+    @Override
     public JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String varName, String varClassName)
             throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
@@ -1059,6 +1060,7 @@ public class GenAssociationToMany extends GenAssociation {
      * }
      * </pre> {@inheritDoc}
      */
+    @Override
     public void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder) throws CoreException {
         String varName = getJavaNamingConvention().getMemberVarName(association.getTargetRoleSingular());
         if (isUseTypesafeCollections()) {

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,9 +27,9 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
  */
 public class ToggleWorkingModeAction extends Action implements IPropertyChangeListener {
     public static String ID = "org.faktorips.devtools.actions.ToggleWorkingModeAction"; //$NON-NLS-1$
-    
+
     private boolean propertyChangedByThisAction = false;
-    
+
     public ToggleWorkingModeAction() {
         super("", Action.AS_CHECK_BOX); //$NON-NLS-1$
         IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
@@ -39,34 +39,36 @@ public class ToggleWorkingModeAction extends Action implements IPropertyChangeLi
     private void update() {
         setChecked(getIpsPreferences().isWorkingModeEdit());
     }
-    
-    private IpsPreferences getIpsPreferences(){
+
+    private IpsPreferences getIpsPreferences() {
         return IpsPlugin.getDefault().getIpsPreferences();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void propertyChange(PropertyChangeEvent event) {
-        if (!propertyChangedByThisAction && event.getProperty().equals(IpsPreferences.WORKING_MODE)){
+        if (!propertyChangedByThisAction && event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             update();
         }
     }
-    
+
     public void dispose() {
         IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run() {
         runInternal();
     }
 
     private void runInternal() {
         propertyChangedByThisAction = true;
-        getIpsPreferences().setWorkingMode(isChecked() ? IpsPreferences.WORKING_MODE_EDIT : IpsPreferences.WORKING_MODE_BROWSE);
+        getIpsPreferences().setWorkingMode(
+                isChecked() ? IpsPreferences.WORKING_MODE_EDIT : IpsPreferences.WORKING_MODE_BROWSE);
         propertyChangedByThisAction = false;
     }
 

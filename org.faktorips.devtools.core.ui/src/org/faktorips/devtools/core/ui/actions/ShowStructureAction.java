@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,42 +25,44 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer;
 
 /**
- * Action for opening the StructureExplorer for a selected ProductCmpt.
- * Other types of IpsObjects are ignored.
- * This Action is instanciated with a SelectionProvider that returns 
- * the selected objects when <code>run()</code> is called later in program execution. 
+ * Action for opening the StructureExplorer for a selected ProductCmpt. Other types of IpsObjects
+ * are ignored. This Action is instanciated with a SelectionProvider that returns the selected
+ * objects when <code>run()</code> is called later in program execution.
  * 
  * @author Stefan Widmaier
  */
 public class ShowStructureAction extends IpsAction {
-	
+
     /**
      * Constructor inherited from IpsAction
+     * 
      * @param selectionProvider
      */
     public ShowStructureAction(ISelectionProvider selectionProvider) {
-    	super(selectionProvider);
+        super(selectionProvider);
         this.setDescription(Messages.ShowStructureAction_description);
         this.setText(Messages.ShowStructureAction_name);
         this.setToolTipText(this.getDescription());
     }
-    
-	public void run(IStructuredSelection selection) {
-		IIpsObject ipsObject= getIpsObjectForSelection(selection);
-		if(!(ipsObject instanceof IProductCmpt)){
-			return;
-		}
-		IIpsSrcFile file= ipsObject.getIpsSrcFile();
-		if (file == null) {
-        	return;
+
+    @Override
+    public void run(IStructuredSelection selection) {
+        IIpsObject ipsObject = getIpsObjectForSelection(selection);
+        if (!(ipsObject instanceof IProductCmpt)) {
+            return;
+        }
+        IIpsSrcFile file = ipsObject.getIpsSrcFile();
+        if (file == null) {
+            return;
         }
         try {
-	        IViewPart pse = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ProductStructureExplorer.EXTENSION_ID);
-	        ((ProductStructureExplorer)pse).showStructure(file);
+            IViewPart pse = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                    ProductStructureExplorer.EXTENSION_ID);
+            ((ProductStructureExplorer)pse).showStructure(file);
         } catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-	}
+    }
 }

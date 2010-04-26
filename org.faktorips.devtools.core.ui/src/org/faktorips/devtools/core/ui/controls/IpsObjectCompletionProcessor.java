@@ -81,7 +81,8 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     @Override
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result) throws Exception {
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
+            throws Exception {
         if (control == null && ipsProject == null) {
             setErrorMessage(Messages.IpsObjectCompletionProcessor_msgNoProject);
             return;
@@ -98,21 +99,21 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
             } else {
                 ipsSrcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
             }
-            for (int i = 0; i < ipsSrcFiles.length; i++) {
-                QualifiedNameType qnt = ipsSrcFiles[i].getQualifiedNameType();
+            for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                QualifiedNameType qnt = ipsSrcFile.getQualifiedNameType();
                 if (match(matchPack, matchName, qnt.getName())) {
                     String qName = qnt.getName();
                     String displayText = qnt.getUnqualifiedName()
-                            + " - " + mapDefaultPackageName(ipsSrcFiles[i].getIpsPackageFragment().getName()); //$NON-NLS-1$
+                            + " - " + mapDefaultPackageName(ipsSrcFile.getIpsPackageFragment().getName()); //$NON-NLS-1$
                     String description = null;
-                    if (IpsObjectType.TABLE_CONTENTS != ipsSrcFiles[i].getIpsObjectType()) {
+                    if (IpsObjectType.TABLE_CONTENTS != ipsSrcFile.getIpsObjectType()) {
                         // table contents doesn't support description, thus doen't call getIpsObject
                         // due to performance reason
-                        description = ipsSrcFiles[i].getIpsObject().getDescription();
+                        description = ipsSrcFile.getIpsObject().getDescription();
                     }
 
                     CompletionProposal proposal = new CompletionProposal(qName, 0, documentOffset, qName.length(),
-                            IpsUIPlugin.getImageHandling().getImage(ipsSrcFiles[i]), displayText, null, description);
+                            IpsUIPlugin.getImageHandling().getImage(ipsSrcFile), displayText, null, description);
                     result.add(proposal);
                 }
             }
@@ -127,16 +128,16 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
 
             // find packages of the project this completion processor was created in
             IIpsPackageFragmentRoot[] roots = prj.getIpsPackageFragmentRoots();
-            for (int i = 0; i < roots.length; i++) {
-                matchPackages(roots[i].getIpsPackageFragments(), prefix, documentOffset, result);
+            for (IIpsPackageFragmentRoot root : roots) {
+                matchPackages(root.getIpsPackageFragments(), prefix, documentOffset, result);
             }
 
             // find packages of projects, the project of this compeltion processor refers to...
             IIpsProject[] projects = prj.getIpsObjectPath().getReferencedIpsProjects();
-            for (int i = 0; i < projects.length; i++) {
-                roots = projects[i].getIpsPackageFragmentRoots();
-                for (int j = 0; j < roots.length; j++) {
-                    matchPackages(roots[j].getIpsPackageFragments(), prefix, documentOffset, result);
+            for (IIpsProject project : projects) {
+                roots = project.getIpsPackageFragmentRoots();
+                for (IIpsPackageFragmentRoot root : roots) {
+                    matchPackages(root.getIpsPackageFragments(), prefix, documentOffset, result);
                 }
             }
         } catch (Exception e) {

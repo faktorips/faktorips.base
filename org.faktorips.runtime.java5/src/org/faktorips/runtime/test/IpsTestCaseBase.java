@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,6 +28,7 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IpsTestResult result) {
         result.run(this);
     }
@@ -64,9 +65,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -90,9 +91,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -134,9 +135,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -154,9 +155,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -167,8 +168,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
             String testObject,
             String attribute,
             String message) {
-        if (!condition)
+        if (!condition) {
             fail(Boolean.TRUE, Boolean.FALSE, result, testObject, attribute, message);
+        }
     }
 
     /**
@@ -191,9 +193,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -211,9 +213,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -224,8 +226,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
             String testObject,
             String attribute,
             String message) {
-        if (condition)
+        if (condition) {
             fail(Boolean.FALSE, Boolean.TRUE, result, testObject, attribute, message);
+        }
     }
 
     /**
@@ -248,9 +251,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -268,9 +271,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -278,8 +281,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * 
      */
     protected void assertNull(Object object, IpsTestResult result, String testObject, String attribute, String message) {
-        if (object != null)
+        if (object != null) {
             fail(null, object, result, testObject, attribute, message);
+        }
     }
 
     /**
@@ -302,9 +306,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -322,9 +326,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object which will be checked. If the test contains several instances with the same
      *            name then an index (starting with 0) must be added to the testObject string
-     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            separated by "#" (e.g. TestObject#0, TestObject#1, ...). If the test object is a
+     *            child object then the complete path to the object must be given, the path elements
+     *            must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute which will be checked, if the test object doesn't support attributes
      *            then this parameter could be <code>null</code>
@@ -335,8 +339,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
             String testObject,
             String attribute,
             String message) {
-        if (object == null)
+        if (object == null) {
             fail("!" + null, object, result, testObject, attribute, message);
+        }
     }
 
     /**
@@ -345,6 +350,7 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * 
      * @deprecated Decimal class already ignores the scale in it's equals method.
      */
+    @Deprecated
     protected void assertEqualsIgnoreScale(Decimal expectedValue, Decimal actualValue, IpsTestResult result) {
         assertEqualsIgnoreScale(expectedValue, actualValue, result, null, null, null);
     }
@@ -355,6 +361,7 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * 
      * @deprecated Decimal class already ignores the scale in it's equals method.
      */
+    @Deprecated
     protected void assertEqualsIgnoreScale(Decimal expectedValue,
             Decimal actualValue,
             IpsTestResult result,
@@ -369,6 +376,7 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * 
      * @deprecated Decimal class already ignores the scale in it's equals method.
      */
+    @Deprecated
     protected void assertEqualsIgnoreScale(Decimal expectedValue,
             Decimal actualValue,
             IpsTestResult result,
@@ -394,9 +402,9 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param testObject name of the test object in the test case type definition, identifies the
      *            object. If the test contains several instances with the same name then an index
      *            (starting with 0) must be added to the testObject string separated by "#" (e.g.
-     *            TestObject#0, TestObject#1, ...).
-     *            If the test object is a child object then the complete path to the object must be given, 
-     *            the path elements must be separated by "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
+     *            TestObject#0, TestObject#1, ...). If the test object is a child object then the
+     *            complete path to the object must be given, the path elements must be separated by
+     *            "." (e.g. RootTestObject#0.ParentObject#0.ChildObject#0)
      * @param attribute name of the test attribute in the test case type definition, identifies the
      *            attribute, if the test object doesn't support attributes then this parameter could
      *            be <code>null</code>

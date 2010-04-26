@@ -92,8 +92,8 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
             // business function exists
             IBusinessFunction refBf = findReferencedBusinessFunction();
             if (refBf == null) {
-                msgList.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST,
-                        Messages.ActionBFE_bfDoesNotExist, Message.ERROR, this));
+                msgList.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST, Messages.ActionBFE_bfDoesNotExist,
+                        Message.ERROR, this));
             }
         }
     }

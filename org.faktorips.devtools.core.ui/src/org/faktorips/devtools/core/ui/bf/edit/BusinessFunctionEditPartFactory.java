@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,15 +35,15 @@ public class BusinessFunctionEditPartFactory implements EditPartFactory {
 
         if (model instanceof IBusinessFunction) {
             child = new BusinessFunctionEditPart();
-            
+
         } else if (model instanceof IBFElement) {
 
             IBFElement element = (IBFElement)model;
             if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 child = new CallBusinessFunctionActionEditPart();
-            } else if(element.getType().equals(BFElementType.ACTION_INLINE)){
+            } else if (element.getType().equals(BFElementType.ACTION_INLINE)) {
                 child = new InlineActionEditPart();
-            } else if(element.getType().equals(BFElementType.ACTION_METHODCALL)){
+            } else if (element.getType().equals(BFElementType.ACTION_METHODCALL)) {
                 child = new CallMethodActionEditPart();
             } else if (element.getType().equals(BFElementType.DECISION)) {
                 child = new DecisionEditPart();

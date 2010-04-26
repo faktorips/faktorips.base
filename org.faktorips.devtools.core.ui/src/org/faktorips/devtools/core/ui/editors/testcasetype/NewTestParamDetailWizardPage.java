@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -38,72 +38,72 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
  */
 public class NewTestParamDetailWizardPage extends WizardPage implements ValueChangeListener {
     private static final String PAGE_ID = "RootParamDetailWizardPage"; //$NON-NLS-1$
-    
+
     private IBlockedValidationWizard wizard;
-    
+
     private EditField editFieldMin;
     private EditField editFieldMax;
     private EditField editFieldReqProd;
-    
+
     private UIToolkit uiToolkit;
 
     private int pageNumber = 3;
 
-    public NewTestParamDetailWizardPage(IBlockedValidationWizard wizard, UIToolkit uiToolkit, int pageNumber){
+    public NewTestParamDetailWizardPage(IBlockedValidationWizard wizard, UIToolkit uiToolkit, int pageNumber) {
         super(PAGE_ID, Messages.NewTestParamDetailWizardPage_Title, null);
         this.setDescription(Messages.NewTestParamDetailWizardPage_Description);
         this.wizard = wizard;
         this.uiToolkit = uiToolkit;
         this.pageNumber = pageNumber;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void createControl(Composite parent) {
         Composite c = uiToolkit.createLabelEditColumnComposite(parent);
-        
+
         uiToolkit.createFormLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_MinInstances);
         editFieldMin = new CardinalityField(uiToolkit.createText(c));
         editFieldMin.addChangeListener(this);
-        
+
         uiToolkit.createFormLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_MaxInstances);
         editFieldMax = new CardinalityField(uiToolkit.createText(c));
         editFieldMax.addChangeListener(this);
-        
+
         uiToolkit.createFormLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
         editFieldReqProd = new CheckboxField(uiToolkit.createCheckbox(c));
         editFieldReqProd.addChangeListener(this);
-        
+
         setControl(c);
     }
 
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */
-    void connectToModel(IpsObjectUIController controller, ITestParameter testParameter){
+    void connectToModel(IpsObjectUIController controller, ITestParameter testParameter) {
         controller.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
         controller.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
         controller.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
-        
+
         editFieldMin.getControl().setEnabled(true);
         editFieldMax.getControl().setEnabled(true);
         editFieldReqProd.getControl().setEnabled(true);
-        
+
         // min and max are not editable for root parameters
-        if (testParameter.isRoot()){
+        if (testParameter.isRoot()) {
             editFieldMin.getControl().setEnabled(false);
             editFieldMax.getControl().setEnabled(false);
             return;
         }
-        
+
         // req product cmpt is not editable for associations
-        if (testParameter instanceof ITestPolicyCmptTypeParameter){
-            ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter) testParameter;
+        if (testParameter instanceof ITestPolicyCmptTypeParameter) {
+            ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter)testParameter;
             IPolicyCmptTypeAssociation association;
             try {
                 association = testPolicyCmptTypeParameter.findAssociation(testPolicyCmptTypeParameter.getIpsProject());
-                if (association != null && association.isAssoziation()){
+                if (association != null && association.isAssoziation()) {
                     editFieldReqProd.getControl().setEnabled(false);
                 }
             } catch (CoreException e) {
@@ -133,7 +133,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
         setErrorMessage(null);
         return wizard.isPageValid(pageNumber);
     }
-    
+
     /**
      * Updates the page complete status.
      */
@@ -152,6 +152,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
      * 
      * {@inheritDoc}
      */
+    @Override
     public IWizardPage getNextPage() {
         wizard.setMaxPageShown(pageNumber);
         return super.getNextPage();
@@ -162,7 +163,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
             wizard.getController().remove(editFieldMin);
             wizard.getController().remove(editFieldMax);
             wizard.getController().remove(editFieldReqProd);
-        } 
+        }
         editFieldMin.setText(""); //$NON-NLS-1$
         editFieldMax.setText(""); //$NON-NLS-1$
         ((Checkbox)editFieldReqProd.getControl()).setChecked(false);

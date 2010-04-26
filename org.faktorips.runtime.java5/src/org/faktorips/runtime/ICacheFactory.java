@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,7 +19,7 @@ package org.faktorips.runtime;
  * @author Jan Ortmann
  */
 public interface ICacheFactory {
-    
+
     public enum Type {
         PRODUCT_CMPT_CHACHE,
         PRODUCT_CMPT_GENERATION_CHACHE,
@@ -28,7 +28,7 @@ public interface ICacheFactory {
         ENUM_CONTENT_BY_CLASS,
         ENUM_XML_ADAPTER_BY_QUALIFIED_NAME;
     }
-    
+
     /**
      * Creates a new cache of the given type.
      * 

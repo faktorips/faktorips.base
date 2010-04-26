@@ -32,8 +32,8 @@ public interface EnumDatatype extends ValueDatatype {
 
     /**
      * Returns <code>true</code> if an implementation of this interface supports names that describe
-     * the datatype's value. E.g. an enum datatype PaymentMode might return the name "annual" for the
-     * annual payment mode with id "1". If this method returns <code>false</code> a call to the
+     * the datatype's value. E.g. an enum datatype PaymentMode might return the name "annual" for
+     * the annual payment mode with id "1". If this method returns <code>false</code> a call to the
      * getName(String id) method is supposed to throw a runtime exception.
      */
     public boolean isSupportingNames();

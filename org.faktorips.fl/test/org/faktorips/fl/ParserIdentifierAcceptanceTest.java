@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,8 +24,9 @@ import org.faktorips.util.message.MessageList;
 public class ParserIdentifierAcceptanceTest extends TestCase {
 
     private ExprCompiler compiler;
-    
-    public void setUp(){
+
+    @Override
+    public void setUp() {
         compiler = new ExprCompiler();
         Locale.setDefault(Locale.ENGLISH);
         compiler.setLocale(Locale.ENGLISH);
@@ -35,11 +36,11 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
         resolver.register("Altersgruppe_1980", new JavaCodeFragment("Altersgruppe_1980"), Datatype.STRING);
         compiler.setIdentifierResolver(resolver);
     }
-    
-    public void testParserIdentifiers(){
+
+    public void testParserIdentifiers() {
         CompilationResult result = compiler.compile("Altersgruppe_1980-01-01");
         assertTrue(result.successfull());
-        
+
         result = compiler.compile("Altersgruppe_1980-01");
         assertTrue(result.successfull());
 
@@ -49,8 +50,8 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
         result = compiler.compile("Altersgruppe_1980-01-01-01");
         assertFalse(result.successfull());
     }
-    
-    public void testParserWithUmlaut() throws Exception{
+
+    public void testParserWithUmlaut() throws Exception {
         compiler = new ExprCompiler();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
         resolver.register("ä", new JavaCodeFragment("a"), Datatype.INTEGER);

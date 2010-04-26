@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,17 +16,17 @@ package org.faktorips.runtime;
 import org.faktorips.runtime.internal.DateTime;
 
 /**
- * The identification of a generation consists of the qualified product component name
- * and the valid from date.
- *  
+ * The identification of a generation consists of the qualified product component name and the valid
+ * from date.
+ * 
  * @author Jan Ortmann
  */
 public class GenerationId implements Comparable<GenerationId> {
-    
+
     private String qName;
     private DateTime validFrom;
     private int hashCode;
-    
+
     public GenerationId(String name, DateTime validFrom) {
         this.qName = name;
         this.validFrom = validFrom;
@@ -46,15 +46,16 @@ public class GenerationId implements Comparable<GenerationId> {
     public DateTime getValidFrom() {
         return validFrom;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof GenerationId)) {
             return false;
         }
-        if (obj.hashCode()!=hashCode) {
+        if (obj.hashCode() != hashCode) {
             return false; // optimization
         }
         GenerationId other = (GenerationId)obj;
@@ -64,6 +65,7 @@ public class GenerationId implements Comparable<GenerationId> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return hashCode;
     }
@@ -71,6 +73,7 @@ public class GenerationId implements Comparable<GenerationId> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return qName + " " + validFrom.toIsoFormat();
     }
@@ -80,7 +83,7 @@ public class GenerationId implements Comparable<GenerationId> {
      */
     public int compareTo(GenerationId other) {
         int c = qName.compareTo(other.qName);
-        if (c!=0) {
+        if (c != 0) {
             return c;
         }
         return validFrom.compareTo(other.validFrom);

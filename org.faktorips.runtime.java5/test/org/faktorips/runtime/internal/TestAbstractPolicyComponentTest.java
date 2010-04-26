@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -38,7 +38,6 @@ import org.w3c.dom.Element;
  * @author Jan Ortmann
  */
 public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
-
 
     public void testValidate() {
         PcB b = new PcB();
@@ -290,9 +289,10 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * {@inheritDoc}
          */
         @Override
-        protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId) throws SecurityException, NoSuchMethodException {
+        protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId)
+                throws SecurityException, NoSuchMethodException {
             if ("InsuredPerson".equals(targetRole)) {
-                Method m = getClass().getMethod("setInsuredPerson", new Class[]{PcA.class});
+                Method m = getClass().getMethod("setInsuredPerson", new Class[] { PcA.class });
                 return new DefaultUnresolvedReference(this, objectId, m, PcA.class, targetId);
             }
             return null;

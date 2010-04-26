@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,27 +19,26 @@ import org.faktorips.fl.CompilerAbstractTest;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.values.Money;
 
-
-
 /**
  *
  */
 public class SubtractMoneyMoneyTest extends CompilerAbstractTest {
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        compiler.setBinaryOperations(new BinaryOperation[]{new SubtractMoneyMoney()});
+        compiler.setBinaryOperations(new BinaryOperation[] { new SubtractMoneyMoney() });
     }
-    
+
     public void testSuccessfull() throws Exception {
         execAndTestSuccessfull("10.12EUR - 8.10EUR", Money.valueOf("2.02EUR"), Datatype.MONEY);
         execAndTestSuccessfull("8.10EUR - 10.12EUR", Money.valueOf("-2.02EUR"), Datatype.MONEY);
     }
-    
+
     public void testLhsError() throws Exception {
         execAndTestFail("a a - 8.10EUR", ExprCompiler.SYNTAX_ERROR);
     }
-    
+
     public void testRhsError() throws Exception {
         execAndTestFail("8.10EUR - a a", ExprCompiler.SYNTAX_ERROR);
     }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,12 +21,11 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.values.Decimal;
 
-
 /**
  * The function: Decimal sum(Decimal[])
  */
 public class SumDecimal extends AbstractFlFunction {
-    
+
     /**
      * Constructs a sum() function with the given name.
      * 
@@ -35,11 +34,12 @@ public class SumDecimal extends AbstractFlFunction {
      * @throws IllegalArgumentException if name is <code>null</code>.
      */
     public SumDecimal(String name, String description) {
-        super(name, description, Datatype.DECIMAL, new Datatype[] {new ArrayOfValueDatatype(Datatype.DECIMAL, 1)});
+        super(name, description, Datatype.DECIMAL, new Datatype[] { new ArrayOfValueDatatype(Datatype.DECIMAL, 1) });
     }
 
-    /** 
+    /**
      * Overridden method.
+     * 
      * @see org.faktorips.fl.FlFunction#compile(org.faktorips.codegen.JavaCodeFragment[])
      */
     public CompilationResult compile(CompilationResult[] argResults) {
@@ -51,5 +51,5 @@ public class SumDecimal extends AbstractFlFunction {
         fragment.append(")"); //$NON-NLS-1$
         return new CompilationResultImpl(fragment, getType());
     }
-    
+
 }

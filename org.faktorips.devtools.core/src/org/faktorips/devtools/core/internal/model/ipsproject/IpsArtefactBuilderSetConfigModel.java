@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -108,8 +107,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
     public final Element toXml(Document doc) {
         Element root = doc.createElement(XML_ELEMENT);
         Set<String> keys = properties.keySet();
-        for (Iterator<String> iter = keys.iterator(); iter.hasNext();) {
-            String key = iter.next();
+        for (String key : keys) {
             String value = properties.get(key);
             Element prop = doc.createElement("Property"); //$NON-NLS-1$
             String description = propertiesDescription.get(key);
@@ -130,8 +128,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
 
     public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo) {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        for (Iterator<String> it = this.properties.keySet().iterator(); it.hasNext();) {
-            String name = it.next();
+        for (String name : this.properties.keySet()) {
             IIpsBuilderSetPropertyDef propertyDef = builderSetInfo.getPropertyDefinition(name);
             if (propertyDef == null) {
                 throw new IllegalStateException("The property: " + name
@@ -147,11 +144,10 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
             properties.put(name, value);
         }
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
-        for (int i = 0; i < propertyDefs.length; i++) {
-            Object value = properties.get(propertyDefs[i].getName());
+        for (IIpsBuilderSetPropertyDef propertyDef : propertyDefs) {
+            Object value = properties.get(propertyDef.getName());
             if (value == null) {
-                properties.put(propertyDefs[i].getName(), propertyDefs[i].parseValue(propertyDefs[i]
-                        .getDisableValue(ipsProject)));
+                properties.put(propertyDef.getName(), propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
             }
         }
         return new IpsArtefactBuilderSetConfig(properties);

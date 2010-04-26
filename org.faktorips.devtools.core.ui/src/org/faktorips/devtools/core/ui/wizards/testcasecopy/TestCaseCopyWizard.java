@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.testcasecopy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -191,8 +190,8 @@ public class TestCaseCopyWizard extends ResizableWizard {
         IIpsProject ipsProject = targetTestCase.getIpsProject();
         IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
         ITestPolicyCmptLink[] testPolicyCmptlinks = testPolicyCmpt.getTestPolicyCmptLinks();
-        for (int i = 0; i < testPolicyCmptlinks.length; i++) {
-            ITestPolicyCmpt testPolicyCmptChild = testPolicyCmptlinks[i].findTarget();
+        for (ITestPolicyCmptLink testPolicyCmptlink : testPolicyCmptlinks) {
+            ITestPolicyCmpt testPolicyCmptChild = testPolicyCmptlink.findTarget();
             if (testPolicyCmptChild != null) {
                 IProductCmpt productCmptChild = testPolicyCmptChild.findProductCmpt(testPolicyCmpt.getIpsProject());
                 if (productCmptChild == null) {
@@ -205,8 +204,8 @@ public class TestCaseCopyWizard extends ResizableWizard {
                         .findTestPolicyCmptTypeParameter(testPolicyCmptChild.getIpsProject());
                 IIpsSrcFile[] allowedProductCmpt = parameter.getAllowedProductCmpt(ipsProject, parentProductCmpt);
                 IProductCmpt newProductCmptChild = null;
-                for (int j = 0; j < allowedProductCmpt.length; j++) {
-                    IProductCmpt productCmptCandidate = (IProductCmpt)allowedProductCmpt[j].getIpsObject();
+                for (IIpsSrcFile element : allowedProductCmpt) {
+                    IProductCmpt productCmptCandidate = (IProductCmpt)element.getIpsObject();
                     if (productCmptCandidate.getName().equals(newProductCmptName)) {
                         newProductCmptChild = productCmptCandidate;
                         break;
@@ -278,14 +277,13 @@ public class TestCaseCopyWizard extends ResizableWizard {
                 testObjectsList.addAll(Arrays.asList(testObjects));
 
                 Object[] checkedObjects = testCaseStructurePage.getCheckedObjects();
-                for (int i = 0; i < checkedObjects.length; i++) {
-                    if (checkedObjects[i] instanceof ITestObject) {
-                        testObjectsList.remove(checkedObjects[i]);
+                for (Object checkedObject : checkedObjects) {
+                    if (checkedObject instanceof ITestObject) {
+                        testObjectsList.remove(checkedObject);
                     }
                 }
 
-                for (Iterator<ITestObject> iter = testObjectsList.iterator(); iter.hasNext();) {
-                    ITestObject toDeleteTestObj = iter.next();
+                for (ITestObject toDeleteTestObj : testObjectsList) {
                     if (toDeleteTestObj.getParent() != null) {
                         toDeleteTestObj.delete();
                     }
@@ -306,8 +304,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
     }
 
     private void deletePackageFragments() {
-        for (Iterator<IIpsPackageFragment> iter = packageFrgmtsCreatedByWizard.iterator(); iter.hasNext();) {
-            IIpsPackageFragment fragment = iter.next();
+        for (IIpsPackageFragment fragment : packageFrgmtsCreatedByWizard) {
             if (fragment.exists()) {
                 try {
                     fragment.getEnclosingResource().delete(true, null);

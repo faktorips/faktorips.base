@@ -158,8 +158,7 @@ public class MessageList implements Iterable<Message> {
      * Returns the first message with the given severity or null if none is found.
      */
     public Message getFirstMessage(int severity) {
-        for (Iterator<Message> it = messages.iterator(); it.hasNext();) {
-            Message msg = it.next();
+        for (Message msg : messages) {
             if (msg.getSeverity() == severity) {
                 return msg;
             }
@@ -253,14 +252,14 @@ public class MessageList implements Iterable<Message> {
         for (int i = 0; i < getNoOfMessages(); i++) {
             Message msg = getMessage(i);
             ObjectProperty[] op = msg.getInvalidObjectProperties();
-            for (int j = 0; j < op.length; j++) {
-                if (op[j].getObject().equals(object)) {
+            for (ObjectProperty element : op) {
+                if (element.getObject().equals(object)) {
                     if (property == null) {
                         result.add(msg);
                         break;
                     }
-                    if (property.equals(op[j].getProperty())) {
-                        if (index < 0 || op[j].getIndex() == index) {
+                    if (property.equals(element.getProperty())) {
+                        if (index < 0 || element.getIndex() == index) {
                             result.add(msg);
                             break;
                         }

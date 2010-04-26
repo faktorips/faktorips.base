@@ -479,8 +479,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         public void setCheckedNodes(IProductCmptStructureReference[] checked) {
             checkedNodes = new HashSet<IProductCmptStructureReference>();
-            for (int i = 0; i < checked.length; i++) {
-                checkedNodes.add(checked[i]);
+            for (IProductCmptStructureReference element : checked) {
+                checkedNodes.add(element);
             }
         }
 

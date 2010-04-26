@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -313,8 +312,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return false;
         }
 
-        for (Iterator<String> iter = page.getProperties().iterator(); iter.hasNext();) {
-            String prop = iter.next();
+        for (String prop : page.getProperties()) {
             MessageList messagesFor = list.getMessagesFor(association, prop);
             if (messagesFor.containsErrorMsg()) {
                 if (displayErrorMessageForPages.contains(page)) {
@@ -751,9 +749,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
     public void storeExistingInverseAssociation(String inverseAssociation) {
         IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = targetPolicyCmptType.getPolicyCmptTypeAssociations();
-        for (int i = 0; i < policyCmptTypeAssociations.length; i++) {
-            if (policyCmptTypeAssociations[i].getName().equals(inverseAssociation)) {
-                storeInverseAssociation(policyCmptTypeAssociations[i]);
+        for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
+            if (policyCmptTypeAssociation.getName().equals(inverseAssociation)) {
+                storeInverseAssociation(policyCmptTypeAssociation);
                 return;
             }
         }

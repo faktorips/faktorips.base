@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-
 /**
  *
  */
@@ -40,34 +39,35 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
         setAllowMultiple(false);
         setInput(IpsPlugin.getDefault().getIpsModel());
     }
-    
+
     public IIpsPackageFragmentRoot getSelectedRoot() {
-        if (getResult().length>0) {
-        	Object result = getResult()[0];
-        	if (result instanceof IIpsPackageFragmentRoot) {
-            return (IIpsPackageFragmentRoot) this.getResult()[0];
-        	} else if (result instanceof IIpsProject) {
-        		try {
-					return ((IIpsProject)result).getIpsPackageFragmentRoots()[0];
-				} catch (CoreException e) {
-					IpsPlugin.log(e);
-				}
-        	}
+        if (getResult().length > 0) {
+            Object result = getResult()[0];
+            if (result instanceof IIpsPackageFragmentRoot) {
+                return (IIpsPackageFragmentRoot)this.getResult()[0];
+            } else if (result instanceof IIpsProject) {
+                try {
+                    return ((IIpsProject)result).getIpsPackageFragmentRoots()[0];
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
         }
         return null;
     }
-    
+
     private static class ContentProvider implements ITreeContentProvider {
-        
-        // true if only package fragment roots contains sourcecode are allowed. 
+
+        // true if only package fragment roots contains sourcecode are allowed.
         private boolean onlySourceRoots;
 
         ContentProvider(boolean onlySourceRoots) {
             this.onlySourceRoots = onlySourceRoots;
         }
 
-        /** 
+        /**
          * Overridden method.
+         * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
          */
         public Object[] getChildren(Object parentElement) {
@@ -76,7 +76,7 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
                     if (onlySourceRoots) {
                         return ((IIpsProject)parentElement).getSourceIpsPackageFragmentRoots();
                     } else {
-                        return ((IIpsProject)parentElement).getIpsPackageFragmentRoots();    
+                        return ((IIpsProject)parentElement).getIpsPackageFragmentRoots();
                     }
                 } catch (CoreException e) {
                     return new Object[0];
@@ -85,27 +85,30 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
             return new Object[0];
         }
 
-        /** 
+        /**
          * Overridden method.
+         * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
          */
         public Object getParent(Object element) {
             return ((IIpsElement)element).getParent();
         }
 
-        /** 
+        /**
          * Overridden method.
+         * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
          */
         public boolean hasChildren(Object element) {
-            return getChildren(element).length>0;
+            return getChildren(element).length > 0;
         }
 
-        /** 
+        /**
          * Overridden method.
+         * 
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
-        public Object[] getElements(Object inputElement) { 
+        public Object[] getElements(Object inputElement) {
             try {
                 return IpsPlugin.getDefault().getIpsModel().getIpsProjects();
             } catch (Exception e) {
@@ -114,20 +117,23 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
             }
         }
 
-        /** 
+        /**
          * Overridden method.
+         * 
          * @see org.eclipse.jface.viewers.IContentProvider#dispose()
          */
         public void dispose() {
         }
 
-        /** 
+        /**
          * Overridden method.
-         * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+         * 
+         * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+         *      java.lang.Object, java.lang.Object)
          */
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
-        
+
     }
-    
+
 }

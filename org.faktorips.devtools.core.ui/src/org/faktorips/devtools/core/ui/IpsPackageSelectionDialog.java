@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-
 
 /**
  * Dialog to select an ips package fragment.
@@ -31,12 +30,12 @@ public class IpsPackageSelectionDialog extends ElementListSelectionDialog {
         setMatchEmptyString(true);
         setMultipleSelection(false);
     }
-    
+
     public IIpsPackageFragment getSelectedPackage() {
-        if (getResult().length>0) {
-            return (IIpsPackageFragment)getResult()[0];    
+        if (getResult().length > 0) {
+            return (IIpsPackageFragment)getResult()[0];
         }
         return null;
     }
-    
+
 }

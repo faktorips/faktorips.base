@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -88,8 +88,8 @@ public abstract class MessageHoverService {
      * @param point The position on the screen the bounds for the representation of the user-data is
      *            requested.
      * @return The bounds for the representation of the user-data (first column if columns are
-     *         supported by the control) or <code>null</code> if no user-data is found at the
-     *         given position.
+     *         supported by the control) or <code>null</code> if no user-data is found at the given
+     *         position.
      */
     protected abstract Rectangle getBoundsAt(Point point);
 
@@ -187,8 +187,8 @@ public abstract class MessageHoverService {
          * Margin around info hover text.
          */
         private int LABEL_MARGIN = 2;
-        
-        private int defaultOffsetOfArrow = HD+HW/2;
+
+        private int defaultOffsetOfArrow = HD + HW / 2;
 
         /**
          * This info hover's shell.
@@ -199,7 +199,7 @@ public abstract class MessageHoverService {
          * The info hover text.
          */
         String fText = ""; //$NON-NLS-1$
-        
+
         Shell parentShell;
 
         Hover(Shell shell, int arrowOffset) {
@@ -238,8 +238,9 @@ public abstract class MessageHoverService {
         }
 
         void dispose() {
-            if (!fHoverShell.isDisposed())
+            if (!fHoverShell.isDisposed()) {
                 fHoverShell.dispose();
+            }
         }
 
         void setVisible(boolean visible) {
@@ -247,17 +248,20 @@ public abstract class MessageHoverService {
                 return;
             }
             if (visible) {
-                if (!fHoverShell.isVisible())
+                if (!fHoverShell.isVisible()) {
                     fHoverShell.setVisible(true);
+                }
             } else {
-                if (fHoverShell.isVisible())
+                if (fHoverShell.isVisible()) {
                     fHoverShell.setVisible(false);
+                }
             }
         }
 
         void setText(String t) {
-            if (t == null)
+            if (t == null) {
                 t = ""; //$NON-NLS-1$
+            }
             if (!t.equals(fText)) {
                 Point oldSize = getExtent();
                 fText = t;
@@ -288,13 +292,13 @@ public abstract class MessageHoverService {
             e.y += LABEL_MARGIN * 2;
             return e;
         }
-        
+
         /**
          * Returns the default offset of the arrow.
          */
         public int getDefaultOffsetOfArrow() {
             return defaultOffsetOfArrow;
-        }        
+        }
     }
 
 }

@@ -1046,8 +1046,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
             IResource correspondingResource = ipsObjectEditor.getIpsSrcFile().getCorrespondingResource();
             if (correspondingResource != null) {
-                for (int i = 0; i < changedResources.length; i++) {
-                    if (changedResources[i].equals(correspondingResource)) {
+                for (IResource changedResource : changedResources) {
+                    if (changedResource.equals(correspondingResource)) {
                         updateEditorImage();
                     }
                 }

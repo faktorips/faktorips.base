@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,9 +13,9 @@
 
 package org.faktorips.util;
 
-import java.util.*;
-
-import org.faktorips.util.LocalizedStringsSet;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -25,13 +25,15 @@ import junit.framework.TestCase;
 public class LocalizedStringsSetTest extends TestCase {
 
     private LocalizedStringsSet set;
-    
+
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        set = new LocalizedStringsSet(this.getClass()); // in this case the class name is the set's name. 
+        set = new LocalizedStringsSet(this.getClass()); // in this case the class name is the set's
+                                                        // name.
     }
 
     /*
@@ -41,8 +43,8 @@ public class LocalizedStringsSetTest extends TestCase {
         GregorianCalendar calendar = new GregorianCalendar(2004, 11, 20);
         Date date = calendar.getTime();
         Double x = new Double(9.34);
-        Object[] replacements = new Object[]{date, x};
-        
+        Object[] replacements = new Object[] { date, x };
+
         assertEquals("Date=12/20/04, x=9.34", set.getString("replacements", Locale.ENGLISH, replacements));
         assertEquals("Datum=20.12.04, x=9,34", set.getString("replacements", Locale.GERMAN, replacements));
     }

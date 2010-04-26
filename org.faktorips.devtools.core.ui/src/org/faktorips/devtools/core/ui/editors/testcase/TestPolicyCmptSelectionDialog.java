@@ -218,8 +218,8 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         if (filter != null) {
             elements = filter.filter(treeViewer, input, elements);
         }
-        for (int i = 0; i < elements.length; i++) {
-            Object[] childs = filter.filter(treeViewer, input, contentProvider.getChildren(elements[i]));
+        for (Object element : elements) {
+            Object[] childs = filter.filter(treeViewer, input, contentProvider.getChildren(element));
             if (childs.length != 0) {
                 return false;
             }
@@ -286,10 +286,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
                     }
                     ITestPolicyCmptLink childs[] = testPolicyCmpt.getTestPolicyCmptLinks();
                     boolean found = false;
-                    for (int i = 0; i < childs.length; i++) {
-                        // because of grouping the links, get the links by using the parent test
-                        // policy component
-                        ITestPolicyCmptLink elem = childs[i];
+                    for (ITestPolicyCmptLink elem : childs) {
                         String linkName = ""; //$NON-NLS-1$
                         if (elem.findTarget() != null) {
                             linkName = elem.findTarget().getTestPolicyCmptTypeParameter();
@@ -318,8 +315,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
     private boolean isFilterChildOf(ITestPolicyCmpt testPolicyCmpt, String filter) throws CoreException {
         boolean found = false;
         ITestPolicyCmptLink[] realtions = testPolicyCmpt.getTestPolicyCmptLinks();
-        for (int i = 0; i < realtions.length; i++) {
-            ITestPolicyCmptLink link = realtions[i];
+        for (ITestPolicyCmptLink link : realtions) {
             found = isFilterChildOfLink(link, filter);
             if (found) {
                 // exit, at least one link contains the filtered element

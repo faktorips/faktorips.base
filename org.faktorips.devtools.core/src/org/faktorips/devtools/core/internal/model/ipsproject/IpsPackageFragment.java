@@ -221,14 +221,14 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      */
     private boolean isIpsContent(IResource res) throws CoreException {
         IIpsElement[] children = getChildIpsPackageFragments();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i].getCorrespondingResource().equals(res)) {
+        for (IIpsElement element : children) {
+            if (element.getCorrespondingResource().equals(res)) {
                 return true;
             }
         }
         children = getChildren();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i].getCorrespondingResource().equals(res)) {
+        for (IIpsElement element : children) {
+            if (element.getCorrespondingResource().equals(res)) {
                 return true;
             }
         }
@@ -414,9 +414,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] members = folder.members();
         String extension = type.getFileExtension();
-        for (int i = 0; i < members.length; i++) {
-            if (members[i].getType() == IResource.FILE) {
-                IFile file = (IFile)members[i];
+        for (IResource member : members) {
+            if (member.getType() == IResource.FILE) {
+                IFile file = (IFile)member;
                 if (extension.equals(file.getFileExtension())) {
                     IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
                     if (srcFile.getIpsObject() != null) {
@@ -437,12 +437,12 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         IpsObjectType[] types = getIpsModel().getIpsObjectTypes();
 
         Set<String> fileExtensionNames = new HashSet<String>();
-        for (int i = 0; i < types.length; i++) {
-            fileExtensionNames.add(types[i].getFileExtension());
+        for (IpsObjectType type : types) {
+            fileExtensionNames.add(type.getFileExtension());
         }
-        for (int i = 0; i < members.length; i++) {
-            if (members[i].getType() == IResource.FILE) {
-                IFile file = (IFile)members[i];
+        for (IResource member : members) {
+            if (member.getType() == IResource.FILE) {
+                IFile file = (IFile)member;
                 if (fileExtensionNames.contains(file.getFileExtension())) {
                     IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
                     if (srcFile.getIpsObject() != null) {
@@ -460,9 +460,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] members = folder.members();
-        for (int i = 0; i < members.length; i++) {
-            if (members[i].getType() == IResource.FILE) {
-                IFile file = (IFile)members[i];
+        for (IResource member : members) {
+            if (member.getType() == IResource.FILE) {
+                IFile file = (IFile)member;
                 if (type.getFileExtension().equals(file.getFileExtension())) {
                     IpsSrcFile ipsSrcFile = new IpsSrcFile(this, file.getName());
                     result.add(ipsSrcFile);
@@ -515,9 +515,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] members = folder.members();
         String newPrefix = ignoreCase ? prefix.toLowerCase() : prefix;
-        for (int i = 0; i < members.length; i++) {
-            if (members[i].getType() == IResource.FILE) {
-                IFile file = (IFile)members[i];
+        for (IResource member : members) {
+            if (member.getType() == IResource.FILE) {
+                IFile file = (IFile)member;
                 if (type.getFileExtension().equals(file.getFileExtension())) {
                     String filename = ignoreCase ? file.getName().toLowerCase() : file.getName();
                     if (filename.startsWith(newPrefix)) {

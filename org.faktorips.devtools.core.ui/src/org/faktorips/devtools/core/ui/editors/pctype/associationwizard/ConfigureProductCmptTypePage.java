@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,7 +21,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * Page to define on of the following option:<ul>
+ * Page to define on of the following option:
+ * <ul>
  * <li>create a new product component type association
  * <li>don't create a new product component type association
  * </ul>
@@ -29,7 +30,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * @author Joerg Ortmann
  */
 public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenWizardPage {
-    
+
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
 
@@ -42,23 +43,25 @@ public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenW
         setDescription(Messages.ConfigureProductCmptTypePage_pageDescription);
         this.wizard = wizard;
         this.toolkit = toolkit;
-        
+
         setPageComplete(true);
     }
-    
+
     public void createControl(Composite parent) {
         Composite pageComposite = wizard.createPageComposite(parent);
-        
+
         ProductComponentTypeAssociationSelectionListener listener = new ProductComponentTypeAssociationSelectionListener();
-        
-        newAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite, Messages.ConfigureProductCmptTypePage_labelCreateNew);
+
+        newAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite,
+                Messages.ConfigureProductCmptTypePage_labelCreateNew);
         newAssociationOnProductCmptType.addSelectionListener(listener);
-        
+
         toolkit.createVerticalSpacer(pageComposite, 1);
-        
-        noAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite, Messages.ConfigureProductCmptTypePage_labelCreateNone);
+
+        noAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite,
+                Messages.ConfigureProductCmptTypePage_labelCreateNone);
         noAssociationOnProductCmptType.addSelectionListener(listener);
-        
+
         // set the default selection
         newAssociationOnProductCmptType.setSelection(true);
         prevSelection = noAssociationOnProductCmptType;
@@ -71,16 +74,17 @@ public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenW
      */
     private class ProductComponentTypeAssociationSelectionListener implements SelectionListener {
         public void widgetSelected(SelectionEvent e) {
-            if (prevSelection != e.getSource()){
-                prevSelection = (Button) e.getSource();
+            if (prevSelection != e.getSource()) {
+                prevSelection = (Button)e.getSource();
                 if (e.getSource() == newAssociationOnProductCmptType) {
                     wizard.setConfigureProductCmptType(true);
-                }else if(e.getSource() == noAssociationOnProductCmptType){
+                } else if (e.getSource() == noAssociationOnProductCmptType) {
                     wizard.setConfigureProductCmptType(false);
                 }
                 wizard.pageHasChanged();
             }
         }
+
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }

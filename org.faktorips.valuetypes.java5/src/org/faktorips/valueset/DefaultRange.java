@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,14 +20,13 @@ import java.util.Set;
 import org.faktorips.values.NullObject;
 import org.faktorips.values.NullObjectSupport;
 
-
 /**
  * Abstract implementation of the <code>Range<code> interface. Implementations of this abstract
  * range that support incremental steps must provide public factory methods instead of public
  * constructors. Within the factory method the checkIfStepFitsIntoBounds() method has to be
  * called on the created object to ensure that the step increment and the bounds of the
  * range are consistent.
- *
+ * 
  * @author Jan Ortmann, Peter Erzberger
  * @author Daniel Hohenberger conversion to Java5
  */
@@ -149,14 +148,14 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
         if (isStepNull()) {
             return;
         }
-        if(isLowerBoundNull() || isUpperBoundNull()){
+        if (isLowerBoundNull() || isUpperBoundNull()) {
             return;
         }
         if (!checkIfValueCompliesToStepIncrement(getLowerBound(), getUpperBound())) {
             throw new IllegalArgumentException(
                     "The step doesn't fit into the specified bounds. The step has to comply to "
-                    + "the condition: the value of the expression abs(upperBound - lowerBound) / "
-                    + "step needs to be an integer.");
+                            + "the condition: the value of the expression abs(upperBound - lowerBound) / "
+                            + "step needs to be an integer.");
         }
     }
 
@@ -276,24 +275,27 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
     }
 
     /**
-     * Returns the range's String representation. Format is: lowerBound-upperBound, step, e.g. 5-10, 1
+     * Returns the range's String representation. Format is: lowerBound-upperBound, step, e.g. 5-10,
+     * 1
      */
     @Override
     public String toString() {
         return lowerBound + "-" + upperBound + (step != null && !(step instanceof NullObject) ? ", " + step : "");
     }
 
-    private boolean isLowerBoundNull(){
-        return lowerBound == null || (getLowerBound() instanceof NullObjectSupport ?
-                ((NullObjectSupport)getLowerBound()).isNull() : false);
+    private boolean isLowerBoundNull() {
+        return lowerBound == null
+                || (getLowerBound() instanceof NullObjectSupport ? ((NullObjectSupport)getLowerBound()).isNull()
+                        : false);
     }
 
-    private boolean isUpperBoundNull(){
-        return upperBound == null || (getUpperBound() instanceof NullObjectSupport ?
-                ((NullObjectSupport)getUpperBound()).isNull() : false);
+    private boolean isUpperBoundNull() {
+        return upperBound == null
+                || (getUpperBound() instanceof NullObjectSupport ? ((NullObjectSupport)getUpperBound()).isNull()
+                        : false);
     }
 
-    private boolean isStepNull(){
+    private boolean isStepNull() {
         return step == null || (step instanceof NullObjectSupport ? ((NullObjectSupport)step).isNull() : false);
     }
 
@@ -309,7 +311,7 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
         }
 
         boolean withinBounds = (isLowerBoundNull() || value.compareTo(lowerBound) >= 0)
-        && (isUpperBoundNull() || value.compareTo(upperBound) <= 0);
+                && (isUpperBoundNull() || value.compareTo(upperBound) <= 0);
 
         if (withinBounds) {
             if (!isStepNull()) {

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,21 +31,24 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
 
     private ITestRuleParameter ruleInput;
     private IIpsProject project;
+
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        ITestCaseType type = (ITestCaseType )newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        ITestCaseType type = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         ruleInput = type.newExpectedResultRuleParameter();
     }
-    
-    public void testIsRoot(){
-        // a test rule parameter is always a root element, no childs are supported by the test rule parameter
+
+    public void testIsRoot() {
+        // a test rule parameter is always a root element, no childs are supported by the test rule
+        // parameter
         assertTrue(ruleInput.isRoot());
     }
-    
+
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "RuleParameter", 0);
@@ -53,21 +56,21 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
         assertEquals("rule1", ruleInput.getName());
         assertFalse(ruleInput.isInputOrCombinedParameter());
         assertTrue(ruleInput.isExpextedResultOrCombinedParameter());
-        assertFalse(ruleInput.isCombinedParameter());        
-        
+        assertFalse(ruleInput.isCombinedParameter());
+
         paramEl = XmlUtil.getElement(docEl, "RuleParameter", 1);
         ruleInput.initFromXml(paramEl);
         assertEquals("rule2", ruleInput.getName());
         assertFalse(ruleInput.isInputOrCombinedParameter());
         assertTrue(ruleInput.isExpextedResultOrCombinedParameter());
-        assertFalse(ruleInput.isCombinedParameter());                
+        assertFalse(ruleInput.isCombinedParameter());
     }
-    
+
     public void testToXml() {
         ruleInput.setName("rule3");
         ruleInput.setTestParameterType(TestParameterType.EXPECTED_RESULT);
         Element el = ruleInput.toXml(newDocument());
-        
+
         ruleInput.setName("rule4");
         boolean exceptionThrown = false;
         try {
@@ -77,15 +80,15 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
         }
         assertTrue(exceptionThrown);
         ruleInput.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        
+
         ruleInput.initFromXml(el);
         assertEquals("rule3", ruleInput.getName());
         assertFalse(ruleInput.isInputOrCombinedParameter());
         assertTrue(ruleInput.isExpextedResultOrCombinedParameter());
         assertFalse(ruleInput.isCombinedParameter());
     }
-    
-    public void testValidateWrongType() throws Exception{
+
+    public void testValidateWrongType() throws Exception {
         MessageList ml = ruleInput.validate(project);
         assertNull(ml.getMessageByCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));
 

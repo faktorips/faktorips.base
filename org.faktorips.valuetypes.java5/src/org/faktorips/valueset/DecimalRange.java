@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -116,8 +116,8 @@ public class DecimalRange extends DefaultRange<Decimal> {
      */
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
-        return getUpperBound().subtract(getLowerBound()).abs().divide(getStep(), 0,
-                BigDecimal.ROUND_UNNECESSARY).intValue() + 1;
+        return getUpperBound().subtract(getLowerBound()).abs().divide(getStep(), 0, BigDecimal.ROUND_UNNECESSARY)
+                .intValue() + 1;
     }
 
     /**

@@ -52,8 +52,8 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
         assertEquals(10, propertyDefs.length);
 
         ArrayList<String> propertyDefNames = new ArrayList<String>();
-        for (int i = 0; i < propertyDefs.length; i++) {
-            propertyDefNames.add(propertyDefs[i].getName());
+        for (IIpsBuilderSetPropertyDef propertyDef : propertyDefs) {
+            propertyDefNames.add(propertyDef.getName());
         }
 
         assertTrue(propertyDefNames.contains("generateChangeListener"));

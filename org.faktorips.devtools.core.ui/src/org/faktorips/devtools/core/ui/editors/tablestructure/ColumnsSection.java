@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -38,21 +38,21 @@ public class ColumnsSection extends SimpleIpsPartsSection {
     public ColumnsSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
         super(table, parent, Messages.ColumnsSection_title, toolkit);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    protected IpsPartsComposite createIpsPartsComposite(Composite parent,
-            UIToolkit toolkit) {
+    @Override
+    protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new ColumnsComposite(getIpsObject(), parent, toolkit);
     }
-    
+
     private class ColumnsComposite extends IpsPartsComposite {
 
         public ColumnsComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
             super(pdObject, parent, toolkit);
         }
-        
+
         public ITableStructure getTable() {
             return (ITableStructure)getIpsObject();
         }
@@ -60,6 +60,7 @@ public class ColumnsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
@@ -67,13 +68,15 @@ public class ColumnsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected ILabelProvider createLabelProvider() {
             return new ColumnLabelProvider();
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         protected IIpsObjectPart newIpsPart() {
             return getTable().newColumn();
         }
@@ -81,31 +84,36 @@ public class ColumnsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
             return new ColumnEditDialog((IColumn)part, shell);
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getTable().moveColumns(indexes, up);
         }
-        
-    	private class ContentProvider implements IStructuredContentProvider {
-    		public Object[] getElements(Object inputElement) {
-    			 return getTable().getColumns();
-    		}
-    		public void dispose() {
-    			// nothing todo
-    		}
-    		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-    			// nothing todo
-    		}
-    	}
+
+        private class ContentProvider implements IStructuredContentProvider {
+            public Object[] getElements(Object inputElement) {
+                return getTable().getColumns();
+            }
+
+            public void dispose() {
+                // nothing todo
+            }
+
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // nothing todo
+            }
+        }
     }
 
     private class ColumnLabelProvider extends DefaultLabelProvider {
+        @Override
         public String getText(Object element) {
             String text = super.getText(element);
             IColumn column = (Column)element;

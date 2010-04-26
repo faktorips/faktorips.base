@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -30,11 +30,10 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
-
 /**
- * Dialog for editing base or specific package names of IPS source folder entries 
- * (or global for the whole IPS object path)
- *  
+ * Dialog for editing base or specific package names of IPS source folder entries (or global for the
+ * whole IPS object path)
+ * 
  * @author Roman Grutza
  */
 public class PackageNameEditDialog extends StatusDialog {
@@ -46,122 +45,125 @@ public class PackageNameEditDialog extends StatusDialog {
     private String selectedPackageName;
     private Text text;
 
-    
     /**
      * @param parent Composite
      * @param srcfolderEntry parent entry for which to alter an attribute
-     * @param attribute attribute to be changed, must be of type DEFAULT_BASE_PACKAGE_MERGABLE, DEFAULT_BASE_PACKAGE_DERIVED, 
-     * SPECIFIC_BASE_PACKAGE_MERGABLE or SPECIFIC_BASE_PACKAGE_DERIVED
+     * @param attribute attribute to be changed, must be of type DEFAULT_BASE_PACKAGE_MERGABLE,
+     *            DEFAULT_BASE_PACKAGE_DERIVED, SPECIFIC_BASE_PACKAGE_MERGABLE or
+     *            SPECIFIC_BASE_PACKAGE_DERIVED
      * @see IIpsObjectPathEntryAttribute
      */
     public PackageNameEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
         super(parent);
-        
+
         this.setTitle(Messages.PackageNameEditDialog_dialog_title);
         this.setHelpAvailable(false);
         this.attribute = attribute;
         this.srcFolderEntry = srcFolderEntry;
-        
-        if (! (attribute.isPackageNameForDerivedSources() || attribute.isPackageNameForMergableSources())) {
+
+        if (!(attribute.isPackageNameForDerivedSources() || attribute.isPackageNameForMergableSources())) {
             throw new IllegalArgumentException("Attribute is not of type 'package name'."); //$NON-NLS-1$
         }
     }
-    
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
-        Composite composite = (Composite) super.createDialogArea(parent);
+        Composite composite = (Composite)super.createDialogArea(parent);
 
         Group group = new Group(parent, SWT.NONE);
-        
+
         buttonDefaultPackageNameSelected = new Button(group, SWT.RADIO);
         String defaultPackageName = getDefaultPackageName();
-        buttonDefaultPackageNameSelected.setText(Messages.PackageNameEditDialog_button_text_use_default_folder + " (" + defaultPackageName + ")"); //$NON-NLS-2$ //$NON-NLS-3$
+        buttonDefaultPackageNameSelected.setText(Messages.PackageNameEditDialog_button_text_use_default_folder
+                + " (" + defaultPackageName + ")"); //$NON-NLS-2$ 
         buttonCustomPackageNameSelected = new Button(group, SWT.RADIO);
         buttonCustomPackageNameSelected.setText(Messages.PackageNameEditDialog_button_text_use_specific_folder);
 
         text = new Text(group, SWT.BORDER | SWT.SINGLE);
-        
+
         final TextField specificPackageNameTextField = new TextField(text);
         specificPackageNameTextField.addChangeListener(new ValueChangeListener() {
 
             public void valueChanged(FieldValueChangedEvent e) {
-                selectedPackageName =  e.field.getText();
-                
-            }});
-        
+                selectedPackageName = e.field.getText();
+
+            }
+        });
+
         text.setLayoutData(new GridData(SWT.HORIZONTAL));
-        
+
         selectedPackageName = getSpecificPackageName();
         if (selectedPackageName.equals("")) { //$NON-NLS-1$
             // default IPS object path package name is used
             selectedPackageName = getDefaultPackageName();
             buttonCustomPackageNameSelected.setSelection(false);
             buttonDefaultPackageNameSelected.setSelection(true);
-            text.setEnabled(false);            
+            text.setEnabled(false);
         } else {
             // entry specific package name
             buttonCustomPackageNameSelected.setSelection(true);
             buttonDefaultPackageNameSelected.setSelection(false);
             text.setEnabled(true);
         }
-        
+
         specificPackageNameTextField.setText(selectedPackageName);
-        
+
         GridLayout layout = new GridLayout(1, true);
         layout.verticalSpacing = 10;
-        
+
         buttonDefaultPackageNameSelected.addSelectionListener(new SelectionListener() {
 
-            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do*/ }
+            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+            }
 
             public void widgetSelected(SelectionEvent e) {
                 text.setEnabled(false);
                 selectedPackageName = getDefaultPackageName();
             }
         });
-        
+
         buttonCustomPackageNameSelected.addSelectionListener(new SelectionListener() {
 
-            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do*/ }
+            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+            }
 
             public void widgetSelected(SelectionEvent e) {
                 text.setEnabled(true);
             }
         });
-        
+
         group.setLayout(layout);
-        
+
         return composite;
     }
 
     /**
-     * Returns the package name selected in this dialog. 
+     * Returns the package name selected in this dialog.
+     * 
      * @return the package name
      */
     public String getPackageName() {
         return selectedPackageName;
     }
-    
-    
+
     private String getSpecificPackageName() {
-                
+
         String specificPackageName = ""; //$NON-NLS-1$
-        
+
         if (attribute.isPackageNameForDerivedSources()) {
             specificPackageName = srcFolderEntry.getSpecificBasePackageNameForDerivedJavaClasses();
         } else {
             specificPackageName = srcFolderEntry.getSpecificBasePackageNameForMergableJavaClasses();
         }
-        
+
         return specificPackageName;
     }
 
-
     private String getDefaultPackageName() {
-        
+
         String projectName = ""; //$NON-NLS-1$
         if (attribute.isPackageNameForDerivedSources()) {
             projectName = srcFolderEntry.getIpsObjectPath().getBasePackageNameForDerivedJavaClasses();
@@ -171,5 +173,4 @@ public class PackageNameEditDialog extends StatusDialog {
         return projectName;
     }
 
-    
 }

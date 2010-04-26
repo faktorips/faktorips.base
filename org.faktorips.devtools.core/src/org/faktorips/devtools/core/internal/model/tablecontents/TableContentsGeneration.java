@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -80,8 +79,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     Row newRow(List<String> columns) {
         Row newRow = newRowInternal(getNextPartId());
         int column = 0;
-        for (Iterator<String> iter = columns.iterator(); iter.hasNext();) {
-            String value = iter.next();
+        for (String value : columns) {
             newRow.setValueInternal(column++, value);
         }
 
@@ -105,16 +103,14 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     public void newColumn(int insertAt, String defaultValue) {
-        for (Iterator<Row> it = rows.iterator(); it.hasNext();) {
-            Row row = it.next();
+        for (Row row : rows) {
             row.newColumn(insertAt, defaultValue);
         }
         clearUniqueKeyValidator();
     }
 
     public void removeColumn(int column) {
-        for (Iterator<Row> it = rows.iterator(); it.hasNext();) {
-            Row row = it.next();
+        for (Row row : rows) {
             row.removeColumn(column);
         }
         clearUniqueKeyValidator();
@@ -235,8 +231,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      */
     private void refreshRowNumbers() {
         int index = 0;
-        for (Iterator<Row> iter = rows.iterator(); iter.hasNext();) {
-            Row row = iter.next();
+        for (Row row : rows) {
             row.setRowNumber(index++);
         }
     }
@@ -253,8 +248,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
 
         IIpsElement[] children = getChildren();
-        for (int i = 0; i < children.length; i++) {
-            Row row = (Row)children[i];
+        for (IIpsElement element : children) {
+            Row row = (Row)element;
             MessageList list = row.validateThis(tableStructure, datatypes, ipsProject);
             result.add(list);
         }
@@ -289,8 +284,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     private void updateUniqueKeyCache(ITableStructure tableStructure) {
         uniqueKeyValidator.clearUniqueKeyCache();
         IRow[] rows = getRows();
-        for (int j = 0; j < rows.length; j++) {
-            updateUniqueKeyCacheFor((Row)rows[j]);
+        for (IRow row : rows) {
+            updateUniqueKeyCacheFor((Row)row);
         }
         uniqueKeyValidator.cacheTableStructureAndValueDatatypes(this);
         // store the last table structure modification time to detect changes of the table structure

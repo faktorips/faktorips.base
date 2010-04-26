@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,7 +32,7 @@ public class Messages extends NLS {
     public static String IpsObjectPage_msgIpsObjectAlreadyExists4;
     public static String IpsObjectPage_msgIpsObjectAlreadyExists5;
     public static String NewIpsObjectWizard_title;
-    public static String IpsObjectPage_msgNew; 
+    public static String IpsObjectPage_msgNew;
     public static String IpsObjectPage_labelSrcFolder;
     public static String IpsObjectPage_labelPackage;
     public static String IpsObjectPage_labelName;

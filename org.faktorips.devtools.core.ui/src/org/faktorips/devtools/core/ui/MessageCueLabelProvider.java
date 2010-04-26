@@ -107,9 +107,9 @@ public class MessageCueLabelProvider extends LabelProvider {
 
         result.add(msgList.getMessagesFor(container));
         IIpsElement[] childs = container.getChildren();
-        for (int i = 0; i < childs.length; i++) {
-            if (childs[i] instanceof IIpsObjectPartContainer) {
-                collectMessagesForIpsObjectPartContainer(result, msgList, (IIpsObjectPartContainer)childs[i]);
+        for (IIpsElement child : childs) {
+            if (child instanceof IIpsObjectPartContainer) {
+                collectMessagesForIpsObjectPartContainer(result, msgList, (IIpsObjectPartContainer)child);
             }
         }
     }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,16 +28,24 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
     /*
      * Dummy test case class to call the assert methods
      */
-    private class IpsTestCaseAssert extends IpsTestCase2{
-        public IpsTestCaseAssert(){
+    private class IpsTestCaseAssert extends IpsTestCase2 {
+        public IpsTestCaseAssert() {
             super("IpsTestCaseAssert");
         }
+
+        @Override
         public void executeAsserts(IpsTestResult result) throws Exception {
         }
+
+        @Override
         public void executeBusinessLogic() throws Exception {
         }
+
+        @Override
         protected void initExpectedResultFromXml(Element resultEl) {
         }
+
+        @Override
         protected void initInputFromXml(Element inputEl) {
         }
     }
@@ -45,7 +53,8 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
     private MyListener listener;
     private IpsTestCaseAssert test;
     private IpsTestResult result;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         listener = new MyListener();
@@ -57,27 +66,28 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
     private final static String OBJECT = "obj";
     private final static String ATTRIBUTE = "attr";
     private final static String MESSAGE = "message";
-    
-    private static void assertFailure(IpsTestFailure failure){
+
+    private static void assertFailure(IpsTestFailure failure) {
         assertEquals(OBJECT, failure.getTestObject());
         assertEquals(ATTRIBUTE, failure.getTestedAttribute());
         assertEquals(MESSAGE, failure.getMessage());
     }
-    
-    private static void assertFailureWithoutMessage(IpsTestFailure failure){
+
+    private static void assertFailureWithoutMessage(IpsTestFailure failure) {
         assertEquals(OBJECT, failure.getTestObject());
         assertEquals(ATTRIBUTE, failure.getTestedAttribute());
         assertEquals(null, failure.getMessage());
     }
-    
-    private static void assertFailureWithoutObjAttrMessage(IpsTestFailure failure){
+
+    private static void assertFailureWithoutObjAttrMessage(IpsTestFailure failure) {
         assertEquals(null, failure.getTestObject());
         assertEquals(null, failure.getTestedAttribute());
         assertEquals(null, failure.getMessage());
     }
-    
+
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEquals(Object, Object, IpsTestResult)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEquals(Object, Object,
+     * IpsTestResult)'
      */
     /**
      * 
@@ -89,11 +99,12 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailureWithoutObjAttrMessage(listener.lastFailure);
         assertEquals("1", listener.lastFailure.getExpectedValue());
-        assertEquals("2", listener.lastFailure.getActualValue());        
+        assertEquals("2", listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEquals(Object, Object, IpsTestResult, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEquals(Object, Object,
+     * IpsTestResult, String, String)'
      */
     public void testAssertEqualsObjectObjectIpsTestResultStringString() {
         test.assertEquals("1", "1", result, OBJECT, ATTRIBUTE);
@@ -102,11 +113,12 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailureWithoutMessage(listener.lastFailure);
         assertEquals("1", listener.lastFailure.getExpectedValue());
-        assertEquals("2", listener.lastFailure.getActualValue());     
+        assertEquals("2", listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEquals(Object, Object, IpsTestResult, String, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEquals(Object, Object,
+     * IpsTestResult, String, String, String)'
      */
     public void testAssertEqualsObjectObjectIpsTestResultStringStringString() {
         test.assertEquals("1", "1", result, OBJECT, ATTRIBUTE, MESSAGE);
@@ -115,7 +127,7 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailure(listener.lastFailure);
         assertEquals("1", listener.lastFailure.getExpectedValue());
-        assertEquals("2", listener.lastFailure.getActualValue());   
+        assertEquals("2", listener.lastFailure.getActualValue());
     }
 
     /*
@@ -128,11 +140,12 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailureWithoutObjAttrMessage(listener.lastFailure);
         assertEquals(Boolean.TRUE, listener.lastFailure.getExpectedValue());
-        assertEquals(Boolean.FALSE, listener.lastFailure.getActualValue()); 
+        assertEquals(Boolean.FALSE, listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertTrue(boolean, IpsTestResult, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertTrue(boolean, IpsTestResult,
+     * String, String)'
      */
     public void testAssertTrueBooleanIpsTestResultStringString() {
         test.assertTrue(true, result, OBJECT, ATTRIBUTE);
@@ -141,11 +154,12 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailureWithoutMessage(listener.lastFailure);
         assertEquals(Boolean.TRUE, listener.lastFailure.getExpectedValue());
-        assertEquals(Boolean.FALSE, listener.lastFailure.getActualValue()); 
+        assertEquals(Boolean.FALSE, listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertTrue(boolean, IpsTestResult, String, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertTrue(boolean, IpsTestResult,
+     * String, String, String)'
      */
     public void testAssertTrueBooleanIpsTestResultStringStringString() {
         test.assertTrue(true, result, OBJECT, ATTRIBUTE, MESSAGE);
@@ -154,7 +168,7 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailure(listener.lastFailure);
         assertEquals(Boolean.TRUE, listener.lastFailure.getExpectedValue());
-        assertEquals(Boolean.FALSE, listener.lastFailure.getActualValue());  
+        assertEquals(Boolean.FALSE, listener.lastFailure.getActualValue());
     }
 
     /*
@@ -167,11 +181,12 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailureWithoutObjAttrMessage(listener.lastFailure);
         assertEquals(Boolean.FALSE, listener.lastFailure.getExpectedValue());
-        assertEquals(Boolean.TRUE, listener.lastFailure.getActualValue()); 
+        assertEquals(Boolean.TRUE, listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertFalse(boolean, IpsTestResult, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertFalse(boolean, IpsTestResult,
+     * String, String)'
      */
     public void testAssertFalseBooleanIpsTestResultStringString() {
         test.assertFalse(false, result, OBJECT, ATTRIBUTE);
@@ -184,7 +199,8 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertFalse(boolean, IpsTestResult, String, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertFalse(boolean, IpsTestResult,
+     * String, String, String)'
      */
     public void testAssertFalseBooleanIpsTestResultStringStringString() {
         test.assertFalse(false, result, OBJECT, ATTRIBUTE, MESSAGE);
@@ -193,7 +209,7 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailure(listener.lastFailure);
         assertEquals(Boolean.FALSE, listener.lastFailure.getExpectedValue());
-        assertEquals(Boolean.TRUE, listener.lastFailure.getActualValue());  
+        assertEquals(Boolean.TRUE, listener.lastFailure.getActualValue());
     }
 
     /*
@@ -206,11 +222,12 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailureWithoutObjAttrMessage(listener.lastFailure);
         assertEquals(null, listener.lastFailure.getExpectedValue());
-        assertEquals("notNull", listener.lastFailure.getActualValue()); 
+        assertEquals("notNull", listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNull(Object, IpsTestResult, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNull(Object, IpsTestResult,
+     * String, String)'
      */
     public void testAssertNullObjectIpsTestResultStringString() {
         test.assertNull(null, result, OBJECT, ATTRIBUTE);
@@ -223,7 +240,8 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNull(Object, IpsTestResult, String, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNull(Object, IpsTestResult,
+     * String, String, String)'
      */
     public void testAssertNullObjectIpsTestResultStringStringString() {
         test.assertNull(null, result, OBJECT, ATTRIBUTE, MESSAGE);
@@ -232,11 +250,12 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailure(listener.lastFailure);
         assertEquals(null, listener.lastFailure.getExpectedValue());
-        assertEquals("notNull", listener.lastFailure.getActualValue());  
+        assertEquals("notNull", listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNotNull(Object, IpsTestResult)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNotNull(Object,
+     * IpsTestResult)'
      */
     public void testAssertNotNullObjectIpsTestResult() {
         test.assertNotNull("notNull", result);
@@ -244,12 +263,13 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         test.assertNotNull(null, result);
         assertEquals(1, listener.failureCount);
         assertFailureWithoutObjAttrMessage(listener.lastFailure);
-        assertEquals("!"+null, listener.lastFailure.getExpectedValue());
-        assertEquals(null, listener.lastFailure.getActualValue()); 
-    } 
+        assertEquals("!" + null, listener.lastFailure.getExpectedValue());
+        assertEquals(null, listener.lastFailure.getActualValue());
+    }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNotNull(Object, IpsTestResult, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNotNull(Object, IpsTestResult,
+     * String, String)'
      */
     public void testAssertNotNullObjectIpsTestResultStringString() {
         test.assertNotNull("notNull", result, OBJECT, ATTRIBUTE);
@@ -257,12 +277,13 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         test.assertNotNull(null, result, OBJECT, ATTRIBUTE);
         assertEquals(1, listener.failureCount);
         assertFailureWithoutMessage(listener.lastFailure);
-        assertEquals("!"+null, listener.lastFailure.getExpectedValue());
+        assertEquals("!" + null, listener.lastFailure.getExpectedValue());
         assertEquals(null, listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNotNull(Object, IpsTestResult, String, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertNotNull(Object, IpsTestResult,
+     * String, String, String)'
      */
     public void testAssertNotNullObjectIpsTestResultStringStringString() {
         test.assertNotNull("notNull", result, OBJECT, ATTRIBUTE, MESSAGE);
@@ -270,12 +291,13 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         test.assertNotNull(null, result, OBJECT, ATTRIBUTE, MESSAGE);
         assertEquals(1, listener.failureCount);
         assertFailure(listener.lastFailure);
-        assertEquals("!"+null, listener.lastFailure.getExpectedValue());
+        assertEquals("!" + null, listener.lastFailure.getExpectedValue());
         assertEquals(null, listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEqualsIgnoreScale(Decimal, Decimal, IpsTestResult)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEqualsIgnoreScale(Decimal,
+     * Decimal, IpsTestResult)'
      */
     public void testAssertEqualsIgnoreScaleDecimalDecimalIpsTestResult() {
         test.assertEquals(Decimal.valueOf("2.00"), Decimal.valueOf("2.0"), result);
@@ -284,11 +306,12 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailureWithoutObjAttrMessage(listener.lastFailure);
         assertEquals(Decimal.valueOf("2.00"), listener.lastFailure.getExpectedValue());
-        assertEquals(Decimal.valueOf("2.01"), listener.lastFailure.getActualValue()); 
+        assertEquals(Decimal.valueOf("2.01"), listener.lastFailure.getActualValue());
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEqualsIgnoreScale(Decimal, Decimal, IpsTestResult, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEqualsIgnoreScale(Decimal,
+     * Decimal, IpsTestResult, String, String)'
      */
     public void testAssertEqualsIgnoreScaleDecimalDecimalIpsTestResultStringString() {
         test.assertEquals(Decimal.valueOf("2.00"), Decimal.valueOf("2.0"), result, OBJECT, ATTRIBUTE);
@@ -301,7 +324,8 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
     }
 
     /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEqualsIgnoreScale(Decimal, Decimal, IpsTestResult, String, String, String)'
+     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.assertEqualsIgnoreScale(Decimal,
+     * Decimal, IpsTestResult, String, String, String)'
      */
     public void testAssertEqualsIgnoreScaleDecimalDecimalIpsTestResultStringStringString() {
         test.assertEquals(Decimal.valueOf("2.00"), Decimal.valueOf("2.0"), result, OBJECT, ATTRIBUTE, MESSAGE);
@@ -310,7 +334,7 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
         assertEquals(1, listener.failureCount);
         assertFailure(listener.lastFailure);
         assertEquals(Decimal.valueOf("2.00"), listener.lastFailure.getExpectedValue());
-        assertEquals(Decimal.valueOf("2.01"), listener.lastFailure.getActualValue());  
+        assertEquals(Decimal.valueOf("2.01"), listener.lastFailure.getActualValue());
     }
 
 }

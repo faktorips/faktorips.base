@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,20 +13,18 @@
 
 package org.faktorips.devtools.core.enums;
 
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-
 import junit.framework.TestCase;
 
 /**
  *
  */
 public class DefaultEnumTypeTest extends TestCase {
-    
+
     private DefaultEnumType gender;
     private DefaultEnumValue male;
     private DefaultEnumValue female;
-    
+
+    @Override
     protected void setUp() {
         gender = new DefaultEnumType("Gender", DefaultEnumValue.class);
         male = new DefaultEnumValue(gender, "male");
@@ -40,7 +38,7 @@ public class DefaultEnumTypeTest extends TestCase {
         assertEquals(2, gender.getValues().length);
         assertEquals(male, gender.getValues()[0]);
         assertEquals(female, gender.getValues()[1]);
-        
+
         // defensive copy test
         gender.getValues()[0] = null; // modifiy resulting array
         assertEquals(male, gender.getValues()[0]);
@@ -72,7 +70,7 @@ public class DefaultEnumTypeTest extends TestCase {
 
     public void testCompareTo() {
     }
-    
+
     public void testGetEnumValue_int() {
         assertEquals(male, gender.getEnumValue(0));
     }

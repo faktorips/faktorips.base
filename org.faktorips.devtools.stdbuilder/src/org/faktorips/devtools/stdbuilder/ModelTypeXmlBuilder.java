@@ -89,8 +89,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         if (associations.length > 0) {
             Element modelTypeAssociations = doc.createElement("ModelTypeAssociations");
             modelType.appendChild(modelTypeAssociations);
-            for (int i = 0; i < associations.length; i++) {
-                IAssociation association = associations[i];
+            for (IAssociation association : associations) {
                 if (association.isValid()) {
                     Element modelTypeAssociation = doc.createElement("ModelTypeAssociation");
                     modelTypeAssociations.appendChild(modelTypeAssociation);
@@ -144,17 +143,17 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         if (attributes.length > 0) {
             Element modelTypeAttributes = doc.createElement("ModelTypeAttributes");
             modelType.appendChild(modelTypeAttributes);
-            for (int i = 0; i < attributes.length; i++) {
-                IAttribute attribute = attributes[i];
+            for (IAttribute attribute : attributes) {
                 if (attribute.isValid()) {
                     Element modelTypeAttribute = doc.createElement("ModelTypeAttribute");
                     modelTypeAttributes.appendChild(modelTypeAttribute);
                     modelTypeAttribute.setAttribute("name", attribute.getName());
                     if (model instanceof IPolicyCmptType) {
-                        GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                (IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
+                        GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((StandardBuilderSet)getBuilderSet())
+                                .getGenerator((IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
                         if (genPolicyCmptTypeAttribute != null) {
-                            modelTypeAttribute.setAttribute("datatype", genPolicyCmptTypeAttribute.getDatatype().getJavaClassName());
+                            modelTypeAttribute.setAttribute("datatype", genPolicyCmptTypeAttribute.getDatatype()
+                                    .getJavaClassName());
                         }
                     } else if (model instanceof IProductCmptType) {
                         GenProductCmptTypeAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
@@ -185,8 +184,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 .getExtensionPropertyDefinitions(element.getClass(), true);
         Element extensionProperties = doc.createElement("ExtensionProperties");
         modelElement.appendChild(extensionProperties);
-        for (int i = 0; i < extensionPropertyDefinitions.length; i++) {
-            IExtensionPropertyDefinition extensionPropertyDefinition = extensionPropertyDefinitions[i];
+        for (IExtensionPropertyDefinition extensionPropertyDefinition : extensionPropertyDefinitions) {
             String propertyId = extensionPropertyDefinition.getPropertyId();
             if (extensionPropertyDefinition instanceof StringExtensionPropertyDefinition
                     && element.isExtPropertyDefinitionAvailable(propertyId)) {

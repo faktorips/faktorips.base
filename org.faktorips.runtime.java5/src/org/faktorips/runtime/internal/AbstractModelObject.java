@@ -75,10 +75,11 @@ public abstract class AbstractModelObject implements IModelObject {
      * @param context provides additional external information that might be necessary to execute
      *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information
-     *            
+     * 
      * @throws NullPointerException if the list is <code>null</code> and a message is generated.
      * 
-     * This method is model internal, it is not part of the published interface and should not be used by clients
+     *             This method is model internal, it is not part of the published interface and
+     *             should not be used by clients
      */
     public void validate(MessageList list, IValidationContext context) {
         if (!validateSelf(list, context)) {

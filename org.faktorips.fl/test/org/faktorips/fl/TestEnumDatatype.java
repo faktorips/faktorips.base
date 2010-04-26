@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,7 +25,7 @@ import org.faktorips.datatype.ValueDatatype;
 public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
 
     public final static EnumDatatype INSTANCE = new TestEnumDatatype();
-    
+
     private TestEnumDatatype() {
         super();
     }
@@ -34,7 +34,7 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
      * {@inheritDoc}
      */
     public String[] getAllValueIds(boolean includeNull) {
-        return new String[]{"MONTH", "YEAR"};
+        return new String[] { "MONTH", "YEAR" };
     }
 
     /**
@@ -96,7 +96,7 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
      * {@inheritDoc}
      */
     public boolean isNull(Object value) {
-        return value==null;
+        return value == null;
     }
 
     /**
@@ -119,7 +119,7 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
     public boolean isPrimitive() {
         return false;
     }
-    
+
     /**
      * {@inheritDoc}
      */

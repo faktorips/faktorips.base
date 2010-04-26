@@ -138,8 +138,8 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         private boolean isErrorDelta(IResourceDelta delta) {
             if ((delta.getFlags() & IResourceDelta.MARKERS) != 0) {
                 IMarkerDelta[] markerDeltas = delta.getMarkerDeltas();
-                for (int i = 0; i < markerDeltas.length; i++) {
-                    if (markerDeltas[i].isSubtypeOf(IpsPlugin.PROBLEM_MARKER)) {
+                for (IMarkerDelta markerDelta : markerDeltas) {
+                    if (markerDelta.isSubtypeOf(IpsPlugin.PROBLEM_MARKER)) {
                         return true;
                     }
                 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -34,70 +34,72 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationSelectionDia
  */
 public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListener, ITestAnswerProvider {
 
-	private IpsPlugin plugin;
-	private int answer = GenerationSelectionDialog.CHOICE_BROWSE;
-	
-	public void setUp() throws Exception {
+    private IpsPlugin plugin;
+    private int answer = GenerationSelectionDialog.CHOICE_BROWSE;
+
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
-		plugin = IpsPlugin.getDefault();
-		plugin.getLog().addLogListener(this);
-		plugin.setTestMode(true);
-		plugin.setTestAnswerProvider(this);
-	}
-    
+        plugin = IpsPlugin.getDefault();
+        plugin.getLog().addLogListener(this);
+        plugin.setTestMode(true);
+        plugin.setTestAnswerProvider(this);
+    }
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void tearDownExtension() throws Exception {
         plugin.getLog().removeLogListener(this);
     }
 
-	public void testOpenProductCmptEditor() throws Exception {
+    public void testOpenProductCmptEditor() throws Exception {
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
 
         IIpsProject ipsProject = newIpsProject();
         IProductCmptType type = newProductCmptType(ipsProject, "Type");
         IProductCmpt product1 = newProductCmpt(type, "Product1");
         openEditor(product1);
-        
+
         IProductCmpt product2 = newProductCmpt(type, "Product2");
         openEditor(product1);
-		openEditor(product2);
-	}
+        openEditor(product2);
+    }
 
-	private void openEditor(IIpsObject file) throws Exception {
-    	IpsUIPlugin.getDefault().openEditor((IFile) file.getCorrespondingResource());
-		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void logging(IStatus status, String plugin) {
-		// never ever should a logentry appear...
-		fail();
-	}
+    private void openEditor(IIpsObject file) throws Exception {
+        IpsUIPlugin.getDefault().openEditor((IFile)file.getCorrespondingResource());
+        plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean getBooleanAnswer() {
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void logging(IStatus status, String plugin) {
+        // never ever should a logentry appear...
+        fail();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getStringAnswer() {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getBooleanAnswer() {
+        return false;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getAnswer() {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getStringAnswer() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getAnswer() {
+        return null;
+    }
 
     public int getIntAnswer() {
         return answer;

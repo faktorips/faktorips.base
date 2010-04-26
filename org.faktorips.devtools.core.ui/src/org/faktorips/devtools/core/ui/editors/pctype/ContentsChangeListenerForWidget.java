@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,11 +22,10 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An abstract base class for contents change listeners that are associated with widgets.
- * These listeners must be removed from the ips model when the widget is disposed.
- * If this listener receives a content changed event when the widget
- * is disposed,  the listener consumes the event, otherwise it delegates the call to the 
- * template method contentsChangedAndWidgetIsNotDisposed().
+ * An abstract base class for contents change listeners that are associated with widgets. These
+ * listeners must be removed from the ips model when the widget is disposed. If this listener
+ * receives a content changed event when the widget is disposed, the listener consumes the event,
+ * otherwise it delegates the call to the template method contentsChangedAndWidgetIsNotDisposed().
  * 
  * @author Jan Ortmann
  */
@@ -41,16 +40,19 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
         this();
         setWidget(widget);
     }
-    
+
     public void setWidget(Widget newWidget) {
-        ArgumentCheck.notNull(newWidget, "Hint: Be sure to create the listener in the methods that are responsible for creating the controls. Sometimes this happens AFTER the object was created. E.g. in IpsSections");  //$NON-NLS-1$
-        if (widget!=null) { // widget can still be null
-            widget.removeDisposeListener(this); 
+        ArgumentCheck
+                .notNull(
+                        newWidget,
+                        "Hint: Be sure to create the listener in the methods that are responsible for creating the controls. Sometimes this happens AFTER the object was created. E.g. in IpsSections"); //$NON-NLS-1$
+        if (widget != null) { // widget can still be null
+            widget.removeDisposeListener(this);
         }
         widget = newWidget;
         widget.addDisposeListener(this);
     }
-    
+
     public Widget getWidget() {
         return widget;
     }
@@ -60,7 +62,7 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
      * {@inheritDoc}
      */
     public final void contentsChanged(ContentChangeEvent event) {
-        if (widget==null) {
+        if (widget == null) {
             throw new RuntimeException("The widget hasn't been set!"); //$NON-NLS-1$
         }
         if (!widget.isDisposed()) {
@@ -70,13 +72,12 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
 
     public abstract void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event);
 
-    public void disposedInternal(DisposeEvent e){
+    public void disposedInternal(DisposeEvent e) {
     }
-    
+
     public final void widgetDisposed(DisposeEvent e) {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         disposedInternal(e);
     }
 
-    
 }

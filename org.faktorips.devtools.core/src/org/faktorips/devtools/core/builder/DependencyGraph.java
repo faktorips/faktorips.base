@@ -109,13 +109,13 @@ public class DependencyGraph implements Serializable {
     }
 
     private void addEntryToDependantsForMap(IDependency[] dependsOn) {
-        for (int i = 0; i < dependsOn.length; i++) {
-            List<IDependency> dependants = getDependantsAsList(dependsOn[i].getTarget());
+        for (IDependency element : dependsOn) {
+            List<IDependency> dependants = getDependantsAsList(element.getTarget());
             if (dependants == null) {
                 dependants = new ArrayList<IDependency>(0);
-                dependantsForMap.put(dependsOn[i].getTarget(), dependants);
+                dependantsForMap.put(element.getTarget(), dependants);
             }
-            dependants.add(dependsOn[i]);
+            dependants.add(element);
         }
     }
 

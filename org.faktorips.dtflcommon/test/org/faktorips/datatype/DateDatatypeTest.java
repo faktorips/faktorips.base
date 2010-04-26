@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,6 +12,7 @@
  *******************************************************************************/
 
 package org.faktorips.datatype;
+
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,8 +21,6 @@ import junit.framework.TestCase;
 
 import org.faktorips.datatype.classtypes.DateDatatype;
 
-
-
 /**
  * 
  * @author Peter Erzberger
@@ -29,12 +28,13 @@ import org.faktorips.datatype.classtypes.DateDatatype;
 public class DateDatatypeTest extends TestCase {
 
     private DateDatatype datatype;
-    
-    public void setUp(){
+
+    @Override
+    public void setUp() {
         datatype = new DateDatatype();
     }
-    
-    public void testGetValue(){
+
+    public void testGetValue() {
         String valueStr = "2000-01-01";
         Date date = (Date)datatype.getValue(valueStr);
         Calendar cal = Calendar.getInstance();
@@ -44,17 +44,16 @@ public class DateDatatypeTest extends TestCase {
         assertEquals(1, cal.get(Calendar.DATE));
         assertEquals(0, cal.get(Calendar.SECOND));
         assertEquals(0, cal.get(Calendar.MILLISECOND));
-        
+
         assertNull(datatype.getValue(null));
-        
-        try{
+
+        try {
             datatype.getValue("01.01.2000");
             fail();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
         }
     }
-    
+
     public void testIsParsable() throws ParseException {
         assertTrue(datatype.isParsable("2000-01-01"));
         assertTrue(datatype.isParsable("2000-01-01"));
@@ -66,9 +65,9 @@ public class DateDatatypeTest extends TestCase {
         assertTrue(datatype.isParsable("2001-1-1"));
         assertTrue(datatype.isParsable("2001-1-1"));
     }
-    
-    public void testValueToString(){
-        
+
+    public void testValueToString() {
+
         Calendar cal = Calendar.getInstance();
         cal.set(2000, Calendar.FEBRUARY, 20);
         String valueStr = datatype.valueToString(cal.getTime());
@@ -77,14 +76,13 @@ public class DateDatatypeTest extends TestCase {
         assertEquals(tokens[0], "2000");
         assertEquals(tokens[1], "02");
         assertEquals(tokens[2], "20");
-        
+
         assertNull(datatype.valueToString(null));
-        
-        try{
+
+        try {
             datatype.valueToString(cal);
             fail();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
         }
     }
 }

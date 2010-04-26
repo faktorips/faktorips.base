@@ -127,9 +127,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     private int getAssociationIndex() {
         List<IAssociation> allAssociationsForTheTargetType = new ArrayList<IAssociation>();
         IPolicyCmptTypeAssociation[] ass = getPolicyCmptType().getPolicyCmptTypeAssociations();
-        for (int i = 0; i < ass.length; i++) {
-            if (target.equals(ass[i].getTarget())) {
-                allAssociationsForTheTargetType.add(ass[i]);
+        for (IPolicyCmptTypeAssociation as : ass) {
+            if (target.equals(as.getTarget())) {
+                allAssociationsForTheTargetType.add(as);
             }
         }
         int index = 0;
@@ -200,9 +200,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             return null;
         }
         IPolicyCmptTypeAssociation[] associations = target.getPolicyCmptTypeAssociations();
-        for (int i = 0; i < associations.length; i++) {
-            if (associations[i].getName().equals(inverseAssociation)) {
-                return associations[i];
+        for (IPolicyCmptTypeAssociation association : associations) {
+            if (association.getName().equals(inverseAssociation)) {
+                return association;
             }
         }
         return null;
@@ -222,12 +222,12 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             return null;
         }
         IPolicyCmptTypeAssociation[] associationCandidates = target.getPolicyCmptTypeAssociations();
-        for (int i = 0; i < associationCandidates.length; i++) {
-            String canditateInverseAssociationName = associationCandidates[i].getInverseAssociation();
+        for (IPolicyCmptTypeAssociation associationCandidate : associationCandidates) {
+            String canditateInverseAssociationName = associationCandidate.getInverseAssociation();
             String canditateTargetQName = getPolicyCmptType().getQualifiedName();
             if (getName().equals(canditateInverseAssociationName)
-                    && associationCandidates[i].getTarget().equals(canditateTargetQName)) {
-                return associationCandidates[i];
+                    && associationCandidate.getTarget().equals(canditateTargetQName)) {
+                return associationCandidate;
             }
         }
         return null;

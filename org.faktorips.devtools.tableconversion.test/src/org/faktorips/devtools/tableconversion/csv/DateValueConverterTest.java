@@ -52,6 +52,6 @@ public class DateValueConverterTest extends TestCase {
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
         Object extValue = converter.getExternalDataValue("2009-10-15", ml);
         assertTrue(extValue instanceof String);
-        assertEquals("15.10.2009", (String) extValue);
+        assertEquals("15.10.2009", (String)extValue);
     }
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,11 +21,12 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
     public GenericValueDatatypeHelper(GenericValueDatatype datatype) {
         super(datatype);
     }
-    
+
     private GenericValueDatatype getGenericValueDatatype() {
         return (GenericValueDatatype)getDatatype();
     }
 
+    @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment code = new JavaCodeFragment();
         code.appendClassName(getGenericValueDatatype().getJavaClassName());
@@ -48,7 +49,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
         code.append('.');
         code.append(datatype.getValueOfMethodName());
         code.append('(');
-        if (datatype.getNullObjectId()==null) {
+        if (datatype.getNullObjectId() == null) {
             code.append("null");
         } else {
             code.appendQuoted(datatype.getNullObjectId());
@@ -58,7 +59,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
     }
 
     public JavaCodeFragment newInstance(String value) {
-        if (value==null) {
+        if (value == null) {
             return nullExpression();
         }
         return valueOfExpression('"' + value + '"');

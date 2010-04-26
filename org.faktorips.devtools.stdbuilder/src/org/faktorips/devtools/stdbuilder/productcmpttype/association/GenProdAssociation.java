@@ -17,7 +17,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -146,8 +145,8 @@ public abstract class GenProdAssociation extends GenTypePart {
             String methodName2 = getMethodNameGetNumOfRelatedCmpts();
             builder.appendln("num += super." + methodName2 + "();");
         }
-        for (Iterator<IAssociation> it = implAssociations.iterator(); it.hasNext();) {
-            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)it.next();
+        for (IAssociation iAssociation : implAssociations) {
+            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iAssociation;
             builder.append("num += ");
             ((GenProductCmptType)getGenType()).getGenerator(association)
                     .generateCodeGetNumOfRelatedProductCmptsInternal(builder);
@@ -344,8 +343,8 @@ public abstract class GenProdAssociation extends GenTypePart {
                 methodsBuilder.append("int index = 0;");
             }
         }
-        for (Iterator<IAssociation> it = implAssociations.iterator(); it.hasNext();) {
-            IProductCmptTypeAssociation implAssociation = (IProductCmptTypeAssociation)it.next();
+        for (IAssociation iAssociation : implAssociations) {
+            IProductCmptTypeAssociation implAssociation = (IProductCmptTypeAssociation)iAssociation;
             ((GenProductCmptType)getGenType()).getGenerator(implAssociation).generateCodeGetRelatedCmptsInContainer(
                     methodsBuilder);
         }

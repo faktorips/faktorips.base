@@ -19,6 +19,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -37,8 +39,6 @@ import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * Operation to export an ipstablecontents to an text-file (comma separated values).

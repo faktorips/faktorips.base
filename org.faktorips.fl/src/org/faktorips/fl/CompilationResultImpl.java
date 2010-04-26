@@ -221,14 +221,14 @@ public class CompilationResultImpl implements CompilationResult {
     }
 
     public void addAllIdentifierUsed(CompilationResult[] argResults) {
-        for (int i = 0; i < argResults.length; i++) {
-            addIdentifier(argResults[i].getResolvedIdentifiers());
+        for (CompilationResult argResult : argResults) {
+            addIdentifier(argResult.getResolvedIdentifiers());
         }
     }
 
     private void addIdentifier(String[] identifiers) {
-        for (int i = 0; i < identifiers.length; i++) {
-            addIdentifierUsed(identifiers[i]);
+        for (String identifier : identifiers) {
+            addIdentifierUsed(identifier);
         }
     }
 

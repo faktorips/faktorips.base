@@ -19,7 +19,8 @@ import org.faktorips.devtools.tableconversion.IValueConverter;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Tests for Conversion of an arbitrary CSV-Integer representation to IPS Integer Datatype and vice versa.
+ * Tests for Conversion of an arbitrary CSV-Integer representation to IPS Integer Datatype and vice
+ * versa.
  * 
  * @author Roman Grutza
  */
@@ -32,11 +33,7 @@ public class IntegerValueConverterTest extends NumberValueConverterTest {
 
     @Override
     public String[] getExternalDataToConvert(boolean useCommaAsDecimalSeparator) {
-        String[] validExternalDoubles = {
-                String.valueOf(Integer.MAX_VALUE),
-                String.valueOf(Integer.MIN_VALUE),
-                "0"
-        };
+        String[] validExternalDoubles = { String.valueOf(Integer.MAX_VALUE), String.valueOf(Integer.MIN_VALUE), "0" };
         return validExternalDoubles;
     }
 
@@ -45,8 +42,8 @@ public class IntegerValueConverterTest extends NumberValueConverterTest {
 
         MessageList ml = new MessageList();
         IValueConverter converter = new IntegerValueConverter();
-        for (int i = 0; i < doNotFitInInteger.length; i++) {
-            String ipsValue = converter.getIpsValue(doNotFitInInteger[i], ml);
+        for (String element : doNotFitInInteger) {
+            String ipsValue = converter.getIpsValue(element, ml);
             assertFalse(ml.isEmpty());
             assertFalse(Datatype.INTEGER.isParsable(ipsValue));
         }

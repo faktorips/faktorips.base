@@ -290,11 +290,11 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         }
         Element replacementsEl = doc.createElement("JavaIdentifierCharReplacements"); //$NON-NLS-1$
         subEl.appendChild(replacementsEl);
-        for (int i = 0; i < chars.length; i++) {
+        for (char c : chars) {
             Element replacementEl = doc.createElement("Replacement"); //$NON-NLS-1$
             replacementsEl.appendChild(replacementEl);
-            replacementEl.setAttribute("replacedChar", "" + chars[i]); //$NON-NLS-1$ //$NON-NLS-2$
-            replacementEl.setAttribute("replacement", getReplacement(chars[i])); //$NON-NLS-1$
+            replacementEl.setAttribute("replacedChar", "" + c); //$NON-NLS-1$ //$NON-NLS-2$
+            replacementEl.setAttribute("replacement", getReplacement(c)); //$NON-NLS-1$
         }
         return el;
     }

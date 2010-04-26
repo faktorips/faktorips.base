@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,30 +29,35 @@ import org.faktorips.devtools.core.ui.bf.properties.BusinessFunctionRefControl;
 public class BusinessFunctionRefControlTest extends AbstractIpsPluginTest {
 
     private Shell shell;
-    
-    public void setUp() throws Exception{
+
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
         shell = new Shell(Display.getCurrent());
     }
-    
-    public void tearDownExtension(){
+
+    @Override
+    public void tearDownExtension() {
         shell.dispose();
     }
-    
+
     public void testGetIpsSrcFiles() throws Exception {
         UIToolkit toolkit = new UIToolkit(null);
         BusinessFunctionRefControl control = new BusinessFunctionRefControl(shell, toolkit);
         assertEquals(0, control.getIpsSrcFiles().length);
-        
+
         IIpsProject ipsProject = newIpsProject("TestProject");
         assertEquals(0, control.getIpsSrcFiles().length);
 
-        IBusinessFunction bf1 = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf1");
-        IBusinessFunction bf2 = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf2");
-        IBusinessFunction bf3 = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf3");
+        IBusinessFunction bf1 = (IBusinessFunction)newIpsObject(ipsProject,
+                BusinessFunctionIpsObjectType.getInstance(), "bf1");
+        IBusinessFunction bf2 = (IBusinessFunction)newIpsObject(ipsProject,
+                BusinessFunctionIpsObjectType.getInstance(), "bf2");
+        IBusinessFunction bf3 = (IBusinessFunction)newIpsObject(ipsProject,
+                BusinessFunctionIpsObjectType.getInstance(), "bf3");
         control.setIpsProject(ipsProject);
         assertEquals(3, control.getIpsSrcFiles().length);
-        
+
         control.setCurrentBusinessFunction(bf1);
         assertEquals(2, control.getIpsSrcFiles().length);
         List<IIpsSrcFile> files = Arrays.asList(control.getIpsSrcFiles());

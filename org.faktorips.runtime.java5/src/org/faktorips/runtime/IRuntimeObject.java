@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -30,7 +30,8 @@ public interface IRuntimeObject {
     /**
      * @param propertyId the id of the desired extension property.
      * @return the value of the extension property defined by the given <code>propertyId</code> or
-     *         <code>null</code> if the extension property's <code>isNull</code> attribute is <code>true</code>.
+     *         <code>null</code> if the extension property's <code>isNull</code> attribute is
+     *         <code>true</code>.
      * @throws IllegalArgumentException if no such property exists.
      */
     public abstract Object getExtensionPropertyValue(String propertyId);

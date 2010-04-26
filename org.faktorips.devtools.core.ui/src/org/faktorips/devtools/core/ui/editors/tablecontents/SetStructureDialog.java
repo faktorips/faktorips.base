@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,16 +27,15 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 
-
 /**
  * A dialog to choose a tableStructure a tableContent is based on.
  */
 public class SetStructureDialog extends EditDialog {
-    
+
     private ITableContents contents;
     private TableStructureRefControl template;
     private String message;
-    
+
     /**
      * Creates a new dialog to choose a tableStructure
      * 
@@ -53,45 +52,48 @@ public class SetStructureDialog extends EditDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         uiToolkit.createFormLabel(workArea, Messages.SetStructureDialog_labelNewStructure);
         template = new TableStructureRefControl(contents.getIpsProject(), workArea, uiToolkit);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				if (StringUtils.isEmpty(template.getText())) {
-					getButton(OK).setEnabled(false);
-					String msg = NLS.bind(Messages.SetStructureDialog_msgStructureDontExist, template.getText());
-					setMessage(msg, IMessageProvider.ERROR);
-				} else {
-					getButton(OK).setEnabled(true);
-					setMessage(message);
-				}
-			}
-		});
+            public void modifyText(ModifyEvent e) {
+                if (StringUtils.isEmpty(template.getText())) {
+                    getButton(OK).setEnabled(false);
+                    String msg = NLS.bind(Messages.SetStructureDialog_msgStructureDontExist, template.getText());
+                    setMessage(msg, IMessageProvider.ERROR);
+                } else {
+                    getButton(OK).setEnabled(true);
+                    setMessage(message);
+                }
+            }
+        });
         super.setMessage(message);
-        
+
         return workArea;
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		super.createButtonsForButtonBar(parent);
-		super.getButton(OK).setEnabled(false);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        super.createButtonsForButtonBar(parent);
+        super.getButton(OK).setEnabled(false);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == OK) {
-			contents.setTableStructure(template.getText());
-		}
-		super.buttonPressed(buttonId);
-	}    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == OK) {
+            contents.setTableStructure(template.getText());
+        }
+        super.buttonPressed(buttonId);
+    }
 }

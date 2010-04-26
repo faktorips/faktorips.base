@@ -136,8 +136,8 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     private int computeAdornmentFlagsProject(IIpsProject project) throws CoreException {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
         int result = 0;
-        for (int i = 0; i < roots.length; i++) {
-            int flag = findMaxProblemSeverity(roots[i]);
+        for (IIpsPackageFragmentRoot root : roots) {
+            int flag = findMaxProblemSeverity(root);
             if (flag == IMarker.SEVERITY_ERROR) {
                 return flag;
             } else {

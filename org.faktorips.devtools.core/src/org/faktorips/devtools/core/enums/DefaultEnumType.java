@@ -85,13 +85,13 @@ public class DefaultEnumType implements EnumType {
      * {@inheritDoc}
      */
     public boolean containsValue(String id) {
-        for (int i = 0; i < values.length; i++) {
-            if (values[i].getId() == null) {
+        for (DefaultEnumValue value : values) {
+            if (value.getId() == null) {
                 if (id == null) {
                     return true;
                 }
             } else {
-                if (values[i].getId().equals(id)) {
+                if (value.getId().equals(id)) {
                     return true;
                 }
             }
@@ -103,15 +103,15 @@ public class DefaultEnumType implements EnumType {
      * {@inheritDoc}
      */
     public EnumValue getEnumValue(String id) throws IllegalArgumentException {
-        for (int i = 0; i < values.length; i++) {
-            if (values[i].getId() == null) {
+        for (DefaultEnumValue value : values) {
+            if (value.getId() == null) {
                 if (id == null) {
-                    return values[i];
+                    return value;
                 } else {
                 }
             } else {
-                if (values[i].getId().equals(id)) {
-                    return values[i];
+                if (value.getId().equals(id)) {
+                    return value;
                 }
             }
         }

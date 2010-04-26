@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -35,7 +34,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
- *
+ * 
  * @author Jan Ortmann
  */
 public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
@@ -49,12 +48,14 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
         type = newPolicyCmptType(archiveProject, "motor.Policy");
         type.getIpsSrcFile().save(true, null);
-        newPolicyCmptTypeWithoutProductCmptType(archiveProject, "motor.collision.CollisionCoverage").getIpsSrcFile().save(true, null);
+        newPolicyCmptTypeWithoutProductCmptType(archiveProject, "motor.collision.CollisionCoverage").getIpsSrcFile()
+                .save(true, null);
         newProductCmpt(archiveProject, "motor.MotorProduct").getIpsSrcFile().save(true, null);
 
         project = newIpsProject();
@@ -67,7 +68,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         project.setIpsObjectPath(path);
         root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
     }
-    
+
     public void testExists_ArchiveInSameProject() throws CoreException {
         assertTrue(root.exists());
         archiveFile.delete(true, null);
@@ -80,7 +81,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         entry = (IpsArchiveEntry)path2.newArchiveEntry(archiveFile.getFullPath());
         project2.setIpsObjectPath(path2);
         root = (ArchiveIpsPackageFragmentRoot)project2.getIpsPackageFragmentRoots()[1];
-        
+
         assertTrue(root.exists());
         archiveFile.delete(true, null);
         assertFalse(root.exists());
@@ -93,14 +94,14 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, externalArchiveFile);
         ResourcesPlugin.getWorkspace().run(op, null);
         IPath externalArchivePath = new Path(externalArchiveFile.getAbsolutePath());
-        
+
         IIpsObjectPath path = project.getIpsObjectPath();
         entry = (IpsArchiveEntry)path.newArchiveEntry(externalArchivePath);
         project.setIpsObjectPath(path);
         root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[2];
-        
+
         assertTrue(root.exists());
-        
+
         externalArchiveFile.delete();
         assertFalse(root.exists());
     }
@@ -140,18 +141,18 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals("motor.collision", packs[1].getName());
     }
 
-    public void testFindIpsSourceFiles() throws CoreException{
+    public void testFindIpsSourceFiles() throws CoreException {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         root.findIpsSourceFiles(IpsObjectType.POLICY_CMPT_TYPE, null, result);
         assertEquals(2, result.size());
         List<QualifiedNameType> qualifiedNameTypes = new ArrayList<QualifiedNameType>();
-        for (Iterator<IIpsSrcFile> it = result.iterator(); it.hasNext();) {
-            IIpsSrcFile pcTypeSrcFile = it.next();
+        for (IIpsSrcFile pcTypeSrcFile : result) {
             qualifiedNameTypes.add(pcTypeSrcFile.getQualifiedNameType());
         }
         assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.Policy", IpsObjectType.POLICY_CMPT_TYPE)));
-        assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.collision.CollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
-        
+        assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.collision.CollisionCoverage",
+                IpsObjectType.POLICY_CMPT_TYPE)));
+
         result = new ArrayList<IIpsSrcFile>();
         root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT_TYPE, null, result);
         assertEquals(1, result.size());

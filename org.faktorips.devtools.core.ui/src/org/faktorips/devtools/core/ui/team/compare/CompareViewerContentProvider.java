@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,10 +21,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * Contentprovider for <code>ProductCmptCompareViewer</code>. Returns images for 
- * <code>ProductCmptCompareItem</code>s by quering the contained <code>IIpsElement</code>.
- * The getXXXContent() methods simply return the left, right respectiveley ancestor 
- * input object referenced by the given input.
+ * Contentprovider for <code>ProductCmptCompareViewer</code>. Returns images for
+ * <code>ProductCmptCompareItem</code>s by quering the contained <code>IIpsElement</code>. The
+ * getXXXContent() methods simply return the left, right respectiveley ancestor input object
+ * referenced by the given input.
  * 
  * @author Stefan Widmaier
  */
@@ -44,8 +44,8 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
     }
 
     /**
-     * Returns the image of the <code>IIpsElement</code> that is referenced by the ancestor-<code>ProductCmptCompareItem</code>.
-     * {@inheritDoc}
+     * Returns the image of the <code>IIpsElement</code> that is referenced by the ancestor-
+     * <code>ProductCmptCompareItem</code>. {@inheritDoc}
      */
     public Image getAncestorImage(Object input) {
         if (input instanceof ICompareInput) {
@@ -101,9 +101,8 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
     }
 
     /**
-     * Returns the left <code>ProductCmptCompareItem</code> itself. The
-     * <code>TextMergeViewer</code> can use <code>ProductCmptCompareItem</code>s as
-     * <code>IDocumentRange</code>s. {@inheritDoc}
+     * Returns the left <code>ProductCmptCompareItem</code> itself. The <code>TextMergeViewer</code>
+     * can use <code>ProductCmptCompareItem</code>s as <code>IDocumentRange</code>s. {@inheritDoc}
      */
     public Object getLeftContent(Object input) {
         if (input instanceof ICompareInput) {

@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -159,8 +158,8 @@ public class TestCase extends IpsObject implements ITestCase {
         }
         // add dependency to product cmpts
         ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
-        for (int i = 0; i < testCmpts.length; i++) {
-            addDependenciesForTestPolicyCmpt(dependencies, details, testCmpts[i]);
+        for (ITestPolicyCmpt testCmpt : testCmpts) {
+            addDependenciesForTestPolicyCmpt(dependencies, details, testCmpt);
         }
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
@@ -181,10 +180,10 @@ public class TestCase extends IpsObject implements ITestCase {
             addDetails(details, dependency, cmpt, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
         }
         ITestPolicyCmptLink[] testLinks = cmpt.getTestPolicyCmptLinks();
-        for (int i = 0; i < testLinks.length; i++) {
+        for (ITestPolicyCmptLink testLink : testLinks) {
             // get the dependencies for the childs of the given test policy cmpt
-            if (testLinks[i].isComposition()) {
-                addDependenciesForTestPolicyCmpt(dependencies, details, testLinks[i].findTarget());
+            if (testLink.isComposition()) {
+                addDependenciesForTestPolicyCmpt(dependencies, details, testLink.findTarget());
             }
         }
     }
@@ -192,8 +191,8 @@ public class TestCase extends IpsObject implements ITestCase {
     public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreException {
         List<ITestPolicyCmpt> allPolicyCmpts = new ArrayList<ITestPolicyCmpt>();
         ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
-        for (int i = 0; i < testCmpts.length; i++) {
-            addChildTestPolicyCmpt(allPolicyCmpts, testCmpts[i]);
+        for (ITestPolicyCmpt testCmpt : testCmpts) {
+            addChildTestPolicyCmpt(allPolicyCmpts, testCmpt);
         }
         return allPolicyCmpts.toArray(new ITestPolicyCmpt[allPolicyCmpts.size()]);
     }
@@ -218,10 +217,10 @@ public class TestCase extends IpsObject implements ITestCase {
             throws CoreException {
         allPolicyCmpts.add(cmpt);
         ITestPolicyCmptLink[] testLinks = cmpt.getTestPolicyCmptLinks();
-        for (int i = 0; i < testLinks.length; i++) {
+        for (ITestPolicyCmptLink testLink : testLinks) {
             // get the dependencies for the childs of the given test policy cmpt
-            if (testLinks[i].isComposition()) {
-                addChildTestPolicyCmpt(allPolicyCmpts, testLinks[i].findTarget());
+            if (testLink.isComposition()) {
+                addChildTestPolicyCmpt(allPolicyCmpts, testLink.findTarget());
             }
         }
     }
@@ -229,9 +228,9 @@ public class TestCase extends IpsObject implements ITestCase {
     public String[] getReferencedProductCmpts() throws CoreException {
         List<String> relatedProductCmpts = new ArrayList<String>();
         ITestPolicyCmpt[] allTestPolicyCmpt = getAllTestPolicyCmpt();
-        for (int i = 0; i < allTestPolicyCmpt.length; i++) {
-            if (allTestPolicyCmpt[i].hasProductCmpt()) {
-                relatedProductCmpts.add(allTestPolicyCmpt[i].getProductCmpt());
+        for (ITestPolicyCmpt element : allTestPolicyCmpt) {
+            if (element.hasProductCmpt()) {
+                relatedProductCmpts.add(element.getProductCmpt());
             }
         }
         return relatedProductCmpts.toArray(new String[relatedProductCmpts.size()]);
@@ -277,14 +276,14 @@ public class TestCase extends IpsObject implements ITestCase {
             // fix child's
             // order links in order of the test parameter
             ITestPolicyCmpt[] cmpts = delta.getTestPolicyCmptWithDifferentSortOrder();
-            for (int i = 0; i < cmpts.length; i++) {
-                ((TestPolicyCmpt)cmpts[i]).fixDifferentChildSortOrder();
+            for (ITestPolicyCmpt cmpt : cmpts) {
+                ((TestPolicyCmpt)cmpt).fixDifferentChildSortOrder();
             }
 
             // order test attributes
             cmpts = delta.getTestPolicyCmptWithDifferentSortOrderTestAttr();
-            for (int i = 0; i < cmpts.length; i++) {
-                ((TestPolicyCmpt)cmpts[i]).fixDifferentTestAttrValueSortOrder();
+            for (ITestPolicyCmpt cmpt : cmpts) {
+                ((TestPolicyCmpt)cmpt).fixDifferentTestAttrValueSortOrder();
             }
 
             objectHasChanged();
@@ -300,36 +299,34 @@ public class TestCase extends IpsObject implements ITestCase {
                 .getTestAttributesWithMissingTestAttributeValue();
 
         // add missing test value parameters
-        for (int i = 0; i < testValueParametersWithMissingTestValue.length; i++) {
+        for (ITestValueParameter element : testValueParametersWithMissingTestValue) {
             ITestValue testValue = newTestValue();
-            testValue.setTestValueParameter(testValueParametersWithMissingTestValue[i].getName());
+            testValue.setTestValueParameter(element.getName());
             // set default value to default
-            ValueDatatype valueDatatype = ((TestValueParameter)testValueParametersWithMissingTestValue[i])
-                    .findValueDatatype(getIpsProject());
+            ValueDatatype valueDatatype = ((TestValueParameter)element).findValueDatatype(getIpsProject());
             if (valueDatatype != null) {
                 testValue.setValue(valueDatatype.getDefaultValue());
             }
         }
 
         // add missing test policy cmpt type parameters
-        for (int i = 0; i < testPolicyCmptTypeParametersWithMissingTestPolicyCmpt.length; i++) {
-            if (testPolicyCmptTypeParametersWithMissingTestPolicyCmpt[i].isRoot()) {
-                addRootTestPolicyCmpt(testPolicyCmptTypeParametersWithMissingTestPolicyCmpt[i]);
+        for (ITestPolicyCmptTypeParameter element : testPolicyCmptTypeParametersWithMissingTestPolicyCmpt) {
+            if (element.isRoot()) {
+                addRootTestPolicyCmpt(element);
             } else {
                 throw new RuntimeException("Merge of child test test policy cmpts is not supported!"); //$NON-NLS-1$
             }
         }
 
         // add missing test attributes
-        for (int i = 0; i < testAttributesWithMissingTestAttributeValue.length; i++) {
-            ITestPolicyCmpt[] testPolicyCmpts = delta
-                    .getTestPolicyCmptForMissingTestAttribute(testAttributesWithMissingTestAttributeValue[i]);
-            for (int j = 0; j < testPolicyCmpts.length; j++) {
-                ITestAttributeValue testAttributeValue = testPolicyCmpts[j].newTestAttributeValue();
-                testAttributeValue.setTestAttribute(testAttributesWithMissingTestAttributeValue[i].getName());
+        for (ITestAttribute element : testAttributesWithMissingTestAttributeValue) {
+            ITestPolicyCmpt[] testPolicyCmpts = delta.getTestPolicyCmptForMissingTestAttribute(element);
+            for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
+                ITestAttributeValue testAttributeValue = testPolicyCmpt.newTestAttributeValue();
+                testAttributeValue.setTestAttribute(element.getName());
                 // set default for the new added test attribute value only
-                IProductCmptGeneration generation = ((TestPolicyCmpt)testPolicyCmpts[j])
-                        .findProductCmpsCurrentGeneration(testPolicyCmpts[j].getIpsProject());
+                IProductCmptGeneration generation = ((TestPolicyCmpt)testPolicyCmpt)
+                        .findProductCmpsCurrentGeneration(testPolicyCmpt.getIpsProject());
                 ((TestAttributeValue)testAttributeValue).setDefaultTestAttributeValueInternal(generation);
             }
         }
@@ -346,9 +343,9 @@ public class TestCase extends IpsObject implements ITestCase {
         testPolicyCpmt.setName(name);
         // add test attributes values
         ITestAttribute[] attrs = testPolicyCmptTypeParameter.getTestAttributes();
-        for (int j = 0; j < attrs.length; j++) {
+        for (ITestAttribute attr : attrs) {
             ITestAttributeValue testAttributeValue = testPolicyCpmt.newTestAttributeValue();
-            testAttributeValue.setTestAttribute(attrs[j].getName());
+            testAttributeValue.setTestAttribute(attr.getName());
             // set default for the added test attribute value
             testAttributeValue.updateDefaultTestAttributeValue();
         }
@@ -366,24 +363,24 @@ public class TestCase extends IpsObject implements ITestCase {
         ITestRule[] testRulesWithMissingTestRuleParam = delta.getTestRulesWithMissingTestValueParam();
 
         // delete test values
-        for (int i = 0; i < testValuesWithMissingTestValueParam.length; i++) {
-            testValuesWithMissingTestValueParam[i].delete();
+        for (ITestValue element : testValuesWithMissingTestValueParam) {
+            element.delete();
         }
         // delta test rules
-        for (int i = 0; i < testRulesWithMissingTestRuleParam.length; i++) {
-            testRulesWithMissingTestRuleParam[i].delete();
+        for (ITestRule element : testRulesWithMissingTestRuleParam) {
+            element.delete();
         }
         // delete root and child test policy cmpts
-        for (int i = 0; i < testPolicyCmptsWithMissingTypeParam.length; i++) {
-            testPolicyCmptsWithMissingTypeParam[i].delete();
+        for (ITestPolicyCmpt element : testPolicyCmptsWithMissingTypeParam) {
+            element.delete();
         }
         // delete test policy cmpt links
-        for (int i = 0; i < testPolicyCmptLinksWithMissingTypeParam.length; i++) {
-            testPolicyCmptLinksWithMissingTypeParam[i].delete();
+        for (ITestPolicyCmptLink element : testPolicyCmptLinksWithMissingTypeParam) {
+            element.delete();
         }
         // delete test attribute values
-        for (int i = 0; i < testAttributeValuesWithMissingTestAttribute.length; i++) {
-            testAttributeValuesWithMissingTestAttribute[i].delete();
+        for (ITestAttributeValue element : testAttributeValuesWithMissingTestAttribute) {
+            element.delete();
         }
     }
 
@@ -403,8 +400,8 @@ public class TestCase extends IpsObject implements ITestCase {
         List<IIpsObjectPart> newTestObjectOrder = new ArrayList<IIpsObjectPart>(testObjects.size());
         HashMap<ITestParameter, List<ITestObject>> oldTestObject = new HashMap<ITestParameter, List<ITestObject>>(
                 testObjects.size());
-        for (Iterator<IIpsObjectPart> iter = testObjects.iterator(); iter.hasNext();) {
-            ITestObject testObject = (ITestObject)iter.next();
+        for (IIpsObjectPart iIpsObjectPart : testObjects) {
+            ITestObject testObject = (ITestObject)iIpsObjectPart;
             String testParameterName = ""; //$NON-NLS-1$
             ITestParameter testParameter = null;
             if (testObject instanceof ITestPolicyCmpt) {
@@ -436,8 +433,8 @@ public class TestCase extends IpsObject implements ITestCase {
 
         ITestCaseType testCaseType = findTestCaseType(ipsProject);
         ITestParameter[] testParameters = testCaseType.getTestParameters();
-        for (int i = 0; i < testParameters.length; i++) {
-            List<ITestObject> oldObjectsToTestParam = oldTestObject.get(testParameters[i]);
+        for (ITestParameter testParameter : testParameters) {
+            List<ITestObject> oldObjectsToTestParam = oldTestObject.get(testParameter);
             // add all elements without a test parameter to the end
             if (oldObjectsToTestParam != null) {
                 newTestObjectOrder.addAll(oldObjectsToTestParam);
@@ -488,8 +485,8 @@ public class TestCase extends IpsObject implements ITestCase {
     public ITestRule[] getTestRule(String testRuleParameter) {
         List<TestObject> testRules = getTestObjects(null, TestRule.class, null);
         List<ITestRule> result = new ArrayList<ITestRule>();
-        for (Iterator<TestObject> iter = testRules.iterator(); iter.hasNext();) {
-            ITestRule element = (ITestRule)iter.next();
+        for (TestObject testObject : testRules) {
+            ITestRule element = (ITestRule)testObject;
             if (element.getTestParameterName().equals(testRuleParameter)) {
                 result.add(element);
             }
@@ -696,8 +693,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
             currElem = path.next();
             pc = null;
-            for (int i = 0; i < prs.length; i++) {
-                ITestPolicyCmptLink link = prs[i];
+            for (ITestPolicyCmptLink link : prs) {
                 ITestPolicyCmpt pcTarget = link.findTarget();
                 if (pcTarget == null) {
                     return null;
@@ -737,8 +733,7 @@ public class TestCase extends IpsObject implements ITestCase {
             ITestPolicyCmpt parent = newTestPolicyCmpt.getParentTestPolicyCmpt();
             ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
             ArrayList<String> names = new ArrayList<String>();
-            for (int i = 0; i < links.length; i++) {
-                ITestPolicyCmptLink link = links[i];
+            for (ITestPolicyCmptLink link : links) {
                 if (link.isComposition()) {
                     try {
                         ITestPolicyCmpt child = link.findTarget();
@@ -770,9 +765,9 @@ public class TestCase extends IpsObject implements ITestCase {
 
     public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException {
         IValidationRule[] validationRules = getTestRuleCandidates(ipsProject);
-        for (int i = 0; i < validationRules.length; i++) {
-            if (validationRules[i].getName().equals(validationRuleName)) {
-                return validationRules[i];
+        for (IValidationRule validationRule : validationRules) {
+            if (validationRule.getName().equals(validationRuleName)) {
+                return validationRule;
             }
         }
         return null;
@@ -795,8 +790,8 @@ public class TestCase extends IpsObject implements ITestCase {
     private void getValidationRules(ITestPolicyCmpt[] testPolicyCmpts,
             List<IValidationRule> validationRules,
             IIpsProject ipsProject) throws CoreException {
-        for (int i = 0; i < testPolicyCmpts.length; i++) {
-            getValidationRules(testPolicyCmpts[i], validationRules, ipsProject);
+        for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
+            getValidationRules(testPolicyCmpt, validationRules, ipsProject);
         }
     }
 
@@ -810,8 +805,8 @@ public class TestCase extends IpsObject implements ITestCase {
         // add rules of childs, ignore if the corresponding objects are not found (validation
         // errors)
         ITestPolicyCmptLink[] rs = testPolicyCmpt.getTestPolicyCmptLinks();
-        for (int i = 0; i < rs.length; i++) {
-            ITestPolicyCmpt tpc = rs[i].findTarget();
+        for (ITestPolicyCmptLink element : rs) {
+            ITestPolicyCmpt tpc = element.findTarget();
             if (tpc == null) {
                 continue;
             }
@@ -876,8 +871,8 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     private List<TestObject> getTestObjects(TestParameterType type, Class<?> parameterClass, String name) {
         List<TestObject> result = new ArrayList<TestObject>(testObjects.size());
-        for (Iterator<IIpsObjectPart> iter = testObjects.iterator(); iter.hasNext();) {
-            TestObject testObject = (TestObject)iter.next();
+        for (IIpsObjectPart iIpsObjectPart : testObjects) {
+            TestObject testObject = (TestObject)iIpsObjectPart;
             boolean addParameter = true;
 
             if (type != null && !isTypeOrDefault(testObject.getTestParameterName(), type, TestObject.DEFAULT_TYPE)) {
@@ -995,19 +990,19 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     private void clearTestValues(ITestValue[] testValues) throws CoreException {
-        for (int i = 0; i < testValues.length; i++) {
-            testValues[i].setDefaultValue();
+        for (ITestValue testValue : testValues) {
+            testValue.setDefaultValue();
         }
     }
 
     private void clearTestAttributeValues(ITestPolicyCmpt[] inputTestPolicyCmpts, boolean input) throws CoreException {
         ITestPolicyCmpt[] testPolicyCmpt = getAllTestPolicyCmpt();
-        for (int i = 0; i < testPolicyCmpt.length; i++) {
-            ITestAttributeValue[] testAttributeValues = testPolicyCmpt[i].getTestAttributeValues();
-            for (int j = 0; j < testAttributeValues.length; j++) {
-                if ((input && testAttributeValues[j].isInputAttribute(getIpsProject()))
-                        || (!input && testAttributeValues[j].isExpextedResultAttribute(getIpsProject()))) {
-                    testAttributeValues[j].setDefaultValue();
+        for (ITestPolicyCmpt element : testPolicyCmpt) {
+            ITestAttributeValue[] testAttributeValues = element.getTestAttributeValues();
+            for (ITestAttributeValue testAttributeValue : testAttributeValues) {
+                if ((input && testAttributeValue.isInputAttribute(getIpsProject()))
+                        || (!input && testAttributeValue.isExpextedResultAttribute(getIpsProject()))) {
+                    testAttributeValue.setDefaultValue();
                 }
             }
         }

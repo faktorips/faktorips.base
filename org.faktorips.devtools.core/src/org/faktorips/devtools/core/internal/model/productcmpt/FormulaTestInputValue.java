@@ -106,9 +106,9 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
 
         // find the corresponding parameter
         IParameter[] parameters = method.getParameters();
-        for (int i = 0; i < parameters.length; i++) {
-            if (parameterIdentifier.equals(parameters[i].getName())) {
-                return parameters[i];
+        for (IParameter parameter : parameters) {
+            if (parameterIdentifier.equals(parameter.getName())) {
+                return parameter;
             }
         }
         return null;

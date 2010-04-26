@@ -93,12 +93,12 @@ public class WrapperAction extends IpsAction {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         // search actionsets for action definitions
         IConfigurationElement[] elems = registry.getConfigurationElementsFor("org.eclipse.ui.actionSets"); //$NON-NLS-1$
-        for (int i = 0; i < elems.length; i++) {
-            if (elems[i].getName().equals("actionSet") && elems[i].getAttribute("id").equals(actionSetId)) { //$NON-NLS-1$ //$NON-NLS-2$
-                IConfigurationElement[] childElems = elems[i].getChildren("action"); //$NON-NLS-1$
-                for (int j = 0; j < childElems.length; j++) {
-                    if (childElems[j].getAttribute("id").equals(actionId)) { //$NON-NLS-1$
-                        className = childElems[j].getAttribute("class"); //$NON-NLS-1$
+        for (IConfigurationElement elem : elems) {
+            if (elem.getName().equals("actionSet") && elem.getAttribute("id").equals(actionSetId)) { //$NON-NLS-1$ //$NON-NLS-2$
+                IConfigurationElement[] childElems = elem.getChildren("action"); //$NON-NLS-1$
+                for (IConfigurationElement childElem : childElems) {
+                    if (childElem.getAttribute("id").equals(actionId)) { //$NON-NLS-1$
+                        className = childElem.getAttribute("class"); //$NON-NLS-1$
                         break;
                     }
                 }
@@ -111,11 +111,11 @@ public class WrapperAction extends IpsAction {
         if (className == null) {
             // search popupmenu defs for action definitions
             IConfigurationElement[] popupElements = registry.getConfigurationElementsFor("org.eclipse.ui.popupMenus"); //$NON-NLS-1$
-            for (int i = 0; i < popupElements.length; i++) {
-                IConfigurationElement[] actionElements = popupElements[i].getChildren("action"); //$NON-NLS-1$
-                for (int k = 0; k < actionElements.length; k++) {
-                    if (actionElements[k].getAttribute("id").equals(actionId)) { //$NON-NLS-1$
-                        className = actionElements[k].getAttribute("class"); //$NON-NLS-1$
+            for (IConfigurationElement popupElement : popupElements) {
+                IConfigurationElement[] actionElements = popupElement.getChildren("action"); //$NON-NLS-1$
+                for (IConfigurationElement actionElement : actionElements) {
+                    if (actionElement.getAttribute("id").equals(actionId)) { //$NON-NLS-1$
+                        className = actionElement.getAttribute("class"); //$NON-NLS-1$
                         break;
                     }
                 }

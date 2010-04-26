@@ -3,7 +3,6 @@
  */
 package org.faktorips.runtime.internal;
 
-
 /**
  * @author ortmann
  * 

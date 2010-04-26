@@ -102,18 +102,18 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld = new Hashtable<IProductCmpt, IProductCmpt>();
         List<IIpsObject> newIpsObjects = new ArrayList<IIpsObject>();
 
-        for (int i = 0; i < toCopy.length; i++) {
-            IIpsObject newIpsObject = createNewIpsObjectIfNecessary(toCopy[i], productNew2ProductOld, monitor);
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsObject newIpsObject = createNewIpsObjectIfNecessary(element, productNew2ProductOld, monitor);
             newIpsObjects.add(newIpsObject);
 
             // stores the link or tableUsage which indicates the creation of the new object
             // will be used later to fix the new link target or new table contents if necessary
-            if (toCopy[i] instanceof IProductCmptReference) {
-                IProductCmptReference productCmptReference = (IProductCmptReference)toCopy[i];
+            if (element instanceof IProductCmptReference) {
+                IProductCmptReference productCmptReference = (IProductCmptReference)element;
                 storeLinkToNewNewProductCmpt(productCmptReference, newIpsObject.getQualifiedName(),
                         linkData2newProductCmptQName);
-            } else if (toCopy[i] instanceof IProductCmptStructureTblUsageReference) {
-                IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)toCopy[i];
+            } else if (element instanceof IProductCmptStructureTblUsageReference) {
+                IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)element;
                 storeTableUsageToNewTableContents(productCmptStructureTblUsageReference, newIpsObject
                         .getQualifiedName(), tblContentData2newTableContentQName);
             }
@@ -145,8 +145,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         }
 
         // save all ipsSource files
-        for (Iterator<IIpsObject> iterator = newIpsObjects.iterator(); iterator.hasNext();) {
-            IIpsSrcFile ipsSrcFile = (iterator.next()).getIpsSrcFile();
+        for (IIpsObject iIpsObject : newIpsObjects) {
+            IIpsSrcFile ipsSrcFile = (iIpsObject).getIpsSrcFile();
             ipsSrcFile.save(true, monitor);
             monitor.worked(1);
         }
@@ -230,9 +230,9 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     private Set<Object> collectObjectsToRefer() {
         Set<Object> tblContentUsageAndLinkDataRefer = new HashSet<Object>();
         List<IProductCmptStructureReference> toReferList = Arrays.asList(toRefer);
-        for (int i = 0; i < toRefer.length; i++) {
-            if (toRefer[i] instanceof IProductCmptStructureTblUsageReference) {
-                final IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)toRefer[i];
+        for (IProductCmptStructureReference productCmptStructureReference : toRefer) {
+            if (productCmptStructureReference instanceof IProductCmptStructureTblUsageReference) {
+                final IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)productCmptStructureReference;
                 IProductCmptStructureReference parent = productCmptStructureTblUsageReference.getParent();
                 if (toReferList.contains(parent)) {
                     // the tableContents should be linked, check if the productCmpt for this
@@ -243,18 +243,13 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 }
                 tblContentUsageAndLinkDataRefer.add(new TblContentUsageData((productCmptStructureTblUsageReference)
                         .getTableContentUsage()));
-            } else if (toRefer[i] instanceof IProductCmptStructureReference) {
-                // root elements couldn't be linked thus getParent returns the type association
-                // and the getParent of the type association returns the parent product cmpt of
-                // the to be linked object
-                IProductCmptStructureReference productCmptStructureReference = toRefer[i];
+            } else if (productCmptStructureReference instanceof IProductCmptStructureReference) {
                 IProductCmptTypeAssociationReference parentTypeRel = (IProductCmptTypeAssociationReference)productCmptStructureReference
                         .getParent();
                 IProductCmptStructureReference parent = parentTypeRel.getParent();
-                tblContentUsageAndLinkDataRefer
-                        .add(new LinkData((IProductCmpt)parent.getWrappedIpsObject(),
-                                (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(), parentTypeRel
-                                        .getAssociation()));
+                tblContentUsageAndLinkDataRefer.add(new LinkData((IProductCmpt)parent.getWrappedIpsObject(),
+                        (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(), parentTypeRel
+                                .getAssociation()));
             }
         }
         return tblContentUsageAndLinkDataRefer;
@@ -279,8 +274,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             Set<Object> objectsToRefer) {
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
         ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
-        for (int i = 0; i < tableContentUsages.length; i++) {
-            TblContentUsageData tblContentsData = new TblContentUsageData(productCmptTemplate, tableContentUsages[i]
+        for (ITableContentUsage tableContentUsage : tableContentUsages) {
+            TblContentUsageData tblContentsData = new TblContentUsageData(productCmptTemplate, tableContentUsage
                     .getTableContentName());
             if (objectsToRefer.contains(tblContentsData)) {
                 // keep table usage to old table contents
@@ -288,7 +283,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             }
 
             String newTarget = tblContentData2newTableContentQName.get(tblContentsData);
-            tableContentUsages[i].setTableContentName(newTarget == null ? "" : newTarget); //$NON-NLS-1$
+            tableContentUsage.setTableContentName(newTarget == null ? "" : newTarget); //$NON-NLS-1$
         }
     }
 
@@ -311,12 +306,12 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             Set<Object> objectsToRefer) {
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
         IProductCmptLink[] links = generation.getLinks();
-        for (int i = 0; i < links.length; i++) {
+        for (IProductCmptLink link : links) {
             LinkData linkData;
             try {
                 final IIpsProject ipsProject = productCmptTemplate.getIpsProject();
-                IProductCmpt oldTargetProductCmpt = links[i].findTarget(ipsProject);
-                linkData = new LinkData(productCmptTemplate, oldTargetProductCmpt, links[i].findAssociation(ipsProject));
+                IProductCmpt oldTargetProductCmpt = link.findTarget(ipsProject);
+                linkData = new LinkData(productCmptTemplate, oldTargetProductCmpt, link.findAssociation(ipsProject));
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return;
@@ -324,13 +319,13 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
             String newTarget = linkData2newProductCmptQName.get(linkData);
             if (newTarget != null) {
-                links[i].setTarget(newTarget);
+                link.setTarget(newTarget);
             } else {
                 if (objectsToRefer.contains(linkData)) {
                     // keep table usage to old table contents
                     continue;
                 }
-                links[i].delete();
+                link.delete();
             }
         }
     }

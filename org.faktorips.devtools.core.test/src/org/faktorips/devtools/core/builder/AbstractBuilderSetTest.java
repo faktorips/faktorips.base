@@ -35,6 +35,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         a = new A();
@@ -42,7 +43,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         c = new C();
         d = new DExtendsC();
         e = new EExtendsC();
-        builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[]{a, b, c, d, e});
+        builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { a, b, c, d, e });
     }
 
     /**
@@ -71,8 +72,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         assertEquals(1, builderSet.getBuildersByClass(EExtendsC.class).size());
         assertEquals(e, builderSet.getBuildersByClass(EExtendsC.class).get(0));
     }
-    
-    
+
     /*
      * -------------- TEST CLASSES --------------
      */
@@ -80,7 +80,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     class A extends DumyJavaSourceFileBuilder {
 
         /**
-         * @throws CoreException 
+         * @throws CoreException
          */
         public A() throws CoreException {
             super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
@@ -91,7 +91,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     class B extends DumyJavaSourceFileBuilder {
 
         /**
-         * @throws CoreException 
+         * @throws CoreException
          */
         public B() throws CoreException {
             super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
@@ -102,7 +102,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     class C extends DumyJavaSourceFileBuilder {
 
         /**
-         * @throws CoreException 
+         * @throws CoreException
          */
         public C() throws CoreException {
             super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
@@ -113,7 +113,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     class DExtendsC extends C {
 
         /**
-         * @throws CoreException 
+         * @throws CoreException
          */
         public DExtendsC() throws CoreException {
             super();
@@ -124,14 +124,14 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     class EExtendsC extends C {
 
         /**
-         * @throws CoreException 
+         * @throws CoreException
          */
         public EExtendsC() throws CoreException {
             super();
         }
 
     }
-    
+
     class NotInBuilderSer extends DumyJavaSourceFileBuilder {
         /**
          * @param builderSet

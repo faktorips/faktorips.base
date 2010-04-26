@@ -59,8 +59,8 @@ public final class RenameRefactoringWizard extends IpsRefactoringWizard {
     }
 
     /**
-     * The <tt>RenameUserInputPage</tt> provides a text field that allows the user to type a new name for
-     * <tt>IIpsElement</tt> to rename.
+     * The <tt>RenameUserInputPage</tt> provides a text field that allows the user to type a new
+     * name for <tt>IIpsElement</tt> to rename.
      */
     private final static class RenameUserInputPage extends IpsRefactoringUserInputPage {
 

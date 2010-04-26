@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,39 +18,39 @@ import java.math.BigDecimal;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 
-
 /**
- * A range implementation where the upper and lower bounds are of the type <code>org.faktorips.datatype.Money</code>.
+ * A range implementation where the upper and lower bounds are of the type
+ * <code>org.faktorips.datatype.Money</code>.
  * 
  * @author Jan Ortmann
  * @see org.faktorips.values.Money
  */
-public class MoneyRange extends DefaultRange<Money>{
+public class MoneyRange extends DefaultRange<Money> {
 
     private static final long serialVersionUID = 4750295893441094927L;
 
     /**
-     * Creates a new MoneyRange with the provided lower and upper bounds parsed using the Money.valueOf(String s)
-     * method.
+     * Creates a new MoneyRange with the provided lower and upper bounds parsed using the
+     * Money.valueOf(String s) method.
      */
     public final static MoneyRange valueOf(String lower, String upper) {
         return new MoneyRange(Money.valueOf(lower), Money.valueOf(upper));
     }
 
     /**
-     * Creates a new MoneyRange with the provided lower and upper bounds, the step increment and
-     * an indicator saying if the null value is contained.  The values are determined by parsing
-     * the strings using the Money.valueOf(String s) method.
+     * Creates a new MoneyRange with the provided lower and upper bounds, the step increment and an
+     * indicator saying if the null value is contained. The values are determined by parsing the
+     * strings using the Money.valueOf(String s) method.
      */
     public final static MoneyRange valueOf(String lower, String upper, String step, boolean containsNull) {
         return new MoneyRange(Money.valueOf(lower), Money.valueOf(upper), Money.valueOf(step), containsNull);
     }
 
-    public final static MoneyRange valueOf(Money lower, Money upper, Money step){
+    public final static MoneyRange valueOf(Money lower, Money upper, Money step) {
         return valueOf(lower, upper, step, false);
     }
 
-    public final static MoneyRange valueOf(Money lower, Money upper, Money step, boolean containsNull){
+    public final static MoneyRange valueOf(Money lower, Money upper, Money step, boolean containsNull) {
         MoneyRange range = new MoneyRange(lower, upper, step, containsNull);
         range.checkIfStepFitsIntoBounds();
         return range;
@@ -78,7 +78,7 @@ public class MoneyRange extends DefaultRange<Money>{
 
         Decimal step = getStep().getAmount();
         Decimal zero = Decimal.valueOf(0, step.scale());
-        if(zero.equals(step)){
+        if (zero.equals(step)) {
             throw new IllegalArgumentException("The step size cannot be zero. Use null to indicate a continuous range.");
         }
 
@@ -103,8 +103,8 @@ public class MoneyRange extends DefaultRange<Money>{
     }
 
     /**
-     * Returns true if the value is in the range. The borders are considered to be in the range. Returns false if the
-     * passed value is null.
+     * Returns true if the value is in the range. The borders are considered to be in the range.
+     * Returns false if the passed value is null.
      */
     @Override
     public boolean contains(Money value) {
@@ -112,7 +112,7 @@ public class MoneyRange extends DefaultRange<Money>{
             return false;
         }
         if (value.isNull()) {
-            if(containsNull()){
+            if (containsNull()) {
                 return true;
             }
             return false;
@@ -129,8 +129,7 @@ public class MoneyRange extends DefaultRange<Money>{
         Decimal lowerAmount = getLowerBound().getAmount();
         Decimal stepAmount = getStep().getAmount();
 
-        return upperAmount.subtract(lowerAmount).abs().
-        divide(stepAmount,0, BigDecimal.ROUND_UNNECESSARY).intValue() + 1;
+        return upperAmount.subtract(lowerAmount).abs().divide(stepAmount, 0, BigDecimal.ROUND_UNNECESSARY).intValue() + 1;
     }
 
     /**

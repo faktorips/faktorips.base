@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -98,9 +98,9 @@ public class MessageList implements Serializable, Iterable<Message> {
      * 
      * @param msgList the list to copy the messages from.
      * @param invalidObjectProperty the object and it's property that the messages refer to.
-     * @param override <code>true</code> if the invalidObjectProperty should be set in all
-     *            messages. <code>false</code> if the invalidObjectProperty is set only for
-     *            messages that do not contain any invalid object property information.
+     * @param override <code>true</code> if the invalidObjectProperty should be set in all messages.
+     *            <code>false</code> if the invalidObjectProperty is set only for messages that do
+     *            not contain any invalid object property information.
      */
     public void add(MessageList msgList, ObjectProperty invalidObjectProperty, boolean override) {
         if (msgList == null) {
@@ -288,6 +288,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     /**
      * Returns all messages in the list separated by a line separator. Overridden method.
      */
+    @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
         StringBuffer s = new StringBuffer();
@@ -300,6 +301,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     /**
      * Returns true if o is a MessageList that contains the same messages in the same order.
      */
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof MessageList)) {
             return false;

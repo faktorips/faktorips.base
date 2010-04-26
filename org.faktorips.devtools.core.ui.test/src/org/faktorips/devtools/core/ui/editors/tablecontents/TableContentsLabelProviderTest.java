@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -30,32 +30,35 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
     private IRow rowInvalid;
     private IRow rowNull;
     private TableContentsLabelProvider labelProvider;
-    private String nullPresentation= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+    private String nullPresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject proj= newIpsProject("TableContentsLabelProviderProject");
-        IIpsPackageFragmentRoot root= proj.getIpsPackageFragmentRoots()[0];
-        
-        ITableStructure structure= (ITableStructure) newIpsObject(root, IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
-        IColumn column0= structure.newColumn();
+        IIpsProject proj = newIpsProject("TableContentsLabelProviderProject");
+        IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
+
+        ITableStructure structure = (ITableStructure)newIpsObject(root, IpsObjectType.TABLE_STRUCTURE,
+                "TestTableStructure");
+        IColumn column0 = structure.newColumn();
         column0.setDatatype("Integer");
-        IColumn column1= structure.newColumn();
+        IColumn column1 = structure.newColumn();
         column1.setDatatype("Integer");
-        IColumn column2= structure.newColumn();
+        IColumn column2 = structure.newColumn();
         column2.setDatatype("Integer");
-        
-        ITableContents tableContents= (ITableContents) newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "TestTableContents");
+
+        ITableContents tableContents = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS,
+                "TestTableContents");
         tableContents.setTableStructure(structure.getQualifiedName());
-        ITableContentsGeneration gen= (ITableContentsGeneration) tableContents.newGeneration();
+        ITableContentsGeneration gen = (ITableContentsGeneration)tableContents.newGeneration();
         rowValid = gen.newRow();
         rowInvalid = gen.newRow();
-        rowNull= gen.newRow();
+        rowNull = gen.newRow();
 
         tableContents.newColumn("1");
         tableContents.newColumn("2");
         tableContents.newColumn("3");
-        
+
         rowValid.setValue(0, "1");
         rowValid.setValue(1, "2");
         rowValid.setValue(2, "3");
@@ -65,13 +68,15 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
         rowNull.setValue(0, null);
         rowNull.setValue(1, null);
         rowNull.setValue(2, null);
-        
+
         labelProvider = new TableContentsLabelProvider();
-        labelProvider.setValueDatatypes(new ValueDatatype[] { column0.findValueDatatype(column0.getIpsProject()), column1.findValueDatatype(column1.getIpsProject()),
-                column2.findValueDatatype(column2.getIpsProject()) });
+        labelProvider
+                .setValueDatatypes(new ValueDatatype[] { column0.findValueDatatype(column0.getIpsProject()),
+                        column1.findValueDatatype(column1.getIpsProject()),
+                        column2.findValueDatatype(column2.getIpsProject()) });
     }
-    
-    public void testGetColumnImage(){
+
+    public void testGetColumnImage() {
         assertNull(labelProvider.getColumnImage(rowValid, 0));
         assertNull(labelProvider.getColumnImage(rowValid, 1));
         assertNull(labelProvider.getColumnImage(rowValid, 2));
@@ -82,8 +87,8 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
         assertNull(labelProvider.getColumnImage(rowNull, 1));
         assertNull(labelProvider.getColumnImage(rowNull, 2));
     }
-    
-    public void testGetColumnText(){
+
+    public void testGetColumnText() {
         assertEquals("1", labelProvider.getColumnText(rowValid, 0));
         assertEquals("2", labelProvider.getColumnText(rowValid, 1));
         assertEquals("3", labelProvider.getColumnText(rowValid, 2));

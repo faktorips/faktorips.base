@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,7 +26,7 @@ public class TestPremiumCalculation extends IpsTestCase2 {
 
     private String inputSumInsured;
     private String expResultPremium;
-    
+
     public TestPremiumCalculation(String qName) {
         super(qName);
     }
@@ -34,6 +34,7 @@ public class TestPremiumCalculation extends IpsTestCase2 {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initInputFromXml(Element inputEl) {
         Element el = XmlUtil.getFirstElement(inputEl);
         inputSumInsured = el.getAttribute("value");
@@ -42,6 +43,7 @@ public class TestPremiumCalculation extends IpsTestCase2 {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initExpectedResultFromXml(Element resultEl) {
         Element el = XmlUtil.getFirstElement(resultEl);
         expResultPremium = el.getAttribute("value");
@@ -64,15 +66,17 @@ public class TestPremiumCalculation extends IpsTestCase2 {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void executeBusinessLogic() throws Exception {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void executeAsserts(IpsTestResult result) throws Exception {
     }
 
-    public void testDummy(){
+    public void testDummy() {
     }
 }

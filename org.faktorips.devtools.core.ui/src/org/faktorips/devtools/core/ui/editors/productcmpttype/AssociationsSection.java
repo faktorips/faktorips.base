@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,8 +41,8 @@ import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
 /**
- * A section that shows a product component type's associations in a viewer and 
- * allows to edit association in a dialog, create new associations and delete associations.
+ * A section that shows a product component type's associations in a viewer and allows to edit
+ * association in a dialog, create new associations and delete associations.
  * 
  * @author Jan Ortmann
  */
@@ -55,10 +55,11 @@ public class AssociationsSection extends SimpleIpsPartsSection {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new RelationsComposite(getIpsObject(), parent, toolkit);
     }
-    
+
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getIpsObject();
     }
@@ -75,14 +76,16 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             return (selected instanceof IProductCmptTypeAssociation);
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
+        @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             if (selected instanceof IProductCmptTypeAssociation) {
@@ -96,12 +99,11 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             }
         }
     }
-    
+
     private class RelationsComposite extends IpsPartsComposite {
         protected OpenTargetProductCmptTypeInEditorAction openAction;
 
-        RelationsComposite(IIpsObject pdObject, Composite parent,
-                UIToolkit toolkit) {
+        RelationsComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
             super(pdObject, parent, true, true, true, true, true, toolkit);
             openAction = new OpenTargetProductCmptTypeInEditorAction(getViewer());
             buildContextMenu();
@@ -128,6 +130,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected IStructuredContentProvider createContentProvider() {
             return new IStructuredContentProvider() {
 
@@ -136,26 +139,29 @@ public class AssociationsSection extends SimpleIpsPartsSection {
                 }
 
                 public void dispose() {
-                    
+
                 }
 
                 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 }
-                
+
             };
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         protected ILabelProvider createLabelProvider() {
             return new AssociationsLabelProvider();
         }
-        
+
+        @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
             return new AssociationEditDialog((IProductCmptTypeAssociation)part, shell);
         }
 
+        @Override
         protected IIpsObjectPart newIpsPart() {
             return getProductCmptType().newProductCmptTypeAssociation();
         }
@@ -163,6 +169,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getProductCmptType().moveAssociations(indexes, up);
         }
@@ -170,6 +177,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected void openLink() {
             openAction.run();
         }

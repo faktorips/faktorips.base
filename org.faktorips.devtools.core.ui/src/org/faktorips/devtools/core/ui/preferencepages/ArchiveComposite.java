@@ -180,8 +180,8 @@ public class ArchiveComposite extends Composite {
 
         List<IPath> alreadyRefArchives = new ArrayList<IPath>();
         IIpsArchiveEntry[] entries = ipsObjectPath.getArchiveEntries();
-        for (int i = 0; i < entries.length; i++) {
-            alreadyRefArchives.add(entries[i].getArchivePath());
+        for (IIpsArchiveEntry entrie : entries) {
+            alreadyRefArchives.add(entrie.getArchivePath());
         }
 
         dialog.addFilter(new IpsarViewerFilter(alreadyRefArchives, true));
@@ -206,8 +206,8 @@ public class ArchiveComposite extends Composite {
                     return;
                 }
 
-                for (int i = 0; i < selectedArchives.length; i++) {
-                    IFile archiveFile = (IFile)selectedArchives[i];
+                for (Object selectedArchive : selectedArchives) {
+                    IFile archiveFile = (IFile)selectedArchive;
                     IPath archivePath = null;
                     if (ipsObjectPath.getIpsProject().getProject().equals(archiveFile.getProject())) {
                         archivePath = archiveFile.getProjectRelativePath();

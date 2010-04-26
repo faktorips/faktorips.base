@@ -116,8 +116,8 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
             IStructuredSelection selection = (IStructuredSelection)event.getSelection();
             Object[] objects = selection.toArray();
             boolean enabled = true;
-            for (int i = 0; i < objects.length; i++) {
-                if (objects[i] instanceof IIpsObjectPart) {
+            for (Object object : objects) {
+                if (object instanceof IIpsObjectPart) {
                     enabled = false;
                 }
             }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,7 +37,7 @@ public class ObjectProperty {
     }
 
     private void createHashCode() {
-        hashCode = ( object == null ? 0 : object.hashCode() ) + index;
+        hashCode = (object == null ? 0 : object.hashCode()) + index;
         hashCode = property == null ? hashCode : hashCode + property.hashCode();
     }
 
@@ -66,22 +66,24 @@ public class ObjectProperty {
         return index >= 0;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof ObjectProperty) {
             ObjectProperty other = (ObjectProperty)obj;
             return object.equals(other.object)
                     && index == other.index
-                    && ((property == null && other.property == null) 
-                    || (property != null && other.property != null && property
+                    && ((property == null && other.property == null) || (property != null && other.property != null && property
                             .equals(other.property)));
         }
         return false;
     }
 
+    @Override
     public int hashCode() {
         return hashCode;
     }
 
+    @Override
     public String toString() {
         if (object == null) {
             return "null." + property;

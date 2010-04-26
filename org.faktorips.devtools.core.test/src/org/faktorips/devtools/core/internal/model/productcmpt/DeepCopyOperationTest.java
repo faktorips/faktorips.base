@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -40,194 +40,200 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * @author Thorsten Guenther
  */
 public class DeepCopyOperationTest extends AbstractIpsPluginTest {
-	
+
     private IIpsProject ipsProject;
-	private IProductCmpt product;
-	
-	/**
-	 * {@inheritDoc}
-	 */
+    private IProductCmpt product;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         IPolicyCmptType pctype = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         product = newProductCmpt(pctype.findProductCmptType(ipsProject), "Product");
     }
-   
+
     /**
-     * For this test, the comfort-product of the default test content is copied completely. After that, the new 
-     * files are expected to be existant and not dirty.
-     * @throws CycleException 
+     * For this test, the comfort-product of the default test content is copied completely. After
+     * that, the new files are expected to be existant and not dirty.
+     * 
+     * @throws CycleException
      */
     public void testCopyAll() throws Exception {
         createTestContent();
-        
+
         IProductCmpt productCmpt = ipsProject.findProductCmpt("products.ComfortMotorProduct");
         assertNotNull(productCmpt);
-        
+
         IProductCmptTreeStructure structure = productCmpt.getStructure(ipsProject);
         IProductCmptStructureReference[] toCopy = (IProductCmptStructureReference[])structure.toArray(true);
 
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
-        for (int i = 0; i < toCopy.length; i++) {
-        	IIpsObject ipsObject = toCopy[i].getWrappedIpsObject();
-        	handles.put(toCopy[i], ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
-        	assertFalse(handles.get(toCopy[i]).exists());
-		}
-        
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsObject ipsObject = element.getWrappedIpsObject();
+            handles.put(element, ipsObject.getIpsPackageFragment().getIpsSrcFile(
+                    "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
+            assertFalse(handles.get(element).exists());
+        }
+
         DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
         dco.run(null);
-        
-        for (int i = 0; i < toCopy.length; i++) {
-        	IIpsSrcFile src = handles.get(toCopy[i]);
-        	assertTrue(src.exists());
 
-        	// we have a race condition, because files are written async. So loop for some times...
-        	int count = 0;
-        	if (src.isDirty() && count < 100) {
-        		count ++;
-        	}
-        	
-        	assertFalse(src.isDirty());
-		}
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsSrcFile src = handles.get(element);
+            assertTrue(src.exists());
+
+            // we have a race condition, because files are written async. So loop for some times...
+            int count = 0;
+            if (src.isDirty() && count < 100) {
+                count++;
+            }
+
+            assertFalse(src.isDirty());
+        }
     }
-    
+
     /**
-     * For this test, the comfort-product of the default test content is copied only in part. After that, the new 
-     * files are expected to be existant and not dirty. Some relations from the new objects link now the the not 
-     * copied old objects.
-     * @throws CycleException 
+     * For this test, the comfort-product of the default test content is copied only in part. After
+     * that, the new files are expected to be existant and not dirty. Some relations from the new
+     * objects link now the the not copied old objects.
+     * 
+     * @throws CycleException
      */
     public void testCopySome() throws Exception {
         createTestContent();
-        
+
         IProductCmptReference[] toCopy = new IProductCmptReference[3];
         IProductCmptReference[] toRefer = new IProductCmptReference[2];
-    	int copyCount = 0;
-    	int refCount = 0;
+        int copyCount = 0;
+        int refCount = 0;
 
         IProductCmpt comfortMotorProduct = ipsProject.findProductCmpt("products.ComfortMotorProduct");
         assertNotNull(comfortMotorProduct);
-        
+
         IProductCmpt standardVehicle = ipsProject.findProductCmpt("products.StandardVehicle");
         assertNotNull(standardVehicle);
-        
+
         IProductCmpt comfortCollisionCoverageA = ipsProject.findProductCmpt("products.ComfortCollisionCoverageA");
         assertNotNull(comfortCollisionCoverageA);
-        
+
         IProductCmpt comfortCollisionCoverageB = ipsProject.findProductCmpt("products.ComfortCollisionCoverageB");
         assertNotNull(comfortCollisionCoverageB);
-        
+
         IProductCmpt standardTplCoverage = ipsProject.findProductCmpt("products.StandardTplCoverage");
         assertNotNull(standardTplCoverage);
 
         IProductCmptTreeStructure structure = comfortMotorProduct.getStructure(ipsProject);
         IProductCmptReference node = structure.getRoot();
         IProductCmptReference[] children = structure.getChildProductCmptReferences(node);
-    	for (int i = 0; i < children.length; i++) {
-            if (children[i].getProductCmpt().equals(comfortMotorProduct)
-                    || children[i].getProductCmpt().equals(standardVehicle)
-                    || children[i].getProductCmpt().equals(comfortCollisionCoverageA)) {
-                toCopy[copyCount] = children[i];
+        for (IProductCmptReference element : children) {
+            if (element.getProductCmpt().equals(comfortMotorProduct)
+                    || element.getProductCmpt().equals(standardVehicle)
+                    || element.getProductCmpt().equals(comfortCollisionCoverageA)) {
+                toCopy[copyCount] = element;
                 copyCount++;
-            } else if (children[i].getProductCmpt().equals(comfortCollisionCoverageB)
-                    || children[i].getProductCmpt().equals(standardTplCoverage)) {
-                toRefer[refCount] = children[i];
+            } else if (element.getProductCmpt().equals(comfortCollisionCoverageB)
+                    || element.getProductCmpt().equals(standardTplCoverage)) {
+                toRefer[refCount] = element;
                 refCount++;
             }
         }
-    	toCopy[copyCount] = node;
+        toCopy[copyCount] = node;
         copyCount++;
-        
+
         assertEquals(3, copyCount);
         assertEquals(2, refCount);
-        
-    	Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
-        for (int i = 0; i < toCopy.length; i++) {
-        	IProductCmpt cmpt = toCopy[i].getProductCmpt();
-        	handles.put(toCopy[i], cmpt.getIpsPackageFragment().getIpsSrcFile("DeepCopyOf" + cmpt.getName() + ".ipsproduct"));
-        	assertFalse(handles.get(toCopy[i]).exists());
-		}
-        
-        DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
-        dco.run(null);
-        for (int i = 0; i < toCopy.length; i++) {
-        	IIpsSrcFile src = handles.get(toCopy[i]);
-        	assertTrue(src.exists());
-
-        	// we have a race condition, because files are written async. So loop for some times...
-        	int count = 0;
-        	if (src.isDirty() && count < 100) {
-        		count ++;
-        	}
-        	assertFalse(src.isDirty());
-		}
-        
-        IProductCmpt base = (IProductCmpt)handles.get(toCopy[toCopy.length-1]).getIpsObject();
-        IProductCmptGeneration gen = (IProductCmptGeneration)base.getGenerationsOrderedByValidDate()[0];
-        IProductCmptLink[] rels = gen.getLinks("TplCoverageType");
-        assertEquals(1, rels.length);
-        assertEquals("products.StandardTplCoverage", rels[0].getName());
-        
-        rels = gen.getLinks("VehicleType");
-        assertEquals(1, rels.length);
-        assertEquals("products.DeepCopyOfStandardVehicle", rels[0].getName());
-    }
-    
-    public void testCopyWithNoGeneration() throws Exception {
-        product = newProductCmpt(ipsProject, "EmptyProduct");
-        IProductCmptTreeStructure structure = product.getStructure(ipsProject);
-        IProductCmptStructureReference[] toCopy = (IProductCmptStructureReference[])structure.toArray(true);
-        
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
-        for (int i = 0; i < toCopy.length; i++) {
-            IIpsObject ipsObject = toCopy[i].getWrappedIpsObject();
-            handles.put(toCopy[i], ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + ipsObject.getName(), ipsObject.getIpsObjectType()));
-            assertFalse(handles.get(toCopy[i]).exists());
+        for (IProductCmptReference element : toCopy) {
+            IProductCmpt cmpt = element.getProductCmpt();
+            handles.put(element, cmpt.getIpsPackageFragment().getIpsSrcFile(
+                    "DeepCopyOf" + cmpt.getName() + ".ipsproduct"));
+            assertFalse(handles.get(element).exists());
         }
-        
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(1990, 1, 1));
-        
-        DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
+
+        DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
         dco.run(null);
-        
-        for (int i = 0; i < toCopy.length; i++) {
-            IIpsSrcFile src = handles.get(toCopy[i]);
+        for (IProductCmptReference element : toCopy) {
+            IIpsSrcFile src = handles.get(element);
             assertTrue(src.exists());
 
             // we have a race condition, because files are written async. So loop for some times...
             int count = 0;
             if (src.isDirty() && count < 100) {
-                count ++;
+                count++;
             }
-            
+            assertFalse(src.isDirty());
+        }
+
+        IProductCmpt base = (IProductCmpt)handles.get(toCopy[toCopy.length - 1]).getIpsObject();
+        IProductCmptGeneration gen = (IProductCmptGeneration)base.getGenerationsOrderedByValidDate()[0];
+        IProductCmptLink[] rels = gen.getLinks("TplCoverageType");
+        assertEquals(1, rels.length);
+        assertEquals("products.StandardTplCoverage", rels[0].getName());
+
+        rels = gen.getLinks("VehicleType");
+        assertEquals(1, rels.length);
+        assertEquals("products.DeepCopyOfStandardVehicle", rels[0].getName());
+    }
+
+    public void testCopyWithNoGeneration() throws Exception {
+        product = newProductCmpt(ipsProject, "EmptyProduct");
+        IProductCmptTreeStructure structure = product.getStructure(ipsProject);
+        IProductCmptStructureReference[] toCopy = (IProductCmptStructureReference[])structure.toArray(true);
+
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsObject ipsObject = element.getWrappedIpsObject();
+            handles.put(element, ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + ipsObject.getName(),
+                    ipsObject.getIpsObjectType()));
+            assertFalse(handles.get(element).exists());
+        }
+
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(1990, 1, 1));
+
+        DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
+        dco.run(null);
+
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsSrcFile src = handles.get(element);
+            assertTrue(src.exists());
+
+            // we have a race condition, because files are written async. So loop for some times...
+            int count = 0;
+            if (src.isDirty() && count < 100) {
+                count++;
+            }
+
             assertFalse(src.isDirty());
         }
     }
-    
-    private void createTestContent() throws CoreException{
+
+    private void createTestContent() throws CoreException {
         createModel();
         createProducts();
     }
-    
+
     private IPolicyCmptType contract;
     private IPolicyCmptType motorContract;
-    
+
     private IPolicyCmptType coverage;
     private IPolicyCmptType collisionCoverage;
     private IPolicyCmptType tplCoverage;
 
     private IPolicyCmptType vehicle;
-    
+
     private IProductCmpt comfortMotorProduct;
     private IProductCmpt standardVehicle;
     private IProductCmpt comfortCollisionCoverageA;
     private IProductCmpt comfortCollisionCoverageB;
     private IProductCmpt standardTplCoverage;
-    
+
     private void createModel() throws CoreException {
         contract = newPolicyAndProductCmptType(ipsProject, "independant.Contract", "independant.Product");
         motorContract = newPolicyAndProductCmptType(ipsProject, "motor.MotorContract", "motor.MotorProduct");
@@ -235,9 +241,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         coverage = newPolicyAndProductCmptType(ipsProject, "independant.Coverage", "independant.CoverageType");
         collisionCoverage = newPolicyAndProductCmptType(ipsProject, "motor.CollisionCoverage",
                 "motor.CollisionCoverageType");
-        tplCoverage = newPolicyAndProductCmptType(ipsProject, "motor.TplCoverage",
-                "motor.TplCoverageType");
-        
+        tplCoverage = newPolicyAndProductCmptType(ipsProject, "motor.TplCoverage", "motor.TplCoverageType");
+
         vehicle = newPolicyAndProductCmptType(ipsProject, "motor.Vehicle", "motor.VehicleType");
 
         // create association: Contract to Coverage
@@ -248,29 +253,29 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
                 "CoverageTypes", 0, 1);
 
         // create association: MotorContract to Vehicle
-        createPolicyCmptTypeAssociation(motorContract, vehicle, AssociationType.COMPOSITION_MASTER_TO_DETAIL, "Vehicle",
-                "Vehicles", 0, 1);
+        createPolicyCmptTypeAssociation(motorContract, vehicle, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
+                "Vehicle", "Vehicles", 0, 1);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject), vehicle
                 .findProductCmptType(ipsProject), AssociationType.COMPOSITION_MASTER_TO_DETAIL, "VehicleType",
                 "VehicleTypes", 0, 1);
-        
+
         // create association: MotorContract to CollisionCoverage
         createPolicyCmptTypeAssociation(motorContract, collisionCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "CollisionCoverage", "CollisionCoverages", 0, 2);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject), collisionCoverage
                 .findProductCmptType(ipsProject), AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "CollisionCoverageType", "CollisionCoverageTypes", 0, 2);
-        
+
         // create association: MotorContract to TplCoverage
         createPolicyCmptTypeAssociation(motorContract, tplCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "TplCoverage", "TplCoverages", 0, 1);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject), tplCoverage
-                .findProductCmptType(ipsProject), AssociationType.COMPOSITION_MASTER_TO_DETAIL,
-                "TplCoverageType", "TplCoverageTypes", 0, 1);
-        
+                .findProductCmptType(ipsProject), AssociationType.COMPOSITION_MASTER_TO_DETAIL, "TplCoverageType",
+                "TplCoverageTypes", 0, 1);
+
     }
 
-    private void createProducts() throws CoreException{
+    private void createProducts() throws CoreException {
         comfortMotorProduct = newProductCmpt(motorContract.findProductCmptType(ipsProject),
                 "products.ComfortMotorProduct");
         comfortMotorProduct.setProductCmptType(motorContract.getProductCmptType());
@@ -289,9 +294,10 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         standardTplCoverage = newProductCmpt(tplCoverage.findProductCmptType(ipsProject),
                 "products.StandardTplCoverage");
         standardTplCoverage.setProductCmptType(tplCoverage.getProductCmptType());
-        
+
         // link products
-        IProductCmptGeneration generation = (IProductCmptGeneration)comfortMotorProduct.findGenerationEffectiveOn(new GregorianCalendar());
+        IProductCmptGeneration generation = (IProductCmptGeneration)comfortMotorProduct
+                .findGenerationEffectiveOn(new GregorianCalendar());
         IProductCmptLink link = generation.newLink("VehicleType");
         link.setTarget("products.StandardVehicle");
 
@@ -303,7 +309,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         link = generation.newLink("TplCoverageType");
         link.setTarget("products.StandardTplCoverage");
     }
-    
+
     private void createProductCmptTypeAssociation(IProductCmptType source,
             IProductCmptType target,
             AssociationType assocType,

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,7 +37,7 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration generation3;
     private IIpsSrcFile srcFile;
     private IFile correspondingFile;
-    
+
     private ProductCmptCompareItem compareItemRoot;
     private IProductCmpt product;
     private IIpsPackageFragmentRoot root;
@@ -45,60 +45,63 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
     private IConfigElement configElement2;
     private IProductCmptLink relation1;
     private IProductCmptLink relation2;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject proj= (IpsProject)newIpsProject("TestProject");
+        IIpsProject proj = (IpsProject)newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
         product = newProductCmpt(root, "TestProductCmpt");
         IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");
-        
-        GregorianCalendar calendar= new GregorianCalendar();
-        generation1 = (IProductCmptGeneration) product.newGeneration(calendar);
-        calendar= new GregorianCalendar();
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        generation1 = (IProductCmptGeneration)product.newGeneration(calendar);
+        calendar = new GregorianCalendar();
         calendar.add(Calendar.MONTH, 1);
-        generation2 = (IProductCmptGeneration) product.newGeneration(calendar);
-        calendar= new GregorianCalendar();
+        generation2 = (IProductCmptGeneration)product.newGeneration(calendar);
+        calendar = new GregorianCalendar();
         calendar.add(Calendar.MONTH, 2);
-        generation3 = (IProductCmptGeneration) product.newGeneration(calendar);
+        generation3 = (IProductCmptGeneration)product.newGeneration(calendar);
 
         configElement1 = generation1.newConfigElement();
-        configElement1.setPolicyCmptTypeAttribute("configElement1");    // set name to ensure sorting order
+        configElement1.setPolicyCmptTypeAttribute("configElement1"); // set name to ensure sorting
+                                                                     // order
         configElement2 = generation1.newConfigElement();
         configElement2.setPolicyCmptTypeAttribute("configElement2");
         relation1 = generation1.newLink(productReferenced.getQualifiedName());
         relation2 = generation1.newLink(productReferenced.getQualifiedName());
-        
+
         srcFile = product.getIpsSrcFile();
         correspondingFile = srcFile.getCorrespondingFile();
 
-        compareItemRoot = (ProductCmptCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
+        compareItemRoot = (ProductCmptCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
     /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getStructure(Object)'
+     * Test method for
+     * 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getStructure(Object)'
      */
     public void testGetStructure() {
         assertEquals(srcFile, compareItemRoot.getIpsElement());
-        
-        Object[] children= compareItemRoot.getChildren();
-        ProductCmptCompareItem compareItem= (ProductCmptCompareItem) children[0];
+
+        Object[] children = compareItemRoot.getChildren();
+        ProductCmptCompareItem compareItem = (ProductCmptCompareItem)children[0];
         assertEquals(product, compareItem.getIpsElement());
-        
-        children= compareItem.getChildren();
-        ProductCmptCompareItem compareItemGen1= (ProductCmptCompareItem) children[0];
-        ProductCmptCompareItem compareItemGen2= (ProductCmptCompareItem) children[1];
-        ProductCmptCompareItem compareItemGen3= (ProductCmptCompareItem) children[2];
-        
+
+        children = compareItem.getChildren();
+        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[0];
+        ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[1];
+        ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[2];
+
         assertEquals(generation1, compareItemGen1.getIpsElement());
         assertEquals(generation2, compareItemGen2.getIpsElement());
         assertEquals(generation3, compareItemGen3.getIpsElement());
-        
-        children= compareItemGen1.getChildren();
-        ProductCmptCompareItem compareItemConfigElement1= (ProductCmptCompareItem) children[0];
-        ProductCmptCompareItem compareItemConfigElement2= (ProductCmptCompareItem) children[1];
-        ProductCmptCompareItem compareItemRelation1= (ProductCmptCompareItem) children[2];
-        ProductCmptCompareItem compareItemRelation2= (ProductCmptCompareItem) children[3];
+
+        children = compareItemGen1.getChildren();
+        ProductCmptCompareItem compareItemConfigElement1 = (ProductCmptCompareItem)children[0];
+        ProductCmptCompareItem compareItemConfigElement2 = (ProductCmptCompareItem)children[1];
+        ProductCmptCompareItem compareItemRelation1 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemRelation2 = (ProductCmptCompareItem)children[3];
 
         assertEquals(configElement1, compareItemConfigElement1.getIpsElement());
         assertEquals(configElement2, compareItemConfigElement2.getIpsElement());
@@ -107,20 +110,22 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
     }
 
     /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getContents(Object, boolean)'
+     * Test method for
+     * 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getContents(Object,
+     * boolean)'
      */
     public void testGetContents() {
-        Object[] children= compareItemRoot.getChildren();
-        ProductCmptCompareItem compareItem= (ProductCmptCompareItem) children[0];
+        Object[] children = compareItemRoot.getChildren();
+        ProductCmptCompareItem compareItem = (ProductCmptCompareItem)children[0];
 
-        String contentString= structureCreator.getContents(compareItemRoot, false);
+        String contentString = structureCreator.getContents(compareItemRoot, false);
         assertEquals(compareItemRoot.getContentString(), contentString);
-        contentString= structureCreator.getContents(compareItem, false);
+        contentString = structureCreator.getContents(compareItem, false);
         assertEquals(compareItem.getContentString(), contentString);
-        
-        contentString= structureCreator.getContents(compareItemRoot, true);
+
+        contentString = structureCreator.getContents(compareItemRoot, true);
         assertTrue(compareItemRoot.getContentStringWithoutWhiteSpace().equals(contentString));
-        contentString= structureCreator.getContents(compareItem, true);
+        contentString = structureCreator.getContents(compareItem, true);
         assertTrue(compareItem.getContentStringWithoutWhiteSpace().equals(contentString));
     }
 

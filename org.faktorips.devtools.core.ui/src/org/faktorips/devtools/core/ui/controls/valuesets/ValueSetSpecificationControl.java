@@ -334,11 +334,12 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      * Sets the available value set types.
      * 
      * @deprecated use {@link #setAllowedValueSetTypes(List)
+
      */
     @Deprecated
     public void setAllowedValueSetTypes(ValueSetType[] valueSetTypes) {
         List<ValueSetType> types = new ArrayList<ValueSetType>();
-        for (int i = 0; i < valueSetTypes.length; i++) {
+        for (ValueSetType valueSetType : valueSetTypes) {
             types.add(valueSetTypes[0]);
         }
         setAllowedValueSetTypes(types);

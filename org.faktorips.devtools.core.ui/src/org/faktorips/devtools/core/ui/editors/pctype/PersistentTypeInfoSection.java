@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.layout.GridData;
@@ -144,8 +143,8 @@ public class PersistentTypeInfoSection extends IpsSection {
                 public void updateUiIfNotDisposed() {
                     IPersistentTypeInfo persTypeInfo = (IPersistentTypeInfo)getObject();
                     boolean enabled = persTypeInfo.getPersistentType() == PersistentType.ENTITY;
-                    for (Iterator<Control> iterator = persistentComposites.iterator(); iterator.hasNext();) {
-                        uiToolkit.setDataChangeable(iterator.next(), enabled);
+                    for (Control control2 : persistentComposites) {
+                        uiToolkit.setDataChangeable(control2, enabled);
                     }
                 }
             });

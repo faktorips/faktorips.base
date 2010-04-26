@@ -33,14 +33,14 @@ public class IpsFeatureVersionManagerSorter {
      */
     public IIpsFeatureVersionManager[] sortForMigartionOrder(IIpsFeatureVersionManager[] managers) {
         HashMap<String, IIpsFeatureVersionManager> managersById = new HashMap<String, IIpsFeatureVersionManager>();
-        for (int i = 0; i < managers.length; i++) {
-            managersById.put(managers[i].getId(), managers[i]);
+        for (IIpsFeatureVersionManager manager : managers) {
+            managersById.put(manager.getId(), manager);
         }
 
         ArrayList<IIpsFeatureVersionManager> result = new ArrayList<IIpsFeatureVersionManager>();
         IpsFeatureVersionManagerSorter sorter = new IpsFeatureVersionManagerSorter();
-        for (int i = 0; i < managers.length; i++) {
-            sorter.buildPredecessorList(managersById, result, managers[i].getId());
+        for (IIpsFeatureVersionManager manager : managers) {
+            sorter.buildPredecessorList(managersById, result, manager.getId());
         }
 
         return result.toArray(new IIpsFeatureVersionManager[result.size()]);

@@ -171,17 +171,17 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
 
         IFormulaTestInputValue[] input = getFormulaTestInputValues();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
-        for (int i = 0; i < input.length; i++) {
-            String storedValue = input[i].getValue();
+        for (IFormulaTestInputValue element : input) {
+            String storedValue = element.getValue();
             // get the datatype and the helper for generating the code fragment of the formula
-            Datatype datatype = input[i].findDatatypeOfFormulaParameter(ipsProject);
+            Datatype datatype = element.findDatatypeOfFormulaParameter(ipsProject);
             DatatypeHelper dataTypeHelper = getIpsProject().getDatatypeHelper(datatype);
             if (dataTypeHelper == null) {
                 throw new CoreException(new IpsStatus(NLS.bind(
-                        Messages.FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured, datatype, input[i]
+                        Messages.FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured, datatype, element
                                 .getIdentifier())));
             }
-            resolver.register(input[i].getIdentifier(), dataTypeHelper.newInstance(storedValue), datatype);
+            resolver.register(element.getIdentifier(), dataTypeHelper.newInstance(storedValue), datatype);
         }
 
         compileAndAddAllEnumDatatypeValueIdentifier(resolver);
@@ -197,16 +197,16 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     private void compileAndAddAllEnumDatatypeValueIdentifier(DefaultIdentifierResolver resolver) {
         try {
             EnumDatatype[] enumTypes = getIpsProject().findEnumDatatypes();
-            for (int i = 0; i < enumTypes.length; i++) {
-                String valueName = enumTypes[i].getName();
-                List<String> valueIds = Arrays.asList(enumTypes[i].getAllValueIds(true));
+            for (EnumDatatype enumType : enumTypes) {
+                String valueName = enumType.getName();
+                List<String> valueIds = Arrays.asList(enumType.getAllValueIds(true));
                 for (String id : valueIds) {
                     JavaCodeFragment frag = new JavaCodeFragment();
-                    frag.getImportDeclaration().add(enumTypes[i].getJavaClassName());
-                    DatatypeHelper helper = getIpsProject().getDatatypeHelper(enumTypes[i]);
+                    frag.getImportDeclaration().add(enumType.getJavaClassName());
+                    DatatypeHelper helper = getIpsProject().getDatatypeHelper(enumType);
                     frag.append(helper.newInstance(id));
                     String enumValueName = id;
-                    resolver.register(valueName + "." + enumValueName, frag, enumTypes[i]); //$NON-NLS-1$
+                    resolver.register(valueName + "." + enumValueName, frag, enumType); //$NON-NLS-1$
                 }
             }
         } catch (Exception e) {
@@ -454,8 +454,8 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         if (identifierInFormula.length != formulaTestInputValues.size()) {
             isIdentifierMismatch = true;
         }
-        for (int i = 0; i < identifierInFormula.length; i++) {
-            if (getFormulaTestInputValue(identifierInFormula[i]) == null) {
+        for (String element : identifierInFormula) {
+            if (getFormulaTestInputValue(element) == null) {
                 isIdentifierMismatch = true;
                 break;
             }

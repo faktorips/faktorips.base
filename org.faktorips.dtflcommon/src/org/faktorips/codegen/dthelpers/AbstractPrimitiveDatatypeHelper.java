@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,8 +22,7 @@ import org.faktorips.datatype.Datatype;
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHelper implements
-        PrimitiveDatatypeHelper {
+public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHelper implements PrimitiveDatatypeHelper {
 
     public AbstractPrimitiveDatatypeHelper() {
         super();
@@ -36,6 +35,7 @@ public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHe
     /**
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment newInstanceFromExpression(String expression) {
         return valueOfExpression(expression);
     }
@@ -50,7 +50,8 @@ public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHe
     /**
      * {@inheritDoc}
      */
-    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection, JavaCodeFragment containsNullExpression) {
+    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection,
+            JavaCodeFragment containsNullExpression) {
         throw new UnsupportedOperationException("Call the helper of the wrapper type instead.");
     }
 

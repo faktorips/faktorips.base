@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,38 +31,43 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
     public ProductCmptTypeMethodEditDialog(IProductCmptTypeMethod method, Shell parentShell) {
         super(method, parentShell);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
-        
+
         Composite c = super.createWorkArea(parent);
-        
+
         nameText.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(method.getName())) {
                     method.setName(getProductCmptTypeMethod().getDefaultMethodName());
                 }
             }
         });
-        
+
         return c;
     }
 
-    private IProductCmptTypeMethod getProductCmptTypeMethod(){
+    private IProductCmptTypeMethod getProductCmptTypeMethod() {
         return (IProductCmptTypeMethod)method;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void createAdditionalControlsOnGeneralPage(Composite parent, UIToolkit toolkit) {
         Composite group = toolkit.createGroup(parent, Messages.ProductCmptTypeMethodEditDialog_formulaGroup);
-        AbstractCheckbox checkbox = toolkit.createCheckbox(group, Messages.ProductCmptTypeMethodEditDialog_formulaCheckbox);
+        AbstractCheckbox checkbox = toolkit.createCheckbox(group,
+                Messages.ProductCmptTypeMethodEditDialog_formulaCheckbox);
         bindingContext.bindContent(checkbox, method, IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
 
-        AbstractCheckbox overloadsFormula = toolkit.createCheckbox(group, Messages.ProductCmptTypeMethodEditDialog_labelOverloadsFormula);
+        AbstractCheckbox overloadsFormula = toolkit.createCheckbox(group,
+                Messages.ProductCmptTypeMethodEditDialog_labelOverloadsFormula);
         bindingContext.bindContent(overloadsFormula, method, IProductCmptTypeMethod.PROPERTY_OVERLOADS_FORMULA);
 
         Composite area = uiToolkit.createLabelEditColumnComposite(group);
@@ -71,7 +76,8 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         bindingContext.bindContent(formulaNameText, method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
 
     }
-    
+
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
         if (event.getIpsSrcFile().equals(getIpsPart().getIpsSrcFile())) {

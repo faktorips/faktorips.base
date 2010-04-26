@@ -212,11 +212,9 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         if (structure.getNumOfColumns() != getTableContents().getNumOfColumns()) {
             return;
         }
-        for (int i = 0; i < uniqueKeys.length; i++) {
-            IUniqueKey uniqueKey = uniqueKeys[i];
+        for (IUniqueKey uniqueKey : uniqueKeys) {
             IKeyItem[] keyItems = uniqueKey.getKeyItems();
-            for (int j = 0; j < keyItems.length; j++) {
-                IKeyItem keyItem = keyItems[j];
+            for (IKeyItem keyItem : keyItems) {
                 if (keyItem instanceof IColumn) {
                     IColumn column = (IColumn)keyItem;
                     validateUniqueKeyValue(list, structure, column);

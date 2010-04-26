@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,7 +17,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,10 +27,10 @@ import org.faktorips.devtools.core.IpsPlugin;
  * 
  * @author Jan Ortmann
  */
-public class PresentationModelObject  {
+public class PresentationModelObject {
 
-    private Set<PropertyChangeListener> propertyChangeListeners = new HashSet<PropertyChangeListener>(1); 
-    
+    private Set<PropertyChangeListener> propertyChangeListeners = new HashSet<PropertyChangeListener>(1);
+
     public PresentationModelObject() {
     }
 
@@ -39,7 +38,7 @@ public class PresentationModelObject  {
      * {@inheritDoc}
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        if (listener==null) {
+        if (listener == null) {
             return;
         }
         propertyChangeListeners.add(listener);
@@ -53,25 +52,27 @@ public class PresentationModelObject  {
     }
 
     /**
-     * Notifies all listeners that the object has changed. No detailed information about property and
-     * old and new value is passed to the listeners.
-     * <p> 
-     * If a listener throws an exception while dealing with the exception, the exception
-     * is logged, but NOT re-thrown. Instead the method continues to notify the remaining listeners.
+     * Notifies all listeners that the object has changed. No detailed information about property
+     * and old and new value is passed to the listeners.
+     * <p>
+     * If a listener throws an exception while dealing with the exception, the exception is logged,
+     * but NOT re-thrown. Instead the method continues to notify the remaining listeners.
      */
     protected void notifyListeners() {
         notifyListeners(new PropertyChangeEvent(this, null, null, null));
     }
 
     /**
-     * Notifies all listeners that the given event has occurred.
-     * If a listener throws an exception while dealing with the exception, the exception
-     * is logged, but NOT re-thrown. Instead the method continues to notify the remaining listeners.
+     * Notifies all listeners that the given event has occurred. If a listener throws an exception
+     * while dealing with the exception, the exception is logged, but NOT re-thrown. Instead the
+     * method continues to notify the remaining listeners.
      */
     protected void notifyListeners(PropertyChangeEvent event) {
-        List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>(propertyChangeListeners); // copy to be thread-safe
-        for (Iterator<PropertyChangeListener> it = listeners.iterator(); it.hasNext();) {
-            PropertyChangeListener listener = it.next();
+        List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>(propertyChangeListeners); // copy
+                                                                                                                 // to
+                                                                                                                 // be
+                                                                                                                 // thread-safe
+        for (PropertyChangeListener listener : listeners) {
             try {
                 listener.propertyChange(event);
             } catch (Exception e) {

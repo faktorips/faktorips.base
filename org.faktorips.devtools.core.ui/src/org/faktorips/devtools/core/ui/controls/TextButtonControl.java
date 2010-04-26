@@ -83,6 +83,7 @@ public abstract class TextButtonControl extends ControlComposite {
         }
         button.setLayoutData(d);
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 buttonClicked();
             }
@@ -106,6 +107,7 @@ public abstract class TextButtonControl extends ControlComposite {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setEnabled(boolean value) {
         text.setEnabled(value);
         button.setEnabled(value);
@@ -136,6 +138,7 @@ public abstract class TextButtonControl extends ControlComposite {
         return text;
     }
 
+    @Override
     public boolean setFocus() {
         return text.setFocus();
     }
@@ -143,6 +146,7 @@ public abstract class TextButtonControl extends ControlComposite {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);
         if (eventType != SWT.Paint) {

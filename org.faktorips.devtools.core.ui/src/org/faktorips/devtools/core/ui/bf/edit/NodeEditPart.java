@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,10 +36,11 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The base edit part for all edit parts of this package. It provides an anchor for incoming and one for outgoing
- * connections. It registers itself as {@link ContentsChangeListener} to the faktor ips model so that it refreshs
- * its ui components like its figure and connects according to content change events. It provides a label that
- * can show the name and the error state of the associated model object.
+ * The base edit part for all edit parts of this package. It provides an anchor for incoming and one
+ * for outgoing connections. It registers itself as {@link ContentsChangeListener} to the faktor ips
+ * model so that it refreshs its ui components like its figure and connects according to content
+ * change events. It provides a label that can show the name and the error state of the associated
+ * model object.
  * 
  * @author Peter Erzberger
  */
@@ -65,7 +66,8 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     }
 
     /**
-     * Returns the {@link IBFElement} that is assigned to this edit part by the {@link BusinessFunctionEditPartFactory}.
+     * Returns the {@link IBFElement} that is assigned to this edit part by the
+     * {@link BusinessFunctionEditPartFactory}.
      */
     public IBFElement getBFElement() {
         return (IBFElement)getModel();
@@ -74,13 +76,14 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      * {@inheritDoc}
      */
-    public final IFigure createFigure(){
+    @Override
+    public final IFigure createFigure() {
         nameLabel = new Label();
         nameLabel.setForegroundColor(ColorConstants.black);
         nameLabel.setBorder(new MarginBorder(0, 5, 0, 5));
         return createFigureInternal();
     }
-   
+
     /**
      * Template method that is called by createFigure().
      */
@@ -102,10 +105,11 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     }
 
     /**
-     * Is called by refreshVisuals(). It requests the display string of the {@link IBFElement} and displays it
-     * on the name label. It calls the validate method of the element and delegates the message list to the
-     * showError(MessageList) method. <p/>
-     * Subclass can override this method to do more model updating. 
+     * Is called by refreshVisuals(). It requests the display string of the {@link IBFElement} and
+     * displays it on the name label. It calls the validate method of the element and delegates the
+     * message list to the showError(MessageList) method.
+     * <p/>
+     * Subclass can override this method to do more model updating.
      */
     protected void refreshVisualsFromModel() {
         nameLabel.setText(getBFElement().getDisplayString());
@@ -120,11 +124,11 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     }
 
     /**
-     * Empty implementation. Subclasses implement the error display with this method. 
+     * Empty implementation. Subclasses implement the error display with this method.
      */
-    protected void showError(MessageList msgList){
+    protected void showError(MessageList msgList) {
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
     protected List getModelSourceConnections() {
@@ -176,8 +180,9 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
      */
     @Override
     public void activate() {
-        if (isActive())
+        if (isActive()) {
             return;
+        }
         super.activate();
         getBFElement().getIpsModel().addChangeListener(this);
     }
@@ -187,15 +192,16 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
      */
     @Override
     public void deactivate() {
-        if (!isActive())
+        if (!isActive()) {
             return;
+        }
         super.deactivate();
         getBFElement().getIpsModel().removeChangeListener(this);
     }
 
     /**
-     * Implementation of the {@link ContentsChangeListener} interface. It updates the visuals and connections
-     * when a <code>ContentChangeEvent.TYPE_PROPERTY_CHANGED</code> occurs.
+     * Implementation of the {@link ContentsChangeListener} interface. It updates the visuals and
+     * connections when a <code>ContentChangeEvent.TYPE_PROPERTY_CHANGED</code> occurs.
      */
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getBFElement()) && event.getEventType() == ContentChangeEvent.TYPE_PROPERTY_CHANGED) {

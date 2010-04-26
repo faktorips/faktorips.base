@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,15 +32,17 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private ConnectionCommand command;
     private IBusinessFunction bf;
-    
-    public void setUp() throws Exception{
+
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         command = new ConnectionCommand(false);
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
         command.setBusinessFunction(bf);
-        
+
     }
+
     public void testCanExecute() throws Exception {
         assertFalse(command.canExecute());
 
@@ -49,7 +51,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         source.addOutgoingControlFlow(out);
         command.setSource(source);
         assertFalse(command.canExecute());
-        
+
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf1");
         command = new ConnectionCommand(false);
         source = bf.newEnd(new Point(10, 10));
@@ -71,7 +73,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         source.addOutgoingControlFlow(out);
         command.setSource(source);
         assertFalse(command.canExecute());
-        
+
         source.delete();
         source = bf.newBusinessFunctionCallAction(new Point(10, 10));
         source.addOutgoingControlFlow(out);
@@ -83,8 +85,8 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         source.addOutgoingControlFlow(out);
         command.setSource(source);
         assertFalse(command.canExecute());
-        
-        bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf3");        
+
+        bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf3");
         command = new ConnectionCommand(false);
         source = bf.newOpaqueAction(new Point(100, 100));
         command.setSource(source);
@@ -144,9 +146,9 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         assertEquals(bf.getControlFlows().get(0), source.getOutgoingControlFlow().get(0));
         assertEquals(target, source.getOutgoingControlFlow().get(0).getTarget());
     }
-    
-    public void testSetDefaultConditionValueForBooleanDecisionSourceNode() throws Exception{
-        //by default a new decision is created with the datatype set to boolean
+
+    public void testSetDefaultConditionValueForBooleanDecisionSourceNode() throws Exception {
+        // by default a new decision is created with the datatype set to boolean
         IDecisionBFE source = bf.newDecision(new Point(10, 10));
         IBFElement target = bf.newOpaqueAction(new Point(10, 10));
         command.setSource(source);
@@ -203,19 +205,19 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         command.execute();
         assertEquals("", command.getControlFlow().getConditionValue());
     }
-    
-    public void testExecuteReconnect(){
+
+    public void testExecuteReconnect() {
         command = new ConnectionCommand(true);
         command.setBusinessFunction(bf);
         IBFElement source = bf.newOpaqueAction(new Point(10, 10));
         IBFElement target = bf.newOpaqueAction(new Point(100, 100));
-        
+
         IControlFlow cf = bf.newControlFlow();
         cf.setSource(source);
         cf.setTarget(target);
         command.setControlFlow(cf);
 
-        //reconnect target
+        // reconnect target
         IBFElement newtarget = bf.newOpaqueAction(new Point(100, 100));
         command.setTarget(newtarget);
         command.setSource(null);
@@ -224,7 +226,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         assertEquals(source, cf.getSource());
         assertTrue(target.getIncomingControlFlow().isEmpty());
 
-        //reconnect source
+        // reconnect source
         cf.setSource(source);
         cf.setTarget(target);
         IBFElement newSource = bf.newOpaqueAction(new Point(100, 100));
@@ -255,33 +257,33 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         assertEquals(bf.getControlFlows().get(0), source.getOutgoingControlFlow().get(0));
         assertEquals(target, source.getOutgoingControlFlow().get(0).getTarget());
     }
-    
-    public void testExecuteWithBooleanDecisionSourceNode(){
-        IDecisionBFE decision = bf.newDecision(new Point(10, 10 ));
+
+    public void testExecuteWithBooleanDecisionSourceNode() {
+        IDecisionBFE decision = bf.newDecision(new Point(10, 10));
         decision.setName("decision");
         decision.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         IBFElement action1 = bf.newOpaqueAction(new Point(10, 10));
         action1.setName("action1");
         IBFElement action2 = bf.newOpaqueAction(new Point(10, 10));
         action2.setName("action2");
-        
+
         command.setSource(decision);
         command.setTarget(action1);
         command.execute();
         assertEquals(Boolean.TRUE.toString(), command.getControlFlow().getConditionValue());
-        
+
         command.setSource(decision);
         command.setTarget(action2);
         command.execute();
         assertEquals(Boolean.FALSE.toString(), command.getControlFlow().getConditionValue());
-        
+
         command = new ConnectionCommand(false);
         command.setBusinessFunction(bf);
-        
+
         decision.removeAllOutgoingControlFlows();
         action1.removeAllIncommingControlFlows();
         action2.removeAllIncommingControlFlows();
-        
+
         IControlFlow cf = bf.newControlFlow();
         cf.setSource(decision);
         cf.setTarget(action1);

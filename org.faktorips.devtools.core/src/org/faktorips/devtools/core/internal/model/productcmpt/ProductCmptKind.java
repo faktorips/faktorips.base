@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,28 +23,28 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ProductCmptKind implements IProductCmptKind {
 
-	private String name;
-	private String runtimeId;
-	
-	public ProductCmptKind(String name, String runtimeId) {
-		ArgumentCheck.notNull(name);
-		ArgumentCheck.notNull(runtimeId);
-		this.name = name;
-		this.runtimeId = runtimeId;
-	}
+    private String name;
+    private String runtimeId;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getName() {
-		return name;
-	}
+    public ProductCmptKind(String name, String runtimeId) {
+        ArgumentCheck.notNull(name);
+        ArgumentCheck.notNull(runtimeId);
+        this.name = name;
+        this.runtimeId = runtimeId;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getRuntimeId() {
-		return runtimeId;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getRuntimeId() {
+        return runtimeId;
+    }
 
 }

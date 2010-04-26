@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.Described;
 
-
 /**
  *
  */
@@ -31,7 +30,7 @@ public class DescriptionControl extends Composite implements ModifyListener {
 
     private Described describedObject;
     private Text descriptionText;
-    
+
     public DescriptionControl(Described describedObject, Composite parent) {
         super(parent, SWT.NONE);
         this.describedObject = describedObject;
@@ -55,8 +54,9 @@ public class DescriptionControl extends Composite implements ModifyListener {
         descriptionText.addModifyListener(this);
     }
 
-    /** 
+    /**
      * Overridden method.
+     * 
      * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
      */
     public void modifyText(ModifyEvent e) {

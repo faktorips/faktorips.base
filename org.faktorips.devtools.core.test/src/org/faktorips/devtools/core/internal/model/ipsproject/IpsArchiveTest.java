@@ -333,10 +333,10 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
         List<IIpsElement> childList = new ArrayList<IIpsElement>();
         IIpsPackageFragmentRoot[] roots = dummyProject.getIpsPackageFragmentRoots();
-        for (int i = 0; i < roots.length; i++) {
-            IIpsPackageFragment[] fragments = roots[i].getIpsPackageFragments();
-            for (int j = 0; j < fragments.length; j++) {
-                collectChildren(fragments[j], childList);
+        for (IIpsPackageFragmentRoot root : roots) {
+            IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
+            for (IIpsPackageFragment fragment : fragments) {
+                collectChildren(fragment, childList);
             }
         }
         assertEquals(2, childList.size());
@@ -345,12 +345,12 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     private void collectChildren(IIpsPackageFragment ipsPackageFragment, List<IIpsElement> childList)
             throws CoreException {
         IIpsElement[] childs = ipsPackageFragment.getChildren();
-        for (int k = 0; k < childs.length; k++) {
-            childList.add(childs[k]);
+        for (IIpsElement child : childs) {
+            childList.add(child);
         }
         IIpsPackageFragment[] childFragments = ipsPackageFragment.getChildIpsPackageFragments();
-        for (int k = 0; k < childFragments.length; k++) {
-            collectChildren(childFragments[k], childList);
+        for (IIpsPackageFragment childFragment : childFragments) {
+            collectChildren(childFragment, childList);
         }
     }
 }

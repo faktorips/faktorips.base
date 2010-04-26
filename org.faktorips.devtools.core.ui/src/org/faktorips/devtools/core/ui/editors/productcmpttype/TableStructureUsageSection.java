@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -39,10 +39,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
     private TblsStructureUsageComposite tblsStructureUsageComposite;
 
-    public TableStructureUsageSection(
-            IProductCmptType productCmptType,
-            Composite parent,
-            UIToolkit toolkit) {
+    public TableStructureUsageSection(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
         super(productCmptType, parent, Messages.TableStructureUsageSection_title, toolkit);
         this.productCmptType = productCmptType;
     }
@@ -50,64 +47,67 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         tblsStructureUsageComposite = new TblsStructureUsageComposite((IProductCmptType)getIpsObject(), parent, toolkit);
         return tblsStructureUsageComposite;
     }
 
     /**
-     * Label provider for the table structure usages. Adds the first related table structure and ... if 
-     * more than one table structure is related.
+     * Label provider for the table structure usages. Adds the first related table structure and ...
+     * if more than one table structure is related.
      */
-    private class TblStructureLabelProvider extends DefaultLabelProvider{
+    private class TblStructureLabelProvider extends DefaultLabelProvider {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getText(Object element) {
             StringBuffer sb = new StringBuffer(super.getText(element));
-            if (element instanceof ITableStructureUsage){
+            if (element instanceof ITableStructureUsage) {
                 String[] tableStructures = ((ITableStructureUsage)element).getTableStructures();
-                if (tableStructures.length > 0){
+                if (tableStructures.length > 0) {
                     sb.append(" : "); //$NON-NLS-1$
                     sb.append(tableStructures[0]);
-                    if (tableStructures.length > 1){
+                    if (tableStructures.length > 1) {
                         sb.append(", ..."); //$NON-NLS-1$
                     }
                 }
-                    
+
             }
             return sb.toString();
         }
     }
 
     /**
-     * A composite that shows the used table structures for a product component type in a viewer and 
+     * A composite that shows the used table structures for a product component type in a viewer and
      * allows to edit, create, move and delete.
      */
     private class TblsStructureUsageComposite extends IpsPartsComposite {
-        
+
         private class TblsStructureUsageContentProvider implements IStructuredContentProvider {
 
             public Object[] getElements(Object inputElement) {
                 return productCmptType.getTableStructureUsages();
             }
-            
+
             public void dispose() {
                 // nothing todo
             }
-            
+
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing todo
             }
         }
-        
+
         public TblsStructureUsageComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
             super(productCmptType, parent, toolkit);
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         protected ILabelProvider createLabelProvider() {
             return new TblStructureLabelProvider();
         }
@@ -115,6 +115,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected IStructuredContentProvider createContentProvider() {
             return new TblsStructureUsageContentProvider();
         }
@@ -122,6 +123,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
             ArgumentCheck.isInstanceOf(part, ITableStructureUsage.class);
             return new TblsStructureUsageEditDialog((ITableStructureUsage)part, shell);
@@ -130,17 +132,19 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return productCmptType.moveTableStructureUsage(indexes, up);
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         protected IIpsObjectPart newIpsPart() {
             ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
             return tsu;
         }
     }
-    
+
 }

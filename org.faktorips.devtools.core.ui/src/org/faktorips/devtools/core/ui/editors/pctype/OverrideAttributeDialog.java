@@ -22,8 +22,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialog;
+import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 
 /**
  * A dialog that enables the user to select <tt>IPolicyCmptTypeAttribute</tt>s to overwrite.
@@ -48,9 +48,9 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
     public IPolicyCmptTypeAttribute[] getSelectedAttributes() {
         List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
         Object[] checked = getResult();
-        for (int i = 0; i < checked.length; i++) {
-            if (checked[i] instanceof IPolicyCmptTypeAttribute) {
-                IPolicyCmptTypeAttribute attr = (IPolicyCmptTypeAttribute)checked[i];
+        for (Object element : checked) {
+            if (element instanceof IPolicyCmptTypeAttribute) {
+                IPolicyCmptTypeAttribute attr = (IPolicyCmptTypeAttribute)element;
                 attributes.add(attr);
             }
         }

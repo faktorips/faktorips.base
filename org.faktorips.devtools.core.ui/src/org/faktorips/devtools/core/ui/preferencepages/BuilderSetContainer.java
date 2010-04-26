@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -139,7 +138,7 @@ public class BuilderSetContainer {
         label.setLayoutData(gd);
 
         createTableViewer(mainComposite, adapter);
-        
+
         return mainComposite;
     }
 
@@ -166,7 +165,7 @@ public class BuilderSetContainer {
             }
             builderSetLabels[i] = info.getBuilderSetLabel();
         }
-        
+
         builderSetComboField.getCombo().setItems(builderSetLabels);
         builderSetComboField.getCombo().select(currentBuilderSetIndex);
     }
@@ -197,6 +196,7 @@ public class BuilderSetContainer {
         }
 
         columns[PROPERTY_NAME_COLUMN_INDEX].setLabelProvider(new ColumnLabelProvider() {
+            @Override
             public String getText(Object element) {
                 return ((IIpsBuilderSetPropertyDef)element).getLabel();
             }
@@ -206,10 +206,12 @@ public class BuilderSetContainer {
         columns[PROPERTY_DESCRIPTION_COLUMN_INDEX].setLabelProvider(new ColumnLabelProvider() {
             private static final int TOOLTIP_LINE_LENGTH = 75;
 
-			public String getText(Object element) {
+            @Override
+            public String getText(Object element) {
                 return ((IIpsBuilderSetPropertyDef)element).getDescription();
             }
 
+            @Override
             public String getToolTipText(Object element) {
                 if (element instanceof IIpsBuilderSetPropertyDef) {
                     IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
@@ -220,14 +222,17 @@ public class BuilderSetContainer {
                 return ""; //$NON-NLS-1$
             }
 
+            @Override
             public Point getToolTipShift(Object object) {
                 return new Point(5, 5);
             }
 
+            @Override
             public int getToolTipDisplayDelayTime(Object object) {
                 return 200;
             }
 
+            @Override
             public int getToolTipTimeDisplayed(Object object) {
                 return 10000;
             }
@@ -237,6 +242,7 @@ public class BuilderSetContainer {
                 new FocusCellOwnerDrawHighlighter(tableViewer));
 
         ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(tableViewer) {
+            @Override
             protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
                 return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
                         || event.eventType == ColumnViewerEditorActivationEvent.MOUSE_CLICK_SELECTION
@@ -259,9 +265,9 @@ public class BuilderSetContainer {
 
         IIpsArtefactBuilderSetInfo[] ipsArtefactBuilderSetInfos = IpsPlugin.getDefault().getIpsModel()
                 .getIpsArtefactBuilderSetInfos();
-        for (int i = 0; i < ipsArtefactBuilderSetInfos.length; i++) {
-            if (builderSetLabel.equals(ipsArtefactBuilderSetInfos[i].getBuilderSetLabel())) {
-                return ipsArtefactBuilderSetInfos[i].getBuilderSetId();
+        for (IIpsArtefactBuilderSetInfo ipsArtefactBuilderSetInfo : ipsArtefactBuilderSetInfos) {
+            if (builderSetLabel.equals(ipsArtefactBuilderSetInfo.getBuilderSetLabel())) {
+                return ipsArtefactBuilderSetInfo.getBuilderSetId();
             }
         }
         return builderSetId;
@@ -269,8 +275,8 @@ public class BuilderSetContainer {
 
     private IpsArtefactBuilderSetInfo getBuilderSetInfo(String builderSetId) {
         List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos(ipsProject);
-        for (Iterator<IIpsArtefactBuilderSetInfo> iterator = builderSetInfos.iterator(); iterator.hasNext();) {
-            IpsArtefactBuilderSetInfo info = (IpsArtefactBuilderSetInfo)iterator.next();
+        for (IIpsArtefactBuilderSetInfo iIpsArtefactBuilderSetInfo : builderSetInfos) {
+            IpsArtefactBuilderSetInfo info = (IpsArtefactBuilderSetInfo)iIpsArtefactBuilderSetInfo;
             if (builderSetId.equals(info.getBuilderSetId())) {
                 return info;
             }
@@ -312,15 +318,14 @@ public class BuilderSetContainer {
     private void updateColumnWidths() {
         columns[PROPERTY_NAME_COLUMN_INDEX].getColumn().pack();
         columns[PROPERTY_VALUE_COLUMN_INDEX].getColumn().pack();
-        
-        // avoid the horizontal scrollbar to be shown by decreasing the width of the 
+
+        // avoid the horizontal scrollbar to be shown by decreasing the width of the
         // third tableViewerColumn by 5 pixels (taking a minimal width of 150 into account)
         int thirdColWidth = 150;
-        thirdColWidth = Math.max(thirdColWidth, 
-        		tableViewer.getControl().getSize().x - 5
-        		- columns[PROPERTY_NAME_COLUMN_INDEX].getColumn().getWidth()
-        		- columns[PROPERTY_VALUE_COLUMN_INDEX].getColumn().getWidth());
-        
+        thirdColWidth = Math.max(thirdColWidth, tableViewer.getControl().getSize().x - 5
+                - columns[PROPERTY_NAME_COLUMN_INDEX].getColumn().getWidth()
+                - columns[PROPERTY_VALUE_COLUMN_INDEX].getColumn().getWidth());
+
         columns[PROPERTY_DESCRIPTION_COLUMN_INDEX].getColumn().setWidth(thirdColWidth);
     }
 
@@ -334,9 +339,9 @@ public class BuilderSetContainer {
         StringBuffer buf = new StringBuffer();
         buf.append(ipsProjectProperties.getBuilderSetId()).append(';');
         String[] propertyNames = builderSetConfigModel.getPropertyNames();
-        for (int i = 0; i < propertyNames.length; i++) {
-            buf.append(propertyNames[i]).append('=');
-            buf.append(builderSetConfigModel.getPropertyValue(propertyNames[i])).append(';');
+        for (String propertyName : propertyNames) {
+            buf.append(propertyName).append('=');
+            buf.append(builderSetConfigModel.getPropertyValue(propertyName)).append(';');
         }
         return buf.toString();
     }
@@ -470,7 +475,8 @@ public class BuilderSetContainer {
             }
         }
 
-        public void widgetDefaultSelected(SelectionEvent e) { /* ignore */ }
+        public void widgetDefaultSelected(SelectionEvent e) { /* ignore */
+        }
     }
 
     // Sorter for IIpsBuilderSetPropertyDef class. Note that only "Property name" is taken into
@@ -484,6 +490,7 @@ public class BuilderSetContainer {
             this.ipsProject = ipsProject;
         }
 
+        @Override
         public int compare(Viewer viewer, Object e1, Object e2) {
             int direction = ((TableViewer)viewer).getTable().getSortDirection();
 
@@ -501,10 +508,12 @@ public class BuilderSetContainer {
                     return s2.compareTo(s1);
                 }
             }
-            if (firstIsModifiable)
+            if (firstIsModifiable) {
                 return -1;
-            if (secondIsModifiable)
+            }
+            if (secondIsModifiable) {
                 return 1;
+            }
 
             // non-modifiable elements are unsorted at the end
             return 0;
@@ -556,6 +565,7 @@ public class BuilderSetContainer {
             this.model = ipsArtefactBuilderSetConfigModel;
         }
 
+        @Override
         public String getText(Object element) {
             if (element instanceof IIpsBuilderSetPropertyDef) {
                 IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
@@ -575,6 +585,7 @@ public class BuilderSetContainer {
             return ""; //$NON-NLS-1$
         }
 
+        @Override
         public Color getBackground(Object element) {
             Color bgColor = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
             if (element instanceof IIpsBuilderSetPropertyDef) {

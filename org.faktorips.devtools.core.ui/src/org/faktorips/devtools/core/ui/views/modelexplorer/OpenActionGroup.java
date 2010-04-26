@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -39,8 +39,7 @@ public class OpenActionGroup extends ActionGroup {
     /**
      * The id for the Open With submenu.
      */
-    public static final String OPEN_WITH_ID = IpsPlugin.PLUGIN_ID
-            + ".OpenWithSubMenu"; //$NON-NLS-1$
+    public static final String OPEN_WITH_ID = IpsPlugin.PLUGIN_ID + ".OpenWithSubMenu"; //$NON-NLS-1$
 
     public OpenActionGroup(ModelExplorer explorer) {
         this.explorer = explorer;
@@ -51,16 +50,15 @@ public class OpenActionGroup extends ActionGroup {
         openFileAction = new OpenFileAction(explorer.getSite().getPage());
     }
 
+    @Override
     public void fillContextMenu(IMenuManager menu) {
-        IStructuredSelection selection = (IStructuredSelection) getContext()
-                .getSelection();
+        IStructuredSelection selection = (IStructuredSelection)getContext().getSelection();
 
         boolean anyResourceSelected = !selection.isEmpty()
-                && ResourceSelectionUtil.allResourcesAreOfType(selection,
-                        IResource.PROJECT | IResource.FOLDER | IResource.FILE);
+                && ResourceSelectionUtil.allResourcesAreOfType(selection, IResource.PROJECT | IResource.FOLDER
+                        | IResource.FILE);
         boolean onlyFilesSelected = !selection.isEmpty()
-                && ResourceSelectionUtil.allResourcesAreOfType(selection,
-                        IResource.FILE);
+                && ResourceSelectionUtil.allResourcesAreOfType(selection, IResource.FILE);
 
         if (onlyFilesSelected) {
             openFileAction.selectionChanged(selection);
@@ -79,8 +77,7 @@ public class OpenActionGroup extends ActionGroup {
      * @param menu the context menu
      * @param selection the current selection
      */
-    private void fillOpenWithMenu(IMenuManager menu,
-            IStructuredSelection selection) {
+    private void fillOpenWithMenu(IMenuManager menu, IStructuredSelection selection) {
 
         // Only supported if exactly one file is selected.
         if (selection.size() != 1) {
@@ -92,8 +89,7 @@ public class OpenActionGroup extends ActionGroup {
         }
 
         MenuManager submenu = new MenuManager(Messages.OpenActionGroup_openWithMenuLabel, OPEN_WITH_ID);
-        submenu.add(new OpenWithMenu(explorer.getSite().getPage(),
-                (IFile) element));
+        submenu.add(new OpenWithMenu(explorer.getSite().getPage(), (IFile)element));
         menu.add(submenu);
     }
 
@@ -103,8 +99,7 @@ public class OpenActionGroup extends ActionGroup {
      * @param menu the context menu
      * @param selection the current selection
      */
-    private void addNewWindowAction(IMenuManager menu,
-            IStructuredSelection selection) {
+    private void addNewWindowAction(IMenuManager menu, IStructuredSelection selection) {
 
         // Only supported if exactly one container (i.e open project or folder) is selected.
         if (selection.size() != 1) {
@@ -114,12 +109,11 @@ public class OpenActionGroup extends ActionGroup {
         if (!(element instanceof IContainer)) {
             return;
         }
-        if (element instanceof IProject && !(((IProject) element).isOpen())) {
+        if (element instanceof IProject && !(((IProject)element).isOpen())) {
             return;
         }
 
-        menu.add(new OpenInNewWindowAction(explorer.getSite()
-                .getWorkbenchWindow(), (IContainer) element));
+        menu.add(new OpenInNewWindowAction(explorer.getSite().getWorkbenchWindow(), (IContainer)element));
     }
 
     /**

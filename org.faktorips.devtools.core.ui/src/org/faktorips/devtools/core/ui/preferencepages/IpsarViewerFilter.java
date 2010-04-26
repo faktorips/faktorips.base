@@ -67,8 +67,8 @@ public class IpsarViewerFilter extends ViewerFilter {
             try {
                 IResource[] resources = ((IContainer)element).members();
                 // recursive! Only show containers that contain an archive
-                for (int i = 0; i < resources.length; i++) {
-                    if (select(viewer, parentElement, resources[i])) {
+                for (IResource resource : resources) {
+                    if (select(viewer, parentElement, resource)) {
                         return true;
                     }
                 }

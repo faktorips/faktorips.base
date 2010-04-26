@@ -103,11 +103,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     public IValidationRule findValueSetRule(IIpsProject ipsProject) {
         IValidationRule[] rules = getPolicyCmptType().getRules();
 
-        for (int i = 0; i < rules.length; i++) {
-            String[] attributes = rules[i].getValidatedAttributes();
-            for (int j = 0; j < attributes.length; j++) {
-                if (attributes[j].equals(getName()) && rules[i].isCheckValueAgainstValueSetRule()) {
-                    return rules[i];
+        for (IValidationRule rule : rules) {
+            String[] attributes = rule.getValidatedAttributes();
+            for (String attribute : attributes) {
+                if (attribute.equals(getName()) && rule.isCheckValueAgainstValueSetRule()) {
+                    return rule;
                 }
             }
         }

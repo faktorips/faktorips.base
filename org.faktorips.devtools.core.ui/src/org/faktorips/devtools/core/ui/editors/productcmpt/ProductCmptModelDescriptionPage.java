@@ -107,10 +107,10 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
             ProdDefPropertyType propertyType) throws CoreException {
         IPropertyValue[] values = productCmptGen.getPropertyValues(propertyType);
         Arrays.sort(values, valueComparator);
-        for (int i = 0; i < values.length; i++) {
-            IProdDefProperty property = values[i].findProperty(productCmptGen.getIpsProject());
+        for (IPropertyValue value : values) {
+            IProdDefProperty property = value.findProperty(productCmptGen.getIpsProject());
             if (property != null) {
-                DescriptionItem item = new DescriptionItem(values[i].getPropertyName(), property.getDescription());
+                DescriptionItem item = new DescriptionItem(value.getPropertyName(), property.getDescription());
                 descriptions.add(item);
             }
         }

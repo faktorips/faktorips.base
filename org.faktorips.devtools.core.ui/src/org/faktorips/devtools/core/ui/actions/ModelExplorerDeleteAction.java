@@ -42,8 +42,8 @@ public class ModelExplorerDeleteAction extends IpsAction implements IShellProvid
     private boolean canDelete(IStructuredSelection selection) {
         Object[] items = selection.toArray();
         boolean canDelete = true;
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] instanceof IIpsObjectPart) {
+        for (Object item : items) {
+            if (item instanceof IIpsObjectPart) {
                 canDelete = false;
             }
         }

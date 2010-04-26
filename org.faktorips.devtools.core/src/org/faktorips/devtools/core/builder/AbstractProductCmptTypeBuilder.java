@@ -82,8 +82,8 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
         IPolicyCmptType policyCmptType = getPcType();
         IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0]
                 : policyCmptType.getPolicyCmptTypeAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            IPolicyCmptTypeAttribute a = attributes[i];
+        for (IPolicyCmptTypeAttribute attribute : attributes) {
+            IPolicyCmptTypeAttribute a = attribute;
             if (!a.isProductRelevant() || !a.isChangeable() || !a.isValid()) {
                 continue;
             }
@@ -96,8 +96,8 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
                 generateCodeForPolicyCmptTypeAttribute(a, helper, typeSection.getMemberVarBuilder(), typeSection
                         .getMethodBuilder());
             } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building attribute "
-                        + attributes[i].getName() + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building attribute " + attribute.getName()
+                        + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
     }
@@ -112,9 +112,9 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
             return;
         }
         ITableStructureUsage[] tsus = type.getTableStructureUsages();
-        for (int i = 0; i < tsus.length; i++) {
-            if (tsus[i].isValid()) {
-                generateCodeForTableUsage(tsus[i], fieldCodeBuilder, methodCodeBuilder);
+        for (ITableStructureUsage tsu : tsus) {
+            if (tsu.isValid()) {
+                generateCodeForTableUsage(tsu, fieldCodeBuilder, methodCodeBuilder);
             }
         }
     }
@@ -147,8 +147,8 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
 
         HashMap<IAssociation, List<IAssociation>> derivedUnionAssociations = new HashMap<IAssociation, List<IAssociation>>();
         IAssociation[] associations = getProductCmptType().getAssociations();
-        for (int i = 0; i < associations.length; i++) {
-            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)associations[i];
+        for (IAssociation association2 : associations) {
+            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)association2;
             try {
                 if (association.validate(getIpsProject()).containsErrorMsg()) {
                     continue;
@@ -159,19 +159,17 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
                     generateCodeForNoneDerivedUnionAssociation(association, fieldsBuilder, methodsBuilder);
                 }
                 if (association.isSubsetOfADerivedUnion()) {
-                    IAssociation derivedUnion = associations[i].findSubsettedDerivedUnion(getIpsSrcFile()
-                            .getIpsProject());
+                    IAssociation derivedUnion = association2.findSubsettedDerivedUnion(getIpsSrcFile().getIpsProject());
                     List<IAssociation> implementationAssociations = derivedUnionAssociations.get(derivedUnion);
                     if (implementationAssociations == null) {
                         implementationAssociations = new ArrayList<IAssociation>();
                         derivedUnionAssociations.put(derivedUnion, implementationAssociations);
                     }
-                    implementationAssociations.add(associations[i]);
+                    implementationAssociations.add(association2);
                 }
             } catch (Exception e) {
-                throw new CoreException(
-                        new IpsStatus(IStatus.ERROR, "Error building association " + associations[i].getName() + " of "
-                                + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building association "
+                        + association2.getName() + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
         CodeGeneratorForDerivedUnionSubsets generator = new CodeGeneratorForDerivedUnionSubsets(getIpsProject(),
@@ -243,18 +241,18 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
         @Override
         protected boolean visit(IProductCmptType type) throws CoreException {
             IAssociation[] associations = type.getAssociations();
-            for (int i = 0; i < associations.length; i++) {
-                if (associations[i].isDerivedUnion() && associations[i].isValid()) {
+            for (IAssociation association : associations) {
+                if (association.isDerivedUnion() && association.isValid()) {
                     try {
-                        List<IAssociation> implAssociations = derivedUnionMap.get(associations[i]);
+                        List<IAssociation> implAssociations = derivedUnionMap.get(association);
                         if (implAssociations != null) {
                             generateCodeForDerivedUnionAssociationImplementation(
-                                    (IProductCmptTypeAssociation)associations[i], implAssociations, fieldsBuilder,
+                                    (IProductCmptTypeAssociation)association, implAssociations, fieldsBuilder,
                                     methodsBuilder);
                         }
                     } catch (Exception e) {
                         addToBuildStatus(new IpsStatus("Error building container association implementation. "
-                                + "DerivedUnionAssociation: " + associations[i] + "Implementing Type: "
+                                + "DerivedUnionAssociation: " + association + "Implementing Type: "
                                 + getProductCmptType(), e));
                     }
                 }

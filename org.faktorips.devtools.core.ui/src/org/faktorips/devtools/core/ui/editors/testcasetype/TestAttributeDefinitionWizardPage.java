@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,7 +28,8 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 
 /**
- * Wizard page to define a new test attribute - this attribute is not based on a policy cmpt type attribute.
+ * Wizard page to define a new test attribute - this attribute is not based on a policy cmpt type
+ * attribute.
  * 
  * @author Joerg Ortmann
  */
@@ -39,10 +40,10 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
     private DatatypeRefControl datatypeRefControl;
     private Combo testAttributeType;
     private EnumValue[] valuesWithoutCombined;
-    
+
     private BindingContext bindingContext = new BindingContext();
     private PmoTestAttribute testAttribute;
-    
+
     /**
      * Presentation model object for the new test attribute.
      * 
@@ -60,32 +61,37 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
         public String getDatatype() {
             return datatype;
         }
+
         public void setDatatype(String datatype) {
             this.datatype = datatype;
             valueChanged();
         }
+
         public String getName() {
             return name;
         }
+
         public void setName(String name) {
             this.name = name;
             valueChanged();
         }
+
         public TestParameterType getTestParameterType() {
             return testParameterType;
         }
+
         public void setTestParameterType(TestParameterType testParameterType) {
             this.testParameterType = testParameterType;
             valueChanged();
         }
-        
-        private void valueChanged(){
+
+        private void valueChanged() {
             // if the value has changed then the button state must be updated
             // to enable or disable the finish button
             TestAttributeDefinitionWizardPage.this.getContainer().updateButtons();
         }
     }
-    
+
     protected TestAttributeDefinitionWizardPage(NewTestAttributeWizard wizard) {
         super(PAGE_ID, Messages.TestAttributeDefinitionWizardPage_wizardPageTitle, null);
         setDescription(Messages.TestAttributeDefinitionWizardPage_wizardPageDescription);
@@ -99,7 +105,7 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
         Composite c = uiToolkit.createLabelEditColumnComposite(parent);
-        
+
         // name of test attribute
         uiToolkit.createFormLabel(c, Messages.TestAttributeDefinitionWizardPage_testLabelTestAttrName);
         testAttributeNameText = uiToolkit.createText(c);
@@ -107,24 +113,26 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
 
         // type of attribute
         EnumValue[] values = TestParameterType.getEnumType().getValues();
-        valuesWithoutCombined = new EnumValue[values.length-1];
-        int idx=0;
-        for (int i = 0; i < values.length; i++) {
-            if (values[i] != TestParameterType.COMBINED)
-                valuesWithoutCombined[idx++] = values[i];
+        valuesWithoutCombined = new EnumValue[values.length - 1];
+        int idx = 0;
+        for (EnumValue value : values) {
+            if (value != TestParameterType.COMBINED) {
+                valuesWithoutCombined[idx++] = value;
+            }
         }
         uiToolkit.createLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
         testAttributeType = uiToolkit.createCombo(c, valuesWithoutCombined);
         testAttributeType.select(0);
-        bindingContext.bindContent(testAttributeType, testAttribute, PmoTestAttribute.PROPERTY_TEST_PARAMETER_TYPE, TestParameterType.getEnumType());
-        
+        bindingContext.bindContent(testAttributeType, testAttribute, PmoTestAttribute.PROPERTY_TEST_PARAMETER_TYPE,
+                TestParameterType.getEnumType());
+
         // datatype of test attribute
         uiToolkit.createFormLabel(c, Messages.TestAttributeDefinitionWizardPage_testLabelDatatype);
         datatypeRefControl = uiToolkit.createDatatypeRefEdit(wizard.getIpsProjekt(), c);
         datatypeRefControl.setOnlyValueDatatypesAllowed(true);
-        
+
         bindingContext.bindContent(datatypeRefControl, testAttribute, PmoTestAttribute.PROPERTY_DATATYPE);
-        
+
         setControl(c);
     }
 
@@ -148,24 +156,25 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
     public TestParameterType getTestParameterType() {
         return testAttribute.getTestParameterType();
     }
-    
+
     /**
      * Check the valid state of the page. Validation errors will be displayed as error inside the
      * wizards message ara.
      */
-    public boolean isValid(){
+    public boolean isValid() {
         setErrorMessage(null);
         try {
-            if (StringUtils.isEmpty(testAttributeNameText.getText())){
+            if (StringUtils.isEmpty(testAttributeNameText.getText())) {
                 setErrorMessage(Messages.TestAttributeDefinitionWizardPage_errorMessageEmptyName);
                 return false;
             }
-            if (StringUtils.isEmpty(datatypeRefControl.getText())){
+            if (StringUtils.isEmpty(datatypeRefControl.getText())) {
                 setErrorMessage(Messages.TestAttributeDefinitionWizardPage_TestAttributeDefinitionWizardPage_errorMessageEmptyDatatype);
                 return false;
             }
-            if (wizard.getIpsProjekt().findDatatype(datatypeRefControl.getText()) == null){
-                setErrorMessage(NLS.bind(Messages.TestAttributeDefinitionWizardPage_errorMessageDatatypeNotFound, testAttribute.getDatatype()));
+            if (wizard.getIpsProjekt().findDatatype(datatypeRefControl.getText()) == null) {
+                setErrorMessage(NLS.bind(Messages.TestAttributeDefinitionWizardPage_errorMessageDatatypeNotFound,
+                        testAttribute.getDatatype()));
                 return false;
             }
         } catch (CoreException e) {

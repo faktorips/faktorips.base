@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,14 +27,15 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     private IIpsProject project;
     private IIpsSrcFile ipsSrcFile;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject();
         ipsSrcFile = newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy").getIpsSrcFile();
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(project);
-        builder = new DumyJavaSourceFileBuilder(builderSet, "dumy",
-                  new LocalizedStringsSet(JavaSourceFileBuilderTest.class));
+        builder = new DumyJavaSourceFileBuilder(builderSet, "dumy", new LocalizedStringsSet(
+                JavaSourceFileBuilderTest.class));
         builder.beforeBuildProcess(project, IncrementalProjectBuilder.INCREMENTAL_BUILD);
     }
 
@@ -60,34 +61,35 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.reset();
         builder.build(ipsSrcFile);
         assertFalse(builder.generateCalled);
-        
-        //check file creation
+
+        // check file creation
         IFile file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile("TestPolicy.java");
         assertTrue(file.exists());
-        
-        //this checks if the merge.xml has been found since it will try to merge the content because
-        //the java file exists already
+
+        // this checks if the merge.xml has been found since it will try to merge the content
+        // because
+        // the java file exists already
         builder.setMergeEnabled(true);
         builder.reset();
         builder.isBuilderFor = true;
         builder.build(ipsSrcFile);
     }
 
-    public void testDelete() throws Exception{
+    public void testDelete() throws Exception {
         builder.beforeBuild(ipsSrcFile, null);
         builder.isBuilderFor = true;
         builder.build(ipsSrcFile);
         builder.afterBuild(ipsSrcFile);
-        //check file creation
+        // check file creation
         IFile file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile("TestPolicy.java");
         assertTrue(file.exists());
-        
-        //check file deletion
+
+        // check file deletion
         builder.delete(ipsSrcFile);
         file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile("TestPolicy.java");
         assertFalse(file.exists());
     }
-    
+
     public void testGetLocalizedText() throws Exception {
         builder.beforeBuild(ipsSrcFile, null);
         String value = builder.getLocalizedText(ipsSrcFile, "key");

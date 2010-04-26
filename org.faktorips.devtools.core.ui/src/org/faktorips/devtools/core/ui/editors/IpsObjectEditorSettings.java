@@ -20,7 +20,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.resources.ISaveContext;
@@ -200,8 +199,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         PrintWriter out = null;
         try {
             out = new PrintWriter(new FileOutputStream(file));
-            for (Iterator<String> it = settings.keySet().iterator(); it.hasNext();) {
-                String ipsSrcFile = it.next();
+            for (String ipsSrcFile : settings.keySet()) {
                 out.println(ipsSrcFile);
                 writeKeyValuePairs(out, settings.get(ipsSrcFile));
 
@@ -212,8 +210,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     }
 
     private void writeKeyValuePairs(PrintWriter out, Map<String, String> keyValuePairs) {
-        for (Iterator<String> it = keyValuePairs.keySet().iterator(); it.hasNext();) {
-            String key = it.next();
+        for (String key : keyValuePairs.keySet()) {
             String value = keyValuePairs.get(key);
             out.println(" " + key + " " + value); //$NON-NLS-1$ //$NON-NLS-2$
         }

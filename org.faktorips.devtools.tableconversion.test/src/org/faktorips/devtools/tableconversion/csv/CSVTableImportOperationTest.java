@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.GregorianCalendar;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -27,8 +29,6 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 public class CSVTableImportOperationTest extends AbstractTableTest {
 

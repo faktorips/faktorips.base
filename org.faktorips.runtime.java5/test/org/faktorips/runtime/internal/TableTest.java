@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,14 +25,15 @@ import org.faktorips.values.Decimal;
 public class TableTest extends XmlAbstractTestCase {
 
     private TestTable table;
-    
+
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         table = new TestTable();
     }
-    
+
     public void testInitFromXmlViaSax() throws Exception {
         String className = getClass().getName();
         int index = className.lastIndexOf('.');
@@ -46,18 +47,18 @@ public class TableTest extends XmlAbstractTestCase {
         }
 
         table.initFromXml(is, null);
-        
-        TestTableRow row = (TestTableRow) table.rows.get(0);
+
+        TestTableRow row = (TestTableRow)table.rows.get(0);
         assertNull(row.getCompany());
         assertEquals(Integer.valueOf("0"), row.getGender());
         assertEquals(Decimal.valueOf("0.1"), row.getRate());
-        
-        row = (TestTableRow) table.rows.get(1);
+
+        row = (TestTableRow)table.rows.get(1);
         assertEquals("KQV", row.getCompany());
         assertEquals(Integer.valueOf("1"), row.getGender());
         assertEquals(Decimal.valueOf("0.15"), row.getRate());
-        
-        row = (TestTableRow) table.rows.get(5);
+
+        row = (TestTableRow)table.rows.get(5);
         assertEquals("BBV", row.getCompany());
         assertEquals(Integer.valueOf("1"), row.getGender());
         assertEquals(Decimal.valueOf("0.35"), row.getRate());

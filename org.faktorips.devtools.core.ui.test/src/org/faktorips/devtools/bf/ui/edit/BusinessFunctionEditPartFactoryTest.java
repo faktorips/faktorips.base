@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,15 +31,17 @@ import org.faktorips.devtools.core.ui.bf.edit.StartEditPart;
 public class BusinessFunctionEditPartFactoryTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
-    
-    public void setUp() throws Exception{
+
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
     }
-    
+
     public void testCreateEditPart() throws Exception {
         BusinessFunctionEditPartFactory factory = new BusinessFunctionEditPartFactory();
-        IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
+        IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+                "bf");
         EditPart editPart = factory.createEditPart(null, bf);
         assertTrue(editPart instanceof BusinessFunctionEditPart);
 
@@ -70,16 +72,16 @@ public class BusinessFunctionEditPartFactoryTest extends AbstractIpsPluginTest {
         editPart = factory.createEditPart(null, bf.newMerge(new Point(1, 1)));
         assertTrue(editPart instanceof MergeEditPart);
 
-        try{
+        try {
             editPart = factory.createEditPart(null, null);
             fail();
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
         }
 
-        try{
+        try {
             editPart = factory.createEditPart(null, newPolicyCmptType(ipsProject, "pctype"));
             fail();
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
         }
     }
 

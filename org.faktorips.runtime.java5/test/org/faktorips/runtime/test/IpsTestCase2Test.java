@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
-
 
 /**
  * 
@@ -41,7 +40,7 @@ public class IpsTestCase2Test extends TestCase {
         assertEquals(test, listener.lastStarted);
         assertEquals(test, listener.lastFinished);
         assertNull(listener.lastFailure);
-        
+
         result = new IpsTestResult();
         test = new MyTestCase("MyTest", "42", "43");
         listener = new MyListener();
@@ -55,28 +54,28 @@ public class IpsTestCase2Test extends TestCase {
         assertEquals("TestObject", failure.getTestObject());
         assertEquals("TestedAttribute", failure.getTestedAttribute());
     }
-    
-    public void testGetExtensionAttribute(){
+
+    public void testGetExtensionAttribute() {
         MyTestCase test = new MyTestCase("MyTest", "42", "42");
         MyModelObject modelObj1 = new MyModelObject();
         MyModelObject modelObj2 = new MyModelObject();
         MyModelObject modelObj3 = new MyModelObject();
-        
+
         test.addExtensionAttribute(modelObj1, "testAttribute1", "A");
         test.addExtensionAttribute(modelObj1, "testAttribute2", "B");
         test.addExtensionAttribute(modelObj2, "testAttribute3", "C");
-        
+
         assertNotNull(test.getExtensionAttributeValue(modelObj1, "testAttribute1"));
         assertNotNull(test.getExtensionAttributeValue(modelObj1, "testAttribute2"));
         assertNotNull(test.getExtensionAttributeValue(modelObj2, "testAttribute3"));
         assertNull(test.getExtensionAttributeValue(modelObj1, "testAttribute3"));
         assertNull(test.getExtensionAttributeValue(modelObj3, "testAttribute3"));
-        
+
         assertEquals("A", test.getExtensionAttributeValue(modelObj1, "testAttribute1"));
         assertEquals("B", test.getExtensionAttributeValue(modelObj1, "testAttribute2"));
         assertEquals("C", test.getExtensionAttributeValue(modelObj2, "testAttribute3"));
     }
-    
+
     private class MyModelObject implements IModelObject {
         public MessageList validate(IValidationContext context) {
             throw new RuntimeException();

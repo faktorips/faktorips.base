@@ -45,8 +45,8 @@ public class ExtensionPropertyControlFactory {
     }
 
     public boolean needsToCreateControlsFor(IIpsObjectPartContainer ipsObjectPart, String position) {
-        for (int i = 0; i < extPropData.length; i++) {
-            if (position.equals(extPropData[i].extProperty.getPosition()) && (extPropData[i].editField == null)) {
+        for (ExtPropControlData element : extPropData) {
+            if (position.equals(element.extProperty.getPosition()) && (element.editField == null)) {
                 return true;
             }
         }
@@ -63,9 +63,9 @@ public class ExtensionPropertyControlFactory {
 
         // find all extension property definitions for the given position
         ArrayList<ExtPropControlData> extPropertiesForPosition = new ArrayList<ExtPropControlData>();
-        for (int i = 0; i < extPropData.length; i++) {
-            if (position.equals(extPropData[i].extProperty.getPosition())) {
-                extPropertiesForPosition.add(extPropData[i]);
+        for (ExtPropControlData element : extPropData) {
+            if (position.equals(element.extProperty.getPosition())) {
+                extPropertiesForPosition.add(element);
             }
         }
 
@@ -99,9 +99,9 @@ public class ExtensionPropertyControlFactory {
         Arrays.sort(sortedExtensionPropertyDefinitions);
 
         // create controls
-        for (int i = 0; i < sortedExtensionPropertyDefinitions.length; i++) {
-            if (sortedExtensionPropertyDefinitions[i].editField == null) {
-                createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, sortedExtensionPropertyDefinitions[i]);
+        for (ExtPropControlData sortedExtensionPropertyDefinition : sortedExtensionPropertyDefinitions) {
+            if (sortedExtensionPropertyDefinition.editField == null) {
+                createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, sortedExtensionPropertyDefinition);
             }
         }
     }
@@ -127,8 +127,8 @@ public class ExtensionPropertyControlFactory {
      * Connects all EditFields created by this factory with the model.
      */
     public void connectToModel(IpsObjectUIController uiController) {
-        for (int i = 0; i < extPropData.length; i++) {
-            uiController.add(extPropData[i].editField, extPropData[i].extProperty.getPropertyId());
+        for (ExtPropControlData element : extPropData) {
+            uiController.add(element.editField, element.extProperty.getPropertyId());
         }
     }
 
@@ -138,10 +138,9 @@ public class ExtensionPropertyControlFactory {
      * @throws NullPointerException if context is <code>null</code>.
      */
     public void bind(BindingContext context) {
-        for (int i = 0; i < extPropData.length; i++) {
-            if (extPropData[i].editField != null) {
-                context.bindContent(extPropData[i].editField, extPropData[i].partContainer, extPropData[i].extProperty
-                        .getPropertyId());
+        for (ExtPropControlData element : extPropData) {
+            if (element.editField != null) {
+                context.bindContent(element.editField, element.partContainer, element.extProperty.getPropertyId());
             }
         }
     }

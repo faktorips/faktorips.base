@@ -93,8 +93,8 @@ public class ListElementMover<T> {
      * Returns true if the indices array contains the index, otherwise false.
      */
     private boolean contains(int[] indices, int index) {
-        for (int i = 0; i < indices.length; i++) {
-            if (indices[i] == index) {
+        for (int indice : indices) {
+            if (indice == index) {
                 return true;
             }
         }

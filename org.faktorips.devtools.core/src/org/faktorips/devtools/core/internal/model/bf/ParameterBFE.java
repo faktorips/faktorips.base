@@ -93,8 +93,8 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
         }
         Datatype datatype = findDatatype();
         if (datatype == null) {
-            String text = NLS.bind(Messages.ParameterBFE_parameterOrDatatypeMissing, new String[] {
-                    getDatatype(), getName() });
+            String text = NLS.bind(Messages.ParameterBFE_parameterOrDatatypeMissing, new String[] { getDatatype(),
+                    getName() });
             list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXISIT, text, Message.ERROR, this));
         }
     }

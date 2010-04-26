@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -48,7 +48,8 @@ public class AssociationQualificationGroup extends Composite {
 
     private PmoAssociation pmoAssociation;
 
-    public AssociationQualificationGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent, IAssociation association) {
+    public AssociationQualificationGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent,
+            IAssociation association) {
         super(parent, SWT.NONE);
 
         GridLayout layout = new GridLayout(1, false);
@@ -56,13 +57,14 @@ public class AssociationQualificationGroup extends Composite {
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         this.setLayout(layout);
-        
+
         GridData gridData = new GridData(SWT.FILL, SWT.NONE, true, false);
         this.setLayoutData(gridData);
-        
+
         pmoAssociation = new PmoAssociation((IPolicyCmptTypeAssociation)association);
-        
-        Group groupQualification = uiToolkit.createGroup(this, Messages.AssociationQualificationGroup_groupQualification);
+
+        Group groupQualification = uiToolkit.createGroup(this,
+                Messages.AssociationQualificationGroup_groupQualification);
         ((GridData)groupQualification.getLayoutData()).grabExcessVerticalSpace = false;
         createQualificationControls(uiToolkit, bindingContext, groupQualification, association);
     }
@@ -73,14 +75,14 @@ public class AssociationQualificationGroup extends Composite {
     public void bindLabelAboutConstrainedByProductStructure(Text note, BindingContext bindingContext) {
         note.setText(pmoAssociation.getConstrainedNote());
         bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAINED_NOTE);
-    }  
-    
+    }
+
     /**
      * Creates the note text to inform if the association is [not] constrained by product structure.
      */
-    public static Text createConstrainedNote(UIToolkit uiToolkit, Composite parent){
+    public static Text createConstrainedNote(UIToolkit uiToolkit, Composite parent) {
         uiToolkit.createHorizonzalLine(parent);
-        
+
         Text noteAboutProductStructureConstrained = new Text(parent, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         noteAboutProductStructureConstrained.setEditable(false);
         GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -89,17 +91,21 @@ public class AssociationQualificationGroup extends Composite {
         noteAboutProductStructureConstrained.setLayoutData(gridData);
         return noteAboutProductStructureConstrained;
     }
-    
-    private void createQualificationControls(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent, IAssociation association) {
+
+    private void createQualificationControls(UIToolkit uiToolkit,
+            BindingContext bindingContext,
+            Composite parent,
+            IAssociation association) {
         Composite workArea = uiToolkit.createGridComposite(parent, 1, true, true);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         Checkbox qualifiedCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(qualifiedCheckbox, association, IAssociation.PROPERTY_QUALIFIED);
         bindingContext.bindEnabled(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_POSSIBLE);
         Label note = uiToolkit.createFormLabel(workArea, StringUtils.rightPad("", 120)); //$NON-NLS-1$
         bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_NOTE);
-        bindingContext.add(new ButtonTextBinding(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
+        bindingContext.add(new ButtonTextBinding(qualifiedCheckbox, pmoAssociation,
+                PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
 
         GridData gridData = new GridData();
         GC gc = new GC(getShell());
@@ -109,40 +115,40 @@ public class AssociationQualificationGroup extends Composite {
         gridData.widthHint = getMaxWidth(gc, gridData.minimumWidth, pmoAssociation.getQualificationNote(true, true));
         note.setLayoutData(gridData);
     }
-    
-    private int getMaxWidth(GC gc, int maxWidth, String text){
+
+    private int getMaxWidth(GC gc, int maxWidth, String text) {
         Point e = gc.textExtent(text, SWT.DRAW_DELIMITER | SWT.DRAW_TAB);
         return Math.max(maxWidth, e.x);
     }
-    
+
     public class PmoAssociation extends IpsObjectPartPmo {
         public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel"; //$NON-NLS-1$
         public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$
         public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
         public final static String PROPERTY_CONSTRAINED_NOTE = "constrainedNote"; //$NON-NLS-1$
-        
+
         private IIpsProject ipsProject;
         private IPolicyCmptTypeAssociation association;
 
         public PmoAssociation(IPolicyCmptTypeAssociation association) {
             super(association);
-            
+
             this.association = association;
             this.ipsProject = association.getIpsProject();
         }
-        
+
         public String getQualificationLabel() {
             String label = Messages.AssociationQualificationGroup_labelIsQualified;
             try {
                 String productCmptType = QNameUtil.getUnqualifiedName(association.findQualifierCandidate(ipsProject));
                 if (StringUtils.isNotEmpty(productCmptType)) {
-                    label = label + NLS.bind(Messages.AssociationQualificationGroup_labelIsQualifiedByType, productCmptType);
+                    label = label
+                            + NLS.bind(Messages.AssociationQualificationGroup_labelIsQualifiedByType, productCmptType);
                 }
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-            return StringUtils.rightPad(label, 80);            
+            return StringUtils.rightPad(label, 80);
         }
 
         public String getQualificationNote() {
@@ -155,7 +161,7 @@ public class AssociationQualificationGroup extends Composite {
             }
             return ""; //$NON-NLS-1$
         }
-        
+
         public String getQualificationNote(boolean compositeDetailToMaster, boolean qualificationPossible) {
             String note = Messages.AssociationQualificationGroup_labelNote;
             if (!compositeDetailToMaster) {
@@ -169,12 +175,11 @@ public class AssociationQualificationGroup extends Composite {
             }
             return StringUtils.rightPad(note, 90);
         }
-        
+
         public boolean isQualificationPossible() {
             try {
                 return association.isQualificationPossible(ipsProject);
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return false;
             }
@@ -185,25 +190,29 @@ public class AssociationQualificationGroup extends Composite {
                 if (association.isCompositionDetailToMaster()) {
                     return StringUtils.rightPad("", 120) + StringUtils.rightPad("\n", 120) + StringUtils.right("\n", 120); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
-                IProductCmptTypeAssociation matchingAss = association.findMatchingProductCmptTypeAssociation(ipsProject);
-                if (matchingAss!=null) {
+                IProductCmptTypeAssociation matchingAss = association
+                        .findMatchingProductCmptTypeAssociation(ipsProject);
+                if (matchingAss != null) {
                     String type = matchingAss.getProductCmptType().getName();
-                    return NLS.bind(Messages.AssociationQualificationGroup_noteIsConstrained, type, matchingAss.getTargetRoleSingular()) 
-                            + StringUtils.rightPad("\n", 120);  //$NON-NLS-1$
+                    return NLS.bind(Messages.AssociationQualificationGroup_noteIsConstrained, type, matchingAss
+                            .getTargetRoleSingular())
+                            + StringUtils.rightPad("\n", 120); //$NON-NLS-1$
                 } else {
-                    String note = Messages.AssociationQualificationGroup_noteIsNotConstrained; 
-                    IProductCmptType sourceProductType = association.getPolicyCmptType().findProductCmptType(ipsProject);
+                    String note = Messages.AssociationQualificationGroup_noteIsNotConstrained;
+                    IProductCmptType sourceProductType = association.getPolicyCmptType()
+                            .findProductCmptType(ipsProject);
                     IPolicyCmptType targetType = association.findTargetPolicyCmptType(ipsProject);
-                    if (sourceProductType!=null && targetType!=null) {
+                    if (sourceProductType != null && targetType != null) {
                         IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
-                        if (targetProductType!=null) {
-                            return note + NLS.bind(Messages.AssociationQualificationGroup_noteContrainHowTo, sourceProductType.getName(), targetProductType.getName());
+                        if (targetProductType != null) {
+                            return note
+                                    + NLS.bind(Messages.AssociationQualificationGroup_noteContrainHowTo,
+                                            sourceProductType.getName(), targetProductType.getName());
                         }
                     }
-                    return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120) ; //$NON-NLS-1$ //$NON-NLS-2$
+                    return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return ""; //$NON-NLS-1$
             }

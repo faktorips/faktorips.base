@@ -18,22 +18,23 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 
 /**
- * Abstract XML file builder that belongs to the Faktor-IPS standard code generator and
- * implements the {@link IIpsStandardArtefactBuilder} interface.
+ * Abstract XML file builder that belongs to the Faktor-IPS standard code generator and implements
+ * the {@link IIpsStandardArtefactBuilder} interface.
  * 
  * @author Jan Ortmann
  */
 public abstract class StandardXmlFileBuilder extends AbstractXmlFileBuilder implements IIpsStandardArtefactBuilder {
 
     private boolean buildsPublishedArtefacts = false;
-    
+
     public StandardXmlFileBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet) {
         this(type, builderSet, false);
     }
 
-    public StandardXmlFileBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, boolean buildsPublishedArtefacts) {
+    public StandardXmlFileBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet,
+            boolean buildsPublishedArtefacts) {
         super(type, builderSet, "");
-        this.buildsPublishedArtefacts = buildsPublishedArtefacts; 
+        this.buildsPublishedArtefacts = buildsPublishedArtefacts;
     }
 
     /**
@@ -42,5 +43,5 @@ public abstract class StandardXmlFileBuilder extends AbstractXmlFileBuilder impl
     public boolean buildsPublishedArtefacts() {
         return buildsPublishedArtefacts;
     }
-    
+
 }

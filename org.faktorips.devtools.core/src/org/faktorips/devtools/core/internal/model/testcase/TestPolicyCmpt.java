@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -228,8 +227,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     public ITestAttributeValue getTestAttributeValue(String name) {
-        for (Iterator<ITestAttributeValue> it = testAttributeValues.iterator(); it.hasNext();) {
-            ITestAttributeValue a = it.next();
+        for (ITestAttributeValue a : testAttributeValues) {
             if (a.getTestAttribute().equals(name)) {
                 return a;
             }
@@ -252,8 +250,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     public ITestPolicyCmptLink getTestPolicyCmptLink(String testPolicyCmptType) {
         ArgumentCheck.notNull(testPolicyCmptType);
-        for (Iterator<ITestPolicyCmptLink> it = testPolicyCmptLinks.iterator(); it.hasNext();) {
-            ITestPolicyCmptLink r = it.next();
+        for (ITestPolicyCmptLink r : testPolicyCmptLinks) {
             if (r.getTestPolicyCmptTypeParameter().equals(testPolicyCmptType)) {
                 return r;
             }
@@ -269,8 +266,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     public ITestPolicyCmptLink[] getTestPolicyCmptLinks(String typeParameterName) {
         List<ITestPolicyCmptLink> links = new ArrayList<ITestPolicyCmptLink>();
-        for (Iterator<ITestPolicyCmptLink> iter = testPolicyCmptLinks.iterator(); iter.hasNext();) {
-            ITestPolicyCmptLink element = iter.next();
+        for (ITestPolicyCmptLink element : testPolicyCmptLinks) {
             if (element.getTestPolicyCmptTypeParameter().equals(typeParameterName)) {
                 links.add(element);
             }
@@ -325,8 +321,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     public void removeLink(ITestPolicyCmptLink link) {
         int idx = 0;
         int foundIdx = -1;
-        for (Iterator<ITestPolicyCmptLink> iter = testPolicyCmptLinks.iterator(); iter.hasNext();) {
-            ITestPolicyCmptLink element = iter.next();
+        for (ITestPolicyCmptLink element : testPolicyCmptLinks) {
             if (element == link) {
                 foundIdx = idx;
                 break;
@@ -378,8 +373,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
             // add all test attribute values as spedified in the test parameter type
             ITestAttribute attributes[] = typeParam.getTestAttributes();
-            for (int i = 0; i < attributes.length; i++) {
-                ITestAttribute attribute = attributes[i];
+            for (ITestAttribute attribute : attributes) {
                 ITestAttributeValue attrValue = newTestPolicyCmpt.newTestAttributeValue();
                 attrValue.setTestAttribute(attribute.getName());
             }
@@ -397,8 +391,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
         // add the new link at the end of the existing links, grouped by the link name
         ITestPolicyCmptLink prevLinkWithSameName = null;
-        for (Iterator<ITestPolicyCmptLink> iter = testPolicyCmptLinks.iterator(); iter.hasNext();) {
-            ITestPolicyCmptLink currLink = iter.next();
+        for (ITestPolicyCmptLink currLink : testPolicyCmptLinks) {
             if (newTestPcTypeLink.getTestPolicyCmptTypeParameter().equals(currLink.getTestPolicyCmptTypeParameter())) {
                 prevLinkWithSameName = currLink;
             }
@@ -421,7 +414,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         // add the attributes which are defined in the test case type parameter
         IProductCmptGeneration generation = findProductCmpsCurrentGeneration(getIpsProject());
         ITestAttributeValue[] testAttrValues = getTestAttributeValues();
-        for (int i = 0; i < testAttrValues.length; i++) {
+        for (ITestAttributeValue testAttrValue : testAttrValues) {
             // set default value only if the model attribute is relevant by the specified product
             // cmpt
             // otherwise set the value to null,
@@ -431,14 +424,14 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             // if the value isn't null
             // the test attribute value will be displayed and a warning will be shown
             if (generation != null) {
-                ITestAttribute testAttribute = testAttrValues[i].findTestAttribute(getIpsProject());
+                ITestAttribute testAttribute = testAttrValue.findTestAttribute(getIpsProject());
                 if (testAttribute != null) {
                     if (!testAttribute.isAttributeRelevantByProductCmpt(generation.getProductCmpt(), getIpsProject())) {
-                        ((TestAttributeValue)testAttrValues[i]).setValue(null);
+                        ((TestAttributeValue)testAttrValue).setValue(null);
                         continue;
                     }
                 }
-                ((TestAttributeValue)testAttrValues[i]).setDefaultTestAttributeValueInternal(generation);
+                ((TestAttributeValue)testAttrValue).setDefaultTestAttributeValueInternal(generation);
             }
         }
     }
@@ -446,8 +439,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
         Assert.isNotNull(testPolicyCmpt);
         int idx = 0;
-        for (Iterator<ITestPolicyCmptLink> iter = testPolicyCmptLinks.iterator(); iter.hasNext();) {
-            ITestPolicyCmptLink testPolicyCmptLink = iter.next();
+        for (ITestPolicyCmptLink testPolicyCmptLink : testPolicyCmptLinks) {
             if (testPolicyCmpt.equals(testPolicyCmptLink.findTarget())) {
                 return idx;
             }
@@ -493,8 +485,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         // fill temporary storage of the links for a test parameter
         HashMap<ITestPolicyCmptTypeParameter, List<ITestPolicyCmptLink>> param2Links = new HashMap<ITestPolicyCmptTypeParameter, List<ITestPolicyCmptLink>>(
                 oldLinks.size());
-        for (Iterator<ITestPolicyCmptLink> iter = oldLinks.iterator(); iter.hasNext();) {
-            ITestPolicyCmptLink testPolicyCmptLink = iter.next();
+        for (ITestPolicyCmptLink testPolicyCmptLink : oldLinks) {
             ITestPolicyCmptTypeParameter paramOfLink = testPolicyCmptLink.findTestPolicyCmptTypeParameter(ipsProject);
             List<ITestPolicyCmptLink> linkList = param2Links.get(paramOfLink);
             if (linkList == null) {
@@ -513,9 +504,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         ITestPolicyCmptTypeParameter[] paramChild = param.getTestPolicyCmptTypeParamChilds();
         // iterate over all links in the corresponding parameter and add the link lists to
         // the new whole link list
-        for (int i = 0; i < paramChild.length; i++) {
+        for (ITestPolicyCmptTypeParameter element : paramChild) {
             // get the list of links for the parameter
-            List<ITestPolicyCmptLink> links = param2Links.get(paramChild[i]);
+            List<ITestPolicyCmptLink> links = param2Links.get(element);
             if (links == null) {
                 // ignore if there are no such kind of link
                 continue;
@@ -537,8 +528,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         List<ITestAttributeValue> newTestAttrValueList = new ArrayList<ITestAttributeValue>();
         ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(getIpsProject());
         ITestAttribute[] testAttr = param.getTestAttributes();
-        for (int i = 0; i < testAttr.length; i++) {
-            ITestAttributeValue testAttrValue = getTestAttributeValue(testAttr[i].getName());
+        for (ITestAttribute element : testAttr) {
+            ITestAttributeValue testAttrValue = getTestAttributeValue(element.getName());
             if (testAttrValue == null) {
                 throw new CoreException(
                         new IpsStatus(
@@ -662,15 +653,15 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         // instances
         if (param != null) {
             ITestPolicyCmptTypeParameter[] paramForLinks = param.getTestPolicyCmptTypeParamChilds();
-            for (int i = 0; i < paramForLinks.length; i++) {
-                int currNumberOfInstances = getTestPolicyCmptLinks(paramForLinks[i].getName()).length;
+            for (ITestPolicyCmptTypeParameter paramForLink : paramForLinks) {
+                int currNumberOfInstances = getTestPolicyCmptLinks(paramForLink.getName()).length;
 
                 // check min and max instances
-                int minInstances = paramForLinks[i].getMinInstances();
-                int maxInstances = paramForLinks[i].getMaxInstances();
+                int minInstances = paramForLink.getMinInstances();
+                int maxInstances = paramForLink.getMaxInstances();
                 if (currNumberOfInstances < minInstances) {
                     String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_MinimumNotReached,
-                            "" + paramForLinks[i].getMinInstances(), paramForLinks[i].getName()); //$NON-NLS-1$
+                            "" + paramForLink.getMinInstances(), paramForLink.getName()); //$NON-NLS-1$
                     Message msg = new Message(MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this,
                             ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
                     list.add(msg);
@@ -678,7 +669,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
                 if (currNumberOfInstances > maxInstances) {
                     String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_MaximumReached,
-                            "" + maxInstances, paramForLinks[i].getName()); //$NON-NLS-1$
+                            "" + maxInstances, paramForLink.getName()); //$NON-NLS-1$
                     Message msg = new Message(MSGCODE_MAX_INSTANCES_REACHED, text, Message.ERROR, this,
                             ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
                     list.add(msg);

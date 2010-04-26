@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,9 +36,10 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAttribute attribute;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
-    
+
     private IAttributeValue attrValue;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -50,36 +51,38 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         generation = productCmpt.getProductCmptGeneration(0);
         attrValue = generation.newAttributeValue(attribute, "42");
     }
-    
+
     public void testValidate_UnknownAttribute() throws CoreException {
         MessageList ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
-        
+
         attrValue.setAttribute("AnotherAttribute");
         ml = attrValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
-        
+
         IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");
         productCmptType.setSupertype(supertype.getQualifiedName());
-        
+
         supertype.newProductCmptTypeAttribute().setName("AnotherAttribute");
         ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
     }
-    
+
     public void testValidate_ValueNotParsable() throws CoreException {
         MessageList ml = attrValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
-        
+        assertNull(ml
+                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+
         attrValue.setValue("abc");
         ml = attrValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
-    }    
-    
+        assertNotNull(ml
+                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+    }
+
     public void testValidate_ValueNotInSet() throws CoreException {
         MessageList ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
-        
+
         attribute.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet range = (IRangeValueSet)attribute.getValueSet();
         range.setLowerBound("0");
@@ -88,50 +91,51 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         attrValue.setValue("0");
         ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
-        
+
         attrValue.setValue("100");
         ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
-        
+
         attrValue.setValue("42");
         ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
-        
+
         attrValue.setValue("-1");
         ml = attrValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
-        
+
         attrValue.setValue("101");
         ml = attrValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
-        
+
     }
-    
+
     public void testSetAttribute() {
-        super.testPropertyAccessReadWrite(IAttributeValue.class, IAttributeValue.PROPERTY_ATTRIBUTE, attrValue, "premium");
+        super.testPropertyAccessReadWrite(IAttributeValue.class, IAttributeValue.PROPERTY_ATTRIBUTE, attrValue,
+                "premium");
     }
 
     public void testSetValue() {
         super.testPropertyAccessReadWrite(IAttributeValue.class, IAttributeValue.PROPERTY_VALUE, attrValue, "newValue");
     }
-    
+
     public void testInitFromXml() {
         Element el = getTestDocument().getDocumentElement();
         attrValue.initFromXml(el);
         assertEquals("rate", attrValue.getAttribute());
         assertEquals("42", attrValue.getValue());
     }
-    
+
     public void testToXml() {
         Document doc = newDocument();
         attrValue.setValue("42");
         attrValue.setAttribute("rate");
         Element el = attrValue.toXml(doc);
-        
+
         IAttributeValue copy = generation.newAttributeValue();
         copy.initFromXml(el);
         assertEquals("rate", copy.getAttribute());
         assertEquals("42", copy.getValue());
     }
-    
+
 }

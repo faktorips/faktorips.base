@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,11 +24,11 @@ import java.util.List;
 public class IpsTestSuite extends IpsTest2 {
 
     private List<IpsTest2> tests = new ArrayList<IpsTest2>();
-    
+
     public IpsTestSuite(String qName) {
         super(qName);
     }
-    
+
     /**
      * Adds the test to the suite.
      */
@@ -49,30 +49,30 @@ public class IpsTestSuite extends IpsTest2 {
     public List<IpsTest2> getTests() {
         return new ArrayList<IpsTest2>(tests);
     }
-    
+
     /**
-     * Returns the number of tests in the suite. Note that if this suite contains
-     * another suite this method does not add the number of tests in this other suite
-     * to this suite's size.
+     * Returns the number of tests in the suite. Note that if this suite contains another suite this
+     * method does not add the number of tests in this other suite to this suite's size.
      */
     public int size() {
         return tests.size();
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public int countTestCases(){
-        int count=0;
+    @Override
+    public int countTestCases() {
+        int count = 0;
         for (IpsTest2 test : tests) {
             count += test.countTestCases();
         }
         return count;
     }
-    
+
     /**
-     * Returns the test with the given name. This method does not search recursively in suites
-     * that are contained in this suite.
+     * Returns the test with the given name. This method does not search recursively in suites that
+     * are contained in this suite.
      * 
      * @param name The unqualified name of the test that identifies the test in this suite.
      */
@@ -88,6 +88,7 @@ public class IpsTestSuite extends IpsTest2 {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IpsTestResult result) {
         for (IpsTest2 test : tests) {
             test.run(result);
@@ -97,6 +98,7 @@ public class IpsTestSuite extends IpsTest2 {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return "TestSuite " + getQualifiedName();
     }

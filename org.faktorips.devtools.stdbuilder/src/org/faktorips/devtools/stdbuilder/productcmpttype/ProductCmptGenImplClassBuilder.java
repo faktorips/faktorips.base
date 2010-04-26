@@ -263,8 +263,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         IPolicyCmptType policyCmptType = getPcType();
         IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0]
                 : policyCmptType.getPolicyCmptTypeAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            IPolicyCmptTypeAttribute a = attributes[i];
+        for (IPolicyCmptTypeAttribute attribute : attributes) {
+            IPolicyCmptTypeAttribute a = attribute;
             if (a.validate(getIpsProject()).containsErrorMsg()) {
                 continue;
             }
@@ -578,8 +578,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         // }
         // }
         boolean associationFound = false;
-        for (int i = 0; i < associations.length; i++) {
-            IProductCmptTypeAssociation ass = (IProductCmptTypeAssociation)associations[i];
+        for (IAssociation association : associations) {
+            IProductCmptTypeAssociation ass = (IProductCmptTypeAssociation)association;
             if (!ass.isValid()) {
                 continue;
             }
@@ -662,7 +662,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.appendln("super.doInitTableUsagesFromXml(tableUsageMap);"); //$NON-NLS-1$
         builder.appendClassName(Element.class);
         builder.appendln(" element = null;"); //$NON-NLS-1$
-        for (int i = 0; i < tsus.length; i++) {
+        for (ITableStructureUsage tsu : tsus) {
             if (isUseTypesafeCollections()) {
                 builder.append("element = tableUsageMap.get(\""); //$NON-NLS-1$
             } else {
@@ -670,10 +670,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 builder.appendClassName(Element.class);
                 builder.append(")tableUsageMap.get(\""); //$NON-NLS-1$
             }
-            builder.append(tsus[i].getRoleName());
+            builder.append(tsu.getRoleName());
             builder.appendln("\");"); //$NON-NLS-1$
             builder.appendln("if (element != null){"); //$NON-NLS-1$
-            builder.append(getTableStructureUsageRoleName(tsus[i]));
+            builder.append(getTableStructureUsageRoleName(tsu));
             builder.appendln(" = "); //$NON-NLS-1$
             builder.appendClassName(ValueToXmlHelper.class);
             builder.append(".getValueFromElement(element, \"TableContentName\");"); //$NON-NLS-1$
@@ -754,8 +754,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         @Override
         protected boolean visit(IProductCmptType type) {
             IProductCmptTypeMethod[] methods = type.getProductCmptTypeMethods();
-            for (int i = 0; i < methods.length; i++) {
-                if (methods[i].isFormulaSignatureDefinition()) {
+            for (IProductCmptTypeMethod method : methods) {
+                if (method.isFormulaSignatureDefinition()) {
                     modifier = modifier | Modifier.ABSTRACT;
                     return false;
                 }

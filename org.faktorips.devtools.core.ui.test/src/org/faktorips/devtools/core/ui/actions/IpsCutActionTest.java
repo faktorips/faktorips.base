@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,18 +37,18 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.xml.sax.SAXException;
 
-
 /**
  * Test for IpsCutAction.
  * 
  * @author Thorsten Guenther
  */
 public class IpsCutActionTest extends AbstractIpsPluginTest {
-    
-	IpsCutAction cutAction;
-	IPolicyCmptTypeAttribute attribute;
-	IPolicyCmptType pcType;
-	
+
+    IpsCutAction cutAction;
+    IPolicyCmptTypeAttribute attribute;
+    IPolicyCmptType pcType;
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -60,37 +60,38 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
         pcType = (PolicyCmptType)pdSrcFile.getIpsObject();
         attribute = pcType.newPolicyCmptTypeAttribute();
 
-        cutAction = new IpsCutAction(new TestSelectionProvider(), IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell());
+        cutAction = new IpsCutAction(new TestSelectionProvider(), IpsPlugin.getDefault().getWorkbench()
+                .getActiveWorkbenchWindow().getShell());
 
-        
-     }
-    
+    }
+
     public void testRun() throws CoreException, SAXException, IOException, TransformerException {
         String current = new IpsObjectPartState(attribute).toString();
 
         assertEquals(1, pcType.getNumOfAttributes());
         cutAction.run();
-        Clipboard clipboard = new Clipboard(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay());
+        Clipboard clipboard = new Clipboard(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell()
+                .getDisplay());
         String stored = (String)clipboard.getContents(TextTransfer.getInstance());
 
         assertEquals(current, stored);
-        
+
         assertEquals(0, pcType.getNumOfAttributes());
     }
-    
+
     private class TestSelectionProvider implements ISelectionProvider {
 
-		public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		}
+        public void addSelectionChangedListener(ISelectionChangedListener listener) {
+        }
 
-		public ISelection getSelection() {
-			return new StructuredSelection(attribute);
-		}
+        public ISelection getSelection() {
+            return new StructuredSelection(attribute);
+        }
 
-		public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-		}
+        public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+        }
 
-		public void setSelection(ISelection selection) {
-		}    	
+        public void setSelection(ISelection selection) {
+        }
     }
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,7 +27,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute");
         JavaCodeFragment code = builder.getFragment();
         assertEquals("@XmlAttribute" + SystemUtils.LINE_SEPARATOR, code.getSourcecode());
-        
+
         builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute(name=\"parent-id\")");
         code = builder.getFragment();
@@ -46,7 +46,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         imports.add("javax.xml.bind.annotation.XmlAttribute");
         assertEquals(imports, code.getImportDeclaration());
     }
-    
+
     public void testAnnotation_AnnotationString_ParamName_ParamValue() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", "parent-id");
@@ -77,17 +77,19 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         assertEquals(buf.toString(), builder.toString().trim());
     }
 
-    public void testAnnotationLnClassValue(){
+    public void testAnnotationLnClassValue() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("AnAnnotation", "value", List.class);
-        assertEquals("@AnAnnotation(value=List.class)" + SystemUtils.LINE_SEPARATOR, builder.getFragment().getSourcecode());
+        assertEquals("@AnAnnotation(value=List.class)" + SystemUtils.LINE_SEPARATOR, builder.getFragment()
+                .getSourcecode());
         assertTrue(builder.getFragment().getImportDeclaration().isCovered(List.class));
     }
-    
-    public void testAnnotationClassValueLn(){
+
+    public void testAnnotationClassValueLn() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationClassValueLn("AnAnnotation", "value", List.class.getName());
-        assertEquals("@AnAnnotation(value=List.class)" + SystemUtils.LINE_SEPARATOR, builder.getFragment().getSourcecode());
+        assertEquals("@AnAnnotation(value=List.class)" + SystemUtils.LINE_SEPARATOR, builder.getFragment()
+                .getSourcecode());
         assertTrue(builder.getFragment().getImportDeclaration().isCovered(List.class));
     }
 }

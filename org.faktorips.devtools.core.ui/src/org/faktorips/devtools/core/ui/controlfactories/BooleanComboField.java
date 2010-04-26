@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,14 +18,14 @@ import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Field to edit values of type boolean (=instances of the BooleanDatatype). E.g. this field can be used
- * to edit an attributes default value if the attributes datatype is boolean.
- * This is NOT a general purpose field for booleans that are part the faktor ips meta model.
+ * Field to edit values of type boolean (=instances of the BooleanDatatype). E.g. this field can be
+ * used to edit an attributes default value if the attributes datatype is boolean. This is NOT a
+ * general purpose field for booleans that are part the faktor ips meta model.
  * 
  * @author Joerg Ortmann
  */
 public class BooleanComboField extends ComboField {
-    
+
     private String trueRepresentation;
     private String falseRepresentation;
 
@@ -43,6 +43,7 @@ public class BooleanComboField extends ComboField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object parseContent() {
         String s = (String)super.parseContent();
         if (s == null) {
@@ -54,12 +55,13 @@ public class BooleanComboField extends ComboField {
         }
         throw new RuntimeException("Unknown value " + s); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setText(String newValue) {
-        if (super.prepareObjectForGet(newValue)==null) {
+        if (super.prepareObjectForGet(newValue) == null) {
             super.setText(newValue);
         } else if (newValue.equals(trueRepresentation) || newValue.equals(Boolean.TRUE.toString())) {
             super.setText(trueRepresentation);

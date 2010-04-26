@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,19 +24,19 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
- * Structure creator for creating a tree that represents the structure of a <code>ITableContents</code> object.
- * {@inheritDoc}
+ * Structure creator for creating a tree that represents the structure of a
+ * <code>ITableContents</code> object. {@inheritDoc}
+ * 
  * @author Stefan Widmaier
  */
 public class TableContentsCompareItemCreator extends AbstractCompareItemCreator {
-    
-    public TableContentsCompareItemCreator(){
+
+    public TableContentsCompareItemCreator() {
         super();
     }
-    
+
     /**
-     * Returns the title for the structure-differences viewer.
-     * {@inheritDoc}
+     * Returns the title for the structure-differences viewer. {@inheritDoc}
      */
     public String getName() {
         return Messages.TableContentsCompareItemCreator_TableContentsStructureCompare;
@@ -45,8 +45,8 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
     /**
      * Creates a structure/tree of <code>TableContentsCompareItem</code>s from the given
      * <code>IIpsSrcFile</code> to represent an <code>ITableContents</code> object. The
-     * <code>IIpsSrcFile</code>, the <code>ITableContents</code>, its generations and all
-     * contained rows are each represented by a <code>TableContentsCompareItem</code>.
+     * <code>IIpsSrcFile</code>, the <code>ITableContents</code>, its generations and all contained
+     * rows are each represented by a <code>TableContentsCompareItem</code>.
      * <p>
      * The returned <code>TableContentsCompareItem</code> is the root of the created structure and
      * contains the given <code>IIpsSrcFile</code>. It has exactly one child representing (and
@@ -57,6 +57,7 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
      * 
      * {@inheritDoc}
      */
+    @Override
     protected IStructureComparator getStructureForIpsSrcFile(IIpsSrcFile file) {
         try {
             if (file.getIpsObject() instanceof ITableContents) {
@@ -65,12 +66,12 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
                 TableContentsCompareItem ipsObject = new TableContentsCompareItem(root, table);
                 // Generations for table
                 IIpsObjectGeneration[] gens = table.getGenerationsOrderedByValidDate();
-                for (int i = 0; i < gens.length; i++) {
-                    TableContentsCompareItem generation = new TableContentsCompareItem(ipsObject, gens[i]);
+                for (IIpsObjectGeneration gen : gens) {
+                    TableContentsCompareItem generation = new TableContentsCompareItem(ipsObject, gen);
                     // rows for each generation
-                    IRow[] rows = ((ITableContentsGeneration)gens[i]).getRows();
-                    for (int j = 0; j < rows.length; j++) {
-                        new TableContentsCompareItem(generation, rows[j]);
+                    IRow[] rows = ((ITableContentsGeneration)gen).getRows();
+                    for (IRow row : rows) {
+                        new TableContentsCompareItem(generation, row);
                     }
                 }
                 // initialize name, root-document and ranges for all nodes

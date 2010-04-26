@@ -894,8 +894,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         String fileName = name.substring(index + 1, name.length());
         String[] packageFolders = packageName.split("\\."); //$NON-NLS-1$
         IFolder folder = destinationFolder;
-        for (int i = 0; i < packageFolders.length; i++) {
-            folder = folder.getFolder(packageFolders[i]);
+        for (String packageFolder : packageFolders) {
+            folder = folder.getFolder(packageFolder);
         }
         return folder.getFile(fileName + JAVA_EXTENSION);
     }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,16 +13,15 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
-
 /**
- * A configuration object for ips artefact builder sets. Provides string values for string keys.
- * An ips artefact builder set instance can be configured by means of the ips project properties. Therefor 
- * the IpsArtefactBuilderSet tag of an .ipsproject file can contain one IpsArtefactBuilderSetConfig tag.
- * Here is an example for a configuration declaration:
+ * A configuration object for ips artefact builder sets. Provides string values for string keys. An
+ * ips artefact builder set instance can be configured by means of the ips project properties.
+ * Therefor the IpsArtefactBuilderSet tag of an .ipsproject file can contain one
+ * IpsArtefactBuilderSetConfig tag. Here is an example for a configuration declaration:
  * 
  * @author Peter Erzberger
  */
-public interface IIpsArtefactBuilderSetConfig{
+public interface IIpsArtefactBuilderSetConfig {
 
     /**
      * Returns the names of all properties provided by this configuration.

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,7 +35,7 @@ public class IpsTestSuiteTest extends TestCase {
         assertEquals(suite2, suite.getTest("suite2"));
         assertEquals(case1, suite.getTest("case1"));
     }
-    
+
     /*
      * Test method for 'org.faktorips.runtime.test.IpsTestCase2.run(IpsTestResult)'
      */
@@ -53,7 +53,7 @@ public class IpsTestSuiteTest extends TestCase {
         suite2.addTest(test3);
         suite2.addTest(test4);
         suite2.addTest(test5);
-        
+
         IpsTestResult result = new IpsTestResult();
         MyListener listener = new MyListener();
         result.addListener(listener);
@@ -81,11 +81,11 @@ public class IpsTestSuiteTest extends TestCase {
         assertEquals(5, listener.failureCount);
     }
 
-    public void testCountTestCases(){
+    public void testCountTestCases() {
         IpsTestSuite root = new IpsTestSuite("root");
         MyTestCase test0 = new MyTestCase("suite.Test0", "42", "42");
         root.addTest(test0);
-        
+
         IpsTestSuite suite = new IpsTestSuite("suite");
         root.addTest(suite);
         MyTestCase test1 = new MyTestCase("suite.Test1", "42", "42");
@@ -98,7 +98,7 @@ public class IpsTestSuiteTest extends TestCase {
         MyTestCase test4 = new MyTestCase("suite.a.Test4", "42", "42");
         suite2.addTest(test3);
         suite2.addTest(test4);
-        
+
         assertEquals(5, root.countTestCases());
     }
 }

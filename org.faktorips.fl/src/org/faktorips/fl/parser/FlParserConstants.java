@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,56 +16,26 @@ package org.faktorips.fl.parser;
 
 public interface FlParserConstants {
 
-  int EOF = 0;
-  int BOOLEAN_LITERAL = 7;
-  int INTEGER_LITERAL = 8;
-  int DECIMAL_LITERAL = 9;
-  int EXPONENT = 10;
-  int STRING_LITERAL = 11;
-  int MONEY_LITERAL = 12;
-  int LETTER = 13;
-  int NULL_LITERAL = 14;
-  int IDENTIFIER = 15;
-  int LETTER_OR_UNDERSCORE_OR_DOT = 16;
-  int DIGIT = 17;
-  int DATE_IDENTIFIER = 18;
+    int EOF = 0;
+    int BOOLEAN_LITERAL = 7;
+    int INTEGER_LITERAL = 8;
+    int DECIMAL_LITERAL = 9;
+    int EXPONENT = 10;
+    int STRING_LITERAL = 11;
+    int MONEY_LITERAL = 12;
+    int LETTER = 13;
+    int NULL_LITERAL = 14;
+    int IDENTIFIER = 15;
+    int LETTER_OR_UNDERSCORE_OR_DOT = 16;
+    int DIGIT = 17;
+    int DATE_IDENTIFIER = 18;
 
-  int DEFAULT = 0;
+    int DEFAULT = 0;
 
-  String[] tokenImage = {
-    "<EOF>",
-    "\" \"",
-    "\"\\t\"",
-    "\"\\n\"",
-    "\"\\r\"",
-    "<token of kind 5>",
-    "<token of kind 6>",
-    "<BOOLEAN_LITERAL>",
-    "<INTEGER_LITERAL>",
-    "<DECIMAL_LITERAL>",
-    "<EXPONENT>",
-    "<STRING_LITERAL>",
-    "<MONEY_LITERAL>",
-    "<LETTER>",
-    "<NULL_LITERAL>",
-    "<IDENTIFIER>",
-    "<LETTER_OR_UNDERSCORE_OR_DOT>",
-    "<DIGIT>",
-    "<DATE_IDENTIFIER>",
-    "\"=\"",
-    "\"!=\"",
-    "\"<\"",
-    "\">\"",
-    "\"<=\"",
-    "\">=\"",
-    "\"+\"",
-    "\"-\"",
-    "\"*\"",
-    "\"/\"",
-    "\"!\"",
-    "\"(\"",
-    "\")\"",
-    "\";\"",
-  };
+    String[] tokenImage = { "<EOF>", "\" \"", "\"\\t\"", "\"\\n\"", "\"\\r\"", "<token of kind 5>",
+            "<token of kind 6>", "<BOOLEAN_LITERAL>", "<INTEGER_LITERAL>", "<DECIMAL_LITERAL>", "<EXPONENT>",
+            "<STRING_LITERAL>", "<MONEY_LITERAL>", "<LETTER>", "<NULL_LITERAL>", "<IDENTIFIER>",
+            "<LETTER_OR_UNDERSCORE_OR_DOT>", "<DIGIT>", "<DATE_IDENTIFIER>", "\"=\"", "\"!=\"", "\"<\"", "\">\"",
+            "\"<=\"", "\">=\"", "\"+\"", "\"-\"", "\"*\"", "\"/\"", "\"!\"", "\"(\"", "\")\"", "\";\"", };
 
 }

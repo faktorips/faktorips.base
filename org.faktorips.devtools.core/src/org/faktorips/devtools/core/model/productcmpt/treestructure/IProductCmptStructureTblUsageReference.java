@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.model.productcmpt.treestructure;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 
 /**
- * A reference to a <code>ITableContentUsage</code> which is used in the 
+ * A reference to a <code>ITableContentUsage</code> which is used in the
  * <code>IProductCmptStructure</code>
  * 
  * @author Joerg Ortmann
@@ -27,5 +27,5 @@ public interface IProductCmptStructureTblUsageReference extends IProductCmptStru
      * @return The <code>IProductCmptTypeRelation</code> this reference refers to.
      */
     public ITableContentUsage getTableContentUsage();
-    
+
 }

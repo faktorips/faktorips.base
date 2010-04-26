@@ -283,8 +283,8 @@ public class BFElement extends IpsObjectPart implements IBFElement {
      */
     protected final void validateName(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(getName())) {
-            msgList
-                    .add(new Message(MSGCODE_NAME_NOT_SPECIFIED, Messages.BFElement_nameNotSpecified, Message.ERROR, this));
+            msgList.add(new Message(MSGCODE_NAME_NOT_SPECIFIED, Messages.BFElement_nameNotSpecified, Message.ERROR,
+                    this));
             return;
         }
         Message msg = getIpsProject().getNamingConventions().validateIfValidJavaIdentifier(getName(),

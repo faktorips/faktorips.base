@@ -278,8 +278,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             if (list.size() > 1) {
                 for (IBFElement element : list) {
                     if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list) || checkIfOnlyMethodCallDecisions(list))) {
-                        String text = NLS.bind(
-                                Messages.BusinessFunction_duplicateNames, key);
+                        String text = NLS.bind(Messages.BusinessFunction_duplicateNames, key);
                         msgList.add(new Message(MSGCODE_ELEMENT_NAME_COLLISION, text, Message.ERROR, element));
                     }
                 }
@@ -335,13 +334,13 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     private void validateBFElementsConnected(MessageList list) {
         boolean startOrEndMissing = false;
         if (getStart() == null) {
-            list.add(new Message(MSGCODE_START_DEFINITION_MISSING,
-                    Messages.BusinessFunction_startMissing, Message.ERROR, this));
+            list.add(new Message(MSGCODE_START_DEFINITION_MISSING, Messages.BusinessFunction_startMissing,
+                    Message.ERROR, this));
             startOrEndMissing = true;
         }
         if (getEnd() == null) {
-            list.add(new Message(MSGCODE_END_DEFINITION_MISSING, Messages.BusinessFunction_endMissing,
-                    Message.ERROR, this));
+            list.add(new Message(MSGCODE_END_DEFINITION_MISSING, Messages.BusinessFunction_endMissing, Message.ERROR,
+                    this));
             startOrEndMissing = true;
         }
         if (startOrEndMissing) {
@@ -364,10 +363,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForStart.contains(element)) {
-                String text = NLS
-                        .bind(
-                                Messages.BusinessFunction_elementNotConnectedWithStart,
-                                element.getDisplayString());
+                String text = NLS.bind(Messages.BusinessFunction_elementNotConnectedWithStart, element
+                        .getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_START, text, Message.ERROR, element));
             }
         }
@@ -378,9 +375,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             }
             if (!successfullyCheckedForEnd.contains(element)) {
                 String text = NLS
-                        .bind(
-                                Messages.BusinessFunction_elementNotConnectedWithEnd,
-                                element.getDisplayString());
+                        .bind(Messages.BusinessFunction_elementNotConnectedWithEnd, element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_END, text, Message.ERROR, element));
             }
         }

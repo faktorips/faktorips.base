@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,7 +19,6 @@ import java.util.GregorianCalendar;
 import junit.framework.TestCase;
 
 import org.faktorips.datatype.classtypes.DateDatatype;
-import org.faktorips.devtools.tableconversion.excel.DateValueConverter;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -31,13 +30,14 @@ public class DateValueConverterTest extends TestCase {
     private DateValueConverter converter;
     private DateDatatype datatype;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ml = new MessageList();
         converter = new DateValueConverter();
         datatype = new DateDatatype();
     }
-    
+
     public void testGetIpsValue() {
         String value = converter.getIpsValue(new Long(1234), ml);
         assertTrue(datatype.isParsable(value));
@@ -50,7 +50,7 @@ public class DateValueConverterTest extends TestCase {
         value = converter.getIpsValue("0", ml);
         assertFalse(ml.isEmpty());
         assertEquals("0", value);
-        
+
         ml.clear();
         assertEquals("2008-07-06", converter.getIpsValue("2008-07-06", ml));
         assertTrue(ml.isEmpty());

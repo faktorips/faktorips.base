@@ -61,7 +61,8 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
             monitor.beginTask(getWaitingLabel(), 2);
             IIpsSrcFile[] metaObjectsSrcFiles = ipsMetaClass.searchMetaObjectSrcFiles(subTypeSearch);
             monitor.worked(1);
-            InstanceIpsSrcFileViewItem[] result = InstanceIpsSrcFileViewItem.createItems(metaObjectsSrcFiles, ipsMetaClass);
+            InstanceIpsSrcFileViewItem[] result = InstanceIpsSrcFileViewItem.createItems(metaObjectsSrcFiles,
+                    ipsMetaClass);
             monitor.worked(1);
             monitor.done();
             return result;

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
-
 
 /**
  *
@@ -38,14 +37,14 @@ public class ExprEvaluatorTest extends TestCase {
         compiler.setIdentifierResolver(resolver);
         ExprEvaluator processor = new ExprEvaluator(compiler);
         Object o = processor.evaluate("a * 2");
-        
+
         assertEquals(new Integer(84), o);
     }
-    
-    public void testExecuteWithEnum() throws Exception{
+
+    public void testExecuteWithEnum() throws Exception {
         System.setProperty("debug", "true");
         System.setProperty("trace", "true");
-        
+
         ExprCompiler compiler = new ExprCompiler();
         compiler.setIdentifierResolver(new TestEnumIdentifierResolver());
         String expression = "TestEnum.MONTH";

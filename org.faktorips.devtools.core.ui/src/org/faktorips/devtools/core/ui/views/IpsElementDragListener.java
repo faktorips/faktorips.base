@@ -69,8 +69,8 @@ public class IpsElementDragListener implements DragSourceListener {
             Object selected = iter.next();
             if (selected instanceof Object[]) {
                 Object[] objetcs = (Object[])selected;
-                for (int i = 0; i < objetcs.length; i++) {
-                    addSelectedObject(list, objetcs[i]);
+                for (Object objetc : objetcs) {
+                    addSelectedObject(list, objetc);
                 }
             } else {
                 addSelectedObject(list, selected);

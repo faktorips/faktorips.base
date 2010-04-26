@@ -107,8 +107,8 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     protected final void generateCodeForMethodsDefinedInModel(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         IMethod[] methods = ((IType)getIpsObject()).getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            IMethod method = methods[i];
+        for (IMethod method2 : methods) {
+            IMethod method = method2;
             if (!method.validate(getIpsProject()).containsErrorMsg()) {
                 generateCodeForMethodDefinedInModel(method, methodsBuilder);
             }
@@ -200,8 +200,8 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            IProductCmptTypeAttribute a = attributes[i];
+        for (IProductCmptTypeAttribute attribute : attributes) {
+            IProductCmptTypeAttribute a = attribute;
             if (!a.isValid()) {
                 continue;
             }
@@ -215,7 +215,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
                         .getMemberVarBuilder(), typeSection.getMethodBuilder());
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
-                        "Error building attribute " + attributes[i].getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
+                        "Error building attribute " + attribute.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
                                 + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }

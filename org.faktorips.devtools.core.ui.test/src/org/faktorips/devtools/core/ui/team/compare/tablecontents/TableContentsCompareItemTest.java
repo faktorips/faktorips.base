@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,23 +37,24 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     private IIpsSrcFile srcFile;
     private IFile correspondingFile;
     private IIpsPackageFragmentRoot root;
-    
+
     private TableContentsCompareItem compareItemRoot;
     private ITableContents table;
     private IRow row1;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        
-        IIpsProject proj= (IpsProject)newIpsProject("TestProject");
+
+        IIpsProject proj = (IpsProject)newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
-        table = (ITableContents) newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
+        table = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");
-        
-        GregorianCalendar calendar= new GregorianCalendar();
-        generation = (ITableContentsGeneration) table.newGeneration(calendar);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        generation = (ITableContentsGeneration)table.newGeneration(calendar);
         row1 = generation.newRow();
         row1.setValue(0, "r1_c1");
         row1.setValue(1, "r1_c2");
@@ -61,30 +62,31 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         generation.newRow();
         generation.newRow();
         generation.newRow();
-        
+
         srcFile = table.getIpsSrcFile();
         correspondingFile = srcFile.getCorrespondingFile();
 
         // initialized compareItem
-        compareItemRoot = (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
+        compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
     /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItem.init()'
+     * Test method for
+     * 'org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItem.init()'
      */
     public void testInit() {
         // create uninitialized tree of compareitems
-        TableContentsCompareItem compareItemSrcFile= new TableContentsCompareItem(null, srcFile);
-        TableContentsCompareItem compareItemTable= new TableContentsCompareItem(compareItemSrcFile, table);
-        TableContentsCompareItem compareItemGeneration= new TableContentsCompareItem(compareItemTable, generation);
-        TableContentsCompareItem compareItemRow1= new TableContentsCompareItem(compareItemGeneration, row1);
+        TableContentsCompareItem compareItemSrcFile = new TableContentsCompareItem(null, srcFile);
+        TableContentsCompareItem compareItemTable = new TableContentsCompareItem(compareItemSrcFile, table);
+        TableContentsCompareItem compareItemGeneration = new TableContentsCompareItem(compareItemTable, generation);
+        TableContentsCompareItem compareItemRow1 = new TableContentsCompareItem(compareItemGeneration, row1);
 
         // test content/name before initialization
         assertNull(compareItemSrcFile.getContentString());
         assertNull(compareItemSrcFile.getContentStringWithoutWhiteSpace());
         assertNull(compareItemSrcFile.getName());
         assertNull(compareItemSrcFile.getDocument());
-        
+
         // init
         compareItemSrcFile.init();
 
@@ -102,43 +104,46 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     }
 
     /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItem.getType()'
+     * Test method for
+     * 'org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItem.getType()'
      */
     public void testGetType() {
         assertEquals("ipstablecontents", compareItemRoot.getType());
     }
 
-    public void testEqualsObject() throws CoreException{
+    public void testEqualsObject() throws CoreException {
         // set Row values of default Table
         row1.setValue(0, "65");
         row1.setValue(1, "69");
         row1.setValue(2, "E69");
-        compareItemRoot= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
+        compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
 
-        // create new table (and row) to avoid that both compareitems reference the same row instance
-        ITableContents table2 = (ITableContents) newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
+        // create new table (and row) to avoid that both compareitems reference the same row
+        // instance
+        ITableContents table2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
         table2.newColumn("1");
         table2.newColumn("2");
         table2.newColumn("3");
-        GregorianCalendar calendar= new GregorianCalendar();
-        ITableContentsGeneration generation2 = (ITableContentsGeneration) table2.newGeneration(calendar);
+        GregorianCalendar calendar = new GregorianCalendar();
+        ITableContentsGeneration generation2 = (ITableContentsGeneration)table2.newGeneration(calendar);
         IRow row2 = generation2.newRow();
         row2.setValue(0, "6");
         row2.setValue(1, "569");
         row2.setValue(2, "E69");
-        IRow row2b= generation2.newRow();
+        IRow row2b = generation2.newRow();
         generation2.newRow();
         generation2.newRow();
         IIpsSrcFile srcFile2 = table2.getIpsSrcFile();
         IFile correspondingFile2 = srcFile2.getCorrespondingFile();
-        TableContentsCompareItem compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
-        
-        TableContentsCompareItem tableItem1= (TableContentsCompareItem) compareItemRoot.getChildren()[0];
-        TableContentsCompareItem genItem1= (TableContentsCompareItem) tableItem1.getChildren()[0];
-        TableContentsCompareItem rowItem1= (TableContentsCompareItem) genItem1.getChildren()[0];
-        TableContentsCompareItem tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
-        TableContentsCompareItem genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
-        TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        TableContentsCompareItem compareItemRoot2 = (TableContentsCompareItem)structureCreator
+                .getStructure(new ResourceNode(correspondingFile2));
+
+        TableContentsCompareItem tableItem1 = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
+        TableContentsCompareItem genItem1 = (TableContentsCompareItem)tableItem1.getChildren()[0];
+        TableContentsCompareItem rowItem1 = (TableContentsCompareItem)genItem1.getChildren()[0];
+        TableContentsCompareItem tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
+        TableContentsCompareItem genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
+        TableContentsCompareItem rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // rows equal in contentString (ignored whitespace) but not in content
         assertEquals(rowItem1.getContentStringWithoutWhiteSpace(), rowItem2.getContentStringWithoutWhiteSpace());
         assertFalse(rowItem1.equals(rowItem2));
@@ -147,193 +152,209 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         row2b.setValue(0, "65");
         row2b.setValue(1, "69");
         row2b.setValue(2, "E69");
-        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
-        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
-        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
-        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[1]; // second row (row2b)
+        compareItemRoot2 = (TableContentsCompareItem)structureCreator
+                .getStructure(new ResourceNode(correspondingFile2));
+        tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
+        genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
+        rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[1]; // second row (row2b)
         // compare rows with same content and differing rownumber
         assertEquals(rowItem1.getContentStringWithoutWhiteSpace(), rowItem2.getContentStringWithoutWhiteSpace());
         assertFalse(rowItem1.getIpsElement().getName().equals(rowItem2.getIpsElement().getName()));
         assertFalse(rowItem1.equals(rowItem2));
-        
+
         // change contents
         row2.setValue(0, "x");
         row2.setValue(1, "xx");
         row2.setValue(2, "xXx");
-        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
-        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
-        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
-        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        compareItemRoot2 = (TableContentsCompareItem)structureCreator
+                .getStructure(new ResourceNode(correspondingFile2));
+        tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
+        genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
+        rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // compare rows with differing content
         assertFalse(rowItem1.getContentStringWithoutWhiteSpace().equals(rowItem2.getContentStringWithoutWhiteSpace()));
         assertFalse(rowItem1.equals(rowItem2));
 
         // add column
         table2.newColumn("4");
-        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
-        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
-        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
-        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        compareItemRoot2 = (TableContentsCompareItem)structureCreator
+                .getStructure(new ResourceNode(correspondingFile2));
+        tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
+        genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
+        rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // compare rows with differing columnNumber
         assertFalse(rowItem1.getContentStringWithoutWhiteSpace().equals(rowItem2.getContentStringWithoutWhiteSpace()));
         assertFalse(rowItem1.equals(rowItem2));
     }
-    
-    public void testHashCode() throws CoreException{
+
+    public void testHashCode() throws CoreException {
         // set Row values of default Table
         row1.setValue(0, "65");
         row1.setValue(1, "69");
         row1.setValue(2, "E69");
-        compareItemRoot= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
+        compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
 
-        // create new table (and row) to avoid that both compareitems reference the same row instance
-        ITableContents table2 = (ITableContents) newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
+        // create new table (and row) to avoid that both compareitems reference the same row
+        // instance
+        ITableContents table2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
         table2.newColumn("1");
         table2.newColumn("2");
         table2.newColumn("3");
-        GregorianCalendar calendar= new GregorianCalendar();
-        ITableContentsGeneration generation2 = (ITableContentsGeneration) table2.newGeneration(calendar);
+        GregorianCalendar calendar = new GregorianCalendar();
+        ITableContentsGeneration generation2 = (ITableContentsGeneration)table2.newGeneration(calendar);
         IRow row2 = generation2.newRow();
         row2.setValue(0, "6");
         row2.setValue(1, "569");
         row2.setValue(2, "E69");
-        IRow row2b= generation2.newRow();
+        IRow row2b = generation2.newRow();
         generation2.newRow();
         generation2.newRow();
         IIpsSrcFile srcFile2 = table2.getIpsSrcFile();
         IFile correspondingFile2 = srcFile2.getCorrespondingFile();
-        TableContentsCompareItem compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
-        
-        TableContentsCompareItem tableItem1= (TableContentsCompareItem) compareItemRoot.getChildren()[0];
-        TableContentsCompareItem genItem1= (TableContentsCompareItem) tableItem1.getChildren()[0];
-        TableContentsCompareItem rowItem1= (TableContentsCompareItem) genItem1.getChildren()[0];
-        TableContentsCompareItem tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
-        TableContentsCompareItem genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
-        TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        TableContentsCompareItem compareItemRoot2 = (TableContentsCompareItem)structureCreator
+                .getStructure(new ResourceNode(correspondingFile2));
+
+        TableContentsCompareItem tableItem1 = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
+        TableContentsCompareItem genItem1 = (TableContentsCompareItem)tableItem1.getChildren()[0];
+        TableContentsCompareItem rowItem1 = (TableContentsCompareItem)genItem1.getChildren()[0];
+        TableContentsCompareItem tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
+        TableContentsCompareItem genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
+        TableContentsCompareItem rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // rows equal in contentString (ignored whitespace) but not in content
-        assertEquals(rowItem1.getContentStringWithoutWhiteSpace().hashCode(), rowItem2.getContentStringWithoutWhiteSpace().hashCode());
-        assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
+        assertEquals(rowItem1.getContentStringWithoutWhiteSpace().hashCode(), rowItem2
+                .getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.hashCode() == rowItem2.hashCode());
 
         // fill row (different rownumber) with same contents
         row2b.setValue(0, "65");
         row2b.setValue(1, "69");
         row2b.setValue(2, "E69");
-        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
-        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
-        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
-        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[1]; // second row (row2b)
+        compareItemRoot2 = (TableContentsCompareItem)structureCreator
+                .getStructure(new ResourceNode(correspondingFile2));
+        tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
+        genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
+        rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[1]; // second row (row2b)
         // compare rows with same content and different ID
-        assertEquals(rowItem1.getContentStringWithoutWhiteSpace().hashCode(), rowItem2.getContentStringWithoutWhiteSpace().hashCode());
+        assertEquals(rowItem1.getContentStringWithoutWhiteSpace().hashCode(), rowItem2
+                .getContentStringWithoutWhiteSpace().hashCode());
         assertFalse(rowItem1.getIpsElement().getName().equals(rowItem2.getIpsElement().getName()));
-        assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
-        
+        assertFalse(rowItem1.hashCode() == rowItem2.hashCode());
+
         // change contents
         row2.setValue(0, "x");
         row2.setValue(1, "xx");
         row2.setValue(2, "xXx");
-        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
-        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
-        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
-        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        compareItemRoot2 = (TableContentsCompareItem)structureCreator
+                .getStructure(new ResourceNode(correspondingFile2));
+        tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
+        genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
+        rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // compare rows with differing content
-        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode()==rowItem2.getContentStringWithoutWhiteSpace().hashCode());
-        assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
+        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode() == rowItem2
+                .getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.hashCode() == rowItem2.hashCode());
 
         // add column
         table2.newColumn("4");
-        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
-        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
-        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
-        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        compareItemRoot2 = (TableContentsCompareItem)structureCreator
+                .getStructure(new ResourceNode(correspondingFile2));
+        tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
+        genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
+        rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // compare rows with differing columnNumber
-        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode()==rowItem2.getContentStringWithoutWhiteSpace().hashCode());
-        assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
-        
-        
-        Differencer differencer= new Differencer();
+        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode() == rowItem2
+                .getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.hashCode() == rowItem2.hashCode());
+
+        Differencer differencer = new Differencer();
         differencer.findDifferences(false, null, null, null, compareItemRoot2, compareItemRoot);
     }
-    
-    
-    
+
     /* ****************************************************************
      * protected Methods
      */
-    
+
     /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.initContentString()'
+     * Test method for
+     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.initContentString()'
      */
-//    public void testInitContentString() {
-//        TableContentsCompareItem tableItem= (TableContentsCompareItem) compareItemRoot.getChildren()[0];
-//        TableContentsCompareItem genItem= (TableContentsCompareItem) tableItem.getChildren()[0];
-//        assertEquals("", genItem.initContentString());        
-//        
-//        TableContentsCompareItem rowItem= (TableContentsCompareItem) genItem.getChildren()[0];
-//        TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem.getChildren()[1];
-//        TableContentsCompareItem rowItem3= (TableContentsCompareItem) genItem.getChildren()[2];
-//        TableContentsCompareItem rowItem4= (TableContentsCompareItem) genItem.getChildren()[3];
-//        assertEquals("0:\t\tr1_c1\t\tr1_c2\t\tr1_c3\t\t", rowItem.initContentString());
-//        assertEquals("1:\t\t1\t\t\t2\t\t\t3\t\t\t", rowItem2.initContentString());
-//        assertEquals("2:\t\t1\t\t\t2\t\t\t3\t\t\t", rowItem3.initContentString());
-//        assertEquals("3:\t\t1\t\t\t2\t\t\t3\t\t\t", rowItem4.initContentString());
-//    }
+    // public void testInitContentString() {
+    // TableContentsCompareItem tableItem= (TableContentsCompareItem)
+    // compareItemRoot.getChildren()[0];
+    // TableContentsCompareItem genItem= (TableContentsCompareItem) tableItem.getChildren()[0];
+    // assertEquals("", genItem.initContentString());
+    //        
+    // TableContentsCompareItem rowItem= (TableContentsCompareItem) genItem.getChildren()[0];
+    // TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem.getChildren()[1];
+    // TableContentsCompareItem rowItem3= (TableContentsCompareItem) genItem.getChildren()[2];
+    // TableContentsCompareItem rowItem4= (TableContentsCompareItem) genItem.getChildren()[3];
+    // assertEquals("0:\t\tr1_c1\t\tr1_c2\t\tr1_c3\t\t", rowItem.initContentString());
+    // assertEquals("1:\t\t1\t\t\t2\t\t\t3\t\t\t", rowItem2.initContentString());
+    // assertEquals("2:\t\t1\t\t\t2\t\t\t3\t\t\t", rowItem3.initContentString());
+    // assertEquals("3:\t\t1\t\t\t2\t\t\t3\t\t\t", rowItem4.initContentString());
+    // }
 
     /*
      * Test method for 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.initName()'
      */
-//    public void testInitName() {
-//        DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
-//        
-//        TableContentsCompareItem tableItem= (TableContentsCompareItem) compareItemRoot.getChildren()[0];
-//        String name= tableItem.getIpsElement().getName();
-//        assertEquals(Messages.TableContentsCompareItem_TableContents+": \""+name+"\"", tableItem.initContentString());
-//        
-//        TableContentsCompareItem genItem= (TableContentsCompareItem) tableItem.getChildren()[0];
-//        Date date= ((IIpsObjectGeneration)genItem.getIpsElement()).getValidFrom().getTime();
-//        assertEquals(Messages.TableContentsCompareItem_Generation+": \""+dateFormat.format(date)+"\"", genItem.initContentString());        
-//        
-//        TableContentsCompareItem rowItem= (TableContentsCompareItem) genItem.getChildren()[0];
-//        TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem.getChildren()[1];
-//        TableContentsCompareItem rowItem3= (TableContentsCompareItem) genItem.getChildren()[2];
-//        TableContentsCompareItem rowItem4= (TableContentsCompareItem) genItem.getChildren()[3];
-//        assertEquals(Messages.TableContentsCompareItem_Row+": 0", rowItem.initName());
-//        assertEquals(Messages.TableContentsCompareItem_Row+": 1", rowItem2.initName());
-//        assertEquals(Messages.TableContentsCompareItem_Row+": 2", rowItem3.initName());
-//        assertEquals(Messages.TableContentsCompareItem_Row+": 3", rowItem4.initName());
-//    }
-    
-//    public void testGetColumnWidths(){
-//        // test columnwidth before init
-//        assertNull(compareItemRoot.getColumnWidths());
-//        
-//        // set cell content to force a 9 tabs column width in the second column and reinit artificially
-//        row3.setValue(1, "thisStringNeedsEightTabsToFit");
-//        compareItemRoot.init();
-//
-//        // test columnwidth after init
-//        int[] columnWidths= compareItemRoot.getColumnWidths();
-//        assertNotNull(columnWidths);
-//        // the rowNumber column is two tabs wide
-//        assertEquals(2, columnWidths[0]);
-//        // the first column is two tabs wide (because of "r1_c1")
-//        assertEquals(3, columnWidths[1]);
-//        // the first column is nine tabs wide (because of "thisStringNeedsEightTabsToFit")
-//        assertEquals(9, columnWidths[2]);
-//        // the first column is two tabs wide (because of "r1_c3")
-//        assertEquals(3, columnWidths[3]);
-//        
-//        // test subclasses
-//        TableContentsCompareItem tableItem= (TableContentsCompareItem) compareItemRoot.getChildren()[0];
-//        TableContentsCompareItem genItem= (TableContentsCompareItem) tableItem.getChildren()[0];
-//        TableContentsCompareItem rowItem= (TableContentsCompareItem) genItem.getChildren()[0];
-//        TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem.getChildren()[1];
-//        TableContentsCompareItem rowItem3= (TableContentsCompareItem) genItem.getChildren()[2];
-//        TableContentsCompareItem rowItem4= (TableContentsCompareItem) genItem.getChildren()[3];
-//        assertSame(columnWidths, tableItem.getColumnWidths());
-//        assertSame(columnWidths, genItem.getColumnWidths());
-//        assertSame(columnWidths, rowItem.getColumnWidths());
-//        assertSame(columnWidths, rowItem2.getColumnWidths());
-//        assertSame(columnWidths, rowItem3.getColumnWidths());
-//        assertSame(columnWidths, rowItem4.getColumnWidths());
-//    }
+    // public void testInitName() {
+    // DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+    //        
+    // TableContentsCompareItem tableItem= (TableContentsCompareItem)
+    // compareItemRoot.getChildren()[0];
+    // String name= tableItem.getIpsElement().getName();
+    // assertEquals(Messages.TableContentsCompareItem_TableContents+": \""+name+"\"",
+    // tableItem.initContentString());
+    //        
+    // TableContentsCompareItem genItem= (TableContentsCompareItem) tableItem.getChildren()[0];
+    // Date date= ((IIpsObjectGeneration)genItem.getIpsElement()).getValidFrom().getTime();
+    // assertEquals(Messages.TableContentsCompareItem_Generation+": \""+dateFormat.format(date)+"\"",
+    // genItem.initContentString());
+    //        
+    // TableContentsCompareItem rowItem= (TableContentsCompareItem) genItem.getChildren()[0];
+    // TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem.getChildren()[1];
+    // TableContentsCompareItem rowItem3= (TableContentsCompareItem) genItem.getChildren()[2];
+    // TableContentsCompareItem rowItem4= (TableContentsCompareItem) genItem.getChildren()[3];
+    // assertEquals(Messages.TableContentsCompareItem_Row+": 0", rowItem.initName());
+    // assertEquals(Messages.TableContentsCompareItem_Row+": 1", rowItem2.initName());
+    // assertEquals(Messages.TableContentsCompareItem_Row+": 2", rowItem3.initName());
+    // assertEquals(Messages.TableContentsCompareItem_Row+": 3", rowItem4.initName());
+    // }
+
+    // public void testGetColumnWidths(){
+    // // test columnwidth before init
+    // assertNull(compareItemRoot.getColumnWidths());
+    //        
+    // // set cell content to force a 9 tabs column width in the second column and reinit
+    // artificially
+    // row3.setValue(1, "thisStringNeedsEightTabsToFit");
+    // compareItemRoot.init();
+    //
+    // // test columnwidth after init
+    // int[] columnWidths= compareItemRoot.getColumnWidths();
+    // assertNotNull(columnWidths);
+    // // the rowNumber column is two tabs wide
+    // assertEquals(2, columnWidths[0]);
+    // // the first column is two tabs wide (because of "r1_c1")
+    // assertEquals(3, columnWidths[1]);
+    // // the first column is nine tabs wide (because of "thisStringNeedsEightTabsToFit")
+    // assertEquals(9, columnWidths[2]);
+    // // the first column is two tabs wide (because of "r1_c3")
+    // assertEquals(3, columnWidths[3]);
+    //        
+    // // test subclasses
+    // TableContentsCompareItem tableItem= (TableContentsCompareItem)
+    // compareItemRoot.getChildren()[0];
+    // TableContentsCompareItem genItem= (TableContentsCompareItem) tableItem.getChildren()[0];
+    // TableContentsCompareItem rowItem= (TableContentsCompareItem) genItem.getChildren()[0];
+    // TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem.getChildren()[1];
+    // TableContentsCompareItem rowItem3= (TableContentsCompareItem) genItem.getChildren()[2];
+    // TableContentsCompareItem rowItem4= (TableContentsCompareItem) genItem.getChildren()[3];
+    // assertSame(columnWidths, tableItem.getColumnWidths());
+    // assertSame(columnWidths, genItem.getColumnWidths());
+    // assertSame(columnWidths, rowItem.getColumnWidths());
+    // assertSame(columnWidths, rowItem2.getColumnWidths());
+    // assertSame(columnWidths, rowItem3.getColumnWidths());
+    // assertSame(columnWidths, rowItem4.getColumnWidths());
+    // }
 }

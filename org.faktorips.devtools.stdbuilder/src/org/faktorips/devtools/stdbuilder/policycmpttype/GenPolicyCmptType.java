@@ -93,33 +93,33 @@ public class GenPolicyCmptType extends GenType {
 
     private void createGeneratorsForMethods() throws CoreException {
         IMethod[] methods = getPolicyCmptType().getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            if (methods[i].isValid()) {
-                GenPolicyCmptTypeMethod generator = new GenPolicyCmptTypeMethod(this, methods[i]);
+        for (IMethod method : methods) {
+            if (method.isValid()) {
+                GenPolicyCmptTypeMethod generator = new GenPolicyCmptTypeMethod(this, method);
                 genPolicyCmptTypeMethods.add(generator);
-                getGeneratorsByPart().put(methods[i], generator);
+                getGeneratorsByPart().put(method, generator);
             }
         }
     }
 
     private void createGeneratorsForValidationRules() throws CoreException {
         IValidationRule[] validationRules = getPolicyCmptType().getRules();
-        for (int i = 0; i < validationRules.length; i++) {
-            if (validationRules[i].isValid()) {
-                GenValidationRule generator = new GenValidationRule(this, validationRules[i]);
+        for (IValidationRule validationRule : validationRules) {
+            if (validationRule.isValid()) {
+                GenValidationRule generator = new GenValidationRule(this, validationRule);
                 genValidationRules.add(generator);
-                getGeneratorsByPart().put(validationRules[i], generator);
+                getGeneratorsByPart().put(validationRule, generator);
             }
         }
     }
 
     private void createGeneratorsForAttributes() throws CoreException {
         IPolicyCmptTypeAttribute[] attrs = getPolicyCmptType().getPolicyCmptTypeAttributes();
-        for (int i = 0; i < attrs.length; i++) {
-            if (attrs[i].isValid()) {
-                GenPolicyCmptTypeAttribute generator = createGenerator(attrs[i]);
+        for (IPolicyCmptTypeAttribute attr : attrs) {
+            if (attr.isValid()) {
+                GenPolicyCmptTypeAttribute generator = createGenerator(attr);
                 genPolicyCmptTypeAttributes.add(generator);
-                getGeneratorsByPart().put(attrs[i], generator);
+                getGeneratorsByPart().put(attr, generator);
             }
         }
     }
@@ -127,11 +127,11 @@ public class GenPolicyCmptType extends GenType {
     private void createGeneratorsForAssociations() throws CoreException {
         IPolicyCmptType type = getPolicyCmptType();
         IPolicyCmptTypeAssociation[] ass = type.getPolicyCmptTypeAssociations();
-        for (int i = 0; i < ass.length; i++) {
-            if (ass[i].isValid()) {
-                GenAssociation generator = createGenerator(ass[i]);
+        for (IPolicyCmptTypeAssociation as : ass) {
+            if (as.isValid()) {
+                GenAssociation generator = createGenerator(as);
                 genAssociations.add(generator);
-                getGeneratorsByPart().put(ass[i], generator);
+                getGeneratorsByPart().put(as, generator);
             }
         }
     }

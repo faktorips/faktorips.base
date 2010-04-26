@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -56,8 +55,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      * {@inheritDoc}
      */
     public boolean changesOn(GregorianCalendar date) {
-        for (Iterator<IIpsObjectGeneration> it = generations.iterator(); it.hasNext();) {
-            IIpsObjectGeneration gen = it.next();
+        for (IIpsObjectGeneration gen : generations) {
             if (gen.getValidFrom().equals(date)) {
                 return true;
             }
@@ -112,8 +110,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             return null;
         }
         IIpsObjectGeneration generation = null;
-        for (Iterator<IIpsObjectGeneration> it = generations.iterator(); it.hasNext();) {
-            IIpsObjectGeneration each = it.next();
+        for (IIpsObjectGeneration each : generations) {
             if (!each.getValidFrom().after(date)) {
                 if (generation == null) {
                     generation = each;
@@ -141,8 +138,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         if (date == null) {
             return null;
         }
-        for (Iterator<IIpsObjectGeneration> it = generations.iterator(); it.hasNext();) {
-            IIpsObjectGeneration each = it.next();
+        for (IIpsObjectGeneration each : generations) {
             if (date.equals(each.getValidFrom())) {
                 return each;
             }
@@ -307,14 +303,14 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         }
 
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length; i++) {
-            if (generations[i].getValidFrom().after(validTo)) {
+        for (IIpsObjectGeneration generation : generations) {
+            if (generation.getValidFrom().after(validTo)) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
                 String params[] = new String[4];
                 params[0] = prefs.getDateFormat().format(validTo.getTime());
                 params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-                params[2] = "" + generations[i].getGenerationNo(); //$NON-NLS-1$
-                params[3] = prefs.getDateFormat().format(generations[i].getValidFrom().getTime());
+                params[2] = "" + generation.getGenerationNo(); //$NON-NLS-1$
+                params[3] = prefs.getDateFormat().format(generation.getValidFrom().getTime());
                 String msg = NLS.bind(Messages.TimedIpsObject_msgIvalidValidToDate, params);
                 list.add(new Message(MSGCODE_INVALID_VALID_TO, msg, Message.ERROR, this, PROPERTY_VALID_TO));
             }

@@ -22,6 +22,8 @@ import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.datatype.classtypes.LongDatatype;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
 
 /**
  * The type of data similar to a Java class. In most cases a datatype corresponds directly to a Java

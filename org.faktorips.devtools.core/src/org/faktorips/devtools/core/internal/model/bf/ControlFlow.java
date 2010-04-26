@@ -219,10 +219,8 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
             ValueDatatype datatype = decisionSource.findDatatype(ipsProject);
             if (datatype != null) {
                 if (!datatype.isParsable(getConditionValue())) {
-                    String text = NLS
-                            .bind(
-                                    Messages.ControlFlow_valueNotValid,
-                                    new String[] { getConditionValue(), datatype.getQualifiedName() });
+                    String text = NLS.bind(Messages.ControlFlow_valueNotValid, new String[] { getConditionValue(),
+                            datatype.getQualifiedName() });
                     list.add(new Message(MSGCODE_VALUE_NOT_VALID, text, Message.ERROR, this));
                 }
             }
@@ -240,10 +238,8 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
                 continue;
             }
             if (controlFlow.getConditionValue().equals(getConditionValue())) {
-                String text = NLS
-                        .bind(
-                                Messages.ControlFlow_duplicateControlFlowValue,
-                                new String[] { decision.getName(), getConditionValue() });
+                String text = NLS.bind(Messages.ControlFlow_duplicateControlFlowValue, new String[] {
+                        decision.getName(), getConditionValue() });
                 msgList.add(new Message(MSGCODE_DUBLICATE_VALUES, text, Message.ERROR, this));
             }
         }

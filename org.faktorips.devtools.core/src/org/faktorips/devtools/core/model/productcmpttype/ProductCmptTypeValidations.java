@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -34,13 +34,18 @@ import org.faktorips.util.message.ObjectProperty;
 public class ProductCmptTypeValidations {
 
     /**
-     * Validates the rule that if a policy component type is abstract then the configuring product component type needs to be abstract.
-     * @param isPolicyCmptTypeAbstract the value of the property abstract of the policy component type
-     * @param isProductCmptTypeAbstract the value of the property abstract of the product component type
-     * @param thisProductCmptType the product component type instance if available if not <code>null</code> is an accepted value
+     * Validates the rule that if a policy component type is abstract then the configuring product
+     * component type needs to be abstract.
+     * 
+     * @param isPolicyCmptTypeAbstract the value of the property abstract of the policy component
+     *            type
+     * @param isProductCmptTypeAbstract the value of the property abstract of the product component
+     *            type
+     * @param thisProductCmptType the product component type instance if available if not
+     *            <code>null</code> is an accepted value
      * @return a message instance if the validation fails otherwise <code>null</code>
      * 
-     * @throws CoreException delegates raised exceptions 
+     * @throws CoreException delegates raised exceptions
      */
     public static Message validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(boolean isPolicyCmptTypeAbstract,
             boolean isProductCmptTypeAbstract,
@@ -54,25 +59,28 @@ public class ProductCmptTypeValidations {
         return null;
     }
 
-    public static Message validateSupertypeMustBeInHierarchy(IIpsProject ipsProject, IProductCmptType superType,
+    public static Message validateSupertypeMustBeInHierarchy(IIpsProject ipsProject,
+            IProductCmptType superType,
             IPolicyCmptType superPcType) throws CoreException {
-        IProductCmptType productCmptTypeOfPolicyCmptSupertype = null;        
-        if(superPcType != null){
+        IProductCmptType productCmptTypeOfPolicyCmptSupertype = null;
+        if (superPcType != null) {
             productCmptTypeOfPolicyCmptSupertype = superPcType.findProductCmptType(ipsProject);
             return null;
         }
-        if(productCmptTypeOfPolicyCmptSupertype == null){
+        if (productCmptTypeOfPolicyCmptSupertype == null) {
             return null;
         }
-        String msg = NLS.bind("The super type of the product component type must be {0} or a subtype of it", productCmptTypeOfPolicyCmptSupertype.getQualifiedName());
-        if(superType == null){
+        String msg = NLS.bind("The super type of the product component type must be {0} or a subtype of it",
+                productCmptTypeOfPolicyCmptSupertype.getQualifiedName());
+        if (superType == null) {
             return Message.newError("", msg);
         }
         if (superType != null) {
             final Boolean[] holder = new Boolean[] { Boolean.FALSE };
-            final IProductCmptType productCmptTypeOfPolicyCmptSupertypeFinal = productCmptTypeOfPolicyCmptSupertype; 
+            final IProductCmptType productCmptTypeOfPolicyCmptSupertypeFinal = productCmptTypeOfPolicyCmptSupertype;
             if (productCmptTypeOfPolicyCmptSupertype != null) {
                 new TypeHierarchyVisitor(ipsProject) {
+                    @Override
                     protected boolean visit(IType currentType) throws CoreException {
                         if (currentType.equals(productCmptTypeOfPolicyCmptSupertypeFinal)) {
                             holder[0] = Boolean.TRUE;
@@ -112,5 +120,4 @@ public class ProductCmptTypeValidations {
         return null;
     }
 
-    
 }

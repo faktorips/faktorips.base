@@ -191,12 +191,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public ExtendedExprCompiler newExpressionCompiler() {
         ExtendedExprCompiler compiler = new ExtendedExprCompiler();
         IFunctionResolverFactory[] resolvers = IpsPlugin.getDefault().getFlFunctionResolverFactories();
-        for (int i = 0; i < resolvers.length; i++) {
+        for (IFunctionResolverFactory resolver : resolvers) {
             try {
-                compiler.add(resolvers[i].newFunctionResolver(getExpressionLanguageFunctionsLanguage()));
+                compiler.add(resolver.newFunctionResolver(getExpressionLanguageFunctionsLanguage()));
             } catch (Exception e) {
                 IpsPlugin.log(new IpsStatus("Unable the function resolver for the following factory: "
-                        + resolvers[i].getClass(), e));
+                        + resolver.getClass(), e));
             }
         }
 
@@ -314,8 +314,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         if (checkReferencedJavaProjects) {
             List<IJavaProject> refProjectcs = getJavaProjectsReferencedInClasspath(javaProject);
-            for (Iterator<IJavaProject> it = refProjectcs.iterator(); it.hasNext();) {
-                IJavaProject refProject = it.next();
+            for (IJavaProject refProject : refProjectcs) {
                 Boolean errorFree = isJavaProjectErrorFree(refProject, true);
                 if (errorFree != null && !errorFree.booleanValue()) {
                     return errorFree;
@@ -329,8 +328,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private boolean containsErrorMarker(IMarker[] markers) {
-        for (int i = 0; i < markers.length; i++) {
-            if (markers[i].getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR) == IMarker.SEVERITY_ERROR) {
+        for (IMarker marker : markers) {
+            if (marker.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR) == IMarker.SEVERITY_ERROR) {
                 return true;
             }
         }
@@ -341,9 +340,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private List<IJavaProject> getJavaProjectsReferencedInClasspath(IJavaProject javaProject) throws JavaModelException {
         List<IJavaProject> result = new ArrayList<IJavaProject>();
         IClasspathEntry[] entries = javaProject.getRawClasspath();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-                IJavaProject refProject = javaProject.getJavaModel().getJavaProject(entries[i].getPath().lastSegment());
+        for (IClasspathEntry entrie : entries) {
+            if (entrie.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+                IJavaProject refProject = javaProject.getJavaModel().getJavaProject(entrie.getPath().lastSegment());
                 result.add(refProject);
             }
         }
@@ -375,17 +374,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         IIpsObjectPath otherPath = ((IpsProject)otherProject).getIpsObjectPathInternal();
         IIpsProject[] referencedProjects = otherPath.getReferencedIpsProjects();
-        for (int i = 0; i < referencedProjects.length; i++) {
-            if (equals(referencedProjects[i])) {
+        for (IIpsProject referencedProject : referencedProjects) {
+            if (equals(referencedProject)) {
                 return true;
             }
-            if (projectsVisited.contains(referencedProjects[i])) {
+            if (projectsVisited.contains(referencedProject)) {
                 continue;
             }
-            if (considerIndirect && isReferencedBy(referencedProjects[i], considerIndirect, projectsVisited)) {
+            if (considerIndirect && isReferencedBy(referencedProject, considerIndirect, projectsVisited)) {
                 return true;
             }
-            projectsVisited.add(referencedProjects[i]);
+            projectsVisited.add(referencedProject);
         }
 
         return false;
@@ -397,9 +396,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsProject[] findReferencingProjects(boolean includeIndirect) throws CoreException {
         IIpsProject[] projects = getIpsModel().getIpsProjects();
         List<IIpsProject> result = new ArrayList<IIpsProject>(projects.length);
-        for (int i = 0; i < projects.length; i++) {
-            if (isReferencedBy(projects[i], includeIndirect)) {
-                result.add(projects[i]);
+        for (IIpsProject project2 : projects) {
+            if (isReferencedBy(project2, includeIndirect)) {
+                result.add(project2);
             }
         }
 
@@ -572,8 +571,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() throws CoreException {
         List<IIpsPackageFragmentRoot> roots = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsObjectPathEntry[] entries = getIpsObjectPathInternal().getEntries();
-        for (int i = 0; i < entries.length; i++) {
-            IIpsPackageFragmentRoot root = entries[i].getIpsPackageFragmentRoot();
+        for (IIpsObjectPathEntry entrie : entries) {
+            IIpsPackageFragmentRoot root = entrie.getIpsPackageFragmentRoot();
             if (root != null) {
                 roots.add(root);
             }
@@ -588,9 +587,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(String name) {
         try {
             IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
-            for (int i = 0; i < roots.length; i++) {
-                if (roots[i].getName().equals(name)) {
-                    return roots[i];
+            for (IIpsPackageFragmentRoot root : roots) {
+                if (root.getName().equals(name)) {
+                    return root;
                 }
             }
         } catch (CoreException e) {
@@ -634,11 +633,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (resource.getFullPath().equals(outputPath)) {
                 return true;
             }
-            for (int i = 0; i < entries.length; i++) {
-                if (resource.getFullPath().equals(entries[i].getOutputLocation())) {
+            for (IClasspathEntry entrie : entries) {
+                if (resource.getFullPath().equals(entrie.getOutputLocation())) {
                     return true;
                 }
-                if (resource.getFullPath().equals(entries[i].getPath())) {
+                if (resource.getFullPath().equals(entrie.getPath())) {
                     return true;
                 }
             }
@@ -655,8 +654,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     private boolean isPackageFragmentRoot(IResource res) throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
-        for (int i = 0; i < roots.length; i++) {
-            if (res.equals(roots[i].getCorrespondingResource())) {
+        for (IIpsPackageFragmentRoot root : roots) {
+            if (res.equals(root.getCorrespondingResource())) {
                 return true;
             }
         }
@@ -675,8 +674,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IProject project = getProject();
         try {
             String[] natures = project.getDescription().getNatureIds();
-            for (int i = 0; i < natures.length; i++) {
-                if (natures[i].equals(IIpsProject.NATURE_ID)) {
+            for (String nature : natures) {
+                if (nature.equals(IIpsProject.NATURE_ID)) {
                     return true;
                 }
             }
@@ -873,9 +872,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return null;
         }
         IIpsSrcFile[] all = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-        for (int i = 0; i < all.length; i++) {
-            if (runtimeId.equals((all[i]).getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID))) {
-                return (IProductCmpt)(all[i]).getIpsObject();
+        for (IIpsSrcFile element : all) {
+            if (runtimeId.equals((element).getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID))) {
+                return (IProductCmpt)(element).getIpsObject();
             }
         }
 
@@ -981,8 +980,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         // findIpsSrcFiles anyway!
         List<IIpsSrcFile> files = new ArrayList<IIpsSrcFile>();
         findAllIpsSrcFiles(files);
-        for (Iterator<IIpsSrcFile> iter = files.iterator(); iter.hasNext();) {
-            IIpsSrcFile file = iter.next();
+        for (IIpsSrcFile file : files) {
             IIpsObject ipsObject = null;
             if (file.exists()) {
                 ipsObject = file.getIpsObject();
@@ -997,10 +995,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         // this is not the most effizient implementation, however, you should use
         // findIpsSrcFiles anyway!
         List<IIpsObject> objects = new ArrayList<IIpsObject>(files.length);
-        for (int i = 0; i < files.length; i++) {
+        for (IIpsSrcFile file : files) {
             IIpsObject ipsObject = null;
-            if (files[i].exists()) {
-                ipsObject = files[i].getIpsObject();
+            if (file.exists()) {
+                ipsObject = file.getIpsObject();
                 if (ipsObject != null) {
                     objects.add(ipsObject);
                 }
@@ -1012,8 +1010,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private List<IIpsObject> filesToIpsObjects(List<IIpsSrcFile> files) throws CoreException {
         List<IIpsObject> objects = new ArrayList<IIpsObject>(files.size());
-        for (Iterator<IIpsSrcFile> it = files.iterator(); it.hasNext();) {
-            IIpsSrcFile file = it.next();
+        for (IIpsSrcFile file : files) {
             IIpsObject ipsObject = null;
             if (file.exists()) {
                 ipsObject = file.getIpsObject();
@@ -1030,8 +1027,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             throws CoreException {
 
         List<T> objects = new ArrayList<T>(files.size());
-        for (Iterator<IIpsSrcFile> it = files.iterator(); it.hasNext();) {
-            IIpsSrcFile file = it.next();
+        for (IIpsSrcFile file : files) {
             IIpsObject ipsObject = null;
             if (file.exists()) {
                 ipsObject = file.getIpsObject();
@@ -1100,8 +1096,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] ipsObjectTypes) throws CoreException {
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        for (int i = 0; i < ipsObjectTypes.length; i++) {
-            getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectTypes[i], result, visitedEntries);
+        for (IpsObjectType ipsObjectType : ipsObjectTypes) {
+            getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);
             visitedEntries.clear();
         }
     }
@@ -1205,9 +1201,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private void findDatatypesDefinedByIpsObjects(Set<Datatype> result) throws CoreException {
         List<IIpsSrcFile> refDatatypeFiles = new ArrayList<IIpsSrcFile>();
         IpsObjectType[] objectTypes = getIpsModel().getIpsObjectTypes();
-        for (int i = 0; i < objectTypes.length; i++) {
-            if (objectTypes[i].isDatatype()) {
-                findAllIpsSrcFiles(refDatatypeFiles, objectTypes[i]);
+        for (IpsObjectType objectType : objectTypes) {
+            if (objectType.isDatatype()) {
+                findAllIpsSrcFiles(refDatatypeFiles, objectType);
             }
         }
         for (IIpsSrcFile file : refDatatypeFiles) {
@@ -1227,9 +1223,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         Datatype[] datatypes = findDatatypes(true, false);
         ArrayList<Datatype> enumDatatypeList = new ArrayList<Datatype>();
-        for (int i = 0; i < datatypes.length; i++) {
-            if (datatypes[i] instanceof EnumDatatype) {
-                enumDatatypeList.add(datatypes[i]);
+        for (Datatype datatype : datatypes) {
+            if (datatype instanceof EnumDatatype) {
+                enumDatatypeList.add(datatype);
             }
         }
 
@@ -1252,9 +1248,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
             qualifiedName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
         }
         IpsObjectType[] objectTypes = getIpsModel().getIpsObjectTypes();
-        for (int i = 0; i < objectTypes.length; i++) {
-            if (objectTypes[i].isDatatype()) {
-                type = (Datatype)findIpsObject(objectTypes[i], qualifiedName);
+        for (IpsObjectType objectType : objectTypes) {
+            if (objectType.isDatatype()) {
+                type = (Datatype)findIpsObject(objectType, qualifiedName);
                 if (type != null) {
                     break;
                 }
@@ -1403,8 +1399,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         try {
             IIpsProject[] projects = getIpsObjectPathInternal().getReferencedIpsProjects();
-            for (int i = 0; i < projects.length; i++) {
-                helper = projects[i].getDatatypeHelper(datatype);
+            for (IIpsProject project2 : projects) {
+                helper = project2.getDatatypeHelper(datatype);
                 if (helper != null) {
                     return helper;
                 }
@@ -1483,19 +1479,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
-        for (int i = 0; i < ipsSrcFiles.length; i++) {
-            String strProductCmptTypeOfCandidate = ipsSrcFiles[i]
-                    .getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            String strProductCmptTypeOfCandidate = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
             if (productCmptType == null || productCmptType.getQualifiedName().equals(strProductCmptTypeOfCandidate)) {
-                result.add(ipsSrcFiles[i]);
+                result.add(ipsSrcFile);
             } else if (includeCmptsForSubtypes) {
-                IProductCmptType type = ipsSrcFiles[i].getIpsProject().findProductCmptType(
-                        strProductCmptTypeOfCandidate);
+                IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(strProductCmptTypeOfCandidate);
                 if (type == null) {
                     continue;
                 }
                 if (type.isSubtypeOrSameType(productCmptType, type.getIpsProject())) {
-                    result.add(ipsSrcFiles[i]);
+                    result.add(ipsSrcFile);
                 }
             }
         }
@@ -1571,9 +1565,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     public void getSourceIpsFragmentRoots(List<IIpsPackageFragmentRoot> result) throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
-        for (int i = 0; i < roots.length; i++) {
-            if (roots[i].isBasedOnSourceFolder()) {
-                result.add(roots[i]);
+        for (IIpsPackageFragmentRoot root : roots) {
+            if (root.isBasedOnSourceFolder()) {
+                result.add(root);
             }
         }
     }
@@ -1603,13 +1597,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         String qualifiedName = qualifiedNameType.getName();
         IIpsObject[] allProductCmpts = findIpsObjects(IpsObjectType.PRODUCT_CMPT);
         if (IpsObjectType.PRODUCT_CMPT.equals(qualifiedNameType.getIpsObjectType())) {
-            for (int i = 0; i < allProductCmpts.length; i++) {
-                findReferencingProductCmptGenerationsToProductCmpts((IProductCmpt)allProductCmpts[i], qualifiedName,
-                        result);
+            for (IIpsObject allProductCmpt : allProductCmpts) {
+                findReferencingProductCmptGenerationsToProductCmpts((IProductCmpt)allProductCmpt, qualifiedName, result);
             }
         } else if (IpsObjectType.TABLE_CONTENTS.equals(qualifiedNameType.getIpsObjectType())) {
-            for (int i = 0; i < allProductCmpts.length; i++) {
-                findReferencingProductCmptGenerationsToTableContents((IProductCmpt)allProductCmpts[i], qualifiedName,
+            for (IIpsObject allProductCmpt : allProductCmpts) {
+                findReferencingProductCmptGenerationsToTableContents((IProductCmpt)allProductCmpt, qualifiedName,
                         result);
             }
         }
@@ -1631,8 +1624,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         for (int i = 0; i < max; i++) {
             IProductCmptGeneration generation = toBeSearched.getProductCmptGeneration(i);
             IProductCmptLink[] relations = generation.getLinks();
-            for (int j = 0; j < relations.length; j++) {
-                if (relations[j].getTarget().equals(qualifiedProductCmptName)) {
+            for (IProductCmptLink relation : relations) {
+                if (relation.getTarget().equals(qualifiedProductCmptName)) {
                     result.add(generation);
                     break;
                 }
@@ -1652,8 +1645,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         for (int i = 0; i < max; i++) {
             IProductCmptGeneration generation = toBeSearched.getProductCmptGeneration(i);
             ITableContentUsage[] tcus = generation.getTableContentUsages();
-            for (int j = 0; j < tcus.length; j++) {
-                if (tcus[j].getTableContentName().equals(qualifiedTableContentsName)) {
+            for (ITableContentUsage tcu : tcus) {
+                if (tcu.getTableContentName().equals(qualifiedTableContentsName)) {
                     result.add(generation);
                     break;
                 }
@@ -1677,11 +1670,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         ArrayList<IIpsObject> list = new ArrayList<IIpsObject>();
         // get referenced PCTypes
         IIpsObject[] pcTypes = findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
-        for (int i = 0; i < pcTypes.length; i++) {
-            IPolicyCmptTypeAssociation[] relations = ((PolicyCmptType)pcTypes[i]).getPolicyCmptTypeAssociations();
-            for (int x = 0; x < relations.length; x++) {
-                if (relations[x].getTarget().equals(pcType.getQualifiedName())) {
-                    list.add(pcTypes[i]);
+        for (IIpsObject pcType2 : pcTypes) {
+            IPolicyCmptTypeAssociation[] relations = ((PolicyCmptType)pcType2).getPolicyCmptTypeAssociations();
+            for (IPolicyCmptTypeAssociation relation : relations) {
+                if (relation.getTarget().equals(pcType.getQualifiedName())) {
+                    list.add(pcType2);
                 }
             }
         }
@@ -1749,9 +1742,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         IClasspathEntry[] entries = javaProject.getRawClasspath();
-        for (int i = 0; i < entries.length; i++) {
-            if (JavaConventions.validateClasspathEntry(javaProject, entries[i], false).getSeverity() == IStatus.ERROR) {
-                String text = NLS.bind(Messages.IpsProject_javaProjectHasInvalidBuildPath, entries[i].getPath());
+        for (IClasspathEntry entrie : entries) {
+            if (JavaConventions.validateClasspathEntry(javaProject, entrie, false).getSeverity() == IStatus.ERROR) {
+                String text = NLS.bind(Messages.IpsProject_javaProjectHasInvalidBuildPath, entrie.getPath());
                 Message msg = new Message(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS, text, Message.WARNING,
                         this);
                 result.add(msg);
@@ -1767,8 +1760,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         int severity = IStatus.OK;
         IClasspathEntry[] entries = javaProject.getRawClasspath();
-        for (int i = 0; i < entries.length; i++) {
-            int entrySeverity = JavaConventions.validateClasspathEntry(javaProject, entries[i], false).getSeverity();
+        for (IClasspathEntry entrie : entries) {
+            int entrySeverity = JavaConventions.validateClasspathEntry(javaProject, entrie, false).getSeverity();
             if (entrySeverity > severity) {
                 severity = entrySeverity;
             }
@@ -1786,12 +1779,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private void validateMigration(MessageList result, IpsProjectProperties props) {
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
-        for (int i = 0; i < managers.length; i++) {
+        for (IIpsFeatureVersionManager manager : managers) {
             try {
-                managers[i].getMigrationOperations(this);
+                manager.getMigrationOperations(this);
             } catch (Exception e) {
                 IpsPlugin.log(e);
-                String msg = NLS.bind(Messages.IpsProject_msgInvalidMigrationInformation, managers[i].getFeatureId());
+                String msg = NLS.bind(Messages.IpsProject_msgInvalidMigrationInformation, manager.getFeatureId());
                 result.add(new Message(MSGCODE_INVALID_MIGRATION_INFORMATION, msg, Message.ERROR, this));
             }
         }
@@ -1800,22 +1793,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private void validateRequiredFeatures(MessageList ml, IpsProjectProperties props) {
         String features[] = props.getRequiredIpsFeatureIds();
 
-        for (int i = 0; i < features.length; i++) {
-            IIpsFeatureVersionManager manager = IpsPlugin.getDefault().getIpsFeatureVersionManager(features[i]);
+        for (String feature : features) {
+            IIpsFeatureVersionManager manager = IpsPlugin.getDefault().getIpsFeatureVersionManager(feature);
             if (manager == null) {
-                String msg = NLS.bind(Messages.IpsProject_msgNoFeatureManager, features[i]);
+                String msg = NLS.bind(Messages.IpsProject_msgNoFeatureManager, feature);
                 ml.add(new Message(MSGCODE_NO_VERSIONMANAGER, msg, Message.ERROR, this));
                 continue;
             }
-            String minVersion = props.getMinRequiredVersionNumber(features[i]);
+            String minVersion = props.getMinRequiredVersionNumber(feature);
             if (manager.compareToCurrentVersion(minVersion) > 0 && !manager.isCurrentVersionCompatibleWith(minVersion)) {
-                String[] params = { manager.getCurrentVersion(), minVersion, features[i] };
+                String[] params = { manager.getCurrentVersion(), minVersion, feature };
                 String msg = NLS.bind(Messages.IpsProject_msgVersionTooLow, params);
                 ml.add(new Message(MSGCODE_VERSION_TOO_LOW, msg, Message.ERROR, this));
             }
 
             if (manager.compareToCurrentVersion(minVersion) < 0 && !manager.isCurrentVersionCompatibleWith(minVersion)) {
-                String[] params = { manager.getCurrentVersion(), minVersion, features[i] };
+                String[] params = { manager.getCurrentVersion(), minVersion, feature };
                 String msg = NLS.bind(Messages.IpsProject_msgIncompatibleVersions, params);
                 ml.add(new Message(MSGCODE_INCOMPATIBLE_VERSIONS, msg, Message.ERROR, this));
             }
@@ -1837,8 +1830,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             IIpsArtefactBuilderSet builderSet = referencedProjects[i].getIpsArtefactBuilderSet();
             List<IPath> tocPathsInRefProject = collectTocPaths(builderSet, referencedProjects[i]);
 
-            for (Iterator<IPath> iter = tocPathsInRefProject.iterator(); iter.hasNext();) {
-                IPath tocPath = iter.next();
+            for (IPath tocPath : tocPathsInRefProject) {
                 if (tocPaths.contains(tocPath)) {
                     String msg = NLS.bind(Messages.IpsProject_msgDuplicateTocFilePath, tocPath, referencedProjects[i]
                             .getName());
@@ -1852,8 +1844,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private List<IPath> collectTocPaths(IIpsArtefactBuilderSet builderSet, IIpsProject ipsProject) throws CoreException {
         List<IPath> tocPaths = new ArrayList<IPath>();
         IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
-        for (int i = 0; i < roots.length; i++) {
-            String fileName = builderSet.getRuntimeRepositoryTocResourceName(roots[i]);
+        for (IIpsPackageFragmentRoot root : roots) {
+            String fileName = builderSet.getRuntimeRepositoryTocResourceName(root);
             if (fileName != null) {
                 tocPaths.add(new Path(fileName));
             }
@@ -1937,9 +1929,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
                     }
                 }
             } else {
-                for (int j = 0; j < baseCheck.length; j++) {
-                    ArgumentCheck.equals(baseCheck[j].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
-                    IIpsSrcFile productCmptToCheckB = baseCheck[j];
+                for (IIpsSrcFile element : baseCheck) {
+                    ArgumentCheck.equals(element.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
+                    IIpsSrcFile productCmptToCheckB = element;
                     if (!productCmptToCheck.getQualifiedNameType().equals((productCmptToCheckB.getQualifiedNameType()))) {
                         strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
                         checkRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result, false);

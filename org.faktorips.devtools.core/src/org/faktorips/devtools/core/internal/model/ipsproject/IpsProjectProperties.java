@@ -133,8 +133,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             validateIpsObjectPath(list);
             validateRequiredFeatures(list);
             DynamicValueDatatype[] valuetypes = getDefinedValueDatatypes();
-            for (int i = 0; i < valuetypes.length; i++) {
-                list.add(valuetypes[i].checkReadyToUse());
+            for (DynamicValueDatatype valuetype : valuetypes) {
+                list.add(valuetype.checkReadyToUse());
             }
             return list;
         } catch (RuntimeException e) {
@@ -152,10 +152,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void validateRequiredFeatures(MessageList list) {
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
-        for (int i = 0; i < managers.length; i++) {
-            if (getMinRequiredVersionNumber(managers[i].getFeatureId()) == null) {
-                String text = NLS
-                        .bind(Messages.IpsProjectProperties_msgMissingMinFeatureId, managers[i].getFeatureId());
+        for (IIpsFeatureVersionManager manager : managers) {
+            if (getMinRequiredVersionNumber(manager.getFeatureId()) == null) {
+                String text = NLS.bind(Messages.IpsProjectProperties_msgMissingMinFeatureId, manager.getFeatureId());
                 list.add(new Message(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID, text, Message.ERROR, this));
             }
         }
@@ -346,8 +345,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     public void setDefinedDatatypes(DynamicValueDatatype[] datatypes) {
         definedDatatypes = new ArrayList<Datatype>(datatypes.length);
-        for (int i = 0; i < datatypes.length; i++) {
-            definedDatatypes.add(datatypes[i]);
+        for (DynamicValueDatatype datatype : datatypes) {
+            definedDatatypes.add(datatype);
         }
     }
 
@@ -356,8 +355,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     public void setDefinedDatatypes(Datatype[] datatypes) {
         definedDatatypes = new ArrayList<Datatype>(datatypes.length);
-        for (int i = 0; i < datatypes.length; i++) {
-            definedDatatypes.add(datatypes[i]);
+        for (Datatype datatype : datatypes) {
+            definedDatatypes.add(datatype);
         }
     }
 
@@ -406,9 +405,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.appendChild(datatypesEl);
         Element predefinedTypesEl = doc.createElement("UsedPredefinedDatatypes"); //$NON-NLS-1$
         datatypesEl.appendChild(predefinedTypesEl);
-        for (int i = 0; i < predefinedDatatypesUsed.length; i++) {
+        for (String element : predefinedDatatypesUsed) {
             Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
-            datatypeEl.setAttribute("id", predefinedDatatypesUsed[i]); //$NON-NLS-1$
+            datatypeEl.setAttribute("id", element); //$NON-NLS-1$
             predefinedTypesEl.appendChild(datatypeEl);
         }
         Element definedDatatypesEl = doc.createElement("DatatypeDefinitions"); //$NON-NLS-1$

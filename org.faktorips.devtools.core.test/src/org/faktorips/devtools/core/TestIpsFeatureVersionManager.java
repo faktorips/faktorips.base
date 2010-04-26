@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,9 +24,9 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManage
  */
 public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
-    private int compareToCurrentVersion = 0; 
+    private int compareToCurrentVersion = 0;
     private boolean compatible = true;
-    
+
     public TestIpsFeatureVersionManager() {
 
     }
@@ -37,7 +37,7 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
     public int compareToCurrentVersion(String otherVersion) {
         return compareToCurrentVersion;
     }
-    
+
     public void setCompareToCurrentVersion(int newReturnValue) {
         this.compareToCurrentVersion = newReturnValue;
     }
@@ -66,7 +66,8 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
-    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
+            throws CoreException {
         return new AbstractIpsProjectMigrationOperation[0];
     }
 
@@ -83,7 +84,7 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
     public boolean isCurrentVersionCompatibleWith(String otherVersion) {
         return compatible;
     }
-    
+
     public void setCurrentVersionCompatibleWith(boolean newReturnValue) {
         compatible = newReturnValue;
     }
@@ -108,5 +109,5 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
     public void setPredecessorId(String predecessorId) {
         throw new UnsupportedOperationException();
     }
-    
+
 }

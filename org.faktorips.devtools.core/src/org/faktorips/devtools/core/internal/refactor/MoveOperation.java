@@ -17,7 +17,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -284,8 +283,8 @@ public class MoveOperation implements IRunnableWithProgress {
      * otherwise.
      */
     private static boolean canMoveSources(Object[] sources) {
-        for (int i = 0; i < sources.length; i++) {
-            if (sources[i] instanceof IIpsProject) {
+        for (Object source : sources) {
+            if (source instanceof IIpsProject) {
                 return false;
             }
         }
@@ -319,12 +318,12 @@ public class MoveOperation implements IRunnableWithProgress {
      * <code>false</code> e.g. target is inside an ips archive.
      */
     private static boolean canMovePackages(Object[] sources, Object target) {
-        for (int i = 0; i < sources.length; i++) {
-            if (sources[i].equals(target)) {
+        for (Object source : sources) {
+            if (source.equals(target)) {
                 return false;
-            } else if (sources[i] instanceof IIpsPackageFragment || sources[i] instanceof IIpsPackageFragmentRoot) {
+            } else if (source instanceof IIpsPackageFragment || source instanceof IIpsPackageFragmentRoot) {
                 if (target instanceof IIpsPackageFragment || target instanceof IIpsPackageFragmentRoot) {
-                    IFolder sourceFolder = (IFolder)((IIpsElement)sources[i]).getCorrespondingResource();
+                    IFolder sourceFolder = (IFolder)((IIpsElement)source).getCorrespondingResource();
                     IResource targetResource = ((IIpsElement)target).getCorrespondingResource();
                     if (!(targetResource instanceof IFolder)) {
                         return false;
@@ -466,8 +465,7 @@ public class MoveOperation implements IRunnableWithProgress {
         IIpsPackageFragmentRoot sourceRoot = parent.getRoot();
 
         // 2) Move them all.
-        for (Iterator<String[]> iter = files.iterator(); iter.hasNext();) {
-            String[] fileInfos = iter.next();
+        for (String[] fileInfos : files) {
             IIpsPackageFragment targetPackage = currTargetRoot.getIpsPackageFragment(buildPackageName(
                     "", newName, fileInfos[0])); //$NON-NLS-1$
             if (!targetPackage.exists()) {
@@ -579,12 +577,12 @@ public class MoveOperation implements IRunnableWithProgress {
             result.add(new String[] { StringUtil.getPackageName(path), StringUtil.unqualifiedName(path) });
         }
 
-        for (int i = 0; i < members.length; i++) {
-            if (members[i].getType() == IResource.FOLDER) {
+        for (IResource member : members) {
+            if (member.getType() == IResource.FOLDER) {
                 getRelativeFileNames(
-                        path.length() > 0 ? (path + "." + members[i].getName()) : members[i].getName(), (IFolder)members[i], result); //$NON-NLS-1$
-            } else if (members[i].getType() == IResource.FILE) {
-                result.add(new String[] { path, members[i].getName() });
+                        path.length() > 0 ? (path + "." + member.getName()) : member.getName(), (IFolder)member, result); //$NON-NLS-1$
+            } else if (member.getType() == IResource.FILE) {
+                result.add(new String[] { path, member.getName() });
             }
         }
     }
@@ -627,9 +625,9 @@ public class MoveOperation implements IRunnableWithProgress {
             createCopy(source.getIpsSrcFile(), targetFile, monitor);
 
             // update references
-            for (int i = 0; i < refs.length; i++) {
-                fixTableContentsRelations(refs[i], source.getQualifiedName(), targetFile.getIpsObject()
-                        .getQualifiedName(), monitor);
+            for (IProductCmptGeneration ref : refs) {
+                fixTableContentsRelations(ref, source.getQualifiedName(), targetFile.getIpsObject().getQualifiedName(),
+                        monitor);
             }
 
             // delete the source
@@ -664,8 +662,8 @@ public class MoveOperation implements IRunnableWithProgress {
             createCopy(source.getIpsSrcFile(), tmpTargetFile, monitor);
 
             // third a), update references to product component generations
-            for (int i = 0; i < refs.length; i++) {
-                fixRelations(refs[i], source.getQualifiedName(), qualifiedTargetName, monitor);
+            for (IProductCmptGeneration ref : refs) {
+                fixRelations(ref, source.getQualifiedName(), qualifiedTargetName, monitor);
             }
 
             // third b), update references to test cases
@@ -727,10 +725,10 @@ public class MoveOperation implements IRunnableWithProgress {
 
         IProductCmptLink[] relations = generation.getLinks();
 
-        for (int i = 0; i < relations.length; i++) {
-            String target = relations[i].getTarget();
+        for (IProductCmptLink relation : relations) {
+            String target = relation.getTarget();
             if (target.equals(oldName)) {
-                relations[i].setTarget(newName);
+                relation.setTarget(newName);
             }
         }
 
@@ -752,10 +750,10 @@ public class MoveOperation implements IRunnableWithProgress {
             IProgressMonitor monitor) throws CoreException {
         ITableContentUsage[] tcu = generation.getTableContentUsages();
 
-        for (int i = 0; i < tcu.length; i++) {
-            String target = tcu[i].getTableContentName();
+        for (ITableContentUsage element : tcu) {
+            String target = element.getTableContentName();
             if (target.equals(oldName)) {
-                tcu[i].setTableContentName(newName);
+                element.setTableContentName(newName);
             }
         }
         generation.getIpsSrcFile().save(true, monitor);
@@ -771,11 +769,11 @@ public class MoveOperation implements IRunnableWithProgress {
             throws CoreException {
 
         ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
-        for (int i = 0; i < allTestPolicyCmpt.length; i++) {
-            if (oldName.equals(allTestPolicyCmpt[i].getProductCmpt())) {
-                allTestPolicyCmpt[i].setProductCmpt(newName);
-                allTestPolicyCmpt[i].setName(allTestPolicyCmpt[i].getTestCase().generateUniqueNameForTestPolicyCmpt(
-                        allTestPolicyCmpt[i], StringUtil.unqualifiedName(newName)));
+        for (ITestPolicyCmpt element : allTestPolicyCmpt) {
+            if (oldName.equals(element.getProductCmpt())) {
+                element.setProductCmpt(newName);
+                element.setName(element.getTestCase().generateUniqueNameForTestPolicyCmpt(element,
+                        StringUtil.unqualifiedName(newName)));
             }
         }
         testCase.getIpsSrcFile().save(true, null);
@@ -961,17 +959,17 @@ public class MoveOperation implements IRunnableWithProgress {
      * the move operation, thus if the target is inside one of source this package will be deleted!
      */
     public static boolean isTargetIncludedInSources(Object[] sources, IIpsPackageFragment target) throws CoreException {
-        for (int i = 0; i < sources.length; i++) {
-            if (sources[i] instanceof IIpsPackageFragmentRoot) {
-                if (isTargetInPackageFragment(target, ((IIpsPackageFragmentRoot)sources[i])
-                        .getDefaultIpsPackageFragment().getChildIpsPackageFragments())) {
+        for (Object source : sources) {
+            if (source instanceof IIpsPackageFragmentRoot) {
+                if (isTargetInPackageFragment(target, ((IIpsPackageFragmentRoot)source).getDefaultIpsPackageFragment()
+                        .getChildIpsPackageFragments())) {
                     return true;
                 }
-            } else if (sources[i] instanceof IIpsPackageFragment) {
-                if (target.equals(sources[i])) {
+            } else if (source instanceof IIpsPackageFragment) {
+                if (target.equals(source)) {
                     return true;
                 }
-                if (isTargetInPackageFragment(target, ((IIpsPackageFragment)sources[i]).getChildIpsPackageFragments())) {
+                if (isTargetInPackageFragment(target, ((IIpsPackageFragment)source).getChildIpsPackageFragments())) {
                     return true;
                 }
             }
@@ -981,11 +979,11 @@ public class MoveOperation implements IRunnableWithProgress {
 
     private static boolean isTargetInPackageFragment(IIpsPackageFragment frgmt, IIpsPackageFragment[] packageFragments)
             throws CoreException {
-        for (int i = 0; i < packageFragments.length; i++) {
-            if (packageFragments[i].equals(frgmt)) {
+        for (IIpsPackageFragment packageFragment : packageFragments) {
+            if (packageFragment.equals(frgmt)) {
                 return true;
             }
-            if (isTargetInPackageFragment(frgmt, packageFragments[i].getChildIpsPackageFragments())) {
+            if (isTargetInPackageFragment(frgmt, packageFragment.getChildIpsPackageFragments())) {
                 return true;
             }
         }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,7 +14,6 @@
 package org.faktorips.runtime.modeltype;
 
 import java.util.List;
-
 
 /**
  * 
@@ -42,13 +41,14 @@ public interface IModelType extends IModelElement {
     public IModelType getSuperType();
 
     /**
-     * Returns a list containing all attributes declared in this model type. Attributes defined
-     * in the type's super types are not returned.
+     * Returns a list containing all attributes declared in this model type. Attributes defined in
+     * the type's super types are not returned.
      */
     public List<IModelTypeAttribute> getDeclaredAttributes();
 
     /**
-     * Returns a list containing the type's attributes including those defined in the type's supertypes.
+     * Returns a list containing the type's attributes including those defined in the type's
+     * supertypes.
      */
     public List<IModelTypeAttribute> getAttributes();
 
@@ -60,23 +60,24 @@ public interface IModelType extends IModelElement {
     public IModelTypeAttribute getDeclaredAttribute(int index) throws IndexOutOfBoundsException;
 
     /**
-     * Returns the attribute with the given <code>name</code> declared in this type.
-     * Attributes defined in the type's super types are not returned.
+     * Returns the attribute with the given <code>name</code> declared in this type. Attributes
+     * defined in the type's super types are not returned.
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
     public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException;
 
     /**
-     * Returns the attribute with the given <code>name</code> declared in this type or one of it's super type.
+     * Returns the attribute with the given <code>name</code> declared in this type or one of it's
+     * super type.
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
     public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException;
 
     /**
-     * Returns a list containing all associations declared in this model type.
-     * Associations defined in the type's supertypes are not returned.
+     * Returns a list containing all associations declared in this model type. Associations defined
+     * in the type's supertypes are not returned.
      */
     public List<IModelTypeAssociation> getDeclaredAssociations();
 
@@ -86,16 +87,16 @@ public interface IModelType extends IModelElement {
     public List<IModelTypeAssociation> getAssociations();
 
     /**
-     * Returns the association at the given <code>index</code>.
-     * Associations defined in the type's super types are not returned.
+     * Returns the association at the given <code>index</code>. Associations defined in the type's
+     * super types are not returned.
      * 
      * @throws IndexOutOfBoundsException if no association exists for the given <code>index</code>.
      */
     public IModelTypeAssociation getDeclaredAssociation(int index);
 
     /**
-     * Returns the association with the given <code>name</code> declared in this type.
-     * Associations defined in the type's super types are not considered.
+     * Returns the association with the given <code>name</code> declared in this type. Associations
+     * defined in the type's super types are not considered.
      * 
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */

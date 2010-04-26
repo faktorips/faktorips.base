@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,16 +26,16 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 public interface ITableContentUsage extends IIpsObjectPart, IPropertyValue {
 
     public static final String TAG_NAME = "TableContentUsage"; //$NON-NLS-1$
-    
+
     public static final String PROPERTY_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
-    
+
     public static final String PROPERTY_TABLE_CONTENT = "tableContentName"; //$NON-NLS-1$
-    
+
     /**
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "TABLECONTENT-USAGE"; //$NON-NLS-1$
-    
+
     /**
      * Validation message code to indicate that the given structure usage is not known.
      */
@@ -47,7 +47,8 @@ public interface ITableContentUsage extends IIpsObjectPart, IPropertyValue {
     public final static String MSGCODE_UNKNOWN_TABLE_CONTENT = MSGCODE_PREFIX + "UnknownTableContent"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the given table content does not match the needs of the structure
+     * Validation message code to indicate that the given table content does not match the needs of
+     * the structure
      */
     public final static String MSGCODE_INVALID_TABLE_CONTENT = MSGCODE_PREFIX + "InvalidTableContent"; //$NON-NLS-1$
 
@@ -59,30 +60,32 @@ public interface ITableContentUsage extends IIpsObjectPart, IPropertyValue {
     /**
      * Set the rolename of the table structure usage implemented by this content usage.
      * 
-     * @param structureUsage The rolename of the table structure usage referred to by this content usage.
+     * @param structureUsage The rolename of the table structure usage referred to by this content
+     *            usage.
      */
     public void setStructureUsage(String structureUsageRolename);
-    
+
     /**
      * @return The rolename of the table structure usage implemented by this content usage.
      */
     public String getStructureUsage();
-    
+
     /**
      * Set the name of the table conent used by this table content usage.
      * 
      * @param tableContentName The fully quallified name of the used table content.
      */
     public void setTableContentName(String tableContentName);
-    
+
     /**
      * @return The fully quallified name of the used table content.
      */
     public String getTableContentName();
-    
+
     /**
-     * Returns the table contents which is related or <code>null</code> if the table contents
-     * can't be found.
+     * Returns the table contents which is related or <code>null</code> if the table contents can't
+     * be found.
+     * 
      * @param ipsProject TODO
      * 
      * @throws CoreException if an error occurs while searching for the table contents.
@@ -90,11 +93,11 @@ public interface ITableContentUsage extends IIpsObjectPart, IPropertyValue {
     public ITableContents findTableContents(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the related table structure usage or <code>null</code> if the table contents
-     * can't be found.
+     * Returns the related table structure usage or <code>null</code> if the table contents can't be
+     * found.
      * 
-     * @param project The project which ips object path is used for the search.
-     * This is not necessarily the project this type is part of. 
+     * @param project The project which ips object path is used for the search. This is not
+     *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the table structure usage.
      * @throws NullPointerException if ipsProject is <code>null</code>.

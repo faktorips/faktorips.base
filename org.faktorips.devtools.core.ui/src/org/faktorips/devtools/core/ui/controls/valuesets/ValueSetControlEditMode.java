@@ -14,8 +14,8 @@
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
 /**
- * Enumeration the defines the kind of edit modes for the {@link ValueSetSpecificationControl}. At the moment
- * we don't need a ONLY_ABSTRACT_SETS mode.
+ * Enumeration the defines the kind of edit modes for the {@link ValueSetSpecificationControl}. At
+ * the moment we don't need a ONLY_ABSTRACT_SETS mode.
  * 
  * @author Jan Ortmann
  */

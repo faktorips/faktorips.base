@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -44,33 +44,34 @@ import org.w3c.dom.Element;
 public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
     }
-    
+
     public void testGetEntry() throws CoreException {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         assertNull(path.getEntry(null));
         assertNull(path.getEntry("unknown"));
-        
+
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsObjectPathEntry entry0 = path.newSourceFolderEntry(srcFolder);
-        
+
         path.newIpsProjectRefEntry(newIpsProject("Project2"));
-        
+
         IFile archiveFile = ipsProject.getProject().getFile("archive.jar");
         IIpsObjectPathEntry entry2 = path.newArchiveEntry(archiveFile.getLocation());
-        
+
         assertEquals(entry0, path.getEntry("src"));
         assertNull(path.getEntry("Project2"));
         assertEquals(entry2, path.getEntry("archive.jar"));
-        
+
         assertNull(path.getEntry("unknwon"));
         assertNull(path.getEntry(null));
     }
-    
+
     public void testNewSrcFolderEntry() throws CoreException {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
@@ -113,7 +114,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
         IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
         assertFalse(path.containsProjectRefEntry(ipsProject2));
-        
+
         path.removeProjectRefEntry(ipsProject);
         assertFalse(path.containsProjectRefEntry(ipsProject));
     }
@@ -135,7 +136,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertFalse(path.containsProjectRefEntry(ipsProject2));
         assertEquals(1, path.getEntries().length);
     }
-    
+
     public void testContainsArchiveEntry() throws Exception {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
@@ -145,7 +146,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
         IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
         assertFalse(ipsProject2.getIpsObjectPath().containsArchiveEntry(ipsArchive));
-        
+
         path.removeArchiveEntry(ipsArchive);
         assertFalse(path.containsArchiveEntry(ipsArchive));
     }
@@ -174,7 +175,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
         IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
         assertFalse(ipsProject2.getIpsObjectPath().containsSrcFolderEntry(folder));
-        
+
         path.removeSrcFolderEntry(folder);
         assertFalse(path.containsSrcFolderEntry(folder));
     }
@@ -196,8 +197,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         path.removeSrcFolderEntry(folder);
         assertFalse(path.containsSrcFolderEntry(folder));
         assertEquals(1, path.getEntries().length);
-    }    
-    
+    }
+
     public void testGetReferencedIpsProjects() throws CoreException {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsProject refProject1 = ipsProject.getIpsModel().getIpsProject("RefProject1");
@@ -206,7 +207,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(refProject1);
         path.newSourceFolderEntry(srcFolder);
         path.newIpsProjectRefEntry(refProject2);
-        
+
         IIpsProject[] projects = path.getReferencedIpsProjects();
         assertEquals(2, projects.length);
         assertEquals(refProject1, projects[0]);
@@ -215,56 +216,63 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     public void testCreateFromXml() {
         Element docElement = getTestDocument().getDocumentElement();
-        
+
         // test case 1
-        IIpsObjectPath path = IpsObjectPath.createFromXml(ipsProject, XmlUtil.getElement(docElement, IpsObjectPath.XML_TAG_NAME, 0));
-        
+        IIpsObjectPath path = IpsObjectPath.createFromXml(ipsProject, XmlUtil.getElement(docElement,
+                IpsObjectPath.XML_TAG_NAME, 0));
+
         assertTrue(path.isOutputDefinedPerSrcFolder());
         assertEquals("", path.getBasePackageNameForMergableJavaClasses());
         assertNull(path.getOutputFolderForMergableSources());
         assertEquals("", path.getBasePackageNameForDerivedJavaClasses());
         assertEquals(ipsProject.getProject().getFolder("derived"), path.getOutputFolderForDerivedSources());
-        
+
         IIpsObjectPathEntry[] entries = path.getEntries();
         assertEquals(2, entries.length);
-        assertEquals("ipssrc/modelclasses", ((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath().toString());
-        assertEquals("ipssrc/products", ((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath().toString());
-        
+        assertEquals("ipssrc/modelclasses", ((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath()
+                .toString());
+        assertEquals("ipssrc/products", ((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath()
+                .toString());
+
         // test case 2
         path = IpsObjectPath.createFromXml(ipsProject, XmlUtil.getElement(docElement, IpsObjectPath.XML_TAG_NAME, 1));
-        
+
         assertFalse(path.isOutputDefinedPerSrcFolder());
         assertEquals("org.sample.generated", path.getBasePackageNameForMergableJavaClasses());
         assertEquals("generated", path.getOutputFolderForMergableSources().getName());
         assertEquals("org.sample.extension", path.getBasePackageNameForDerivedJavaClasses());
         assertEquals("extensions", path.getOutputFolderForDerivedSources().getName());
-        
+
         entries = path.getEntries();
         assertEquals(2, entries.length);
-        assertEquals("ipssrc/modelclasses", ((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath().toString());
-        assertEquals("ipssrc/products", ((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath().toString());
-        
+        assertEquals("ipssrc/modelclasses", ((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath()
+                .toString());
+        assertEquals("ipssrc/products", ((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath()
+                .toString());
+
     }
-    
+
     public void testToXml() {
         IProject project = ipsProject.getProject();
         IpsObjectPath path = new IpsObjectPath(ipsProject);
-        
+
         // test case 1: output folder and base package defined per entry
         path.setOutputDefinedPerSrcFolder(true);
-        
+
         IIpsSrcFolderEntry entry0 = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
         entry0.setSpecificOutputFolderForMergableJavaFiles(project.getFolder("javasrc").getFolder("modelclasses"));
         entry0.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.model");
-        entry0.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder("javasrc").getFolder("modelclasses.extensions"));
+        entry0.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder("javasrc").getFolder(
+                "modelclasses.extensions"));
         entry0.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.model.extensions");
         IIpsSrcFolderEntry entry1 = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("products"));
         entry1.setSpecificOutputFolderForMergableJavaFiles(project.getFolder("javasrc").getFolder("products"));
         entry1.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.products");
-        entry1.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder("javasrc").getFolder("products").getFolder("extensions"));
+        entry1.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder("javasrc").getFolder("products").getFolder(
+                "extensions"));
         entry1.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.products.extensions");
-        path.setEntries(new IIpsObjectPathEntry[]{entry0, entry1});
-        
+        path.setEntries(new IIpsObjectPathEntry[] { entry0, entry1 });
+
         Element element = path.toXml(newDocument());
         path = new IpsObjectPath(ipsProject);
         path = (IpsObjectPath)IpsObjectPath.createFromXml(ipsProject, element);
@@ -274,8 +282,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals("", path.getBasePackageNameForDerivedJavaClasses());
         assertNull(path.getOutputFolderForDerivedSources());
         assertEquals(2, path.getEntries().length);
-        
-        // test case 2: output folder and package defined via the path for all entries 
+
+        // test case 2: output folder and package defined via the path for all entries
         path.setOutputDefinedPerSrcFolder(false);
         path.setOutputFolderForMergableSources(project.getFolder("generated"));
         path.setBasePackageNameForMergableJavaClasses("org.sample.generated");
@@ -292,17 +300,17 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(2, path.getEntries().length);
         assertEquals(project.getFolder("derived"), path.getOutputFolderForDerivedSources());
     }
-    
+
     public void testFindIpsSrcFileStartingWith() throws CoreException {
         IIpsProject ipsProject2 = newIpsProject("TestProject2");
-        
+
         IpsObjectPath path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(path);
-        
+
         IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
         IIpsObject obj2 = newIpsObject(ipsProject2, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy2");
-        
+
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         path.findIpsSrcFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
@@ -310,22 +318,23 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(obj1.getIpsSrcFile()));
         assertTrue(result.contains(obj2.getIpsSrcFile()));
     }
-    
-    public void testFindIpsSrcFiles() throws Exception{
-    
+
+    public void testFindIpsSrcFiles() throws Exception {
+
         IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
         IIpsObject obj2 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.B");
         IIpsObject obj3 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.C");
-        
+
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        ((IpsObjectPath)ipsProject.getIpsObjectPath()).findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE, result, visitedEntries);
-        
+        ((IpsObjectPath)ipsProject.getIpsObjectPath()).findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE, result,
+                visitedEntries);
+
         assertTrue(result.contains(obj1.getIpsSrcFile()));
         assertTrue(result.contains(obj2.getIpsSrcFile()));
         assertTrue(result.contains(obj3.getIpsSrcFile()));
     }
-    
+
     public void testGetOutputFolders() {
         IProject project = ipsProject.getProject();
         IpsObjectPath path = new IpsObjectPath(ipsProject);
@@ -333,7 +342,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IFolder ext0 = project.getFolder("ext0");
         path.setOutputFolderForMergableSources(out0);
         path.setOutputFolderForDerivedSources(ext0);
-        
+
         IIpsSrcFolderEntry entry0 = path.newSourceFolderEntry(project.getFolder("src0"));
         IFolder out1 = project.getFolder("out1");
         entry0.setSpecificOutputFolderForMergableJavaFiles(out1);
@@ -343,19 +352,18 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsSrcFolderEntry entry2 = path.newSourceFolderEntry(project.getFolder("src1"));
         entry2.setSpecificOutputFolderForMergableJavaFiles(null);
         path.newIpsProjectRefEntry(ipsProject);
-        
+
         // one output folder for all src folders
         path.setOutputDefinedPerSrcFolder(false);
         IFolder[] outFolders = path.getOutputFolders();
         assertEquals(1, outFolders.length);
         assertEquals(out0, outFolders[0]);
-        
+
         // one output folder, but it is null
         path.setOutputFolderForMergableSources(null);
         outFolders = path.getOutputFolders();
         assertEquals(0, outFolders.length);
-        
-        
+
         // output defined per src folder
         path.setOutputDefinedPerSrcFolder(true);
         outFolders = path.getOutputFolders();
@@ -363,14 +371,14 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(out1, outFolders[0]);
         assertEquals(out2, outFolders[1]);
     }
-    
-    public void testValidate() throws CoreException{
+
+    public void testValidate() throws CoreException {
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.getNoOfMessages());
-        
+
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
-        
+
         // validate missing outputFolderGenerated
         IFolder folder1 = ipsProject.getProject().getFolder("none");
         path.setOutputFolderForMergableSources(folder1);
@@ -385,21 +393,21 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         ml = ipsProject.validate();
         assertEquals(2, ml.getNoOfMessages());
 
-        //validate missing folders only when general output folder needs to be defined
+        // validate missing folders only when general output folder needs to be defined
         path.setOutputDefinedPerSrcFolder(true);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(0, ml.getNoOfMessages());
-        
+
     }
-    
-    public void testValidateOutputFolderMergableAndDerivedEmpty() throws Exception{
+
+    public void testValidateOutputFolderMergableAndDerivedEmpty() throws Exception {
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.getNoOfMessages());
-        
+
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
-        
+
         ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
         assertNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
@@ -408,29 +416,30 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         path.setOutputFolderForMergableSources(null);
         path.setOutputFolderForDerivedSources(null);
         ipsProject.setProperties(props);
-        
+
         ml = ipsProject.validate();
         assertNotNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
         assertNotNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
     }
-    
-    public void testConstructor(){
-        
-        try{
+
+    public void testConstructor() {
+
+        try {
             new IpsObjectPath(null);
             fail();
+        } catch (Exception e) {
         }
-        catch(Exception e){}
-        
+
         IpsProject ipsProject = new IpsProject();
         IpsObjectPath path = new IpsObjectPath(ipsProject);
         assertSame(ipsProject, path.getIpsProject());
     }
-    
+
     public void testMoveEntries() throws Exception {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        
-        IIpsObjectPathEntry entry0 = path.getEntries()[0];      // default test project contains already 1 entry
+
+        IIpsObjectPathEntry entry0 = path.getEntries()[0]; // default test project contains already
+                                                           // 1 entry
         IIpsSrcFolderEntry entry1 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src"));
         IIpsSrcFolderEntry entry2 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src2"));
         IIpsSrcFolderEntry entry3 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src3"));
@@ -438,39 +447,42 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(4, path.getEntries().length);
 
         // move top two entries one position down
-        int[] newIndices = path.moveEntries(new int[] {0,1}, false);
+        int[] newIndices = path.moveEntries(new int[] { 0, 1 }, false);
         assertEquals(4, path.getEntries().length);
         assertEquals(2, newIndices.length);
-        assertTrue((newIndices[0] == 1) || (newIndices[1] == 1));   // check if the expected indices are contained in the 
-        assertTrue((newIndices[0] == 2) || (newIndices[1] == 2));   // returned array (no order guaranteed)
-        
-        assertEquals(entry2, path.getEntries()[0]);                 // check if the IPS object path was really modified in the
-        assertEquals(entry0, path.getEntries()[1]);                 // expected manner
+        assertTrue((newIndices[0] == 1) || (newIndices[1] == 1)); // check if the expected indices
+                                                                  // are contained in the
+        assertTrue((newIndices[0] == 2) || (newIndices[1] == 2)); // returned array (no order
+                                                                  // guaranteed)
+
+        assertEquals(entry2, path.getEntries()[0]); // check if the IPS object path was really
+                                                    // modified in the
+        assertEquals(entry0, path.getEntries()[1]); // expected manner
         assertEquals(entry1, path.getEntries()[2]);
         assertEquals(entry3, path.getEntries()[3]);
-        
+
         // now move last three entries one position up
-        newIndices = path.moveEntries(new int[] {3,1,2}, true);
+        newIndices = path.moveEntries(new int[] { 3, 1, 2 }, true);
         assertEquals(4, path.getEntries().length);
         assertEquals(3, newIndices.length);
-        assertTrue((newIndices[0] == 0) || (newIndices[1] == 0) || (newIndices[2] == 0)); 
-        assertTrue((newIndices[0] == 1) || (newIndices[1] == 1) || (newIndices[2] == 1)); 
-        assertTrue((newIndices[0] == 2) || (newIndices[1] == 2) || (newIndices[2] == 2)); 
-        
-        assertEquals(entry0, path.getEntries()[0]);
-        assertEquals(entry1, path.getEntries()[1]);
-        assertEquals(entry3, path.getEntries()[2]);
-        assertEquals(entry2, path.getEntries()[3]);
-        
-        // invalid values should not change the elements order
-        newIndices = path.moveEntries(new int[] {-2, 42}, true);
+        assertTrue((newIndices[0] == 0) || (newIndices[1] == 0) || (newIndices[2] == 0));
+        assertTrue((newIndices[0] == 1) || (newIndices[1] == 1) || (newIndices[2] == 1));
+        assertTrue((newIndices[0] == 2) || (newIndices[1] == 2) || (newIndices[2] == 2));
+
         assertEquals(entry0, path.getEntries()[0]);
         assertEquals(entry1, path.getEntries()[1]);
         assertEquals(entry3, path.getEntries()[2]);
         assertEquals(entry2, path.getEntries()[3]);
 
         // invalid values should not change the elements order
-        newIndices = path.moveEntries(new int[] {-3, 21}, false);
+        newIndices = path.moveEntries(new int[] { -2, 42 }, true);
+        assertEquals(entry0, path.getEntries()[0]);
+        assertEquals(entry1, path.getEntries()[1]);
+        assertEquals(entry3, path.getEntries()[2]);
+        assertEquals(entry2, path.getEntries()[3]);
+
+        // invalid values should not change the elements order
+        newIndices = path.moveEntries(new int[] { -3, 21 }, false);
         assertEquals(entry0, path.getEntries()[0]);
         assertEquals(entry1, path.getEntries()[1]);
         assertEquals(entry3, path.getEntries()[2]);

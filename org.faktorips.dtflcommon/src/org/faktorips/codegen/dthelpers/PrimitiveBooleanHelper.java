@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,7 +15,6 @@ package org.faktorips.codegen.dthelpers;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
-
 
 /**
  *
@@ -38,8 +37,9 @@ public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
         super(datatype);
     }
 
-    /** 
+    /**
      * Overridden method.
+     * 
      * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
      */
     public JavaCodeFragment newInstance(String value) {
@@ -51,7 +51,7 @@ public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public JavaCodeFragment toWrapper(JavaCodeFragment expression) {
@@ -63,12 +63,13 @@ public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
         return fragment;
     }
 
-	/**
+    /**
      * {@inheritDoc}
-	 */
-	protected JavaCodeFragment valueOfExpression(String expression) {
+     */
+    @Override
+    protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("Boolean.valueOf(" + expression + ").booleanValue()");
         return fragment;
-	}
+    }
 }

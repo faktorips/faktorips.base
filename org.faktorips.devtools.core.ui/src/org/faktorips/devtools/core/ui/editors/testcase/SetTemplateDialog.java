@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,17 +29,15 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 
-
 /**
- * A dialog to edit the product component type (template) of a product
- * compnent.
+ * A dialog to edit the product component type (template) of a product compnent.
  */
 public class SetTemplateDialog extends EditDialog {
-    
+
     private ITestCase testCase;
     private TestCaseTypeRefControl template;
     private String message;
-    
+
     /**
      * Set template for tese case dialog
      * 
@@ -56,10 +54,11 @@ public class SetTemplateDialog extends EditDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         uiToolkit.createFormLabel(workArea, Messages.SetTemplateDialog_DialogTemplate_LabelTemplate);
         template = new TestCaseTypeRefControl(testCase.getIpsProject(), workArea, uiToolkit);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -83,29 +82,31 @@ public class SetTemplateDialog extends EditDialog {
             }
         });
         super.setMessage(message);
-        
+
         return workArea;
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void createButtonsForButtonBar(Composite parent) {
-		super.createButtonsForButtonBar(parent);
-		super.getButton(OK).setEnabled(false);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        super.createButtonsForButtonBar(parent);
+        super.getButton(OK).setEnabled(false);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == OK) {
-			testCase.setTestCaseType(getTestCaseType());
-		}
-		super.buttonPressed(buttonId);
-	}
-    
-	private String getTestCaseType() {
-    	return template.getText();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == OK) {
+            testCase.setTestCaseType(getTestCaseType());
+        }
+        super.buttonPressed(buttonId);
+    }
+
+    private String getTestCaseType() {
+        return template.getText();
     }
 }

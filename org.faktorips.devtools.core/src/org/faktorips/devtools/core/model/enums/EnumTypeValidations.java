@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.model.enums;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -115,8 +114,8 @@ public class EnumTypeValidations {
             msgList.add(new Message(IEnumType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg, Message.ERROR, enumType,
                     IEnumType.PROPERTY_SUPERTYPE));
         } else {
-            for (Iterator<IEnumType> it = collector.superTypes.iterator(); it.hasNext();) {
-                MessageList superResult = it.next().validate(ipsProject);
+            for (IEnumType iEnumType : collector.superTypes) {
+                MessageList superResult = iEnumType.validate(ipsProject);
                 if (!(superResult.isEmpty())) {
                     if (superResult.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST) != null
                             || superResult.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT) != null) {

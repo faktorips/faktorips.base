@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.team.compare;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -50,14 +49,14 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * Pattern for recognizing separators between generations (single line starting with "-")
      */
     private Pattern genSeparatorPattern = Pattern.compile("-"); //$NON-NLS-1$
-    
+
     /**
      * List of patterns to be applied to lines in getStylesForRestOfLine().
      */
     protected List<Pattern> linePatternList = new ArrayList<Pattern>();
     /**
-     * Maps patterns to specific highlight colors and thus defines a colour for specific tokens 
-     * should in which the should be displayed. 
+     * Maps patterns to specific highlight colors and thus defines a colour for specific tokens
+     * should in which the should be displayed.
      */
     private Map<Pattern, Color> highlightColorMap = new HashMap<Pattern, Color>();
 
@@ -79,11 +78,13 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
                 .compile(org.faktorips.devtools.core.ui.team.compare.tablecontents.Messages.TableContentsCompareItem_TableContents);
         linePatternList.add(tablePattern);
         highlightColorMap.put(tablePattern, ipsObjectHighlight);
-        Pattern tableStructurePattern = Pattern.compile(org.faktorips.devtools.core.ui.team.compare.tablecontents.Messages.TableContentsCompareItem_TableStructure);
+        Pattern tableStructurePattern = Pattern
+                .compile(org.faktorips.devtools.core.ui.team.compare.tablecontents.Messages.TableContentsCompareItem_TableStructure);
         linePatternList.add(tableStructurePattern);
 
         // patterns for all ipsObjects
-        String generationString= IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+        String generationString = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular();
         Pattern generationPattern = Pattern.compile(generationString);
         linePatternList.add(generationPattern);
         highlightColorMap.put(generationPattern, generationHighlight);
@@ -114,9 +115,9 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     }
 
     /**
-     * Returns a list one or no <code>StyleRange</code> for a token at linestart. This may either
-     * be a date (in <code>SimpleDateFormat.MEDIUM</code>) or a dash. (Lines starting with "-"
-     * and a date are not possible)
+     * Returns a list one or no <code>StyleRange</code> for a token at linestart. This may either be
+     * a date (in <code>SimpleDateFormat.MEDIUM</code>) or a dash. (Lines starting with "-" and a
+     * date are not possible)
      * <p>
      * Only returns a style a if date/dash string is found, and only if such a token is found at
      * linestart to avoid faulty highlighting.
@@ -153,14 +154,13 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      */
     protected List<StyleRange> getStylesForRestOfLine(String lineText, int lineOffset) {
         List<StyleRange> styleList = new ArrayList<StyleRange>();
-        for (Iterator<Pattern> iter = linePatternList.iterator(); iter.hasNext();) {
-            Pattern pattern = iter.next();
+        for (Pattern pattern : linePatternList) {
             Matcher matcher = pattern.matcher(lineText);
             if (matcher.find()) {
                 int start = matcher.start();
-                Color highlight = highlightColorMap.get(pattern); // if null, default foreground is used
-                styleList.add(new StyleRange(lineOffset + start, lineText.length() - start, highlight,
-                        null, SWT.BOLD));
+                Color highlight = highlightColorMap.get(pattern); // if null, default foreground is
+                                                                  // used
+                styleList.add(new StyleRange(lineOffset + start, lineText.length() - start, highlight, null, SWT.BOLD));
                 break;
             }
         }

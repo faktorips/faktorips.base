@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -327,8 +327,7 @@ public class Message implements Serializable {
 
     /**
      * Returns <code>true</code> if the message has a replacement parameter with the given name,
-     * otherwise <code>false</code>. Returns <code>false</code> if paramName is
-     * <code>null</code>.
+     * otherwise <code>false</code>. Returns <code>false</code> if paramName is <code>null</code>.
      */
     public boolean hasReplacementParameter(String paramName) {
         if (replacementParameters == null) {
@@ -360,6 +359,7 @@ public class Message implements Serializable {
         return null;
     }
 
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         switch (severity) {
@@ -400,6 +400,7 @@ public class Message implements Serializable {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof Message)) {
             return false;
@@ -429,6 +430,7 @@ public class Message implements Serializable {
         return true;
     }
 
+    @Override
     public int hashCode() {
         return text.hashCode();
     }

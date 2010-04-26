@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 
 /**
- * The edit part of the business function object. 
+ * The edit part of the business function object.
  * 
  * @author Peter Erzberger
  */
@@ -57,14 +57,14 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
     }
 
     /**
-     * Returns the business function which is the model object of this edit part. 
+     * Returns the business function which is the model object of this edit part.
      */
     public IBusinessFunction getBusinessFunction() {
         return (IBusinessFunction)getModel();
     }
 
     /**
-     * Returns all {@link IBFElement} except for the parameters. 
+     * Returns all {@link IBFElement} except for the parameters.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -77,23 +77,24 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
      */
     @Override
     public void activate() {
-        if (isActive())
+        if (isActive()) {
             return;
+        }
         super.activate();
         getBusinessFunction().getIpsModel().addChangeListener(this);
     }
 
     /**
-     * In addition to the super class method behavior special treatment is taken for the parameters of a business
-     * function since parameters are all displayed in one figure. 
+     * In addition to the super class method behavior special treatment is taken for the parameters
+     * of a business function since parameters are all displayed in one figure.
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void refreshChildren(){
+    public void refreshChildren() {
         List<EditPart> childs = getChildren();
         for (Iterator<EditPart> it = childs.iterator(); it.hasNext();) {
             EditPart editPart = it.next();
-            if(editPart instanceof ParameterEditPart){
+            if (editPart instanceof ParameterEditPart) {
                 it.remove();
                 continue;
             }
@@ -111,22 +112,24 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
      */
     @Override
     public void deactivate() {
-        if (!isActive())
+        if (!isActive()) {
             return;
+        }
         super.deactivate();
         getBusinessFunction().getIpsModel().removeChangeListener(this);
     }
 
     /**
-     * Updates the children of this edit part when an <code>ContentChangeEvent.TYPE_PART_ADDED</code> or 
-     * <code>ContentChangeEvent.TYPE_PART_REMOVED</code> occurs.  
+     * Updates the children of this edit part when an
+     * <code>ContentChangeEvent.TYPE_PART_ADDED</code> or
+     * <code>ContentChangeEvent.TYPE_PART_REMOVED</code> occurs.
      */
     public void contentsChanged(ContentChangeEvent event) {
         if (!event.getIpsSrcFile().equals(getBusinessFunction().getIpsSrcFile())) {
             return;
         }
-        if(event.getEventType() == ContentChangeEvent.TYPE_PART_ADDED ||
-                event.getEventType() == ContentChangeEvent.TYPE_PART_REMOVED){
+        if (event.getEventType() == ContentChangeEvent.TYPE_PART_ADDED
+                || event.getEventType() == ContentChangeEvent.TYPE_PART_REMOVED) {
             refreshChildren();
         }
     }

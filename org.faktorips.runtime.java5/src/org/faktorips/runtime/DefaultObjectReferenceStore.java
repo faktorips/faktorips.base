@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,7 +16,6 @@ package org.faktorips.runtime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
 
     private Map<Object, List<Object>> objects = new HashMap<Object, List<Object>>(100);
     private List<IUnresolvedReference> references = new ArrayList<IUnresolvedReference>();
-    
+
     public DefaultObjectReferenceStore() {
     }
 
@@ -37,8 +36,7 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
      * {@inheritDoc}
      */
     public void resolveReferences() throws Exception {
-        for (Iterator<IUnresolvedReference> it=references.iterator(); it.hasNext();) {
-            IUnresolvedReference ref = it.next();
+        for (IUnresolvedReference ref : references) {
             ref.resolve(this);
         }
     }
@@ -48,12 +46,13 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
      */
     public void putObject(Object id, Object object) {
         List<Object> list = objects.get(id);
-        if (list==null) {
+        if (list == null) {
             list = new ArrayList<Object>(1);
             objects.put(id, list);
         }
-        if (!list.contains(object)) { 
-            // assumtion here is that there won't be too many objects with same id of different classes
+        if (!list.contains(object)) {
+            // assumtion here is that there won't be too many objects with same id of different
+            // classes
             // in the store, so this implementation is fast and there is no need to use a set class.
             list.add(object);
         }
@@ -71,11 +70,10 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
      */
     public Object getObject(Class<?> clazz, Object id) {
         List<Object> objectsWithId = objects.get(id);
-        if (objectsWithId==null) {
+        if (objectsWithId == null) {
             return null;
         }
-        for (Iterator<Object> it=objectsWithId.iterator(); it.hasNext(); ) {
-            Object obj = it.next();
+        for (Object obj : objectsWithId) {
             if (clazz.isAssignableFrom(obj.getClass())) {
                 return obj;
             }
@@ -96,6 +94,5 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
     public Collection<IUnresolvedReference> getAllUnresolvedReferences() {
         return references;
     }
-
 
 }

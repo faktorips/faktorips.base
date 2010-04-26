@@ -85,9 +85,9 @@ public class TestConfigurationElement implements IConfigurationElement {
 
     public IConfigurationElement[] getChildren(String name) throws InvalidRegistryObjectException {
         ArrayList<IConfigurationElement> result = new ArrayList<IConfigurationElement>();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i].getName().equals(name)) {
-                result.add(children[i]);
+        for (IConfigurationElement element : children) {
+            if (element.getName().equals(name)) {
+                result.add(element);
             }
         }
         return result.toArray(new IConfigurationElement[result.size()]);

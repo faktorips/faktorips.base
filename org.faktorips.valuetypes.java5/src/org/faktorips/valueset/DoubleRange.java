@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,14 +13,13 @@
 
 package org.faktorips.valueset;
 
-
 /**
  * A Range class where upper and lower bounds are Doubles.
  * 
  * @author Jan Ortmann
  * @author Daniel Hohenberger conversion to Java5
  */
-public class DoubleRange extends DefaultRange<Double>{
+public class DoubleRange extends DefaultRange<Double> {
 
     private static final long serialVersionUID = 3093772484960108819L;
 
@@ -34,8 +33,9 @@ public class DoubleRange extends DefaultRange<Double>{
 
     /**
      * Creates an DoubleRange based on the indicated Strings. The Strings are parsed with the
-     * Double.valueOf() method. An asterisk (*) is interpreted as the maximum/minimum available Double
-     * value.
+     * Double.valueOf() method. An asterisk (*) is interpreted as the maximum/minimum available
+     * Double value.
+     * 
      * @param containsNull defines if null is part of the range or not
      */
     public static DoubleRange valueOf(String lower, String upper, boolean containsNull) {
@@ -57,9 +57,10 @@ public class DoubleRange extends DefaultRange<Double>{
 
     /**
      * Creates an DoubleRange based on the indicated Double values.
+     * 
      * @param containsNull defines if null is part of the range or not
      */
-    public static DoubleRange valueOf(Double lower, Double upper,  boolean containsNull) {
+    public static DoubleRange valueOf(Double lower, Double upper, boolean containsNull) {
         return new DoubleRange(lower, upper, containsNull);
     }
 }

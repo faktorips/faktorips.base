@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -42,18 +42,18 @@ public class LongRangeTest extends TestCase {
         range = new LongRange(null, null);
         assertEquals(Integer.MAX_VALUE, range.size());
 
-        try{
-            range = new LongRange(1L, Integer.MAX_VALUE+3L);
+        try {
+            range = new LongRange(1L, Integer.MAX_VALUE + 3L);
             range.size();
+        } catch (RuntimeException e) {
         }
-        catch(RuntimeException e){}
 
         range = LongRange.valueOf(100L, 1100L, 200L);
         assertEquals(6, range.size());
 
     }
 
-    public void testGetValues(){
+    public void testGetValues() {
         LongRange range = LongRange.valueOf(100L, 1100L, 200L);
         Set<Long> values = range.getValues(false);
         assertTrue(values.contains(new Long(100)));
@@ -81,11 +81,11 @@ public class LongRangeTest extends TestCase {
         assertEquals(new Long(100), range.getUpperBound());
         assertEquals(new Long(10), range.getStep());
 
-        try{
+        try {
             LongRange.valueOf(10L, 101L, 10L);
             fail();
+        } catch (IllegalArgumentException e) {
         }
-        catch(IllegalArgumentException e){}
 
         range = LongRange.valueOf(new Long(10), new Long(100), new Long(10));
         assertEquals(new Long(10), range.getLowerBound());
@@ -93,30 +93,30 @@ public class LongRangeTest extends TestCase {
         assertEquals(new Long(10), range.getStep());
         assertFalse(range.containsNull());
 
-        try{
+        try {
             LongRange.valueOf(new Long(10), new Long(101), new Long(10));
             fail();
+        } catch (IllegalArgumentException e) {
         }
-        catch(IllegalArgumentException e){}
 
         range = LongRange.valueOf(new Long(10), new Long(100), new Long(10), true);
         assertTrue(range.containsNull());
 
-        try{
+        try {
             LongRange.valueOf(new Long(10), new Long(101), new Long(10), true);
             fail();
+        } catch (IllegalArgumentException e) {
         }
-        catch(IllegalArgumentException e){}
 
-        try{
+        try {
             LongRange.valueOf(new Long(10), new Long(101), new Long(0), true);
             fail("Expect to since zero step size is not allowed.");
+        } catch (IllegalArgumentException e) {
         }
-        catch(IllegalArgumentException e){}
 
     }
 
-    public void testSerializable() throws Exception{
+    public void testSerializable() throws Exception {
         TestUtil.testSerializable(LongRange.valueOf(new Long(10), new Long(100), new Long(10)));
     }
 }

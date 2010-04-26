@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,7 +31,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.FolderSelectionControl;
 
 /**
- * Dialog for editing output folders of IPS source folder entries 
+ * Dialog for editing output folders of IPS source folder entries
+ * 
  * @author Roman Grutza
  */
 public class OutputFolderEditDialog extends StatusDialog {
@@ -39,119 +40,121 @@ public class OutputFolderEditDialog extends StatusDialog {
     private FolderSelectionControl folderSelectionControl;
     private Button buttonDefaultFolderSelected;
     private Button buttonCustomFolderSelected;
-    
+
     private boolean customFolderSelected = false;
     private IContainer selectedFolder;
     private IIpsObjectPathEntryAttribute attribute;
-    private IIpsSrcFolderEntry srcFolderEntry;    
+    private IIpsSrcFolderEntry srcFolderEntry;
 
     /**
      * @param parent Composite
      * @param srcfolderEntry parent entry for which to alter an attribute
      * @param the attribute to be changed
      */
-    public OutputFolderEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
+    public OutputFolderEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry,
+            IIpsObjectPathEntryAttribute attribute) {
         super(parent);
 
         Assert.isNotNull(attribute);
-        if (! (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources())) {
+        if (!(attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources())) {
             throw new IllegalArgumentException("Attribute is not of type output folder."); //$NON-NLS-1$
         }
-        
+
         this.setTitle(Messages.OutputFolderEditDialog_dialog_title);
         this.setHelpAvailable(false);
         this.attribute = attribute;
         this.srcFolderEntry = srcFolderEntry;
     }
 
-
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
-        Composite composite = (Composite) super.createDialogArea(parent);
+        Composite composite = (Composite)super.createDialogArea(parent);
 
         Group group = new Group(parent, SWT.NONE);
-        
+
         buttonDefaultFolderSelected = new Button(group, SWT.RADIO);
-        String defaultOutputFolder = (getDefaultOutputFolder() != null) ? " ("  + getDefaultOutputFolder().getName() + ")" : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String defaultOutputFolder = (getDefaultOutputFolder() != null) ? " (" + getDefaultOutputFolder().getName() + ")" : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         buttonDefaultFolderSelected.setText(Messages.OutputFolderEditDialog_use_default_label + defaultOutputFolder);
         buttonCustomFolderSelected = new Button(group, SWT.RADIO);
         buttonCustomFolderSelected.setText(Messages.OutputFolderEditDialog_use_sepcific_label);
 
-        folderSelectionControl = new FolderSelectionControl(group, new UIToolkit(null), Messages.OutputFolderEditDialog_button_title_browse);
+        folderSelectionControl = new FolderSelectionControl(group, new UIToolkit(null),
+                Messages.OutputFolderEditDialog_button_title_browse);
         folderSelectionControl.setRoot(srcFolderEntry.getIpsProject().getProject());
 
         // initialize specific output folder
         if (srcFolderEntry.getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
             folderSelectionControl.setFolder(getSpecificFolder());
             selectedFolder = getSpecificFolder();
-            customFolderSelected  = true;
+            customFolderSelected = true;
         }
-        
+
         if (selectedFolder != null) {
             // entry specific folder
             buttonCustomFolderSelected.setSelection(true);
             buttonDefaultFolderSelected.setSelection(false);
             folderSelectionControl.setEnabled(true);
             folderSelectionControl.setFolder(selectedFolder);
-        }
-        else {
+        } else {
             // default IPS object path folders are used
             buttonCustomFolderSelected.setSelection(false);
             buttonDefaultFolderSelected.setSelection(true);
-            folderSelectionControl.setEnabled(false);      
+            folderSelectionControl.setEnabled(false);
         }
-        
+
         GridLayout layout = new GridLayout(1, true);
         layout.verticalSpacing = 10;
-        
+
         buttonDefaultFolderSelected.addSelectionListener(new SelectionListener() {
 
-            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do*/ }
+            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+            }
 
             public void widgetSelected(SelectionEvent e) {
                 folderSelectionControl.setEnabled(false);
                 customFolderSelected = false;
             }
         });
-        
+
         buttonCustomFolderSelected.addSelectionListener(new SelectionListener() {
 
-            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do*/ }
+            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+            }
 
             public void widgetSelected(SelectionEvent e) {
                 folderSelectionControl.setEnabled(true);
                 customFolderSelected = true;
             }
         });
-        
+
         group.setLayout(layout);
-        
+
         return composite;
-        
+
     }
 
     /**
      * Get the dialog's result
+     * 
      * @return selected folder, or null if none was selected
      */
     public IContainer getSelectedFolder() {
         IContainer resultContainer = null;
-        
+
         if (customFolderSelected) {
             resultContainer = folderSelectionControl.getFolder();
-        }
-        else  {
+        } else {
             resultContainer = getDefaultOutputFolder();
         }
 
-        return resultContainer; 
+        return resultContainer;
     }
 
-    
     private IFolder getDefaultOutputFolder() {
-        
+
         IFolder outputFolder;
         if (attribute.isFolderForDerivedSources()) {
             outputFolder = srcFolderEntry.getIpsObjectPath().getOutputFolderForDerivedSources();
@@ -160,7 +163,7 @@ public class OutputFolderEditDialog extends StatusDialog {
         }
         return outputFolder;
     }
-    
+
     private IFolder getSpecificFolder() {
         if (attribute.isFolderForDerivedSources()) {
             return srcFolderEntry.getSpecificOutputFolderForDerivedJavaFiles();
@@ -168,5 +171,5 @@ public class OutputFolderEditDialog extends StatusDialog {
             return srcFolderEntry.getSpecificOutputFolderForMergableJavaFiles();
         }
     }
-    
+
 }

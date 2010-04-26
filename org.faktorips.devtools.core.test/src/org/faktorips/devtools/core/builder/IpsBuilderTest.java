@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -306,8 +305,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(markers.length > 0);
         assertEquals(msgList.getNoOfMessages(), markers.length);
         Map<String, Integer> msgTexts = new HashMap<String, Integer>();
-        for (Iterator<?> it = msgList.iterator(); it.hasNext();) {
-            Message msg = (Message)it.next();
+        for (Object name : msgList) {
+            Message msg = (Message)name;
             if (msg.getSeverity() == Message.ERROR) {
                 msgTexts.put(msg.getText(), new Integer(IMarker.SEVERITY_ERROR));
             }
@@ -315,10 +314,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
                 msgTexts.put(msg.getText(), new Integer(IMarker.SEVERITY_WARNING));
             }
         }
-        for (int i = 0; i < markers.length; i++) {
-            assertTrue(msgTexts.keySet().contains(markers[i].getAttribute(IMarker.MESSAGE)));
-            assertEquals(msgTexts.get(markers[i].getAttribute(IMarker.MESSAGE)), markers[i]
-                    .getAttribute(IMarker.SEVERITY));
+        for (IMarker marker : markers) {
+            assertTrue(msgTexts.keySet().contains(marker.getAttribute(IMarker.MESSAGE)));
+            assertEquals(msgTexts.get(marker.getAttribute(IMarker.MESSAGE)), marker.getAttribute(IMarker.SEVERITY));
         }
 
         // test if marker got's deleted if the problem is fixed.
@@ -614,8 +612,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, 0);
         boolean isMessageThere = false;
-        for (int i = 0; i < markers.length; i++) {
-            String msg = (String)markers[i].getAttribute(IMarker.MESSAGE);
+        for (IMarker marker : markers) {
+            String msg = (String)marker.getAttribute(IMarker.MESSAGE);
             if (msg.equals(Messages.IpsBuilder_ipsSrcFileNotParsable)) {
                 isMessageThere = true;
             }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
  */
 public class KeyValue extends AbstractKeyValue {
     protected String value;
-    
+
     public KeyValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
         super(structure, uniqueKey, row);
         this.value = evalValue(row);
@@ -38,13 +38,14 @@ public class KeyValue extends AbstractKeyValue {
     /**
      * Creates a new key value object of an a given unique key for a given row.
      */
-    public static KeyValue createKeyValue(ITableStructure structure, IUniqueKey uniqueKey, Row row){
+    public static KeyValue createKeyValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
         KeyValue keyValue = new KeyValue(structure, uniqueKey, row);
         return keyValue;
     }
-    
+
     /**
-     * The key value is the string representation of all key items columns in the table contents row.
+     * The key value is the string representation of all key items columns in the table contents
+     * row.
      * 
      * {@inheritDoc}
      */
@@ -52,7 +53,7 @@ public class KeyValue extends AbstractKeyValue {
     protected String getKeyValue() {
         return value;
     }
-    
+
     /**
      * 
      * {@inheritDoc}
@@ -60,7 +61,7 @@ public class KeyValue extends AbstractKeyValue {
     @Override
     public boolean isValid(Row row) {
         String valueNew = evalValue(row);
-        if (StringUtils.isEmpty(valueNew) || StringUtils.isEmpty(value)){
+        if (StringUtils.isEmpty(valueNew) || StringUtils.isEmpty(value)) {
             return false;
         }
         return value.equals(valueNew);
@@ -73,29 +74,29 @@ public class KeyValue extends AbstractKeyValue {
     private String evalValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
         String[] values;
         List<IKeyItem> keyItems = getNonTwoColumnRangeKeyItems(uniqueKey);;
-        
+
         values = new String[keyItems.size()];
         for (int i = 0; i < keyItems.size(); i++) {
             values[i] = getValueForKeyItem(structure, row, keyItems.get(i));
         }
         return Arrays.toString(values);
     }
-    
+
     private static String getValueForKeyItem(ITableStructure structure, Row row, IKeyItem keyItem) {
         IColumn[] columns = keyItem.getColumns();
         String value = ""; //$NON-NLS-1$
         for (int i = 0; i < columns.length; i++) {
             int columnIndex = structure.getColumnIndex(columns[i]);
-            if (columnIndex >= row.getNoOfColumns()){
+            if (columnIndex >= row.getNoOfColumns()) {
                 // invalid table contents
                 continue;
             }
-            value += i>0?"#":""; //$NON-NLS-1$ //$NON-NLS-2$
+            value += i > 0 ? "#" : ""; //$NON-NLS-1$ //$NON-NLS-2$
             value += row.getValue(columnIndex);
         }
         return value;
     }
-    
+
     @Override
     public String toString() {
         return uniqueKey.getName() + ": " + value; //$NON-NLS-1$

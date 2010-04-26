@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,40 +21,40 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
  * @author dirmeier
- *
+ * 
  */
 public abstract class AbstractDeltaDialog extends TitleAreaDialog {
 
-	protected TreeViewer tree;
-	
-	protected UIToolkit toolkit;
+    protected TreeViewer tree;
 
-
-	/**
-	 * @param parentShell
-	 */
-	public AbstractDeltaDialog(Shell parentShell) {
-		super(parentShell);
-		this.toolkit = new UIToolkit(null);
-
-	}
+    protected UIToolkit toolkit;
 
     /**
-	 * {@inheritDoc}
-	 */
-	protected Control createButtonBar(Composite parent) {
-		Control buttons = super.createButtonBar(parent);
-		super.getButton(OK).setText(Messages.AbstractDeltaDialog_Button_Fix);
-		super.getButton(CANCEL).setText(Messages.AbstractDeltaDialog_Button_Ignore);
-		return buttons; 
-	}
+     * @param parentShell
+     */
+    public AbstractDeltaDialog(Shell parentShell) {
+        super(parentShell);
+        this.toolkit = new UIToolkit(null);
 
-	protected void updateDeltaView(Object delta) {
-		tree.setInput(delta);
-		tree.refresh();
-		tree.expandAll();
-		tree.getControl().redraw();
-		getParentShell().layout();
-	}
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createButtonBar(Composite parent) {
+        Control buttons = super.createButtonBar(parent);
+        super.getButton(OK).setText(Messages.AbstractDeltaDialog_Button_Fix);
+        super.getButton(CANCEL).setText(Messages.AbstractDeltaDialog_Button_Ignore);
+        return buttons;
+    }
+
+    protected void updateDeltaView(Object delta) {
+        tree.setInput(delta);
+        tree.refresh();
+        tree.expandAll();
+        tree.getControl().redraw();
+        getParentShell().layout();
+    }
 
 }

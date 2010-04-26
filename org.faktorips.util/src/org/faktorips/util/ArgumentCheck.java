@@ -49,8 +49,8 @@ public class ArgumentCheck {
      */
     public final static void notNull(Object[] arg) {
         notNull((Object)arg);
-        for (int i = 0; i < arg.length; i++) {
-            notNull(arg[i]);
+        for (Object element : arg) {
+            notNull(element);
         }
     }
 
@@ -63,8 +63,8 @@ public class ArgumentCheck {
      */
     public final static void notNull(Object[] arg, Object context) {
         notNull((Object)arg);
-        for (int i = 0; i < arg.length; i++) {
-            notNull(arg[i], context);
+        for (Object element : arg) {
+            notNull(element, context);
         }
     }
 

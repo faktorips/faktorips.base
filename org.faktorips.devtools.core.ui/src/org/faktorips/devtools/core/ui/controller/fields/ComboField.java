@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,13 +26,13 @@ import org.eclipse.swt.widgets.Control;
 public class ComboField extends DefaultEditField {
 
     private boolean immediatelyNotifyListener = false;
-    
+
     private Combo combo;
-    
+
     public ComboField(Combo combo) {
         this.combo = combo;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -43,11 +43,11 @@ public class ComboField extends DefaultEditField {
     public Combo getCombo() {
         return combo;
     }
-    
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object parseContent() {
         return super.prepareObjectForGet(getText());
     }
@@ -70,7 +70,7 @@ public class ComboField extends DefaultEditField {
         }
         return combo.getItem(i);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -100,6 +100,7 @@ public class ComboField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void addListenerToControl() {
         // add selection listener to get notifications if the user changes the selection
         combo.addSelectionListener(new SelectionListener() {
@@ -109,6 +110,7 @@ public class ComboField extends DefaultEditField {
                 // the time for the change is long enough
                 notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener);
             }
+
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
             }

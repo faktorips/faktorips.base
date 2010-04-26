@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,7 +24,8 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
 /**
- * An extension of the AbstractFlFunction that provides base functionality for variable argument functions. 
+ * An extension of the AbstractFlFunction that provides base functionality for variable argument
+ * functions.
  */
 public abstract class AbstractVarArgFunction extends AbstractFlFunction {
 
@@ -88,8 +89,8 @@ public abstract class AbstractVarArgFunction extends AbstractFlFunction {
      * already converted arguments and a JavaCodeFragment where the code that is to generate needs
      * to be written to. The compilation result is provided to this method to write error messages
      * to that may occure during the code generation or to get status information. Implementations
-     * don't need to care about shoveling messages from the argument CompilationResult object to
-     * the returned CompilationResult object. This is already be handled by the caller.
+     * don't need to care about shoveling messages from the argument CompilationResult object to the
+     * returned CompilationResult object. This is already be handled by the caller.
      */
     protected abstract void compileInternal(CompilationResult returnValue,
             CompilationResult[] convertedArgs,

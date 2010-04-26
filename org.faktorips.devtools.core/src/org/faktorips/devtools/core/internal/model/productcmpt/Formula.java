@@ -255,8 +255,8 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         IProductCmptType productCmptType = getProductCmptGeneration().getProductCmpt().findProductCmptType(ipsProject);
         if (productCmptType != null) {
             IAttribute[] attributes = productCmptType.findAllAttributes(ipsProject);
-            for (int i = 0; i < attributes.length; i++) {
-                Datatype datatype = attributes[i].findDatatype(ipsProject);
+            for (IAttribute attribute : attributes) {
+                Datatype datatype = attribute.findDatatype(ipsProject);
                 if (datatype instanceof EnumDatatype) {
                     enumTypes.put(datatype.getName(), (EnumDatatype)datatype);
                 }
@@ -275,9 +275,9 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
             enumtypes.put(valuetype.getName(), (EnumDatatype)valuetype);
         }
         IParameter[] params = method.getParameters();
-        for (int i = 0; i < params.length; i++) {
+        for (IParameter param : params) {
             try {
-                Datatype datatype = ipsProject.findDatatype(params[i].getDatatype());
+                Datatype datatype = ipsProject.findDatatype(param.getDatatype());
                 if (datatype instanceof EnumDatatype) {
                     enumtypes.put(datatype.getName(), (EnumDatatype)datatype);
                     continue;
@@ -329,8 +329,8 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
 
         IAttribute[] attributes = signature.getProductCmptType().findAllAttributes(ipsProject);
         Set<String> attributeNames = new HashSet<String>(attributes.length);
-        for (int i = 0; i < attributes.length; i++) {
-            attributeNames.add(attributes[i].getName());
+        for (IAttribute attribute : attributes) {
+            attributeNames.add(attribute.getName());
         }
 
         for (Iterator<String> it = filteredIdentifieres.iterator(); it.hasNext();) {
@@ -345,17 +345,16 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     private List<String> removeIdentifieresOfEnumDatatypes(Map<String, EnumDatatype> enumDatatypes,
             String[] allIdentifiersUsedInFormula) {
         List<String> filteredIdentifiers = new ArrayList<String>(allIdentifiersUsedInFormula.length);
-        for (int i = 0; i < allIdentifiersUsedInFormula.length; i++) {
-            if (allIdentifiersUsedInFormula[i] != null) {
-                if (allIdentifiersUsedInFormula[i].indexOf('.') != -1) {
-                    String identifierRoot = allIdentifiersUsedInFormula[i].substring(0, allIdentifiersUsedInFormula[i]
-                            .indexOf('.'));
+        for (String element : allIdentifiersUsedInFormula) {
+            if (element != null) {
+                if (element.indexOf('.') != -1) {
+                    String identifierRoot = element.substring(0, element.indexOf('.'));
                     if (!enumDatatypes.containsKey(identifierRoot)) {
-                        filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
+                        filteredIdentifiers.add(element);
                     }
                     continue;
                 }
-                filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
+                filteredIdentifiers.add(element);
             }
         }
         return filteredIdentifiers;
@@ -473,8 +472,8 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             IPolicyCmptTypeAttribute[] attr = currentType.getPolicyCmptTypeAttributes();
-            for (int i = 0; i < attr.length; i++) {
-                searchAndAdd(project, attr[i].getDatatype(), enumtypes);
+            for (IPolicyCmptTypeAttribute element : attr) {
+                searchAndAdd(project, element.getDatatype(), enumtypes);
             }
             return true;
         }

@@ -158,15 +158,15 @@ public class AddIpsNatureAction extends ActionDelegate {
             }
             IFolder javaSrcFolder = javaProject.getProject().getFolder("src"); //$NON-NLS-1$
             IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
-            for (int i = 0; i < roots.length; i++) {
-                if (roots[i].getKind() == IPackageFragmentRoot.K_SOURCE) {
-                    if (roots[i].getCorrespondingResource() instanceof IProject) {
+            for (IPackageFragmentRoot root : roots) {
+                if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
+                    if (root.getCorrespondingResource() instanceof IProject) {
                         IpsStatus status = new IpsStatus(Messages.AddIpsNatureAction_msgSourceInProjectImpossible);
                         ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature, null,
                                 status);
                         return;
                     }
-                    javaSrcFolder = (IFolder)roots[i].getCorrespondingResource();
+                    javaSrcFolder = (IFolder)root.getCorrespondingResource();
                     break;
                 }
             }

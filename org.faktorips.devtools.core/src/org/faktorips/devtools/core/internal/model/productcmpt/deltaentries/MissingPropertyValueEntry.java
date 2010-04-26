@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,12 +25,12 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
     private IProdDefProperty property;
-    
+
     public MissingPropertyValueEntry(GenerationToTypeDelta delta, IProdDefProperty property) {
         super(delta);
         this.property = property;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -44,7 +44,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
     public String getPropertyName() {
         return property.getPropertyName();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -59,6 +59,4 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
         generation.newPropertyValue(property);
     }
 
-
-    
 }

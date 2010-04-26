@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,50 +29,50 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Shows a table structure's general properties and allowes to edit them.
- *  
+ * 
  * @author Thorsten Waertel
  */
 public class GeneralInfoSection extends IpsSection {
 
-	private ITableStructure tableStructure;
-	
+    private ITableStructure tableStructure;
+
     private IpsObjectUIController uiController;
 
-    private EnumValueField typeField; 
-    
-	public GeneralInfoSection(
-			ITableStructure tableStructure, 
-			Composite parent,
-			UIToolkit toolkit) {
-		
+    private EnumValueField typeField;
+
+    public GeneralInfoSection(ITableStructure tableStructure, Composite parent, UIToolkit toolkit) {
+
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(tableStructure);
         this.tableStructure = tableStructure;
-        
+
         initControls();
         setText(Messages.GeneralInfoSection_labelGeneralInfoSection);
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void initClientComposite(Composite client, UIToolkit toolkit) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void initClientComposite(Composite client, UIToolkit toolkit) {
         client.setLayout(new GridLayout(1, false));
         Composite composite = toolkit.createLabelEditColumnComposite(client);
 
         toolkit.createFormLabel(composite, Messages.GeneralInfoSection_labelTableType);
-        Combo combo = toolkit.createCombo(composite, new EnumValue[]{TableStructureType.SINGLE_CONTENT, TableStructureType.MULTIPLE_CONTENTS});
+        Combo combo = toolkit.createCombo(composite, new EnumValue[] { TableStructureType.SINGLE_CONTENT,
+                TableStructureType.MULTIPLE_CONTENTS });
         typeField = new EnumValueField(combo, TableStructureType.getEnumType());
-        
+
         uiController = new IpsObjectUIController(tableStructure);
         uiController.add(typeField, ITableStructure.PROPERTY_TYPE);
-	}
+    }
 
     /**
-	 * {@inheritDoc}
-	 */
-	protected void performRefresh() {
-		uiController.updateUI();
-	}
+     * {@inheritDoc}
+     */
+    @Override
+    protected void performRefresh() {
+        uiController.updateUI();
+    }
 
 }

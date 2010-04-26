@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -70,9 +69,9 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
 
     private void computeLinksWithMissingAssociations() throws CoreException {
         IProductCmptLink[] links = generation.getLinks();
-        for (int i = 0; i < links.length; i++) {
-            if (productCmptType.findAssociation(links[i].getAssociation(), ipsProject) == null) {
-                new LinkWithoutAssociationEntry(this, links[i]);
+        for (IProductCmptLink link : links) {
+            if (productCmptType.findAssociation(link.getAssociation(), ipsProject) == null) {
+                new LinkWithoutAssociationEntry(this, link);
             }
         }
     }
@@ -88,8 +87,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     }
 
     private void checkForMissingPropertyValues(LinkedHashMap<String, IProdDefProperty> propertiesMap) {
-        for (Iterator<IProdDefProperty> it = propertiesMap.values().iterator(); it.hasNext();) {
-            IProdDefProperty property = it.next();
+        for (IProdDefProperty property : propertiesMap.values()) {
             if (generation.getPropertyValue(property) == null) {
                 // no value found for the property with the given type, but we might have a type
                 // mismatch
@@ -105,23 +103,22 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     private void checkForInconsistentPropertyValues(LinkedHashMap<String, IProdDefProperty> propertiesMap,
             ProdDefPropertyType propertyType) throws CoreException {
         IPropertyValue[] values = generation.getPropertyValues(propertyType);
-        for (int i = 0; i < values.length; i++) {
-            IProdDefProperty property = propertiesMap.get(values[i].getPropertyName());
+        for (IPropertyValue value : values) {
+            IProdDefProperty property = propertiesMap.get(value.getPropertyName());
             if (property == null) {
                 // the map contains only properties for the current property type
                 // so we have to search if the property exists with a different type.
-                IProdDefProperty property2 = productCmptType.findProdDefProperty(values[i].getPropertyName(),
-                        ipsProject);
+                IProdDefProperty property2 = productCmptType.findProdDefProperty(value.getPropertyName(), ipsProject);
                 if (property2 != null) {
                     // property2 must have a different type, otherwise it would have been in the
                     // property map!
-                    new PropertyTypeMismatchEntry(this, property2, values[i]);
+                    new PropertyTypeMismatchEntry(this, property2, value);
                 } else {
-                    new ValueWithoutPropertyEntry(this, values[i]);
+                    new ValueWithoutPropertyEntry(this, value);
                 }
             } else {
                 if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
-                    checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfigElement)values[i]);
+                    checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfigElement)value);
                 }
             }
         }
@@ -205,12 +202,12 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             ITableStructureUsage[] tsu = currentType.getTableStructureUsages();
-            for (int i = 0; i < tsu.length; i++) {
-                tableStructureUsages.add(tsu[i]);
+            for (ITableStructureUsage element : tsu) {
+                tableStructureUsages.add(element);
             }
             IProductCmptTypeAttribute[] attr = currentType.getProductCmptTypeAttributes();
-            for (int i = 0; i < attr.length; i++) {
-                attributes.add(attr[i]);
+            for (IProductCmptTypeAttribute element : attr) {
+                attributes.add(element);
             }
             return true;
 

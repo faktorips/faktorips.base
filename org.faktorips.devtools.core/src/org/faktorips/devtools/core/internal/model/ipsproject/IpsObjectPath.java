@@ -145,9 +145,9 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public IIpsProjectRefEntry[] getProjectRefEntries() {
         List<IIpsProjectRefEntry> projectRefEntries = new ArrayList<IIpsProjectRefEntry>();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
-                projectRefEntries.add((IIpsProjectRefEntry)entries[i]);
+        for (IIpsObjectPathEntry entrie : entries) {
+            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
+                projectRefEntries.add((IIpsProjectRefEntry)entrie);
             }
         }
         return projectRefEntries.toArray(new IIpsProjectRefEntry[projectRefEntries.size()]);
@@ -158,9 +158,9 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public IIpsSrcFolderEntry[] getSourceFolderEntries() {
         List<IIpsSrcFolderEntry> srcEntries = new ArrayList<IIpsSrcFolderEntry>();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
-                srcEntries.add((IIpsSrcFolderEntry)entries[i]);
+        for (IIpsObjectPathEntry entrie : entries) {
+            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
+                srcEntries.add((IIpsSrcFolderEntry)entrie);
             }
         }
         return srcEntries.toArray(new IIpsSrcFolderEntry[srcEntries.size()]);
@@ -172,9 +172,9 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public IIpsArchiveEntry[] getArchiveEntries() {
         List<IIpsArchiveEntry> archiveEntries = new ArrayList<IIpsArchiveEntry>();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_ARCHIVE)) {
-                archiveEntries.add((IIpsArchiveEntry)entries[i]);
+        for (IIpsObjectPathEntry entrie : entries) {
+            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_ARCHIVE)) {
+                archiveEntries.add((IIpsArchiveEntry)entrie);
             }
         }
         return archiveEntries.toArray(new IIpsArchiveEntry[archiveEntries.size()]);
@@ -187,9 +187,9 @@ public class IpsObjectPath implements IIpsObjectPath {
         if (rootName == null) {
             return null;
         }
-        for (int i = 0; i < entries.length; i++) {
-            if (rootName.equals(entries[i].getIpsPackageFragmentRootName())) {
-                return entries[i];
+        for (IIpsObjectPathEntry entrie : entries) {
+            if (rootName.equals(entrie.getIpsPackageFragmentRootName())) {
+                return entrie;
             }
         }
         return null;
@@ -217,9 +217,9 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public IIpsProject[] getReferencedIpsProjects() {
         List<IIpsProject> projects = new ArrayList<IIpsProject>();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
-                projects.add(((IIpsProjectRefEntry)entries[i]).getReferencedIpsProject());
+        for (IIpsObjectPathEntry entrie : entries) {
+            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
+                projects.add(((IIpsProjectRefEntry)entrie).getReferencedIpsProject());
             }
         }
         return projects.toArray(new IIpsProject[projects.size()]);
@@ -255,8 +255,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject referencedIpsProject) {
         if (containsProjectRefEntry(referencedIpsProject)) {
-            for (int i = 0; i < entries.length; i++) {
-                IIpsObjectPathEntry entry = entries[i];
+            for (IIpsObjectPathEntry entry : entries) {
                 if (entry instanceof IpsProjectRefEntry) {
                     IpsProjectRefEntry ref = (IpsProjectRefEntry)entry;
                     if (ref.getReferencedIpsProject().equals(referencedIpsProject)) {
@@ -277,8 +276,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * {@inheritDoc}
      */
     public boolean containsProjectRefEntry(IIpsProject ipsProject) {
-        for (int i = 0; i < entries.length; i++) {
-            IIpsObjectPathEntry entry = entries[i];
+        for (IIpsObjectPathEntry entry : entries) {
             if (entry instanceof IpsProjectRefEntry) {
                 IpsProjectRefEntry ref = (IpsProjectRefEntry)entry;
                 if (ref.getReferencedIpsProject().equals(ipsProject)) {
@@ -311,8 +309,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * {@inheritDoc}
      */
     public boolean containsArchiveEntry(IIpsArchive ipsArchive) {
-        for (int i = 0; i < entries.length; i++) {
-            IIpsObjectPathEntry entry = entries[i];
+        for (IIpsObjectPathEntry entry : entries) {
             if (entry instanceof IpsArchiveEntry) {
                 IpsArchiveEntry ref = (IpsArchiveEntry)entry;
                 if (ref.getIpsArchive().equals(ipsArchive)) {
@@ -345,8 +342,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * {@inheritDoc}
      */
     public boolean containsSrcFolderEntry(IFolder folder) {
-        for (int i = 0; i < entries.length; i++) {
-            IIpsObjectPathEntry entry = entries[i];
+        for (IIpsObjectPathEntry entry : entries) {
             if (entry instanceof IpsSrcFolderEntry) {
                 IpsSrcFolderEntry ref = (IpsSrcFolderEntry)entry;
                 if (ref.getSourceFolder().equals(folder)) {
@@ -416,9 +412,9 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
 
         List<IFolder> result = new ArrayList<IFolder>(entries.length);
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getType() == IIpsObjectPathEntry.TYPE_SRC_FOLDER) {
-                IIpsSrcFolderEntry srcEntry = (IIpsSrcFolderEntry)entries[i];
+        for (IIpsObjectPathEntry entrie : entries) {
+            if (entrie.getType() == IIpsObjectPathEntry.TYPE_SRC_FOLDER) {
+                IIpsSrcFolderEntry srcEntry = (IIpsSrcFolderEntry)entrie;
                 if (srcEntry.getOutputFolderForMergableJavaFiles() != null) {
                     result.add(srcEntry.getOutputFolderForMergableJavaFiles());
                 }
@@ -514,9 +510,8 @@ public class IpsObjectPath implements IIpsObjectPath {
             boolean ignoreCase,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        for (int i = 0; i < entries.length; i++) {
-            ((IpsObjectPathEntry)entries[i]).findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result,
-                    visitedEntries);
+        for (IIpsObjectPathEntry entrie : entries) {
+            ((IpsObjectPathEntry)entrie).findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result, visitedEntries);
         }
     }
 
@@ -536,8 +531,8 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public void findIpsSrcFiles(IpsObjectType type, List<IIpsSrcFile> result, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
-        for (int i = 0; i < entries.length; i++) {
-            ((IpsObjectPathEntry)entries[i]).findIpsSrcFiles(type, result, visitedEntries);
+        for (IIpsObjectPathEntry entrie : entries) {
+            ((IpsObjectPathEntry)entrie).findIpsSrcFiles(type, result, visitedEntries);
         }
     }
 
@@ -545,8 +540,8 @@ public class IpsObjectPath implements IIpsObjectPath {
             String packageFragment,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        for (int i = 0; i < entries.length; i++) {
-            ((IpsObjectPathEntry)entries[i]).findIpsSrcFiles(type, packageFragment, result, visitedEntries);
+        for (IIpsObjectPathEntry entrie : entries) {
+            ((IpsObjectPathEntry)entrie).findIpsSrcFiles(type, packageFragment, result, visitedEntries);
         }
     }
 
@@ -602,10 +597,10 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result) throws CoreException {
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
+        for (IIpsObjectPathEntry entrie : entries) {
+            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
                 for (IpsObjectType currentType : IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes()) {
-                    ((IpsObjectPathEntry)entries[i]).findIpsSrcFilesInternal(currentType, null, result, visitedEntries);
+                    ((IpsObjectPathEntry)entrie).findIpsSrcFilesInternal(currentType, null, result, visitedEntries);
                 }
             }
         }
@@ -628,8 +623,8 @@ public class IpsObjectPath implements IIpsObjectPath {
                         "outputFolderDerivedSources", outputFolderDerivedSources == null ? "" : outputFolderDerivedSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
         element.setAttribute("basePackageDerived", basePackageDerived); //$NON-NLS-1$
         // entries
-        for (int i = 0; i < entries.length; i++) {
-            Element entryElement = ((IpsObjectPathEntry)entries[i]).toXml(doc);
+        for (IIpsObjectPathEntry entrie : entries) {
+            Element entryElement = ((IpsObjectPathEntry)entrie).toXml(doc);
             element.appendChild(entryElement);
         }
 
@@ -696,8 +691,8 @@ public class IpsObjectPath implements IIpsObjectPath {
                     Message.ERROR));
         }
         IIpsObjectPathEntry[] objectPathEntries = getEntries();
-        for (int i = 0; i < objectPathEntries.length; i++) {
-            MessageList ml = objectPathEntries[i].validate();
+        for (IIpsObjectPathEntry objectPathEntrie : objectPathEntries) {
+            MessageList ml = objectPathEntrie.validate();
             list.add(ml);
         }
 
@@ -735,9 +730,9 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
         visitedEntries.add(this);
 
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i] instanceof IIpsProjectRefEntry) {
-                IpsProject refProject = (IpsProject)((IIpsProjectRefEntry)entries[i]).getReferencedIpsProject();
+        for (IIpsObjectPathEntry entrie : entries) {
+            if (entrie instanceof IIpsProjectRefEntry) {
+                IpsProject refProject = (IpsProject)((IIpsProjectRefEntry)entrie).getReferencedIpsProject();
                 if (project.equals(refProject)) {
                     return true;
                 }

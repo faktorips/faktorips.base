@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -43,9 +43,10 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
     private TestExtensionRegistry registry;
     private TestLogger logger;
     private IpsArtefactBuilderSetInfo builderSetInfo;
-    
-    public void setUp(){
-        
+
+    @Override
+    public void setUp() {
+
         HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("name", "loggingConntectors");
         attributes.put("type", "boolean");
@@ -65,7 +66,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         attributes.put("description", "Hello");
         TestConfigurationElement propertyDef2 = new TestConfigurationElement("builderSetPropertyDef", attributes, null,
                 new IConfigurationElement[] {});
-        
+
         attributes = new HashMap<String, String>();
         attributes.put("name", "coypSupport");
         attributes.put("type", "boolean");
@@ -79,42 +80,43 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         attributes = new HashMap<String, String>();
         attributes.put("class", DefaultBuilderSet.class.getName());
         TestConfigurationElement element = new TestConfigurationElement("builderSet", attributes, null,
-                new IConfigurationElement[] {propertyDef1, propertyDef2, propertyDef3});
-        
+                new IConfigurationElement[] { propertyDef1, propertyDef2, propertyDef3 });
+
         TestExtension extension = new TestExtension(new IConfigurationElement[] { element }, "mybuilderset");
-        TestExtensionPoint extensionPoint = new TestExtensionPoint(new IExtension[] { extension }, IpsPlugin.PLUGIN_ID, "artefactbuilderset");
-        registry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint});
-        
+        TestExtensionPoint extensionPoint = new TestExtensionPoint(new IExtension[] { extension }, IpsPlugin.PLUGIN_ID,
+                "artefactbuilderset");
+        registry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
+
         logger = new TestLogger();
         ArrayList<IIpsArtefactBuilderSetInfo> builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>();
         IIpsModel ipsModel = createTestIpsModel();
-        
+
         IpsArtefactBuilderSetInfo.loadExtensions(registry, logger, builderSetInfoList, ipsModel);
         builderSetInfo = (IpsArtefactBuilderSetInfo)builderSetInfoList.get(0);
 
     }
-    
-    public void testLoadExtensions(){
+
+    public void testLoadExtensions() {
         assertEquals(3, builderSetInfo.getPropertyDefinitions().length);
         assertEquals("mybuilderset", builderSetInfo.getBuilderSetId());
-        
+
     }
 
-    public void testValidateIpsBuilderSetPropertyValue(){
+    public void testValidateIpsBuilderSetPropertyValue() {
         IIpsProject ipsProject = createTestIpsProject("1.4");
         assertNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, "loggingConntectors", "true"));
         assertNotNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, "loggingConntectors", "hallo"));
         assertNotNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, "hanswurst", "hallo"));
-        
+
     }
-    
-    public void testValidateIpsArtefactBuilderSetConfig(){
+
+    public void testValidateIpsArtefactBuilderSetConfig() {
         IIpsProject ipsProject = createTestIpsProject("1.4");
         HashMap<String, String> properties = new HashMap<String, String>();
         properties.put("loggingConntectors", "true");
         properties.put("useChangeListener", "false");
         IpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
-        
+
         MessageList msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
         assertTrue(msgList.isEmpty());
 
@@ -123,19 +125,18 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         properties.put("useChangeListener", "false");
         properties.put("hanswurst", "false");
         builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
-        
+
         msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
         assertFalse(msgList.isEmpty());
-        
+
     }
-    
-    
-    private IIpsModel createTestIpsModel(){
-        
-        InvocationHandler ipsModelHandler = new InvocationHandler(){
+
+    private IIpsModel createTestIpsModel() {
+
+        InvocationHandler ipsModelHandler = new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if(method.getName().equals("getIpsBuilderSetPropertyDef")){
-                    if(args.length < 1){
+                if (method.getName().equals("getIpsBuilderSetPropertyDef")) {
+                    if (args.length < 1) {
                         return null;
                     }
                     HashMap<String, String> properties = new HashMap<String, String>();
@@ -143,13 +144,13 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
                     properties.put("defaultValue", "false");
                     properties.put("disableValue", "false");
 
-                    if(((String)args[0]).equals("loggingConntectors")){
+                    if (((String)args[0]).equals("loggingConntectors")) {
                         properties.put("name", "loggingConntectors");
                     }
-                    if(((String)args[0]).equals("useChangeListener")){
+                    if (((String)args[0]).equals("useChangeListener")) {
                         properties.put("name", "useChangeListener");
                     }
-                    if(((String)args[0]).equals("coypSupport")){
+                    if (((String)args[0]).equals("coypSupport")) {
                         properties.put("name", "coypSupport");
                     }
                     IpsBuilderSetPropertyDef propertyDef = new IpsBuilderSetPropertyDef();
@@ -159,30 +160,34 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
                 return null;
             }
         };
-        return (IIpsModel) Proxy.newProxyInstance(IIpsModel.class.getClassLoader(), new Class[] { IIpsModel.class }, ipsModelHandler);
+        return (IIpsModel)Proxy.newProxyInstance(IIpsModel.class.getClassLoader(), new Class[] { IIpsModel.class },
+                ipsModelHandler);
     }
-    
-    private IIpsProject createTestIpsProject(final String complianceLevel){
 
-        InvocationHandler javaProjectHandler = new InvocationHandler(){
+    private IIpsProject createTestIpsProject(final String complianceLevel) {
+
+        InvocationHandler javaProjectHandler = new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if(method.getName().equals("getOption") && args.length > 0 && ((String)args[0]).equals(JavaCore.COMPILER_COMPLIANCE)){
+                if (method.getName().equals("getOption") && args.length > 0
+                        && ((String)args[0]).equals(JavaCore.COMPILER_COMPLIANCE)) {
                     return complianceLevel;
                 }
                 return null;
             }
         };
-        final IJavaProject javaProject = (IJavaProject) Proxy.newProxyInstance(IJavaProject.class.getClassLoader(), new Class[] { IJavaProject.class }, javaProjectHandler);
-        
-        InvocationHandler ipsProjectHandler = new InvocationHandler(){
+        final IJavaProject javaProject = (IJavaProject)Proxy.newProxyInstance(IJavaProject.class.getClassLoader(),
+                new Class[] { IJavaProject.class }, javaProjectHandler);
+
+        InvocationHandler ipsProjectHandler = new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if(method.getName().equals("getJavaProject")){
+                if (method.getName().equals("getJavaProject")) {
                     return javaProject;
                 }
                 return null;
             }
         };
-        return (IIpsProject) Proxy.newProxyInstance(IIpsProject.class.getClassLoader(), new Class[] { IIpsProject.class }, ipsProjectHandler);
+        return (IIpsProject)Proxy.newProxyInstance(IIpsProject.class.getClassLoader(),
+                new Class[] { IIpsProject.class }, ipsProjectHandler);
     }
 
 }

@@ -50,9 +50,9 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
 
     private TableImplBuilder getTableImpleBuilder() throws CoreException {
         IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
-        for (int i = 0; i < builders.length; i++) {
-            if (builders[i].getClass() == TableImplBuilder.class) {
-                return (TableImplBuilder)builders[i];
+        for (IIpsArtefactBuilder builder2 : builders) {
+            if (builder2.getClass() == TableImplBuilder.class) {
+                return (TableImplBuilder)builder2;
             }
         }
         throw new RuntimeException("The " + TableImplBuilder.class + " is not in the builder set.");

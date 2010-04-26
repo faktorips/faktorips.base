@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -57,8 +57,8 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
 
     /**
      * Copies the xml content (which is either the given string <code>newContent</code> or the
-     * content of the given <code>IIpsSrcFile</code> if <code>newContent</code> is
-     * <code>null</code>).
+     * content of the given <code>IIpsSrcFile</code> if <code>newContent</code> is <code>null</code>
+     * ).
      * 
      * @param ipsSrcFile The sourcefile to process.
      * @param newContent The content of the sourcefile to process. Must not be <code>null</code>.

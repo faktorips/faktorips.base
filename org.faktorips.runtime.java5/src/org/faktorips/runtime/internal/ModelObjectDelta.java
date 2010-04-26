@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,20 +33,25 @@ import org.faktorips.runtime.IModelObjectDeltaVisitor;
  */
 public class ModelObjectDelta implements IModelObjectDelta {
 
-    private final static int STRUCTURAL_CHANGES = IModelObjectDelta.ADDED | IModelObjectDelta.REMOVED | IModelObjectDelta.MOVED | IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION;
+    private final static int STRUCTURAL_CHANGES = IModelObjectDelta.ADDED | IModelObjectDelta.REMOVED
+            | IModelObjectDelta.MOVED | IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION;
 
-    public final static ModelObjectDelta newDelta(IModelObject object, IModelObject refObject, IDeltaComputationOptions options) {
-        if (object!=null && refObject!=null) {
+    public final static ModelObjectDelta newDelta(IModelObject object,
+            IModelObject refObject,
+            IDeltaComputationOptions options) {
+        if (object != null && refObject != null) {
             if (!object.getClass().equals(refObject.getClass())) {
                 return new ModelObjectDelta(object, refObject, CHANGED, CLASS_CHANGED);
             }
         }
         ModelObjectDelta delta = newEmptyDelta(object, refObject);
-        if (object instanceof IConfigurableModelObject && refObject!=null) {
+        if (object instanceof IConfigurableModelObject && refObject != null) {
             IConfigurableModelObject confObject = (IConfigurableModelObject)object;
             IConfigurableModelObject confRefObject = (IConfigurableModelObject)refObject;
-            delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_COMPONENT, confObject.getProductComponent(), confRefObject.getProductComponent(), options);
-            delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_CMPT_GENERATION, confObject.getProductCmptGeneration(), confRefObject.getProductCmptGeneration(), options);
+            delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_COMPONENT, confObject
+                    .getProductComponent(), confRefObject.getProductComponent(), options);
+            delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_CMPT_GENERATION, confObject
+                    .getProductCmptGeneration(), confRefObject.getProductCmptGeneration(), options);
         }
         return delta;
     }
@@ -54,24 +59,23 @@ public class ModelObjectDelta implements IModelObjectDelta {
     public final static ModelObjectDelta newEmptyDelta(IModelObject object, IModelObject refObject) {
         return new ModelObjectDelta(object, refObject, IModelObjectDelta.EMPTY, 0);
     }
-    
-    public final static void createChildDeltas(
-            ModelObjectDelta delta,
+
+    public final static void createChildDeltas(ModelObjectDelta delta,
             IModelObject original,
             IModelObject refObject,
             String association,
             IDeltaComputationOptions options) {
 
-        if (delta==null) {
+        if (delta == null) {
             return;
         }
-        if (original==null) {
-            if (refObject!=null) {
+        if (original == null) {
+            if (refObject != null) {
                 delta.addChildDelta(newAddDelta(refObject, association));
             }
             return;
         }
-        if (refObject==null) {
+        if (refObject == null) {
             delta.addChildDelta(newRemoveDelta(original, association));
             return;
         }
@@ -80,9 +84,9 @@ public class ModelObjectDelta implements IModelObjectDelta {
             delta.addChildDelta(childDelta);
             return;
         }
-        if (options.getMethod(association)==IDeltaComputationOptions.ComputationMethod.BY_POSITION) {
+        if (options.getMethod(association) == IDeltaComputationOptions.ComputationMethod.BY_POSITION) {
             delta.addChildDelta(newDifferentObjectAtPositionChangedDelta(original, refObject, association));
-        } else if (options.getMethod(association)==IDeltaComputationOptions.ComputationMethod.BY_OBJECT){
+        } else if (options.getMethod(association) == IDeltaComputationOptions.ComputationMethod.BY_OBJECT) {
             delta.addChildDelta(newRemoveDelta(original, association));
             delta.addChildDelta(newAddDelta(refObject, association));
         } else {
@@ -90,32 +94,35 @@ public class ModelObjectDelta implements IModelObjectDelta {
         }
     }
 
-    public final static void createChildDeltas(
-            ModelObjectDelta delta,
+    public final static void createChildDeltas(ModelObjectDelta delta,
             List<? extends IModelObject> originals,
             List<? extends IModelObject> refObjects,
             String association,
             IDeltaComputationOptions options) {
 
-        if (delta==null) {
+        if (delta == null) {
             return;
         }
-        if (options.getMethod(association)==IDeltaComputationOptions.ComputationMethod.BY_POSITION) {
+        if (options.getMethod(association) == IDeltaComputationOptions.ComputationMethod.BY_POSITION) {
             createChildDeltasPerPosition(delta, originals, refObjects, association, options);
-        } else if (options.getMethod(association)==IDeltaComputationOptions.ComputationMethod.BY_OBJECT){
+        } else if (options.getMethod(association) == IDeltaComputationOptions.ComputationMethod.BY_OBJECT) {
             createChildDeltasPerObject(delta, originals, refObjects, association, options);
         } else {
             throw new RuntimeException("Unknown delta computation method " + options.getMethod(association));
         }
     }
 
-    private static void createChildDeltasPerPosition(ModelObjectDelta delta, List<? extends IModelObject> originals, List<? extends IModelObject> refObjects, String association, IDeltaComputationOptions options) {
+    private static void createChildDeltasPerPosition(ModelObjectDelta delta,
+            List<? extends IModelObject> originals,
+            List<? extends IModelObject> refObjects,
+            String association,
+            IDeltaComputationOptions options) {
         int max = Math.max(originals.size(), refObjects.size());
         for (int i = 0; i < max; i++) {
             IModelObject original = getModelObject(originals, i);
             IModelObject refObject = getModelObject(refObjects, i);
-            if (original!=null) {
-                if (refObject==null) {
+            if (original != null) {
+                if (refObject == null) {
                     delta.addChildDelta(newRemoveDelta(original, association));
                 } else {
                     if (options.isSame(original, refObject)) {
@@ -126,27 +133,33 @@ public class ModelObjectDelta implements IModelObjectDelta {
                     }
                 }
             } else {
-                if (refObject!=null) {
+                if (refObject != null) {
                     delta.addChildDelta(newAddDelta(refObject, association));
                 } else {
-                    throw new RuntimeException("Error in delta computation. Both objects null in assocation " + association);
+                    throw new RuntimeException("Error in delta computation. Both objects null in assocation "
+                            + association);
                 }
             }
         }
     }
 
     private static IModelObject getModelObject(List<? extends IModelObject> originals, int index) {
-        if (index<originals.size()) {
+        if (index < originals.size()) {
             return originals.get(index);
         }
         return null;
     }
 
-    private static void createChildDeltasPerObject(ModelObjectDelta delta, List<? extends IModelObject> originals, List<? extends IModelObject> refObjects, String association, IDeltaComputationOptions options) {
+    private static void createChildDeltasPerObject(ModelObjectDelta delta,
+            List<? extends IModelObject> originals,
+            List<? extends IModelObject> refObjects,
+            String association,
+            IDeltaComputationOptions options) {
         int removeCounter = 0;
         int size = originals.size();
-        for (int i=0; i<size; i++) {
-            IModelObjectDelta childDelta = createRemoveMoveOrChangeDelta(originals.get(i), i, refObjects, association, options);
+        for (int i = 0; i < size; i++) {
+            IModelObjectDelta childDelta = createRemoveMoveOrChangeDelta(originals.get(i), i, refObjects, association,
+                    options);
             delta.addChildDelta(childDelta);
             if (childDelta.isRemoved()) {
                 removeCounter++;
@@ -156,9 +169,9 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (size - removeCounter == refSize) {
             return; // nothing has been added
         }
-        for (int i=0; i<refSize; i++) {
+        for (int i = 0; i < refSize; i++) {
             boolean exists = false;
-            for (int j=0; j<size; j++) {
+            for (int j = 0; j < size; j++) {
                 if (options.isSame(originals.get(j), refObjects.get(i))) {
                     exists = true;
                     break;
@@ -170,8 +183,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
         }
     }
 
-    private final static IModelObjectDelta createRemoveMoveOrChangeDelta(
-            IModelObject original,
+    private final static IModelObjectDelta createRemoveMoveOrChangeDelta(IModelObject original,
             int position,
             List<? extends IModelObject> refObjects,
             String association,
@@ -183,8 +195,8 @@ public class ModelObjectDelta implements IModelObjectDelta {
             return childDelta;
         }
         // check for moved object
-        for (int i=0; i<refSize; i++) {
-            if (i!=position) {
+        for (int i = 0; i < refSize; i++) {
+            if (i != position) {
                 IModelObject refModelObject = refObjects.get(i);
                 if (options.isSame(original, refModelObject)) {
                     IModelObjectDelta childDelta = ((IDeltaSupport)original).computeDelta(refModelObject, options);
@@ -204,7 +216,9 @@ public class ModelObjectDelta implements IModelObjectDelta {
         return new ModelObjectDelta(removedObject, null, IModelObjectDelta.REMOVED, association);
     }
 
-    public final static ModelObjectDelta newDifferentObjectAtPositionChangedDelta(IModelObject original, IModelObject refObject, String association) {
+    public final static ModelObjectDelta newDifferentObjectAtPositionChangedDelta(IModelObject original,
+            IModelObject refObject,
+            String association) {
         return new ModelObjectDelta(original, refObject, IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION, association);
     }
 
@@ -223,7 +237,8 @@ public class ModelObjectDelta implements IModelObjectDelta {
     private final List<IModelObjectDelta> children = new ArrayList<IModelObjectDelta>(0);
 
     /**
-     * @throws NullPointerException if modelObject and referenceModelObject are both <code>null</code>.
+     * @throws NullPointerException if modelObject and referenceModelObject are both
+     *             <code>null</code>.
      */
     private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int kind, String association) {
         this(original, referenceModelObject, kind, 0);
@@ -233,7 +248,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
     private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int deltaKind, int kindOfChange) {
         this.original = original;
         referenceObject = referenceModelObject;
-        if (original!=null) {
+        if (original != null) {
             modelClass = original.getClass();
         } else {
             modelClass = referenceModelObject.getClass();
@@ -243,13 +258,13 @@ public class ModelObjectDelta implements IModelObjectDelta {
     }
 
     /**
-     * Adds the child delta to this delta and sets this delta's kindOfChange accordingly. E.g. if the child delta
-     * is of kind ADD, this delta's kind of change is marked as structure changed.
+     * Adds the child delta to this delta and sets this delta's kindOfChange accordingly. E.g. if
+     * the child delta is of kind ADD, this delta's kind of change is marked as structure changed.
      * <p>
      * Note this method ignores the childDelta if it is <code>null</code> or empty!!!
      */
     public void addChildDelta(IModelObjectDelta childDelta) {
-        if (childDelta== null || childDelta.isEmpty()) {
+        if (childDelta == null || childDelta.isEmpty()) {
             return;
         }
         if ((childDelta.getKind() & STRUCTURAL_CHANGES) > 0) {
@@ -296,7 +311,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
     public String getAssociation() {
         return association;
     }
-    
+
     public void checkPropertyChange(String property, Object value1, Object value2, IDeltaComputationOptions options) {
         if (options.ignore(modelClass, property)) {
             return;
@@ -310,7 +325,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (options.ignore(modelClass, property)) {
             return;
         }
-        if (value1!=value2) {
+        if (value1 != value2) {
             markPropertyChanged(property);
         }
     }
@@ -319,7 +334,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (options.ignore(modelClass, property)) {
             return;
         }
-        if (value1!=value2) {
+        if (value1 != value2) {
             markPropertyChanged(property);
         }
     }
@@ -328,7 +343,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (options.ignore(modelClass, property)) {
             return;
         }
-        if (value1!=value2) {
+        if (value1 != value2) {
             markPropertyChanged(property);
         }
     }
@@ -337,7 +352,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (options.ignore(modelClass, property)) {
             return;
         }
-        if (value1!=value2) {
+        if (value1 != value2) {
             markPropertyChanged(property);
         }
     }
@@ -346,16 +361,17 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (options.ignore(modelClass, property)) {
             return;
         }
-        if (value1!=value2) {
+        if (value1 != value2) {
             markPropertyChanged(property);
         }
     }
 
     /**
-     * Marks the given property as having a different value in the model object and the reference model object.
+     * Marks the given property as having a different value in the model object and the reference
+     * model object.
      */
     public void markPropertyChanged(String property) {
-        if (changedProperties==null) {
+        if (changedProperties == null) {
             changedProperties = new TreeSet<String>();
         }
         changedProperties.add(property);
@@ -381,7 +397,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
      * {@inheritDoc}
      */
     public List<String> getChangedProperties() {
-        if (changedProperties==null) {
+        if (changedProperties == null) {
             return new ArrayList<String>(0);
         }
         return new ArrayList<String>(changedProperties);
@@ -391,7 +407,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
      * {@inheritDoc}
      */
     public boolean isPropertyChanged(String propertyName) {
-        if (changedProperties==null || propertyName==null) {
+        if (changedProperties == null || propertyName == null) {
             return false;
         }
         return changedProperties.contains(propertyName);
@@ -518,8 +534,8 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (isMoved()) {
             buffer.append(" (moved)");
         }
-        if (changedProperties!=null) {
-            boolean first=true;
+        if (changedProperties != null) {
+            boolean first = true;
             for (String changedProperty : changedProperties) {
                 if (first) {
                     buffer.append(" [");

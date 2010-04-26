@@ -86,8 +86,8 @@ public class ElementSelectionPage extends WizardPage {
                     boolean checked = treeViewer.getChecked(element);
                     Object[] children = contentProvider.getChildren(parent);
                     treeViewer.setGrayed(parent, false);
-                    for (int i = 0; i < children.length; i++) {
-                        boolean checked2 = treeViewer.getChecked(children[i]);
+                    for (Object element2 : children) {
+                        boolean checked2 = treeViewer.getChecked(element2);
                         if (checked2 != checked) {
                             treeViewer.setGrayed(parent, true);
                         }
@@ -109,9 +109,9 @@ public class ElementSelectionPage extends WizardPage {
     protected IFixDifferencesToModelSupport[] getElementsToFix() {
         Object[] checked = treeViewer.getCheckedElements();
         Set<Object> elements = new HashSet<Object>();
-        for (int i = 0; i < checked.length; i++) {
-            if (checked[i] instanceof IFixDifferencesToModelSupport) {
-                elements.add(checked[i]);
+        for (Object element : checked) {
+            if (element instanceof IFixDifferencesToModelSupport) {
+                elements.add(element);
             }
         }
         return elements.toArray(new IFixDifferencesToModelSupport[elements.size()]);
@@ -138,8 +138,7 @@ public class ElementSelectionPage extends WizardPage {
         ContentProvider() {
             Object[] elements = ipsElementsToFix.toArray();
             packages = new HashMap<IIpsPackageFragment, Set<Object>>();
-            for (int i = 0; i < elements.length; i++) {
-                Object object = elements[i];
+            for (Object object : elements) {
                 if (object instanceof IpsObject) {
                     IIpsPackageFragment pack = ((IpsObject)object).getIpsPackageFragment();
                     Set<Object> children = packages.get(pack);

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,15 +18,15 @@ import java.util.Locale;
 /**
  * A <code>IdentifierResolver</code> resolves identifiers used in an expression.
  * <p>
- * Example:
- * <blockquote>
- * <pre> 
+ * Example: <blockquote>
+ * 
+ * <pre>
  * 2 * a + 3
  * </pre>
- * </blockquote>
- * In the above example a is an identifier. The compiler needs to know a's datatype
- * and generate appropriate Java sourcecode that returns the value of a at runtime.
- * The compiler delegates this task to an identifier resolver.   
+ * 
+ * </blockquote> In the above example a is an identifier. The compiler needs to know a's datatype
+ * and generate appropriate Java sourcecode that returns the value of a at runtime. The compiler
+ * delegates this task to an identifier resolver.
  */
 public interface IdentifierResolver {
 
@@ -48,5 +48,5 @@ public interface IdentifierResolver {
      *            properly
      */
     public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale);
-    
+
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,17 +33,17 @@ public class MoneyRangeTest extends TestCase {
         assertEquals(Money.euro(1, 25), lower);
         assertEquals(Money.euro(5, 67), upper);
 
-        try{
+        try {
             MoneyRange.valueOf(Money.euro(10, 0), Money.euro(10, 10), Money.euro(10, 0), false);
             fail();
+        } catch (IllegalArgumentException e) {
         }
-        catch(IllegalArgumentException e){}
 
-        try{
+        try {
             MoneyRange.valueOf(Money.euro(10, 0), Money.euro(10, 10), Money.euro(0, 0), false);
             fail("Expected to fail since zero step size is not allowed.");
+        } catch (IllegalArgumentException e) {
         }
-        catch(IllegalArgumentException e){}
 
         range = MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true);
         assertEquals(Money.euro(10, 0), range.getLowerBound());
@@ -61,7 +61,7 @@ public class MoneyRangeTest extends TestCase {
         assertEquals(Money.euro(5, 67), upper);
     }
 
-    public void testContains(){
+    public void testContains() {
         MoneyRange range = MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true);
         assertEquals(11, range.size());
         assertTrue(range.contains(Money.euro(10, 0)));
@@ -81,7 +81,7 @@ public class MoneyRangeTest extends TestCase {
 
     }
 
-    public void testSize(){
+    public void testSize() {
         MoneyRange range = MoneyRange.valueOf(Money.euro(0, 0), Money.euro(100, 0), Money.euro(10, 0), true);
         assertEquals(12, range.size());
 
@@ -90,7 +90,7 @@ public class MoneyRangeTest extends TestCase {
 
     }
 
-    public void testGetValues(){
+    public void testGetValues() {
         MoneyRange range = MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true);
         Set<Money> values = range.getValues(false);
         assertEquals(11, range.size());
@@ -111,7 +111,7 @@ public class MoneyRangeTest extends TestCase {
         assertFalse(values.contains(Money.euro(110, 0)));
     }
 
-    public void testSerializable() throws Exception{
+    public void testSerializable() throws Exception {
         TestUtil.testSerializable(MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true));
     }
 }

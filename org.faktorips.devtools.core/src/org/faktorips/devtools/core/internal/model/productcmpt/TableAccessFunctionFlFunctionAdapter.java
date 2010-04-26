@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -34,10 +34,11 @@ import org.faktorips.util.message.Message;
  * @deprecated
  * @see org.faktorips.devtools.core.internal.model.productcmpt.TableUsageAccessFunctionFlFunctionAdapter
  * 
- * An adapter that adapts a table access function to the FlFunction interfaces.
+ *      An adapter that adapts a table access function to the FlFunction interfaces.
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
+@Deprecated
 public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
 
     private ITableAccessFunction fct;
@@ -45,8 +46,8 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
     private ITableContents tableContents;
 
     /**
-     * @param tableContents can be null. This indicates that it is a table access function for a table that doesn't allow multiple
-     * 						contents
+     * @param tableContents can be null. This indicates that it is a table access function for a
+     *            table that doesn't allow multiple contents
      * @param fct the table access function
      */
     public TableAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct) {
@@ -63,17 +64,19 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
         try {
             IIpsArtefactBuilderSet builderSet = fct.getIpsProject().getIpsArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {
-                CompilationResultImpl result = new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
+                CompilationResultImpl result = new CompilationResultImpl(Message.newError(
+                        "", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
                 result.addAllIdentifierUsed(argResults);
                 return result;
             }
             return builderSet.getTableAccessCode(tableContents, fct, argResults);
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration + fct.toString())); //$NON-NLS-1$
+            return new CompilationResultImpl(Message.newError(
+                    "", Messages.TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration + fct.toString())); //$NON-NLS-1$
         }
     }
-    
+
     public void setCompiler(ExprCompiler compiler) {
         this.compiler = compiler;
     }
@@ -99,7 +102,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
     }
 
     public String getName() {
-		return tableContents.getName() + "." + fct.getAccessedColumn(); //$NON-NLS-1$
+        return tableContents.getName() + "." + fct.getAccessedColumn(); //$NON-NLS-1$
     }
 
     public Datatype[] getArgTypes() {
@@ -134,8 +137,8 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
     /**
      * Returns false;
      */
-	public boolean hasVarArgs() {
-		return false;
-	}
+    public boolean hasVarArgs() {
+        return false;
+    }
 
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,7 +25,8 @@ import junit.framework.AssertionFailedError;
 
 public class TestUtil {
 
-    public final static void testSerializable(Serializable serializableObject) throws AssertionFailedError, IOException, ClassNotFoundException{
+    public final static void testSerializable(Serializable serializableObject) throws AssertionFailedError,
+            IOException, ClassNotFoundException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(bos);
         os.writeObject(serializableObject);

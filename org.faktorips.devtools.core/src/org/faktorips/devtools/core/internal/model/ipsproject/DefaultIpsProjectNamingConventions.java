@@ -200,8 +200,8 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         MessageList ml = new MessageList();
         String unqualifiedName = qualifiedCheck ? StringUtil.unqualifiedName(name) : name;
         char[] chars = INVALID_RESOURCE_CHARACTERS;
-        for (int i = 0; i < chars.length; i++) {
-            if (unqualifiedName.indexOf(chars[i]) != -1) {
+        for (char c : chars) {
+            if (unqualifiedName.indexOf(c) != -1) {
                 ml.add(new Message(INVALID_NAME, NLS.bind(Messages.DefaultIpsProjectNamingConventions_msgNameNotValid,
                         unqualifiedName), Message.ERROR));
             }

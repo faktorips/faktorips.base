@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -187,14 +186,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
         MessageList list2 = strategy.validate(getName());
-        for (Iterator<Message> iter = list2.iterator(); iter.hasNext();) {
-            Message msg = iter.next();
+        for (Message msg : list2) {
             Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
             list.add(msgNew);
         }
         list2 = strategy.validateRuntimeId(getRuntimeId());
-        for (Iterator<Message> iter = list2.iterator(); iter.hasNext();) {
-            Message msg = iter.next();
+        for (Message msg : list2) {
             Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_RUNTIME_ID);
             list.add(msgNew);
         }
@@ -208,8 +205,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     public boolean containsFormula() {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length; i++) {
-            if (((ProductCmptGeneration)generations[i]).containsFormula()) {
+        for (IIpsObjectGeneration generation : generations) {
+            if (((ProductCmptGeneration)generation).containsFormula()) {
                 return true;
             }
         }
@@ -221,12 +218,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     public boolean containsFormulaTest() {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length; i++) {
+        for (IIpsObjectGeneration generation : generations) {
             IProductCmptGeneration gen = getProductCmptGeneration(0);
             if (gen.getNumOfFormulas() > 0) {
                 IFormula[] formulas = gen.getFormulas();
-                for (int j = 0; j < formulas.length; j++) {
-                    if (formulas[j].getFormulaTestCases().length > 0) {
+                for (IFormula formula : formulas) {
+                    if (formula.getFormulaTestCases().length > 0) {
                         return true;
                     }
                 }
@@ -251,8 +248,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
         // add dependency to related product cmpt's and add dependency to table contents
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length; i++) {
-            ((ProductCmptGeneration)generations[i]).dependsOn(dependencySet, details);
+        for (IIpsObjectGeneration generation : generations) {
+            ((ProductCmptGeneration)generation).dependsOn(dependencySet, details);
         }
 
         return dependencySet.toArray(new IDependency[dependencySet.size()]);
@@ -318,8 +315,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length; i++) {
-            IIpsObjectGeneration generation = generations[i];
+        for (IIpsObjectGeneration generation : generations) {
             if (generation instanceof IProductCmptGeneration) {
                 IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel(ipsProject);
                 if (!delta.isEmpty()) {
@@ -350,8 +346,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (int i = 0; i < numOfGenerations; i++) {
             IProductCmptGeneration generation = (IProductCmptGeneration)getGeneration(i);
             IProductCmptLink[] links = generation.getLinks();
-            for (int j = 0; j < links.length; j++) {
-                if (productCmptCandidate.getQualifiedName().equals(links[j].getTarget())) {
+            for (IProductCmptLink link : links) {
+                if (productCmptCandidate.getQualifiedName().equals(link.getTarget())) {
                     return true;
                 }
             }

@@ -109,9 +109,9 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     private int getAssociationIndex() {
         List<IAssociation> allAssociationsForTheTargetType = new ArrayList<IAssociation>();
         IAssociation[] assoc = getType().getAssociations();
-        for (int i = 0; i < assoc.length; i++) {
-            if (getTarget().equals(assoc[i].getTarget())) {
-                allAssociationsForTheTargetType.add(assoc[i]);
+        for (IAssociation element : assoc) {
+            if (getTarget().equals(element.getTarget())) {
+                allAssociationsForTheTargetType.add(element);
             }
         }
         int index = 0;

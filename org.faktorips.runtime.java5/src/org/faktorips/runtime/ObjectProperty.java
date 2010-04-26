@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,7 +25,7 @@ public class ObjectProperty implements Serializable {
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = -3407760096164658253L;
-    
+
     private Object object;
     private String property;
     private int index;
@@ -58,7 +58,8 @@ public class ObjectProperty implements Serializable {
     }
 
     /**
-     * Creates an ObjectProperty that characterizes only the object but not a specific property of it.
+     * Creates an ObjectProperty that characterizes only the object but not a specific property of
+     * it.
      */
     public ObjectProperty(Object object) {
         this(object, null, -1);
@@ -80,22 +81,24 @@ public class ObjectProperty implements Serializable {
         return index >= 0;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof ObjectProperty) {
             ObjectProperty other = (ObjectProperty)obj;
             return object.equals(other.object)
                     && index == other.index
-                    && ((property == null && other.property == null) 
-                    || (property != null && other.property != null && property
+                    && ((property == null && other.property == null) || (property != null && other.property != null && property
                             .equals(other.property)));
         }
         return false;
     }
 
+    @Override
     public int hashCode() {
         return hashCode;
     }
 
+    @Override
     public String toString() {
         if (object == null) {
             return "null." + property;

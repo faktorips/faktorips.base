@@ -330,8 +330,8 @@ public class RenamePage extends WizardPage implements ModifyListener {
     private boolean hasContentWithNameEqualsIgnoreCase(IContainer parentFolder, String name) {
         try {
             IResource[] children = parentFolder.members();
-            for (int i = 0; i < children.length; i++) {
-                if (children[i].getName().equalsIgnoreCase(name)) {
+            for (IResource element : children) {
+                if (element.getName().equalsIgnoreCase(name)) {
                     return true;
                 }
             }

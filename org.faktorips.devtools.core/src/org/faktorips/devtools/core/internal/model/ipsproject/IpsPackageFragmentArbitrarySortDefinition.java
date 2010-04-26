@@ -52,11 +52,11 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
         int pos = 0;
 
-        for (int i = 0; i < segments.length; i++) {
+        for (String segment : segments) {
 
-            if (checkLine(segments[i])) {
-                sortOrderLookup.put(segments[i], new Integer(pos++));
-                sortOrder.add(segments[i]);
+            if (checkLine(segment)) {
+                sortOrderLookup.put(segment, new Integer(pos++));
+                sortOrder.add(segment);
             }
         }
     }
@@ -111,9 +111,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         int pos = 0;
         sortOrderLookup.clear();
 
-        for (int i = 0; i < segments.length; i++) {
-            String line = segments[i];
-
+        for (String line : segments) {
             // skip empty lines (incl. whitespaces) and comments
             if (checkLine(line)) {
                 sortOrderLookup.put(line, new Integer(pos++));

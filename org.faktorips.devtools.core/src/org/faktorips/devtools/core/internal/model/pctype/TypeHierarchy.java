@@ -91,15 +91,15 @@ public class TypeHierarchy implements ITypeHierarchy {
         IIpsProject project = pcType.getIpsProject();
         IIpsProject[] projects = pcType.getIpsModel().getIpsProjects();
         List<IIpsProject> searchedProjects = new ArrayList<IIpsProject>();
-        for (int i = 0; i < projects.length; i++) {
-            if (searchedProjects.contains(projects[i])) {
+        for (IIpsProject project2 : projects) {
+            if (searchedProjects.contains(project2)) {
                 continue;
             }
-            if (projects[i].equals(project) || projects[i].isReferencing(project)) {
-                IIpsSrcFile[] pcTypeSrcFiles = projects[i].findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
-                for (int j = 0; j < pcTypeSrcFiles.length; j++) {
-                    IPolicyCmptType candidate = (IPolicyCmptType)pcTypeSrcFiles[j].getIpsObject();
-                    if (!subtypes.contains(candidate) && pcType.equals(candidate.findSupertype(projects[i]))) {
+            if (project2.equals(project) || project2.isReferencing(project)) {
+                IIpsSrcFile[] pcTypeSrcFiles = project2.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+                for (IIpsSrcFile pcTypeSrcFile : pcTypeSrcFiles) {
+                    IPolicyCmptType candidate = (IPolicyCmptType)pcTypeSrcFile.getIpsObject();
+                    if (!subtypes.contains(candidate) && pcType.equals(candidate.findSupertype(project2))) {
                         if (hierarchy.contains(candidate)) {
                             hierarchy.containsCycle = true;
                         } else {
@@ -107,10 +107,10 @@ public class TypeHierarchy implements ITypeHierarchy {
                         }
                     }
                 }
-                searchedProjects.add(projects[i]);
-                IIpsProject[] refProjects = projects[i].getReferencedIpsProjects();
-                for (int k = 0; k < refProjects.length; k++) {
-                    searchedProjects.add(refProjects[k]);
+                searchedProjects.add(project2);
+                IIpsProject[] refProjects = project2.getReferencedIpsProjects();
+                for (IIpsProject refProject : refProjects) {
+                    searchedProjects.add(refProject);
                 }
             }
         }
@@ -206,11 +206,11 @@ public class TypeHierarchy implements ITypeHierarchy {
      */
     public boolean isSubtypeOf(IPolicyCmptType candidate, IPolicyCmptType supertype) {
         IPolicyCmptType[] subtypes = getSubtypes(supertype);
-        for (int i = 0; i < subtypes.length; i++) {
-            if (subtypes[i].equals(candidate)) {
+        for (IPolicyCmptType subtype : subtypes) {
+            if (subtype.equals(candidate)) {
                 return true;
             }
-            if (isSubtypeOf(candidate, subtypes[i])) {
+            if (isSubtypeOf(candidate, subtype)) {
                 return true;
             }
         }
@@ -242,8 +242,8 @@ public class TypeHierarchy implements ITypeHierarchy {
         }
 
         list.addAll(Arrays.asList(node.subtypes));
-        for (int i = 0; i < node.subtypes.length; i++) {
-            addSubtypes(nodes.get(node.subtypes[i]), list);
+        for (IPolicyCmptType subtype : node.subtypes) {
+            addSubtypes(nodes.get(subtype), list);
         }
     }
 
@@ -267,8 +267,8 @@ public class TypeHierarchy implements ITypeHierarchy {
     public IPolicyCmptTypeAttribute[] getAllAttributes(IPolicyCmptType type) {
         List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
-        for (int i = 0; i < types.length; i++) {
-            List<?> list = ((PolicyCmptType)types[i]).getAttributeList();
+        for (IPolicyCmptType type2 : types) {
+            List<?> list = ((PolicyCmptType)type2).getAttributeList();
             for (Object nextAttr : list) {
                 attributes.add((IPolicyCmptTypeAttribute)nextAttr);
             }
@@ -285,8 +285,8 @@ public class TypeHierarchy implements ITypeHierarchy {
 
         Map<String, IAttribute> overridden = new HashMap<String, IAttribute>();
 
-        for (int i = 0; i < types.length; i++) {
-            IPolicyCmptTypeAttribute[] attrs = types[i].getPolicyCmptTypeAttributes();
+        for (IPolicyCmptType type2 : types) {
+            IPolicyCmptTypeAttribute[] attrs = type2.getPolicyCmptTypeAttributes();
             for (int j = 0; j < attrs.length; j++) {
                 if (!overridden.containsKey(attrs[j].getName())) {
                     attributes.add(attrs[j]);
@@ -305,8 +305,8 @@ public class TypeHierarchy implements ITypeHierarchy {
     public IMethod[] getAllMethods(IPolicyCmptType type) {
         List<IMethod> methods = new ArrayList<IMethod>();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
-        for (int i = 0; i < types.length; i++) {
-            List<?> typeMethods = ((PolicyCmptType)types[i]).getMethodList();
+        for (IPolicyCmptType type2 : types) {
+            List<?> typeMethods = ((PolicyCmptType)type2).getMethodList();
             for (Object nextMethod : typeMethods) {
                 methods.add((IMethod)nextMethod);
             }
@@ -320,8 +320,8 @@ public class TypeHierarchy implements ITypeHierarchy {
     public IValidationRule[] getAllRules(IPolicyCmptType type) {
         List<IValidationRule> rules = new ArrayList<IValidationRule>();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
-        for (int i = 0; i < types.length; i++) {
-            List<?> typeRules = ((PolicyCmptType)types[i]).getRulesList();
+        for (IPolicyCmptType type2 : types) {
+            List<?> typeRules = ((PolicyCmptType)type2).getRulesList();
             for (Object nextRule : typeRules) {
                 rules.add((IValidationRule)nextRule);
             }
@@ -334,8 +334,8 @@ public class TypeHierarchy implements ITypeHierarchy {
      */
     public IPolicyCmptTypeAttribute findAttribute(IPolicyCmptType type, String attributeName) {
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
-        for (int i = 0; i < types.length; i++) {
-            IPolicyCmptTypeAttribute a = types[i].getPolicyCmptTypeAttribute(attributeName);
+        for (IPolicyCmptType type2 : types) {
+            IPolicyCmptTypeAttribute a = type2.getPolicyCmptTypeAttribute(attributeName);
             if (a != null) {
                 return a;
             }

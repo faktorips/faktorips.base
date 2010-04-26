@@ -22,10 +22,12 @@ public class DefaultGenericEnumDatatype extends GenericEnumDatatype {
         this.adaptedClass = adaptedClass;
     }
 
+    @Override
     public Class getAdaptedClass() {
         return adaptedClass;
     }
 
+    @Override
     public String getAdaptedClassName() {
         return adaptedClass.getName();
     }

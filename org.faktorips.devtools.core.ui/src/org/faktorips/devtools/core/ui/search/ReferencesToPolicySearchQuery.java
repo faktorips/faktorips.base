@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,21 +24,23 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
  */
 public class ReferencesToPolicySearchQuery extends ReferenceSearchQuery {
 
-	public ReferencesToPolicySearchQuery(IPolicyCmptType referenced) {
-		super(referenced);
-	}
+    public ReferencesToPolicySearchQuery(IPolicyCmptType referenced) {
+        super(referenced);
+    }
 
     /**
      * @inheritDoc
      */
-	protected IIpsElement[] findReferences() throws CoreException {
-		return referenced.getIpsProject().findReferencingPolicyCmptTypes((PolicyCmptType)referenced);
-	}
+    @Override
+    protected IIpsElement[] findReferences() throws CoreException {
+        return referenced.getIpsProject().findReferencingPolicyCmptTypes((PolicyCmptType)referenced);
+    }
 
     /**
      * @inheritDoc
      */
-	protected Object[] getDataForResult(IIpsElement object) throws CoreException {
-		return new Object[]{object};
-	}
+    @Override
+    protected Object[] getDataForResult(IIpsElement object) throws CoreException {
+        return new Object[] { object };
+    }
 }

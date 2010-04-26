@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,17 +19,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A toc entry that refers to an ips object generation. 
+ * A toc entry that refers to an ips object generation.
  * 
  * @author Jan Ortmann
  */
 public class TocEntryGeneration extends TocEntry {
 
-    private final static TimeZone defaultTimeZone = TimeZone.getDefault(); 
-    
+    private final static TimeZone defaultTimeZone = TimeZone.getDefault();
+
     public final static TocEntryGeneration createFromXml(TocEntryObject parent, Element element) {
         DateTime validFrom = DateTime.parseIso(element.getAttribute("validFrom"));
-        String className  = element.getAttribute("implementationClass");
+        String className = element.getAttribute("implementationClass");
         String xmlResourceName = element.getAttribute("xmlResource");
         return new TocEntryGeneration(parent, validFrom, className, xmlResourceName);
     }
@@ -44,7 +44,8 @@ public class TocEntryGeneration extends TocEntry {
         this.validFrom = validFrom;
         validFromAsLongInDefaultTimeZone = validFrom.toDate(defaultTimeZone).getTime();
     }
-    
+
+    @Override
     public String getXmlResourceName() {
         if (super.getXmlResourceName().equals("")) {
             return parent.getXmlResourceName();
@@ -68,8 +69,8 @@ public class TocEntryGeneration extends TocEntry {
     }
 
     /**
-     * Returns the point in time this generation is valid from in the given time zone. 
-     * This method never returns <code>null</code>.
+     * Returns the point in time this generation is valid from in the given time zone. This method
+     * never returns <code>null</code>.
      * 
      * @throws NullPointerException if zone is <code>null</code>.
      */
@@ -79,7 +80,7 @@ public class TocEntryGeneration extends TocEntry {
         }
         return validFrom.toDate(zone).getTime();
     }
-    
+
     /**
      * Transforms the toc entry to xml.
      * 
@@ -91,13 +92,13 @@ public class TocEntryGeneration extends TocEntry {
         entryElement.setAttribute("validFrom", validFrom.toIsoFormat());
         return entryElement;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return parent.toString() + " " + validFrom;
     }
 
-    
 }

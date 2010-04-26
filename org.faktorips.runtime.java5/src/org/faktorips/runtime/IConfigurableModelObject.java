@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,22 +32,22 @@ public interface IConfigurableModelObject extends IModelObject {
      * The name of the property 'productCmptGeneration'.
      */
     public final static String PROPERTY_PRODUCT_CMPT_GENERATION = "productCmptGeneration";
-    
+
     /**
      * Returns the product component this policy component is based on.
      */
     public IProductComponent getProductComponent();
-    
+
     /**
      * Returns the product component generation this policy component is based on.
      */
     public IProductComponentGeneration getProductCmptGeneration();
-    
+
     /**
      * Returns the date since when this model object is effective.
      */
     public Calendar getEffectiveFromAsCalendar();
-    
+
     /**
      * Initializes the model object with the defaults from it's product component generation.
      */

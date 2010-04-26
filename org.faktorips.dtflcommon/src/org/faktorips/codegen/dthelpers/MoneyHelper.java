@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -60,8 +60,10 @@ public class MoneyHelper extends AbstractDatatypeHelper {
     /*
      * (non-Javadoc)
      * 
-     * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
+     * @see
+     * org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
      */
+    @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         if (StringUtils.isEmpty(expression)) {
             return nullExpression();
@@ -78,6 +80,7 @@ public class MoneyHelper extends AbstractDatatypeHelper {
      * Methode der Oberklasse wird ueberschrieben, weil bei diesem Datentyp valueOf-Methode selbst
      * Null-Expression zurueckgeben kann
      */
+    @Override
     public JavaCodeFragment newInstanceFromExpression(String expression) {
         return valueOfExpression(expression);
     }
@@ -99,13 +102,15 @@ public class MoneyHelper extends AbstractDatatypeHelper {
      * 
      * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
      */
+    @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-            return MoneyRange.class.getName();
+        return MoneyRange.class.getName();
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,

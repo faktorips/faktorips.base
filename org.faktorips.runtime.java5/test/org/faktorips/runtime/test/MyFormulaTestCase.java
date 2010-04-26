@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,7 +13,6 @@
 
 package org.faktorips.runtime.test;
 
-
 /**
  * Test class to test the assert of formula tests.
  * 
@@ -21,7 +20,7 @@ package org.faktorips.runtime.test;
  */
 public class MyFormulaTestCase extends IpsFormulaTestCase {
     private int failures = 0;
-     
+
     public MyFormulaTestCase(String qName) {
         super(qName);
     }
@@ -29,6 +28,7 @@ public class MyFormulaTestCase extends IpsFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void executeAsserts(IpsTestResult result) throws Exception {
         for (int i = 0; i < failures; i++) {
             fail("test", "failure", result, "dummy", "formulaTest", "Tested failure");
@@ -38,10 +38,11 @@ public class MyFormulaTestCase extends IpsFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void executeBusinessLogic() throws Exception {
     }
-    
-    public void addDummyFailures(int failures){
+
+    public void addDummyFailures(int failures) {
         this.failures += failures;
     }
 }

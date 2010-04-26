@@ -162,10 +162,10 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         if (builders == null) {
             return result;
         }
-        for (int i = 0; i < builders.length; i++) {
+        for (IIpsArtefactBuilder builder : builders) {
             // TODO genau die Klasse oder auch subklassen?
-            if (builderClass.isAssignableFrom(builders[i].getClass())) {
-                result.add(builderClass.cast(builders[i]));
+            if (builderClass.isAssignableFrom(builder.getClass())) {
+                result.add(builderClass.cast(builder));
             }
         }
         return result;

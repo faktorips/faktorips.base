@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,41 +21,43 @@ import org.faktorips.devtools.core.ui.actions.IpsAction;
 public class ProductEditorDeleteAction extends IpsAction {
 
     private ProductCmptEditor editor;
-    
+
     public ProductEditorDeleteAction(ProductCmptEditor editor) {
         super(editor.getSelectionProviderDispatcher());
         this.editor = editor;
-    }    
+    }
 
     /**
-     * Defines which IpsObjectParts can be process by this action. Returns the IpsObjectPart if it can be processed, returns 
-     * <code>null</code> if the provided object cannot be processed.
+     * Defines which IpsObjectParts can be process by this action. Returns the IpsObjectPart if it
+     * can be processed, returns <code>null</code> if the provided object cannot be processed.
      */
-    protected IpsObjectPart canBeProcessed(Object selectedIpsObjectPart){
-        if(selectedIpsObjectPart instanceof IProductCmptLink){
+    protected IpsObjectPart canBeProcessed(Object selectedIpsObjectPart) {
+        if (selectedIpsObjectPart instanceof IProductCmptLink) {
             return (IpsObjectPart)selectedIpsObjectPart;
         }
         return null;
     }
-    
-    public void dispose(){
+
+    @Override
+    public void dispose() {
         setEnabled(false);
         super.dispose();
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
-        if(!super.computeEnabledProperty(selection)){
+        if (!super.computeEnabledProperty(selection)) {
             return false;
         }
-        if(!editor.isActiveGenerationEditable()){
+        if (!editor.isActiveGenerationEditable()) {
             return false;
         }
-        Object[] items= ((IStructuredSelection)selection).toArray();
-        for (int i = 0; i < items.length; i++) {
-            IpsObjectPart part = canBeProcessed(items[i]);
+        Object[] items = ((IStructuredSelection)selection).toArray();
+        for (Object item : items) {
+            IpsObjectPart part = canBeProcessed(item);
             if (part != null) {
                 return true;
             }
@@ -66,11 +68,12 @@ public class ProductEditorDeleteAction extends IpsAction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IStructuredSelection selection) {
-        Object[] items= selection.toArray();
-        for (int i = 0; i < items.length; i++) {
-            IpsObjectPart part = canBeProcessed(items[i]);
-            if(part != null){
+        Object[] items = selection.toArray();
+        for (Object item : items) {
+            IpsObjectPart part = canBeProcessed(item);
+            if (part != null) {
                 part.delete();
             }
         }

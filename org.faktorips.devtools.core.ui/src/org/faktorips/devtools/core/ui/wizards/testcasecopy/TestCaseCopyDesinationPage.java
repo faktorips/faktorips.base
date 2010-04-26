@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.testcasecopy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -358,9 +357,9 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                     rootTestPolicyCmpt = (ITestPolicyCmpt)((TableItem)element).getData();
                     IIpsSrcFile[] canditates = rootParameterProductCmptCandidates.get(rootTestPolicyCmpt);
                     IIpsSrcFile changedValue = null;
-                    for (int i = 0; i < canditates.length; i++) {
-                        if (defaultLabelProvider.getText(canditates[i]).equals(value)) {
-                            changedValue = canditates[i];
+                    for (IIpsSrcFile canditate : canditates) {
+                        if (defaultLabelProvider.getText(canditate).equals(value)) {
+                            changedValue = canditate;
                             break;
                         }
                     }
@@ -398,10 +397,10 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     private List<ITestPolicyCmpt> getRelevantRootTestPolicyCmpts() throws CoreException {
         ITestPolicyCmpt[] testPolicyCmpts = getTestCaseCopyWizard().getSourceTestCase().getTestPolicyCmpts();
         List<ITestPolicyCmpt> result = new ArrayList<ITestPolicyCmpt>(testPolicyCmpts.length);
-        for (int i = 0; i < testPolicyCmpts.length; i++) {
-            IProductCmpt productCmpt = testPolicyCmpts[i].findProductCmpt(testPolicyCmpts[i].getIpsProject());
-            if (productCmpt != null && testPolicyCmpts[i].hasProductCmpt()) {
-                result.add(testPolicyCmpts[i]);
+        for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
+            IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
+            if (productCmpt != null && testPolicyCmpt.hasProductCmpt()) {
+                result.add(testPolicyCmpt);
             }
         }
         return result;
@@ -433,8 +432,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         IProductCmptNamingStrategy productCmptNamingStrategy = sourceTestCase.getIpsProject()
                 .getProductCmptNamingStrategy();
 
-        for (Iterator<ITestPolicyCmpt> iter = testObjects.iterator(); iter.hasNext();) {
-            ITestPolicyCmpt testPolicyCmpt = iter.next();
+        for (ITestPolicyCmpt testPolicyCmpt : testObjects) {
             ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(testPolicyCmpt
                     .getIpsProject());
             if (parameter == null || !parameter.isRequiresProductCmpt()) {
@@ -450,12 +448,12 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
                 List<String> content = new ArrayList<String>(allowedProductCmpt.length);
                 List<IIpsSrcFile> allowedProductCmptList = new ArrayList<IIpsSrcFile>(allowedProductCmpt.length);
-                for (int j = 0; j < allowedProductCmpt.length; j++) {
-                    IProductCmpt productCmptCandidate = (IProductCmpt)allowedProductCmpt[j].getIpsObject();
+                for (IIpsSrcFile element : allowedProductCmpt) {
+                    IProductCmpt productCmptCandidate = (IProductCmpt)element.getIpsObject();
                     String kindIdCandidate = productCmptNamingStrategy.getKindId(productCmptCandidate.getName());
                     if (kindId.equals(kindIdCandidate)) {
-                        content.add(provider.getText(allowedProductCmpt[j]));
-                        allowedProductCmptList.add(allowedProductCmpt[j]);
+                        content.add(provider.getText(element));
+                        allowedProductCmptList.add(element);
                     }
                 }
 

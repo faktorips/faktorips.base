@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,29 +41,29 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  * 
  * @author Joerg Ortmann
  */
-public class NewChildParamWizardPage extends WizardPage implements ValueChangeListener  {
+public class NewChildParamWizardPage extends WizardPage implements ValueChangeListener {
     private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
     protected static final int PAGE_NUMBER = 1;
-    
+
     private NewChildParameterWizard wizard;
-    
+
     private EditField editFieldAssociation;
     private EditField editFieldTarget;
     private EditField editFieldName;
     private EditField editFieldParamType;
-    
+
     private String prevAssociation;
     private IPolicyCmptTypeAssociation association;
-    
+
     private AssociationTargetRefControl accosiationTargetRefControl;
     private AssociationRefControl accosiationRefControl;
-    
-    public NewChildParamWizardPage(NewChildParameterWizard wizard){
+
+    public NewChildParamWizardPage(NewChildParameterWizard wizard) {
         super(PAGE_ID, Messages.NewChildParamWizardPage_Title, null);
         this.setDescription(Messages.NewChildParamWizardPage_Description);
         this.wizard = wizard;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,7 +71,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
         Composite c = uiToolkit.createLabelEditColumnComposite(parent);
-        
+
         uiToolkit.createLabel(c, Messages.NewChildParamWizardPage_Label_Association);
         accosiationRefControl = new AssociationRefControl(c, uiToolkit, wizard.getParentPolicyCmptType());
         editFieldAssociation = new TextButtonField(accosiationRefControl);
@@ -82,19 +82,19 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
                 uiToolkit, null);
         editFieldTarget = new TextButtonField(accosiationTargetRefControl);
         editFieldTarget.addChangeListener(this);
-        
+
         uiToolkit.createLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_Name);
         editFieldName = new TextField(uiToolkit.createText(c));
         editFieldName.addChangeListener(this);
-        
+
         uiToolkit.createLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        editFieldParamType = new EnumValueField(uiToolkit.createCombo(c, TestParameterType
-                .getEnumType()), TestParameterType.getEnumType());
+        editFieldParamType = new EnumValueField(uiToolkit.createCombo(c, TestParameterType.getEnumType()),
+                TestParameterType.getEnumType());
         editFieldParamType.addChangeListener(this);
-        
+
         setControl(c);
     }
-    
+
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */
@@ -103,8 +103,8 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         controller.add(editFieldTarget, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
         controller.add(editFieldName, ITestParameter.PROPERTY_NAME);
         controller.add(editFieldParamType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
-    }    
-    
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -112,11 +112,12 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         if (e.field == editFieldAssociation) {
             associationChanged(editFieldAssociation.getText());
         }
-        
+
         wizard.postAsyncRunnable(new Runnable() {
             public void run() {
-                if (wizard.getShell().isDisposed())
+                if (wizard.getShell().isDisposed()) {
                     return;
+                }
                 updateSetPageComplete();
             }
         });
@@ -126,16 +127,19 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
      * Association has changed.
      */
     private void associationChanged(String newAssociation) {
-        if (newAssociation.equals(prevAssociation))
+        if (newAssociation.equals(prevAssociation)) {
             return;
+        }
         prevAssociation = newAssociation;
-        
+
         try {
             association = accosiationRefControl.findAssociation();
-            if (association == null)
+            if (association == null) {
                 return;
+            }
 
-            accosiationTargetRefControl.setPolicyCmptTypeTarget(association.findTargetPolicyCmptType(association.getIpsProject()));
+            accosiationTargetRefControl.setPolicyCmptTypeTarget(association.findTargetPolicyCmptType(association
+                    .getIpsProject()));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -146,17 +150,19 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     /**
      * Creates a new test parameter in an asynchronous manner.
      */
-    private void postNewTestParameter(){
+    private void postNewTestParameter() {
         wizard.postAsyncRunnable(new Runnable() {
             public void run() {
-                if (wizard.getShell().isDisposed())
+                if (wizard.getShell().isDisposed()) {
                     return;
-                if (association != null)
+                }
+                if (association != null) {
                     wizard.newTestParameter(association.getName());
+                }
             }
         });
     }
-    
+
     /**
      * Validate the page.
      * 
@@ -165,25 +171,27 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     private boolean validatePage() throws CoreException {
         setErrorMessage(null);
         if (association == null) {
-            setErrorMessage(NLS.bind(Messages.NewChildParamWizardPage_Error_AssociationDoesNotExists, editFieldAssociation.getText()));
+            setErrorMessage(NLS.bind(Messages.NewChildParamWizardPage_Error_AssociationDoesNotExists,
+                    editFieldAssociation.getText()));
             return false;
         }
-        if ("".equals(editFieldParamType.getText()) || "".equals(editFieldName.getText())){ //$NON-NLS-1$ //$NON-NLS-2$
+        if ("".equals(editFieldParamType.getText()) || "".equals(editFieldName.getText())) { //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
-        
+
         IStatus status = JavaConventions.validateFieldName(editFieldName.getText());
-        if (!status.isOK()){
-            setErrorMessage(NLS.bind(Messages.NewChildParamWizardPage_ValidationError_InvalidTestParameterName, editFieldName.getText()));
+        if (!status.isOK()) {
+            setErrorMessage(NLS.bind(Messages.NewChildParamWizardPage_ValidationError_InvalidTestParameterName,
+                    editFieldName.getText()));
             return false;
         }
-        
+
         return wizard.isPageValid(PAGE_NUMBER);
     }
-    
+
     /**
      * Updates the page complete status.
-     */    
+     */
     private void updateSetPageComplete() {
         boolean completeAllowed = false;
         try {
@@ -193,15 +201,16 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         }
         super.setPageComplete(completeAllowed);
     }
-    
+
     /**
      * Informs the wizard that this page was displayed.
      * 
      * {@inheritDoc}
      */
+    @Override
     public IWizardPage getNextPage() {
         wizard.setMaxPageShown(PAGE_NUMBER);
         return super.getNextPage();
     }
-    
+
 }

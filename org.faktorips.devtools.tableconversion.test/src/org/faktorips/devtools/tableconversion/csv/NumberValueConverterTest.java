@@ -26,19 +26,18 @@ public abstract class NumberValueConverterTest extends TestCase {
 
     /**
      * @return The datatype to pass into <code>ITableFormat.getIpsValue()</code> and
-     * <code>ITableFormat.getExternalValue()</code> when doing conversions.
+     *         <code>ITableFormat.getExternalValue()</code> when doing conversions.
      */
     public abstract ValueDatatype getDatatypeUsedForConversion();
 
     /**
-     * @param useCommaAsDecimalSeparator If <code>true</code> the returned numbers use a comma
-     * as decimal separator character (e.g. 3,456), otherwise a dot is used (3.456).
+     * @param useCommaAsDecimalSeparator If <code>true</code> the returned numbers use a comma as
+     *            decimal separator character (e.g. 3,456), otherwise a dot is used (3.456).
      * 
-     * @return Test data in an external representation to be converted into the internal IPS representation using
-     * <code>IValueConverter.getIpsValue()</code>.
+     * @return Test data in an external representation to be converted into the internal IPS
+     *         representation using <code>IValueConverter.getIpsValue()</code>.
      */
     public abstract String[] getExternalDataToConvert(boolean useCommaAsDecimalSeparator);
-
 
     public void testExternalToInternal() {
         String[] validExternalDoubles = getExternalDataToConvert(false);
@@ -46,9 +45,8 @@ public abstract class NumberValueConverterTest extends TestCase {
         ITableFormat tableFormat = getCSVTableFormat();
 
         MessageList ml = new MessageList();
-        for (int i = 0; i < validExternalDoubles.length; i++) {
-            String ipsValue = tableFormat.getIpsValue(
-                    validExternalDoubles[i], getDatatypeUsedForConversion(), ml);
+        for (String validExternalDouble : validExternalDoubles) {
+            String ipsValue = tableFormat.getIpsValue(validExternalDouble, getDatatypeUsedForConversion(), ml);
             assertTrue(ml.isEmpty());
             assertTrue(getDatatypeUsedForConversion().isParsable(ipsValue));
         }
@@ -61,9 +59,8 @@ public abstract class NumberValueConverterTest extends TestCase {
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR, ",");
 
         MessageList ml = new MessageList();
-        for (int i = 0; i < validExternalDoubles.length; i++) {
-            String ipsValue = tableFormat.getIpsValue(
-                    validExternalDoubles[i], getDatatypeUsedForConversion(), ml);
+        for (String validExternalDouble : validExternalDoubles) {
+            String ipsValue = tableFormat.getIpsValue(validExternalDouble, getDatatypeUsedForConversion(), ml);
             assertTrue(ml.isEmpty());
             assertTrue(getDatatypeUsedForConversion().isParsable(ipsValue));
         }
@@ -84,8 +81,8 @@ public abstract class NumberValueConverterTest extends TestCase {
 
         MessageList ml = new MessageList();
         IValueConverter converter = new DecimalValueConverter();
-        for (int i = 0; i < validExternalDecimals.length; i++) {
-            String ipsValue = converter.getIpsValue(validExternalDecimals[i], ml);
+        for (String validExternalDecimal : validExternalDecimals) {
+            String ipsValue = converter.getIpsValue(validExternalDecimal, ml);
             assertFalse(ml.isEmpty());
             assertFalse(Datatype.DECIMAL.isParsable(ipsValue));
         }

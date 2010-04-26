@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,13 +24,13 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Joerg Ortmann
  */
-public class ErrorPage extends WizardPage implements IHiddenWizardPage{
+public class ErrorPage extends WizardPage implements IHiddenWizardPage {
     private static final String PAGE_ID = "Error"; //$NON-NLS-1$
-    
+
     private Label details;
 
     private UIToolkit toolkit;
-    
+
     public ErrorPage(UIToolkit toolkit) {
         super(PAGE_ID, Messages.ErrorPage_pageTitle, null);
         setDescription(Messages.ErrorPage_pageDescription);
@@ -47,17 +47,17 @@ public class ErrorPage extends WizardPage implements IHiddenWizardPage{
     }
 
     /**
-     * If the current page this page then return false to disable the finish button.
-     * {@inheritDoc}
+     * If the current page this page then return false to disable the finish button. {@inheritDoc}
      */
+    @Override
     public boolean isPageComplete() {
-        return ! (getWizard().getContainer().getCurrentPage() == this);
+        return !(getWizard().getContainer().getCurrentPage() == this);
     }
 
     /**
-     * This method returns null to disable the next button.
-     * {@inheritDoc}
+     * This method returns null to disable the next button. {@inheritDoc}
      */
+    @Override
     public IWizardPage getPreviousPage() {
         return null;
     }

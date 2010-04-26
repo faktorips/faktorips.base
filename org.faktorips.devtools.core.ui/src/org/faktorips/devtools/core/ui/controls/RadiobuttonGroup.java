@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
@@ -36,7 +35,7 @@ public class RadiobuttonGroup implements ValueChangeListener {
 
     /**
      * Creates a <code>org.eclipse.swt.widgets.Group</code> and controls
-     * <code>org.faktorips.devtools.core.ui.controls.Radiobutton</code>s added to it via the 
+     * <code>org.faktorips.devtools.core.ui.controls.Radiobutton</code>s added to it via the
      * <code>RadiobuttonGroup#addRadiobutton</code> method.
      * 
      * @param parent
@@ -59,8 +58,7 @@ public class RadiobuttonGroup implements ValueChangeListener {
         if (e.field instanceof CheckboxField) {
             CheckboxField changedField = (CheckboxField)e.field;
             if (changedField.getCheckbox().isChecked()) {
-                for (Iterator<CheckboxField> it = checkboxFields.iterator(); it.hasNext();) {
-                    CheckboxField checkboxField = it.next();
+                for (CheckboxField checkboxField : checkboxFields) {
                     if (!checkboxField.equals(changedField)) {
                         checkboxField.getCheckbox().setChecked(false);
                     }

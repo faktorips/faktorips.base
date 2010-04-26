@@ -132,10 +132,10 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
      * created, because for this kind of parameter there is no add functionality.
      */
     private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase) throws CoreException {
-        for (int i = 0; i < parameter.length; i++) {
-            if (parameter[i] instanceof ITestValueParameter) {
+        for (ITestParameter element : parameter) {
+            if (element instanceof ITestValueParameter) {
                 ITestValue testValue = testCase.newTestValue();
-                testValue.setTestValueParameter(parameter[i].getName());
+                testValue.setTestValueParameter(element.getName());
                 testValue.setDefaultValue();
             }
         }

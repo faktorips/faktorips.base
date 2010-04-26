@@ -29,28 +29,29 @@ public class EnumSaxHandlerTest extends TestCase {
     private InputStream is;
     private SAXParser saxParser;
     private EnumSaxHandler handler;
-    
-    
+
+    @Override
     public void setUp() throws Exception {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         saxParser = factory.newSAXParser();
         handler = new EnumSaxHandler();
     }
-    
-    public void tearDown(){
-        if(is != null){
+
+    @Override
+    public void tearDown() {
+        if (is != null) {
             try {
                 is.close();
             } catch (IOException e) {
             }
         }
     }
-    
+
     private InputStream createInputStream(String extension) {
         return EnumSaxHandlerTest.class.getClassLoader().getResourceAsStream(
                 EnumSaxHandlerTest.class.getName().replace('.', '/') + (extension != null ? extension : ".xml"));
     }
-    
+
     public void testCorrectContent() throws Exception {
         is = createInputStream(null);
         saxParser.parse(is, handler);

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,45 +33,57 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
 
     // map containing extension attributes
     private Map<ModelObjectAttribute, Object> extensionAttributes = new HashMap<ModelObjectAttribute, Object>();
-    
+
     /*
      * Wrapper class stores all extension attributes.
      */
     private class ModelObjectAttribute {
         private IModelObject modelObject;
         private String attributeName;
+
         public ModelObjectAttribute(IModelObject modelObject, String attributeName) {
             super();
             this.modelObject = modelObject;
             this.attributeName = attributeName;
         }
+
         /**
          * Returns the model object
          */
         public IModelObject getModelObject() {
             return modelObject;
         }
+
         /**
          * Returns the attribute name of the model object this wrapper object belongs to
          */
         public String getAttributeName() {
             return attributeName;
         }
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean equals(Object other) {
-            if ( (this == other ) ) return true;
-            if ( (other == null ) ) return false;
-            if ( !(other instanceof ModelObjectAttribute) ) return false;
-            ModelObjectAttribute castOther = ( ModelObjectAttribute ) other; 
-            return  (this.getAttributeName() != null && this.getAttributeName().equals(castOther.getAttributeName())) && 
-                    (this.getModelObject() != null && this.getModelObject().equals(castOther.getModelObject()));
+            if ((this == other)) {
+                return true;
+            }
+            if ((other == null)) {
+                return false;
+            }
+            if (!(other instanceof ModelObjectAttribute)) {
+                return false;
+            }
+            ModelObjectAttribute castOther = (ModelObjectAttribute)other;
+            return (this.getAttributeName() != null && this.getAttributeName().equals(castOther.getAttributeName()))
+                    && (this.getModelObject() != null && this.getModelObject().equals(castOther.getModelObject()));
         }
-        
+
         /**
          * {@inheritDoc}
          */
+        @Override
         public int hashCode() {
             int result = 17;
             result = 37 * result + (getModelObject() == null ? 0 : getModelObject().hashCode());
@@ -79,11 +91,11 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
             return result;
         }
     }
-    
+
     public IpsTestCase2(String qName) {
         super(qName);
     }
-    
+
     /**
      * Initialized the input and expected result objects from the xml.
      */
@@ -91,7 +103,7 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
         initInputFromXml(XmlUtil.getFirstElement(testCaseEl, "Input"));
         initExpectedResultFromXml(XmlUtil.getFirstElement(testCaseEl, "ExpectedResult"));
     }
-   
+
     /**
      * Adds a extension attribute value identified by the attribute name and the test object the
      * attribute is related to.
@@ -99,20 +111,21 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
     protected void addExtensionAttribute(IModelObject modelObject, String attributeName, Object value) {
         extensionAttributes.put(new ModelObjectAttribute(modelObject, attributeName), value);
     }
-    
+
     /**
      * Initialized the input from the given element.
      */
     protected abstract void initInputFromXml(Element inputEl);
-    
+
     /**
      * Initialized the expected result from the given element.
-     */    
+     */
     protected abstract void initExpectedResultFromXml(Element resultEl);
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return "TestCase " + getQualifiedName();
     }
@@ -120,19 +133,21 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int countTestCases() {
         return 1;
     }
-    
+
     /**
-     * Returns the value of the given extension attribute identified by the attribute name
-     * and the model object the attribute is related to. Returns <code>null</code> if no
-     * such extension attributes exists.
+     * Returns the value of the given extension attribute identified by the attribute name and the
+     * model object the attribute is related to. Returns <code>null</code> if no such extension
+     * attributes exists.
      * 
-     * @param modelObject The model object for which the value of the extension attribute should be returned
-     * @param attributeName The name which identifies the extension attribute 
+     * @param modelObject The model object for which the value of the extension attribute should be
+     *            returned
+     * @param attributeName The name which identifies the extension attribute
      */
-    public Object getExtensionAttributeValue(IModelObject modelObject, String attributeName){
+    public Object getExtensionAttributeValue(IModelObject modelObject, String attributeName) {
         return extensionAttributes.get(new ModelObjectAttribute(modelObject, attributeName));
     }
 }

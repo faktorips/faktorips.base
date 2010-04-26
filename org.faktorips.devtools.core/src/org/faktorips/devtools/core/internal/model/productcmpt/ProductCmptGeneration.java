@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -132,12 +131,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private void addRelatedTableContentsQualifiedNameTypes(Set<IDependency> qaTypes,
             Map<IDependency, List<IDependencyDetail>> details) {
         ITableContentUsage[] tableContentUsages = getTableContentUsages();
-        for (int i = 0; i < tableContentUsages.length; i++) {
+        for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
-                    .getQualifiedNameType(), new QualifiedNameType(tableContentUsages[i].getTableContentName(),
+                    .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
                     IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
-            addDetails(details, dependency, tableContentUsages[i], ITableContentUsage.PROPERTY_TABLE_CONTENT);
+            addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
     }
 
@@ -148,12 +147,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private void addRelatedProductCmptQualifiedNameTypes(Set<IDependency> qaTypes,
             Map<IDependency, List<IDependencyDetail>> details) {
         IProductCmptLink[] relations = getLinks();
-        for (int j = 0; j < relations.length; j++) {
+        for (IProductCmptLink relation : relations) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
-                    .getQualifiedNameType(),
-                    new QualifiedNameType(relations[j].getTarget(), IpsObjectType.PRODUCT_CMPT));
+                    .getQualifiedNameType(), new QualifiedNameType(relation.getTarget(), IpsObjectType.PRODUCT_CMPT));
             qaTypes.add(dependency);
-            addDetails(details, dependency, relations[j], IProductCmptLink.PROPERTY_TARGET);
+            addDetails(details, dependency, relation, IProductCmptLink.PROPERTY_TARGET);
         }
     }
 
@@ -282,8 +280,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (attribute == null) {
             return null;
         }
-        for (Iterator<IAttributeValue> it = attributeValues.iterator(); it.hasNext();) {
-            IAttributeValue value = it.next();
+        for (IAttributeValue value : attributeValues) {
             if (attribute.equals(value.getAttribute())) {
                 return value;
             }
@@ -353,8 +350,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     public IConfigElement getConfigElement(String attributeName) {
-        for (Iterator<IConfigElement> it = configElements.iterator(); it.hasNext();) {
-            IConfigElement each = it.next();
+        for (IConfigElement each : configElements) {
             if (each.getPolicyCmptTypeAttribute().equals(attributeName)) {
                 return each;
             }
@@ -423,8 +419,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      */
     public IProductCmptLink[] getLinks(String typeLink) {
         List<IProductCmptLink> result = new ArrayList<IProductCmptLink>();
-        for (Iterator<IProductCmptLink> it = links.iterator(); it.hasNext();) {
-            IProductCmptLink link = it.next();
+        for (IProductCmptLink link : links) {
             if (link.getAssociation().equals(typeLink)) {
                 result.add(link);
             }
@@ -498,8 +493,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     private boolean isFirstRelationOfThisType(IAssociation association, IProductCmpt target, IIpsProject ipsProject)
             throws CoreException {
-        for (Iterator<IProductCmptLink> iter = links.iterator(); iter.hasNext();) {
-            IProductCmptLink link = iter.next();
+        for (IProductCmptLink link : links) {
             if (link.findAssociation(ipsProject).equals(association)
                     && link.getTarget().equals(target.getQualifiedName())) {
                 return false;
@@ -617,8 +611,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (formulaName == null) {
             return null;
         }
-        for (Iterator<IFormula> it = formulas.iterator(); it.hasNext();) {
-            IFormula formula = it.next();
+        for (IFormula formula : formulas) {
             if (formulaName.equals(formula.getName())) {
                 return formula;
             }
@@ -763,10 +756,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
         IGenerationToTypeDelta delta = computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
+        for (IDeltaEntry entrie : entries) {
+            if (entrie.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
                 String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement,
-                        ((IDeltaEntryForProperty)entries[i]).getPropertyName());
+                        ((IDeltaEntryForProperty)entrie).getPropertyName());
                 list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this));
             }
         }
@@ -782,15 +775,15 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     protected void validateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate(MessageList msgList,
             IIpsProject ipsProject) throws CoreException {
         IProductCmptLink[] links = getLinks();
-        for (int i = 0; i < links.length; i++) {
-            IAssociation association = links[i].findAssociation(ipsProject);
+        for (IProductCmptLink link : links) {
+            IAssociation association = link.findAssociation(ipsProject);
             // associations of type association will be excluded from this constraint. If the type
             // of the association
             // cannot be determined then the link will not be evaluated
             if (association == null || association.isAssoziation()) {
                 continue;
             }
-            IProductCmpt productCmpt = links[i].findTarget(ipsProject);
+            IProductCmpt productCmpt = link.findTarget(ipsProject);
             if (productCmpt != null) {
                 if (getValidFrom() != null && productCmpt.findGenerationEffectiveOn(getValidFrom()) == null) {
                     String dateString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(
@@ -800,7 +793,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                     String text = NLS.bind(
                             Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate, new Object[] {
                                     productCmpt.getQualifiedName(), generationName, dateString });
-                    msgList.add(new Message(MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE, text, Message.ERROR, links[i]));
+                    msgList.add(new Message(MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE, text, Message.ERROR, link));
                 }
             }
         }
@@ -813,8 +806,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (rolename == null) {
             return null;
         }
-        for (Iterator<ITableContentUsage> iter = tableContentUsages.iterator(); iter.hasNext();) {
-            ITableContentUsage element = iter.next();
+        for (ITableContentUsage element : tableContentUsages) {
             if (rolename.equals(element.getStructureUsage())) {
                 return element;
             }
@@ -870,8 +862,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
                 Set<String> targets = new HashSet<String>();
                 String msg = null;
-                for (int j = 0; j < relations.length; j++) {
-                    String target = relations[j].getTarget();
+                for (IProductCmptLink relation : relations) {
+                    String target = relation.getTarget();
                     if (!targets.add(target)) {
                         if (msg == null) {
                             msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, association

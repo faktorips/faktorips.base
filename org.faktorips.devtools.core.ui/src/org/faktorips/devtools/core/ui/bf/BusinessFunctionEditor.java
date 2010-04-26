@@ -115,8 +115,8 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     public void problemsChanged(IResource[] changedResources) {
         IResource correspondingResource = ipsSrcFile.getCorrespondingResource();
         if (correspondingResource != null) {
-            for (int i = 0; i < changedResources.length; i++) {
-                if (changedResources[i].equals(correspondingResource)) {
+            for (IResource changedResource : changedResources) {
+                if (changedResource.equals(correspondingResource)) {
                     postImageChange();
                 }
             }

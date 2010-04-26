@@ -89,8 +89,8 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
     @Override
     protected final void generateCodeForPolicyCmptTypeAttributes(TypeSection mainSection) throws CoreException {
         IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            IPolicyCmptTypeAttribute a = attributes[i];
+        for (IPolicyCmptTypeAttribute attribute : attributes) {
+            IPolicyCmptTypeAttribute a = attribute;
             if (!a.validate(getIpsProject()).containsErrorMsg()) {
                 try {
                     Datatype datatype = a.findDatatype(getIpsProject());
@@ -103,7 +103,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
                 } catch (Exception e) {
 
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
-                            "Error building attribute " + attributes[i].getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
+                            "Error building attribute " + attribute.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
                                     + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
                 }
             }
@@ -251,18 +251,17 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             IPolicyCmptTypeAssociation[] associations = currentType.getPolicyCmptTypeAssociations();
-            for (int i = 0; i < associations.length; i++) {
-                if (associations[i].isDerivedUnion() && associations[i].isValid()) {
+            for (IPolicyCmptTypeAssociation association : associations) {
+                if (association.isDerivedUnion() && association.isValid()) {
                     try {
-                        List<IAssociation> implAssociations = derivedUnionMap.get(associations[i]);
+                        List<IAssociation> implAssociations = derivedUnionMap.get(association);
                         if (implAssociations != null) {
-                            generateCodeForContainerAssociationImplementation(associations[i], implAssociations,
+                            generateCodeForContainerAssociationImplementation(association, implAssociations,
                                     fieldsBuilder, methodsBuilder);
                         }
                     } catch (Exception e) {
                         addToBuildStatus(new IpsStatus("Error building container association implementation. " //$NON-NLS-1$
-                                + "ContainerAssociation: " + associations[i] //$NON-NLS-1$
-                                + "Implementing Type: " + getPcType(), e)); //$NON-NLS-1$
+                                + "ContainerAssociation: " + association + "Implementing Type: " + getPcType(), e)); //$NON-NLS-1$
                     }
                 }
             }

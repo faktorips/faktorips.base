@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,7 +32,7 @@ import org.faktorips.values.DateUtil;
 public class DateValueConverter extends AbstractValueConverter {
 
     private DateDatatype datatype = new DateDatatype();
-    
+
     /**
      * Supported type for the externalDataValue is Number or Date.
      * 
@@ -55,11 +55,12 @@ public class DateValueConverter extends AbstractValueConverter {
             } catch (IllegalArgumentException ignored) {
             }
         }
-        
-        if (error){
-            messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue //$NON-NLS-1$
-                    .getClass().getName(), getSupportedDatatype().getQualifiedName())); 
-            return externalDataValue.toString();            
+
+        if (error) {
+            messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                    "" + externalDataValue, externalDataValue //$NON-NLS-1$
+                            .getClass().getName(), getSupportedDatatype().getQualifiedName()));
+            return externalDataValue.toString();
         }
         return datatype.valueToString(date);
     }
@@ -79,7 +80,7 @@ public class DateValueConverter extends AbstractValueConverter {
             return (Date)datatype.getValue(ipsValue);
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
-                    .getQualifiedName(), GregorianCalendar.class.getName())); //$NON-NLS-1$
+                    .getQualifiedName(), GregorianCalendar.class.getName()));
             return ipsValue;
         }
     }

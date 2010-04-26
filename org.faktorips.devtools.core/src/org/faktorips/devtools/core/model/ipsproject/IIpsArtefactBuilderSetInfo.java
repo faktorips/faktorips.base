@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,17 +41,18 @@ public interface IIpsArtefactBuilderSetInfo {
      * validated against the definiton of this builder set and its allowed properties.
      */
     public final static String MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE = "propertyNoJdkCompliance";
-    
+
     /**
-     * Creates a {@link IIpsArtefactBuilderSet} instance based on this {@link IIpsArtefactBuilderSetInfo} and returns it.
+     * Creates a {@link IIpsArtefactBuilderSet} instance based on this
+     * {@link IIpsArtefactBuilderSetInfo} and returns it.
      */
     public IIpsArtefactBuilderSet create(IIpsProject ipsProject);
-    
+
     /**
      * Creates a default configuration for a builder set defined by this info.
      */
     public IIpsArtefactBuilderSetConfigModel createDefaultConfiguration(IIpsProject ipsProject);
-    
+
     /**
      * Returns the id by which the <code>IIpsArtefactBuilderSet</code> is registered with the
      * system.
@@ -64,7 +65,8 @@ public interface IIpsArtefactBuilderSetInfo {
     public String getBuilderSetLabel();
 
     /**
-     * Returns the property definition object for the specified name or <code>null</code> if it doesn't exist.
+     * Returns the property definition object for the specified name or <code>null</code> if it
+     * doesn't exist.
      */
     public IIpsBuilderSetPropertyDef getPropertyDefinition(String name);
 
@@ -77,12 +79,14 @@ public interface IIpsArtefactBuilderSetInfo {
      * Validates the provided IIpsArtefactBuilderSetConfig against this definition. Especially the
      * properties of the configuration are checked for their existence and the correct value.
      */
-    public MessageList validateIpsArtefactBuilderSetConfig(IIpsProject ipsProject, IIpsArtefactBuilderSetConfigModel builderSetConfig);
+    public MessageList validateIpsArtefactBuilderSetConfig(IIpsProject ipsProject,
+            IIpsArtefactBuilderSetConfigModel builderSetConfig);
 
     /**
-     * Validates the property value of the property of an IpsArtefactBuilderSetConfig specified by the propertyName. It returns <code>null</code>
-     * if validation is correct otherwise a {@link Message} object is returned.
+     * Validates the property value of the property of an IpsArtefactBuilderSetConfig specified by
+     * the propertyName. It returns <code>null</code> if validation is correct otherwise a
+     * {@link Message} object is returned.
      */
     public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject, String propertyName, String propertyValue);
-    
+
 }

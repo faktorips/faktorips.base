@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,13 +18,13 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- *  Specification of a test value parameter.
- *  
+ * Specification of a test value parameter.
+ * 
  * @author Joerg Ortmann
  */
 public interface ITestValueParameter extends ITestParameter {
 
-	/** Property names */
+    /** Property names */
     public final static String PROPERTY_VALUEDATATYPE = "valueDatatype"; //$NON-NLS-1$
 
     /**
@@ -46,18 +46,18 @@ public interface ITestValueParameter extends ITestParameter {
      * Returns the datatype.
      */
     public String getValueDatatype();
-	
-	/**
-	 * Sets the datatype.
-	 */
-	public void setValueDatatype(String datatype);
-	
+
+    /**
+     * Sets the datatype.
+     */
+    public void setValueDatatype(String datatype);
+
     /**
      * Returns the datatype or <code>null</code> if the object does not exists.
      * 
      * @param ipsProject The ips project which object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the datatype.
-     */			
-	public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
+     */
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
 }

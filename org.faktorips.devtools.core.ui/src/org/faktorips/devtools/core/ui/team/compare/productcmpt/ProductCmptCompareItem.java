@@ -33,9 +33,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
@@ -76,6 +76,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * 
      * @see #initGenerationContentString(StringBuffer, int) {@inheritDoc}
      */
+    @Override
     protected int initTreeContentString(StringBuffer sb, int offset) {
         int currentLength = 0;
         sb.append(getContentString());
@@ -139,10 +140,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append(relationsHeader);
             currentLength += relationsHeader.length();
             String[] relationTypes = getRelationTypes(generation);
-            for (int i = 0; i < relationTypes.length; i++) {
-                List<ProductCmptCompareItem> relationsByType = getRelations(relations, relationTypes[i]);
+            for (String relationType : relationTypes) {
+                List<ProductCmptCompareItem> relationsByType = getRelations(relations, relationType);
                 if (!relationsByType.isEmpty()) {
-                    String relTypeHeader = getRelationTypeHeader(generation, relationTypes[i]);
+                    String relTypeHeader = getRelationTypeHeader(generation, relationType);
                     sb.append(relTypeHeader);
                     currentLength += relTypeHeader.length();
                 }
@@ -251,8 +252,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         // use TreeSet to avoid duplicate IDs and at the same time maintain their order.
         Set<String> relationTypes = new TreeSet<String>();
         IProductCmptLink[] relations = gen.getLinks();
-        for (int i = 0; i < relations.length; i++) {
-            relationTypes.add(relations[i].getAssociation());
+        for (IProductCmptLink relation : relations) {
+            relationTypes.add(relation.getAssociation());
         }
         return (String[])relationTypes.toArray(new String[relationTypes.size()]);
     }
@@ -264,6 +265,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * prepended date is needed for the rangedifferencing (calculation of differences based on the
      * text representation) that is performed by the <code>TextMergeViewer</code> internally.
      */
+    @Override
     protected String initContentString() {
         StringBuffer sb = new StringBuffer();
         if (getIpsElement() == null) {
@@ -386,6 +388,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String initName() {
         StringBuffer sb = new StringBuffer();
         if (getIpsElement() != null) {
@@ -439,6 +442,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * initDocumentRange() has effect only if this CompareItem is the root of its structure.
      * 
      */
+    @Override
     public void init() {
         if (isRoot()) {
             sortChildren();

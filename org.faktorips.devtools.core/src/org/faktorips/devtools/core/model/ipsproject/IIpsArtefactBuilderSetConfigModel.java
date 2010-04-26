@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * 
  * @author Peter Erzberger
  */
-public interface IIpsArtefactBuilderSetConfigModel{
+public interface IIpsArtefactBuilderSetConfigModel {
 
     /**
      * The xml tag name for instances of this type.
@@ -48,11 +48,13 @@ public interface IIpsArtefactBuilderSetConfigModel{
     /**
      * Returns the description of the property if specified.
      * 
-     * @param propertyName the name for which the description is requested. Cannot be <code>null</code>
-     * @return the description of the specified property or <code>null</code> if no description is available
+     * @param propertyName the name for which the description is requested. Cannot be
+     *            <code>null</code>
+     * @return the description of the specified property or <code>null</code> if no description is
+     *         available
      */
     public String getPropertyDescription(String propertyName);
-    
+
     /**
      * Returns the value of the property of the provided property name.
      */
@@ -66,32 +68,33 @@ public interface IIpsArtefactBuilderSetConfigModel{
      * @param description optional description of the property. Can be null
      */
     public void setPropertyValue(String propertyName, String value, String description);
-    
+
     /**
      * @param doc The document to create the element with.
-     * @return The element containing all configuration data which can be parsed back to a new configuration 
-     * using initFromXml().
+     * @return The element containing all configuration data which can be parsed back to a new
+     *         configuration using initFromXml().
      */
     public Element toXml(Document doc);
 
     /**
      * @param config The configuration to be parsed.
-     * @return The element containing all configuration data which can be parsed back to a new configuration 
-     * using initFromXml().
+     * @return The element containing all configuration data which can be parsed back to a new
+     *         configuration using initFromXml().
      */
     public void initFromXml(Element config);
-    
+
     /**
-     * Create a IIpsArtefactBuilderSetConfig that is provided to the IIpsArtefactBuilderSets init method out of this
-     * configuration model object.
+     * Create a IIpsArtefactBuilderSetConfig that is provided to the IIpsArtefactBuilderSets init
+     * method out of this configuration model object.
      * 
-     * @throws IllegalStateException if there are inconsistencies between the provided builder set info and this object
+     * @throws IllegalStateException if there are inconsistencies between the provided builder set
+     *             info and this object
      */
     public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo);
 
     /**
-     * Validates this configuration against the provided {@link IpsArtefactBuilderSetInfo} object and returns a validation message object
-     * if the validation fails otherwise <code>null</code>. 
+     * Validates this configuration against the provided {@link IpsArtefactBuilderSetInfo} object
+     * and returns a validation message object if the validation fails otherwise <code>null</code>.
      */
     public MessageList validate(IIpsProject ipsProject, IpsArtefactBuilderSetInfo builderSetInfo);
 

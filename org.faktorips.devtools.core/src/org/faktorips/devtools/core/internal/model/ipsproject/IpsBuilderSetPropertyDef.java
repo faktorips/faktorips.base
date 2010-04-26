@@ -177,8 +177,8 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
         if (!StringUtils.isEmpty(type) && type.equals("enum") && element.getName().equals("discreteValues")) { //$NON-NLS-1$ //$NON-NLS-2$
             IConfigurationElement[] values = element.getChildren();
-            for (int j = 0; j < values.length; j++) {
-                String value = values[j].getAttribute("value"); //$NON-NLS-1$
+            for (IConfigurationElement value2 : values) {
+                String value = value2.getAttribute("value"); //$NON-NLS-1$
                 if (!StringUtils.isEmpty(value)) {
                     discreteValues.add(value);
                 }
@@ -208,8 +208,8 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             properties.put("extensionPointId", extensionPointId); //$NON-NLS-1$
             IExtensionPoint refExtPoint = registry.getExtensionPoint(extensionPointId);
             IExtension[] refExts = refExtPoint.getExtensions();
-            for (int j = 0; j < refExts.length; j++) {
-                discreteValues.add(refExts[j].getUniqueIdentifier());
+            for (IExtension refExt : refExts) {
+                discreteValues.add(refExt.getUniqueIdentifier());
             }
         }
         return true;
@@ -219,8 +219,8 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             IConfigurationElement element) {
         if (element.getName().equals("jdkComplianceLevels")) { //$NON-NLS-1$
             IConfigurationElement[] values = element.getChildren();
-            for (int j = 0; j < values.length; j++) {
-                String level = values[j].getAttribute("value"); //$NON-NLS-1$
+            for (IConfigurationElement value : values) {
+                String level = value.getAttribute("value"); //$NON-NLS-1$
                 if (!StringUtils.isEmpty(level)) {
                     jdkComplianceLevelList.add(level);
                 }
@@ -303,9 +303,9 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         String type = (String)properties.get("type"); //$NON-NLS-1$
         IConfigurationElement[] childs = element.getChildren();
 
-        for (int j = 0; j < childs.length; j++) {
-            retrieveEnumValues(type, discreteValues, childs[j]);
-            retrieveJdkComplianceLevels(jdkComplianceLevelList, childs[j]);
+        for (IConfigurationElement child : childs) {
+            retrieveEnumValues(type, discreteValues, child);
+            retrieveJdkComplianceLevels(jdkComplianceLevelList, child);
         }
         if ("enum".equals(type) && discreteValues.isEmpty()) { //$NON-NLS-1$
             logger.log(new IpsStatus("If the type attribute of the builder set property " + element.getName() //$NON-NLS-1$

@@ -47,9 +47,9 @@ public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDi
     public IEnumAttribute[] getSelectedAttributes() {
         List<IEnumAttribute> attributes = new ArrayList<IEnumAttribute>();
         Object[] checked = getResult();
-        for (int i = 0; i < checked.length; i++) {
-            if (checked[i] instanceof IEnumAttribute) {
-                IEnumAttribute attribute = (IEnumAttribute)checked[i];
+        for (Object element : checked) {
+            if (element instanceof IEnumAttribute) {
+                IEnumAttribute attribute = (IEnumAttribute)element;
                 attributes.add(attribute);
             }
         }

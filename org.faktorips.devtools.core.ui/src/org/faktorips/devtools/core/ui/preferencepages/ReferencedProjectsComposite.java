@@ -175,9 +175,9 @@ public class ReferencedProjectsComposite extends Composite {
 
             Object[] selectedReferencedProjects = dialog.getResult();
             if (selectedReferencedProjects.length > 0) {
-                for (int i = 0; i < selectedReferencedProjects.length; i++) {
+                for (Object selectedReferencedProject : selectedReferencedProjects) {
 
-                    ipsObjectPath.newIpsProjectRefEntry((IIpsProject)selectedReferencedProjects[i]);
+                    ipsObjectPath.newIpsProjectRefEntry((IIpsProject)selectedReferencedProject);
                     tableViewer.refresh(false);
                 }
                 dataChanged = true;
@@ -205,15 +205,14 @@ public class ReferencedProjectsComposite extends Composite {
         ArrayList<IIpsProject> resultList = new ArrayList<IIpsProject>();
         IIpsProjectRefEntry[] projectRefEntries = ipsObjectPath.getProjectRefEntries();
         ArrayList<IIpsProject> references = new ArrayList<IIpsProject>();
-        for (int i = 0; i < projectRefEntries.length; i++) {
-            references.add(projectRefEntries[i].getReferencedIpsProject());
+        for (IIpsProjectRefEntry projectRefEntrie : projectRefEntries) {
+            references.add(projectRefEntrie.getReferencedIpsProject());
         }
 
         IIpsProject[] ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
         IIpsProject currentIpsProject = ipsObjectPath.getIpsProject();
 
-        for (int i = 0; i < ipsProjects.length; i++) {
-            IIpsProject ipsProject = ipsProjects[i];
+        for (IIpsProject ipsProject : ipsProjects) {
             if (ipsProject.equals(currentIpsProject) || references.contains(ipsProject)) {
                 continue;
             }

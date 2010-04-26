@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,7 +24,6 @@ import java.io.InputStream;
  */
 public class StreamUtil {
 
-
     /**
      * Copies the content of the provided InputStream into a ByteArrayInputStream and closes the
      * provided stream.
@@ -36,27 +35,27 @@ public class StreamUtil {
      * @throws IOException exceptions that ocur during reading from and writing to a stream or
      *             closing the provided stream are delegated
      */
-    public final static ByteArrayInputStream copy(InputStream is, int increments) throws IOException{
-        if(increments < 1){
+    public final static ByteArrayInputStream copy(InputStream is, int increments) throws IOException {
+        if (increments < 1) {
             throw new IllegalArgumentException("The increments must be greater equal to 1.");
         }
-        if(is == null){
+        if (is == null) {
             return null;
         }
-        try{
+        try {
             int value = is.read();
-            if(value == -1){
+            if (value == -1) {
                 return new ByteArrayInputStream(new byte[0]);
             }
             byte[] bytes = new byte[increments];
             int counter = 0;
             int absoluteCounter = 0;
-            while(value != -1){
+            while (value != -1) {
                 bytes[absoluteCounter] = (byte)value;
                 value = is.read();
                 counter++;
                 absoluteCounter++;
-                if(counter > increments - 1){
+                if (counter > increments - 1) {
                     byte[] current = bytes;
                     bytes = new byte[bytes.length + increments];
                     System.arraycopy(current, 0, bytes, 0, current.length);
@@ -67,12 +66,11 @@ public class StreamUtil {
             bytes = new byte[absoluteCounter];
             System.arraycopy(current, 0, bytes, 0, absoluteCounter);
             return new ByteArrayInputStream(bytes);
-        }
-        finally {
+        } finally {
             is.close();
         }
     }
-    
-    private StreamUtil(){
+
+    private StreamUtil() {
     }
 }

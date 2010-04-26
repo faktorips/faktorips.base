@@ -40,9 +40,9 @@ public class EnumField extends ComboField {
     }
 
     private Enum getEnumValue(Enum[] allEnumConstants, String name) {
-        for (int i = 0; i < allEnumConstants.length; i++) {
-            if (allEnumConstants[i].toString().equals(name)) {
-                return allEnumConstants[i];
+        for (Enum allEnumConstant : allEnumConstants) {
+            if (allEnumConstant.toString().equals(name)) {
+                return allEnumConstant;
             }
         }
         return null;

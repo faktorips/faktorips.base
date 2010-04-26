@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -40,7 +40,7 @@ public interface IBFElement extends IIpsObjectPart {
     public final static String PROPERTY_INCOMMING_EDGES = "incommingEdges"; //$NON-NLS-1$
     public final static String PROPERTY_OUTGOING_EDGES = "outgoingEdges"; //$NON-NLS-1$
 
-    //validation message codes
+    // validation message codes
     public static final String MSGCODE_PREFIX = "BFELEMENT-"; //$NON-NLS-1$
     public static final String MSGCODE_NAME_NOT_SPECIFIED = MSGCODE_PREFIX + "nameNotSpecified"; //$NON-NLS-1$
     public static final String MSGCODE_NAME_NOT_VALID = IIpsProjectNamingConventions.INVALID_NAME;
@@ -61,12 +61,13 @@ public interface IBFElement extends IIpsObjectPart {
     public Point getLocation();
 
     /**
-     * Sets the location of the graphical representation of this element. 
+     * Sets the location of the graphical representation of this element.
      */
     public void setLocation(Point location);
 
     /**
      * Returns the size of the graphical representation of this element.
+     * 
      * @return
      */
     public Dimension getSize();
@@ -77,13 +78,13 @@ public interface IBFElement extends IIpsObjectPart {
     public void setSize(Dimension size);
 
     /**
-     * Returns the type of this element. 
+     * Returns the type of this element.
      */
     public BFElementType getType();
 
     /**
-     * Sets the name of this element. For business function call actions and method call actions 
-     * the name is not required. 
+     * Sets the name of this element. For business function call actions and method call actions the
+     * name is not required.
      */
     public void setName(String name);
 
@@ -94,8 +95,8 @@ public interface IBFElement extends IIpsObjectPart {
 
     /**
      * Returns all control flows of this element that point to it. The returned list is a copy and
-     * can therefore be modified without corrupting the list that represents the association to
-     * the incoming control flows. 
+     * can therefore be modified without corrupting the list that represents the association to the
+     * incoming control flows.
      */
     public List<IControlFlow> getIncomingControlFlow();
 
@@ -110,9 +111,9 @@ public interface IBFElement extends IIpsObjectPart {
     public void addOutgoingControlFlow(IControlFlow controlFlow);
 
     /**
-     * Returns all control flows of this element that point from it.  The returned list is a copy and
-     * can therefore be modified without corrupting the list that represents the association of
-     * the outgoing control flows. 
+     * Returns all control flows of this element that point from it. The returned list is a copy and
+     * can therefore be modified without corrupting the list that represents the association of the
+     * outgoing control flows.
      */
     public List<IControlFlow> getOutgoingControlFlow();
 
@@ -125,13 +126,12 @@ public interface IBFElement extends IIpsObjectPart {
      * Removes all incoming control flows from this element.
      */
     public void removeAllIncommingControlFlows();
-    
+
     /**
      * Removes all outgoing control flows from this element.
      */
     public void removeAllOutgoingControlFlows();
 
-    
     /**
      * Returns all control flows that are connected to this element.
      */

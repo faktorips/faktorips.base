@@ -17,6 +17,7 @@ package org.faktorips.runtime;
  * Delta computation options that create child deltas per position and don't ignore any property.
  * 
  * TODO the following reference does not exist
+ * 
  * @see IDeltaComputationOptions#createChildDeltasByPosition(String)
  * 
  * @author Jan Ortmann

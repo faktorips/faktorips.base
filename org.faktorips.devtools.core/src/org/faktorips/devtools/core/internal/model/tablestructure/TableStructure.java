@@ -380,8 +380,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         List<ITableAccessFunction> functions = new ArrayList<ITableAccessFunction>();
         IUniqueKey[] keys = getUniqueKeys();
         // add functions for each key and column which is not in the key
-        for (int i = 0; i < keys.length; i++) {
-            IUniqueKey key = keys[i];
+        for (IUniqueKey key : keys) {
             IColumn[] columns = getColumnsNotInKey(key);
             for (int j = 0; j < columns.length; j++) {
                 // add function for each column which is not included in the key
@@ -418,10 +417,10 @@ public class TableStructure extends IpsObject implements ITableStructure {
         ArgumentCheck.notNull(key);
         List<IColumn> columnsNotInKey = new ArrayList<IColumn>(columns);
         IKeyItem[] items = key.getKeyItems();
-        for (int i = 0; i < items.length; i++) {
-            IColumn[] columnsInItem = items[i].getColumns();
-            for (int j = 0; j < columnsInItem.length; j++) {
-                columnsNotInKey.remove(columnsInItem[j]);
+        for (IKeyItem item : items) {
+            IColumn[] columnsInItem = item.getColumns();
+            for (IColumn element : columnsInItem) {
+                columnsNotInKey.remove(element);
             }
         }
         return columnsNotInKey.toArray(new IColumn[columnsNotInKey.size()]);

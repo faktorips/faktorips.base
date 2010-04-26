@@ -89,8 +89,8 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             JavaCodeFragmentBuilder methodsBuilder,
             JavaCodeFragmentBuilder constantBuilder) throws CoreException {
 
-        GenProductCmptTypeAttribute generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
-                .getGenerator(attribute);
+        GenProductCmptTypeAttribute generator = ((StandardBuilderSet)getBuilderSet())
+                .getGenerator(getProductCmptType()).getGenerator(attribute);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }

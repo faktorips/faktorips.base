@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -265,8 +264,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         if (multipleNames.isEmpty()) {
             return;
         }
-        for (Iterator<String> it = multipleNames.iterator(); it.hasNext();) {
-            String paramName = it.next();
+        for (String paramName : multipleNames) {
             ArrayList<ObjectProperty> objProps = new ArrayList<ObjectProperty>();
             for (int j = 0; j < parameterNames.size(); j++) {
                 if (parameterNames.get(j).equals(paramName)) {
@@ -302,11 +300,11 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     private boolean validateDuplicateMethodInSameType(MessageList msgList) {
         IMethod[] methods = getType().getMethods();
         String thisSignature = getSignatureString();
-        for (int i = 0; i < methods.length; i++) {
-            if (methods[i].equals(this)) {
+        for (IMethod method : methods) {
+            if (method.equals(this)) {
                 continue;
             }
-            if (methods[i].getSignatureString().equals(thisSignature)) {
+            if (method.getSignatureString().equals(thisSignature)) {
                 msgList.add(new Message(MSGCODE_DUBLICATE_SIGNATURE, Messages.Method_duplicateSignature, Message.ERROR,
                         this));
                 return false;

@@ -90,8 +90,8 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
             return;
         }
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length; i++) {
-            build((IProductCmptGeneration)generations[i]);
+        for (IIpsObjectGeneration generation : generations) {
+            build((IProductCmptGeneration)generation);
         }
     }
 
@@ -145,9 +145,9 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         IContainer folder = file.getParent();
         IResource[] members = folder.members(); // now delete all files that start with the common
         // prefix
-        for (int i = 0; i < members.length; i++) {
-            if (members[i].getType() == IResource.FILE && members[i].getName().startsWith(prefix)) {
-                members[i].delete(true, null);
+        for (IResource member : members) {
+            if (member.getType() == IResource.FILE && member.getName().startsWith(prefix)) {
+                member.delete(true, null);
             }
         }
     }

@@ -106,8 +106,8 @@ public class UniqueKey extends Key implements IUniqueKey {
 
     public boolean containsRangesOnly() {
         String[] items = getKeyItemNames();
-        for (int i = 0; i < items.length; i++) {
-            if (getTableStructure().hasColumn(items[i])) {
+        for (String item : items) {
+            if (getTableStructure().hasColumn(item)) {
                 return false;
             }
         }
@@ -116,8 +116,8 @@ public class UniqueKey extends Key implements IUniqueKey {
 
     public boolean containsRanges() {
         String[] items = getKeyItemNames();
-        for (int i = 0; i < items.length; i++) {
-            if (getTableStructure().hasRange(items[i])) {
+        for (String item : items) {
+            if (getTableStructure().hasRange(item)) {
                 return true;
             }
         }
@@ -126,11 +126,11 @@ public class UniqueKey extends Key implements IUniqueKey {
 
     public boolean containsTwoColumnRanges() {
         IKeyItem[] keyItems = getKeyItems();
-        for (int i = 0; i < keyItems.length; i++) {
+        for (IKeyItem keyItem : keyItems) {
             IColumnRange[] ranges = getTableStructure().getRanges();
-            for (int j = 0; j < ranges.length; j++) {
-                if (ColumnRangeType.TWO_COLUMN_RANGE.equals(ranges[j].getColumnRangeType())
-                        && keyItems[i].getName().equals(ranges[j].getName())) {
+            for (IColumnRange range : ranges) {
+                if (ColumnRangeType.TWO_COLUMN_RANGE.equals(range.getColumnRangeType())
+                        && keyItem.getName().equals(range.getName())) {
                     return true;
                 }
             }
@@ -140,8 +140,8 @@ public class UniqueKey extends Key implements IUniqueKey {
 
     public boolean containsColumns() {
         String[] items = getKeyItemNames();
-        for (int i = 0; i < items.length; i++) {
-            if (getTableStructure().hasColumn(items[i])) {
+        for (String item : items) {
+            if (getTableStructure().hasColumn(item)) {
                 return true;
             }
         }

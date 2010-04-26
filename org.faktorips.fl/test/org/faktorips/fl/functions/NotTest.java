@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,13 +21,13 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
-
 /**
  * 
  * @author Jan Ortmann
  */
 public class NotTest extends FunctionAbstractTest {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         compiler.setEnsureResultIsObject(false);
@@ -44,20 +44,19 @@ public class NotTest extends FunctionAbstractTest {
                     return new CompilationResultImpl("null", Datatype.BOOLEAN);
                 }
             }
-            
+
         });
     }
-    
+
     public void testPrimitiveBoolean() throws Exception {
         execAndTestSuccessfull("NOT(FALSE)", true);
         execAndTestSuccessfull("NOT(TRUE)", false);
     }
-    
+
     public void testBoolean() throws Exception {
         execAndTestSuccessfull("NOT( beTrue )", Boolean.FALSE, Datatype.BOOLEAN);
         execAndTestSuccessfull("NOT( beFalse )", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("NOT( beNull )", null, Datatype.BOOLEAN);
     }
-    
-    
+
 }

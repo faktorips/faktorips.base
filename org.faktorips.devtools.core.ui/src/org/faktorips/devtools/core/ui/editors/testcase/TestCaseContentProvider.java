@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -283,8 +282,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         // create helper map
         List<Object> resultList = new ArrayList<Object>();
         HashMap<String, List<ITestObject>> name2elements = new HashMap<String, List<ITestObject>>();
-        for (Iterator<ITestObject> iter = elements.iterator(); iter.hasNext();) {
-            ITestObject element = iter.next();
+        for (ITestObject element : elements) {
             List<ITestObject> existingElements = name2elements.get(element.getTestParameterName());
             if (existingElements == null) {
                 existingElements = new ArrayList<ITestObject>(1);
@@ -296,22 +294,22 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         // sort and add dummy nodes for root policy cmpt type params and rules
         ITestParameter[] params = testCaseType.getTestParameters();
 
-        for (int i = 0; i < params.length; i++) {
-            List<ITestObject> testObjects = name2elements.get(params[i].getName());
-            name2elements.remove(params[i].getName());
+        for (ITestParameter param : params) {
+            List<ITestObject> testObjects = name2elements.get(param.getName());
+            name2elements.remove(param.getName());
 
-            if (params[i] instanceof ITestPolicyCmptTypeParameter) {
+            if (param instanceof ITestPolicyCmptTypeParameter) {
                 // dummy root node for all test policy cmpt type parameter
-                if (parameterMatchesType(params[i])) {
-                    resultList.add(getDummyObject(params[i], null));
+                if (parameterMatchesType(param)) {
+                    resultList.add(getDummyObject(param, null));
                 }
-            } else if (params[i] instanceof ITestRuleParameter) {
+            } else if (param instanceof ITestRuleParameter) {
                 if (isCombined() || isExpectedResult()) {
                     // test rule objects are not visible if the input filter is chosen
-                    resultList.add(getDummyObject(params[i], null));
+                    resultList.add(getDummyObject(param, null));
                 }
-            } else if (testObjects != null && params[i] instanceof ITestValueParameter) {
-                if (parameterMatchesType(params[i])) {
+            } else if (testObjects != null && param instanceof ITestValueParameter) {
+                if (parameterMatchesType(param)) {
                     resultList.addAll(testObjects);
                 }
             }
@@ -319,8 +317,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 
         // add all elements which are not in the test parameter on the end
         // -> invalid test objects
-        for (Iterator<List<ITestObject>> iter = name2elements.values().iterator(); iter.hasNext();) {
-            List<ITestObject> elementsWithNoParams = iter.next();
+        for (List<ITestObject> elementsWithNoParams : name2elements.values()) {
             resultList.addAll(elementsWithNoParams);
         }
 
@@ -389,8 +386,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         ITestPolicyCmpt parent = dummyAssociation.getParentTestPolicyCmpt();
         if (parent != null) {
             ITestPolicyCmptLink[] associations = parent.getTestPolicyCmptLinks(dummyAssociation.getName());
-            for (int i = 0; i < associations.length; i++) {
-                ITestPolicyCmptLink association = associations[i];
+            for (ITestPolicyCmptLink association : associations) {
                 if (association.isComposition()) {
                     try {
                         if ((isExpectedResult() && association.findTarget().isExpectedResult())
@@ -406,9 +402,9 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             }
         } else {
             ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
-            for (int i = 0; i < testPolicyCmpts.length; i++) {
-                if (dummyAssociation.getName().equals(testPolicyCmpts[i].getTestParameterName())) {
-                    childs.add(testPolicyCmpts[i]);
+            for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
+                if (dummyAssociation.getName().equals(testPolicyCmpt.getTestParameterName())) {
+                    childs.add(testPolicyCmpt);
                 }
             }
         }
@@ -456,8 +452,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
             if (typeParam != null) {
                 ITestPolicyCmptTypeParameter[] children = typeParam.getTestPolicyCmptTypeParamChilds();
-                for (int i = 0; i < children.length; i++) {
-                    ITestPolicyCmptTypeParameter parameter = children[i];
+                for (ITestPolicyCmptTypeParameter parameter : children) {
                     if (parameterMatchesType(parameter)) {
                         childs.add(getDummyObject(parameter, testPolicyCmpt));
                     }
@@ -467,8 +462,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             // add links which are not added by the test case parameter
             // association with missing test case type parameter
             ITestPolicyCmptLink[] linksInTestCase = testPolicyCmpt.getTestPolicyCmptLinks();
-            for (int i = 0; i < linksInTestCase.length; i++) {
-                ITestPolicyCmptLink link = linksInTestCase[i];
+            for (ITestPolicyCmptLink element : linksInTestCase) {
+                ITestPolicyCmptLink link = element;
                 if (!childNames.contains(link.getTestPolicyCmptTypeParameter())) {
                     childs.add(link);
                 }
@@ -489,8 +484,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         // the result objects type could be ITestPolicyCmpt or ITestPolicyCpmtLink in case of an
         // association
         List<IIpsObjectPart> childTestPolicyCmpt = new ArrayList<IIpsObjectPart>(links.length);
-        for (int i = 0; i < links.length; i++) {
-            ITestPolicyCmptLink link = links[i];
+        for (ITestPolicyCmptLink link : links) {
             if (link.isComposition()) {
                 ITestPolicyCmpt target = null;
                 try {
@@ -503,7 +497,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
                 }
             } else {
                 // the link is an association will be added
-                childTestPolicyCmpt.add(links[i]);
+                childTestPolicyCmpt.add(link);
             }
         }
         return childTestPolicyCmpt.toArray(new IIpsElement[0]);
@@ -584,15 +578,14 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         }
         String objectId = StringUtils.substringAfter(id, "#"); //$NON-NLS-1$
         List<String> objectsToRemove = new ArrayList<String>();
-        for (Iterator<String> iterator = dummyObjects.keySet().iterator(); iterator.hasNext();) {
-            String currId = iterator.next();
+        for (String currId : dummyObjects.keySet()) {
             String currObjectId = currId.indexOf("#") == -1 ? "none" : StringUtils.substringAfter(currId, "#"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             if (currObjectId.startsWith(objectId)) {
                 objectsToRemove.add(currId);
             }
         }
-        for (Iterator<String> iterator = objectsToRemove.iterator(); iterator.hasNext();) {
-            dummyObjects.remove(iterator.next());
+        for (String string : objectsToRemove) {
+            dummyObjects.remove(string);
 
         }
     }

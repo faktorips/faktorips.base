@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -38,18 +38,20 @@ public class UnparsableFilePage extends IpsObjectEditorPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
         toolkit.createLabel(formBody, Messages.UnparsableFilePage_fileContentIsNotParsable);
         Text xmlText = toolkit.createMultilineText(formBody);
         try {
             String charSet = ((IpsObjectEditor)getEditor()).getIpsProject().getXmlFileCharset();
-            String text = StringUtil.readFromInputStream(getIpsObjectEditor().getIpsSrcFile().getContentFromEnclosingResource(), charSet);
+            String text = StringUtil.readFromInputStream(getIpsObjectEditor().getIpsSrcFile()
+                    .getContentFromEnclosingResource(), charSet);
             xmlText.setText(text);
         } catch (Exception e) {
             IpsPlugin.log(e);
         }
-        
+
     }
 
 }

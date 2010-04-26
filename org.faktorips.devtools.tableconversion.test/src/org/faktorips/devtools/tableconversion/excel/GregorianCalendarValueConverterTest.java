@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,7 +19,6 @@ import java.util.GregorianCalendar;
 import junit.framework.TestCase;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.excel.GregorianCalendarValueConverter;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -42,7 +41,7 @@ public class GregorianCalendarValueConverterTest extends TestCase {
         value = converter.getIpsValue("0", ml);
         assertFalse(ml.isEmpty());
         assertEquals("0", value);
-        
+
         ml.clear();
         assertEquals("2008-07-06", converter.getIpsValue("2008-07-06", ml));
         assertTrue(ml.isEmpty());

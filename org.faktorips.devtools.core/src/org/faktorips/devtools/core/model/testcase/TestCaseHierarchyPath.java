@@ -65,12 +65,12 @@ public class TestCaseHierarchyPath {
             int offset = 0;
             ITestPolicyCmpt parent = testPolicyCmpt.getParentTestPolicyCmpt();
             ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
-            for (int i = 0; i < links.length; i++) {
-                if (links[i].findTarget().equals(testPolicyCmpt)) {
+            for (ITestPolicyCmptLink link : links) {
+                if (link.findTarget().equals(testPolicyCmpt)) {
                     break;
                 }
                 // check for same parameter and increment offset if necessary
-                if (links[i].getTestPolicyCmptTypeParameter().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter())) {
+                if (link.getTestPolicyCmptTypeParameter().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter())) {
                     offset++;
                 }
             }
@@ -84,12 +84,12 @@ public class TestCaseHierarchyPath {
         ITestCase testCase = testPolicyCmpt.getTestCase();
         ITestPolicyCmpt[] tpcs = testCase.getTestPolicyCmpts();
         int offset = 0;
-        for (int i = 0; i < tpcs.length; i++) {
-            if (testPolicyCmpt.equals(tpcs[i])) {
+        for (ITestPolicyCmpt tpc : tpcs) {
+            if (testPolicyCmpt.equals(tpc)) {
                 break;
             }
             // check for same parameter and increment offset if necessary
-            if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpcs[i])) {
+            if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpc)) {
                 offset++;
             }
         }

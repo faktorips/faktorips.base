@@ -160,8 +160,8 @@ public class TestRule extends TestObject implements ITestRule {
         // check if the validation rule is unique in this test case
         ITestCase testCase = (ITestCase)getParent();
         ITestRule[] rules = testCase.getTestRuleObjects();
-        for (int i = 0; i < rules.length; i++) {
-            if (rules[i] != this && rules[i].getValidationRule().equals(validationRule)) {
+        for (ITestRule rule : rules) {
+            if (rule != this && rule.getValidationRule().equals(validationRule)) {
                 String text = NLS.bind(Messages.TestRule_ValidationError_DuplicateValidationRule, validationRule);
                 Message msg = new Message(MSGCODE_DUPLICATE_VALIDATION_RULE, text, Message.ERROR, this,
                         PROPERTY_VALIDATIONRULE);

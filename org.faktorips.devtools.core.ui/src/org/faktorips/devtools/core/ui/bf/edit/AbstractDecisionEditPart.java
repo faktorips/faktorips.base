@@ -8,7 +8,7 @@ import org.faktorips.devtools.core.ui.bf.draw2d.ScalableRhombFigure;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The edit part for the decision model object. 
+ * The edit part for the decision model object.
  * 
  * @author Peter Erzberger
  */
@@ -16,7 +16,6 @@ public abstract class AbstractDecisionEditPart extends NodeEditPart {
 
     private ScalableRhombFigure errorDisplay;
 
-    
     protected void createConnectionAnchor(Figure figure) {
         setTargetConnectionAnchor(new ChopboxAnchor(figure));
         setSourceConnectionAnchor(new ChopboxAnchor(figure));
@@ -39,8 +38,8 @@ public abstract class AbstractDecisionEditPart extends NodeEditPart {
     }
 
     @Override
-    protected void showError(MessageList msgList){
-        if(!msgList.isEmpty()){
+    protected void showError(MessageList msgList) {
+        if (!msgList.isEmpty()) {
             errorDisplay.showError(true);
         } else {
             errorDisplay.showError(false);

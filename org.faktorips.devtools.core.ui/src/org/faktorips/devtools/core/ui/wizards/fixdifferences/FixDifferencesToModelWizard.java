@@ -52,9 +52,9 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
             public void run(IProgressMonitor monitor) {
                 monitor.beginTask(Messages.FixDifferencesToModelWizard_beginTask, elementsToFix.length);
                 try {
-                    for (int i = 0; i < elementsToFix.length; i++) {
-                        elementsToFix[i].fixAllDifferencesToModel(elementsToFix[i].getIpsSrcFile().getIpsProject());
-                        elementsToFix[i].getIpsSrcFile().save(true, null);
+                    for (IFixDifferencesToModelSupport element : elementsToFix) {
+                        element.fixAllDifferencesToModel(element.getIpsSrcFile().getIpsProject());
+                        element.getIpsSrcFile().save(true, null);
                         monitor.worked(1);
                     }
                 } catch (CoreException e) {

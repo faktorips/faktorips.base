@@ -79,8 +79,7 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
         List<Object> combinedResult = combineResult(found);
         Match[] resultMatches = new Match[combinedResult.size()];
         int idx = 0;
-        for (Iterator<Object> iter = combinedResult.iterator(); iter.hasNext();) {
-            Object foundElem = iter.next();
+        for (Object foundElem : combinedResult) {
             Object[] combined = null;
             if (foundElem instanceof IIpsElement) {
                 combined = getDataForResult((IIpsElement)foundElem);

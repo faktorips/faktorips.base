@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.search;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.AbstractTreeViewer;
@@ -36,7 +35,7 @@ public class SearchResultContentProvider implements ITreeContentProvider {
 
     private synchronized void initialize(ReferenceSearchResult result) {
         this.searchResult = result;
-        
+
         if (searchResult == null) {
             return;
         }
@@ -74,7 +73,7 @@ public class SearchResultContentProvider implements ITreeContentProvider {
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -116,21 +115,21 @@ public class SearchResultContentProvider implements ITreeContentProvider {
         if (searchResult == null) {
             return;
         }
-        
+
         AbstractTreeViewer viewer = (AbstractTreeViewer)page.getViewer();
-        
+
         Set<Object> toRemove = new HashSet<Object>();
         Set<Object> toAdd = new HashSet<Object>();
         Set<Object> toUpdate = new HashSet<Object>();
-        for (int i = 0; i < updatedElements.length; i++) {
-            if (page.getDisplayedMatchCount(updatedElements[i]) > 0){
-                if (viewer.testFindItem(updatedElements[i])!= null){
-                    toUpdate.add(updatedElements[i]);
+        for (Object updatedElement : updatedElements) {
+            if (page.getDisplayedMatchCount(updatedElement) > 0) {
+                if (viewer.testFindItem(updatedElement) != null) {
+                    toUpdate.add(updatedElement);
                 } else {
-                    toAdd.add(updatedElements[i]);
+                    toAdd.add(updatedElement);
                 }
             } else {
-                toRemove.add(updatedElements[i]);
+                toRemove.add(updatedElement);
             }
         }
 
@@ -138,13 +137,11 @@ public class SearchResultContentProvider implements ITreeContentProvider {
             viewer.remove(searchResult, toRemove.toArray());
         }
 
-        for (Iterator<Object> iter = toAdd.iterator(); iter.hasNext();) {
-            Object element = iter.next();
+        for (Object element : toAdd) {
             viewer.add(searchResult, element);
         }
 
-        for (Iterator<Object> iterator = toUpdate.iterator(); iterator.hasNext();) {
-            Object element = iterator.next();
+        for (Object element : toUpdate) {
             viewer.refresh(element);
         }
     }

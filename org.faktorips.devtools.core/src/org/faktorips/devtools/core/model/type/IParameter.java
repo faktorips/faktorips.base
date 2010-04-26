@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,31 +24,30 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * @author Jan Ortmann
  */
 public interface IParameter extends IIpsObjectPart {
-	
-	public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
-	/**
-	 * Sets the name of the parameter.
-	 */
-	public void setName(String newName);
+    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
-	/**
-	 * Sets the parameter's value datatype.
-	 */
-	public void setDatatype(String type);
-	
-	/**
-	 * Returns the parameter's datatype.
-	 */
-	public String getDatatype();
-	
-	/**
-	 * Returns the parameter's datatype or <code>null</code> if the datatype
-	 * can't be found.
+    /**
+     * Sets the name of the parameter.
+     */
+    public void setName(String newName);
+
+    /**
+     * Sets the parameter's value datatype.
+     */
+    public void setDatatype(String type);
+
+    /**
+     * Returns the parameter's datatype.
+     */
+    public String getDatatype();
+
+    /**
+     * Returns the parameter's datatype or <code>null</code> if the datatype can't be found.
      * 
-	 * @param ipsProject The ips project which ips object path is used to search.
-	 * 
-	 * @throws CoreException if an excpetion occurs while searching for the datatype.
-	 */
-	public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an excpetion occurs while searching for the datatype.
+     */
+    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
 }

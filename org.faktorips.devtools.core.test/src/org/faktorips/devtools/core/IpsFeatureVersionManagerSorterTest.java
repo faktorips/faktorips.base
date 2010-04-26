@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,90 +21,72 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrat
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
 
-
 /**
  *
  */
 public class IpsFeatureVersionManagerSorterTest extends TestCase {
-    
+
     public void testGetMigrationOperation() throws CoreException {
         IpsFeatureVersionManagerSorter sorter = new IpsFeatureVersionManagerSorter();
-        Manager[] managers = new Manager[] {
-                new Manager("6", "1"),
-                new Manager("2", ""),
-                new Manager("3", ""),
-                new Manager("4", ""),
-                new Manager("5", ""),
-                new Manager("1", "")
-        };
-        
+        Manager[] managers = new Manager[] { new Manager("6", "1"), new Manager("2", ""), new Manager("3", ""),
+                new Manager("4", ""), new Manager("5", ""), new Manager("1", "") };
+
         IIpsFeatureVersionManager[] result = sorter.sortForMigartionOrder(managers);
         boolean found = false;
-        for (int i = 0; i < result.length; i++) {
-            if (result[i].getId().equals("1")) {
+        for (IIpsFeatureVersionManager element : result) {
+            if (element.getId().equals("1")) {
                 found = true;
             }
-            if (result[i].getId().equals("6") && !found) {
+            if (element.getId().equals("6") && !found) {
                 fail();
             }
         }
 
-        managers = new Manager[] {
-                new Manager("2", ""),
-                new Manager("3", ""),
-                new Manager("6", "1"),
-                new Manager("4", ""),
-                new Manager("5", ""),
-                new Manager("1", "")
-        };
-        
+        managers = new Manager[] { new Manager("2", ""), new Manager("3", ""), new Manager("6", "1"),
+                new Manager("4", ""), new Manager("5", ""), new Manager("1", "") };
+
         result = sorter.sortForMigartionOrder(managers);
         found = false;
-        for (int i = 0; i < result.length; i++) {
-            if (result[i].getId().equals("1")) {
+        for (IIpsFeatureVersionManager element : result) {
+            if (element.getId().equals("1")) {
                 found = true;
             }
-            if (result[i].getId().equals("6") && !found) {
+            if (element.getId().equals("6") && !found) {
                 fail();
             }
         }
 
-        managers = new Manager[] {
-                new Manager("2", ""),
-                new Manager("5", "3"),
-                new Manager("6", "1"),
-                new Manager("4", ""),
-                new Manager("3", ""),
-                new Manager("1", "")
-        };
-        
+        managers = new Manager[] { new Manager("2", ""), new Manager("5", "3"), new Manager("6", "1"),
+                new Manager("4", ""), new Manager("3", ""), new Manager("1", "") };
+
         result = sorter.sortForMigartionOrder(managers);
         found = false;
         boolean foundThree = false;
-        for (int i = 0; i < result.length; i++) {
-            if (result[i].getId().equals("1")) {
+        for (IIpsFeatureVersionManager element : result) {
+            if (element.getId().equals("1")) {
                 found = true;
             }
-            if (result[i].getId().equals("3")) {
+            if (element.getId().equals("3")) {
                 foundThree = true;
             }
-            if (result[i].getId().equals("6") && !found) {
+            if (element.getId().equals("6") && !found) {
                 fail();
             }
-            if (result[i].getId().equals("5") && !foundThree) {
+            if (element.getId().equals("5") && !foundThree) {
                 fail();
             }
         }
     }
-    
+
     private class Manager implements IIpsFeatureVersionManager {
         private String id;
         private String prevId;
-        
+
         public Manager(String id, String predecessorId) {
             this.id = id;
             this.prevId = predecessorId;
         }
+
         /**
          * {@inheritDoc}
          */
@@ -168,8 +150,9 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
         /**
          * {@inheritDoc}
          */
-        public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
+        public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
+                throws CoreException {
             return null;
-        }        
+        }
     }
 }

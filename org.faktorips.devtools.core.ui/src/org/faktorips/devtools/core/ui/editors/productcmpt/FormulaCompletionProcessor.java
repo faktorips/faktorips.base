@@ -91,11 +91,11 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     private void addMatchingEnumTypes(List<ICompletionProposal> result, String enumTypePrefix, int replacementOffset)
             throws CoreException {
         EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
-        for (int i = 0; i < enumTypes.length; i++) {
-            if (enumTypes[i].getName().startsWith(enumTypePrefix)) {
-                ICompletionProposal proposal = new CompletionProposal(enumTypes[i].getName(), replacementOffset,
-                        enumTypePrefix.length(), enumTypes[i].getName().length(), new DefaultLabelProvider()
-                                .getImage(enumTypes[i]), enumTypes[i].getName(), null, null);
+        for (EnumDatatype enumType : enumTypes) {
+            if (enumType.getName().startsWith(enumTypePrefix)) {
+                ICompletionProposal proposal = new CompletionProposal(enumType.getName(), replacementOffset,
+                        enumTypePrefix.length(), enumType.getName().length(), new DefaultLabelProvider()
+                                .getImage(enumType), enumType.getName(), null, null);
                 result.add(proposal);
             }
         }
@@ -106,13 +106,12 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             String enumValuePrefix,
             int replacementOffset) throws CoreException {
         EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
-        for (int i = 0; i < enumTypes.length; i++) {
-            if (enumTypes[i].getName().equals(enumTypeName)) {
-                String[] valueIds = enumTypes[i].getAllValueIds(false);
-                for (int t = 0; t < valueIds.length; t++) {
-                    String valueId = valueIds[t];
+        for (EnumDatatype enumType : enumTypes) {
+            if (enumType.getName().equals(enumTypeName)) {
+                String[] valueIds = enumType.getAllValueIds(false);
+                for (String valueId : valueIds) {
                     if (valueId.startsWith(enumValuePrefix)) {
-                        addEnumValueToResult(result, enumTypes[i], valueId, replacementOffset, enumValuePrefix.length());
+                        addEnumValueToResult(result, enumType, valueId, replacementOffset, enumValuePrefix.length());
                     }
                 }
                 return;
@@ -137,10 +136,9 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         IProductCmptType productCmptType = formula.findProductCmptType(formula.getIpsProject());
         if (productCmptType != null) {
             IAttribute[] attributes = productCmptType.findAllAttributes(ipsProject);
-            for (int i = 0; i < attributes.length; i++) {
-                if (attributes[i].getName().startsWith(prefix)) {
-                    addPartToResult(result, attributes[i], attributes[i].getDatatype(), replacementOffset, prefix
-                            .length());
+            for (IAttribute attribute : attributes) {
+                if (attribute.getName().startsWith(prefix)) {
+                    addPartToResult(result, attribute, attribute.getDatatype(), replacementOffset, prefix.length());
                 }
             }
         }
@@ -160,9 +158,9 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private void addMatchingParameters(List<ICompletionProposal> result, String prefix, int replacementOffset) {
         IParameter[] params = signature.getParameters();
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].getName().startsWith(prefix)) {
-                addPartToResult(result, params[i], params[i].getDatatype(), replacementOffset, prefix.length());
+        for (IParameter param : params) {
+            if (param.getName().startsWith(prefix)) {
+                addPartToResult(result, param, param.getDatatype(), replacementOffset, prefix.length());
             }
         }
     }
@@ -179,9 +177,9 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
                 return f1.getName().compareTo(f2.getName());
             }
         });
-        for (int i = 0; i < functions.length; i++) {
-            if (functions[i].getName().toLowerCase().startsWith(prefix.toLowerCase())) {
-                addFunctionToResult(result, functions[i], replacementOffset, prefix.length());
+        for (FlFunction function : functions) {
+            if (function.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
+                addFunctionToResult(result, function, replacementOffset, prefix.length());
             }
         }
     }
@@ -252,9 +250,9 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private IParameter getParameter(String name) {
         IParameter[] params = signature.getParameters();
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].getName().equals(name)) {
-                return params[i];
+        for (IParameter param : params) {
+            if (param.getName().equals(name)) {
+                return param;
             }
         }
         return null;

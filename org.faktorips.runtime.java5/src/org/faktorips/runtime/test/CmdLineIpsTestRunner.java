@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,12 +29,10 @@ import org.faktorips.runtime.IRuntimeRepository;
 public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
 
     /**
-     * The entry point for the command line test runner. 
-     * The arguments are:
-     * args[0]: package name of the classpath repository
-     * args[1]: Name of the testsuite to run
-     * args[2]: additional classpath repositories (to find objects in the runtime environment)
-     */    
+     * The entry point for the command line test runner. The arguments are: args[0]: package name of
+     * the classpath repository args[1]: Name of the testsuite to run args[2]: additional classpath
+     * repositories (to find objects in the runtime environment)
+     */
     public static void main(String[] args) {
         CmdLineIpsTestRunner runner = new CmdLineIpsTestRunner(args[0]);
         try {
@@ -43,7 +41,7 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * @param repositoryPackage package name of the classpath repository
      */
@@ -55,11 +53,12 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected List<IRuntimeRepository> createRepositories() throws ParserConfigurationException {
         List<String> repositoryNameList = getRepositoryListFromInputString(getRepositoryPackages());
         List<IRuntimeRepository> runtimeRepositories = new ArrayList<IRuntimeRepository>(repositoryNameList.size());
         for (String repositoryName : repositoryNameList) {
-            runtimeRepositories.add(ClassloaderRuntimeRepository.create((String) repositoryName, classLoader));
+            runtimeRepositories.add(ClassloaderRuntimeRepository.create((String)repositoryName, classLoader));
         }
         return runtimeRepositories;
     }
@@ -82,7 +81,8 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
      * {@inheritDoc}
      */
     public void testFailureOccured(IpsTestFailure failure) {
-        System.out.println("Test failed. Expected " + failure.getExpectedValue() + " but was " + failure.getActualValue());
+        System.out.println("Test failed. Expected " + failure.getExpectedValue() + " but was "
+                + failure.getActualValue());
     }
 
 }

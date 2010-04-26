@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,11 +33,11 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
      * Creates a new policy component effective from now on.
      */
     protected DefaultConfigurableModelObject() {
-    }    
-    
+    }
+
     /**
-     * Creates a new policy component based on the given product component 
-     * that is effective from now on.
+     * Creates a new policy component based on the given product component that is effective from
+     * now on.
      * 
      * @throws NullPointerException if productCmpt is <code>null</code>.
      */
@@ -55,21 +55,21 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
     }
 
     /**
-     * Creates a new policy component based on the given product component 
-     * that is effective from the given date.
+     * Creates a new policy component based on the given product component that is effective from
+     * the given date.
      * 
      * @throws NullPointerException if productCmpt or effectiveDate is <code>null</code>.
      */
     protected DefaultConfigurableModelObject(IProductComponent productCmpt, Calendar effectiveFrom) {
         super(productCmpt);
-        if (effectiveFrom==null) {
+        if (effectiveFrom == null) {
             throw new NullPointerException("EffectiveFrom was null!");
         }
         this.effectiveFrom = effectiveFrom;
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     public Calendar getEffectiveFromAsCalendar() {
         return effectiveFrom;
@@ -81,7 +81,7 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
      * @throws NullPointerException if effectice date is <code>null</code>.
      */
     public void setEffectiveFrom(Calendar effectiveDate) {
-        if (effectiveDate==null) {
+        if (effectiveDate == null) {
             throw new NullPointerException("EffectiveDate was null!");
         }
         this.effectiveFrom = effectiveDate;
@@ -96,6 +96,7 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
     /**
      * {@inheritDoc}
      */
+    @Override
     protected AbstractModelObject createChildFromXml(Element childEl) {
         return null;
     }
@@ -103,13 +104,16 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
     /**
      * {@inheritDoc}
      */
-    protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId) throws Exception {
+    @Override
+    protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId)
+            throws Exception {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeChildModelObjectInternal(IModelObject child) {
     }
 

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,7 +16,6 @@ package org.faktorips.valueset;
 import java.util.Set;
 
 import junit.framework.TestCase;
-
 
 public class IntegerRangeTest extends TestCase {
 
@@ -53,19 +52,20 @@ public class IntegerRangeTest extends TestCase {
         assertEquals(Integer.MAX_VALUE, range.size());
 
     }
+
     public void testValueOf() {
         assertEquals(new IntegerRange(2, 5), IntegerRange.valueOf("2", "5"));
         assertEquals(new IntegerRange(null, null), IntegerRange.valueOf("", ""));
         assertEquals(new IntegerRange(null, null), IntegerRange.valueOf(null, null));
 
-        try{
+        try {
             IntegerRange.valueOf(new Integer(0), new Integer(100), new Integer(0), false);
             fail("Expect to fail since zero step size is not allowed.");
+        } catch (IllegalArgumentException e) {
         }
-        catch(IllegalArgumentException e){}
     }
 
-    public void testContains(){
+    public void testContains() {
 
         IntegerRange range = IntegerRange.valueOf(null, new Integer(100), 10);
         assertTrue(range.contains(30));
@@ -81,7 +81,7 @@ public class IntegerRangeTest extends TestCase {
 
     }
 
-    public void testGetValues(){
+    public void testGetValues() {
 
         IntegerRange range = IntegerRange.valueOf(0, 100, 20);
         Set<Integer> values = range.getValues(false);
@@ -104,7 +104,7 @@ public class IntegerRangeTest extends TestCase {
         assertTrue(values.contains(null));
     }
 
-    public void testSerializable() throws Exception{
+    public void testSerializable() throws Exception {
         TestUtil.testSerializable(IntegerRange.valueOf(0, 100, 20));
     }
 }

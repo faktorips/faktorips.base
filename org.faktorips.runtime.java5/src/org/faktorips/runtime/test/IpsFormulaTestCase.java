@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,7 +19,7 @@ package org.faktorips.runtime.test;
  * @author Joerg Ortmann
  */
 public abstract class IpsFormulaTestCase extends IpsTestCaseBase {
-    
+
     public IpsFormulaTestCase(String qName) {
         super(qName);
     }
@@ -27,6 +27,7 @@ public abstract class IpsFormulaTestCase extends IpsTestCaseBase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int countTestCases() {
         return 1;
     }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,21 +32,20 @@ import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.WholeNumber;
 import org.faktorips.util.LocalizedStringsSet;
 
-
 /**
- * A <code>FunctionResolver</code> that supports Excel functions. The
- * functions are available in different languages.
+ * A <code>FunctionResolver</code> that supports Excel functions. The functions are available in
+ * different languages.
  */
 public class ExcelFunctionsResolver extends DefaultFunctionResolver {
 
     private LocalizedStringsSet localizedStrings;
-    
+
     // the locale used for function names and descriptions.
     private Locale locale;
-    
+
     /**
-     * Creates a new resolver that contains a set of functions that are similiar
-     * by name and argument list as those provided by Microsoft's Excel.
+     * Creates a new resolver that contains a set of functions that are similiar by name and
+     * argument list as those provided by Microsoft's Excel.
      * 
      * @param fctNameLocale The locale that determines the language of the function names.
      */
@@ -76,26 +75,27 @@ public class ExcelFunctionsResolver extends DefaultFunctionResolver {
         add(new MinMaxDouble(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
         add(new MinMaxDouble(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     private String getFctName(String key) {
         return localizedStrings.getString(key + ".name", locale); //$NON-NLS-1$
     }
-    
+
     private String getFctDescription(String key) {
         return localizedStrings.getString(key + ".description", locale); //$NON-NLS-1$
     }
-    
+
+    @Override
     public String toString() {
         return "ExcelFunctionResolver"; //$NON-NLS-1$
     }
-    
+
     class NameDescription {
-        
+
         NameDescription(String name, String description) {
             this.name = name;
             this.description = description;
         }
-        
+
         String name;
         String description;
     }

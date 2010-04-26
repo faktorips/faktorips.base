@@ -162,8 +162,8 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
             int replacementLength,
             List<ICompletionProposal> result) {
         String lowerPrefix = prefix.toLowerCase();
-        for (int i = 0; i < packages.length; i++) {
-            String name = packages[i].getName();
+        for (IIpsPackageFragment package1 : packages) {
+            String name = package1.getName();
             if (name.length() == 0) {
                 // don't show default package,
                 // the default package could be entered by leaving the edit field empty
@@ -171,7 +171,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
             }
             if (name.toLowerCase().startsWith(lowerPrefix)) {
                 CompletionProposal proposal = new CompletionProposal(name, 0, replacementLength, name.length(),
-                        IpsUIPlugin.getImageHandling().getImage(packages[i]), name, null, ""); //$NON-NLS-1$
+                        IpsUIPlugin.getImageHandling().getImage(package1), name, null, ""); //$NON-NLS-1$
                 result.add(proposal);
             }
         }

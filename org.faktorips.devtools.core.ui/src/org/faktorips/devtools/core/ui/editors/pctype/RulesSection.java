@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
-
 /**
  * Section to display the validation rules.
  */
@@ -38,88 +37,99 @@ public class RulesSection extends SimpleIpsPartsSection {
     public RulesSection(IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
         super(pcType, parent, Messages.RulesSection_title, toolkit);
     }
-    
+
     public IPolicyCmptType getPcType() {
         return (IPolicyCmptType)getIpsObject();
     }
-    
-    /** 
+
+    /**
      * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
+     * 
+     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite,
+     *      org.faktorips.devtools.core.ui.UIToolkit)
      */
+    @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new RulesComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);
     }
 
     /**
-     * A composite that shows a policy component's rules in a viewer and 
-     * allows to edit rules in a dialog, create new rules and delete rules.
+     * A composite that shows a policy component's rules in a viewer and allows to edit rules in a
+     * dialog, create new rules and delete rules.
      */
     private class RulesComposite extends IpsPartsComposite {
 
-        RulesComposite(IIpsObject pdObject, Composite parent,
-                UIToolkit toolkit) {
+        RulesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
             super(pdObject, parent, toolkit);
         }
-        
-        /** 
+
+        /**
          * Overridden method.
+         * 
          * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
          */
+        @Override
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
 
-        /** 
+        /**
          * Overridden method.
+         * 
          * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
          */
+        @Override
         protected IIpsObjectPart newIpsPart() {
             return getPcType().newRule();
         }
 
-        /** 
+        /**
          * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart, org.eclipse.swt.widgets.Shell)
+         * 
+         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart,
+         *      org.eclipse.swt.widgets.Shell)
          */
+        @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-        	IValidationRule rule = (IValidationRule)part;
-        	if (rule.isCheckValueAgainstValueSetRule()) {
-        		String[] attrNames = rule.getValidatedAttributes();
-        		if (attrNames.length == 1) {
-        			IPolicyCmptTypeAttribute attr = getPcType().getPolicyCmptTypeAttribute(attrNames[0]);
-        			if (attr == null) {
-        				String msg = NLS.bind(Messages.RulesSection_msgMissingAttribute, attrNames[0]);
-        				MessageDialog.openInformation(getShell(), Messages.RulesSection_titleMissingAttribute, msg);
-        				rule.delete();
-        				return null;
-        			}
-        			AttributeEditDialog dialog = new AttributeEditDialog(attr, getShell());
-        			dialog.showValidationRulePage();
+            IValidationRule rule = (IValidationRule)part;
+            if (rule.isCheckValueAgainstValueSetRule()) {
+                String[] attrNames = rule.getValidatedAttributes();
+                if (attrNames.length == 1) {
+                    IPolicyCmptTypeAttribute attr = getPcType().getPolicyCmptTypeAttribute(attrNames[0]);
+                    if (attr == null) {
+                        String msg = NLS.bind(Messages.RulesSection_msgMissingAttribute, attrNames[0]);
+                        MessageDialog.openInformation(getShell(), Messages.RulesSection_titleMissingAttribute, msg);
+                        rule.delete();
+                        return null;
+                    }
+                    AttributeEditDialog dialog = new AttributeEditDialog(attr, getShell());
+                    dialog.showValidationRulePage();
                     dialog.setDataChangeable(isDataChangeable());
-        			return dialog;
-        		}
-        	}
+                    return dialog;
+                }
+            }
             return new RuleEditDialog((IValidationRule)part, shell);
         }
-        
+
+        @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getPcType().moveRules(indexes, up);
         }
-        
-		private class ContentProvider implements IStructuredContentProvider {
-			public Object[] getElements(Object inputElement) {
-				 return getPcType().getRules();
-			}
-			public void dispose() {
-				// nothing todo
-			}
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				// nothing todo
-			}
-		}
-    
+
+        private class ContentProvider implements IStructuredContentProvider {
+            public Object[] getElements(Object inputElement) {
+                return getPcType().getRules();
+            }
+
+            public void dispose() {
+                // nothing todo
+            }
+
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // nothing todo
+            }
+        }
+
     } // class RulesComposite
-	
 
 }

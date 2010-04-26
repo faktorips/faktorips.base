@@ -130,8 +130,8 @@ public abstract class JetJavaContentGenerator {
         }
         ImportDeclaration existingImports = new ImportDeclaration();
         IJavaElement[] imports = importContainer.getChildren();
-        for (int i = 0; i < imports.length; i++) {
-            String imp = ((IImportDeclaration)imports[i]).getSource(); // example for imp: import
+        for (IJavaElement import1 : imports) {
+            String imp = ((IImportDeclaration)import1).getSource(); // example for imp: import
             // java.util.Date;
             existingImports.add(imp.substring(7, imp.length() - 1));
         }

@@ -322,8 +322,8 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         fileFormatControl = toolkit.createCombo(lowerComposite);
 
         formats = IpsPlugin.getDefault().getExternalTableFormats();
-        for (int i = 0; i < formats.length; i++) {
-            fileFormatControl.add(formats[i].getName());
+        for (ITableFormat format : formats) {
+            fileFormatControl.add(format.getName());
         }
         fileFormatControl.select(0);
         fileFormatField = new ComboField(fileFormatControl);

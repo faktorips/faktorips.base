@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,55 +22,55 @@ import org.faktorips.fl.functions.Messages;
 import org.faktorips.util.message.Message;
 import org.faktorips.values.ObjectUtil;
 
-
 /**
- * Equals operation for none primitive datatypes that are tested for equality with
- * the equals() Method.
+ * Equals operation for none primitive datatypes that are tested for equality with the equals()
+ * Method.
  */
 public class EqualsObjectDatatype extends AbstractBinaryOperation {
 
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
-    
-    protected EqualsObjectDatatype(String operator, Datatype lhsDatatype, Datatype rhsDatatype){
+
+    protected EqualsObjectDatatype(String operator, Datatype lhsDatatype, Datatype rhsDatatype) {
         super(operator, lhsDatatype, rhsDatatype);
     }
-    
-    public EqualsObjectDatatype (Datatype type) {
+
+    public EqualsObjectDatatype(Datatype type) {
         super("=", type, type); //$NON-NLS-1$
     }
 
-    public EqualsObjectDatatype (Datatype lhsDatatype, Datatype rhsDatatype) {
+    public EqualsObjectDatatype(Datatype lhsDatatype, Datatype rhsDatatype) {
         super("=", lhsDatatype, rhsDatatype); //$NON-NLS-1$
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
-    public CompilationResultImpl generate(CompilationResultImpl lhs,
-            CompilationResultImpl rhs) {
+    public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
 
         ConversionCodeGenerator ccg = getCompiler().getConversionCodeGenerator();
         Datatype datatype1 = lhs.getDatatype();
         Datatype datatype2 = rhs.getDatatype();
-        
+
         if (!datatype1.equals(datatype2)) {
             if (ccg.canConvert(datatype1, datatype2)) {
                 JavaCodeFragment converted = ccg.getConversionCode(datatype1, datatype2, lhs.getCodeFragment());
-                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype2, lhs.getMessages(), lhs.getIdentifiersUsedAsSet());
+                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype2, lhs.getMessages(),
+                        lhs.getIdentifiersUsedAsSet());
                 lhs = newResult;
             } else if (ccg.canConvert(datatype2, datatype1)) {
                 JavaCodeFragment converted = ccg.getConversionCode(datatype2, datatype1, rhs.getCodeFragment());
-                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1, rhs.getMessages(), rhs.getIdentifiersUsedAsSet());
+                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1, rhs.getMessages(),
+                        rhs.getIdentifiersUsedAsSet());
                 rhs = newResult;
             } else {
-                String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[]{datatype1, datatype2});
+                String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[] { datatype1, datatype2 });
                 Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
                 return new CompilationResultImpl(msg);
             }
         }
         CompilationResultImpl result = new CompilationResultImpl();
         result.setDatatype(Datatype.PRIMITIVE_BOOLEAN);
-        JavaCodeFragment frag = result.getCodeFragment(); 
+        JavaCodeFragment frag = result.getCodeFragment();
         frag.appendClassName(ObjectUtil.class);
         frag.append(".equals("); //$NON-NLS-1$
         frag.append(rhs.getCodeFragment());

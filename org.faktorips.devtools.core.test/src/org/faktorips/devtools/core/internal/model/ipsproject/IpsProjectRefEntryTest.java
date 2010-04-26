@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -40,58 +40,57 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IpsObjectPath path;
-    
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         path = new IpsObjectPath(ipsProject);
     }
 
-    public void testFindIpsSrcFiles() throws Exception{
-        
+    public void testFindIpsSrcFiles() throws Exception {
+
         IpsProject refProject = (IpsProject)newIpsProject("RefProject");
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.B");
 
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "b.C");
 
-        
         path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
-        
+
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
-        
+
         assertTrue(result.contains(a.getIpsSrcFile()));
         assertTrue(result.contains(b.getIpsSrcFile()));
         assertFalse(result.contains(c.getIpsSrcFile()));
     }
-    
-    public void testFindIpsSrcFilesWithPackageFragment() throws Exception{
+
+    public void testFindIpsSrcFilesWithPackageFragment() throws Exception {
         IpsProject refProject = (IpsProject)newIpsProject("RefProject");
-        
-        //policy cmpt types in ref project
+
+        // policy cmpt types in ref project
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.c.A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.c.B");
-        
-        //policy cmpt types in original project
+
+        // policy cmpt types in original project
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.C");
 
-        //policy cmpt types in ref project
+        // policy cmpt types in ref project
         IPolicyCmptType a2 = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.d.A");
         IPolicyCmptType b2 = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.d.B");
-        
-        //policy cmpt types in original project
+
+        // policy cmpt types in original project
         IPolicyCmptType c2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.C");
 
-        
         path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
 
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.c", result, new HashSet<IIpsObjectPathEntry>());
-        
+
         assertEquals(2, result.size());
         assertTrue(result.contains(a.getIpsSrcFile()));
         assertTrue(result.contains(b.getIpsSrcFile()));
@@ -99,14 +98,14 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
         result = new ArrayList<IIpsSrcFile>();
         entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.d", result, new HashSet<IIpsObjectPathEntry>());
-        
+
         assertEquals(2, result.size());
         assertTrue(result.contains(a2.getIpsSrcFile()));
         assertTrue(result.contains(b2.getIpsSrcFile()));
         assertFalse(result.contains(c2.getIpsSrcFile()));
 
     }
-    
+
     public void testInitFromXml() {
         Document doc = getTestDocument();
         IpsProjectRefEntry entry = new IpsProjectRefEntry(path);
@@ -118,22 +117,22 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         IIpsProject refProject = IpsPlugin.getDefault().getIpsModel().getIpsProject("RefProject");
         IpsProjectRefEntry entry = new IpsProjectRefEntry(path, refProject);
         Element element = entry.toXml(newDocument());
-        
+
         entry = new IpsProjectRefEntry(path);
         entry.initFromXml(element, ipsProject.getProject());
         assertEquals(refProject, entry.getReferencedIpsProject());
     }
 
-    public void testValidate() throws CoreException{
+    public void testValidate() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
         IIpsProject refProject = this.newIpsProject("TestProject2");
         path.newIpsProjectRefEntry(refProject);
         ipsProject.setProperties(props);
-        
+
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.getNoOfMessages());
-        
+
         // validate missing project reference
         refProject = IpsPlugin.getDefault().getIpsModel().getIpsProject("none");
         path.newIpsProjectRefEntry(refProject);
@@ -141,7 +140,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         ml = ipsProject.validate();
         assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IIpsProjectRefEntry.MSGCODE_MISSING_PROJECT));
-        
+
         // validate empty project name
         path.removeProjectRefEntry(refProject);
         path.newIpsProjectRefEntry(null);

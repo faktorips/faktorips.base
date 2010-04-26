@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,20 +18,20 @@ package org.faktorips.datatype;
  */
 public class PrimitiveBooleanDatatype extends AbstractPrimitiveDatatype {
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public String getName() {
         return "boolean";
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getQualifiedName() {
         return "boolean";
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -45,17 +45,18 @@ public class PrimitiveBooleanDatatype extends AbstractPrimitiveDatatype {
     public ValueDatatype getWrapperType() {
         return Datatype.BOOLEAN;
     }
-	
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     public String getJavaClassName() {
         return "boolean";
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValue(String value) {
         return Boolean.valueOf(value);
     }

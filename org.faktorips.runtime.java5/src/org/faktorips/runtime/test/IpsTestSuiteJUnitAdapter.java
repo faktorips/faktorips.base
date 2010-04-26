@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,7 +22,7 @@ import junit.framework.TestSuite;
  * @author Joerg Ortmann
  */
 public class IpsTestSuiteJUnitAdapter extends TestSuite {
-    
+
     public IpsTestSuiteJUnitAdapter() {
         super();
     }
@@ -30,13 +30,14 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
     public IpsTestSuiteJUnitAdapter(String name) {
         super(name);
     }
-    
+
     /**
-     * Dummy test method to avoid a warning when running all JUnit tests in this project.
-     * Without this method, Eclpise's JUnit support would create a warning that his suite hasn't got any tests.
+     * Dummy test method to avoid a warning when running all JUnit tests in this project. Without
+     * this method, Eclpise's JUnit support would create a warning that his suite hasn't got any
+     * tests.
      */
     public void testDummy() {
-        
+
     }
 
     /**
@@ -47,7 +48,7 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
             return new IpsTestCaseJUnitAdapter((IpsTestCaseBase)ipsTest);
         } else if (ipsTest instanceof IpsTestSuite) {
             return new IpsTestSuiteJUnitAdapter((IpsTestSuite)ipsTest);
-        } else{
+        } else {
             throw new RuntimeException("Unknown type " + ipsTest.getClass());
         }
     }

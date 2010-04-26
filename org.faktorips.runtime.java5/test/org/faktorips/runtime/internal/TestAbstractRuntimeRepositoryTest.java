@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -335,115 +335,115 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         } catch (Exception e) {
         }
     }
-    
+
     public void testAddEnumValueLookup() {
-    	Lookup lookup = new Lookup();
-    	mainRepository.addEnumValueLookupService(lookup);
-    	assertEquals(lookup, mainRepository.getEnumValueLookupService(TestEnumValue.class));
-    	
-    	Lookup lookup2 = new Lookup();
-    	mainRepository.addEnumValueLookupService(lookup2);
-    	assertEquals(lookup2, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+        Lookup lookup = new Lookup();
+        mainRepository.addEnumValueLookupService(lookup);
+        assertEquals(lookup, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+
+        Lookup lookup2 = new Lookup();
+        mainRepository.addEnumValueLookupService(lookup2);
+        assertEquals(lookup2, mainRepository.getEnumValueLookupService(TestEnumValue.class));
     }
-    
+
     public void testGetEnumValueLookup() {
-    	mainRepository.getEnumValueLookupService(TestEnumValue.class);
-    	
-    	Lookup lookup = new Lookup();
-    	mainRepository.addEnumValueLookupService(lookup);
-    	assertEquals(lookup, mainRepository.getEnumValueLookupService(TestEnumValue.class));
-    	
-    	Lookup lookup2 = new Lookup();
-    	mainRepository.addEnumValueLookupService(lookup2);
-    	assertEquals(lookup2, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+        mainRepository.getEnumValueLookupService(TestEnumValue.class);
+
+        Lookup lookup = new Lookup();
+        mainRepository.addEnumValueLookupService(lookup);
+        assertEquals(lookup, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+
+        Lookup lookup2 = new Lookup();
+        mainRepository.addEnumValueLookupService(lookup2);
+        assertEquals(lookup2, mainRepository.getEnumValueLookupService(TestEnumValue.class));
     }
 
     public void testRemoveEnumValueLookup() {
-    	Lookup lookup = new Lookup();
-    	mainRepository.removeEnumValueLookupService(lookup);
-    	
-    	mainRepository.addEnumValueLookupService(lookup);
-    	assertEquals(lookup, mainRepository.getEnumValueLookupService(TestEnumValue.class));
-    	mainRepository.removeEnumValueLookupService(lookup);
-    	assertNull(mainRepository.getEnumValueLookupService(TestEnumValue.class));
-    }
-    
-    public void testGetEnumValueFromLookup() {
-    	Lookup lookup = new Lookup();
-    	assertNull(baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
-    	
-    	baseRepository.addEnumValueLookupService(lookup);
-    	assertEquals(lookup.value1, baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
-    	assertEquals(lookup.value2, baseRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
-    	assertNull(baseRepository.getEnumValue(TestEnumValue.class, "unknownId"));
+        Lookup lookup = new Lookup();
+        mainRepository.removeEnumValueLookupService(lookup);
 
-    	// test if the search through referenced repositories works
+        mainRepository.addEnumValueLookupService(lookup);
+        assertEquals(lookup, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+        mainRepository.removeEnumValueLookupService(lookup);
+        assertNull(mainRepository.getEnumValueLookupService(TestEnumValue.class));
+    }
+
+    public void testGetEnumValueFromLookup() {
+        Lookup lookup = new Lookup();
+        assertNull(baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
+
+        baseRepository.addEnumValueLookupService(lookup);
+        assertEquals(lookup.value1, baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
+        assertEquals(lookup.value2, baseRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
+        assertNull(baseRepository.getEnumValue(TestEnumValue.class, "unknownId"));
+
+        // test if the search through referenced repositories works
         assertEquals(lookup.value1, mainRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
         assertEquals(lookup.value2, mainRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
-        
+
         assertNull(mainRepository.getEnumValue(TestEnumValue.class, "unknownId"));
-    	
+
     }
 
     public void testGetEnumValuesFromLookup() {
-    	Lookup lookup = new Lookup();
-    	assertNull(baseRepository.getEnumValues(TestEnumValue.class));
-    	
-    	baseRepository.addEnumValueLookupService(lookup);
-    	List<TestEnumValue> values = baseRepository.getEnumValues(TestEnumValue.class);
-    	assertEquals(lookup.value1, values.get(0));
-    	assertEquals(lookup.value2, values.get(1));
-    	
+        Lookup lookup = new Lookup();
+        assertNull(baseRepository.getEnumValues(TestEnumValue.class));
+
+        baseRepository.addEnumValueLookupService(lookup);
+        List<TestEnumValue> values = baseRepository.getEnumValues(TestEnumValue.class);
+        assertEquals(lookup.value1, values.get(0));
+        assertEquals(lookup.value2, values.get(1));
+
         values = mainRepository.getEnumValues(TestEnumValue.class);
         assertEquals(lookup.value1, values.get(0));
         assertEquals(lookup.value2, values.get(1));
-        
+
         // test if list is unmodfiable
         try {
             values.add(new TestEnumValue("value3"));
             fail();
         } catch (UnsupportedOperationException e) {
-            
+
         }
-        
+
     }
 
     class TestTable implements ITable {
 
     }
-    
+
     private class Lookup implements IEnumValueLookupService<TestEnumValue> {
 
-    	private TestEnumValue value1 = new TestEnumValue("value1");
-    	private TestEnumValue value2 = new TestEnumValue("value2");
-    	
-    	private List<TestEnumValue> values = new ArrayList<TestEnumValue>(); 
-    	
-		public Lookup() {
-	    	values.add(value1);
-	    	values.add(value2);
-		}
+        private TestEnumValue value1 = new TestEnumValue("value1");
+        private TestEnumValue value2 = new TestEnumValue("value2");
 
-		public Class<TestEnumValue> getEnumTypeClass() {
-			return TestEnumValue.class;
-		}
+        private List<TestEnumValue> values = new ArrayList<TestEnumValue>();
 
-		public TestEnumValue getEnumValue(Object id) {
-			for (TestEnumValue value : values) {
-				if (value.getEnumValueId().equals(id)) {
-					return value;
-				}
-			}
-			return null;
-		}
+        public Lookup() {
+            values.add(value1);
+            values.add(value2);
+        }
 
-		public List<TestEnumValue> getEnumValues() {
-			return values;
-		}
+        public Class<TestEnumValue> getEnumTypeClass() {
+            return TestEnumValue.class;
+        }
+
+        public TestEnumValue getEnumValue(Object id) {
+            for (TestEnumValue value : values) {
+                if (value.getEnumValueId().equals(id)) {
+                    return value;
+                }
+            }
+            return null;
+        }
+
+        public List<TestEnumValue> getEnumValues() {
+            return values;
+        }
 
         public XmlAdapter<?, TestEnumValue> getXmlAdapter() {
             return null;
         }
-    	
+
     }
 }

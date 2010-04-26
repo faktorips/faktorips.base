@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,12 +33,13 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
     private ControlFlowEditPart editPart;
     private boolean refreshChildrenCalled;
     private Shell shell;
-    
-    
-    public void setUp() throws Exception{
+
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
-        businessFunction = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
+        businessFunction = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+                "bf");
         controlFlow = businessFunction.newControlFlow();
         refreshChildrenCalled = false;
         ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
@@ -47,10 +48,9 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
         ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
         root.setViewer(viewer);
         viewer.setRootEditPart(root);
-        
-        
-        editPart = new ControlFlowEditPart(){
-            
+
+        editPart = new ControlFlowEditPart() {
+
             @Override
             protected void refreshVisuals() {
                 super.refreshVisuals();
@@ -61,9 +61,11 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
         editPart.setParent(root);
     }
 
-    public void tearDownExtension(){
+    @Override
+    public void tearDownExtension() {
         shell.dispose();
     }
+
     public void testActivate() {
         editPart.activate();
         controlFlow.addBendpoint(0, new AbsoluteBendpoint(1, 1));
@@ -74,11 +76,11 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
         editPart.activate();
         controlFlow.addBendpoint(0, new AbsoluteBendpoint(1, 1));
         assertTrue(refreshChildrenCalled);
-        
+
         refreshChildrenCalled = false;
         editPart.deactivate();
         controlFlow.addBendpoint(1, new AbsoluteBendpoint(1, 1));
         assertFalse(refreshChildrenCalled);
-        
+
     }
 }

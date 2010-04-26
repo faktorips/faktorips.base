@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.views.testrunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -173,17 +172,15 @@ public class TestRunPane {
         try {
             IIpsProject ipsProject = IpsPlugin.getDefault().getIpsTestRunner().getIpsProject();
             IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots();
-            for (int i = 0; i < ipsPackageFragmentRoots.length; i++) {
+            for (IIpsPackageFragmentRoot ipsPackageFragmentRoot : ipsPackageFragmentRoots) {
                 // currently two types of ips objects supports test:
                 // 1. product cmpts
                 // 2. isp test cases
-                ipsObject = ipsPackageFragmentRoots[i]
-                        .findIpsObject(IpsObjectType.TEST_CASE, selectedTestQualifiedName);
+                ipsObject = ipsPackageFragmentRoot.findIpsObject(IpsObjectType.TEST_CASE, selectedTestQualifiedName);
                 if (ipsObject != null) {
                     break;
                 }
-                ipsObject = ipsPackageFragmentRoots[i].findIpsObject(IpsObjectType.PRODUCT_CMPT,
-                        selectedTestQualifiedName);
+                ipsObject = ipsPackageFragmentRoot.findIpsObject(IpsObjectType.PRODUCT_CMPT, selectedTestQualifiedName);
                 if (ipsObject != null) {
                     break;
                 }
@@ -559,8 +556,7 @@ public class TestRunPane {
             return;
         }
         synchronized (missingTestEntries) {
-            for (Iterator<String> iter = missingTestEntries.iterator(); iter.hasNext();) {
-                String element = iter.next();
+            for (String element : missingTestEntries) {
                 TestTableEntry testTableEntry = fTableItemMap.get(element);
                 if (testTableEntry == null) {
                     missingTestEntries.add(element);
@@ -585,8 +581,7 @@ public class TestRunPane {
     }
 
     private void showAllElementsInTable() {
-        for (Iterator<TestTableEntry> iterator = fTableItemMap.values().iterator(); iterator.hasNext();) {
-            TestTableEntry tableEntry = iterator.next();
+        for (TestTableEntry tableEntry : fTableItemMap.values()) {
             if (tableEntry.getTableItem() == null) {
                 TableItem tableItem = new TableItem(fTable, SWT.NONE);
                 tableItem.setText(tableEntry.getQualifiedTestName());
@@ -603,8 +598,7 @@ public class TestRunPane {
 
     private void removeNonErrorsAndFailuresFromTable() {
         List<Integer> nonErrorsOrFailuresIndices = new ArrayList<Integer>();
-        for (Iterator<TestTableEntry> iterator = fTableItemMap.values().iterator(); iterator.hasNext();) {
-            TestTableEntry testTableEntry = iterator.next();
+        for (TestTableEntry testTableEntry : fTableItemMap.values()) {
             if (!(testTableEntry.isError() || testTableEntry.isFailure())) {
                 TableItem tableItem = testTableEntry.getTableItem();
                 if (tableItem == null) {

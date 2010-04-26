@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -74,6 +74,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
         setAdditionalRepositoryPackages(additionalRepositoryPackages);
     }
 
+    @Override
     public void run(String name) {
 
         long testStartTime = System.currentTimeMillis();
@@ -119,7 +120,8 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
     }
 
     /*
-     * Adds all test as String with the following format: <br> :<testQualifiedName>{<testFullPath>},...
+     * Adds all test as String with the following format: <br>
+     * :<testQualifiedName>{<testFullPath>},...
      */
     private void printAllTests(int testCount) {
         List<IpsTest2> tests = getTests();
@@ -155,6 +157,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected List<IRuntimeRepository> createRepositories() throws Exception {
         List<String> repositoryNameList = getRepositoryListFromInputString(getRepositoryPackages());
         List<IRuntimeRepository> runtimeRepositories = new ArrayList<IRuntimeRepository>(repositoryNameList.size());
@@ -264,31 +267,36 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
      */
     private void postError(Throwable t, String qualifiedTestName) {
         // format: qualifiedTestName{StacktraceLine1}{StacktraceLine2}...{StacktraceLineN}
-        if (writer == null)
+        if (writer == null) {
             return;
-        // get the error message or if not given, the name of the exception class
+            // get the error message or if not given, the name of the exception class
+        }
 
         writer.print(TEST_ERROR);
         writer.print(qualifiedTestName == null ? "" : qualifiedTestName);
         while (t != null) {
             String errorMsg = t.getLocalizedMessage();
-            if (!(errorMsg != null && errorMsg.length() > 0))
+            if (!(errorMsg != null && errorMsg.length() > 0)) {
                 errorMsg = t.getMessage();
-            if (!(errorMsg != null && errorMsg.length() > 0))
+            }
+            if (!(errorMsg != null && errorMsg.length() > 0)) {
                 errorMsg = t.getClass().getName();
-            if ("null".equals(errorMsg))
+            }
+            if ("null".equals(errorMsg)) {
                 errorMsg = t.getClass().getName() + " " + errorMsg;
-            if (t instanceof ClassNotFoundException)
+            }
+            if (t instanceof ClassNotFoundException) {
                 errorMsg = "ClassNotFoundException " + errorMsg;
+            }
             writer.print(!(errorMsg != null && errorMsg.length() > 0) ? "" : "{");
             writer.print(TEST_ERROR_MESSAGE_INDICATOR);
             writer.print(errorMsg);
             writer.print("}");
             StackTraceElement[] stackElems = t.getStackTrace();
-            for (int i = 0; i < stackElems.length; i++) {
+            for (StackTraceElement stackElem : stackElems) {
                 writer.print("{");
                 writer.print(TEST_ERROR_STACK_INDICATOR);
-                writer.print(stackElems[i].toString());
+                writer.print(stackElem.toString());
                 writer.print("}");
             }
             t = t.getCause();

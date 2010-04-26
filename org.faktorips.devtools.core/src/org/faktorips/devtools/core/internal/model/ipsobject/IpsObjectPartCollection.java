@@ -78,8 +78,8 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
     private Constructor<T> getConstructor(Class<? extends T> clazz) {
         Constructor<?>[] constructors = clazz.getConstructors();
-        for (int i = 0; i < constructors.length; i++) {
-            Class<?>[] params = constructors[i].getParameterTypes();
+        for (Constructor<?> constructor : constructors) {
+            Class<?>[] params = constructor.getParameterTypes();
             if (params.length != 2) {
                 continue;
             }
@@ -89,7 +89,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
                     // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
                     // while returning Contructor<T>[]
                     // The Javaoc Class.getDeclaredConstructors() for more information
-                    Constructor<T> castedConstructor = (Constructor<T>)constructors[i];
+                    Constructor<T> castedConstructor = (Constructor<T>)constructor;
                     return castedConstructor;
                 }
             }

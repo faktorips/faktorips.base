@@ -135,8 +135,8 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      */
     private boolean isPackageFragment(IResource res) throws CoreException {
         IIpsPackageFragment[] frags = getIpsPackageFragments();
-        for (int i = 0; i < frags.length; i++) {
-            if (frags[i].getCorrespondingResource().equals(res)) {
+        for (IIpsPackageFragment frag : frags) {
+            if (frag.getCorrespondingResource().equals(res)) {
                 return true;
             }
         }
@@ -155,15 +155,15 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
     private void getIpsPackageFragments(IFolder folder, String namePrefix, List<IIpsPackageFragment> packs)
             throws CoreException {
         IResource[] resources = folder.members();
-        for (int i = 0; i < resources.length; i++) {
-            if (resources[i].getType() == IResource.FOLDER) {
-                String name = resources[i].getName();
+        for (IResource resource : resources) {
+            if (resource.getType() == IResource.FOLDER) {
+                String name = resource.getName();
                 if (isValidIpsPackageFragmentName(name)) {
                     name = namePrefix + name;
                     // package name is not the platform folder name, but the concatenation
                     // of platform folder names starting at the root folder separated by dots
                     packs.add(new IpsPackageFragment(this, name));
-                    getIpsPackageFragments((IFolder)resources[i], name + ".", packs); //$NON-NLS-1$
+                    getIpsPackageFragments((IFolder)resource, name + ".", packs); //$NON-NLS-1$
                 }
             }
         }
@@ -202,8 +202,8 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         }
         if (packageFragment == null) {
             IIpsPackageFragment[] packs = this.getIpsPackageFragments();
-            for (int i = 0; i < packs.length; i++) {
-                ((IpsPackageFragment)packs[i]).findIpsSourceFiles(type, result);
+            for (IIpsPackageFragment pack : packs) {
+                ((IpsPackageFragment)pack).findIpsSourceFiles(type, result);
             }
             return;
         }
@@ -231,8 +231,8 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
             return;
         }
         IIpsPackageFragment[] packs = getIpsPackageFragments();
-        for (int i = 0; i < packs.length; i++) {
-            ((IpsPackageFragment)packs[i]).findIpsSourceFilesStartingWith(type, prefix, ignoreCase, result);
+        for (IIpsPackageFragment pack : packs) {
+            ((IpsPackageFragment)pack).findIpsSourceFilesStartingWith(type, prefix, ignoreCase, result);
         }
     }
 

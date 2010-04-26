@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,19 +15,16 @@ package org.faktorips.devtools.core;
 
 /*******************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) d?rfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung ? Version 0.1 (vor Gr?ndung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) d?rfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung ? Version 0.1
+ * (vor Gr?ndung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
  *******************************************************************************/
 
 import org.faktorips.devtools.core.enums.DefaultEnumType;
@@ -40,6 +37,7 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
  * <li>NAME - display name only
  * <li>NAME_AND_ID - display both: name and id
  * </ul>
+ * 
  * @author Joerg Ortmann
  */
 public class EnumTypeDisplay extends DefaultEnumValue {
@@ -47,27 +45,27 @@ public class EnumTypeDisplay extends DefaultEnumValue {
     public final static EnumTypeDisplay ID;
 
     public final static EnumTypeDisplay NAME;
-    
+
     public final static EnumTypeDisplay NAME_AND_ID;
-    
+
     public final static EnumTypeDisplay DEFAULT;
-    
-    private final static DefaultEnumType enumType; 
+
+    private final static DefaultEnumType enumType;
 
     static {
         enumType = new DefaultEnumType("EnumTypeDisplay", EnumTypeDisplay.class); //$NON-NLS-1$
         ID = new EnumTypeDisplay(enumType, "id", Messages.EnumTypeDisplay_id); //$NON-NLS-1$
         NAME = new EnumTypeDisplay(enumType, "name", Messages.EnumTypeDisplay_name); //$NON-NLS-1$
         NAME_AND_ID = new EnumTypeDisplay(enumType, "nameAndId", Messages.EnumTypeDisplay_nameAndId); //$NON-NLS-1$
-        
+
         DEFAULT = NAME_AND_ID;
     }
-    
-    public EnumTypeDisplay(DefaultEnumType type, String id, String name){
+
+    public EnumTypeDisplay(DefaultEnumType type, String id, String name) {
         super(type, id, name);
     }
-    
-    public static DefaultEnumType getEnumType(){
+
+    public static DefaultEnumType getEnumType() {
         return enumType;
     }
 }

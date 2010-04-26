@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -29,8 +29,8 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.faktorips.devtools.core.IpsStatus;
 
 /**
- * An <code>IRunnableWithProgress</code> that adapts an <code>IWorkspaceRunnable</code>
- * so that is can be executed inside <code>IRunnableContext</code>. <code>OperationCanceledException</code> 
+ * An <code>IRunnableWithProgress</code> that adapts an <code>IWorkspaceRunnable</code> so that is
+ * can be executed inside <code>IRunnableContext</code>. <code>OperationCanceledException</code>
  * thrown by the adapted runnable are caught and re-thrown as a <code>InterruptedException</code>.
  * 
  * Copied from the class with the same name from the internal Eclipse packages.
@@ -41,22 +41,23 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
 
     private IWorkspaceRunnable workspaceRunnable;
     private ISchedulingRule rule;
-    
+
     /**
      * Runs a workspace runnable with the workspace lock.
      */
     public WorkbenchRunnableAdapter(IWorkspaceRunnable runnable) {
         this(runnable, ResourcesPlugin.getWorkspace().getRoot());
     }
-    
+
     /**
-     * Runs a workspace runnable with the given lock or <code>null</code> to run with no lock at all.
+     * Runs a workspace runnable with the given lock or <code>null</code> to run with no lock at
+     * all.
      */
     public WorkbenchRunnableAdapter(IWorkspaceRunnable runnable, ISchedulingRule rule) {
-        workspaceRunnable= runnable;
-        this.rule= rule;
-    }    
-    
+        workspaceRunnable = runnable;
+        this.rule = rule;
+    }
+
     public ISchedulingRule getSchedulingRule() {
         return rule;
     }
@@ -75,17 +76,18 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
     }
 
     public void runAsUserJob(String name, final Object jobFamiliy) {
-        Job buildJob = new Job(name){ 
+        Job buildJob = new Job(name) {
             /**
              * {@inheritDoc}
              */
+            @Override
             protected IStatus run(IProgressMonitor monitor) {
                 try {
                     WorkbenchRunnableAdapter.this.run(monitor);
                 } catch (InvocationTargetException e) {
-                    Throwable cause= e.getCause();
+                    Throwable cause = e.getCause();
                     if (cause instanceof CoreException) {
-                        return ((CoreException) cause).getStatus();
+                        return ((CoreException)cause).getStatus();
                     } else {
                         return new IpsStatus(e);
                     }
@@ -96,12 +98,14 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
                 }
                 return Status.OK_STATUS;
             }
+
+            @Override
             public boolean belongsTo(Object family) {
                 return jobFamiliy == family;
             }
         };
         buildJob.setRule(rule);
-        buildJob.setUser(true); 
+        buildJob.setUser(true);
         buildJob.schedule();
     }
 }

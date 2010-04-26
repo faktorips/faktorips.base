@@ -578,8 +578,8 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter tp = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         // clean the default test data, because we use two new policy cmpts
         ITestPolicyCmptTypeParameter[] childs = tp.getTestPolicyCmptTypeParamChilds();
-        for (int i = 0; i < childs.length; i++) {
-            tp.removeTestPolicyCmptTypeParamChild((TestPolicyCmptTypeParameter)childs[i]);
+        for (ITestPolicyCmptTypeParameter child : childs) {
+            tp.removeTestPolicyCmptTypeParamChild((TestPolicyCmptTypeParameter)child);
         }
         tp.setPolicyCmptType(policy.getQualifiedName());
         ITestPolicyCmptTypeParameter tpChild = tp.newTestPolicyCmptTypeParamChild();

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,7 +12,6 @@
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
-
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -38,79 +37,83 @@ import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDia
  */
 public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
 
-	private IProductCmptGeneration[] generations;
-	private IGenerationToTypeDelta[] deltas;
-	private List generationsList;
-	
-	/**
-	 * Create a new dialog, showing all the differences given. The first delta found
-	 * in the given deltas has to be for the first generation and so on.
-	 * 
-	 * @param parentShell The SWT parent-shell
-	 * @param generations All generations with differences.
-	 * @param deltas All deltas for the generations.
-	 */
-	public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IGenerationToTypeDelta[] deltas, Shell parentShell) {
-		super(parentShell);
-		super.setShellStyle(getShellStyle() | SWT.RESIZE);
-		this.generations = generations;
-		this.deltas = deltas;
-	}
+    private IProductCmptGeneration[] generations;
+    private IGenerationToTypeDelta[] deltas;
+    private List generationsList;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected Control createDialogArea(Composite parent) {
-		String genTextPlural = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
-		String genTextSingular = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-		Composite root = (Composite)super.createDialogArea(parent);
-		
-		// layouting
-		
-		// create composite with margins
-		Composite listParent = toolkit.createGridComposite(root, 3, false, false);
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.minimumHeight = 10+30+50+10;
-		listParent.setLayoutData(gridData);
+    /**
+     * Create a new dialog, showing all the differences given. The first delta found in the given
+     * deltas has to be for the first generation and so on.
+     * 
+     * @param parentShell The SWT parent-shell
+     * @param generations All generations with differences.
+     * @param deltas All deltas for the generations.
+     */
+    public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IGenerationToTypeDelta[] deltas,
+            Shell parentShell) {
+        super(parentShell);
+        super.setShellStyle(getShellStyle() | SWT.RESIZE);
+        this.generations = generations;
+        this.deltas = deltas;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createDialogArea(Composite parent) {
+        String genTextPlural = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNamePlural();
+        String genTextSingular = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular();
+        Composite root = (Composite)super.createDialogArea(parent);
+
+        // layouting
+
+        // create composite with margins
+        Composite listParent = toolkit.createGridComposite(root, 3, false, false);
+        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gridData.minimumHeight = 10 + 30 + 50 + 10;
+        listParent.setLayoutData(gridData);
 
         // line 1 (label for list)
-		toolkit.createVerticalSpacer(listParent, 1);
-		String text = NLS.bind(Messages.ProductCmptDeltaDialog_labelSelectGeneration, genTextPlural);
-		Label label = toolkit.createLabel(listParent, text, false);
-		((GridData)label.getLayoutData()).minimumHeight = 10;
-		toolkit.createVerticalSpacer(listParent, 1);
-		
-		// line 2 (list)
-		toolkit.createVerticalSpacer(listParent, 1);
-		generationsList = new List(listParent, SWT.SINGLE | SWT.BORDER);
-		toolkit.createVerticalSpacer(listParent, 1);
-		
-		for (int i = 0; i < generations.length; i++) {
-			generationsList.add(generations[i].getName());
-		}
+        toolkit.createVerticalSpacer(listParent, 1);
+        String text = NLS.bind(Messages.ProductCmptDeltaDialog_labelSelectGeneration, genTextPlural);
+        Label label = toolkit.createLabel(listParent, text, false);
+        ((GridData)label.getLayoutData()).minimumHeight = 10;
+        toolkit.createVerticalSpacer(listParent, 1);
 
-		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.minimumHeight = 30;
-		generationsList.setLayoutData(gridData);
+        // line 2 (list)
+        toolkit.createVerticalSpacer(listParent, 1);
+        generationsList = new List(listParent, SWT.SINGLE | SWT.BORDER);
+        toolkit.createVerticalSpacer(listParent, 1);
 
-		// line 3 (label for tree)
-		toolkit.createVerticalSpacer(listParent, 1);
-		text = NLS.bind(Messages.ProductCmptDeltaDialog_labelSelectedDifferences, genTextSingular);
-		label = toolkit.createLabel(listParent, text, false);
-		((GridData)label.getLayoutData()).minimumHeight = 10;
-		toolkit.createVerticalSpacer(listParent, 1);
-		
-		// line 4 (tree)
-		toolkit.createVerticalSpacer(listParent, 1);
-		tree = new TreeViewer(listParent);
-		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.minimumHeight = 50;
-		tree.getTree().setLayoutData(gridData);
-		toolkit.createVerticalSpacer(listParent, 1);
+        for (IProductCmptGeneration generation : generations) {
+            generationsList.add(generation.getName());
+        }
 
-		// adding data and behaviour
+        gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gridData.minimumHeight = 30;
+        generationsList.setLayoutData(gridData);
+
+        // line 3 (label for tree)
+        toolkit.createVerticalSpacer(listParent, 1);
+        text = NLS.bind(Messages.ProductCmptDeltaDialog_labelSelectedDifferences, genTextSingular);
+        label = toolkit.createLabel(listParent, text, false);
+        ((GridData)label.getLayoutData()).minimumHeight = 10;
+        toolkit.createVerticalSpacer(listParent, 1);
+
+        // line 4 (tree)
+        toolkit.createVerticalSpacer(listParent, 1);
+        tree = new TreeViewer(listParent);
+        gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gridData.minimumHeight = 50;
+        tree.getTree().setLayoutData(gridData);
+        toolkit.createVerticalSpacer(listParent, 1);
+
+        // adding data and behaviour
         getShell().setText(Messages.ProductCmptDeltaDialog_title);
-        
+
         if (isProductEditableInAllGenerations()) {
             setMessage(Messages.ProductCmptDeltaDialog_message, IMessageProvider.INFORMATION);
         } else {
@@ -124,41 +127,41 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
 
         tree.setContentProvider(new DeltaContentProvider());
         tree.setLabelProvider(new DeltaLabelProvider());
-		
-		generationsList.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-			public void widgetSelected(SelectionEvent e) {
-				updateDeltaView();
-			}
-		});
 
-		// initialize view
-		generationsList.setSelection(0);
-		updateDeltaView();
-		
-		return root;
-	}
+        generationsList.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
 
+            public void widgetSelected(SelectionEvent e) {
+                updateDeltaView();
+            }
+        });
+
+        // initialize view
+        generationsList.setSelection(0);
+        updateDeltaView();
+
+        return root;
+    }
 
     /*
-	 * Returns <code>true</code> if the user can edit recent generations, if
-	 * recent generations couldn't be edit return <code>false</code>.
-	 */
-	private boolean isProductEditableInAllGenerations() {
-	    return IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration();
-	}
+     * Returns <code>true</code> if the user can edit recent generations, if recent generations
+     * couldn't be edit return <code>false</code>.
+     */
+    private boolean isProductEditableInAllGenerations() {
+        return IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration();
+    }
 
-	private void updateDeltaView() {
-		updateDeltaView(deltas[generationsList.getSelectionIndex()]);
-	}
-	
-	public IProductCmptGeneration[] getGenerations() {
-		return generations;
-	}
-	
-	public IGenerationToTypeDelta[] getDeltas() {
-		return deltas;
-	}
+    private void updateDeltaView() {
+        updateDeltaView(deltas[generationsList.getSelectionIndex()]);
+    }
+
+    public IProductCmptGeneration[] getGenerations() {
+        return generations;
+    }
+
+    public IGenerationToTypeDelta[] getDeltas() {
+        return deltas;
+    }
 }

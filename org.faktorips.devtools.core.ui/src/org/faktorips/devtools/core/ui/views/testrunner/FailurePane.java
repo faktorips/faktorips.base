@@ -408,8 +408,8 @@ public class FailurePane implements IMenuListener {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         TableItem[] tableItems = table.getItems();
-        for (int i = 0; i < tableItems.length; i++) {
-            printWriter.println(tableItems[i].getText());
+        for (TableItem tableItem : tableItems) {
+            printWriter.println(tableItem.getText());
         }
         return stringWriter.toString();
     }

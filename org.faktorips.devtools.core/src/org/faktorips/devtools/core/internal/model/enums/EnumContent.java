@@ -264,8 +264,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     public List<IEnumAttributeReference> getEnumAttributeReferences() {
         List<IEnumAttributeReference> referencesList = new ArrayList<IEnumAttributeReference>();
         IIpsObjectPart[] parts = enumAttributeReferences.getParts();
-        for (int i = 0; i < parts.length; i++) {
-            referencesList.add((IEnumAttributeReference)parts[i]);
+        for (IIpsObjectPart part : parts) {
+            referencesList.add((IEnumAttributeReference)part);
         }
         return referencesList;
     }

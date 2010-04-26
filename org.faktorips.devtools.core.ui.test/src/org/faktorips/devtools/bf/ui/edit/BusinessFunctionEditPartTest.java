@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,24 +36,25 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
     private boolean refreshChildrenCalled;
 
     private Shell shell;
-    
-    public void setUp() throws Exception{
+
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
-        
+
         shell = new Shell(Display.getCurrent());
-        
+
         ipsProject = newIpsProject("TestProject");
-        businessFunction = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
+        businessFunction = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+                "bf");
         refreshChildrenCalled = false;
         ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
         viewer.createControl(shell);
         ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
         root.setViewer(viewer);
         viewer.setRootEditPart(root);
-        
 
-        editPart = new BusinessFunctionEditPart(){
-            
+        editPart = new BusinessFunctionEditPart() {
+
             @Override
             public void refreshChildren() {
                 super.refreshChildren();
@@ -64,10 +65,11 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
         editPart.setModel(businessFunction);
     }
 
-    public void tearDownExtension(){
+    @Override
+    public void tearDownExtension() {
         shell.dispose();
     }
-    
+
     public void testActivate() {
         editPart.activate();
         businessFunction.newControlFlow();
@@ -78,7 +80,7 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
         editPart.activate();
         businessFunction.newControlFlow();
         assertTrue(refreshChildrenCalled);
-        
+
         editPart.deactivate();
         refreshChildrenCalled = false;
         businessFunction.newControlFlow();
@@ -89,29 +91,30 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
         editPart.activate();
         IControlFlow cf = businessFunction.newControlFlow();
         assertTrue(refreshChildrenCalled);
-        
+
         refreshChildrenCalled = false;
         cf.delete();
         assertTrue(refreshChildrenCalled);
 
         refreshChildrenCalled = false;
-        IBusinessFunction bf2 = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf2");
+        IBusinessFunction bf2 = (IBusinessFunction)newIpsObject(ipsProject,
+                BusinessFunctionIpsObjectType.getInstance(), "bf2");
         bf2.newControlFlow();
         assertFalse(refreshChildrenCalled);
     }
 
     @SuppressWarnings("unchecked")
-    public void testRefreshChildren(){
+    public void testRefreshChildren() {
         List<EditPart> childs = editPart.getChildren();
         assertEquals(0, childs.size());
-        
-        //creation of the ParameterEditPart
+
+        // creation of the ParameterEditPart
         editPart.refreshChildren();
         childs = editPart.getChildren();
         assertEquals(1, childs.size());
         assertTrue(childs.get(0) instanceof ParameterEditPart);
 
-        //removal and new creation of the ParameterEditPart
+        // removal and new creation of the ParameterEditPart
         editPart.refreshChildren();
         childs = editPart.getChildren();
         assertEquals(1, childs.size());

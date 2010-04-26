@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,14 +27,15 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest {
 
     public final void testGetDependencyGraph() throws Exception {
-        
+
         IIpsProject ipsProject = newIpsProject("Testproject");
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
         IAssociation bToA = b.newAssociation();
         bToA.setTarget(a.getQualifiedName());
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        DependencyGraphPersistenceManager persistenceManager = IpsPlugin.getDefault().getDependencyGraphPersistenceManager();
+        DependencyGraphPersistenceManager persistenceManager = IpsPlugin.getDefault()
+                .getDependencyGraphPersistenceManager();
         assertNull(persistenceManager.getDependencyGraph(ipsProject));
         persistenceManager.saving(new TestSaveContext());
         DependencyGraph graph = persistenceManager.getDependencyGraph(ipsProject);
@@ -44,8 +45,7 @@ public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest
         assertEquals(b.getQualifiedNameType(), dependencies[0].getSource());
     }
 
-    
-    private static class TestSaveContext implements ISaveContext{
+    private static class TestSaveContext implements ISaveContext {
 
         public IPath[] getFiles() {
             return null;
@@ -79,6 +79,6 @@ public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest
 
         public void needSaveNumber() {
         }
-        
+
     }
 }

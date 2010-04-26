@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,7 +21,6 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.util.ArgumentCheck;
 
-
 /**
  *
  */
@@ -30,11 +29,12 @@ public class WholeNumber extends AbstractFlFunction {
     /**
      */
     public WholeNumber(String name, String description) {
-        super(name, description, Datatype.INTEGER, new Datatype[] {Datatype.DECIMAL});
+        super(name, description, Datatype.INTEGER, new Datatype[] { Datatype.DECIMAL });
     }
 
-    /** 
+    /**
      * Overridden method.
+     * 
      * @see org.faktorips.fl.FlFunction#compile(org.faktorips.codegen.JavaCodeFragment[])
      */
     public CompilationResult compile(CompilationResult[] argResults) {
@@ -49,6 +49,5 @@ public class WholeNumber extends AbstractFlFunction {
         fragment.append(".ROUND_DOWN).intValue())"); //$NON-NLS-1$
         return new CompilationResultImpl(fragment, Datatype.INTEGER);
     }
-
 
 }

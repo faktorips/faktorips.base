@@ -128,8 +128,8 @@ public class CheckStateListener implements ICheckStateListener {
         }
 
         TreeItem[] items = node.getItems();
-        for (int i = 0; i < items.length; i++) {
-            items[i].setChecked(true);
+        for (TreeItem item : items) {
+            item.setChecked(true);
         }
     }
 
@@ -141,13 +141,13 @@ public class CheckStateListener implements ICheckStateListener {
         boolean gray = false;
         boolean unchecked = false;
 
-        for (int i = 0; i < items.length; i++) {
-            if (items[i].getChecked()) {
-                boolean myGray = updateGrayState(items[i].getItems());
-                items[i].setGrayed(myGray);
+        for (TreeItem item : items) {
+            if (item.getChecked()) {
+                boolean myGray = updateGrayState(item.getItems());
+                item.setGrayed(myGray);
                 gray = gray || myGray;
             } else {
-                setNotGrayedRecursive(new TreeItem[] { items[i] });
+                setNotGrayedRecursive(new TreeItem[] { item });
                 unchecked = true;
             }
         }
@@ -159,9 +159,9 @@ public class CheckStateListener implements ICheckStateListener {
      * Set all given TreeItems and all children non-grayed.
      */
     private void setNotGrayedRecursive(TreeItem[] items) {
-        for (int i = 0; i < items.length; i++) {
-            items[i].setGrayed(false);
-            setNotGrayedRecursive(items[i].getItems());
+        for (TreeItem item : items) {
+            item.setGrayed(false);
+            setNotGrayedRecursive(item.getItems());
         }
     }
 
@@ -169,9 +169,9 @@ public class CheckStateListener implements ICheckStateListener {
      * Uncheck the given tree items and all its direct or indirect children.
      */
     private void uncheckChildren(TreeItem[] items) {
-        for (int i = 0; i < items.length; i++) {
-            items[i].setChecked(false);
-            uncheckChildren(items[i].getItems());
+        for (TreeItem item : items) {
+            item.setChecked(false);
+            uncheckChildren(item.getItems());
         }
     }
 

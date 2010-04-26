@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,22 +26,22 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.FormulaEditDialog;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Control to edit the value of an formula. A textfeld followed by a button is provided.
- * If the button is clicked, an special Editor for editing the formula with support is opened.
+ * Control to edit the value of an formula. A textfeld followed by a button is provided. If the
+ * button is clicked, an special Editor for editing the formula with support is opened.
  * 
  * @author Thorsten Guenther
  */
-public class FormulaEditControl extends TextButtonControl implements IDataChangeableReadWriteAccess{
+public class FormulaEditControl extends TextButtonControl implements IDataChangeableReadWriteAccess {
 
-	private IFormula formula;
-	private Shell shell;
-	private IpsSection parentSection;
-    
+    private IFormula formula;
+    private Shell shell;
+    private IpsSection parentSection;
+
     private UIToolkit uiToolkit;
-    
+
     private boolean dataChangeable = true;
-    
-	public FormulaEditControl(Composite parent, UIToolkit toolkit, IFormula formula, Shell shell,
+
+    public FormulaEditControl(Composite parent, UIToolkit toolkit, IFormula formula, Shell shell,
             IpsSection parentSection) {
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
         this.formula = formula;
@@ -49,28 +49,30 @@ public class FormulaEditControl extends TextButtonControl implements IDataChange
         this.parentSection = parentSection;
         this.uiToolkit = toolkit;
     }
-	
-	protected void buttonClicked() {
-		try {
+
+    @Override
+    protected void buttonClicked() {
+        try {
             EditDialog dialog = new FormulaEditDialog(formula, shell);
             dialog.setDataChangeable(isDataChangeable());
-            if (dialog.open()==Window.OK) {
-                if (parentSection != null){
+            if (dialog.open() == Window.OK) {
+                if (parentSection != null) {
                     parentSection.refresh();
                 }
             }
-            
-		} catch (CoreException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		}
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setEnabled(boolean enabled) {
-		super.getTextControl().setEnabled(enabled);
-	}
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.getTextControl().setEnabled(enabled);
+    }
 
     /**
      * {@inheritDoc}

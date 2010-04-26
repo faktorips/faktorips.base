@@ -28,6 +28,7 @@ public class NewTableContentsWizard extends NewIpsObjectWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         page = new TableContentsPage(selection);
         return page;

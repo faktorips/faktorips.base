@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -58,14 +58,14 @@ public interface IProductComponentGeneration extends IRuntimeObject {
     Date getValidFrom(TimeZone zone);
 
     /**
-     * Returns the <code>IProductComponentLink</code> for the association with the given role name to the given
-     * product component or <code>null</code> if no such association exists.
+     * Returns the <code>IProductComponentLink</code> for the association with the given role name
+     * to the given product component or <code>null</code> if no such association exists.
      */
     public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target);
 
     /**
-     * Returns a <code>List</code> of all the <code>IProductComponentLink</code>s from this product component
-     * generation to other product components.
+     * Returns a <code>List</code> of all the <code>IProductComponentLink</code>s from this product
+     * component generation to other product components.
      */
     public List<IProductComponentLink<? extends IProductComponent>> getLinks();
 }

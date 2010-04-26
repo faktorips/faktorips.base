@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -13,11 +13,10 @@
 
 package org.faktorips.devtools.core.util;
 
-
 import junit.framework.TestCase;
 
 /**
- *
+ * 
  * @author Jan Ortmann
  */
 public class QNameUtilTest extends TestCase {
@@ -57,27 +56,27 @@ public class QNameUtilTest extends TestCase {
     }
 
     public void testGetSegments() {
-       assertEquals(0, QNameUtil.getSegments(null).length);
-       assertEquals(0, QNameUtil.getSegments("").length); //$NON-NLS-1$
+        assertEquals(0, QNameUtil.getSegments(null).length);
+        assertEquals(0, QNameUtil.getSegments("").length); //$NON-NLS-1$
 
-       String[] segments = QNameUtil.getSegments(" "); //$NON-NLS-1$
-       assertEquals(1, segments.length);
-       assertEquals(" ", segments[0]); //$NON-NLS-1$
+        String[] segments = QNameUtil.getSegments(" "); //$NON-NLS-1$
+        assertEquals(1, segments.length);
+        assertEquals(" ", segments[0]); //$NON-NLS-1$
 
-       segments = QNameUtil.getSegments("a"); //$NON-NLS-1$
-       assertEquals(1, segments.length);
-       assertEquals("a", segments[0]); //$NON-NLS-1$
+        segments = QNameUtil.getSegments("a"); //$NON-NLS-1$
+        assertEquals(1, segments.length);
+        assertEquals("a", segments[0]); //$NON-NLS-1$
 
-       segments = QNameUtil.getSegments("a."); //$NON-NLS-1$
-       assertEquals(1, segments.length);
-       assertEquals("a", segments[0]); //$NON-NLS-1$
+        segments = QNameUtil.getSegments("a."); //$NON-NLS-1$
+        assertEquals(1, segments.length);
+        assertEquals("a", segments[0]); //$NON-NLS-1$
 
-       segments = QNameUtil.getSegments("a.b.c.d"); //$NON-NLS-1$
-       assertEquals(4, segments.length);
-       assertEquals("a", segments[0]); //$NON-NLS-1$
-       assertEquals("b", segments[1]); //$NON-NLS-1$
-       assertEquals("c", segments[2]); //$NON-NLS-1$
-       assertEquals("d", segments[3]); //$NON-NLS-1$
+        segments = QNameUtil.getSegments("a.b.c.d"); //$NON-NLS-1$
+        assertEquals(4, segments.length);
+        assertEquals("a", segments[0]); //$NON-NLS-1$
+        assertEquals("b", segments[1]); //$NON-NLS-1$
+        assertEquals("c", segments[2]); //$NON-NLS-1$
+        assertEquals("d", segments[3]); //$NON-NLS-1$
 
     }
 

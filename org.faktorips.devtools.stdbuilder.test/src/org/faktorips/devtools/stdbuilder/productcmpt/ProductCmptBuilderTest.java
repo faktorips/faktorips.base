@@ -71,9 +71,9 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         assertFalse(productCmpt.validate(project).containsErrorMsg());
 
         IIpsArtefactBuilder[] builders = project.getIpsArtefactBuilderSet().getArtefactBuilders();
-        for (int i = 0; i < builders.length; i++) {
-            if (builders[i] instanceof ProductCmptBuilder) {
-                builder = (ProductCmptBuilder)builders[i];
+        for (IIpsArtefactBuilder builder2 : builders) {
+            if (builder2 instanceof ProductCmptBuilder) {
+                builder = (ProductCmptBuilder)builder2;
             }
         }
         assertNotNull(builder);

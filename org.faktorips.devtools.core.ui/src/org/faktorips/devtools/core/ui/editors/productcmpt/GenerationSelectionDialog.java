@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -273,8 +272,8 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     public List<String> getGenerationsDropDownContent() {
         IIpsObjectGeneration[] generations = cmpt.getGenerationsOrderedByValidDate();
         List<String> relevantGenerations = new ArrayList<String>(generations.length);
-        for (int i = 0; i < generations.length; i++) {
-            String valueToAdd = generations[i].getName();
+        for (IIpsObjectGeneration generation : generations) {
+            String valueToAdd = generation.getName();
             relevantGenerations.add(valueToAdd);
         }
         return relevantGenerations;
@@ -288,13 +287,12 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         SelectionListenerForCombo listenerForCombo = new SelectionListenerForCombo(validFromDates, button);
         validFromDates.addSelectionListener(listenerForCombo);
         validFromDates.addFocusListener(listenerForCombo);
-        for (Iterator<String> iter = generations.iterator(); iter.hasNext();) {
-            validFromDates.add(iter.next());
+        for (String string : generations) {
+            validFromDates.add(string);
         }
 
         validFromDates.select(forReadOnlyCombo ? 0 : generations.size() - 1);
-        for (Iterator<Button> iter = allButtons.values().iterator(); iter.hasNext();) {
-            Button btn = iter.next();
+        for (Button btn : allButtons.values()) {
             btn.addSelectionListener(new SelectionListenerForButton(validFromDates));
         }
 
@@ -304,8 +302,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             IIpsObjectGeneration generation = cmpt.findGenerationEffectiveOn(workingDate);
             int idx = 0;
             if (generation != null) {
-                for (Iterator<String> iter = generations.iterator(); iter.hasNext();) {
-                    String generationName = iter.next();
+                for (String generationName : generations) {
                     if (generationName.equals(generation.getName())) {
                         break;
                     }
@@ -365,8 +362,8 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         // if one genearations valid to date is equal the working date then the new button should
         // not displayed
         IIpsObjectGeneration[] generations = cmpt.getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length; i++) {
-            if (workingDate.equals(generations[i].getValidFrom())) {
+        for (IIpsObjectGeneration generation : generations) {
+            if (workingDate.equals(generation.getValidFrom())) {
                 return;
             }
         }
@@ -389,8 +386,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 
     private void initSelectionFromPreferences() {
         choice = IpsPlugin.getDefault().getPreferenceStore().getInt(STORED_CHOICE_ID);
-        for (Iterator<Integer> iter = allButtons.keySet().iterator(); iter.hasNext();) {
-            Integer key = iter.next();
+        for (Integer key : allButtons.keySet()) {
             Button btn = allButtons.get(key);
             if (key.intValue() == choice) {
                 btn.setSelection(true);
@@ -493,8 +489,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         }
 
         private void handleButtonStates() {
-            for (Iterator<Button> iter = allButtons.values().iterator(); iter.hasNext();) {
-                Button btn = iter.next();
+            for (Button btn : allButtons.values()) {
                 if (btn != button) {
                     btn.setSelection(false);
                 } else {
@@ -522,8 +517,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         }
 
         public void mouseUp(MouseEvent e) {
-            for (Iterator<Button> iter = allButtons.values().iterator(); iter.hasNext();) {
-                Button btn = iter.next();
+            for (Button btn : allButtons.values()) {
                 btn.setSelection(false);
             }
 

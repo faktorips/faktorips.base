@@ -64,7 +64,8 @@ public class DeepCopyLabelProvider implements ILabelProvider {
         if (element instanceof IProductCmptReference) {
             return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt());
         } else if (element instanceof IProductCmptTypeAssociationReference) {
-            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptTypeAssociationReference)element).getAssociation());
+            return IpsUIPlugin.getImageHandling().getImage(
+                    ((IProductCmptTypeAssociationReference)element).getAssociation());
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             return IpsUIPlugin.getImageHandling().getImage(
                     ((IProductCmptStructureTblUsageReference)element).getTableContentUsage());

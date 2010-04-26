@@ -322,9 +322,9 @@ public class SrcFolderComposite extends Composite {
 
             // add new selected source folders to IPS object path
             Object[] selectedFolders = selectFolderDialog.getResult();
-            for (int i = 0; i < selectedFolders.length; i++) {
+            for (Object selectedFolder : selectedFolders) {
 
-                IFolder folder = (IFolder)selectedFolders[i];
+                IFolder folder = (IFolder)selectedFolder;
                 ipsObjectPath.newSourceFolderEntry(folder);
                 treeViewer.refresh(false);
 

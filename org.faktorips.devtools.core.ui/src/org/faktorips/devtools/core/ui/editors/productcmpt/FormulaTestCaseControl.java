@@ -388,8 +388,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         if (changed) {
             formulaTestCases.clear();
 
-            for (Iterator<IFormulaTestCase> iter = newFormulaTestCases.iterator(); iter.hasNext();) {
-                formulaTestCases.add(new ExtDataForFormulaTestCase(iter.next()));
+            for (IFormulaTestCase iFormulaTestCase : newFormulaTestCases) {
+                formulaTestCases.add(new ExtDataForFormulaTestCase(iFormulaTestCase));
             }
         } else {
             formulaTestCaseTableViewer.refresh();
@@ -527,9 +527,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         newFormulaTestCase.setName(name);
         try {
             String[] identifiers = formula.getParameterIdentifiersUsedInFormula(ipsProject);
-            for (int i = 0; i < identifiers.length; i++) {
+            for (String identifier : identifiers) {
                 IFormulaTestInputValue newInputValue = newFormulaTestCase.newFormulaTestInputValue();
-                newInputValue.setIdentifier(identifiers[i]);
+                newInputValue.setIdentifier(identifier);
             }
             if (uiController != null) {
                 uiController.updateUI();
@@ -595,17 +595,17 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         idsInFormula.addAll(Arrays.asList(identifiersInFormula));
         List<String> idsInTestCase = new ArrayList<String>();
         IFormulaTestInputValue[] inputValues = selElement.getFormulaTestInputValues();
-        for (int i = 0; i < inputValues.length; i++) {
+        for (IFormulaTestInputValue inputValue : inputValues) {
             boolean found = false;
             for (int j = idsInFormula.size() - 1; j >= 0; j--) {
-                if (idsInFormula.get(j).equals(inputValues[i].getIdentifier())) {
+                if (idsInFormula.get(j).equals(inputValue.getIdentifier())) {
                     idsInFormula.remove(j);
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                idsInTestCase.add(inputValues[i].getIdentifier());
+                idsInTestCase.add(inputValue.getIdentifier());
             }
         }
         String newParams = ""; //$NON-NLS-1$
@@ -646,8 +646,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 if (isDisposed()) {
                     return;
                 }
-                for (Iterator<ExtDataForFormulaTestCase> iter = formulaTestCases.iterator(); iter.hasNext();) {
-                    ExtDataForFormulaTestCase element = iter.next();
+                for (ExtDataForFormulaTestCase element : formulaTestCases) {
                     Object result = ""; //$NON-NLS-1$
                     try {
                         IFormula formula = element.getFormula();

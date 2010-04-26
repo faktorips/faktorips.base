@@ -157,8 +157,7 @@ public class IpsArchive implements IIpsArchive {
             return true;
         }
         String prefix = name + "."; //$NON-NLS-1$
-        for (Iterator<String> it = packs.keySet().iterator(); it.hasNext();) {
-            String pack = it.next();
+        for (String pack : packs.keySet()) {
             if (pack.startsWith(prefix)) {
                 return true; // given pack name is an empty parent package
             }
@@ -175,10 +174,8 @@ public class IpsArchive implements IIpsArchive {
         }
         readArchiveContentIfNecessary();
         Set<String> result = new HashSet<String>();
-        for (Iterator<String> it = packs.keySet().iterator(); it.hasNext();) {
-            String nonEmptyPack = it.next();
-            for (Iterator<String> it2 = getParentPackagesIncludingSelf(nonEmptyPack).iterator(); it2.hasNext();) {
-                String pack = it2.next();
+        for (String nonEmptyPack : packs.keySet()) {
+            for (String pack : getParentPackagesIncludingSelf(nonEmptyPack)) {
                 if (isChildPackageOf(pack, parentPack)) {
                     result.add(pack);
                 }

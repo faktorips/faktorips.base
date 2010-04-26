@@ -1167,10 +1167,10 @@ public class TestCaseTypeSection extends IpsSection {
      * Creates the details all given test parameter
      */
     private void createDetailsForAllTestParams(ITestParameter[] testParams) {
-        for (int i = 0; i < testParams.length; i++) {
-            createDetailsForTestParam(testParams[i]);
-            if (testParams[i] instanceof ITestPolicyCmptTypeParameter) {
-                ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testParams[i];
+        for (ITestParameter testParam : testParams) {
+            createDetailsForTestParam(testParam);
+            if (testParam instanceof ITestPolicyCmptTypeParameter) {
+                ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testParam;
                 createDetailsForAllTestParams(testPolicyCmptTypeParam.getTestPolicyCmptTypeParamChilds());
             }
         }
@@ -1374,9 +1374,9 @@ public class TestCaseTypeSection extends IpsSection {
         EnumValue[] values = TestParameterType.getEnumType().getValues();
         String[] valueNames = new String[values.length - 1];
         int idx = 0;
-        for (int i = 0; i < values.length; i++) {
-            if (values[i] != TestParameterType.COMBINED) {
-                valueNames[idx++] = values[i].getName();
+        for (EnumValue value : values) {
+            if (value != TestParameterType.COMBINED) {
+                valueNames[idx++] = value.getName();
             }
         }
 
@@ -1456,8 +1456,8 @@ public class TestCaseTypeSection extends IpsSection {
         ITestAttribute testAttribute = (ITestAttribute)object;
         ITestParameter param = (ITestParameter)object.getParent();
 
-        for (Iterator<ITestAttribute> iter = getSelectedAttributes(testAttribute).iterator(); iter.hasNext();) {
-            iter.next().delete();
+        for (ITestAttribute iTestAttribute : getSelectedAttributes(testAttribute)) {
+            iTestAttribute.delete();
         }
 
         redrawDetailArea((ITestPolicyCmptTypeParameter)param, (ITestPolicyCmptTypeParameter)param);
@@ -1984,14 +1984,14 @@ public class TestCaseTypeSection extends IpsSection {
     }
 
     private TreeItem searchChilds(TreeItem[] childs, TreeItem selectedItem, TreeItem prevTreeItem) {
-        for (int i = 0; i < childs.length; i++) {
-            if (childs[i].equals(selectedItem)) {
+        for (TreeItem child : childs) {
+            if (child.equals(selectedItem)) {
                 return prevTreeItem;
             }
 
-            prevTreeItem = childs[i];
+            prevTreeItem = child;
 
-            TreeItem found = searchChilds(childs[i].getItems(), selectedItem, prevTreeItem);
+            TreeItem found = searchChilds(child.getItems(), selectedItem, prevTreeItem);
             if (found != null) {
                 return found;
             }
@@ -2047,8 +2047,7 @@ public class TestCaseTypeSection extends IpsSection {
         Set<ITestAttribute> selectedAttributes = getSelectedAttributes(testAttribute);
         int[] selectedAttributesIndexes = new int[selectedAttributes.size()];
         int i = 0;
-        for (Iterator<ITestAttribute> iter = selectedAttributes.iterator(); iter.hasNext();) {
-            ITestAttribute element = iter.next();
+        for (ITestAttribute element : selectedAttributes) {
             Integer testAttributeIdx = objectCache.getIdxFromAttribute(element);
             if (testAttributeIdx == null) {
                 throw new RuntimeException(Messages.TestCaseTypeSection_Error_WrongTestAttributeIndex);
@@ -2258,8 +2257,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Refreshs all section titles
      */
     private void refreshSectionTitles() {
-        for (Iterator<Integer> iter = objectCache.getAllSectionKeys().iterator(); iter.hasNext();) {
-            Integer key = iter.next();
+        for (Integer key : objectCache.getAllSectionKeys()) {
             Section section = objectCache.getSectionByKey(key);
             if (section.isDisposed()) {
                 continue;
@@ -2327,8 +2325,7 @@ public class TestCaseTypeSection extends IpsSection {
                     refreshAttributeTable();
                     refreshSectionTitles();
                     // refresh attribute edit fields
-                    for (Iterator<UIController> iter = attributeControllers.iterator(); iter.hasNext();) {
-                        UIController controller = iter.next();
+                    for (UIController controller : attributeControllers) {
                         controller.updateUI();
                     }
                     updateTreeButtonStatus(getRootSectionObject(currSelectedDetailObject));

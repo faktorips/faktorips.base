@@ -344,8 +344,8 @@ public class ParametersEditControl extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 int index = getTable().getSelectionIndices()[0];
                 IParameterBFE[] selected = getSelectedElements();
-                for (int i = 0; i < selected.length; i++) {
-                    selected[i].delete();
+                for (IParameterBFE element : selected) {
+                    element.delete();
                 }
                 restoreSelection(index);
             }

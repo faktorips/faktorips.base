@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,12 +17,11 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.List;
 
-
 /**
- * Class to show hovers for messages for lists. 
+ * Class to show hovers for messages for lists.
  */
 public abstract class ListMessageHoverService extends MessageHoverService {
-    
+
     private List list;
 
     public ListMessageHoverService(List list) {
@@ -33,6 +32,7 @@ public abstract class ListMessageHoverService extends MessageHoverService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getElementAt(Point point) {
         int index = getIndexFor(point);
         if (index == -1) {
@@ -41,10 +41,11 @@ public abstract class ListMessageHoverService extends MessageHoverService {
 
         return list.getItem(index);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public Rectangle getBoundsAt(Point point) {
         int index = getIndexFor(point);
         if (index == -1) {
@@ -57,13 +58,13 @@ public abstract class ListMessageHoverService extends MessageHoverService {
         result.y += downShift;
         result.height = itemHeight;
         return result;
-    }    
-    
+    }
+
     private int getIndexFor(Point point) {
         int index = list.getTopIndex();
         int height = list.getItemHeight();
         for (int i = 0; i * height + height < point.y; i++) {
-            index ++;
+            index++;
         }
         return index;
     }

@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -256,9 +255,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         MessageList mlForNameValidation = new MessageList();
         mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(
                 getIpsObjectType(), nameToValidate));
-        for (Iterator<Message> iter = mlForNameValidation.iterator(); iter.hasNext();) {
-            // Create new messages related to this object and the given property.
-            Message msg = iter.next();
+        for (Message msg : mlForNameValidation) {
             Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, property);
             list.add(newMsg);
         }

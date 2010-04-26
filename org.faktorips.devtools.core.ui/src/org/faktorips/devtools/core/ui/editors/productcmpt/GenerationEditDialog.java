@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,18 +33,17 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarField;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 
-
 /**
  * A dialog to edit a product component generation.
  */
 public class GenerationEditDialog extends IpsPartEditDialog implements ModifyListener {
-    
+
     // edit fields
     private GregorianCalendarField dateField;
-    
+
     private IProductCmptGeneration previous;
     private IProductCmptGeneration next;
-    
+
     /**
      * Creates a new dialog to edit a product cmpt generation
      * 
@@ -53,7 +52,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
      */
     public GenerationEditDialog(IProductCmptGeneration generation, Shell parentShell) {
         super(generation, parentShell, Messages.GenerationEditDialog_titleChangeValidFromDate, true);
-        
+
         // we have to store previous and next here, because the evaulation of
         // previous and next depend on the valid-from date which we will modify...
         this.previous = (IProductCmptGeneration)generation.getPreviousByValidDate();
@@ -63,6 +62,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
         TabItem firstPage = new TabItem(folder, SWT.NONE);
@@ -71,18 +71,18 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         createDescriptionTabItem(folder);
         return folder;
     }
-    
+
     private Control createFirstPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
 
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         uiToolkit.createFormLabel(workArea, Messages.GenerationEditDialog_labelValidFrom);
-        Text date = uiToolkit.createText(workArea); 
+        Text date = uiToolkit.createText(workArea);
 
         date.addModifyListener(this);
-        
+
         dateField = new GregorianCalendarField(date);
         return c;
     }
@@ -90,6 +90,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void connectToModel() {
         super.connectToModel();
         uiController.add(dateField, IProductCmptGeneration.PROPERTY_VALID_FROM);
@@ -98,27 +99,29 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     /**
      * {@inheritDoc}
      */
-	public void modifyText(ModifyEvent e) {
-		// We need to validate here and "by hand" because this validation is not neccessary
-		// to be done during normal validation of a generation.
-		
-		GregorianCalendar value = (GregorianCalendar)dateField.getValue();
-		if (value == null) {
-			SimpleDateFormat format = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
-			super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + format.toPattern());
-			getButton(OK).setEnabled(false);
-		} else if (previous != null && !value.after(previous.getValidFrom())) {
-			String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
-			super.setErrorMessage(msg);
-			getButton(OK).setEnabled(false);
-		} else if (next != null && !next.getValidFrom().after(value)) {
-			String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
-			super.setErrorMessage(msg);
-			getButton(OK).setEnabled(false);
-		} else {
-			super.setErrorMessage(null);
-			getButton(OK).setEnabled(true);
-		}
-	}
+    public void modifyText(ModifyEvent e) {
+        // We need to validate here and "by hand" because this validation is not neccessary
+        // to be done during normal validation of a generation.
+
+        GregorianCalendar value = (GregorianCalendar)dateField.getValue();
+        if (value == null) {
+            SimpleDateFormat format = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
+            super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + format.toPattern());
+            getButton(OK).setEnabled(false);
+        } else if (previous != null && !value.after(previous.getValidFrom())) {
+            String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault()
+                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
+            super.setErrorMessage(msg);
+            getButton(OK).setEnabled(false);
+        } else if (next != null && !next.getValidFrom().after(value)) {
+            String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault()
+                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
+            super.setErrorMessage(msg);
+            getButton(OK).setEnabled(false);
+        } else {
+            super.setErrorMessage(null);
+            getButton(OK).setEnabled(true);
+        }
+    }
 
 }

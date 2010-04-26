@@ -140,10 +140,10 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     }
 
     private void fillFormattedValue2ValueMap(String[] values) {
-        for (int i = 0; i < values.length; i++) {
+        for (String value : values) {
             String formattedValue = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                    valueDatatype, values[i]);
-            formattedValue2Value.put(formattedValue, values[i]);
+                    valueDatatype, value);
+            formattedValue2Value.put(formattedValue, value);
         }
     }
 
@@ -204,8 +204,8 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
      */
     @Override
     public void valuesAdded(String[] values) {
-        for (int i = 0; i < values.length; i++) {
-            targetValueSet.addValue(getValueForFormattedValue(values[i]));
+        for (String value : values) {
+            targetValueSet.addValue(getValueForFormattedValue(value));
         }
         uiController.updateUI();
     }
@@ -215,8 +215,8 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
      */
     @Override
     public void valuesRemoved(String[] values) {
-        for (int i = 0; i < values.length; i++) {
-            targetValueSet.removeValue(getValueForFormattedValue(values[i]));
+        for (String value : values) {
+            targetValueSet.removeValue(getValueForFormattedValue(value));
         }
         uiController.updateUI();
     }
@@ -285,9 +285,9 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
      */
     private String[] formatValues(String[] values) {
         List<String> result = new ArrayList<String>();
-        for (int i = 0; i < values.length; i++) {
+        for (String value : values) {
             String name = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(valueDatatype,
-                    values[i]);
+                    value);
             result.add(name);
         }
         return result.toArray(new String[result.size()]);

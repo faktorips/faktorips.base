@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,16 +26,15 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-
 /**
  * @author Joerg Ortmann
  */
 public class MigrationPage extends WizardPage {
-    
+
     private ProjectSelectionPage projectSelectionPage;
     private Composite overview;
     private Text description;
-    
+
     /**
      * @param pageName
      * @param selection
@@ -48,20 +47,20 @@ public class MigrationPage extends WizardPage {
         setPageComplete(false);
     }
 
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         IIpsProject[] projects = projectSelectionPage.getProjects();
         StringBuffer desc = new StringBuffer();
         setPageComplete(true);
-        for (int i = 0; i < projects.length; i++) {
-            desc.append(Messages.MigrationPage_titleProject).append(projects[i].getName())
+        for (IIpsProject project : projects) {
+            desc.append(Messages.MigrationPage_titleProject).append(project.getName())
                     .append(":").append(SystemUtils.LINE_SEPARATOR).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-1$
             try {
-                desc.append(IpsPlugin.getDefault().getMigrationOperation(projects[i]).getDescription());
+                desc.append(IpsPlugin.getDefault().getMigrationOperation(project).getDescription());
                 desc.append(SystemUtils.LINE_SEPARATOR);
                 desc.append(SystemUtils.LINE_SEPARATOR);
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
                 desc.append(Messages.MigrationPage_labelError + e.getMessage());
                 desc.append(SystemUtils.LINE_SEPARATOR);
@@ -83,8 +82,8 @@ public class MigrationPage extends WizardPage {
         description = new Text(overview, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         description.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         description.setEditable(false);
-        
+
         super.setControl(overview);
     }
-    
+
 }

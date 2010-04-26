@@ -176,8 +176,8 @@ public class ContentPage extends IpsObjectEditorPage {
      */
     private void deactivateCellEditors() {
         CellEditor[] cellEditors = tableViewer.getCellEditors();
-        for (int i = 0; i < cellEditors.length; i++) {
-            cellEditors[i].deactivate();
+        for (CellEditor cellEditor : cellEditors) {
+            cellEditor.deactivate();
         }
     }
 

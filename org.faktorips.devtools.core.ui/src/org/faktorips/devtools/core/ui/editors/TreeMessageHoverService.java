@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,12 +19,11 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-
 /**
- * Class to show hovers for trees. 
+ * Class to show hovers for trees.
  */
 public abstract class TreeMessageHoverService extends MessageHoverService {
-    
+
     private Tree tree;
 
     public TreeMessageHoverService(TreeViewer viewer) {
@@ -35,6 +34,7 @@ public abstract class TreeMessageHoverService extends MessageHoverService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getElementAt(Point point) {
         TreeItem item = tree.getItem(point);
         if (item == null) {
@@ -42,10 +42,11 @@ public abstract class TreeMessageHoverService extends MessageHoverService {
         }
         return item.getData();
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public Rectangle getBoundsAt(Point point) {
         TreeItem item = tree.getItem(point);
         if (item == null) {

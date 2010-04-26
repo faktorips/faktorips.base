@@ -25,6 +25,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
     private IEnumType abstractSubEnum;
     private IEnumType paymentMode;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");

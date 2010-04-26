@@ -40,9 +40,9 @@ public final class BeanUtil {
                     + clazz, e);
         }
         PropertyDescriptor[] props = info.getPropertyDescriptors();
-        for (int i = 0; i < props.length; i++) {
-            if (props[i].getName().equals(propertyName)) {
-                return props[i];
+        for (PropertyDescriptor prop : props) {
+            if (prop.getName().equals(propertyName)) {
+                return prop;
             }
         }
         throw new IllegalArgumentException("Class " + clazz + " hasn't got a property " + propertyName); //$NON-NLS-1$ //$NON-NLS-2$

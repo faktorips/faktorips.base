@@ -166,10 +166,10 @@ public class GenProductCmptTypeMethod extends GenMethod {
         String[] parameterNames = null;
         if (formulaTest) {
             List<IParameter> parametersWithoutTypes = new ArrayList<IParameter>();
-            for (int i = 0; i < parameters.length; i++) {
-                Datatype datatype = parameters[i].findDatatype(ipsProject);
+            for (IParameter parameter : parameters) {
+                Datatype datatype = parameter.findDatatype(ipsProject);
                 if (!(datatype instanceof IPolicyCmptType || datatype instanceof IProductCmptType)) {
-                    parametersWithoutTypes.add(parameters[i]);
+                    parametersWithoutTypes.add(parameter);
                 }
             }
             parameters = parametersWithoutTypes.toArray(new IParameter[parametersWithoutTypes.size()]);

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,12 +41,13 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IProductCmpt cmpt;
-    
+
     final private String STRUCTURE_ROLENAME = "StructUsageRole";
-    
-	/**
-	 * {@inheritDoc}
-	 */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
@@ -58,95 +59,95 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         structUsage = productCmptType.newTableStructureUsage();
         structUsage.addTableStructure(structure.getQualifiedName());
         structUsage.setRoleName(STRUCTURE_ROLENAME);
-        
+
         contentUsage = cmpt.getProductCmptGeneration(0).newTableContentUsage();
     }
-    
+
     public void testValidateUnknownStructure() throws Exception {
         MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_STRUCTURE_USAGE));
-        
+
         contentUsage.setStructureUsage("StructUsageRole");
         ml = contentUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_STRUCTURE_USAGE));
     }
-    
+
     public void testValidateUnknownContent() throws Exception {
         structUsage.setMandatoryTableContent(true);
         contentUsage.setStructureUsage("StructUsageRole");
         contentUsage.setTableContentName("unknown");
         MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
-        
+
         contentUsage.setTableContentName(content.getQualifiedName());
         ml = contentUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
-        
+
         contentUsage.setTableContentName("");
         ml = contentUsage.validate(project);
-        assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));   
-        
+        assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
+
         contentUsage.setTableContentName(null);
         ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
-        
+
         structUsage.setMandatoryTableContent(false);
         contentUsage.setTableContentName("");
         ml = contentUsage.validate(project);
-        assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));   
-        
+        assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
+
         contentUsage.setTableContentName(null);
         ml = contentUsage.validate(project);
-        assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));        
+        assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
     }
-    
+
     public void testValidateInvalidContent() throws Exception {
         content.setTableStructure("unknown");
         contentUsage.setStructureUsage("StructUsageRole");
         contentUsage.setTableContentName(content.getQualifiedName());
         MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_INVALID_TABLE_CONTENT));
-        
+
         content.setTableStructure(structUsage.getTableStructures()[0]);
         ml = contentUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_INVALID_TABLE_CONTENT));
     }
-    
-    public void testFindTableContents() throws Exception{
+
+    public void testFindTableContents() throws Exception {
         contentUsage.setTableContentName("none");
         assertNull(contentUsage.findTableContents(project));
-        
+
         contentUsage.setTableContentName(content.getQualifiedName());
         assertSame(content, contentUsage.findTableContents(project));
     }
-    
+
     public void testFindTableStructureUsage() throws Exception {
         contentUsage.setStructureUsage("none");
         assertNull(contentUsage.findTableStructureUsage(project));
         contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         assertEquals(structUsage, contentUsage.findTableStructureUsage(project));
     }
-    
+
     public void testInitFromXml() {
         Element el = getTestDocument().getDocumentElement();
         contentUsage.initFromXml(el);
-        
+
         assertEquals("rateTable", contentUsage.getStructureUsage());
         assertEquals("RateTable2007", contentUsage.getTableContentName());
     }
-    
+
     public void testToXml() {
         contentUsage.setStructureUsage("rateTable");
         contentUsage.setTableContentName("RateTable2007");
         Element el = contentUsage.toXml(newDocument());
-        
+
         contentUsage.setStructureUsage("");
         contentUsage.setTableContentName("");
         contentUsage.initFromXml(el);
-        
+
         assertEquals("rateTable", contentUsage.getStructureUsage());
         assertEquals("RateTable2007", contentUsage.getTableContentName());
-        
+
         contentUsage.setTableContentName(null);
         el = contentUsage.toXml(newDocument());
         contentUsage.setTableContentName("");

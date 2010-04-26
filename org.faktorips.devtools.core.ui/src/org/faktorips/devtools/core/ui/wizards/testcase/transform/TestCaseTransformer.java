@@ -200,9 +200,9 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
         String testPolicyCmptName = elem.getNodeName();
         ITestPolicyCmpt testPolicyCmptFound = null;
         ITestPolicyCmpt[] pcs = testCase.getTestPolicyCmpts();
-        for (int j = 0; j < pcs.length; j++) {
-            if (pcs[j].getTestPolicyCmptTypeParameter().equals(testPolicyCmptName)) {
-                testPolicyCmptFound = pcs[j];
+        for (ITestPolicyCmpt pc : pcs) {
+            if (pc.getTestPolicyCmptTypeParameter().equals(testPolicyCmptName)) {
+                testPolicyCmptFound = pc;
                 break;
             }
         }
@@ -285,12 +285,11 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                 .findTestPolicyCmptTypeParameter(ipsProject);
         if (testPolicyCmptTypeParam != null) {
             ITestAttribute[] testAttributes = testPolicyCmptTypeParam.getTestAttributes();
-            for (int j = 0; j < testAttributes.length; j++) {
-                if (testAttributes[j].getAttribute().equals(attributeName)) {
-                    if (testAttributes[j].getTestAttributeType() == TestParameterType.INPUT && isInput
-                            || testAttributes[j].getTestAttributeType() == TestParameterType.EXPECTED_RESULT
-                            && !isInput) {
-                        return testAttributes[j].getName();
+            for (ITestAttribute testAttribute : testAttributes) {
+                if (testAttribute.getAttribute().equals(attributeName)) {
+                    if (testAttribute.getTestAttributeType() == TestParameterType.INPUT && isInput
+                            || testAttribute.getTestAttributeType() == TestParameterType.EXPECTED_RESULT && !isInput) {
+                        return testAttribute.getName();
                     }
                 }
             }
@@ -336,12 +335,12 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                 String productCmpt = child.getAttribute("productCmpt"); //$NON-NLS-1$
                 ITestPolicyCmptLink currlink = links[0];
 
-                for (int j = 0; j < links.length; j++) {
+                for (ITestPolicyCmptLink link : links) {
                     // the name is equal compare the product cmpt
-                    IProductCmpt pc = links[j].findTarget().findProductCmpt(ipsProject);
+                    IProductCmpt pc = link.findTarget().findProductCmpt(ipsProject);
                     if (pc != null && StringUtils.isNotEmpty(productCmpt)) {
                         if (productCmpt.equals(pc.getRuntimeId())) {
-                            currlink = links[j];
+                            currlink = link;
                             break;
                         }
                     }
@@ -407,8 +406,8 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
         ITestPolicyCmptLink[] pcs = testPolicyCmpt.getParentTestPolicyCmpt().getTestPolicyCmptLinks(
                 testPolicyCmpt.getTestParameterName());
 
-        for (int j = 0; j < pcs.length; j++) {
-            ITestPolicyCmpt cmpt = pcs[j].findTarget();
+        for (ITestPolicyCmptLink pc : pcs) {
+            ITestPolicyCmpt cmpt = pc.findTarget();
             if (!isAlreadyFound(cmpt, testAttributeName)) {
                 return cmpt;
             }
@@ -459,14 +458,14 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
         }
 
         IResource[] members = folder.members();
-        for (int i = 0; i < members.length; i++) {
-            if (members[i] instanceof IFolder) {
+        for (IResource member : members) {
+            if (member instanceof IFolder) {
                 targetPackage = targetPackage.length() > 0 ? targetPackage + "." : ""; //$NON-NLS-1$ //$NON-NLS-2$
-                transformFolder((IFolder)members[i], root, packageName, testCaseTypeName, nameExtension, targetPackage
-                        + ((IFolder)members[i]).getName(), monitor);
-            } else if (members[i] instanceof IFile) {
+                transformFolder((IFolder)member, root, packageName, testCaseTypeName, nameExtension, targetPackage
+                        + ((IFolder)member).getName(), monitor);
+            } else if (member instanceof IFile) {
                 transformFile(
-                        (IFile)members[i],
+                        (IFile)member,
                         root,
                         packageName + (targetPackage.length() > 0 ? "." + targetPackage : ""), testCaseTypeName, nameExtension, monitor); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -531,22 +530,22 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
             } else if (selObj instanceof IJavaProject) {
                 IJavaProject project = (IJavaProject)selObj;
                 IPackageFragmentRoot[] roots = project.getAllPackageFragmentRoots();
-                for (int i = 0; i < roots.length; i++) {
-                    if (root.equals(roots[i])) {
+                for (IPackageFragmentRoot root2 : roots) {
+                    if (root.equals(root2)) {
                         logError(
-                                "" + project, NLS.bind(Messages.TestCaseTransformer_Error_Skip_Because_ImportPackageEqualsTargetPackage, roots[i].getElementName())); //$NON-NLS-1$
+                                "" + project, NLS.bind(Messages.TestCaseTransformer_Error_Skip_Because_ImportPackageEqualsTargetPackage, root2.getElementName())); //$NON-NLS-1$
                         continue;
                     }
-                    transformFolder((IFolder)roots[i].getCorrespondingResource(), root, targtePackage.getName(),
+                    transformFolder((IFolder)root2.getCorrespondingResource(), root, targtePackage.getName(),
                             testCaseTypeName, nameExtension, "", monitor); //$NON-NLS-1$
                 }
             } else if (selObj instanceof IProject) {
                 IResource[] members = ((IProject)selObj).members();
-                for (int i = 0; i < members.length; i++) {
-                    if (members[i] instanceof IFile) {
+                for (IResource member : members) {
+                    if (member instanceof IFile) {
                         transformFile((IFile)selObj, root, targtePackage.getName(), testCaseTypeName, nameExtension,
                                 monitor);
-                    } else if (members[i] instanceof IFolder) {
+                    } else if (member instanceof IFolder) {
                         transformFolder((IFolder)selObj, root, targtePackage.getName(), testCaseTypeName,
                                 nameExtension, "", monitor); //$NON-NLS-1$
                     }

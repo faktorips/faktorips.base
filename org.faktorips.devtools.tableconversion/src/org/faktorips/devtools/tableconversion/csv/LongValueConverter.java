@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -42,14 +42,16 @@ public class LongValueConverter extends AbstractValueConverter {
                 return Long.valueOf(external).toString();
             } catch (NumberFormatException e) {
                 // TODO: scientific notation (exponent + mantissa)
-                //       for now fall through to report the error
+                // for now fall through to report the error
             }
         }
-        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
-                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        messageList
+                .add(ExtSystemsMessageUtil
+                        .createConvertExtToIntErrorMessage(
+                                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
         return externalDataValue.toString();
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -18,7 +18,6 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -49,9 +48,7 @@ public class AdjustmentDateContentProvider extends DeferredStructuredContentProv
                 List<AdjustmentDate> result = new ArrayList<AdjustmentDate>();
                 GregorianCalendar lastDate = null;
                 AdjustmentDate lastAdjDate = null;
-                for (Iterator<GregorianCalendar> validFromIterator = validFromDates.iterator(); validFromIterator
-                        .hasNext();) {
-                    GregorianCalendar nextDate = validFromIterator.next();
+                for (GregorianCalendar nextDate : validFromDates) {
                     lastAdjDate = new AdjustmentDate(nextDate, lastDate);
                     lastDate = (GregorianCalendar)nextDate.clone();
                     // valitTo Dates are always one millisecond before next valid from

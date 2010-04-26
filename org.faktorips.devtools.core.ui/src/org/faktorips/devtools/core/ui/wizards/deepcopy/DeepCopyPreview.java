@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -108,8 +107,8 @@ public class DeepCopyPreview {
         int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
         IIpsPackageFragment base = sourcePage.getTargetPackage();
 
-        for (int i = 0; i < toCopy.length; i++) {
-            validateTarget(toCopy[i], segmentsToIgnore, base, errorElements);
+        for (IProductCmptStructureReference element : toCopy) {
+            validateTarget(element, segmentsToIgnore, base, errorElements);
         }
 
         MessageList validationResult = new MessageList();
@@ -203,8 +202,8 @@ public class DeepCopyPreview {
         List<Object> allChecked = Arrays.asList(getNonLinkElements());
         List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
 
-        for (Iterator<Object> iter = allChecked.iterator(); iter.hasNext();) {
-            IProductCmptStructureReference element = (IProductCmptStructureReference)iter.next();
+        for (Object object : allChecked) {
+            IProductCmptStructureReference element = (IProductCmptStructureReference)object;
             if (element instanceof IProductCmptReference) {
                 result.add(element);
             } else if (element instanceof IProductCmptStructureTblUsageReference) {
@@ -218,8 +217,7 @@ public class DeepCopyPreview {
         List<Object> result = new ArrayList<Object>();
         Set<Object> linkedElements = sourcePage.getLinkedElements();
         List<Object> allChecked = Arrays.asList(sourcePage.getTree().getCheckedElements());
-        for (Iterator<Object> iter = allChecked.iterator(); iter.hasNext();) {
-            Object currElement = iter.next();
+        for (Object currElement : allChecked) {
             if (linkedElements.contains(currElement)) {
                 continue;
             }
@@ -365,8 +363,7 @@ public class DeepCopyPreview {
         if (!isValid()) {
             StringBuffer message = new StringBuffer();
             Collection<String> errors = getErrorElements().values();
-            for (Iterator<String> iter = errors.iterator(); iter.hasNext();) {
-                String element = iter.next();
+            for (String element : errors) {
                 message.append(element);
             }
             IpsStatus status = new IpsStatus(message.toString());
@@ -379,15 +376,15 @@ public class DeepCopyPreview {
         int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
         IIpsPackageFragment base = sourcePage.getTargetPackage();
 
-        for (int i = 0; i < toCopy.length; i++) {
-            IIpsObject correspondingIpsObject = sourcePage.getCorrespondingIpsObject(toCopy[i]);
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsObject correspondingIpsObject = sourcePage.getCorrespondingIpsObject(element);
 
             String packageName = buildTargetPackageName(base, correspondingIpsObject, segmentsToIgnore);
             IIpsPackageFragment targetPackage = base.getRoot().getIpsPackageFragment(packageName);
 
             IIpsSrcFile file = getNewIpsSrcFile(targetPackage, correspondingIpsObject);
 
-            result.put(toCopy[i], file);
+            result.put(element, file);
         }
         return result;
     }
@@ -418,8 +415,8 @@ public class DeepCopyPreview {
         Set<Object> linkedElements = sourcePage.getLinkedElements();
         IProductCmptStructureReference[] result = new IProductCmptStructureReference[linkedElements.size()];
         int idx = 0;
-        for (Iterator<Object> iterator = linkedElements.iterator(); iterator.hasNext();) {
-            result[idx++] = (IProductCmptStructureReference)iterator.next();
+        for (Object object : linkedElements) {
+            result[idx++] = (IProductCmptStructureReference)object;
 
         }
         return result;

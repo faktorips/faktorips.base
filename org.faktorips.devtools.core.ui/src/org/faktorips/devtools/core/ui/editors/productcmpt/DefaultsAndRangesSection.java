@@ -123,8 +123,8 @@ public class DefaultsAndRangesSection extends IpsSection {
         if (elements.length == 0) {
             toolkit.createLabel(rootPane, Messages.PolicyAttributesSection_noDefaultsAndRangesDefined);
         } else {
-            for (int i = 0; i < elements.length; i++) {
-                createEditControlsForConfigElement(elements[i]);
+            for (IConfigElement element : elements) {
+                createEditControlsForConfigElement(element);
             }
         }
 

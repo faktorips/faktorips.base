@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -46,7 +46,7 @@ public interface IParameterBFE extends IBFElement {
     /**
      * Returns the datatype object or <code>null</code> if none is found.
      * 
-     * @throws CoreException is throw if an exception occurs during the course of searching 
+     * @throws CoreException is throw if an exception occurs during the course of searching
      */
     public Datatype findDatatype() throws CoreException;
 

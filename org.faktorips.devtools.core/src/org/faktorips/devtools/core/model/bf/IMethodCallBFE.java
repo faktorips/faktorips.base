@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
 
-
 /**
  * This class represents an action within a business function. Actions a points of execution within
  * the control flow of a business function. There are three different types of actions.
@@ -82,7 +81,7 @@ public interface IMethodCallBFE extends IBFElement {
      * @see #setExecutableMethodName(String)
      */
     public String getExecutableMethodName();
-    
+
     /**
      * Tries to find the method defined by the executable method name and the target. The method is
      * assumed to have no parameters. If no method is found <code>null</code> will be returned.

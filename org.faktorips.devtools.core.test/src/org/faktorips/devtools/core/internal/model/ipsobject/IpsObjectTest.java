@@ -75,8 +75,8 @@ public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChan
         IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
         List<IIpsObjectPathEntry> newbPathEntries = new ArrayList<IIpsObjectPathEntry>();
         newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
-        for (int i = 0; i < bPathEntries.length; i++) {
-            newbPathEntries.add(bPathEntries[i]);
+        for (IIpsObjectPathEntry bPathEntrie : bPathEntries) {
+            newbPathEntries.add(bPathEntrie);
         }
         bPath.setEntries(newbPathEntries.toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
         b.setIpsObjectPath(bPath);

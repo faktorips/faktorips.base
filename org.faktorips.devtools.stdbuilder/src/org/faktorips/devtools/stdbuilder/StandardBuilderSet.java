@@ -551,9 +551,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private List<AnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {
         List<AnnotationGeneratorFactory> factories = new ArrayList<AnnotationGeneratorFactory>();
-        for (int i = 0; i < annotationGeneratorFactories.length; i++) {
-            if (annotationGeneratorFactories[i].isRequiredFor(getIpsProject())) {
-                factories.add(annotationGeneratorFactories[i]);
+        for (AnnotationGeneratorFactory annotationGeneratorFactorie : annotationGeneratorFactories) {
+            if (annotationGeneratorFactorie.isRequiredFor(getIpsProject())) {
+                factories.add(annotationGeneratorFactorie);
             }
         }
         return factories;

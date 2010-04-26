@@ -112,8 +112,8 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             IpsPlugin plugin = IpsPlugin.getDefault();
             IpsModel model = (IpsModel)plugin.getIpsModel();
             DependencyGraph[] graphs = model.getCachedDependencyGraphs();
-            for (int i = 0; i < graphs.length; i++) {
-                save(graphs[i]);
+            for (DependencyGraph graph : graphs) {
+                save(graph);
             }
         }
     }

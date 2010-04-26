@@ -159,8 +159,8 @@ public class MovePage extends WizardPage implements ModifyListener {
                         continue;
                     }
                     IIpsPackageFragment[] childs = ((IIpsPackageFragment)selected).getChildIpsPackageFragments();
-                    for (int j = 0; j < childs.length; j++) {
-                        if (ObjectUtils.equals(childs[j], sources[i])) {
+                    for (IIpsPackageFragment child : childs) {
+                        if (ObjectUtils.equals(child, sources[i])) {
                             setErrorMessage(NLS.bind(Messages.MovePage_msgErrorPackageAlreadyExists,
                                     ((IIpsPackageFragment)sources[i]).getLastSegmentName()));
                             super.setPageComplete(false);

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,8 +28,9 @@ public class CreateBendpointCommandTest extends AbstractIpsPluginTest {
     private BendpointCommand command;
     private IBusinessFunction bf;
     private IControlFlow cf;
-    
-    public void setUp() throws Exception{
+
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
@@ -53,7 +54,7 @@ public class CreateBendpointCommandTest extends AbstractIpsPluginTest {
         command.redo();
         assertEquals(1, cf.getBendpoints().size());
         assertEquals(new Point(10, 10), cf.getBendpoints().get(0));
-        
+
     }
 
     public void testUndo() {

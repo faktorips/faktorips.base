@@ -223,14 +223,14 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
             methodBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS);
             methodBuilder.append("(event);");
         }
-        for (int i = 0; i < parentModelObjectNames.length; i++) {
+        for (String parentModelObjectName : parentModelObjectNames) {
             methodBuilder.append("if (");
-            methodBuilder.append(parentModelObjectNames[i]);
+            methodBuilder.append(parentModelObjectName);
             methodBuilder.appendln("!=null) {");
             methodBuilder.append("((");
             methodBuilder.appendClassName(INotificationSupport.class);
             methodBuilder.append(")");
-            methodBuilder.append(parentModelObjectNames[i]);
+            methodBuilder.append(parentModelObjectName);
             methodBuilder.append(").");
             methodBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS);
             methodBuilder.appendln("(event);");

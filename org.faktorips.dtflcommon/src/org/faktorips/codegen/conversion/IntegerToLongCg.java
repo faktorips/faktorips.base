@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,7 +15,6 @@ package org.faktorips.codegen.conversion;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-
 
 /**
  *
@@ -30,12 +29,13 @@ public class IntegerToLongCg extends AbstractSingleConversionCg {
         super(Datatype.INTEGER, Datatype.LONG);
     }
 
-    /** 
+    /**
      * Overridden method.
+     * 
      * @see org.faktorips.codegen.SingleConversionCg#getConversionCode()
      */
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
-//        new Long(new Integer(1).intValue())
+        // new Long(new Integer(1).intValue())
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("new ");
         fragment.appendClassName(Long.class);

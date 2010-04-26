@@ -137,10 +137,10 @@ public class TestExtensionRegistry implements IExtensionRegistry {
      * {@inheritDoc}
      */
     public IExtensionPoint getExtensionPoint(String namespace, String extensionPointName) {
-        for (int i = 0; i < extensionPoints.length; i++) {
-            if (extensionPoints[i].getNamespaceIdentifier().equals(namespace)
-                    && extensionPoints[i].getSimpleIdentifier().equals(extensionPointName)) {
-                return extensionPoints[i];
+        for (IExtensionPoint extensionPoint : extensionPoints) {
+            if (extensionPoint.getNamespaceIdentifier().equals(namespace)
+                    && extensionPoint.getSimpleIdentifier().equals(extensionPointName)) {
+                return extensionPoint;
             }
 
         }

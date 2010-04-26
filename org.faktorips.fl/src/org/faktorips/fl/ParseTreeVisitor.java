@@ -339,9 +339,9 @@ class ParseTreeVisitor implements FlParserVisitor {
 
         // compilation errors in the result?
         CompilationResultImpl result = new CompilationResultImpl();
-        for (int i = 0; i < argResults.length; i++) {
-            if (argResults[i].failed()) {
-                result.addMessages(argResults[i].getMessages());
+        for (CompilationResultImpl argResult : argResults) {
+            if (argResult.failed()) {
+                result.addMessages(argResult.getMessages());
             }
         }
         if (result.failed()) {
@@ -355,12 +355,12 @@ class ParseTreeVisitor implements FlParserVisitor {
         for (Iterator it = compiler.getFunctionResolvers(); it.hasNext();) {
             FunctionResolver resolver = (FunctionResolver)it.next();
             FlFunction[] functions = resolver.getFunctions();
-            for (int i = 0; i < functions.length; i++) {
-                if (functions[i].match(fctName, argTypes)) {
-                    return functions[i].compile(argResults);
-                } else if (functions[i].matchUsingConversion(fctName, argTypes, compiler.getConversionCodeGenerator())) {
-                    function = functions[i];
-                } else if (!functionFoundByName && functions[i].getName().equals(fctName)) {
+            for (FlFunction function2 : functions) {
+                if (function2.match(fctName, argTypes)) {
+                    return function2.compile(argResults);
+                } else if (function2.matchUsingConversion(fctName, argTypes, compiler.getConversionCodeGenerator())) {
+                    function = function2;
+                } else if (!functionFoundByName && function2.getName().equals(fctName)) {
                     functionFoundByName = true;
                 }
             }
@@ -417,16 +417,16 @@ class ParseTreeVisitor implements FlParserVisitor {
 
         UnaryOperation operation = null;
         UnaryOperation[] operations = compiler.getUnaryOperations(operator);
-        for (int i = 0; i < operations.length; i++) {
+        for (UnaryOperation operation2 : operations) {
             // exact match?
-            if (operations[i].getDatatype().equals(argResult.getDatatype())) {
-                CompilationResultImpl compilationResult = operations[i].generate(argResult);
+            if (operation2.getDatatype().equals(argResult.getDatatype())) {
+                CompilationResultImpl compilationResult = operation2.generate(argResult);
                 compilationResult.addIdentifiersUsed(argResult.getIdentifiersUsedAsSet());
                 return compilationResult;
             }
             // match with implicit casting
-            if (compiler.getConversionCodeGenerator().canConvert(argResult.getDatatype(), operations[i].getDatatype())) {
-                operation = operations[i];
+            if (compiler.getConversionCodeGenerator().canConvert(argResult.getDatatype(), operation2.getDatatype())) {
+                operation = operation2;
             }
         }
         if (operation != null) {
@@ -462,25 +462,24 @@ class ParseTreeVisitor implements FlParserVisitor {
 
         BinaryOperation operation = null;
         BinaryOperation[] operations = compiler.getBinaryOperations(operator);
-        for (int i = 0; i < operations.length; i++) {
+        for (BinaryOperation operation2 : operations) {
             // exact match?
-            if (operations[i].getLhsDatatype().equals(lhsResult.getDatatype())
-                    && operations[i].getRhsDatatype().equals(rhsResult.getDatatype())) {
-                CompilationResultImpl compilationResult = operations[i].generate(lhsResult, rhsResult);
+            if (operation2.getLhsDatatype().equals(lhsResult.getDatatype())
+                    && operation2.getRhsDatatype().equals(rhsResult.getDatatype())) {
+                CompilationResultImpl compilationResult = operation2.generate(lhsResult, rhsResult);
                 compilationResult.addIdentifiersUsed(lhsResult.getIdentifiersUsedAsSet());
                 compilationResult.addIdentifiersUsed(rhsResult.getIdentifiersUsedAsSet());
                 return compilationResult;
             }
             // match with implicit casting
-            if (compiler.getConversionCodeGenerator().canConvert(lhsResult.getDatatype(),
-                    operations[i].getLhsDatatype())
+            if (compiler.getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operation2.getLhsDatatype())
                     && compiler.getConversionCodeGenerator().canConvert(rhsResult.getDatatype(),
-                            operations[i].getRhsDatatype()) && operation == null) { // we use the
+                            operation2.getRhsDatatype()) && operation == null) { // we use the
                 // operation
                 // that matches
                 // with code
                 // conversion
-                operation = operations[i];
+                operation = operation2;
             }
         }
         if (operation != null) {

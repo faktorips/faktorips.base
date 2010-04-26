@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 /**
  * A section that is displayed in the property view. The description property of business function
- * elements can be edited with it. 
+ * elements can be edited with it.
  * 
  * @author Peter Erzberger
  */
@@ -41,7 +41,7 @@ public class DescriptionPropertySection extends AbstractPropertySection {
     private Text descriptionField;
     protected BindingContext bindingContext;
     protected UIToolkit uiToolkit;
-    
+
     @Override
     public final void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
         parent.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
@@ -55,10 +55,10 @@ public class DescriptionPropertySection extends AbstractPropertySection {
         bindingContext = new BindingContext();
     }
 
-    private IIpsElement getIpsElement(){
+    private IIpsElement getIpsElement() {
         return (IIpsElement)((EditPart)((IStructuredSelection)getSelection()).getFirstElement()).getModel();
     }
-    
+
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);

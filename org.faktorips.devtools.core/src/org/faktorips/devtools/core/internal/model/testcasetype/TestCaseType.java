@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.testcasetype;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -130,16 +129,16 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     private void addDependenciesForTestPolicyCmptTypeParams(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details,
             ITestPolicyCmptTypeParameter[] parameters) {
-        for (int i = 0; i < parameters.length; i++) {
-            if (StringUtils.isNotEmpty(parameters[i].getPolicyCmptType())) {
+        for (ITestPolicyCmptTypeParameter parameter : parameters) {
+            if (StringUtils.isNotEmpty(parameter.getPolicyCmptType())) {
                 IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                        new QualifiedNameType(parameters[i].getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE));
+                        new QualifiedNameType(parameter.getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE));
                 dependencies.add(dependency);
-                addDetails(details, dependency, parameters[i], ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+                addDetails(details, dependency, parameter, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
             }
-            addDependenciesForTestPolicyCmptTypeParameterAttributes(parameters[i].getTestAttributes(), details,
+            addDependenciesForTestPolicyCmptTypeParameterAttributes(parameter.getTestAttributes(), details,
                     dependencies);
-            addDependenciesForTestPolicyCmptTypeParams(dependencies, details, parameters[i]
+            addDependenciesForTestPolicyCmptTypeParams(dependencies, details, parameter
                     .getTestPolicyCmptTypeParamChilds());
         }
     }
@@ -379,8 +378,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
      */
     private List<TestParameter> getTestParameters(TestParameterType type, Class<?> parameterClass, String name) {
         List<TestParameter> result = new ArrayList<TestParameter>(testParameters.size());
-        for (Iterator<ITestParameter> iter = testParameters.iterator(); iter.hasNext();) {
-            TestParameter parameter = (TestParameter)iter.next();
+        for (ITestParameter iTestParameter : testParameters) {
+            TestParameter parameter = (TestParameter)iTestParameter;
             boolean addParameter = true;
             if (parameter.getTestParameterType() != null && type != null
                     && !TestParameterType.isTypeMatching(type, parameter.getTestParameterType())) {
@@ -458,9 +457,9 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException {
         IValidationRule[] validationRules = getTestRuleCandidates(ipsProject);
-        for (int i = 0; i < validationRules.length; i++) {
-            if (validationRules[i].getName().equals(validationRuleName)) {
-                return validationRules[i];
+        for (IValidationRule validationRule : validationRules) {
+            if (validationRule.getName().equals(validationRuleName)) {
+                return validationRule;
             }
         }
         return null;
@@ -472,15 +471,13 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     private void getValidationRules(ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters,
             List<IValidationRule> validationRules,
             IIpsProject ipsProject) throws CoreException {
-        for (int i = 0; i < testPolicyCmptTypeParameters.length; i++) {
-            ITestPolicyCmptTypeParameter parameter = testPolicyCmptTypeParameters[i];
+        for (ITestPolicyCmptTypeParameter parameter : testPolicyCmptTypeParameters) {
             IPolicyCmptType policyCmptType = parameter.findPolicyCmptType(ipsProject);
             if (policyCmptType == null) {
                 continue;
             }
             validationRules.addAll(Arrays.asList(policyCmptType.getSupertypeHierarchy().getAllRules(policyCmptType)));
-            getValidationRules(testPolicyCmptTypeParameters[i].getTestPolicyCmptTypeParamChilds(), validationRules,
-                    ipsProject);
+            getValidationRules(parameter.getTestPolicyCmptTypeParamChilds(), validationRules, ipsProject);
         }
     }
 
@@ -490,8 +487,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     public ITestParameter[] getAllTestParameter() throws CoreException {
         List<ITestParameter> allParameters = new ArrayList<ITestParameter>();
         ITestParameter[] parameters = getTestParameters();
-        for (int i = 0; i < parameters.length; i++) {
-            getAllChildTestParameter(parameters[i], allParameters);
+        for (ITestParameter parameter : parameters) {
+            getAllChildTestParameter(parameter, allParameters);
         }
         return allParameters.toArray(new ITestParameter[allParameters.size()]);
     }
@@ -500,9 +497,9 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             throws CoreException {
         allParameters.add(testParameter);
         IIpsElement[] elems = testParameter.getChildren();
-        for (int i = 0; i < elems.length; i++) {
-            if (elems[i] instanceof ITestParameter) {
-                getAllChildTestParameter((ITestParameter)elems[i], allParameters);
+        for (IIpsElement elem : elems) {
+            if (elem instanceof ITestParameter) {
+                getAllChildTestParameter((ITestParameter)elem, allParameters);
             }
         }
     }

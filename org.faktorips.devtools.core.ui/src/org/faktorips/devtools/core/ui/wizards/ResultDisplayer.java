@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
-import java.util.Iterator;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -83,8 +81,7 @@ public class ResultDisplayer implements Runnable {
         // create a multistatus based on the given message list,
         // oder errors ascendng
         if (containsErrors) {
-            for (Iterator<Message> iter = messageList.iterator(); iter.hasNext();) {
-                Message msg = iter.next();
+            for (Message msg : messageList) {
                 switch (msg.getSeverity()) {
                     case Message.ERROR:
                         multiStatus
@@ -98,8 +95,7 @@ public class ResultDisplayer implements Runnable {
         }
 
         if (containsWarningsOrInfos) {
-            for (Iterator<Message> iter = messageList.iterator(); iter.hasNext();) {
-                Message msg = iter.next();
+            for (Message msg : messageList) {
                 switch (msg.getSeverity()) {
                     case Message.WARNING:
                         multiStatus.add(new IpsStatus(IStatus.WARNING, 0,

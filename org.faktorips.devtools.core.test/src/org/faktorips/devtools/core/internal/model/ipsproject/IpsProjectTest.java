@@ -1017,7 +1017,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         result = ipsProject.findAllProductCmptSrcFiles(product10.findProductCmptType(product10.getIpsProject()), true);
         assertEquals(0, result.length);
 
-        IIpsObjectPath ipsObjectPath = ((IpsProject)ipsProject).getIpsObjectPath();
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(ipsObjectPath);
 
@@ -1093,7 +1093,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         result = ipsProject.findAllTestCaseSrcFiles(testProj2.findTestCaseType(testProj2.getIpsProject()));
         assertEquals(0, result.length);
 
-        IIpsObjectPath ipsObjectPath = ((IpsProject)ipsProject).getIpsObjectPath();
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(ipsObjectPath);
 
@@ -1131,7 +1131,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         result = ipsProject.findAllTableContentsSrcFiles(ts2);
         assertEquals(0, result.length);
 
-        IIpsObjectPath ipsObjectPath = ((IpsProject)ipsProject).getIpsObjectPath();
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(ipsObjectPath);
 
@@ -1205,7 +1205,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         result = ipsProject.findAllEnumContentSrcFiles(enumProj2.findEnumType(enumProj2.getIpsProject()), true);
         assertEquals(0, result.length);
 
-        IIpsObjectPath ipsObjectPath = ((IpsProject)ipsProject).getIpsObjectPath();
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(ipsObjectPath);
 
@@ -1239,7 +1239,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         result = ipsProject.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals(3, result.length);
 
-        IIpsSrcFile pctSrcFile = (IIpsSrcFile)result[1];
+        IIpsSrcFile pctSrcFile = result[1];
         IPolicyCmptType pct = (IPolicyCmptType)pctSrcFile.getIpsObject();
 
         result = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
@@ -1358,7 +1358,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IProductCmptGeneration[] generations = ipsProject.findReferencingProductCmptGenerations(tobereferenced
                 .getQualifiedNameType());
 
-        List<IProductCmptGeneration> resultList = Arrays.asList((IProductCmptGeneration[])generations);
+        List<IProductCmptGeneration> resultList = Arrays.asList(generations);
         assertEquals(2, resultList.size());
         assertTrue(resultList.contains(gen1));
         assertTrue(resultList.contains(gen2));
@@ -1574,6 +1574,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // plugin
         IIpsArtefactBuilderSet projectABuilderSet = new DefaultBuilderSet() {
 
+            @Override
             protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
                 return new IIpsArtefactBuilder[0];
             }
@@ -1615,6 +1616,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IIpsArtefactBuilderSet projectBBuilderSet = new DefaultBuilderSet() {
 
+            @Override
             protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
                 return new IIpsArtefactBuilder[0];
             }
@@ -1666,7 +1668,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateIpsObjectPathCycle() throws CoreException {
-        IIpsProject ipsProject2 = (IpsProject)this.newIpsProject("TestProject2");
+        IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
         IIpsObjectPath path = ipsProject2.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject);
         ipsProject2.setIpsObjectPath(path);
@@ -1705,10 +1707,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // there is an cycle in the ref projects,
         // if we get no stack overflow exception, then the test was successfully executed
 
-        IIpsProject ipsProject10 = (IpsProject)this.newIpsProject("TestProject10");
-        IIpsProject ipsProject11 = (IpsProject)this.newIpsProject("TestProject11");
-        IIpsProject ipsProject12 = (IpsProject)this.newIpsProject("TestProject12");
-        IIpsProject ipsProject13 = (IpsProject)this.newIpsProject("TestProject13");
+        IIpsProject ipsProject10 = this.newIpsProject("TestProject10");
+        IIpsProject ipsProject11 = this.newIpsProject("TestProject11");
+        IIpsProject ipsProject12 = this.newIpsProject("TestProject12");
+        IIpsProject ipsProject13 = this.newIpsProject("TestProject13");
 
         // test cycle in 4 projects
         path = ipsProject10.getIpsObjectPath();
@@ -1985,8 +1987,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     private boolean containsIpsSrcFile(IIpsSrcFile[] result, IIpsSrcFile policyCmptType) throws CoreException {
-        for (int i = 0; i < result.length; i++) {
-            if (result[i].getIpsObject().equals(policyCmptType.getIpsObject())) {
+        for (IIpsSrcFile element : result) {
+            if (element.getIpsObject().equals(policyCmptType.getIpsObject())) {
                 return true;
             }
         }
@@ -1995,6 +1997,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {
 
+        @Override
         public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
                 throws CoreException {
             throw new UnsupportedOperationException();

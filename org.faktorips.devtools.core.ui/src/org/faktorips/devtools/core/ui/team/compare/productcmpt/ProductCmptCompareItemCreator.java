@@ -58,6 +58,7 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
      * 
      * {@inheritDoc}
      */
+    @Override
     protected IStructureComparator getStructureForIpsSrcFile(IIpsSrcFile file) {
         try {
             if (file.getIpsObject() instanceof IProductCmpt) {
@@ -66,11 +67,11 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
                 ProductCmptCompareItem ipsObject = new ProductCmptCompareItem(root, product);
                 // Generations of product
                 IIpsObjectGeneration[] gens = product.getGenerationsOrderedByValidDate();
-                for (int i = 0; i < gens.length; i++) {
-                    ProductCmptCompareItem generation = new ProductCmptCompareItem(ipsObject, gens[i]);
-                    IIpsElement[] children = gens[i].getChildren();
-                    for (int j = 0; j < children.length; j++) {
-                        new ProductCmptCompareItem(generation, children[j]);
+                for (IIpsObjectGeneration gen : gens) {
+                    ProductCmptCompareItem generation = new ProductCmptCompareItem(ipsObject, gen);
+                    IIpsElement[] children = gen.getChildren();
+                    for (IIpsElement element : children) {
+                        new ProductCmptCompareItem(generation, element);
                     }
                 }
                 // create the name, root document and ranges for all nodes

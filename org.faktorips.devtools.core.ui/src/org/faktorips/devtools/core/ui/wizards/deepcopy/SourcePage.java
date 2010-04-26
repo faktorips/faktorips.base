@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -332,16 +331,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             textCtrls = new Text[] { workingDateField.getTextControl(), versionId };
         }
         FocusListenerRefreshTreeOnValueChange focusListener = new FocusListenerRefreshTreeOnValueChange(textCtrls);
-        for (int i = 0; i < textCtrls.length; i++) {
+        for (Text textCtrl : textCtrls) {
             // control may be null in case of copy type = TYPE_NEW_VERSION
-            textCtrls[i].addFocusListener(focusListener);
+            textCtrl.addFocusListener(focusListener);
         }
 
         // special listener for text button controls perform validate etc. if value changed
         TextButtonField[] textButtonFields = new TextButtonField[] { new TextButtonField(targetPackRootControl),
                 new TextButtonField(targetPackageControl) };
-        for (int i = 0; i < textButtonFields.length; i++) {
-            textButtonFields[i].addChangeListener(new ValueChangeListener() {
+        for (TextButtonField textButtonField : textButtonFields) {
+            textButtonField.addChangeListener(new ValueChangeListener() {
                 public void valueChanged(FieldValueChangedEvent e) {
                     getShell().getDisplay().asyncExec(new Runnable() {
                         public void run() {
@@ -369,10 +368,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      */
     private void initLinkElements() {
         IProductCmptReference[] productCmptReferences = structure.getChildProductCmptReferences(structure.getRoot());
-        for (int i = 0; i < productCmptReferences.length; i++) {
+        for (IProductCmptReference productCmptReference : productCmptReferences) {
             IProductCmptTypeAssociation association;
             try {
-                IProductCmptLink link = productCmptReferences[i].getLink();
+                IProductCmptLink link = productCmptReference.getLink();
                 if (link == null) {
                     continue;
                 }
@@ -382,7 +381,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 return;
             }
             if (association != null && association.isAssoziation()) {
-                linkedElements.add(productCmptReferences[i]);
+                linkedElements.add(productCmptReference);
             }
         }
     }
@@ -393,8 +392,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         public FocusListenerRefreshTreeOnValueChange(Text[] textControls) {
             this.textControls = textControls;
             // store first values, to decide the value change later one
-            for (int i = 0; i < textControls.length; i++) {
-                hasValueChanged(textControls[i]);
+            for (Text textControl : textControls) {
+                hasValueChanged(textControl);
             }
         }
 
@@ -443,8 +442,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         int columnSizeOperation = gc.stringExtent(Messages.SourcePage_columnNameOperation).x + 30;
         int columnSizeNewName = gc.stringExtent(Messages.SourcePage_columnNameNewName).x + 20;
         Map<Object, String> oldObject2newNameMap = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap();
-        for (Iterator<String> iterator = oldObject2newNameMap.values().iterator(); iterator.hasNext();) {
-            String newName = iterator.next();
+        for (String newName : oldObject2newNameMap.values()) {
             int columnSizeNewNameCandidate = gc.stringExtent(newName).x + 40;
             columnSizeNewName = Math.max(columnSizeNewName, columnSizeNewNameCandidate);
         }
@@ -576,8 +574,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 if (childs.size() == 0) {
                     return;
                 }
-                for (Iterator<IProductCmptStructureReference> iterator = childs.iterator(); iterator.hasNext();) {
-                    IProductCmptStructureReference childElem = iterator.next();
+                for (IProductCmptStructureReference childElem : childs) {
                     if (!isChecked(childElem)) {
                         continue;
                     }
@@ -687,9 +684,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     private void setCheckedAll(TreeItem[] items, boolean checked) {
-        for (int i = 0; i < items.length; i++) {
-            items[i].setChecked(checked);
-            setCheckedAll(items[i].getItems(), checked);
+        for (TreeItem item : items) {
+            item.setChecked(checked);
+            setCheckedAll(item.getItems(), checked);
         }
     }
 
@@ -851,11 +848,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         IProductCmptTypeAssociationReference[] child = structure.getChildProductCmptTypeAssociationReferences(structure
                 .getRoot());
 
-        for (int i = 0; i < child.length; i++) {
-            getAllChildElements(child[i], childs);
+        for (IProductCmptTypeAssociationReference element : child) {
+            getAllChildElements(element, childs);
         }
-        for (Iterator<IProductCmptStructureReference> iterator = childs.iterator(); iterator.hasNext();) {
-            IProductCmptStructureReference reference = iterator.next();
+        for (IProductCmptStructureReference reference : childs) {
             if (!getDeepCopyWizard().getDeepCopyPreview().isCopy(reference)) {
                 continue;
             }
@@ -977,8 +973,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         if (element instanceof IProductCmptTypeAssociationReference) {
             List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
             getAllChildElements((IProductCmptTypeAssociationReference)element, childs);
-            for (Iterator<IProductCmptStructureReference> iterator = childs.iterator(); iterator.hasNext();) {
-                linkedElements.remove(iterator.next());
+            for (IProductCmptStructureReference iProductCmptStructureReference : childs) {
+                linkedElements.remove(iProductCmptStructureReference);
             }
         } else {
             linkedElements.remove(element);
@@ -992,12 +988,12 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         childs.addAll(Arrays.asList(structure.getChildProductCmptReferences(element)));
         childs.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference(element)));
         IProductCmptReference[] childProductCmptRefs = structure.getChildProductCmptReferences(element);
-        for (int i = 0; i < childProductCmptRefs.length; i++) {
+        for (IProductCmptReference childProductCmptRef : childProductCmptRefs) {
             // get all children from all association references of all child ProductCmptReferences
             IProductCmptTypeAssociationReference[] childRefs2 = structure
-                    .getChildProductCmptTypeAssociationReferences(childProductCmptRefs[i]);
-            for (int j = 0; j < childRefs2.length; j++) {
-                getAllChildElements(childRefs2[j], childs);
+                    .getChildProductCmptTypeAssociationReferences(childProductCmptRef);
+            for (IProductCmptTypeAssociationReference element2 : childRefs2) {
+                getAllChildElements(element2, childs);
             }
         }
 

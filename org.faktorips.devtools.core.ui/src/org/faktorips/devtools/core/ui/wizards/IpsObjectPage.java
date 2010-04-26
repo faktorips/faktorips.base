@@ -215,7 +215,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      */
     @Override
     public String getIpsObjectName() {
-        return nameField==null ? null : nameField.getText();
+        return nameField == null ? null : nameField.getText();
     }
 
     public void setIpsObjectName(String newName) {

@@ -25,8 +25,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 
-public class TableRowGenerator extends JetJavaContentGenerator
-{
+public class TableRowGenerator extends JetJavaContentGenerator {
+    
   protected static String nl;
   public static synchronized TableRowGenerator create(String lineSeparator)
   {
@@ -71,6 +71,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
   protected final String TEXT_32 = " + \"|\" + ";
   protected final String TEXT_33 = ";" + NL + "\t}" + NL + "}";
 
+    @Override
     public String generate(IIpsSrcFile ipsSrcFile) throws CoreException
   {
     final StringBuffer stringBuffer = new StringBuffer();

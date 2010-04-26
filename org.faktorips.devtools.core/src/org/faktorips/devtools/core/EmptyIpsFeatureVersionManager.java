@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,17 +17,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
- 
+
 /**
  * 
  * @author Jan Ortmann
  */
 public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
-    public final static EmptyIpsFeatureVersionManager INSTANCE = new EmptyIpsFeatureVersionManager(); 
-    
+    public final static EmptyIpsFeatureVersionManager INSTANCE = new EmptyIpsFeatureVersionManager();
+
     private AbstractIpsProjectMigrationOperation[] emptyOps = new AbstractIpsProjectMigrationOperation[0];
-    
+
     private EmptyIpsFeatureVersionManager() {
     }
 
@@ -62,7 +62,8 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
-    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
+            throws CoreException {
         return emptyOps;
     }
 

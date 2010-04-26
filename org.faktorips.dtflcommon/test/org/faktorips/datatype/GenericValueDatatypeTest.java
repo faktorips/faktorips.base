@@ -13,14 +13,15 @@
 
 package org.faktorips.datatype;
 
-import org.faktorips.util.message.MessageList;
-
 import junit.framework.TestCase;
+
+import org.faktorips.util.message.MessageList;
 
 public class GenericValueDatatypeTest extends TestCase {
 
     private DefaultGenericValueDatatype datatype;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         datatype = new DefaultGenericValueDatatype(PaymentMode.class);
@@ -148,10 +149,12 @@ public class GenericValueDatatypeTest extends TestCase {
         assertFalse(datatype.equals(Datatype.INTEGER));
         GenericValueDatatype paymentMode2 = new GenericValueDatatype() {
 
+            @Override
             public Class getAdaptedClass() {
                 return null;
             }
 
+            @Override
             public String getAdaptedClassName() {
                 return null;
             }
@@ -167,10 +170,12 @@ public class GenericValueDatatypeTest extends TestCase {
         assertFalse(datatype.hashCode() == Datatype.INTEGER.hashCode());
         GenericValueDatatype paymentMode2 = new GenericValueDatatype() {
 
+            @Override
             public Class getAdaptedClass() {
                 return null;
             }
 
+            @Override
             public String getAdaptedClassName() {
                 return null;
             }
@@ -192,10 +197,12 @@ public class GenericValueDatatypeTest extends TestCase {
 
     private class InvalidType extends GenericValueDatatype {
 
+        @Override
         public Class getAdaptedClass() {
             return null;
         }
 
+        @Override
         public String getAdaptedClassName() {
             return "UnknownClass";
         }

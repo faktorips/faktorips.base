@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.controller;
 
-import java.util.Iterator;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -109,8 +107,7 @@ public class IpsObjectUIController extends DefaultUIController {
                 validatee = partContainer.getIpsObject();
             }
             MessageList list = validatee.validate(partContainer.getIpsProject());
-            for (Iterator<FieldPropertyMapping> it = mappings.iterator(); it.hasNext();) {
-                FieldPropertyMapping mapping = it.next();
+            for (FieldPropertyMapping mapping : mappings) {
                 Control c = mapping.getField().getControl();
                 if (c == null || c.isDisposed()) {
                     continue;

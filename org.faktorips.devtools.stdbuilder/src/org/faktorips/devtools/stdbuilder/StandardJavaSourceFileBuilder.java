@@ -28,11 +28,13 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Jan Ortmann
  */
-public abstract class StandardJavaSourceFileBuilder extends DefaultJavaSourceFileBuilder implements IIpsStandardArtefactBuilder {
+public abstract class StandardJavaSourceFileBuilder extends DefaultJavaSourceFileBuilder implements
+        IIpsStandardArtefactBuilder {
 
     private boolean buildsPublishedArtefacts;
-    
-    public StandardJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, boolean buildsPublishedArtefacts, LocalizedStringsSet localizedStringsSet) {
+
+    public StandardJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, boolean buildsPublishedArtefacts,
+            LocalizedStringsSet localizedStringsSet) {
         super(builderSet, "", localizedStringsSet);
         this.buildsPublishedArtefacts = buildsPublishedArtefacts;
     }
@@ -58,13 +60,15 @@ public abstract class StandardJavaSourceFileBuilder extends DefaultJavaSourceFil
      * 
      * @throws CoreException is delegated from calls to other methods
      */
+    @Override
     public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (getBuilderSet() instanceof StandardBuilderSet) {
             StandardBuilderSet standardBuilderSet = (StandardBuilderSet)getBuilderSet();
             return standardBuilderSet.getPackageNameForGeneratedArtefacts(this, ipsSrcFile);
         }
-        throw new CoreException(new IpsStatus("The standard builders can only be used with the standard builder set, or with a build set that inherits from the standard builder set!"));
+        throw new CoreException(
+                new IpsStatus(
+                        "The standard builders can only be used with the standard builder set, or with a build set that inherits from the standard builder set!"));
     }
-    
 
 }

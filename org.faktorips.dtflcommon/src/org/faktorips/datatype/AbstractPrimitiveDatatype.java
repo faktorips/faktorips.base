@@ -76,6 +76,7 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasNullObject() {
         return false;
     }

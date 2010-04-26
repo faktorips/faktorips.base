@@ -58,12 +58,11 @@ public class GenAssociationTo1 extends GenAssociation {
      * public void setCoverage(ICoverage objectToTest)
      * </pre>
      */
-    public void generateSignatureSetObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureSetObject(JavaCodeFragmentBuilder methodsBuilder) {
         generateSignatureSetObject(methodsBuilder, false);
     }
 
-    public void generateSignatureSetObject(JavaCodeFragmentBuilder methodsBuilder, boolean internalName)
-            throws CoreException {
+    public void generateSignatureSetObject(JavaCodeFragmentBuilder methodsBuilder, boolean internalName) {
         String methodName = internalName ? getMethodNameSetObjectInternal() : getMethodNameSetObject();
         String paramName = getParamNameForSetObject();
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[] { paramName },
@@ -238,11 +237,11 @@ public class GenAssociationTo1 extends GenAssociation {
 
         if (target.isDependantType() && inverseAssociation != null) {
             builder.appendln("if(" + fieldName + " != null) {");
-            builder.append(generateCodeToSynchronizeReverseComposition(fieldName, "null"));;
+            builder.append(generateCodeToSynchronizeReverseComposition(fieldName, "null"));
             builder.appendln("}");
 
             builder.appendln("if(" + paramName + " != null) {");
-            builder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));;
+            builder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
             builder.appendln("}");
         }
 
@@ -365,7 +364,7 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.closeBracket();
     }
 
-    public JavaCodeFragment generateCodeToCleanupOldReference(String varToCleanUp) throws CoreException {
+    public JavaCodeFragment generateCodeToCleanupOldReference(String varToCleanUp) {
         JavaCodeFragment body = new JavaCodeFragment();
         if (!association.is1ToMany()) {
             body.append("if (" + varToCleanUp + "!=null) {");
@@ -591,7 +590,6 @@ public class GenAssociationTo1 extends GenAssociation {
     /**
      * {@inheritDoc}
      * 
-     * @throws CoreException
      */
     @Override
     public void generateCodeForRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder, String paramName)
@@ -692,7 +690,6 @@ public class GenAssociationTo1 extends GenAssociation {
      * 
      * {@inheritDoc}
      * 
-     * @throws CoreException
      */
     @Override
     public void generateCodeForCopyAssociation(String varCopy, String varCopyMap, JavaCodeFragmentBuilder methodsBuilder)
@@ -716,7 +713,6 @@ public class GenAssociationTo1 extends GenAssociation {
      * }
      * </pre> {@inheritDoc}
      * 
-     * @throws CoreException
      */
     @Override
     public void generateCodeForCopyComposition(String varCopy, String varCopyMap, JavaCodeFragmentBuilder methodsBuilder)

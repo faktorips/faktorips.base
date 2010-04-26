@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,17 +21,17 @@ import org.w3c.dom.Element;
  * This is an application of the memento pattern.
  */
 public class IIpsSrcFileMemento {
-    
+
     private IIpsSrcFile file;
     private Element state;
     private boolean dirty;
-    
+
     public IIpsSrcFileMemento(IIpsSrcFile file, Element state, boolean dirty) {
         this.file = file;
         this.state = state;
         this.dirty = dirty;
     }
-    
+
     public IIpsSrcFile getIpsSrcFile() {
         return file;
     }
@@ -39,7 +39,7 @@ public class IIpsSrcFileMemento {
     public Element getState() {
         return state;
     }
-    
+
     public boolean isDirty() {
         return dirty;
     }

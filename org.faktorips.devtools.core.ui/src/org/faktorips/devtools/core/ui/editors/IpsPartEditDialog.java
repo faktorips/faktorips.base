@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,30 +32,22 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
-
 /**
  *
  */
 public abstract class IpsPartEditDialog extends EditDialog {
-    
+
     protected IpsObjectUIController uiController;
     private TextField descriptionField;
     private Memento oldState;
     private IIpsObjectPart part;
     private boolean dirty = false;
 
-    public IpsPartEditDialog(
-            IIpsObjectPart part, 
-            Shell parentShell, 
-            String windowTitle) {
+    public IpsPartEditDialog(IIpsObjectPart part, Shell parentShell, String windowTitle) {
         this(part, parentShell, windowTitle, false);
     }
-    
-    public IpsPartEditDialog(
-            IIpsObjectPart part, 
-            Shell parentShell, 
-            String windowTitle,
-            boolean useTabFolder) {
+
+    public IpsPartEditDialog(IIpsObjectPart part, Shell parentShell, String windowTitle, boolean useTabFolder) {
         super(parentShell, windowTitle, useTabFolder);
         ArgumentCheck.notNull(part, this);
         this.part = part;
@@ -63,54 +55,58 @@ public abstract class IpsPartEditDialog extends EditDialog {
         oldState = part.newMemento();
         dirty = part.getIpsObject().getIpsSrcFile().isDirty();
     }
-    
+
     // overwritten to be sure to get the cancel-button as soon as possible...
+    @Override
     protected void createButtonsForButtonBar(Composite parent) {
-    	super.createButtonsForButtonBar(parent);
+        super.createButtonsForButtonBar(parent);
         super.getButton(Window.CANCEL).addSelectionListener(new SelectionListener() {
-		
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-		
-			public void widgetSelected(SelectionEvent e) {
-				handleAbortion();
-			}
-		});
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                handleAbortion();
+            }
+        });
     }
-    
+
+    @Override
     protected void handleShellCloseEvent() {
-		handleAbortion();
-    	super.handleShellCloseEvent();
+        handleAbortion();
+        super.handleShellCloseEvent();
     }
-    
+
     private void handleAbortion() {
         part.setState(oldState);
-		if (!dirty) {
-			uiController.getIpsObject().getIpsSrcFile().markAsClean();
-		}
+        if (!dirty) {
+            uiController.getIpsObject().getIpsSrcFile().markAsClean();
+        }
     }
-    
-	protected Control createContents(Composite parent) {
-	    Control control = super.createContents(parent);
+
+    @Override
+    protected Control createContents(Composite parent) {
+        Control control = super.createContents(parent);
         connectToModel();
         uiController.updateUI();
         setTitle(buildTitle());
         return control;
-	}
-    
-	protected TabItem createDescriptionTabItem(TabFolder folder) {
-	    Composite c = createTabItemComposite(folder, 1, false);
-	    Text text = uiToolkit.createMultilineText(c);
-	    descriptionField = new TextField(text);
-	    TabItem item = new TabItem(folder, SWT.NONE);
-	    item.setText(Messages.IpsPartEditDialog_description);
-	    item.setControl(c);
-	    return item;
-	}
-    
+    }
+
+    protected TabItem createDescriptionTabItem(TabFolder folder) {
+        Composite c = createTabItemComposite(folder, 1, false);
+        Text text = uiToolkit.createMultilineText(c);
+        descriptionField = new TextField(text);
+        TabItem item = new TabItem(folder, SWT.NONE);
+        item.setText(Messages.IpsPartEditDialog_description);
+        item.setControl(c);
+        return item;
+    }
+
     protected IpsObjectUIController createUIController(IIpsObjectPart part) {
         IpsObjectUIController controller = new IpsObjectUIController(part) {
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 try {
                     super.valueChanged(e);
@@ -129,25 +125,25 @@ public abstract class IpsPartEditDialog extends EditDialog {
     public IIpsObjectPart getIpsPart() {
         return (IIpsObjectPart)uiController.getIpsObjectPartContainer();
     }
-    
+
     protected String buildTitle() {
         IIpsObjectPart part = getIpsPart();
         if (part.getParent() instanceof IIpsObjectGeneration) {
-            return part.getIpsObject().getName() + " "  //$NON-NLS-1$
-            	+ part.getParent().getName() + "." + part.getName(); //$NON-NLS-1$
+            return part.getIpsObject().getName() + " " //$NON-NLS-1$
+                    + part.getParent().getName() + "." + part.getName(); //$NON-NLS-1$
         }
         return part.getIpsObject().getName() + "." + part.getName(); //$NON-NLS-1$
     }
-    
+
     protected void connectToModel() {
-        if (descriptionField!=null) {
+        if (descriptionField != null) {
             uiController.add(descriptionField, getIpsPart(), IIpsObjectPart.PROPERTY_DESCRIPTION);
         }
     }
 
     protected void setEnabledDescription(boolean enabled) {
-    	if (descriptionField != null) {
-    		descriptionField.getControl().setEnabled(enabled);
-    	}
+        if (descriptionField != null) {
+            descriptionField.getControl().setEnabled(enabled);
+        }
     }
 }

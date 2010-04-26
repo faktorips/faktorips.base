@@ -224,9 +224,7 @@ public class TestCaseDetailArea {
 
     private void notifyListener(List<ITestObject> testObjects) {
         try {
-            for (Iterator<ITestCaseDetailAreaRedrawListener> iter = testCaseDetailAreaRedrawListener.iterator(); iter
-                    .hasNext();) {
-                ITestCaseDetailAreaRedrawListener listener = iter.next();
+            for (ITestCaseDetailAreaRedrawListener listener : testCaseDetailAreaRedrawListener) {
                 listener.visibleTestObjectsChanges(testObjects);
             }
         } catch (CoreException e) {
@@ -241,8 +239,7 @@ public class TestCaseDetailArea {
         try {
             notifyListener(testObjects);
 
-            for (Iterator<ITestObject> iter = testObjects.iterator(); iter.hasNext();) {
-                ITestObject testObject = iter.next();
+            for (ITestObject testObject : testObjects) {
                 if (testObject instanceof ITestValue) {
                     Composite borderedComosite = createBorderComposite(dynamicArea);
                     createTestValuesSection((ITestValue)testObject, borderedComosite);
@@ -301,14 +298,13 @@ public class TestCaseDetailArea {
         // create text edit fields for each attribute
         ITestAttributeValue[] testAttributeValues = testPolicyCmpt.getTestAttributeValues();
         boolean firstEditField = true;
-        for (int i = 0; i < testAttributeValues.length; i++) {
-            final ITestAttributeValue attributeValue = testAttributeValues[i];
+        for (final ITestAttributeValue attributeValue : testAttributeValues) {
             // Create the edit field only if the content provider provides the type of the test
             // attribute object
             if (testCaseSection.getContentProvider().isCombined()
-                    || (testCaseSection.getContentProvider().isInput() && testAttributeValues[i]
-                            .isInputAttribute(ipsProject)) || testCaseSection.getContentProvider().isExpectedResult()
-                    && testAttributeValues[i].isExpextedResultAttribute(ipsProject)) {
+                    || (testCaseSection.getContentProvider().isInput() && attributeValue.isInputAttribute(ipsProject))
+                    || testCaseSection.getContentProvider().isExpectedResult()
+                    && attributeValue.isExpextedResultAttribute(ipsProject)) {
                 EditField editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite,
                         attributeValue);
 
@@ -490,8 +486,7 @@ public class TestCaseDetailArea {
             throws CoreException {
         createPolicyCmptSection(currTestPolicyCmpt, details);
         ITestPolicyCmptLink[] links = currTestPolicyCmpt.getTestPolicyCmptLinks();
-        for (int i = 0; i < links.length; i++) {
-            ITestPolicyCmptLink currLink = links[i];
+        for (ITestPolicyCmptLink currLink : links) {
             if (currLink.isComposition()) {
                 try {
                     ITestPolicyCmpt policyCmpt = currLink.findTarget();
@@ -815,8 +810,7 @@ public class TestCaseDetailArea {
      * Remove binding of all controls
      */
     private void unbindControls() {
-        for (Iterator<Control> iter = allBindedControls.iterator(); iter.hasNext();) {
-            Control control = iter.next();
+        for (Control control : allBindedControls) {
             bindingContext.removeBindings(control);
         }
         allBindedControls.clear();

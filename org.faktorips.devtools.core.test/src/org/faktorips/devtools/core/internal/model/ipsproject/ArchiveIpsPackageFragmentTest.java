@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -33,7 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
- *
+ * 
  * @author Jan Ortmann
  */
 public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
@@ -48,6 +47,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
@@ -95,11 +95,10 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         pack.findIpsObjects(result);
         assertEquals(2, result.size());
         List<QualifiedNameType> qnts = new ArrayList<QualifiedNameType>();
-        for (Iterator<IIpsObject> it = result.iterator(); it.hasNext();) {
-            IIpsObject ipsObject = it.next();
+        for (IIpsObject ipsObject : result) {
             qnts.add(ipsObject.getQualifiedNameType());
         }
-        
+
         assertTrue(qnts.contains(policy.getQualifiedNameType()));
         assertTrue(qnts.contains(coverage.getQualifiedNameType()));
     }
@@ -131,26 +130,26 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertFalse(root.getIpsPackageFragment("unknownPack").exists());
     }
 
-    public void testGetSortedChildIpsPackageFragmentsBasics() throws Exception  {
+    public void testGetSortedChildIpsPackageFragmentsBasics() throws Exception {
 
         IIpsProject project = createTestArchive();
 
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot) project.getIpsPackageFragmentRoots()[1];
+        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
         ArchiveIpsPackageFragment pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("products");
 
         IIpsPackageFragment[] children = pack.getSortedChildIpsPackageFragments();
 
         assertEquals(4, children.length);
-//        assertEquals("products.hausrat", children[0].getName());
-//        assertEquals("products.haftpflicht", children[1].getName());
-//        assertEquals("products.kranken", children[2].getName());
-//        assertEquals("products.unfall", children[3].getName());
+        // assertEquals("products.hausrat", children[0].getName());
+        // assertEquals("products.haftpflicht", children[1].getName());
+        // assertEquals("products.kranken", children[2].getName());
+        // assertEquals("products.unfall", children[3].getName());
 
         pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("products.kranken.leistungsarten");
         children = pack.getSortedChildIpsPackageFragments();
         assertEquals(2, children.length);
-//        assertEquals("products.kranken.leistungsarten.fix", children[0].getName());
-//        assertEquals("products.kranken.leistungsarten.optional", children[1].getName());
+        // assertEquals("products.kranken.leistungsarten.fix", children[0].getName());
+        // assertEquals("products.kranken.leistungsarten.optional", children[1].getName());
 
     }
 
@@ -166,7 +165,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
 
     /**
      * @throws Exception
-     *
+     * 
      */
     private IIpsProject createTestArchive() throws Exception {
         IIpsProject archiveProject = newIpsProject("ArchiveProject2");
@@ -187,7 +186,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         List<String> list = new ArrayList<String>();
         list.add("products");
 
-        createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)rootPackage.getCorrespondingResource(), list);
         list.clear();
 
         list.add("unfall");
@@ -196,15 +195,14 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         list.add("haftpflicht");
         list.add("hausrat");
 
-        createPackageOrderFile((IFolder) products.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)products.getCorrespondingResource(), list);
         list.clear();
 
         list.add("optional");
         list.add("fix");
 
-        createPackageOrderFile((IFolder) service.getCorrespondingResource(), list);
+        createPackageOrderFile((IFolder)service.getCorrespondingResource(), list);
         list.clear();
-
 
         IIpsProject project = newIpsProject("TestProjekt2");
         archiveFile = project.getProject().getFile("test2.ipsar");

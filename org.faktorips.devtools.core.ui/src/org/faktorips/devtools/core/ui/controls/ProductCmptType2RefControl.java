@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,28 +23,26 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-
 /**
  * Control to edit references to product component types.
  */
 public class ProductCmptType2RefControl extends IpsObjectRefControl {
 
     private boolean excludeAbstractTypes;
-    
-    public ProductCmptType2RefControl(
-            IIpsProject project, 
-            Composite parent, 
-            UIToolkit toolkit,
+
+    public ProductCmptType2RefControl(IIpsProject project, Composite parent, UIToolkit toolkit,
             boolean excludeAbstractTypes) {
-        super(project, parent, toolkit, Messages.ProductCmptTypeRefControl_title, Messages.ProductCmptTypeRefControl_description);
+        super(project, parent, toolkit, Messages.ProductCmptTypeRefControl_title,
+                Messages.ProductCmptTypeRefControl_description);
         this.excludeAbstractTypes = excludeAbstractTypes;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        if (getIpsProject()==null) {
+        if (getIpsProject() == null) {
             return new IIpsSrcFile[0];
         }
         IIpsSrcFile[] allProductCmptTypes = getIpsProject().findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
@@ -58,21 +56,19 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
         }
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
-    
+
     /**
-     * Returns the product component type entered in this control. Returns <code>null</code>
-     * if the text in the control does not identify a product component type. 
-     * If abstract types are set to be exclueded but the type found is abstract it is returned
-     * nevertheless! 
+     * Returns the product component type entered in this control. Returns <code>null</code> if the
+     * text in the control does not identify a product component type. If abstract types are set to
+     * be exclueded but the type found is abstract it is returned nevertheless!
      * 
-     * @throws CoreException if an exception occurs while searching for
-     * the type.
+     * @throws CoreException if an exception occurs while searching for the type.
      */
     public IProductCmptType findProductCmptType() throws CoreException {
-    	IIpsProject project = getIpsProject();
-    	if (project != null) {
+        IIpsProject project = getIpsProject();
+        if (project != null) {
             return (IProductCmptType)project.findProductCmptType(getText());
-    	}
-    	return null;
+        }
+        return null;
     }
 }

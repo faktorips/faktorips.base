@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,8 +12,6 @@
  *******************************************************************************/
 
 package org.faktorips.util;
-
-import org.faktorips.util.ArgumentCheck;
 
 import junit.framework.TestCase;
 
@@ -39,41 +37,39 @@ public class ArgumentCheckTest extends TestCase {
         } catch (IllegalArgumentException e) {
         }
     }
-    
-    public void testIsNullArray(){
-    	String[] ids = new String[3];
-    	try{
-    		ArgumentCheck.notNull(ids);
-    		fail();
-    	}
-    	catch(RuntimeException e){
-    		//an exception is excepted to be thrown
-    	}
-    	
-    	ids[0] = "";
-    	ids[1] = "";
-    	ids[2] = "";
-    	
-    	//expected to pass
-    	ArgumentCheck.notNull(ids);
+
+    public void testIsNullArray() {
+        String[] ids = new String[3];
+        try {
+            ArgumentCheck.notNull(ids);
+            fail();
+        } catch (RuntimeException e) {
+            // an exception is excepted to be thrown
+        }
+
+        ids[0] = "";
+        ids[1] = "";
+        ids[2] = "";
+
+        // expected to pass
+        ArgumentCheck.notNull(ids);
     }
-    
-    public void testIsNullArrayContext(){
-    	String[] ids = new String[3];
-    	try{
-    		ArgumentCheck.notNull(ids, this);
-    		fail();
-    	}
-    	catch(RuntimeException e){
-    		//an exception is excepted to be thrown
-    	}
-    	
-    	ids[0] = "";
-    	ids[1] = "";
-    	ids[2] = "";
-    	
-    	//expected to pass
-    	ArgumentCheck.notNull(ids, this);
+
+    public void testIsNullArrayContext() {
+        String[] ids = new String[3];
+        try {
+            ArgumentCheck.notNull(ids, this);
+            fail();
+        } catch (RuntimeException e) {
+            // an exception is excepted to be thrown
+        }
+
+        ids[0] = "";
+        ids[1] = "";
+        ids[2] = "";
+
+        // expected to pass
+        ArgumentCheck.notNull(ids, this);
     }
 
 }

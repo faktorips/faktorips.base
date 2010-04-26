@@ -108,7 +108,7 @@ public class MessageListTest extends TestCase {
         assertEquals(1, list.getNoOfMessages());
         list.add(Message.newInfo("1", "blabla"));
         assertEquals(2, list.getNoOfMessages()); // messages are equal, but the list does not filter
-                                                 // duplicate messages
+        // duplicate messages
 
         assertEquals(0, list.getNoOfMessages(Message.ERROR));
         assertEquals(0, list.getNoOfMessages(Message.WARNING));

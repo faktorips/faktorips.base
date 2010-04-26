@@ -170,9 +170,9 @@ public class IpsPasteAction extends IpsAction {
         Object stored = getTransgeredObject();
         if (stored instanceof IResource[]) {
             IResource[] res = (IResource[])stored;
-            for (int i = 0; i < res.length; i++) {
+            for (IResource re : res) {
                 try {
-                    copy(parent, res[i]);
+                    copy(parent, re);
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
@@ -210,11 +210,11 @@ public class IpsPasteAction extends IpsAction {
     }
 
     private void copyResources(IIpsPackageFragment parent, IResource[] resources) {
-        for (int i = 0; i < resources.length; i++) {
+        for (IResource resource2 : resources) {
             try {
                 IResource resource = ((IIpsElement)parent).getCorrespondingResource();
                 if (resource != null) {
-                    copy(resource, resources[i]);
+                    copy(resource, resource2);
                 } else {
                     showPasteNotSupportedError();
                 }
@@ -247,11 +247,11 @@ public class IpsPasteAction extends IpsAction {
             if (resourceLinks.length > 0) {
                 result = true;
             }
-            for (int i = 0; i < resourceLinks.length; i++) {
-                if (resourceLinks[i] instanceof IIpsObject) {
-                    createFile(parent, (IIpsObject)resourceLinks[i]);
-                } else if (resourceLinks[i] instanceof IIpsPackageFragment) {
-                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)resourceLinks[i];
+            for (Object resourceLink : resourceLinks) {
+                if (resourceLink instanceof IIpsObject) {
+                    createFile(parent, (IIpsObject)resourceLink);
+                } else if (resourceLink instanceof IIpsPackageFragment) {
+                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)resourceLink;
                     createPackageFragmentAndChilds(parent, packageFragment);
                 } else {
                     showPasteNotSupportedError();
@@ -274,11 +274,11 @@ public class IpsPasteAction extends IpsAction {
             if (resourceLinks.length > 0) {
                 result = true;
             }
-            for (int i = 0; i < resourceLinks.length; i++) {
-                if (resourceLinks[i] instanceof IIpsObject) {
-                    createFile(folder, (IIpsObject)resourceLinks[i]);
-                } else if (resourceLinks[i] instanceof IIpsPackageFragment) {
-                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)resourceLinks[i];
+            for (Object resourceLink : resourceLinks) {
+                if (resourceLink instanceof IIpsObject) {
+                    createFile(folder, (IIpsObject)resourceLink);
+                } else if (resourceLink instanceof IIpsPackageFragment) {
+                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)resourceLink;
                     createFolderAndFiles(folder, packageFragment);
                 } else {
                     showPasteNotSupportedError();
@@ -346,15 +346,15 @@ public class IpsPasteAction extends IpsAction {
         String packageName = sourcePackageFragment.getLastSegmentName();
         IIpsPackageFragment destination = parent.createSubPackage(packageName, true, null);
         IIpsElement[] children = sourcePackageFragment.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i] instanceof IIpsSrcFile) {
-                IIpsObject ipsObject = ((IIpsSrcFile)children[i]).getIpsObject();
+        for (IIpsElement element : children) {
+            if (element instanceof IIpsSrcFile) {
+                IIpsObject ipsObject = ((IIpsSrcFile)element).getIpsObject();
                 createFile(destination, ipsObject);
             }
         }
         IIpsPackageFragment[] childPackages = sourcePackageFragment.getChildIpsPackageFragments();
-        for (int i = 0; i < childPackages.length; i++) {
-            createPackageFragmentAndChilds(destination, childPackages[i]);
+        for (IIpsPackageFragment childPackage : childPackages) {
+            createPackageFragmentAndChilds(destination, childPackage);
         }
     }
 
@@ -434,15 +434,15 @@ public class IpsPasteAction extends IpsAction {
         IFolder subFolder = targetParentFolder.getFolder(packageName);
         subFolder.create(true, true, null);
         IIpsElement[] children = sourcePackageFragment.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i] instanceof IIpsSrcFile) {
-                IIpsObject ipsObject = ((IIpsSrcFile)children[i]).getIpsObject();
+        for (IIpsElement element : children) {
+            if (element instanceof IIpsSrcFile) {
+                IIpsObject ipsObject = ((IIpsSrcFile)element).getIpsObject();
                 createFile(subFolder, ipsObject);
             }
         }
         IIpsPackageFragment[] childPackages = sourcePackageFragment.getChildIpsPackageFragments();
-        for (int i = 0; i < childPackages.length; i++) {
-            createFolderAndFiles(subFolder, childPackages[i]);
+        for (IIpsPackageFragment childPackage : childPackages) {
+            createFolderAndFiles(subFolder, childPackage);
         }
     }
 
@@ -484,8 +484,8 @@ public class IpsPasteAction extends IpsAction {
                 try {
                     resource.copy(targetPath.append(newName), true, null);
                 } catch (Exception e) {
-                    IpsPlugin.showErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, Messages.IpsPasteAction_cannot_copy,
-                            e));
+                    IpsPlugin.showErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                            Messages.IpsPasteAction_cannot_copy, e));
                 }
             }
         }
@@ -561,8 +561,8 @@ public class IpsPasteAction extends IpsAction {
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
         // disable action if the selection contains at least one ips object part
         Object[] objects = selection.toArray();
-        for (int i = 0; i < objects.length; i++) {
-            if (objects[i] instanceof IIpsObjectPart) {
+        for (Object object : objects) {
+            if (object instanceof IIpsObjectPart) {
                 return false;
             }
         }

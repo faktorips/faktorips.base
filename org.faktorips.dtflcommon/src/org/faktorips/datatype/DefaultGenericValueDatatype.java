@@ -39,6 +39,7 @@ public class DefaultGenericValueDatatype extends GenericValueDatatype {
     /**
      * Overridden.
      */
+    @Override
     public Class getAdaptedClass() {
         return adaptedClass;
     }
@@ -46,6 +47,7 @@ public class DefaultGenericValueDatatype extends GenericValueDatatype {
     /**
      * Overridden.
      */
+    @Override
     public String getAdaptedClassName() {
         return adaptedClass.getName();
     }

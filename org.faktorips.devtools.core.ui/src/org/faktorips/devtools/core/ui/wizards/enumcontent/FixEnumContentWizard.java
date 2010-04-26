@@ -177,8 +177,7 @@ public class FixEnumContentWizard extends Wizard {
      */
     private void createNewEnumAttributeValues() throws CoreException {
         int[] columnOrder = assignEnumAttributesPage.getColumnOrder();
-        for (int i = 0; i < columnOrder.length; i++) {
-            int currentPosition = columnOrder[i];
+        for (int currentPosition : columnOrder) {
             if (currentPosition == 0) {
                 for (IEnumValue currentEnumValue : enumContent.getEnumValues()) {
                     currentEnumValue.newEnumAttributeValue();

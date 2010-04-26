@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -49,6 +49,7 @@ public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return "XmlContentFileCopyBuilder"; //$NON-NLS-1$
     }
@@ -58,6 +59,7 @@ public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
      * 
      * Returns true.
      */
+    @Override
     public boolean buildsDerivedArtefacts() {
         return true;
     }

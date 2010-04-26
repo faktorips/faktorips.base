@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -42,17 +42,15 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
     private ExprCompiler compiler;
     private ITableContents tableContents;
     private String roleName;
-    
+
     /**
-     * @param tableContents can be null. This indicates that it is a table access function for a table that doesn't allow multiple
-     * 						contents
+     * @param tableContents can be null. This indicates that it is a table access function for a
+     *            table that doesn't allow multiple contents
      * @param fct the table access function
      */
-    public TableUsageAccessFunctionFlFunctionAdapter(
-            ITableContents tableContents, 
-            ITableAccessFunction fct, 
+    public TableUsageAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
             String roleName) {
-        
+
         ArgumentCheck.notNull(fct);
         ArgumentCheck.notNull(tableContents);
         ArgumentCheck.notNull(roleName);
@@ -68,17 +66,19 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
         try {
             IIpsArtefactBuilderSet builderSet = fct.getIpsProject().getIpsArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {
-                CompilationResultImpl result = new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
+                CompilationResultImpl result = new CompilationResultImpl(Message.newError(
+                        "", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
                 result.addAllIdentifierUsed(argResults);
                 return result;
             }
             return builderSet.getTableAccessCode(tableContents, fct, argResults);
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration + fct.toString())); //$NON-NLS-1$
+            return new CompilationResultImpl(Message.newError(
+                    "", Messages.TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration + fct.toString())); //$NON-NLS-1$
         }
     }
-    
+
     public void setCompiler(ExprCompiler compiler) {
         this.compiler = compiler;
     }
@@ -104,7 +104,7 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
     }
 
     public String getName() {
-		return StringUtils.capitalize(roleName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
+        return StringUtils.capitalize(roleName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
     }
 
     public Datatype[] getArgTypes() {
@@ -139,8 +139,8 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
     /**
      * Returns false;
      */
-	public boolean hasVarArgs() {
-		return false;
-	}
+    public boolean hasVarArgs() {
+        return false;
+    }
 
 }

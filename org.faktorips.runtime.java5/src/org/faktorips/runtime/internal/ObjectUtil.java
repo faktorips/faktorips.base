@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,8 +14,8 @@
 package org.faktorips.runtime.internal;
 
 /**
- * A collection of utility methods for Object. We don't use a class library like apache-commons
- * here to minimize the dependencies for the generated code.
+ * A collection of utility methods for Object. We don't use a class library like apache-commons here
+ * to minimize the dependencies for the generated code.
  * 
  * @author Jan Ortmann
  */
@@ -29,10 +29,10 @@ public class ObjectUtil {
         if (object1 == object2) {
             return true;
         }
-        if (object1!=null) {
+        if (object1 != null) {
             return object1.equals(object2);
         }
         return false;
     }
-    
+
 }

@@ -335,7 +335,7 @@ public abstract class GenAssociation extends GenTypePart {
      * public final static String PROPERTY_PREMIUM = &quot;premium&quot;;
      * </pre>
      */
-    protected void generateAssociationNameConstant(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateAssociationNameConstant(JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc("FIELD_ASSOCIATION_NAME", fieldName, builder);
         builder.append("public final static ");
         builder.appendClassName(String.class);
@@ -544,7 +544,6 @@ public abstract class GenAssociation extends GenTypePart {
      * }
      * </pre>
      * 
-     * @throws CoreException
      */
     protected void generateMethodGetRefObjectsByQualifierForDerivedUnion(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
@@ -794,7 +793,7 @@ public abstract class GenAssociation extends GenTypePart {
      * public int getNumOfCoverages()
      * </pre>
      */
-    public void generateSignatureGetNumOfRefObjects(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureGetNumOfRefObjects(JavaCodeFragmentBuilder methodsBuilder) {
 
         String methodName = getMethodNameGetNumOfRefObjects();
         methodsBuilder
@@ -986,6 +985,7 @@ public abstract class GenAssociation extends GenTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         if (generatesInterface) {
@@ -1006,6 +1006,7 @@ public abstract class GenAssociation extends GenTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         if (generatesInterface) {
@@ -1019,6 +1020,7 @@ public abstract class GenAssociation extends GenTypePart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
@@ -1063,7 +1065,7 @@ public abstract class GenAssociation extends GenTypePart {
      * instead of calling PolicyCmptTypeAssociation#isInverseOfDerivedUnion because this method used
      * the cached inverse association instead searching the inverse again.
      */
-    public boolean isInverseOfDerivedUnionAssociation() throws CoreException {
+    public boolean isInverseOfDerivedUnionAssociation() {
         if (inverseAssociation == null) {
             return false;
         }
@@ -1157,7 +1159,6 @@ public abstract class GenAssociation extends GenTypePart {
     public IPolicyCmptTypeAssociation getInverseAssociation() {
         return inverseAssociation;
     }
-
 
     protected GenPolicyCmptType getGenPolicyCmptType() {
         return (GenPolicyCmptType)getGenType();

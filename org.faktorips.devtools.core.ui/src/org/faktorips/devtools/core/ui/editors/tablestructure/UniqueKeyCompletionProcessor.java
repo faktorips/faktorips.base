@@ -60,8 +60,8 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
             return;
         }
         IUniqueKey[] keys = tableStructure.getUniqueKeys();
-        for (int i = 0; i < keys.length; i++) {
-            addToResult(result, keys[i], documentOffset);
+        for (IUniqueKey key : keys) {
+            addToResult(result, key, documentOffset);
         }
     }
 

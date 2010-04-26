@@ -20,5 +20,5 @@ Require-Bundle: org.faktorips.dtflcommon,
 Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.productcmpt,
  org.faktorips.devtools.stdbuilder.table
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG

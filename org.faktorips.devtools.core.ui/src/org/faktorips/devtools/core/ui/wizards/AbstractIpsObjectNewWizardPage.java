@@ -137,10 +137,10 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
             setIpsPackageFragmentRoot(null);
         }
     }
-    
+
     /** Subclasses may overwrite to set default values based upon the user selection. */
     protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
-        
+
     }
 
     /**

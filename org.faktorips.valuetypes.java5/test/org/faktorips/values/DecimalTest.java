@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,7 +12,6 @@
  *******************************************************************************/
 
 package org.faktorips.values;
-
 
 import java.math.BigDecimal;
 
@@ -61,10 +60,10 @@ public class DecimalTest extends TestCase {
 
         assertTrue(Decimal.valueOf((String)null).isNull());
     }
-    
+
     public void testSymmetryOfToStringAndValueOfForNull() {
-    	Decimal decNull = Decimal.NULL;
-    	assertTrue(Decimal.valueOf(decNull.toString()).isNull());
+        Decimal decNull = Decimal.NULL;
+        assertTrue(Decimal.valueOf(decNull.toString()).isNull());
     }
 
     /*
@@ -109,9 +108,9 @@ public class DecimalTest extends TestCase {
     public void testCompareToDecimal() {
         Decimal d1 = Decimal.valueOf("3.45");
         Decimal d2 = Decimal.valueOf("3.46");
-        assertTrue(d1.compareTo(d2)<0);
-        assertTrue(d2.compareTo(d1)>0);
-        assertTrue(d1.compareTo(Decimal.valueOf("3.45"))==0);
+        assertTrue(d1.compareTo(d2) < 0);
+        assertTrue(d2.compareTo(d1) > 0);
+        assertTrue(d1.compareTo(Decimal.valueOf("3.45")) == 0);
     }
 
     /*
@@ -316,7 +315,7 @@ public class DecimalTest extends TestCase {
     public void testSum() throws Exception {
         assertTrue(Decimal.sum(null).isNull());
         assertEquals(Decimal.valueOf(0, 0), Decimal.sum(new Decimal[0]));
-        Decimal[] values = new Decimal[]{Decimal.valueOf(10, 0), Decimal.valueOf(32, 0)};
+        Decimal[] values = new Decimal[] { Decimal.valueOf(10, 0), Decimal.valueOf(32, 0) };
         assertEquals(Decimal.valueOf(42, 0), Decimal.sum(values));
     }
 
@@ -339,7 +338,7 @@ public class DecimalTest extends TestCase {
         assertTrue(Decimal.NULL.round(0, BigDecimal.ROUND_HALF_UP).isNull());
     }
 
-    public void testMax(){
+    public void testMax() {
         Decimal value1 = Decimal.valueOf(105, 2);
         Decimal value2 = Decimal.valueOf(205, 2);
 
@@ -350,7 +349,7 @@ public class DecimalTest extends TestCase {
         assertSame(value1, value1.max(value3));
     }
 
-    public void testMin(){
+    public void testMin() {
         Decimal value1 = Decimal.valueOf(105, 2);
         Decimal value2 = Decimal.valueOf(205, 2);
 

@@ -52,6 +52,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject() == null) {
             return new IIpsSrcFile[0];
@@ -60,13 +61,13 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
         IIpsSrcFile[] ipsSrcFiles = getIpsProject()
                 .findAllProductCmptSrcFiles(productCmptType, includeCmptsForSubtypes);
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
-        for (int i = 0; i < ipsSrcFiles.length; i++) {
-            result.add(ipsSrcFiles[i]);
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            result.add(ipsSrcFile);
         }
         if (result.size() > 0) {
-            for (int i = 0; i < toExclude.length; i++) {
-                if (toExclude[i] != null) {
-                    result.remove(toExclude[i].getIpsSrcFile());
+            for (IProductCmpt element : toExclude) {
+                if (element != null) {
+                    result.remove(element.getIpsSrcFile());
                 }
             }
         }

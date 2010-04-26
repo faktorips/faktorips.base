@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,7 +18,6 @@ import java.util.Date;
 import junit.framework.TestCase;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.excel.DecimalValueConverter;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Decimal;
 
@@ -51,7 +50,7 @@ public class DecimalValueConverterTest extends TestCase {
         value = converter.getIpsValue(date, ml);
         assertFalse(ml.isEmpty());
         assertEquals(date.toString(), value);
-        
+
         ml.clear();
         value = converter.getIpsValue("Egon", ml);
         assertFalse(ml.isEmpty());

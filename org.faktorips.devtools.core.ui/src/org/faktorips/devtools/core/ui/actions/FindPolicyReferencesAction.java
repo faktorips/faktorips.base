@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,39 +22,39 @@ import org.faktorips.devtools.core.ui.search.ReferencesToPolicySearchQuery;
 
 /**
  * Action for finding references to a given PolicyComponentType.
+ * 
  * @author widmaier
  */
 public class FindPolicyReferencesAction extends IpsAction {
 
-	/**
-	 * Creates a new action to find references to a policy component type. 
-	 * The given selection provider is used to retrieve the policy component 
-	 * type to be searched for.
-	 * <p>
-	 * Note: Only <code>IStructuredSelection</code>s are supported.
-	 */
+    /**
+     * Creates a new action to find references to a policy component type. The given selection
+     * provider is used to retrieve the policy component type to be searched for.
+     * <p>
+     * Note: Only <code>IStructuredSelection</code>s are supported.
+     */
     public FindPolicyReferencesAction(ISelectionProvider selectionProvider) {
         super(selectionProvider);
         this.setDescription(Messages.FindPolicyReferencesAction_description);
         this.setText(Messages.FindPolicyReferencesAction_name);
         this.setToolTipText(this.getDescription());
     }
-    
+
     /**
-     * Executes a query if the current selection provides a PolicyCmptType
-     * to search for.
+     * Executes a query if the current selection provides a PolicyCmptType to search for.
      */
+    @Override
     public void run(IStructuredSelection selection) {
-		IIpsObject selected = getIpsObjectForSelection(selection);
-		if(selected!=null){
-			if(selected instanceof IPolicyCmptType){
-				IPolicyCmptType referenced = (IPolicyCmptType) selected;
-				NewSearchUI.activateSearchResultView();
-				NewSearchUI.runQueryInBackground(new ReferencesToPolicySearchQuery(referenced));
-			}
-		}else{
-			return;
-		}
-		
+        IIpsObject selected = getIpsObjectForSelection(selection);
+        if (selected != null) {
+            if (selected instanceof IPolicyCmptType) {
+                IPolicyCmptType referenced = (IPolicyCmptType)selected;
+                NewSearchUI.activateSearchResultView();
+                NewSearchUI.runQueryInBackground(new ReferencesToPolicySearchQuery(referenced));
+            }
+        } else {
+            return;
+        }
+
     }
 }

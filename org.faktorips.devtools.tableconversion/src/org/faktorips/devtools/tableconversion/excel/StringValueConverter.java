@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,7 +18,6 @@ import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.util.message.MessageList;
 
-
 /**
  * Converts from String to String :-)
  * 
@@ -26,29 +25,29 @@ import org.faktorips.util.message.MessageList;
  */
 public class StringValueConverter extends AbstractValueConverter {
 
-	/**
-	 * Every type is allowed for externalDataValue.
-	 * 
-	 * {@inheritDoc}
-	 */
-	public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        if (externalDataValue instanceof Double){
+    /**
+     * Every type is allowed for externalDataValue.
+     * 
+     * {@inheritDoc}
+     */
+    public String getIpsValue(Object externalDataValue, MessageList messageList) {
+        if (externalDataValue instanceof Double) {
             return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
         }
-		return externalDataValue==null?null:externalDataValue.toString();
-	}
+        return externalDataValue == null ? null : externalDataValue.toString();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
-		return ipsValue;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Object getExternalDataValue(String ipsValue, MessageList messageList) {
+        return ipsValue;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Datatype getSupportedDatatype() {
-		return Datatype.STRING;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Datatype getSupportedDatatype() {
+        return Datatype.STRING;
+    }
 }

@@ -198,10 +198,10 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             newFormulaTestCase.setExpectedResult(formulaTestCase.getExpectedResult());
 
             IFormulaTestInputValue[] inputValues = formulaTestCase.getFormulaTestInputValues();
-            for (int i = 0; i < inputValues.length; i++) {
+            for (IFormulaTestInputValue inputValue : inputValues) {
                 IFormulaTestInputValue newInputValue = newFormulaTestCase.newFormulaTestInputValue();
-                newInputValue.setIdentifier(inputValues[i].getIdentifier());
-                newInputValue.setValue(inputValues[i].getValue());
+                newInputValue.setIdentifier(inputValue.getIdentifier());
+                newInputValue.setValue(inputValue.getValue());
             }
         }
 
@@ -383,8 +383,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     private void clearFormulaTestInputValues() {
         if (formulaTestCase != null) {
             IFormulaTestInputValue[] inputValues = formulaTestCase.getFormulaTestInputValues();
-            for (int i = 0; i < inputValues.length; i++) {
-                inputValues[i].setValue(null);
+            for (IFormulaTestInputValue inputValue : inputValues) {
+                inputValue.setValue(null);
                 uiController.updateUI();
                 repackAndResfreshParamInputTable();
                 clearResult();

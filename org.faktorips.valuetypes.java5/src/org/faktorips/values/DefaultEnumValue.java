@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,7 +27,7 @@ public class DefaultEnumValue implements EnumValue {
     }
 
     public DefaultEnumValue(DefaultEnumType type, String id, String name) {
-        if (type==null) {
+        if (type == null) {
             throw new NullPointerException();
         }
         this.type = type;
@@ -38,6 +38,7 @@ public class DefaultEnumValue implements EnumValue {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.values.EnumValue#getType()
      */
     public EnumType getType() {
@@ -46,6 +47,7 @@ public class DefaultEnumValue implements EnumValue {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.values.EnumValue#getId()
      */
     public String getId() {
@@ -54,6 +56,7 @@ public class DefaultEnumValue implements EnumValue {
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.values.EnumValue#getName()
      */
     public String getName() {
@@ -62,10 +65,10 @@ public class DefaultEnumValue implements EnumValue {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof EnumValue )) {
+        if (!(o instanceof EnumValue)) {
             return false;
         }
-        EnumValue other = (EnumValue )o;
+        EnumValue other = (EnumValue)o;
         return id.equals(other.getId()) && type.equals(other.getType());
     }
 
@@ -81,6 +84,7 @@ public class DefaultEnumValue implements EnumValue {
 
     /**
      * Overridden method.
+     * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(EnumValue other) {

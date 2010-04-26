@@ -39,6 +39,7 @@ public class Void extends AbstractDatatype implements ValueDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isVoid() {
         return true;
     }
@@ -124,6 +125,7 @@ public class Void extends AbstractDatatype implements ValueDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasNullObject() {
         return false;
     }

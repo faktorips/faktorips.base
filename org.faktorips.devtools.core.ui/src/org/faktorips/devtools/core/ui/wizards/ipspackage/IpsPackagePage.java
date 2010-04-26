@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -76,14 +76,11 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         super(Messages.IpsPackagePage_title);
         if (selection.getFirstElement() instanceof IResource) {
             selectedResource = (IResource)selection.getFirstElement();
-        }
-        else if (selection.getFirstElement() instanceof IJavaElement) {
+        } else if (selection.getFirstElement() instanceof IJavaElement) {
             selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
-        }
-        else if (selection.getFirstElement() instanceof IIpsElement) {
+        } else if (selection.getFirstElement() instanceof IIpsElement) {
             selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
-        }
-        else {
+        } else {
             selectedResource = null;
         }
     }
@@ -125,8 +122,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         fillNameComposite(nameComposite, toolkit);
         try {
             setDefaults(selectedResource);
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
         }
 
@@ -152,25 +148,20 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
                 if (roots.length > 0) {
                     setIpsPackageFragmentRoot(roots[0]);
                 }
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e); // user can still work with the system, just so the defaults are
                 // missing
                 // so just log it.
             }
-        }
-        else if (element instanceof IIpsPackageFragmentRoot) {
+        } else if (element instanceof IIpsPackageFragmentRoot) {
             setIpsPackageFragmentRoot((IIpsPackageFragmentRoot)element);
-        }
-        else if (element instanceof IIpsPackageFragment) {
+        } else if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment pack = (IIpsPackageFragment)element;
             setIpsPackageFragment(pack);
-        }
-        else if (element instanceof IIpsSrcFile) {
+        } else if (element instanceof IIpsSrcFile) {
             IIpsPackageFragment pack = (IIpsPackageFragment)element.getParent();
             setIpsPackageFragment(pack);
-        }
-        else {
+        } else {
             setIpsPackageFragmentRoot(null);
         }
     }
@@ -205,8 +196,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         }
         if (parentPackageName.length() > 0) {
             return packageName.substring(parentPackageName.length() + 1);
-        }
-        else {
+        } else {
             return packageName;
         }
     }
@@ -218,7 +208,9 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      */
     public IIpsPackageFragment getParentPackageFragment() {
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
-        if(root==null) return null;
+        if (root == null) {
+            return null;
+        }
         String packageName = nameField.getText();
         IIpsPackageFragment pack = root.getIpsPackageFragment(packageName);
         if (pack != null && pack.exists()) {
@@ -309,8 +301,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         if (validateInput) { // don't validate during control creating!
             try {
                 validatePage();
-            }
-            catch (CoreException coreEx) {
+            } catch (CoreException coreEx) {
                 IpsPlugin.logAndShowErrorDialog(coreEx);
             }
 
@@ -326,7 +317,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage(null);
         IIpsProject project = getIpsProject();
-        if (project==null) {
+        if (project == null) {
             setErrorMessage(Messages.IpsPackagePage_msgSelectSourceFolder);
             return;
         }
@@ -335,8 +326,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             if (ml.containsErrorMsg()) {
                 setErrorMessage(ml.getText());
                 return;
-            }
-            else {
+            } else {
                 setMessage(ml.getText(), IMessageProvider.WARNING);
             }
         }
@@ -363,16 +353,13 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         if (root != null) {
             if (!root.getCorrespondingResource().exists()) {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_msgRootMissing, root.getName()));
-            }
-            else if (!root.exists()) {
+            } else if (!root.exists()) {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_msgRootNoIPSSrcFolder, root.getName()));
             }
-        }
-        else {
+        } else {
             if (sourceFolderControl.getText().length() == 0) {
                 setErrorMessage(Messages.IpsPackagePage_msgRootRequired);
-            }
-            else {
+            } else {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_msgRootMissing, sourceFolderControl.getText()));
             }
         }
@@ -398,8 +385,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         if (name.length() == 0) {
             if (parentPackageName.length() > 0) {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_PackageAllreadyExists, parentPackageName));
-            }
-            else {
+            } else {
                 setErrorMessage(Messages.IpsPackagePage_msgEmptyName);
             }
             return;

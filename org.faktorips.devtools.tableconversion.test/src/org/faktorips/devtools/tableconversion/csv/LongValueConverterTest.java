@@ -34,11 +34,7 @@ public class LongValueConverterTest extends NumberValueConverterTest {
 
     @Override
     public String[] getExternalDataToConvert(boolean useCommaAsDecimalSeparator) {
-        String[] validExternalDoubles = {
-                String.valueOf(Long.MAX_VALUE),
-                String.valueOf(Long.MIN_VALUE),
-                "0"
-        };
+        String[] validExternalDoubles = { String.valueOf(Long.MAX_VALUE), String.valueOf(Long.MIN_VALUE), "0" };
         return validExternalDoubles;
     }
 

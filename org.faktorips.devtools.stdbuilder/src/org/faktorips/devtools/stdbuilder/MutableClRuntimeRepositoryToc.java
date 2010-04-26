@@ -41,6 +41,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void internalAddEntry(TocEntryObject entry) {
         super.internalAddEntry(entry);
         ++modificationStamp;
@@ -228,7 +229,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
 
         for (Iterator<TocEntryObject> it = enumXmlAdapterTocEntryMap.values().iterator(); it.hasNext();) {
             TocEntryObject entry = (TocEntryObject)it.next();
-          if (entry.getIpsObjectId().equals(objectId)) {
+            if (entry.getIpsObjectId().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
                 return true;

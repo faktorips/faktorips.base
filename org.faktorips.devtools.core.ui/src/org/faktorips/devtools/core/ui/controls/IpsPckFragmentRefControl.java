@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,62 +23,60 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.IpsPackageSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-
 /**
  * A control to edit a package fragment reference.
  */
 public class IpsPckFragmentRefControl extends TextButtonControl {
 
     private IIpsPackageFragmentRoot root;
-    
+
     private IpsPckFragmenCompletionProcessor completionProcessor;
-    
-    public IpsPckFragmentRefControl(
-            Composite parent, 
-            UIToolkit toolkit) {
+
+    public IpsPckFragmentRefControl(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, Messages.IpsPckFragmentRefControl_titleBrowse);
-        
+
         completionProcessor = new IpsPckFragmenCompletionProcessor(this);
         ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
     }
-    
+
     public void setIpsPckFragmentRoot(IIpsPackageFragmentRoot root) {
         this.root = root;
-        setButtonEnabled(root!=null && root.exists());
+        setButtonEnabled(root != null && root.exists());
     }
-    
+
     public IIpsPackageFragmentRoot getIpsPckFragmentRoot() {
         return root;
     }
 
     public IIpsPackageFragment getIpsPackageFragment() {
-        if (root==null) {
+        if (root == null) {
             return null;
         }
         return root.getIpsPackageFragment(text.getText());
     }
-    
+
     public void setIpsPackageFragment(IIpsPackageFragment newPack) {
-        if (newPack==null) {
+        if (newPack == null) {
             text.setText(""); //$NON-NLS-1$
         } else {
             setText(newPack.getName());
         }
     }
-    
 
     /**
      * Overridden method.
+     * 
      * @see org.faktorips.devtools.core.ui.controls.TextButtonControl#buttonClicked()
-     */ 
+     */
+    @Override
     protected void buttonClicked() {
         try {
             IpsPackageSelectionDialog dialog = new IpsPackageSelectionDialog(getShell());
-            if (root!=null) {
-                dialog.setElements(root.getIpsPackageFragments());    
+            if (root != null) {
+                dialog.setElements(root.getIpsPackageFragments());
             }
-            if (dialog.open()==Window.OK) {
-                if (dialog.getSelectedPackage()!=null) {
+            if (dialog.open() == Window.OK) {
+                if (dialog.getSelectedPackage() != null) {
                     setText(dialog.getSelectedPackage().getName());
                 } else {
                     setText(""); //$NON-NLS-1$
@@ -88,6 +86,5 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
-
 
 }

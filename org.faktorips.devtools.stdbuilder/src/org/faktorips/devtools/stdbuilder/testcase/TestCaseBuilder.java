@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.transform.TransformerException;
@@ -254,8 +253,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
 
     private void resolveAssociations() {
-        for (Iterator<Element> iter = targetObjectIdMap.keySet().iterator(); iter.hasNext();) {
-            Element elem = iter.next();
+        for (Element elem : targetObjectIdMap.keySet()) {
             ITestPolicyCmpt target = targetObjectIdMap.get(elem);
             String objectId = objectIdMap.get(target);
             if (objectId != null) {

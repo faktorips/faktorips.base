@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -39,31 +39,32 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
     private IPolicyCmptTypeAssociation association;
     private UIToolkit toolkit;
     private BindingContext bindingContext;
-    
+
     private ArrayList<String> visibleProperties = new ArrayList<String>(10);
-    
-    protected AssociationTargetPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association, UIToolkit toolkit, BindingContext bindingContext) {
+
+    protected AssociationTargetPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association,
+            UIToolkit toolkit, BindingContext bindingContext) {
         super(Messages.AssociationTargetPage_pageName, Messages.AssociationTargetPage_pageTitle, null);
         super.setDescription(Messages.AssociationTargetPage_pageDescription);
         this.wizard = wizard;
         this.association = association;
         this.toolkit = toolkit;
         this.bindingContext = bindingContext;
-        
+
         setPageComplete(false);
     }
 
     public void createControl(Composite parent) {
         Composite pageComposite = wizard.createPageComposite(parent);
-        
+
         createTargetAndTypeControls(toolkit.createLabelEditColumnComposite(pageComposite));
-        
+
         toolkit.createVerticalSpacer(pageComposite, 10);
-        
+
         new AssociationDerivedUnionGroup(toolkit, bindingContext, pageComposite, association);
-        
+
         createDescriptionControl(pageComposite);
-        
+
         setControl(pageComposite);
     }
 
@@ -77,27 +78,29 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
         // type
         toolkit.createFormLabel(top, Messages.AssociationTargetPage_labelType);
         Combo typeCombo = toolkit.createCombo(top, IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
-        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
+        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType
+                .getEnumType());
         typeCombo.select(0);
         visibleProperties.add(IAssociation.PROPERTY_ASSOCIATION_TYPE);
     }
-    
+
     private void createDescriptionControl(Composite pageComposite) {
         Text text = wizard.createDescriptionText(pageComposite, 2);
         bindingContext.bindContent(text, association, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public List<String> getProperties() {
         return visibleProperties;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canFlipToNextPage() {
         return wizard.canPageFlipToNextPage(this);
     }

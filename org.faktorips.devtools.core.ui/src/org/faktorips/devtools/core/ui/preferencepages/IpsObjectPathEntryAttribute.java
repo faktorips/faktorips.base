@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,16 +21,16 @@ import org.faktorips.devtools.core.internal.model.ipsproject.Messages;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-
 /**
  * Implementation of IIpsObjectPathEntryAttribute
+ * 
  * @author Roman Grutza
  */
 public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute {
 
     String type;
     private Object value;
-    
+
     /**
      * Prefix for all message codes of this class.
      */
@@ -40,16 +40,17 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
      * Validation message code to indicate that a related folder is missing.
      */
     public final static String MSGCODE_MISSING_FOLDER = MSGCODE_PREFIX + "MissingFolder"; //$NON-NLS-1$
-    
+
     /**
-     * Message code constant to indicate the source folder must be a direct child of the project
-     * and it isn't. 
+     * Message code constant to indicate the source folder must be a direct child of the project and
+     * it isn't.
      */
     public final static String MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROJECT = "SourceFolder must be a direct child of the project."; //$NON-NLS-1$
-    
+
     /**
      * 
-     * @param type of the attribute, can be one of the defined String constants as defined in IIpsObjectPathEntryAttribute
+     * @param type of the attribute, can be one of the defined String constants as defined in
+     *            IIpsObjectPathEntryAttribute
      * @param value object to be set
      */
     public IpsObjectPathEntryAttribute(String type, Object value) {
@@ -61,8 +62,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
                 || IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE.equals(type)
                 || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)
                 || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)
-                || IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH.equals(type))
-        {
+                || IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH.equals(type)) {
             this.type = type;
             this.value = value;
             return;
@@ -71,9 +71,10 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
             MessageDialog.openWarning(null, "ERROR", "ERROR");
             throw new IllegalArgumentException("value == null !");
         }
-        throw new IllegalArgumentException("Attribute type must be one of the constants defined in IIpsObjectPathEntryAttribute"); //$NON-NLS-1$
+        throw new IllegalArgumentException(
+                "Attribute type must be one of the constants defined in IIpsObjectPathEntryAttribute"); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -104,18 +105,18 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
      * {@inheritDoc}
      */
     public boolean isFolderForDerivedSources() {
-        return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)
-             || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)); 
+        return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type) || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES
+                .equals(type));
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isFolderForMergableSources() {
-        return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)
-             || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type));
+        return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type) || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES
+                .equals(type));
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -127,16 +128,16 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
      * {@inheritDoc}
      */
     public boolean isPackageNameForDerivedSources() {
-        return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED.equals(type)
-                || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED.equals(type)));
+        return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED.equals(type) || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED
+                .equals(type)));
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isPackageNameForMergableSources() {
-        return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE.equals(type)
-                || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE.equals(type)));        
+        return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE.equals(type) || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE
+                .equals(type)));
     }
 
     /**
@@ -146,23 +147,25 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
         MessageList result = new MessageList();
 
         if (isFolderForDerivedSources() || isFolderForMergableSources()) {
-            IFolder sourceFolder = (IFolder) value;
-            
+            IFolder sourceFolder = (IFolder)value;
+
             // FIXME: workaround for NPE, find root cause!!
             if (sourceFolder == null) {
                 result.add(new Message("Folder invalid", "Folder invalid", Message.ERROR, this));
                 return result;
             }
-            
+
             result.add(validateIfFolderExists(sourceFolder));
 
-            if (sourceFolder.getProjectRelativePath().segmentCount()>1){
-                String text = NLS.bind(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject, sourceFolder.getProjectRelativePath().toString());
-                Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROJECT, text, Message.ERROR, this);
+            if (sourceFolder.getProjectRelativePath().segmentCount() > 1) {
+                String text = NLS.bind(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject, sourceFolder
+                        .getProjectRelativePath().toString());
+                Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROJECT, text, Message.ERROR,
+                        this);
                 result.add(msg);
             }
         }
-        
+
         return result;
     }
 
@@ -171,12 +174,12 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
      */
     private MessageList validateIfFolderExists(IFolder folder) {
         MessageList result = new MessageList();
-        if (!folder.exists()){
+        if (!folder.exists()) {
             String text = NLS.bind("The folder \"{0}\" does not exist.", folder.getName()); //$NON-NLS-1$
             Message msg = new Message(MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
             result.add(msg);
         }
         return result;
     }
-    
+
 }

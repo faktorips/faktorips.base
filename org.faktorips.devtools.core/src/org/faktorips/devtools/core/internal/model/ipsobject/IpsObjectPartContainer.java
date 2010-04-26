@@ -286,8 +286,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (extPropertyValues == null) {
             extPropertyValues = new HashMap<String, Object>();
             IExtensionPropertyDefinition[] properties = getIpsModel().getExtensionPropertyDefinitions(getClass(), true);
-            for (int i = 0; i < properties.length; i++) {
-                extPropertyValues.put(properties[i].getPropertyId(), properties[i].getDefaultValue());
+            for (IExtensionPropertyDefinition propertie : properties) {
+                extPropertyValues.put(propertie.getPropertyId(), propertie.getDefaultValue());
             }
         }
     }
@@ -312,15 +312,15 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         Document doc = element.getOwnerDocument();
         Element extPropertiesEl = doc.createElement(XML_EXT_PROPERTIES_ELEMENT);
         element.appendChild(extPropertiesEl);
-        for (int i = 0; i < properties.length; i++) {
+        for (IExtensionPropertyDefinition propertie : properties) {
             Element valueEl = doc.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT);
             extPropertiesEl.appendChild(valueEl);
-            String propertyId = properties[i].getPropertyId();
+            String propertyId = propertie.getPropertyId();
             valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID, propertyId);
             Object value = extPropertyValues.get(propertyId);
             valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, value == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
             if (value != null) {
-                properties[i].valueToXml(valueEl, value);
+                propertie.valueToXml(valueEl, value);
             }
         }
     }
@@ -340,8 +340,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     private void partsToXml(Document doc, Element element) {
         IIpsElement[] children = getChildren();
-        for (int i = 0; i < children.length; i++) {
-            IIpsObjectPart part = (IIpsObjectPart)children[i];
+        for (IIpsElement element2 : children) {
+            IIpsObjectPart part = (IIpsObjectPart)element2;
             Element newPartElement = part.toXml(doc);
             element.appendChild(newPartElement);
         }
@@ -454,8 +454,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private HashMap<String, IExtensionPropertyDefinition> getExtensionProperties() {
         HashMap<String, IExtensionPropertyDefinition> propMap = new HashMap<String, IExtensionPropertyDefinition>();
         IExtensionPropertyDefinition[] properties = getIpsModel().getExtensionPropertyDefinitions(getClass(), true);
-        for (int i = 0; i < properties.length; i++) {
-            propMap.put(properties[i].getPropertyId(), properties[i]);
+        for (IExtensionPropertyDefinition propertie : properties) {
+            propMap.put(propertie.getPropertyId(), propertie);
         }
         return propMap;
     }
@@ -513,8 +513,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private HashMap<String, IIpsObjectPart> createIdPartMap() {
         HashMap<String, IIpsObjectPart> map = new HashMap<String, IIpsObjectPart>();
         IIpsElement[] parts = getChildren();
-        for (int i = 0; i < parts.length; i++) {
-            IIpsObjectPart part = (IIpsObjectPart)parts[i];
+        for (IIpsElement part2 : parts) {
+            IIpsObjectPart part = (IIpsObjectPart)part2;
             map.put(part.getId(), part);
         }
         return map;
@@ -624,8 +624,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
         IIpsElement[] children = getChildren();
-        for (int i = 0; i < children.length; i++) {
-            MessageList childResult = ((IpsObjectPartContainer)children[i]).validate(ipsProject);
+        for (IIpsElement element : children) {
+            MessageList childResult = ((IpsObjectPartContainer)element).validate(ipsProject);
             result.add(childResult);
         }
     }
@@ -671,9 +671,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected void validateExtensionProperties(MessageList ml) throws CoreException {
         IExtensionPropertyDefinition[] properties = getIpsModel().getExtensionPropertyDefinitions(getClass(), true);
-        for (int i = 0; i < properties.length; i++) {
-            Object value = getExtPropertyValue(properties[i].getPropertyId());
-            MessageList newList = properties[i].validate(this, value);
+        for (IExtensionPropertyDefinition propertie : properties) {
+            Object value = getExtPropertyValue(propertie.getPropertyId());
+            MessageList newList = propertie.validate(this, value);
             if (newList != null) {
                 ml.add(newList);
             }
@@ -724,7 +724,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param part The details part
      * @param propertyName The details property name
      */
-    protected void addDetails(Map<IDependency, List<IDependencyDetail>> details, IDependency dependency, IIpsObjectPartContainer part, String propertyName) {
+    protected void addDetails(Map<IDependency, List<IDependencyDetail>> details,
+            IDependency dependency,
+            IIpsObjectPartContainer part,
+            String propertyName) {
         if (details == null) {
             return;
         }

@@ -148,9 +148,9 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
         List<IIpsPackageFragment> filtered = new ArrayList<IIpsPackageFragment>(roots.length);
 
-        for (int i = 0; i < roots.length; i++) {
-            if (roots[i].isBasedOnSourceFolder()) {
-                filtered.add(roots[i].getDefaultIpsPackageFragment());
+        for (IIpsPackageFragmentRoot root : roots) {
+            if (root.isBasedOnSourceFolder()) {
+                filtered.add(root.getDefaultIpsPackageFragment());
             }
         }
         return filtered.toArray(new IIpsPackageFragment[filtered.size()]);
@@ -249,8 +249,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         }
 
         // traverse tree
-        for (int i = 0; i < children.length; i++) {
-            IIpsPackageFragment currentPack = children[i];
+        for (IIpsPackageFragment currentPack : children) {
             checkSortOrder(currentPack, packagesList, sortDefOrderList, restore);
         }
     }
@@ -265,8 +264,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         String[] fragmentNames = new String[newSortDef.size()];
         int i = 0;
 
-        for (Iterator<IIpsPackageFragment> iter = newSortDef.iterator(); iter.hasNext();) {
-            IIpsPackageFragment element = iter.next();
+        for (IIpsPackageFragment element : newSortDef) {
             fragmentNames[i++] = QNameUtil.getUnqualifiedName(element.getName());
         }
 
@@ -289,10 +287,8 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         }
 
         Iterator<IIpsPackageFragment> iterSortdDefsNew = sortDefNew.iterator();
-        for (Iterator<IIpsPackageFragment> iterSortdDefsOld = sortDefOld.iterator(); iterSortdDefsOld.hasNext();) {
+        for (IIpsPackageFragment elementOld : sortDefOld) {
             IIpsPackageFragment elementNew = iterSortdDefsNew.next();
-            IIpsPackageFragment elementOld = iterSortdDefsOld.next();
-
             if (!elementNew.equals(elementOld)) {
                 return false;
             }
@@ -325,17 +321,16 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
 
-        for (int i = 0; i < roots.length; i++) {
-            if (roots[i].isBasedOnSourceFolder()) {
-                IIpsPackageFragment currentPack = roots[i].getDefaultIpsPackageFragment();
+        for (IIpsPackageFragmentRoot root : roots) {
+            if (root.isBasedOnSourceFolder()) {
+                IIpsPackageFragment currentPack = root.getDefaultIpsPackageFragment();
 
                 checkSortOrder(currentPack, packagesList, sortOrdersNewList, restoreDefault);
             }
         }
 
         Iterator<IIpsPackageFragmentSortDefinition> iterSortdDefs = sortOrdersNewList.iterator();
-        for (Iterator<IIpsPackageFragment> iterFragment = packagesList.iterator(); iterFragment.hasNext();) {
-            IIpsPackageFragment element = iterFragment.next();
+        for (IIpsPackageFragment element : packagesList) {
             element.setSortDefinition(iterSortdDefs.next());
         }
     }

@@ -18,6 +18,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import au.com.bytecode.opencsv.CSVReader;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -32,8 +34,6 @@ import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * Operation to import ipstablecontents from a comma separated values (CSV) file.

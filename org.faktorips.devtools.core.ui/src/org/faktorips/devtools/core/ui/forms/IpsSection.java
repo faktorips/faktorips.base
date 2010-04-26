@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.forms;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -208,8 +207,8 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
         List<IDataChangeableStateChangeListener> listeners = new ArrayList<IDataChangeableStateChangeListener>(
                 dataChangeableStateChangeListeners);
-        for (Iterator<IDataChangeableStateChangeListener> it = listeners.iterator(); it.hasNext();) {
-            it.next().dataChangeableStateHasChanged(this);
+        for (IDataChangeableStateChangeListener iDataChangeableStateChangeListener : listeners) {
+            iDataChangeableStateChangeListener.dataChangeableStateHasChanged(this);
         }
     }
 

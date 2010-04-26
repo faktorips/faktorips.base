@@ -45,9 +45,9 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
         if (parentElement instanceof IIpsObject) {
             IIpsObject ipsObject = (IIpsObject)parentElement;
             List<IIpsObjectPart> parts = new ArrayList<IIpsObjectPart>();
-            for (int i = 0; i < providedObjectParts.length; i++) {
-                if (providedObjectParts[i].getIpsObject().equals(ipsObject)) {
-                    parts.add(providedObjectParts[i]);
+            for (IIpsObjectPart providedObjectPart : providedObjectParts) {
+                if (providedObjectPart.getIpsObject().equals(ipsObject)) {
+                    parts.add(providedObjectPart);
                 }
             }
             return parts.toArray();

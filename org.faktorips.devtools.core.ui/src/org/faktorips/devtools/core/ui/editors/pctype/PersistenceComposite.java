@@ -69,9 +69,9 @@ public abstract class PersistenceComposite extends IpsPartsComposite {
             table.getParent().setLayout(layout);
 
             String[] columnHeaders = getColumnHeaders();
-            for (int i = 0; i < columnHeaders.length; i++) {
+            for (String columnHeader : columnHeaders) {
                 TableColumn column = new TableColumn(table, SWT.NONE);
-                column.setText(columnHeaders[i]);
+                column.setText(columnHeader);
 
                 layout.setColumnData(column, new ColumnWeightData((int)(100 * (1.0f / columnHeaders.length))));
             }

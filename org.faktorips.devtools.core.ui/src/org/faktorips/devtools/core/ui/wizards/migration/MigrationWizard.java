@@ -94,11 +94,11 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
             IIpsProject[] projects = projectSelectionPage.getProjects();
             monitor.beginTask("Migration", projects.length * 10000); //$NON-NLS-1$
             try {
-                for (int i = 0; i < projects.length; i++) {
+                for (IIpsProject project : projects) {
                     IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 10000);
                     try {
                         AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
-                                .getMigrationOperation(projects[i]);
+                                .getMigrationOperation(project);
                         migrationOperation.run(subMonitor);
                         messageList = migrationOperation.getMessageList();
                     } catch (CoreException e) {

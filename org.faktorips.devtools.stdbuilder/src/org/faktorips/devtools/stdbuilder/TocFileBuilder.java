@@ -189,8 +189,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             tocFileMap.clear();
         }
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
-        for (int i = 0; i < srcRoots.length; i++) {
-            IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoots[i];
+        for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
+            IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoot;
             if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
                 getToc(root).clear();
             }
@@ -215,8 +215,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     @Override
     public void afterBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException {
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
-        for (int i = 0; i < srcRoots.length; i++) {
-            IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoots[i];
+        for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
+            IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoot;
             Long oldModStamp = packFrgmtRootTocModStamps.get(root);
             if (oldModStamp.longValue() != getToc(root).getModificationStamp()) {
                 saveToc(root);
@@ -402,12 +402,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                         productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), validTo);
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         List<TocEntryGeneration> genEntries = new ArrayList<TocEntryGeneration>(generations.length);
-        for (int i = 0; i < generations.length; i++) {
-            DateTime validFrom = DateTime.createDateOnly(generations[i].getValidFrom());
-            IProductCmptGeneration gen = (IProductCmptGeneration)generations[i];
+        for (IIpsObjectGeneration generation : generations) {
+            DateTime validFrom = DateTime.createDateOnly(generation.getValidFrom());
+            IProductCmptGeneration gen = (IProductCmptGeneration)generation;
             String generationClassName;
             if (gen.getProductCmpt().containsFormula()) {
-                generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generations[i]);
+                generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generation);
             } else {
                 generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(pcType);
             }

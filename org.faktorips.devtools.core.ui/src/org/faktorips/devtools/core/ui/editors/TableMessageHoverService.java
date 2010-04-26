@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,12 +19,11 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-
 /**
- * Class to show hovers for messages for tables. 
+ * Class to show hovers for messages for tables.
  */
 public abstract class TableMessageHoverService extends MessageHoverService {
-    
+
     private TableViewer viewer;
     private Table table;
 
@@ -37,6 +36,7 @@ public abstract class TableMessageHoverService extends MessageHoverService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getElementAt(Point point) {
         TableItem item = table.getItem(point);
         if (item == null) {
@@ -44,10 +44,11 @@ public abstract class TableMessageHoverService extends MessageHoverService {
         }
         return viewer.getElementAt(table.indexOf(item));
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public Rectangle getBoundsAt(Point point) {
         TableItem item = table.getItem(point);
         if (item == null) {

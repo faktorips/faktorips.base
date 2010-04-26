@@ -86,9 +86,9 @@ public class ProductExplorer extends ModelExplorer {
         IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
         IpsObjectType[] objectTypes = ipsModel.getIpsObjectTypes();
         List<IpsObjectType> allowedObjectTypes = new ArrayList<IpsObjectType>();
-        for (int i = 0; i < objectTypes.length; i++) {
-            if (objectTypes[i].isProductDefinitionType()) {
-                allowedObjectTypes.add(objectTypes[i]);
+        for (IpsObjectType objectType : objectTypes) {
+            if (objectType.isProductDefinitionType()) {
+                allowedObjectTypes.add(objectType);
             }
         }
         return new ModelExplorerConfiguration(allowedObjectTypes.toArray(new IpsObjectType[allowedObjectTypes.size()]));

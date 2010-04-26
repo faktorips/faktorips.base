@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -55,15 +55,15 @@ public interface DatatypeHelper {
     public final static DatatypeHelper MONEY = new MoneyHelper((MoneyDatatype)Datatype.MONEY);
 
     /**
-     * Helper for
-     * {@link org.faktorips.datatype.Datatype#PRIMITIVE_BOOLEAN Datatype.PRIMITIVE_BOOLEAN}.
+     * Helper for {@link org.faktorips.datatype.Datatype#PRIMITIVE_BOOLEAN
+     * Datatype.PRIMITIVE_BOOLEAN}.
      */
     public final static PrimitiveDatatypeHelper PRIMITIVE_BOOLEAN = new PrimitiveBooleanHelper(
             (PrimitiveBooleanDatatype)Datatype.PRIMITIVE_BOOLEAN);
 
     /**
-     * Helper for
-     * {@link org.faktorips.datatype.Datatype#PRIMITIVE_INTEGER Datatype.PRIMITIVE_INTEGER}.
+     * Helper for {@link org.faktorips.datatype.Datatype#PRIMITIVE_INTEGER
+     * Datatype.PRIMITIVE_INTEGER}.
      */
     public final static PrimitiveDatatypeHelper PRIMITIVE_INTEGER = new PrimitiveIntegerHelper(
             (PrimitiveIntegerDatatype)Datatype.PRIMITIVE_INT);
@@ -107,8 +107,8 @@ public interface DatatypeHelper {
 
     /**
      * If this is a helper for a mutable data type (like GregorianCalendar for example) this method
-     * return the code fragment that creates a copy of the given expression. For immutable data types
-     * this method returns the expression unmodified.
+     * return the code fragment that creates a copy of the given expression. For immutable data
+     * types this method returns the expression unmodified.
      * 
      * @param expression An expression (as Java sourcecode)
      * @return s. above
@@ -147,8 +147,8 @@ public interface DatatypeHelper {
             boolean useTypesafeCollections);
 
     /**
-     * Returns a <code>JavaCodeFragment</code> containing the source code to create a new enum
-     * value set instance.
+     * Returns a <code>JavaCodeFragment</code> containing the source code to create a new enum value
+     * set instance.
      * 
      * @param values the values contained in the enum value set code fragment returned by this
      *            method
@@ -162,12 +162,12 @@ public interface DatatypeHelper {
             boolean useTypesafeCollections);
 
     /**
-     * Returns a <code>JavaCodeFragment</code> containing the source code to create a new enum
-     * value set instance.
+     * Returns a <code>JavaCodeFragment</code> containing the source code to create a new enum value
+     * set instance.
      * 
      * @param collectionExpression a JavaCodeFragment is expected that contains an expression of the
-     *            type <code>java.util.Collection</code> The collection has to contain instances
-     *            of the datatype of this helper.
+     *            type <code>java.util.Collection</code> The collection has to contain instances of
+     *            the datatype of this helper.
      * 
      * @param containsNullExpression a JavaCodeFragment is expected that contains an expression of
      *            the type <code>boolean</code>

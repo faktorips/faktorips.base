@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,17 +18,16 @@ import java.math.BigDecimal;
 /**
  * NullObject for Decimal.
  * <p>
- * Overrides all Decimal methods with appropriate NullObject behaviour, e.g.
- * add() called on a null value always returns an instance of DecimalNull.
+ * Overrides all Decimal methods with appropriate NullObject behaviour, e.g. add() called on a null
+ * value always returns an instance of DecimalNull.
  * <p>
- * The class is package private as the null behaviour is completly defined
- * in {@link Decimal}.
+ * The class is package private as the null behaviour is completly defined in {@link Decimal}.
  */
 public class DecimalNull extends Decimal implements NullObject {
 
     private static final long serialVersionUID = -662857878963625638L;
     static final String STRING_REPRESENTATION = "DecimalNull";
-    
+
     DecimalNull() {
         super(null);
     }
@@ -81,7 +80,7 @@ public class DecimalNull extends Decimal implements NullObject {
      * Returns the special case Decimal.NULL.
      */
     @Override
-    public Decimal max(Decimal value){
+    public Decimal max(Decimal value) {
         return Decimal.NULL;
     }
 
@@ -89,7 +88,7 @@ public class DecimalNull extends Decimal implements NullObject {
      * Returns the special case Decimal.NULL.
      */
     @Override
-    public Decimal min(Decimal value){
+    public Decimal min(Decimal value) {
         return Decimal.NULL;
     }
 
@@ -124,7 +123,6 @@ public class DecimalNull extends Decimal implements NullObject {
     public Money multiply(Money m, int roundingMode) {
         return Money.NULL;
     }
-
 
     /**
      * Returns the special case DECIMAL.NULL.
@@ -329,8 +327,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * Returns <code>true</code> if the given object is also Decimal.NULL,
-     * otherwise false.
+     * Returns <code>true</code> if the given object is also Decimal.NULL, otherwise false.
      */
     @Override
     public boolean equals(Object o) {

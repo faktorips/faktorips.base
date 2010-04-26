@@ -17,7 +17,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -158,8 +157,8 @@ public class GenerationAttributesSection extends IpsSection {
         IAttributeValue[] elements = generation.getAttributeValues();
         Arrays.sort(elements, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
                 .getIpsProject()));
-        for (int i = 0; i < elements.length; i++) {
-            addAndRegister(elements[i]);
+        for (IAttributeValue element : elements) {
+            addAndRegister(element);
         }
 
         rootPane.layout(true);
@@ -182,8 +181,7 @@ public class GenerationAttributesSection extends IpsSection {
         super.setEnabled(enabled);
 
         // to get the disabled look, we have to disable all the input-fields manually :-(
-        for (Iterator<Control> iter = editControls.iterator(); iter.hasNext();) {
-            Control element = iter.next();
+        for (Control element : editControls) {
             element.setEnabled(enabled);
 
         }

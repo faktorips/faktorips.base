@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.formulatest;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -249,8 +248,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private void generateComputeTestMethods(Map<IFormula, Integer> formulasToTest, JavaCodeFragmentBuilder builder)
             throws CoreException {
         ProductCmptGenerationCuBuilder generationBuilder = productCmptBuilder.getGenerationBuilder();
-        for (Iterator<IFormula> iterator = formulasToTest.keySet().iterator(); iterator.hasNext();) {
-            IFormula formula = iterator.next();
+        for (IFormula formula : formulasToTest.keySet()) {
             Integer generationId = formulasToTest.get(formula);
             List<String> testParameterNames = testParameterNamesForGeneration.get(formula.getName() + "#"
                     + generationId);
@@ -370,8 +368,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln();
 
         // generate the test method call for each given test method
-        for (Iterator<String> iter = testMethods.iterator(); iter.hasNext();) {
-            String testMethodName = iter.next();
+        for (String testMethodName : testMethods) {
             body.append(testMethodName);
             body.append("(");
             body.append("productCmpt");
@@ -399,8 +396,8 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
         ArrayList<String> testMethods = new ArrayList<String>();
         IIpsObjectGeneration[] gen = productCmpt.getGenerationsOrderedByValidDate();
-        for (int i = 0; i < gen.length; i++) {
-            appendTestMethodsContentForGeneration((IProductCmptGeneration)gen[i], codeBuilder, testMethods);
+        for (IIpsObjectGeneration element : gen) {
+            appendTestMethodsContentForGeneration((IProductCmptGeneration)element, codeBuilder, testMethods);
         }
         return testMethods;
     }
@@ -422,10 +419,10 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
             JavaCodeFragmentBuilder builder,
             ArrayList<String> testMethods) throws CoreException {
         IFormula[] formulas = generation.getFormulas();
-        for (int i = 0; i < formulas.length; i++) {
-            IFormulaTestCase[] testCases = formulas[i].getFormulaTestCases();
-            for (int j = 0; j < testCases.length; j++) {
-                appendTestMethodsContentForGenerationFormulaTest(generation, builder, testMethods, testCases[j]);
+        for (IFormula formula : formulas) {
+            IFormulaTestCase[] testCases = formula.getFormulaTestCases();
+            for (IFormulaTestCase testCase : testCases) {
+                appendTestMethodsContentForGenerationFormulaTest(generation, builder, testMethods, testCase);
             }
         }
     }

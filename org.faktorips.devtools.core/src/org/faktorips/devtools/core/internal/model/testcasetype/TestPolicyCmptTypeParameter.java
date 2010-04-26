@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -192,9 +191,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
         while (pcType != null) {
             IPolicyCmptTypeAssociation[] associations = pcType.getPolicyCmptTypeAssociations();
-            for (int i = 0; i < associations.length; i++) {
-                if (associations[i].getName().equals(association)) {
-                    return associations[i];
+            for (IPolicyCmptTypeAssociation association2 : associations) {
+                if (association2.getName().equals(association)) {
+                    return association2;
                 }
             }
             pcType = (IPolicyCmptType)pcType.findSupertype(ipsProject);
@@ -271,8 +270,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     public ITestAttribute getTestAttribute(String attributeName) {
-        for (Iterator<ITestAttribute> it = testAttributes.iterator(); it.hasNext();) {
-            ITestAttribute a = it.next();
+        for (ITestAttribute a : testAttributes) {
             if (a.getName().equals(attributeName)) {
                 return a;
             }
@@ -458,12 +456,12 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         }
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(100);
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length; i++) {
+        for (IIpsObjectGeneration generation : generations) {
             // check all links, if the target matches the defined target in the test case type
-            IProductCmptLink[] links = ((IProductCmptGeneration)generations[i]).getLinks();
-            for (int j = 0; j < links.length; j++) {
-                IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,
-                        links[j].getTarget());
+            IProductCmptLink[] links = ((IProductCmptGeneration)generation).getLinks();
+            for (IProductCmptLink link : links) {
+                IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, link
+                        .getTarget());
                 if (productCmptFoundSrc != null && !result.contains(productCmptFoundSrc)) {
                     IProductCmpt productCmptFound = (IProductCmpt)productCmptFoundSrc.getIpsObject();
                     if (productCmptFound == null) {
@@ -574,9 +572,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                 if (associationFound.isAssoziation()) {
                     ITestParameter targetOfAssoziationInTestCaseType = null;
                     ITestParameter[] allTestParameter = getTestCaseType().getAllTestParameter();
-                    for (int i = 0; i < allTestParameter.length; i++) {
-                        if (allTestParameter[i] instanceof ITestPolicyCmptTypeParameter) {
-                            ITestPolicyCmptTypeParameter tPCTP = (ITestPolicyCmptTypeParameter)allTestParameter[i];
+                    for (ITestParameter element : allTestParameter) {
+                        if (element instanceof ITestPolicyCmptTypeParameter) {
+                            ITestPolicyCmptTypeParameter tPCTP = (ITestPolicyCmptTypeParameter)element;
                             boolean isTestObject = false;
                             isTestObject = isRoot();
                             if (!isTestObject) {

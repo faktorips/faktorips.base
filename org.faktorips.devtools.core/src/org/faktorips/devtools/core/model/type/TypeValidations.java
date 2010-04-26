@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,11 +32,12 @@ import org.faktorips.util.message.ObjectProperty;
 public class TypeValidations {
 
     /**
-     * Validates if there exists already a policy component type or product component type in the ips object path. The method
-     * checks when a product component type is validated if a policy component type with the same name exists within the ips
-     * objects path and vice versa.
+     * Validates if there exists already a policy component type or product component type in the
+     * ips object path. The method checks when a product component type is validated if a policy
+     * component type with the same name exists within the ips objects path and vice versa.
      * 
-     * @param otherIpsObjectType the IpsObjectType of the other type e.g. if a product component type is validated the IpsObjectType has to be policy component type
+     * @param otherIpsObjectType the IpsObjectType of the other type e.g. if a product component
+     *            type is validated the IpsObjectType has to be policy component type
      * @param qualifiedName the qualified name of the type that is to validate
      * @param ipsProject the ips project
      * @param thisType the model object of the type that is to validate
@@ -44,8 +45,10 @@ public class TypeValidations {
      * 
      * @throws CoreException exceptions that a raised a delegated by this method
      */
-    public static Message validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType otherIpsObjectType, String qualifiedName,
-            IIpsProject ipsProject, IType thisType) throws CoreException {
+    public static Message validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType otherIpsObjectType,
+            String qualifiedName,
+            IIpsProject ipsProject,
+            IType thisType) throws CoreException {
         IIpsSrcFile file = ipsProject.findIpsSrcFile(otherIpsObjectType, qualifiedName);
         if (file != null) {
             if (ipsProject.equals(file.getIpsProject())) {

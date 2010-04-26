@@ -134,17 +134,17 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
             // get all elements on the same level (all children of the parent object)
             IIpsElement[] childrenOfParent = ((ITestParameter)getParent()).getChildren();
             List<ITestParameter> testParameterChildrenOfParent = new ArrayList<ITestParameter>(childrenOfParent.length);
-            for (int i = 0; i < childrenOfParent.length; i++) {
-                if (childrenOfParent[i] instanceof ITestParameter) {
-                    testParameterChildrenOfParent.add((ITestParameter)childrenOfParent[i]);
+            for (IIpsElement element : childrenOfParent) {
+                if (element instanceof ITestParameter) {
+                    testParameterChildrenOfParent.add((ITestParameter)element);
                 }
             }
             testParameters = testParameterChildrenOfParent.toArray(new ITestParameter[0]);
         }
 
         if (testParameters != null) {
-            for (int i = 0; i < testParameters.length; i++) {
-                if (testParameters[i] != this && testParameters[i].getName().equals(name)) {
+            for (ITestParameter testParameter : testParameters) {
+                if (testParameter != this && testParameter.getName().equals(name)) {
                     String text = NLS.bind(Messages.TestParameter_ValidationError_DuplicateName, name);
                     Message msg = new Message(MSGCODE_DUPLICATE_NAME, text, Message.ERROR, this, PROPERTY_NAME);
                     list.add(msg);

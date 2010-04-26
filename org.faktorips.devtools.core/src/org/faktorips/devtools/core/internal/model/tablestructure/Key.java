@@ -127,9 +127,9 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
      * Adds the items that are candidates to the result list.
      */
     private void addCandidates(List<IKeyItem> result, IKeyItem[] items) {
-        for (int i = 0; i < items.length; i++) {
-            if (isCandidate(items[i])) {
-                result.add(items[i]);
+        for (IKeyItem item : items) {
+            if (isCandidate(item)) {
+                result.add(item);
             }
         }
     }

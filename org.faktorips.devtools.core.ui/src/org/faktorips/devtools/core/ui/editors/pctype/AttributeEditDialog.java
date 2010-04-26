@@ -353,8 +353,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             return;
         }
         Control[] children = configGroup.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            children[i].dispose();
+        for (Control element : children) {
+            element.dispose();
         }
         createConfigGroupContent();
         configGroup.layout();
@@ -920,9 +920,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 return;
             }
             IMethod[] methods = type.getMethods();
-            for (int i = 0; i < methods.length; i++) {
-                if (methods[i].getSignatureString().startsWith(prefix)) {
-                    addToResult(result, methods[i], documentOffset);
+            for (IMethod method : methods) {
+                if (method.getSignatureString().startsWith(prefix)) {
+                    addToResult(result, method, documentOffset);
                 }
             }
         }

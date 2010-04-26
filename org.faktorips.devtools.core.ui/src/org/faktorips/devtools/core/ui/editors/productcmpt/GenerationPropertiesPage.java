@@ -122,8 +122,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             }
         };
 
-        Action openModelDescription = new Action(Messages.GenerationPropertiesPage_openModelDescView, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("ModelDescription.gif")) { //$NON-NLS-1$
+        Action openModelDescription = new Action(Messages.GenerationPropertiesPage_openModelDescView, IpsUIPlugin
+                .getImageHandling().createImageDescriptor("ModelDescription.gif")) { //$NON-NLS-1$
 
             @Override
             public void run() {

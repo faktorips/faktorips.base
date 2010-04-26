@@ -294,17 +294,16 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         // check for duplicate test attribute names and types
         TestPolicyCmptTypeParameter typeParam = (TestPolicyCmptTypeParameter)getParent();
         ITestAttribute testAttributes[] = typeParam.getTestAttributes();
-        for (int i = 0; i < testAttributes.length; i++) {
-            if (testAttributes[i] != this && testAttributes[i].getName().equals(name)) {
+        for (ITestAttribute testAttribute : testAttributes) {
+            if (testAttribute != this && testAttribute.getName().equals(name)) {
                 // duplicate name
                 String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, name);
                 Message msg = new Message(MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME, text, Message.ERROR, this,
                         PROPERTY_NAME);
                 messageList.add(msg);
                 break;
-            } else if (isBasedOnModelAttribute() && testAttributes[i] != this
-                    && testAttributes[i].getAttribute().equals(attribute)
-                    && testAttributes[i].getTestAttributeType() == type) {
+            } else if (isBasedOnModelAttribute() && testAttribute != this
+                    && testAttribute.getAttribute().equals(attribute) && testAttribute.getTestAttributeType() == type) {
                 // duplicate attribute and type
                 String text = NLS.bind(Messages.TestAttribute_ValidationError_DuplicateAttributeAndType, attribute,
                         type.getName());

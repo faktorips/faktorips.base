@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class FormulaTestCaseTest extends AbstractIpsPluginTest {
-    
+
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
     private IProductCmpt productCmpt;
@@ -40,6 +40,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
     private IFormula formula;
     private IFormulaTestCase formulaTestCase;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject();
@@ -49,15 +50,15 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         attributeInput.setName("attributeInput");
         attributeInput.setAttributeType(AttributeType.CHANGEABLE);
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
-        
+
         productCmpt = newProductCmpt(productCmptType, "productCmpt");
         IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(0);
         formula = generation.newFormula();
         formulaTestCase = formula.newFormulaTestCase();
         formula.setExpression("1");
     }
-    
-    public void testExecuteFormulaOnlyParam() throws Exception{
+
+    public void testExecuteFormulaOnlyParam() throws Exception {
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setFormulaSignatureDefinition(true);
         method.setFormulaName("PremiumCalculation");
@@ -66,11 +67,11 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         method.newParameter(Datatype.INTEGER.getQualifiedName(), "param2");
         method.newParameter(policyCmptType.getQualifiedName(), "policy");
 
-        formula.setFormulaSignature(method.getFormulaName());   
+        formula.setFormulaSignature(method.getFormulaName());
         formula.setExpression("param1 * param2 * 2 * policy.attributeInput");
-        
+
         // sets the input for the formula test
-        
+
         // param1
         IFormulaTestInputValue formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("param1");
@@ -83,7 +84,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("policy.attributeInput");
         formulaTestInputValue.setValue("10");
-        
+
         Object result = formulaTestCase.execute(ipsProject);
         assertEquals(new Integer(600), result);
     }
@@ -91,12 +92,12 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
         formulaTestCase.initFromXml((Element)doc.getDocumentElement());
-        
+
         assertEquals("formulaTestCase", formulaTestCase.getName());
         assertEquals("4711", formulaTestCase.getExpectedResult());
         assertEquals(2, formulaTestCase.getFormulaTestInputValues().length);
     }
-    
+
     public void testToXmlDocument() {
         IFormulaTestCase formulaTestCase = formula.newFormulaTestCase();
         formulaTestCase.setExpectedResult("101");
@@ -113,8 +114,8 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertNotNull(newFormulaTestCase.getFormulaTestInputValue("foo1"));
         assertNotNull(newFormulaTestCase.getFormulaTestInputValue("foo2"));
     }
-    
-    public void testNewAndDeleteFormulaTestInputValue(){
+
+    public void testNewAndDeleteFormulaTestInputValue() {
         IFormulaTestInputValue v1 = formulaTestCase.newFormulaTestInputValue();
         IFormulaTestInputValue v2 = formulaTestCase.newFormulaTestInputValue();
         v1.setIdentifier("foo1");
@@ -122,21 +123,21 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertEquals(2, formulaTestCase.getFormulaTestInputValues().length);
         assertEquals(v1, formulaTestCase.getFormulaTestInputValue("foo1"));
         assertEquals(v2, formulaTestCase.getFormulaTestInputValue("foo2"));
-        
+
         v1.delete();
         v2.delete();
         assertEquals(0, formulaTestCase.getFormulaTestInputValues().length);
     }
-    
-    public void testAddOrDeleteFormulaTestInputValues(){
+
+    public void testAddOrDeleteFormulaTestInputValues() {
         IFormulaTestInputValue value1 = formulaTestCase.newFormulaTestInputValue();
         value1.setIdentifier("value1");
         IFormulaTestInputValue value2 = formulaTestCase.newFormulaTestInputValue();
         value2.setIdentifier("value2");
         IFormulaTestInputValue value3 = formulaTestCase.newFormulaTestInputValue();
         value3.setIdentifier("value3");
-        
-        String[] newValues = new String[]{"value1","value3","value2"};
+
+        String[] newValues = new String[] { "value1", "value3", "value2" };
         assertTrue(formulaTestCase.addOrDeleteFormulaTestInputValues(newValues, ipsProject));
         IFormulaTestInputValue[] valuesNew = formulaTestCase.getFormulaTestInputValues();
         assertEquals(value1, valuesNew[0]);
@@ -144,8 +145,8 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertEquals(value2, valuesNew[2]);
         assertEquals(3, newValues.length);
         assertFalse(formulaTestCase.addOrDeleteFormulaTestInputValues(newValues, ipsProject));
-        
-        newValues = new String[]{"value1", "value4", "value2", "value5"};
+
+        newValues = new String[] { "value1", "value4", "value2", "value5" };
         assertTrue(formulaTestCase.addOrDeleteFormulaTestInputValues(newValues, ipsProject));
         valuesNew = formulaTestCase.getFormulaTestInputValues();
         assertEquals(value1, valuesNew[0]);
@@ -155,8 +156,8 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertEquals(4, newValues.length);
         assertFalse(formulaTestCase.addOrDeleteFormulaTestInputValues(newValues, ipsProject));
     }
-    
-    public void testIsFormulaTestCaseEmpty(){
+
+    public void testIsFormulaTestCaseEmpty() {
         assertTrue(formulaTestCase.isFormulaTestCaseEmpty());
         IFormulaTestInputValue value1 = formulaTestCase.newFormulaTestInputValue();
         value1.setIdentifier("param1");
@@ -164,53 +165,53 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         value1.setIdentifier("param2");
         // check if empty, because all params have no value
         assertTrue(formulaTestCase.isFormulaTestCaseEmpty());
-        
+
         value1.setValue("1");
         assertFalse(formulaTestCase.isFormulaTestCaseEmpty());
         value2.setValue("2");
         assertFalse(formulaTestCase.isFormulaTestCaseEmpty());
     }
-    
-    public void testGenerateUniqueNameForFormulaTestCase(){
+
+    public void testGenerateUniqueNameForFormulaTestCase() {
         formulaTestCase.setName("Test");
         assertEquals("Test", formulaTestCase.generateUniqueNameForFormulaTestCase("Test"));
-        
+
         IFormulaTestCase ftc1 = formula.newFormulaTestCase();
         ftc1.setName(ftc1.generateUniqueNameForFormulaTestCase("Test"));
         assertEquals("Test (2)", ftc1.getName());
-        
+
         IFormulaTestCase ftcNew = formula.newFormulaTestCase();
         ftcNew.setName(ftcNew.generateUniqueNameForFormulaTestCase("Test"));
         assertEquals("Test (3)", ftcNew.getName());
-        
+
         ftcNew = formula.newFormulaTestCase();
         ftcNew.setName(ftcNew.generateUniqueNameForFormulaTestCase("Test"));
         assertEquals("Test (4)", ftcNew.getName());
-        
+
         ftc1.setName("X");
         ftcNew = formula.newFormulaTestCase();
         ftcNew.setName(ftcNew.generateUniqueNameForFormulaTestCase("Test"));
         assertEquals("Test (2)", ftcNew.getName());
-        
+
         ftcNew = formula.newFormulaTestCase();
         ftcNew.setName(ftcNew.generateUniqueNameForFormulaTestCase("Test"));
         assertEquals("Test (5)", ftcNew.getName());
-        
+
     }
-    
-    public void testValidate_DuplicateName() throws CoreException{
+
+    public void testValidate_DuplicateName() throws CoreException {
         formulaTestCase.setName("Test");
         MessageList ml = formulaTestCase.validate(formulaTestCase.getIpsProject());
         assertNull(ml.getMessageByCode(IFormulaTestCase.MSGCODE_DUPLICATE_NAME));
-        
+
         IFormulaTestCase ftc = formula.newFormulaTestCase();
         ftc.setName(formulaTestCase.getName());
         ml = formulaTestCase.validate(null);
         assertNotNull(ml.getMessageByCode(IFormulaTestCase.MSGCODE_DUPLICATE_NAME));
-        
+
         ftc.setName(ftc.generateUniqueNameForFormulaTestCase(formulaTestCase.getName()));
         ml = formulaTestCase.validate(null);
         assertNull(ml.getMessageByCode(IFormulaTestCase.MSGCODE_DUPLICATE_NAME));
     }
-    
+
 }

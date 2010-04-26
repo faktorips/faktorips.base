@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -627,8 +626,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     private boolean fireAboutToDelete(IIpsObjectPart part) {
-        for (Iterator<IDeleteListener> iter = deleteListeners.iterator(); iter.hasNext();) {
-            IDeleteListener listener = iter.next();
+        for (IDeleteListener listener : deleteListeners) {
             boolean accept = listener.aboutToDelete(part);
             if (!accept) {
                 return false;
@@ -638,8 +636,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     private void fireDeleted(IIpsObjectPart part) {
-        for (Iterator<IDeleteListener> iter = deleteListeners.iterator(); iter.hasNext();) {
-            IDeleteListener listener = iter.next();
+        for (IDeleteListener listener : deleteListeners) {
             listener.deleted(part);
         }
     }

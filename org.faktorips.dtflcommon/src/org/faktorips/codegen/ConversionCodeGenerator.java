@@ -13,9 +13,24 @@
 
 package org.faktorips.codegen;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.faktorips.codegen.conversion.*;
+import org.faktorips.codegen.conversion.BooleanToPrimitiveBooleanCg;
+import org.faktorips.codegen.conversion.DecimalToIntegerCg;
+import org.faktorips.codegen.conversion.IntegerToDecimalCg;
+import org.faktorips.codegen.conversion.IntegerToLongCg;
+import org.faktorips.codegen.conversion.IntegerToPrimitiveIntCg;
+import org.faktorips.codegen.conversion.LongToDecimalCg;
+import org.faktorips.codegen.conversion.LongToIntegerCg;
+import org.faktorips.codegen.conversion.LongToPrimitiveLongCg;
+import org.faktorips.codegen.conversion.PrimitiveBooleanToBooleanCg;
+import org.faktorips.codegen.conversion.PrimitiveIntToDecimalCg;
+import org.faktorips.codegen.conversion.PrimitiveIntToIntegerCg;
+import org.faktorips.codegen.conversion.PrimitiveIntToLongCg;
+import org.faktorips.codegen.conversion.PrimitiveIntToPrimitiveLongCg;
+import org.faktorips.codegen.conversion.PrimitiveLongToLongCg;
+import org.faktorips.codegen.conversion.PrimitiveLongToPrimitiveIntCg;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
@@ -83,8 +98,8 @@ public class ConversionCodeGenerator implements ConversionMatrix {
         if (to instanceof AnyDatatype) {
             return true;
         }
-        for (Iterator<SingleConversionCg> it = conversions.iterator(); it.hasNext();) {
-            SingleConversionCg cg = (SingleConversionCg)it.next();
+        for (SingleConversionCg singleConversionCg : conversions) {
+            SingleConversionCg cg = (SingleConversionCg)singleConversionCg;
             if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
                 return true;
             }
@@ -108,8 +123,8 @@ public class ConversionCodeGenerator implements ConversionMatrix {
         if (to instanceof AnyDatatype) {
             return fromValue;
         }
-        for (Iterator<SingleConversionCg> it = conversions.iterator(); it.hasNext();) {
-            SingleConversionCg cg = (SingleConversionCg)it.next();
+        for (SingleConversionCg singleConversionCg : conversions) {
+            SingleConversionCg cg = (SingleConversionCg)singleConversionCg;
             if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
                 return cg.getConversionCode(fromValue);
             }

@@ -602,8 +602,8 @@ public class TestCaseTest extends AbstractDependencyTest {
 
         ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
         List<String> allTestPolicyCmptNames = new ArrayList<String>();
-        for (int i = 0; i < allTestPolicyCmpt.length; i++) {
-            allTestPolicyCmptNames.add(allTestPolicyCmpt[i].getName());
+        for (ITestPolicyCmpt element : allTestPolicyCmpt) {
+            allTestPolicyCmptNames.add(element.getName());
         }
         assertEquals(7, allTestPolicyCmptNames.size());
         assertTrue(allTestPolicyCmptNames.contains("root"));
@@ -638,16 +638,16 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     private void assertContains(ITestObject[] testObjects, Object[] expected) {
-        for (int i = 0; i < expected.length; i++) {
+        for (Object element : expected) {
             boolean found = false;
-            for (int j = 0; j < testObjects.length; j++) {
+            for (ITestObject testObject : testObjects) {
                 if (testObjects.equals(testObjects)) {
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                fail("expected object not found: " + expected[i]);
+                fail("expected object not found: " + element);
             }
         }
     }

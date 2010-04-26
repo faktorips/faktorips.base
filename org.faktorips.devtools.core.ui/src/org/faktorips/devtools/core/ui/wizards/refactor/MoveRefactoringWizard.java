@@ -55,8 +55,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
      */
     public MoveRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "wizards/MoveWizard.png"));
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/MoveWizard.png"));
         setDefaultPageTitle(NLS.bind(Messages.MoveRefactoringWizard_title, getIpsElementName()));
     }
 
@@ -71,8 +70,8 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
     }
 
     /**
-     * The <tt>MoveUserInputPage</tt> provides a tree viewer that enables the user to choose a target
-     * destination for the <tt>IIpsElement</tt> to move.
+     * The <tt>MoveUserInputPage</tt> provides a tree viewer that enables the user to choose a
+     * target destination for the <tt>IIpsElement</tt> to move.
      */
     private final static class MoveUserInputPage extends IpsRefactoringUserInputPage {
 

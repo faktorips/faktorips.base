@@ -94,8 +94,8 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
                 if (dialog.getResult().length > 0) {
                     List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
                     Object[] result = dialog.getResult();
-                    for (int i = 0; i < result.length; i++) {
-                        srcFiles.add((IIpsSrcFile)result[i]);
+                    for (Object element : result) {
+                        srcFiles.add((IIpsSrcFile)element);
                     }
                     updateTextControlAfterDialogOK(srcFiles);
                 } else {

@@ -97,8 +97,8 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 
     public void setBusinessFunctions(String[] functionNames) {
         functions.clear();
-        for (int i = 0; i < functionNames.length; i++) {
-            functions.add(functionNames[i]);
+        for (String functionName : functionNames) {
+            functions.add(functionName);
         }
         objectHasChanged();
     }
@@ -211,8 +211,8 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         IPolicyCmptTypeAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy().getAllAttributes(
                 getPolicyCmptType());
         Set<String> attributeNames = new HashSet<String>(attributes.length);
-        for (int i = 0; i < attributes.length; i++) {
-            attributeNames.add(attributes[i].getName());
+        for (IPolicyCmptTypeAttribute attribute : attributes) {
+            attributeNames.add(attribute.getName());
         }
         for (int i = 0; i < validatedAttributes.size(); i++) {
             String validatedAttribute = validatedAttributes.get(i);

@@ -88,11 +88,11 @@ public abstract class IpsFileTransferViewerDropAdapter extends ViewerDropAdapter
         if (filenames == null) {
             return new ArrayList<IProductCmpt>();
         }
-    
+
         List<IProductCmpt> result = new ArrayList<IProductCmpt>();
-    
-        for (int i = 0; i < filenames.length; i++) {
-            IFile file = getFile(filenames[i]);
+
+        for (String filename : filenames) {
+            IFile file = getFile(filename);
             if (file == null) {
                 return null;
             }

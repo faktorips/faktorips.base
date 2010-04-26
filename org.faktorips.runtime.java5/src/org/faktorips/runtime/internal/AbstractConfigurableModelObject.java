@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,20 +24,19 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.jaxb.ProductComponentXmlAdapter;
 import org.w3c.dom.Element;
 
-
 /**
- * An abstract implementation of configurable policy component that leaves it open how to 
- * access the effective from date.  
+ * An abstract implementation of configurable policy component that leaves it open how to access the
+ * effective from date.
  * 
  * @author Jan Ortmann
- */ 
+ */
 public abstract class AbstractConfigurableModelObject extends AbstractModelObject implements IConfigurableModelObject {
 
     /** The product component this configurable model object is based on. */
-	@XmlJavaTypeAdapter(value = ProductComponentXmlAdapter.class)
-	@XmlAttribute(name="product-component.id")
+    @XmlJavaTypeAdapter(value = ProductComponentXmlAdapter.class)
+    @XmlAttribute(name = "product-component.id")
     private IProductComponent productCmpt;
-    
+
     private IProductComponentGeneration productCmptGeneration;
 
     public AbstractConfigurableModelObject() {
@@ -53,6 +52,7 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
      * 
      * @deprecated use {@link #setProductComponent(IProductComponent)}
      */
+    @Deprecated
     public void setProductCmpt(IProductComponent productCmpt) {
         setProductComponent(productCmpt);
     }
@@ -73,37 +73,37 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
     }
 
     public IProductComponentGeneration getProductCmptGeneration() {
-        if (productCmptGeneration==null) {
-            if (productCmpt==null) {
+        if (productCmptGeneration == null) {
+            if (productCmpt == null) {
                 return null;
             }
             productCmptGeneration = getProductComponentGenerationFromRepository();
         }
         return productCmptGeneration;
     }
-    
+
     /**
-     * Gets the product component generation from the repository. The default implementation
-     * uses the generation's valid from date and the {@link #getEffectiveFromAsCalendar()} method to
-     * identify the generation. You can change this 
+     * Gets the product component generation from the repository. The default implementation uses
+     * the generation's valid from date and the {@link #getEffectiveFromAsCalendar()} method to
+     * identify the generation. You can change this
      */
     protected IProductComponentGeneration getProductComponentGenerationFromRepository() {
-        return productCmpt.getGenerationBase(getEffectiveFromAsCalendar());    
+        return productCmpt.getGenerationBase(getEffectiveFromAsCalendar());
     }
-   
+
     /**
-     * Sets the new product component generation. This method can be overridden in subclasses,
-     * e.g. to implement a notification mechanism.
+     * Sets the new product component generation. This method can be overridden in subclasses, e.g.
+     * to implement a notification mechanism.
      */
     protected void setProductCmptGeneration(IProductComponentGeneration newGeneration) {
-        if (newGeneration!=null) {
+        if (newGeneration != null) {
             setProductComponent(newGeneration.getProductComponent());
         } else {
             setProductComponent(null);
         }
         productCmptGeneration = newGeneration;
     }
-   
+
     /**
      * Copies the product component and product component generation from the other object.
      */
@@ -115,71 +115,73 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
     /**
      * This method should be called when effective from date has changed, so that the reference to
      * the product component generation is cleared. If this policy component contains child
-     * components, this method should also clear the reference to their product component generations.
+     * components, this method should also clear the reference to their product component
+     * generations.
      */
     public void effectiveFromHasChanged() {
         resetProductCmptGenerationAfterEffectiveFromHasChanged();
     }
-    
+
     /**
      * This method is called by {@link #effectiveFromHasChanged()} to set the reference to the
-     * product component generation to <code>null</code> after the effective date has changed.
-     * The method can be overridden if the generation is not identified by the effective date, but
-     * by some other method. 
+     * product component generation to <code>null</code> after the effective date has changed. The
+     * method can be overridden if the generation is not identified by the effective date, but by
+     * some other method.
      */
     protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
         productCmptGeneration = null;
     }
-    
+
     /**
      * Initializes the policy component with the defaults from it's product component generation.
      */
     public void initialize() {
-        
+
     }
 
     /**
      * {@inheritDoc}
      */
-    public void initFromXml(
-            Element objectEl, 
+    @Override
+    public void initFromXml(Element objectEl,
             boolean initWithProductDefaultsBeforeReadingXmlData,
-            IRuntimeRepository productRepository, 
+            IRuntimeRepository productRepository,
             IObjectReferenceStore store) {
         initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, null, null);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public void initFromXml(
-            Element objectEl, 
+    @Override
+    public void initFromXml(Element objectEl,
             boolean initWithProductDefaultsBeforeReadingXmlData,
-            IRuntimeRepository productRepository, 
+            IRuntimeRepository productRepository,
             IObjectReferenceStore store,
             XmlCallback xmlCallback) {
         initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback, "");
     }
-    
+
     /**
      * {@inheritDoc}
-     */  
-    public void initFromXml(
-            Element objectEl, 
+     */
+    @Override
+    public void initFromXml(Element objectEl,
             boolean initWithProductDefaultsBeforeReadingXmlData,
-            IRuntimeRepository productRepository, 
+            IRuntimeRepository productRepository,
             IObjectReferenceStore store,
             XmlCallback xmlCallback,
             String currPath) {
-        
+
         String productCmptId = objectEl.getAttribute("productCmpt");
         if (!"".equals(productCmptId)) {
-            IProductComponent productCmpt = productRepository.getExistingProductComponent(productCmptId); 
+            IProductComponent productCmpt = productRepository.getExistingProductComponent(productCmptId);
             setProductComponent(productCmpt);
         }
         if (initWithProductDefaultsBeforeReadingXmlData) {
             this.initialize();
         }
-        super.initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback, currPath);
+        super.initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback,
+                currPath);
     }
 }

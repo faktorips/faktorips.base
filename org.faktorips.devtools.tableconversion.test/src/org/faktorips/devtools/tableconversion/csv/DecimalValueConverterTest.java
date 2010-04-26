@@ -17,7 +17,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 
 /**
- * Tests for Conversion of an arbitrary CSV-decimal representation to IPS Decimal Datatype and vice versa.
+ * Tests for Conversion of an arbitrary CSV-decimal representation to IPS Decimal Datatype and vice
+ * versa.
  * 
  * @author Roman Grutza
  */
@@ -30,12 +31,8 @@ public class DecimalValueConverterTest extends NumberValueConverterTest {
 
     @Override
     public String[] getExternalDataToConvert(boolean useCommaAsDecimalSeparator) {
-        String[] validExternalDoubles = {
-                "1234",
-                String.valueOf(Long.MAX_VALUE),
-                String.valueOf(Long.MIN_VALUE),
-                "1234567890.0987654321"
-        };
+        String[] validExternalDoubles = { "1234", String.valueOf(Long.MAX_VALUE), String.valueOf(Long.MIN_VALUE),
+                "1234567890.0987654321" };
         if (useCommaAsDecimalSeparator) {
             for (int i = 0; i < validExternalDoubles.length; i++) {
                 validExternalDoubles[i] = validExternalDoubles[i].replace(".", ",");

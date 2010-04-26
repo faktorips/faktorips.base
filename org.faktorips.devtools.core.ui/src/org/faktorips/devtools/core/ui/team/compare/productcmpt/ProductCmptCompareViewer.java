@@ -53,9 +53,9 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
          */
         Font defaultFont = JFaceResources.getDefaultFont();
         FontData[] data = defaultFont.getFontData();
-        for (int i = 0; i < data.length; i++) {
-            data[i].setStyle(SWT.NORMAL);
-            data[i].setHeight(10);
+        for (FontData element : data) {
+            element.setStyle(SWT.NORMAL);
+            element.setHeight(10);
         }
         JFaceResources.getFontRegistry().put(getClass().getName(), data);
     }
@@ -64,6 +64,7 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
      * Adds a <code>CompareViewerLineStyleListener</code> to the given <code>TextViewer</code> for
      * token highlighting. {@inheritDoc}
      */
+    @Override
     protected void configureTextViewer(TextViewer textViewer) {
         CompareViewerLineStyleListener listener = new CompareViewerLineStyleListener((SourceViewer)textViewer);
         textViewer.getTextWidget().addLineStyleListener(listener);
@@ -72,6 +73,7 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getTitle() {
         return Messages.ProductCmptCompareViewer_CompareViewer_title;
     }

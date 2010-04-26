@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -131,9 +130,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 }
                 waitForIndexer();
                 IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-                for (int i = 0; i < projects.length; i++) {
-                    projects[i].close(null);
-                    projects[i].delete(true, true, null);
+                for (IProject project : projects) {
+                    project.close(null);
+                    project.delete(true, true, null);
                 }
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
@@ -150,9 +149,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected final void tearDown() throws Exception {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        for (int i = 0; i < projects.length; i++) {
-            projects[i].close(null);
-            projects[i].delete(true, true, null);
+        for (IProject project : projects) {
+            project.close(null);
+            project.delete(true, true, null);
         }
         tearDownExtension();
     }
@@ -841,22 +840,22 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         ArrayList<DynamicValueDatatype> dataTypes = new ArrayList<DynamicValueDatatype>(adaptedClass.length);
         IIpsProjectProperties properties = project.getProperties();
         DynamicValueDatatype[] definedDatatypes = properties.getDefinedValueDatatypes();
-        for (int i = 0; i < definedDatatypes.length; i++) {
-            dataTypes.add(definedDatatypes[i]);
+        for (DynamicValueDatatype definedDatatype : definedDatatypes) {
+            dataTypes.add(definedDatatype);
         }
 
-        for (int i = 0; i < adaptedClass.length; i++) {
+        for (Class<?> adaptedClas : adaptedClass) {
             DynamicEnumDatatype dataType = new DynamicEnumDatatype(project);
-            dataType.setAdaptedClass(adaptedClass[i]);
+            dataType.setAdaptedClass(adaptedClas);
             dataType.setAllValuesMethodName("getAllValues");
             dataType.setGetNameMethodName("getName");
             dataType.setIsParsableMethodName("isValueOf");
             dataType.setIsSupportingNames(true);
-            dataType.setQualifiedName(StringUtil.unqualifiedName(adaptedClass[i].getName()));
+            dataType.setQualifiedName(StringUtil.unqualifiedName(adaptedClas.getName()));
             dataType.setToStringMethodName("toString");
             dataType.setValueOfMethodName("valueOf");
             dataTypes.add(dataType);
-            createEnumClassFileInProjectOutputLocation(project, adaptedClass[i]);
+            createEnumClassFileInProjectOutputLocation(project, adaptedClas);
         }
 
         DynamicEnumDatatype[] returnValue = dataTypes.toArray(new DynamicEnumDatatype[adaptedClass.length]);
@@ -918,9 +917,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             throws CoreException {
         IPath outputPath = project.getJavaProject().getOutputLocation();
         IFolder output = project.getProject().getFolder(outputPath);
-        for (int i = 0; i < dependencies.length; i++) {
-            String name = dependencies[i].getName() + ".class";
-            output.getFile(name).create(dependencies[i].getResourceAsStream(name), true, null);
+        for (Class<?> dependencie : dependencies) {
+            String name = dependencie.getName() + ".class";
+            output.getFile(name).create(dependencie.getResourceAsStream(name), true, null);
         }
         IFile ipsproject = project.getProject().getFile(".ipsproject");
         if (ipsproject.exists()) {
@@ -957,8 +956,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             return;
         }
         IStatus[] statuus = status.getChildren();
-        for (int i = 0; i < statuus.length; i++) {
-            printOriginalStatus(statuus[i]);
+        for (IStatus statuu : statuus) {
+            printOriginalStatus(statuu);
         }
     }
 
@@ -1034,8 +1033,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         print = print.concat("# comment" + lineSeparator);
 
-        for (Iterator<?> iter = strings.iterator(); iter.hasNext();) {
-            String element = (String)iter.next();
+        for (Object name : strings) {
+            String element = (String)name;
 
             print = print.concat(element + lineSeparator);
         }

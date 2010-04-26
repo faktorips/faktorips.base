@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,40 +16,39 @@ package org.faktorips.devtools.core.ui.controller;
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 
-
 public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
-    
+
     protected EditField field;
     protected IExtensionPropertyAccess object;
     protected String propertyId;
-    
+
     public FieldExtensionPropertyMapping(EditField edit, IExtensionPropertyAccess object, String extensionPropertyId) {
         this.field = edit;
         this.object = object;
         this.propertyId = extensionPropertyId;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public EditField getField() {
         return field;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public Object getObject() {
         return object;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return propertyId;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -65,7 +64,7 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
         }
         object.setExtPropertyValue(propertyId, field.getValue());
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -83,12 +82,13 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
             throw new RuntimeException("Error setting value in control for property " + getPropertyName(), e); //$NON-NLS-1$            
         }
     }
-    
+
     private Object getPropertyValue() {
         return object.getExtPropertyValue(propertyId);
     }
-    
+
+    @Override
     public String toString() {
-        return object.getClass().getName() + '.' + propertyId + '-' + field; 
+        return object.getClass().getName() + '.' + propertyId + '-' + field;
     }
 }

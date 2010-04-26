@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -328,22 +328,22 @@ public class ExprCompiler {
     public void setBinaryOperations(BinaryOperation[] operations) {
         ArgumentCheck.notNull(operations);
         binaryOperations = new HashMap();
-        for (int i = 0; i < operations.length; i++) {
-            register(operations[i]);
+        for (BinaryOperation operation : operations) {
+            register(operation);
         }
     }
 
     /**
-     * Sets the <code>UnaryOperation</code>s the compiler uses. Overwrites all operations
-     * previously registered.
+     * Sets the <code>UnaryOperation</code>s the compiler uses. Overwrites all operations previously
+     * registered.
      * 
      * @throws IllegalArgumentException if operations is null.
      */
     public void setUnaryOperations(UnaryOperation[] operations) {
         ArgumentCheck.notNull(operations);
         unaryOperations = new HashMap();
-        for (int i = 0; i < operations.length; i++) {
-            register(operations[i]);
+        for (UnaryOperation operation : operations) {
+            register(operation);
         }
     }
 
@@ -367,8 +367,8 @@ public class ExprCompiler {
      * Sets the compiler's EnsureResultIsObject property. If set to true, the compiler will check if
      * an expression's type is a Java primitive before returning the result. If the type is a
      * primitive the compiler will convert it to the appropriate wrapper class. E.g. the expresison
-     * <code>2+4</code> is of type primitive int. If this property is set to true the compiler
-     * would wrap the resulting source code with a <code>Integer(..)</code>.
+     * <code>2+4</code> is of type primitive int. If this property is set to true the compiler would
+     * wrap the resulting source code with a <code>Integer(..)</code>.
      */
     public void setEnsureResultIsObject(boolean newValue) {
         this.ensureResultIsObject = newValue;
@@ -430,8 +430,8 @@ public class ExprCompiler {
         ArgumentCheck.notNull(fctResolver);
         functionResolvers.add(fctResolver);
         FlFunction[] functions = fctResolver.getFunctions();
-        for (int i = 0; i < functions.length; i++) {
-            functions[i].setCompiler(this);
+        for (FlFunction function : functions) {
+            function.setCompiler(this);
         }
     }
 
@@ -461,8 +461,8 @@ public class ExprCompiler {
         for (Iterator it = getFunctionResolvers(); it.hasNext();) {
             FunctionResolver resolver = (FunctionResolver)it.next();
             FlFunction[] resolverFunctions = resolver.getFunctions();
-            for (int i = 0; i < resolverFunctions.length; i++) {
-                functions.add(resolverFunctions[i]);
+            for (FlFunction resolverFunction : resolverFunctions) {
+                functions.add(resolverFunction);
             }
         }
         return (FlFunction[])functions.toArray(new FlFunction[functions.size()]);
@@ -525,8 +525,8 @@ public class ExprCompiler {
 
     private CompilationResult parseExceptionToResult(ParseException e) {
         String expected = ""; //$NON-NLS-1$
-        for (int i = 0; i < e.expectedTokenSequences.length; i++) {
-            expected += e.tokenImage[e.expectedTokenSequences[i][0]] + " "; //$NON-NLS-1$
+        for (int[] expectedTokenSequence : e.expectedTokenSequences) {
+            expected += e.tokenImage[expectedTokenSequence[0]] + " "; //$NON-NLS-1$
         }
         Object[] replacements = new Object[] { e.currentToken.next.toString(),
                 new Integer(e.currentToken.next.beginLine), new Integer(e.currentToken.next.beginColumn), expected };

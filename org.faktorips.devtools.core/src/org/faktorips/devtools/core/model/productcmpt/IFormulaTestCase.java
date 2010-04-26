@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * @author Joerg Ortmann
  */
 public interface IFormulaTestCase extends IIpsObjectPart {
-    
+
     /** Property names */
     public final static String PROPERTY_EXPECTED_RESULT = "expectedResult"; //$NON-NLS-1$
 
@@ -30,7 +30,7 @@ public interface IFormulaTestCase extends IIpsObjectPart {
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "FORMULATESTCASE-"; //$NON-NLS-1$
-    
+
     /**
      * Validation message code to indicate that the test parameter name is duplicate.
      */
@@ -41,12 +41,12 @@ public interface IFormulaTestCase extends IIpsObjectPart {
      * identifier for the test input values and no formula input value is unnecessary.
      */
     public final static String MSGCODE_IDENTIFIER_MISMATCH = MSGCODE_PREFIX + "IdentifierMismatch"; //$NON-NLS-1$
-    
+
     /**
      * Sets the name of the formula test.
      */
     public void setName(String name);
-    
+
     /**
      * Returns the formula this test case tests.
      */
@@ -61,45 +61,48 @@ public interface IFormulaTestCase extends IIpsObjectPart {
      * Returns all formula test input values. Returns <code>null</code> if no values exist.
      */
     public IFormulaTestInputValue[] getFormulaTestInputValues();
-    
+
     /**
      * Returns the given formula test input value or <code>null</code> if the value not exists.
      */
     public IFormulaTestInputValue getFormulaTestInputValue(String identifier);
-    
+
     /**
      * Returns the expected result.
      */
     public String getExpectedResult();
-    
+
     /**
      * Sets the result which is expected if executing this formula test.
      */
     public void setExpectedResult(String expectedResult);
-    
+
     /**
-     * Execute the formula test with the stored values and returns the result of the executed formula.
+     * Execute the formula test with the stored values and returns the result of the executed
+     * formula.
      * 
      * @throws Exception If an error occurs while evaluating the result
      */
     public Object execute(IIpsProject ipsProject) throws Exception;
-    
+
     /**
      * Adds new or delete unused formula test input values. Returns <code>true</code> if one or more
-     * formula test input values are deleted or added. If there was no change returns <code>false</code>.
+     * formula test input values are deleted or added. If there was no change returns
+     * <code>false</code>.
      */
     public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifiers, IIpsProject ipsProject);
-    
+
     /**
-     * Returns <code>true</code> if the formula test case is empty. The formula is empty if it has no formula test input values
-     * or all input values are empty.
+     * Returns <code>true</code> if the formula test case is empty. The formula is empty if it has
+     * no formula test input values or all input values are empty.
      */
     public boolean isFormulaTestCaseEmpty();
-    
+
     /**
      * Evaluates and returns an unique name of a formula test case based on the given name proposal.<br>
-     * If there is already a name with the given name then the name concatinated with " (n)" will be returned,
-     * n will be incremented until the name is unique for all formula test cases in the parent config element.
+     * If there is already a name with the given name then the name concatinated with " (n)" will be
+     * returned, n will be incremented until the name is unique for all formula test cases in the
+     * parent config element.
      */
     // TODO v2 - sollte nach IFormula verschoben werden.
     public String generateUniqueNameForFormulaTestCase(String nameProposal);

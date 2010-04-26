@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,32 +28,32 @@ import org.faktorips.devtools.core.ui.search.ReferencesToTableContentsSearchQuer
  * @author Stefan Widmaier
  */
 public class FindProductReferencesAction extends IpsAction {
-	
-	/**
-	 * Creates a new action to find references to a product component. The 
-	 * product componente to find the references to is queried from the given
-	 * selection provider.
-	 * <p>
-	 * Note: Only <code>IStructuredSelection</code>s are supported.
-	 */
+
+    /**
+     * Creates a new action to find references to a product component. The product componente to
+     * find the references to is queried from the given selection provider.
+     * <p>
+     * Note: Only <code>IStructuredSelection</code>s are supported.
+     */
     public FindProductReferencesAction(ISelectionProvider selectionProvider) {
         super(selectionProvider);
         this.setDescription(Messages.FindProductReferencesAction_description);
         this.setText(Messages.FindProductReferencesAction_name);
         this.setToolTipText(this.getDescription());
     }
-    
+
+    @Override
     public void run(IStructuredSelection selection) {
-		Object selected = getIpsObjectForSelection(selection);
-		if(selected!=null){
-			if (selected instanceof IProductCmpt) {
-				NewSearchUI.activateSearchResultView();
-				NewSearchUI.runQueryInBackground(new ReferencesToProductSearchQuery((IProductCmpt) selected));
-			} else if (selected instanceof ITableContents) {
-			    NewSearchUI.activateSearchResultView();
-			    NewSearchUI.runQueryInBackground(new ReferencesToTableContentsSearchQuery((ITableContents) selected));
-			}
-		}
+        Object selected = getIpsObjectForSelection(selection);
+        if (selected != null) {
+            if (selected instanceof IProductCmpt) {
+                NewSearchUI.activateSearchResultView();
+                NewSearchUI.runQueryInBackground(new ReferencesToProductSearchQuery((IProductCmpt)selected));
+            } else if (selected instanceof ITableContents) {
+                NewSearchUI.activateSearchResultView();
+                NewSearchUI.runQueryInBackground(new ReferencesToTableContentsSearchQuery((ITableContents)selected));
+            }
+        }
     }
-    
+
 }

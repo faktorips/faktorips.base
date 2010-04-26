@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -24,13 +24,13 @@ import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+
 /**
- * Abstract class for ReferenceSearches in the FaktorIPS object model. 
- * Subclasses are used with the eclipse search ui:
- * <code> NewSearchUI.activateSearchResultView();
-			NewSearchUI.runQueryInBackground(ISearchQuery query); </code>
- * Subclasses must implement the abstract methods <code>findReferences()</code> 
- * and <code>getDataForResult(IIpsElement object)</code>.
+ * Abstract class for ReferenceSearches in the FaktorIPS object model. Subclasses are used with the
+ * eclipse search ui: <code> NewSearchUI.activateSearchResultView();
+			NewSearchUI.runQueryInBackground(ISearchQuery query); </code> Subclasses must implement the
+ * abstract methods <code>findReferences()</code> and
+ * <code>getDataForResult(IIpsElement object)</code>.
  * 
  * @author Stefan Widmaier
  */
@@ -38,18 +38,18 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
 
     protected ReferenceSearchResult result;
     protected IIpsObject referenced;
-    
+
     public ReferenceSearchQuery(IIpsObject referenced) {
         this.referenced = referenced;
         this.result = new ReferenceSearchResult(this);
     }
-    
+
     public IStatus run(IProgressMonitor monitor) throws OperationCanceledException {
         monitor.beginTask(this.getLabel(), 2);
         result.removeAll();
         try {
-        	IIpsElement[] found= findReferences();
-            
+            IIpsElement[] found = findReferences();
+
             monitor.worked(1);
             addFoundMatches(found);
         } catch (PartInitException e) {
@@ -74,44 +74,38 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
         }
         result.addMatches(resultMatches);
     }
-    
+
     /**
-     * Template method to be implemented by subclasses.
-     * This method is called once for each search query and returns
-     * all objects the query matches.
-     * In this method subclasses realize the actual search in
-     * their object model, Exceptionhandling, progressmonitors etc. 
-     * are handled by the abstract superclass.
-     * If no objects are found an empty array is returned. 
-     * This method throws a CoreException which is handled by the 
-     * calling run() method.
+     * Template method to be implemented by subclasses. This method is called once for each search
+     * query and returns all objects the query matches. In this method subclasses realize the actual
+     * search in their object model, Exceptionhandling, progressmonitors etc. are handled by the
+     * abstract superclass. If no objects are found an empty array is returned. This method throws a
+     * CoreException which is handled by the calling run() method.
+     * 
      * @throws CoreException
      */
     protected abstract IIpsElement[] findReferences() throws CoreException;
-    
+
     /**
-     * Template method to be implemented by subclasses. 
-     * This method is called for each IIpsElement found by this query. 
-     * It creates an object-array to be used as data/input for the corresponding 
-     * search-result for the found IIpsElement.
-     * By convention the returned object[] contains at least one element,
-     * which is the IIpsElement itself. All following objects represent 
-     * its children.
-     * This method throws a CoreException which is handled by the 
-     * calling run() method.
+     * Template method to be implemented by subclasses. This method is called for each IIpsElement
+     * found by this query. It creates an object-array to be used as data/input for the
+     * corresponding search-result for the found IIpsElement. By convention the returned object[]
+     * contains at least one element, which is the IIpsElement itself. All following objects
+     * represent its children. This method throws a CoreException which is handled by the calling
+     * run() method.
+     * 
      * @throws CoreException
      */
     protected abstract Object[] getDataForResult(IIpsElement object) throws CoreException;
-    
 
-	public String getLabel() {
-        return Messages.ReferenceSearchQuery_labelPrefix + this.referenced.getName(); 
+    public String getLabel() {
+        return Messages.ReferenceSearchQuery_labelPrefix + this.referenced.getName();
     }
 
     public String getReferencedName() {
         return this.referenced.getName();
     }
-    
+
     public boolean canRerun() {
         return true;
     }
@@ -123,5 +117,5 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
     public ISearchResult getSearchResult() {
         return this.result;
     }
-	
+
 }

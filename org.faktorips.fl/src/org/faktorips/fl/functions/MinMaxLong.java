@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,18 +17,18 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 
-
 /**
  *
  */
 public class MinMaxLong extends MinMaxNativeTypes {
-    
+
     public MinMaxLong(String name, String description, boolean isMax) {
         super(name, description, Datatype.LONG, isMax);
     }
 
+    @Override
     protected void writeBody(JavaCodeFragment fragment, CompilationResult first, CompilationResult second) {
-//      new Long(Math.max(new Long(1).longValue(), new Long(2).longValue()));
+        // new Long(Math.max(new Long(1).longValue(), new Long(2).longValue()));
         fragment.append("new Long(Math.");
         fragment.append(functionName);
         fragment.append('(');

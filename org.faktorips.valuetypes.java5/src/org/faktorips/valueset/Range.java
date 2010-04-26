@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,7 +17,7 @@ package org.faktorips.valueset;
  * An interface for a range. Ranges with a lower bound higher than the upper bound are considered
  * empty. Note that it is only useful to define ranges for objects that have a total ordering. The
  * natural ordering is defined by the implementation of the <code>Comparable<code> interface.
- *
+ * 
  * @author Jan Ortmann
  * @author Daniel Hohenberger conversion to Java5
  * @see java.lang.Comparable
@@ -49,10 +49,10 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
 
     /**
      * The unit that defines the discrete values that are allowed to be within this range. The
-     * values that are allowed to be within this range have to meet the condition: <i>bound + x*step =
-     * value</i>, while <i>x</i> must be an integer value. The variable bound is either the upper or the
-     * lower bound while one of these needs to be different from null. The returned value can be
-     * null indicating that this is a continuous range.
+     * values that are allowed to be within this range have to meet the condition: <i>bound + x*step
+     * = value</i>, while <i>x</i> must be an integer value. The variable bound is either the upper
+     * or the lower bound while one of these needs to be different from null. The returned value can
+     * be null indicating that this is a continuous range.
      */
     public T getStep();
 }

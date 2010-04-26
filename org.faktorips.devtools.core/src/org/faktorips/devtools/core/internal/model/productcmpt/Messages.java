@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,17 +20,17 @@ import org.eclipse.osgi.util.NLS;
  * @author Thorsten Guenther
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.productcmpt.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.productcmpt.messages"; //$NON-NLS-1$
 
-	private Messages() {
-	}
+    private Messages() {
+    }
 
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	public static String AttributeValue_AllowedValuesAre;
+    public static String AttributeValue_AllowedValuesAre;
 
     public static String AttributeValue_attributeNotFound;
 
@@ -62,51 +62,51 @@ public class Messages extends NLS {
 
     public static String TableAccessFunctionFlFunctionAdapter_msgNoTableAccess;
 
-	public static String TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration;
+    public static String TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration;
 
-	public static String ProductCmptGeneration_msgTemplateNotFound;
+    public static String ProductCmptGeneration_msgTemplateNotFound;
 
-	public static String ProductCmptGeneration_msgNotEnoughRelations;
+    public static String ProductCmptGeneration_msgNotEnoughRelations;
 
-	public static String ProductCmptGeneration_msgTooManyRelations;
+    public static String ProductCmptGeneration_msgTooManyRelations;
 
-	public static String ConfigElement_msgAttrNotDefined;
+    public static String ConfigElement_msgAttrNotDefined;
 
-	public static String ConfigElement_msgDatatypeMissing;
+    public static String ConfigElement_msgDatatypeMissing;
 
-	public static String ConfigElement_msgUndknownDatatype;
+    public static String ConfigElement_msgUndknownDatatype;
 
-	public static String ConfigElement_msgInvalidDatatype;
+    public static String ConfigElement_msgInvalidDatatype;
 
-	public static String ConfigElement_msgValueNotParsable;
+    public static String ConfigElement_msgValueNotParsable;
 
-	public static String ConfigElement_msgValueNotInValueset;
+    public static String ConfigElement_msgValueNotInValueset;
 
-	public static String ProductCmptRelation_msgNoRelationDefined;
+    public static String ProductCmptRelation_msgNoRelationDefined;
 
-	public static String ProductCmptRelation_msgMaxCardinalityIsLessThan1;
+    public static String ProductCmptRelation_msgMaxCardinalityIsLessThan1;
 
-	public static String ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
+    public static String ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
 
-	public static String ProductCmptRelation_msgMaxCardinalityExceedsModelMax;
+    public static String ProductCmptRelation_msgMaxCardinalityExceedsModelMax;
 
-	public static String DeepCopyOperation_taskTitle;
+    public static String DeepCopyOperation_taskTitle;
 
-	public static String ConfigElement_msgValueIsEmptyString;
+    public static String ConfigElement_msgValueIsEmptyString;
 
-	public static String ProductCmptGeneration_msgDuplicateTarget;
+    public static String ProductCmptGeneration_msgDuplicateTarget;
 
-	public static String AbstractProductCmptNamingStrategy_msgNoVersionSeparator;
+    public static String AbstractProductCmptNamingStrategy_msgNoVersionSeparator;
 
-	public static String AbstractProductCmptNamingStrategy_msgIllegalChar;
+    public static String AbstractProductCmptNamingStrategy_msgIllegalChar;
 
-	public static String DateBasedProductCmptNamingStrategy_msgWrongFormat;
+    public static String DateBasedProductCmptNamingStrategy_msgWrongFormat;
 
-	public static String ProductCmpt_msgInvalidTypeHierarchy;
+    public static String ProductCmpt_msgInvalidTypeHierarchy;
 
-	public static String AbstractProductCmptNamingStrategy_emptyKindId;
+    public static String AbstractProductCmptNamingStrategy_emptyKindId;
 
-	public static String ProductCmptRelation_msgInvalidTarget;
+    public static String ProductCmptRelation_msgInvalidTarget;
 
     public static String ConfigElement_msgInvalidAttributeValueset;
 

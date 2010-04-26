@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,7 +12,6 @@
  *******************************************************************************/
 
 package org.faktorips.values;
-
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -34,19 +33,23 @@ public class MoneyTest extends TestCase {
         } catch (IllegalArgumentException e) {
         }
 
-        //  null
+        // null
         assertEquals(Money.NULL, Money.valueOf(null, Currency.getInstance("EUR")));
         assertEquals(Money.NULL, Money.valueOf(Decimal.NULL, Currency.getInstance("EUR")));
         assertEquals(Money.NULL, Money.valueOf(Decimal.valueOf(42, 0), null));
     }
 
     public void testValueOf_DecimalCurrencyInt() {
-        assertEquals(Money.valueOf("420EUR"), Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
-        assertEquals(Money.valueOf("13.42EUR"), Money.valueOf(Decimal.valueOf("13.42"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
-        assertEquals(Money.valueOf("13.4EUR"), Money.valueOf(Decimal.valueOf("13.4"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
-        assertEquals(Money.valueOf("13.42EUR"), Money.valueOf(Decimal.valueOf("13.415"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
+        assertEquals(Money.valueOf("420EUR"), Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR"),
+                BigDecimal.ROUND_HALF_UP));
+        assertEquals(Money.valueOf("13.42EUR"), Money.valueOf(Decimal.valueOf("13.42"), Currency.getInstance("EUR"),
+                BigDecimal.ROUND_HALF_UP));
+        assertEquals(Money.valueOf("13.4EUR"), Money.valueOf(Decimal.valueOf("13.4"), Currency.getInstance("EUR"),
+                BigDecimal.ROUND_HALF_UP));
+        assertEquals(Money.valueOf("13.42EUR"), Money.valueOf(Decimal.valueOf("13.415"), Currency.getInstance("EUR"),
+                BigDecimal.ROUND_HALF_UP));
 
-        //  null
+        // null
         assertEquals(Money.NULL, Money.valueOf(null, Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
         assertEquals(Money.NULL, Money.valueOf(Decimal.NULL, Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
         assertEquals(Money.NULL, Money.valueOf(Decimal.valueOf(42, 0), null, BigDecimal.ROUND_HALF_UP));
@@ -69,7 +72,7 @@ public class MoneyTest extends TestCase {
         assertEquals(Money.euro(123, 0), Money.valueOf(" 123  EUR "));
         assertEquals(Money.euro(-123, 0), Money.valueOf(" -123  EUR "));
 
-        assertEquals(Money.euro(10,10), Money.valueOf("10.1EUR"));
+        assertEquals(Money.euro(10, 10), Money.valueOf("10.1EUR"));
         assertEquals(Money.euro(10, 9), Money.valueOf("10.09EUR"));
         assertEquals(Money.euro(10, 90), Money.valueOf("10.90EUR"));
         assertEquals(Money.euro(10, 99), Money.valueOf("10.99EUR"));
@@ -116,8 +119,8 @@ public class MoneyTest extends TestCase {
     }
 
     public void testSymmetryOfToStringAndValueOfForNull() {
-    	Money moneyNull = Money.NULL;
-    	assertTrue(Money.valueOf(moneyNull.toString()).isNull());
+        Money moneyNull = Money.NULL;
+        assertTrue(Money.valueOf(moneyNull.toString()).isNull());
     }
 
     public void testGetAmount() {
@@ -300,9 +303,9 @@ public class MoneyTest extends TestCase {
 
     public void testCompareTo() {
         Money m = Money.euro(10, 42);
-        assertTrue(m.compareTo(Money.euro(10, 41))>0);
-        assertTrue(m.compareTo(Money.euro(10, 42))==0);
-        assertTrue(m.compareTo(Money.euro(10, 43))<0);
+        assertTrue(m.compareTo(Money.euro(10, 41)) > 0);
+        assertTrue(m.compareTo(Money.euro(10, 42)) == 0);
+        assertTrue(m.compareTo(Money.euro(10, 43)) < 0);
 
         try {
             m.compareTo(Money.usd(10, 42));
@@ -337,7 +340,6 @@ public class MoneyTest extends TestCase {
         assertFalse(m.greaterThan(Money.NULL));
         assertFalse(Money.NULL.greaterThan(m));
 
-
         try {
             m.greaterThan(Money.usd(10, 42));
             fail();
@@ -364,7 +366,6 @@ public class MoneyTest extends TestCase {
         assertFalse(m.greaterThanOrEqual(Money.euro(10, 43)));
         assertFalse(m.greaterThanOrEqual(Money.NULL));
         assertFalse(Money.NULL.greaterThanOrEqual(m));
-
 
         try {
             m.greaterThanOrEqual(Money.usd(10, 42));
@@ -393,7 +394,6 @@ public class MoneyTest extends TestCase {
         assertFalse(m.lessThan(Money.NULL));
         assertFalse(Money.NULL.lessThan(m));
 
-
         try {
             m.lessThan(Money.usd(10, 42));
             fail();
@@ -421,7 +421,6 @@ public class MoneyTest extends TestCase {
         assertFalse(m.lessThanOrEqual(Money.NULL));
         assertFalse(Money.NULL.lessThanOrEqual(m));
 
-
         try {
             m.lessThanOrEqual(Money.usd(10, 42));
             fail();
@@ -441,7 +440,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
-    public void testMax(){
+    public void testMax() {
         Money value1 = Money.euro(10, 5);
         Money value2 = Money.euro(20, 5);
 
@@ -452,7 +451,7 @@ public class MoneyTest extends TestCase {
         assertSame(value1, value1.max(value3));
     }
 
-    public void testMin(){
+    public void testMin() {
         Money value1 = Money.euro(10, 5);
         Money value2 = Money.euro(20, 5);
 
@@ -467,37 +466,37 @@ public class MoneyTest extends TestCase {
     /*
      * Class under test for boolean equals(Object)
      */
-     public void testEqualsObject() {
-         // different class
-         assertFalse(Money.euro(0, 0).equals(this));
+    public void testEqualsObject() {
+        // different class
+        assertFalse(Money.euro(0, 0).equals(this));
 
-         // different currency
-         assertFalse(Money.euro(0, 0).equals(Money.usd(0, 0)));
+        // different currency
+        assertFalse(Money.euro(0, 0).equals(Money.usd(0, 0)));
 
-         // different major units
-         assertFalse(Money.euro(0, 0).equals(Money.euro(1, 0)));
+        // different major units
+        assertFalse(Money.euro(0, 0).equals(Money.euro(1, 0)));
 
-         // different minor units
-         assertFalse(Money.euro(0, 12).equals(Money.euro(0, 11)));
+        // different minor units
+        assertFalse(Money.euro(0, 12).equals(Money.euro(0, 11)));
 
-         // other is Money.NULL
-         assertFalse(Money.euro(0, 12).equals(Money.NULL));
+        // other is Money.NULL
+        assertFalse(Money.euro(0, 12).equals(Money.NULL));
 
-         // this is Money.NULL
-         assertFalse(Money.NULL.equals(Money.euro(1, 1)));
+        // this is Money.NULL
+        assertFalse(Money.NULL.equals(Money.euro(1, 1)));
 
-         // same
-         assertTrue(Money.euro(3, 12).equals(Money.euro(3, 12)));
+        // same
+        assertTrue(Money.euro(3, 12).equals(Money.euro(3, 12)));
 
-         // both Money.NULL
-         assertTrue(Money.NULL.equals(Money.NULL));
-     }
+        // both Money.NULL
+        assertTrue(Money.NULL.equals(Money.NULL));
+    }
 
-     /*
-      * Class under test for String toString()
-      */
-     public void testToString() {
-         assertEquals("100.77 EUR", Money.euro(100, 77).toString());
-     }
+    /*
+     * Class under test for String toString()
+     */
+    public void testToString() {
+        assertEquals("100.77 EUR", Money.euro(100, 77).toString());
+    }
 
 }

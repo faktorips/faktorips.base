@@ -299,8 +299,8 @@ public class TestSelectionComposite extends Composite {
             dialog.setElements(getPackageFragments());
             if (dialog.open() == Window.OK) {
                 Object[] result = dialog.getResult();
-                for (int i = 0; i < result.length; i++) {
-                    content.add(result[i]);
+                for (Object element : result) {
+                    content.add(element);
                 }
                 viewer.refresh();
                 notifyListener();
@@ -322,8 +322,8 @@ public class TestSelectionComposite extends Composite {
                     continue;
                 }
                 IIpsPackageFragment[] childs = roots[j].getIpsPackageFragments();
-                for (int k = 0; k < childs.length; k++) {
-                    packageFragmentList.add(childs[k]);
+                for (IIpsPackageFragment child : childs) {
+                    packageFragmentList.add(child);
                 }
             }
             return packageFragmentList.toArray(new IIpsPackageFragment[0]);
@@ -372,9 +372,9 @@ public class TestSelectionComposite extends Composite {
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
             for (IIpsPackageFragmentRoot root : roots) {
                 IIpsPackageFragment[] frgmts = root.getIpsPackageFragments();
-                for (int k = 0; k < frgmts.length; k++) {
-                    if (frgmts[k].getName().equals(qualifiedName)) {
-                        content.add(frgmts[k]);
+                for (IIpsPackageFragment frgmt : frgmts) {
+                    if (frgmt.getName().equals(qualifiedName)) {
+                        content.add(frgmt);
                         found = true;
                         break;
                     }
@@ -390,8 +390,8 @@ public class TestSelectionComposite extends Composite {
 
     public String getPackageFragmentRootText() throws CoreException {
         List<String> roots = new ArrayList<String>();
-        for (Iterator<Object> iter = content.iterator(); iter.hasNext();) {
-            IIpsElement element = (IIpsElement)iter.next();
+        for (Object object : content) {
+            IIpsElement element = (IIpsElement)object;
             if (element instanceof IIpsPackageFragment) {
                 roots.add(IpsTestRunner.getRepPckNameFromPckFrgmtRoot(((IIpsPackageFragment)element).getRoot()));
             } else if (element instanceof IIpsObject) {
@@ -410,8 +410,8 @@ public class TestSelectionComposite extends Composite {
 
     public String getTestCasesText() throws CoreException {
         List<String> testSuites = new ArrayList<String>();
-        for (Iterator<Object> iter = content.iterator(); iter.hasNext();) {
-            IIpsElement element = (IIpsElement)iter.next();
+        for (Object object : content) {
+            IIpsElement element = (IIpsElement)object;
             if (element instanceof IIpsPackageFragment) {
                 testSuites.add(((IIpsPackageFragment)element).getName());
             } else if (element instanceof IIpsObject) {
@@ -426,8 +426,7 @@ public class TestSelectionComposite extends Composite {
     }
 
     private void notifyListener() {
-        for (Iterator<ITestConfigurationChangeListener> iter = listeners.iterator(); iter.hasNext();) {
-            ITestConfigurationChangeListener l = iter.next();
+        for (ITestConfigurationChangeListener l : listeners) {
             l.testConfigurationHasChanged();
         }
     }

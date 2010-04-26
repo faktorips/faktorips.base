@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.builder;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -183,8 +182,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if (innerClassSections != null) {
             codeBuilder.appendln();
             codeBuilder.appendln();
-            for (Iterator<TypeSection> it = innerClassSections.iterator(); it.hasNext();) {
-                codeBuilder.append(generateClassBody(it.next(), null));
+            for (TypeSection typeSection : innerClassSections) {
+                codeBuilder.append(generateClassBody(typeSection, null));
             }
         }
 
@@ -222,8 +221,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
         ImportDeclaration existingImports = new ImportDeclaration();
         IJavaElement[] imports = container.getChildren();
-        for (int i = 0; i < imports.length; i++) {
-            String imp = ((IImportDeclaration)imports[i]).getSource(); // example for imp: import
+        for (IJavaElement import1 : imports) {
+            String imp = ((IImportDeclaration)import1).getSource(); // example for imp: import
             // java.util.Date;
             existingImports.add(imp.substring(7, imp.length() - 1));
         }
@@ -248,8 +247,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     }
 
     private void addLoggingConnectorImports(List<String> usedClasses, JavaCodeFragment frag) {
-        for (Iterator<String> it = usedClasses.iterator(); it.hasNext();) {
-            String className = it.next();
+        for (String className : usedClasses) {
             frag.addImport(className);
         }
     }

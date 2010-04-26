@@ -50,10 +50,6 @@ import org.w3c.dom.Element;
 public class GenProdAssociationToMany extends GenProdAssociation {
 
     /**
-     * @param association
-     * @param builder
-     * @param stringsSet
-     * @throws CoreException
      */
     public GenProdAssociationToMany(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association)
             throws CoreException {
@@ -128,7 +124,6 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * public Collection&lt;ILink&lt;ICoverageType&gt;&gt; getLinksForCoverageTypes();
      * </pre>
      * 
-     * @throws CoreException
      */
     private void generateMethodInterfaceGetManyRelatedCmptLinks(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
@@ -144,7 +139,6 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * public Collection&lt;ILink&lt;ICoverageType&gt;&gt; getLinksForCoverageTypes()
      * </pre>
      * 
-     * @throws CoreException
      */
     private void generateSignatureGetManyRelatedCmptLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String methodName = getMethodNameGetManyRelatedCmptLinks();
@@ -154,7 +148,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
                 methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
 
-    private String getMethodNameGetManyRelatedCmptLinks() throws CoreException {
+    private String getMethodNameGetManyRelatedCmptLinks() {
         return getJavaNamingConvention().getMultiValueGetterMethodName(
                 "LinksFor" + StringUtils.capitalize(getFieldNameToManyAssociation()));
     }
@@ -169,7 +163,6 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      *  }
      * </pre>
      * 
-     * @throws CoreException
      */
     private void generateMethodGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -193,7 +186,6 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      *  }
      * </pre>
      * 
-     * @throws CoreException
      */
     private void generateMethodGetManyRelatedCmptLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -283,7 +275,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         }
     }
 
-    private String getFieldNameToManyAssociation() throws CoreException {
+    private String getFieldNameToManyAssociation() {
         return getJavaNamingConvention().getMultiValueMemberVarName(getPropertyNameToManyAssociation(association));
     }
 
@@ -721,12 +713,14 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         methodsBuilder.closeBracket();
     }
 
+    @Override
     protected void generateCodeGetNumOfRelatedProductCmptsInternal(JavaCodeFragmentBuilder builder)
             throws CoreException {
         builder.append(getMethodNameGetNumOfRelatedCmpts());
         builder.append("();");
     }
 
+    @Override
     protected void generateCodeGetNumOfRelatedProductCmpts(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.append(getFieldNameToManyAssociation());
         if (isUseTypesafeCollections()) {
@@ -736,6 +730,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         }
     }
 
+    @Override
     protected void generateCodeGetRelatedCmptsInContainer(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String objectArrayVar = getFieldNameToManyAssociation() + "Objects";
         String getterMethod = getMethodNameGetManyRelatedCmpts(association) + "()";
@@ -761,12 +756,14 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void generateCodeForDerivedUnionAssociationDefinition(JavaCodeFragmentBuilder methodsBuilder)
             throws Exception {
         super.generateCodeForDerivedUnionAssociationDefinition(methodsBuilder);
         generateMethodGetNumOfRelatedCmpts(methodsBuilder);
     }
 
+    @Override
     public void generateCodeForDerivedUnionAssociationImplementation(List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         super.generateCodeForDerivedUnionAssociationImplementation(implAssociations, methodsBuilder);
@@ -800,6 +797,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * 
      * {@inheritDoc}
      */
+    @Override
     public void generateCodeForMethodDoInitReferencesFromXml(IPolicyCmptTypeAssociation policyCmptTypeAssociation,
             JavaCodeFragmentBuilder builder) throws CoreException {
         String cardinalityFieldName = policyCmptTypeAssociation == null ? "" : getFieldNameCardinalityForAssociation();
@@ -881,8 +879,8 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * list.addAll(getLinksForProducts());
      * </pre>
      * 
-     * @throws CoreException
      */
+    @Override
     public void generateCodeForGetLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.appendln("list.addAll(" + getMethodNameGetManyRelatedCmptLinks() + "());");
     }

@@ -109,8 +109,9 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
             children.addAll(list);
         } else if (parentElement instanceof IProductCmptReference) {
             // Arrays.asLists returns an AbstractList that could not be modified
-            List<IProductCmptTypeAssociationReference> list = new ArrayList<IProductCmptTypeAssociationReference>(Arrays
-                    .asList(structure.getChildProductCmptTypeAssociationReferences((IProductCmptReference)parentElement)));
+            List<IProductCmptTypeAssociationReference> list = new ArrayList<IProductCmptTypeAssociationReference>(
+                    Arrays.asList(structure
+                            .getChildProductCmptTypeAssociationReferences((IProductCmptReference)parentElement)));
             if (!showAssociatedCmpts) {
                 // filter association nodes
                 for (Iterator<IProductCmptTypeAssociationReference> iterator = list.iterator(); iterator.hasNext();) {

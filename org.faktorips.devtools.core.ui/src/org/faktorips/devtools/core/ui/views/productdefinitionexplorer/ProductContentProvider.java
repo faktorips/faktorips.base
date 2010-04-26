@@ -43,13 +43,13 @@ public class ProductContentProvider extends ModelContentProvider {
             // same time contain subfolders (subpackages) (this prevents empty or newly created
             // packagefragments from being hidden in the view)
             List<Object> filteredElements = new ArrayList<Object>();
-            for (int i = 0; i < fragments.length; i++) {
-                if (fragments[i].isDefaultPackage()) {
-                    filteredElements.addAll(Arrays.asList(getFileContent(fragments[i])));
+            for (IIpsPackageFragment fragment : fragments) {
+                if (fragment.isDefaultPackage()) {
+                    filteredElements.addAll(Arrays.asList(getFileContent(fragment)));
                     continue;
                 }
-                if (hasChildren(fragments[i]) || fragments[i].getChildIpsPackageFragments().length == 0) {
-                    filteredElements.add(fragments[i]);
+                if (hasChildren(fragment) || fragment.getChildIpsPackageFragments().length == 0) {
+                    filteredElements.add(fragment);
                 }
             }
             return filteredElements.toArray();

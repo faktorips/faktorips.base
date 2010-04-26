@@ -305,8 +305,7 @@ public abstract class IpsAction extends Action {
         // all links will be merged to one text inside the clipboard
         if (copiedResourceLinks != null) {
             String strReferences = ""; //$NON-NLS-1$
-            for (Iterator<String> iter = copiedResourceLinks.iterator(); iter.hasNext();) {
-                String element = iter.next();
+            for (String element : copiedResourceLinks) {
                 strReferences += strReferences.length() > 0 ? "," + element : element; //$NON-NLS-1$
             }
             if (StringUtils.isNotEmpty(strReferences)) {
@@ -351,9 +350,7 @@ public abstract class IpsAction extends Action {
             links.add(tokenizer.nextToken());
         }
 
-        for (Iterator<String> iter = links.iterator(); iter.hasNext();) {
-            String resourceLink = iter.next();
-
+        for (String resourceLink : links) {
             String[] copiedResource = StringUtils.split(resourceLink, "#"); //$NON-NLS-1$
             // 1. find the project
             IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(copiedResource[0]);
@@ -361,9 +358,9 @@ public abstract class IpsAction extends Action {
                 // 2. find the root
                 IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
                 IIpsPackageFragmentRoot archive = null;
-                for (int i = 0; i < roots.length; i++) {
-                    if (roots[i].getName().equals(copiedResource[1])) {
-                        archive = roots[i];
+                for (IIpsPackageFragmentRoot root : roots) {
+                    if (root.getName().equals(copiedResource[1])) {
+                        archive = root;
                         break;
                     }
                 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -28,36 +28,36 @@ public interface ITestCaseTestCaseTypeDelta {
      * Returns the test case type this delta was computed for.
      */
     public ITestCaseType getTestCaseType();
-    
+
     /**
      * Returns the test case this delta was computed for.
      */
     public ITestCase getTestCase();
-    
+
     /**
-     * Returns true if the delta is empty. The test case conforms to
-     * the test case type it is based on. 
+     * Returns true if the delta is empty. The test case conforms to the test case type it is based
+     * on.
      */
     public boolean isEmpty();
-    
+
     /**
      * Returns <code>true</code> if the sort order of the test parameter changed.
      */
     public boolean isDifferentTestParameterOrder();
-    
+
     //
     // Missing test case type side objects
     //
-    
+
     /**
      * Test Case Side: Returns the test policy components with missing test policy cmpt type
      * parameter.
      */
     public ITestPolicyCmpt[] getTestPolicyCmptsWithMissingTypeParam();
-    
+
     /**
-     * Test Case Side: Returns the test policy components link with missing test policy cmpt
-     * type parameter.
+     * Test Case Side: Returns the test policy components link with missing test policy cmpt type
+     * parameter.
      */
     public ITestPolicyCmptLink[] getTestPolicyCmptLinkWithMissingTypeParam();
 
@@ -70,16 +70,16 @@ public interface ITestCaseTestCaseTypeDelta {
      * Test Case Side: Returns the test value with missing test value parameter
      */
     public ITestValue[] getTestValuesWithMissingTestValueParam();
-    
+
     /**
      * Test Case Side: Returns the test rules with missing test value parameter
      */
     public ITestRule[] getTestRulesWithMissingTestValueParam();
-    
+
     //
     // Missing test case type side objects
     //
-    
+
     /**
      * Test Case Type Side: Returns the root test policy cmpt type parameter with missing test
      * policy cmpt.
@@ -87,10 +87,10 @@ public interface ITestCaseTestCaseTypeDelta {
     public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt();
 
     /**
-     *  Test Case Type Side: Returns the test attribute with missing test attribute value. 
+     * Test Case Type Side: Returns the test attribute with missing test attribute value.
      */
     public ITestAttribute[] getTestAttributesWithMissingTestAttributeValue();
-    
+
     /**
      * Test Case Type Side: Returns the test value parameter with missing test value.
      */
@@ -103,11 +103,11 @@ public interface ITestCaseTestCaseTypeDelta {
     public ITestPolicyCmpt[] getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute);
 
     /**
-     * Returns the test policy cmpts which have a different sort order compared to their corresponding
-     * test policy cmpt type parameter.
+     * Returns the test policy cmpts which have a different sort order compared to their
+     * corresponding test policy cmpt type parameter.
      */
     public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrder();
-    
+
     /**
      * Returns the test policy cmpts which have a different sort order of their test attribute
      * values compared to their corresponding test policy cmpt type parameter.

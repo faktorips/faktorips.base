@@ -85,8 +85,8 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
     public void testGetIpsLoggingFrameworkConnectors() throws CoreException {
         IIpsLoggingFrameworkConnector[] connectors = IpsPlugin.getDefault().getIpsLoggingFrameworkConnectors();
         List<String> connectorIds = new ArrayList<String>();
-        for (int i = 0; i < connectors.length; i++) {
-            connectorIds.add(connectors[i].getId());
+        for (IIpsLoggingFrameworkConnector connector : connectors) {
+            connectorIds.add(connector.getId());
         }
         assertTrue(connectorIds.contains("org.faktorips.devtools.core.javaUtilLoggingConnector"));
     }

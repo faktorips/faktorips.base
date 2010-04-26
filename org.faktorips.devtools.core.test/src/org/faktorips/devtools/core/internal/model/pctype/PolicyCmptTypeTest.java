@@ -221,7 +221,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertEquals(a2, policyCmptType.findPolicyCmptTypeAttribute("a2", ipsProject));
     }
 
-    public void testIsExtensionCompilationUnitGenerated() throws CoreException {
+    public void testIsExtensionCompilationUnitGenerated() {
         assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
 
         // force generation
@@ -657,7 +657,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNotNull(hierarchy);
     }
 
-    public void testSetProductCmptType() throws CoreException {
+    public void testSetProductCmptType() {
         super.testPropertyAccessReadWrite(IPolicyCmptType.class, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
                 policyCmptType, "NewProduct");
     }
@@ -754,8 +754,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
         ArrayList<IIpsObjectPathEntry> newbPathEntries = new ArrayList<IIpsObjectPathEntry>();
         newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
-        for (int i = 0; i < bPathEntries.length; i++) {
-            newbPathEntries.add(bPathEntries[i]);
+        for (IIpsObjectPathEntry bPathEntrie : bPathEntries) {
+            newbPathEntries.add(bPathEntrie);
         }
         bPath.setEntries(newbPathEntries.toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
         b.setIpsObjectPath(bPath);
@@ -814,10 +814,12 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
         public final static String ID = "AggregateRootBuilderSet";
 
+        @Override
         public boolean containsAggregateRootBuilder() {
             return true;
         }
 
+        @Override
         public String getId() {
             return ID;
         }

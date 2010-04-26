@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,21 +22,22 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * A visitor that makes it easy to implement a function based on all types in a super type hierarchy.
- * The class provides navigation of the super type hierarchy and stops if a cycle is detected in the
- * type hierarchy. It also provides the information if a cycle exists in the hierarchy.
+ * A visitor that makes it easy to implement a function based on all types in a super type
+ * hierarchy. The class provides navigation of the super type hierarchy and stops if a cycle is
+ * detected in the type hierarchy. It also provides the information if a cycle exists in the
+ * hierarchy.
  * 
  * @since 2.3
  * 
  * @author Jan Ortmann
  * @author Peter Kuntz
  */
-public abstract class HierarchyVisitor <T> {
+public abstract class HierarchyVisitor<T> {
 
     protected IIpsProject ipsProject;
     protected List<T> visitedTypes;
     private boolean cycleDetected;
-    
+
     /**
      * Constructs a new visitor.
      * 
@@ -48,7 +49,7 @@ public abstract class HierarchyVisitor <T> {
         ArgumentCheck.notNull(ipsProject);
         this.ipsProject = ipsProject;
     }
-    
+
     /**
      * Returns <code>true</code> if a cycle was detected in the type hierarchy.
      */
@@ -69,7 +70,7 @@ public abstract class HierarchyVisitor <T> {
     public final void start(T basetype) throws CoreException {
         cycleDetected = false;
         visitedTypes = new ArrayList<T>();
-        if (basetype==null) {
+        if (basetype == null) {
             return;
         }
         visitInternal(basetype);
@@ -86,19 +87,19 @@ public abstract class HierarchyVisitor <T> {
             return;
         }
         T supertype = findSupertype(currentType, ipsProject);
-        if (supertype!=null) {
+        if (supertype != null) {
             visitInternal(supertype);
         }
     }
-    
+
     protected abstract T findSupertype(T currentType, IIpsProject ipsProject) throws CoreException;
-    
+
     /**
      * Template method in that subclasses realize the function for the given type.
      * 
      * @return <code>true</code> if the visitor should continue to navigate up the hierarchy.
-     * <code>false</code> if not.
+     *         <code>false</code> if not.
      */
     protected abstract boolean visit(T currentType) throws CoreException;
-    
+
 }

@@ -72,9 +72,9 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         this.archive = archive;
         List<IIpsPackageFragmentRoot> rootsInt = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsPackageFragmentRoot[] candidateRoots = projectToArchive.getIpsPackageFragmentRoots();
-        for (int i = 0; i < candidateRoots.length; i++) {
-            if (candidateRoots[i].isBasedOnSourceFolder()) {
-                rootsInt.add(candidateRoots[i]);
+        for (IIpsPackageFragmentRoot candidateRoot : candidateRoots) {
+            if (candidateRoot.isBasedOnSourceFolder()) {
+                rootsInt.add(candidateRoot);
             }
         }
         roots = rootsInt.toArray(new IIpsPackageFragmentRoot[rootsInt.size()]);
@@ -126,10 +126,10 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
                 throw new CoreException(new IpsStatus("Error opening output stream for jar file " + archive, e)); //$NON-NLS-1$
             }
             Properties ipsObjectsProperties = new Properties();
-            for (int i = 0; i < roots.length; i++) {
+            for (IIpsPackageFragmentRoot root : roots) {
                 IProgressMonitor subMonitor = new SubProgressMonitor(exportMonitor,
-                        roots[i].getIpsPackageFragments().length);
-                addToArchive(roots[i], os, ipsObjectsProperties, subMonitor);
+                        root.getIpsPackageFragments().length);
+                addToArchive(root, os, ipsObjectsProperties, subMonitor);
             }
             createIpsObjectsPropertiesEntry(os, ipsObjectsProperties);
             try {
@@ -170,12 +170,12 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
      */
     private IFile getWorkspaceFile() {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        for (int i = 0; i < projects.length; i++) {
-            IPath projectPath = projects[i].getLocation();
+        for (IProject project : projects) {
+            IPath projectPath = project.getLocation();
             IPath filePath = new Path(archive.getAbsolutePath());
             if (projectPath.isPrefixOf(filePath)) {
                 IPath filePathInProject = filePath.removeFirstSegments(filePath.matchingFirstSegments(projectPath));
-                return projects[i].getFile(filePathInProject);
+                return project.getFile(filePathInProject);
             }
         }
         return null;
@@ -188,9 +188,9 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         try {
             IIpsPackageFragment[] packs = root.getIpsPackageFragments();
             monitor.beginTask(null, packs.length);
-            for (int i = 0; i < packs.length; i++) {
+            for (IIpsPackageFragment pack : packs) {
                 IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
-                addToArchive(packs[i], os, ipsObjectsProperties, subMonitor);
+                addToArchive(pack, os, ipsObjectsProperties, subMonitor);
                 if (monitor.isCanceled()) {
                     throw new OperationCanceledException();
                 }
@@ -210,8 +210,8 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         try {
             IIpsElement[] elements = pack.getChildren();
             monitor.beginTask(null, elements.length);
-            for (int i = 0; i < elements.length; i++) {
-                addToArchive((IIpsSrcFile)elements[i], os, ipsObjectsProperties);
+            for (IIpsElement element : elements) {
+                addToArchive((IIpsSrcFile)element, os, ipsObjectsProperties);
                 monitor.worked(1);
                 if (monitor.isCanceled()) {
                     throw new OperationCanceledException();
@@ -316,11 +316,11 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
     private void addFiles(IFolder rootFolder, IFolder folder, JarOutputStream os, IProgressMonitor monitor)
             throws CoreException {
         IResource[] members = folder.members();
-        for (int i = 0; i < members.length; i++) {
-            if (members[i] instanceof IFile) {
-                addFiles(rootFolder, (IFile)members[i], os, monitor);
-            } else if (members[i] instanceof IFolder) {
-                addFiles(rootFolder, (IFolder)members[i], os, monitor);
+        for (IResource member : members) {
+            if (member instanceof IFile) {
+                addFiles(rootFolder, (IFile)member, os, monitor);
+            } else if (member instanceof IFolder) {
+                addFiles(rootFolder, (IFolder)member, os, monitor);
             }
         }
     }

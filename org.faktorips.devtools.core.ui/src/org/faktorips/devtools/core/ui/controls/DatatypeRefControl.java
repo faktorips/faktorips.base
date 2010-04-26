@@ -94,6 +94,7 @@ public class DatatypeRefControl extends TextButtonControl {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void buttonClicked() {
         try {
             DatatypeSelectionDialog dialog = new DatatypeSelectionDialog(getShell());

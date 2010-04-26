@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,9 +16,8 @@ package org.faktorips.codegen.dthelpers;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 
-
 /**
- * DatatypeHelper for datatype PrimitiveInteger. 
+ * DatatypeHelper for datatype PrimitiveInteger.
  */
 public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
 
@@ -37,7 +36,7 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
     public PrimitiveIntegerHelper(PrimitiveIntegerDatatype datatype) {
         super(datatype);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -45,7 +44,7 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
         return new JavaCodeFragment(value);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     public JavaCodeFragment toWrapper(JavaCodeFragment expression) {
@@ -58,12 +57,13 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
         return fragment;
     }
 
-	/**
+    /**
      * {@inheritDoc}
-	 */
-	protected JavaCodeFragment valueOfExpression(String expression) {
+     */
+    @Override
+    protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("Integer.parseInt(" + expression + ")");
         return fragment;
-	}
+    }
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -35,6 +35,7 @@ public class IpsObjectPartStringExtPropertyTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         property = new StringExtensionPropertyDefinition();
@@ -46,15 +47,15 @@ public class IpsObjectPartStringExtPropertyTest extends TestCase {
     public void testValueToXml() throws ParserConfigurationException, FactoryConfigurationError {
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element el = doc.createElement("Value");
-        
+
         // not null
-        property.valueToXml(el, "blabla"); 
+        property.valueToXml(el, "blabla");
         assertEquals("blabla", XmlUtil.getFirstCDataSection(el).getData());
         assertEquals("blabla", property.getValueFromXml(el));
-        
+
         // not null, special characters
-        el = doc.createElement("Value");        
-        property.valueToXml(el, "<>&"); 
+        el = doc.createElement("Value");
+        property.valueToXml(el, "<>&");
         assertEquals("<>&", XmlUtil.getFirstCDataSection(el).getData());
         assertEquals("<>&", property.getValueFromXml(el));
     }
@@ -62,17 +63,17 @@ public class IpsObjectPartStringExtPropertyTest extends TestCase {
     public void testGetValueFromXml() throws ParserConfigurationException, FactoryConfigurationError {
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element el = doc.createElement("Value");
-        
+
         // not null
         el.appendChild(doc.createCDATASection("blabla"));
         assertEquals("blabla", property.getValueFromXml(el));
-        
+
         // not null, special characters
         el = doc.createElement("Value");
         el.appendChild(doc.createCDATASection("<>&"));
         assertEquals("<>&", property.getValueFromXml(el));
     }
-    
+
     public void testSetDefaultValue() {
         property.setDefaultValue("blabla");
         assertEquals("blabla", property.getDefaultValue());

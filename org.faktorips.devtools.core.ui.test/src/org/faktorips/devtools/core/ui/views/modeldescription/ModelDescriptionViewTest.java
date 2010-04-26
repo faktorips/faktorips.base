@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,18 +17,19 @@ import junit.framework.TestCase;
 
 public class ModelDescriptionViewTest extends TestCase {
 
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+    }
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-	
-	public void test() {
-	
-		assertEquals("eins", "ei" + "ns");
-	}
-	
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    public void test() {
+
+        assertEquals("eins", "ei" + "ns");
+    }
 
 }

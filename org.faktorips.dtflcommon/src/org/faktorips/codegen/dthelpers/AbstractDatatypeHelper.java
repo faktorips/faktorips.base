@@ -157,9 +157,9 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
             frag.append(containsNull);
             frag.append(", ");
             frag.append(newInstance(null));
-            for (int i = 0; i < values.length; i++) {
+            for (String value : values) {
                 frag.append(", ");
-                frag.append(newInstance(values[i]));
+                frag.append(newInstance(value));
             }
             frag.appendln(")");
         } else {

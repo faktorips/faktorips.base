@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -566,8 +565,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         Map<String, Object> persistentObjectesBySameColumnName = columnNameCollector
                 .getPersistentObjectesBySameColumnName();
-        for (Iterator<String> iterator = persistentObjectesBySameColumnName.keySet().iterator(); iterator.hasNext();) {
-            String columnName = iterator.next();
+        for (String columnName : persistentObjectesBySameColumnName.keySet()) {
             addMessagesDuplicateColumnName(msgList, columnName, persistentObjectesBySameColumnName.get(columnName));
         }
     }
@@ -581,11 +579,10 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (objectOrObjectsUseSameColumnName instanceof List<?>) {
             List<ObjectProperty> objectsUseSameColumnName = (List<ObjectProperty>)objectOrObjectsUseSameColumnName;
             String objectsAsString = "";
-            for (Iterator<ObjectProperty> iterator = objectsUseSameColumnName.iterator(); iterator.hasNext();) {
-                objectsAsString += objectPropertyAsString(iterator.next());
+            for (ObjectProperty objectProperty : objectsUseSameColumnName) {
+                objectsAsString += objectPropertyAsString(objectProperty);
             }
-            for (Iterator<ObjectProperty> iterator = objectsUseSameColumnName.iterator(); iterator.hasNext();) {
-                ObjectProperty objectProperty = iterator.next();
+            for (ObjectProperty objectProperty : objectsUseSameColumnName) {
                 if (getPolicyCmptTypeFromObjectProperty(objectProperty).getPersistenceTypeInfo() == this) {
                     // append the other object property to the message text
                     addMessageDuplicateColumnName(msgList, objectProperty, columnName
@@ -670,8 +667,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         private void collectAssociationColumnsIfExists(IPolicyCmptType currentType) {
             IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = currentType.getPolicyCmptTypeAssociations();
-            for (int i = 0; i < policyCmptTypeAssociations.length; i++) {
-                IPersistentAssociationInfo pAssInfo = policyCmptTypeAssociations[i].getPersistenceAssociatonInfo();
+            for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
+                IPersistentAssociationInfo pAssInfo = policyCmptTypeAssociation.getPersistenceAssociatonInfo();
                 addIfNotEmpty(pAssInfo.getJoinColumnName(), new ObjectProperty(pAssInfo,
                         IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME));
                 addIfNotEmpty(pAssInfo.getSourceColumnName(), new ObjectProperty(pAssInfo,

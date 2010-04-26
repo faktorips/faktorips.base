@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,12 +25,12 @@ import org.eclipse.ui.PlatformUI;
  */
 public class IpsApplication implements IPlatformRunnable {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object run(Object args) throws Exception {
-		Display display = PlatformUI.createDisplay();
-		Integer retValue = new Integer(PlatformUI.createAndRunWorkbench(display, new IpsWorkbenchAdvisor()));
-		return retValue;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Object run(Object args) throws Exception {
+        Display display = PlatformUI.createDisplay();
+        Integer retValue = new Integer(PlatformUI.createAndRunWorkbench(display, new IpsWorkbenchAdvisor()));
+        return retValue;
+    }
 }

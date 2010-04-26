@@ -47,22 +47,22 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     /**
      * Returns the {@link IEnumType} of this helper.
      */
-    public IEnumType getEnumType(){
+    public IEnumType getEnumType() {
         return enumTypeAdapter.getEnumType();
     }
 
     /**
      * Returns the {@link EnumTypeBuilder} wrapped by this helper.
      */
-    public EnumTypeBuilder getEnumTypeBuilder(){
+    public EnumTypeBuilder getEnumTypeBuilder() {
         return enumTypeBuilder;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public JavaCodeFragment newInstance(String value) {
-        if(value == null){
+        if (value == null) {
             return new JavaCodeFragment("null");
         }
         try {
@@ -99,7 +99,8 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         try {
-            return enumTypeBuilder.getCallGetValueByIdentifierCodeFragment(enumTypeAdapter.getEnumType(), expression, null);
+            return enumTypeBuilder.getCallGetValueByIdentifierCodeFragment(enumTypeAdapter.getEnumType(), expression,
+                    null);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

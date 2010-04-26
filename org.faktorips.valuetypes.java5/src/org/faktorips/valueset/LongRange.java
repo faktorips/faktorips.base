@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -14,7 +14,6 @@
 package org.faktorips.valueset;
 
 import java.math.BigInteger;
-
 
 /**
  * A Range class where upper and lower bounds are Longs.
@@ -31,29 +30,28 @@ public class LongRange extends DefaultRange<Long> {
      * Long.valueOf() method. An empty String is interpreted as <code>null</code>.
      */
     public static LongRange valueOf(String lower, String upper) {
-        Long min = (lower==null || lower.equals("")) ? null : Long.valueOf(lower);
-        Long max = (upper==null || upper.equals("")) ? null : Long.valueOf(upper);
+        Long min = (lower == null || lower.equals("")) ? null : Long.valueOf(lower);
+        Long max = (upper == null || upper.equals("")) ? null : Long.valueOf(upper);
         return new LongRange(min, max);
     }
 
     /**
      * Creates a LongRange based on the indicated Strings. The Strings are parsed with the
-     * Long.valueOf() method. An empty String is interpreted as <code>null</code>.
-     * If the parameter containsNull is true <code>null</code> is considered
-     * to be included within this range.
+     * Long.valueOf() method. An empty String is interpreted as <code>null</code>. If the parameter
+     * containsNull is true <code>null</code> is considered to be included within this range.
      */
     public static LongRange valueOf(String lower, String upper, String step, boolean containsNull) {
-        Long min = (lower==null || lower.equals("")) ? null : Long.valueOf(lower);
-        Long max = (upper==null || upper.equals("")) ? null : Long.valueOf(upper);
-        Long stepLong = (step==null || step.equals("")) ? null : Long.valueOf(step);
+        Long min = (lower == null || lower.equals("")) ? null : Long.valueOf(lower);
+        Long max = (upper == null || upper.equals("")) ? null : Long.valueOf(upper);
+        Long stepLong = (step == null || step.equals("")) ? null : Long.valueOf(step);
         return new LongRange(min, max, stepLong, containsNull);
     }
 
-    public static LongRange valueOf(Long lower, Long upper, Long step){
+    public static LongRange valueOf(Long lower, Long upper, Long step) {
         return valueOf(lower, upper, step, false);
     }
 
-    public static LongRange valueOf(Long lower, Long upper, Long step, boolean containsNull){
+    public static LongRange valueOf(Long lower, Long upper, Long step, boolean containsNull) {
         LongRange range = new LongRange(lower, upper, step, containsNull);
         range.checkIfStepFitsIntoBounds();
         return range;
@@ -91,7 +89,7 @@ public class LongRange extends DefaultRange<Long> {
 
         if (returnValue.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
-            "The number of values contained within this range are to huge to be supported by this operation.");
+                    "The number of values contained within this range are to huge to be supported by this operation.");
         }
 
         return returnValue.intValue();

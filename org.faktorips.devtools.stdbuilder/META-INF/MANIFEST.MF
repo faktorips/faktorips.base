@@ -37,7 +37,7 @@ Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.testcase,
  org.faktorips.devtools.stdbuilder.testcasetype,
  org.faktorips.devtools.stdbuilder.type
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.jdt.core.refactoring,
  org.eclipse.jdt.internal.corext.refactoring.structure,
  org.eclipse.jdt.internal.corext.refactoring.structure.constraints,
