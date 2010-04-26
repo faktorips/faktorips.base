@@ -169,7 +169,10 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsRefacto
         assertEquals(newQualifiedName, tableContents.getTableStructure());
     }
 
-    protected void checkBusinessFunctionReferences(@SuppressWarnings("unused") String newQualifiedName) {
+    /**
+     * @param newQualifiedName qualified name
+     */
+    protected void checkBusinessFunctionReferences(String newQualifiedName) {
         // Currently there are no known business function references.
     }
 
@@ -181,15 +184,24 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsRefacto
         assertEquals(newQualifiedName, links[0].getTarget());
     }
 
-    protected void checkTestCaseReferences(@SuppressWarnings("unused") String newQualifiedName) {
+    /**
+     * @param newQualifiedName qualified name
+     */
+    protected void checkTestCaseReferences(String newQualifiedName) {
         // Currently there are no known test case references.
     }
 
-    protected void checkEnumContentReferences(@SuppressWarnings("unused") String newQualifiedName) {
+    /**
+     * @param newQualifiedName qualified name
+     */
+    protected void checkEnumContentReferences(String newQualifiedName) {
         // Currently there are no known enumeration content references.
     }
 
-    protected void checkTableContentsReferences(@SuppressWarnings("unused") String newQualifiedName) {
+    /**
+     * @param newQualifiedName qualified name
+     */
+    protected void checkTableContentsReferences(String newQualifiedName) {
         // Currently there are no known table contents references.
     }
 
