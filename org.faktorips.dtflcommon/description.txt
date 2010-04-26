@@ -1,2 +1,1 @@
 This project contains classes used by the formula compiler and by the core plugin.
-
