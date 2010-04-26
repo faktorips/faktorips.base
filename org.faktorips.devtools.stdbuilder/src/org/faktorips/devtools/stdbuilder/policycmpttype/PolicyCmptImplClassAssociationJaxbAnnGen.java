@@ -62,6 +62,7 @@ public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotation
                 builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName()
                         + "\", type=" + targetImplClassName + ".class");
                 if (!association.isCompositionMasterToDetail()) {
+                    // normally this must be an association
                     builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
                 }
             }
