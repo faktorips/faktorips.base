@@ -10,7 +10,7 @@ CVS_CRUISE_CONTROL_SOURCE_LOCATION=org.faktorips.build/cruisecontrol_config/
 INPUT_FILES=(faktorips.projects.xml mailmapping.txt generate.cc.config.xml)
 OUTPUT_FILE=config.xml
 
-JAVA_HOME=/usr/lib/jvm/java-1.5.0-sun
+JAVA_HOME=/usr/lib/jvm/java-6-openjdk
 ANT_HOME=/opt/cc/apache-ant-1.6.5
 
 cvsUpdate()

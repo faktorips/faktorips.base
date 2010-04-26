@@ -132,7 +132,7 @@ initDefaultParameter()
   # etc
   DEFAULT_CVS_ROOT='/usr/local/cvsroot'
   DEFAULT_ANT_HOME=${DEFAULT_ANT_HOME:-'/opt/cc/apache-ant-1.6.5'}
-  DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/usr/lib/jvm/java-1.5.0-sun'}
+  DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/usr/lib/jvm/java-6-openjdk'}
   CVS_ROOT=${CVS_ROOT:-$DEFAULT_CVS_ROOT}
 
   WORKINGDIR=${WORKINGDIR:-'./tmp_fips_release'}

@@ -8,7 +8,9 @@
 	<property name="manifest-version" value="${Bundle-Version}" />
 	<property name="manifest-title" value="${Bundle-Name}" />
 	<property name="manifest-vendor" value="${Bundle-Vendor}" />
-	
+    <!-- javac source/target VM version -->
+    <property name="vmversion" value="1.5"/>
+
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
 	    <filelist dir="${buildproject.path}/lib">

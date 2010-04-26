@@ -10,6 +10,8 @@
 	<property name="manifest-version" value="${Bundle-Version}" />
 	<property name="manifest-title" value="${Bundle-Name}" />
 	<property name="manifest-vendor" value="${Bundle-Vendor}" />
+    <!-- javac source/target VM version -->
+    <property name="vmversion" value="1.5"/>
 	
 	<!-- classes inside the client jar -->
 	<!-- TODO Abh. zu IEnumValue wieder entfernen! nach fix -->
