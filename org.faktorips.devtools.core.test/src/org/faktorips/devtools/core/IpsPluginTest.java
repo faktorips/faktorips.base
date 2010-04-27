@@ -91,7 +91,4 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         assertTrue(connectorIds.contains("org.faktorips.devtools.core.javaUtilLoggingConnector"));
     }
 
-    public void testGetIpsFeatureVersion() {
-        IpsPlugin.getDefault().getIpsFeatureVersion();
-    }
 }

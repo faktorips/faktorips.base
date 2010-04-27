@@ -23,8 +23,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IBundleGroup;
-import org.eclipse.core.runtime.IBundleGroupProvider;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -138,23 +136,6 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public final static void log(CoreException e) {
         log(e.getStatus());
-    }
-
-    /**
-     * Returns the version of the Faktor-IPS feature. If the Faktor-IPS feature is not found
-     * <code>null</code> will be returned.
-     */
-    public String getIpsFeatureVersion() {
-        IBundleGroupProvider[] bundleGroupProviders = Platform.getBundleGroupProviders();
-        for (int i = 0; i < bundleGroupProviders.length; i++) {
-            IBundleGroup[] bundleGroups = bundleGroupProviders[i].getBundleGroups();
-            for (IBundleGroup bundleGroup : bundleGroups) {
-                if (bundleGroups[i].getIdentifier().equals("org.faktorips.feature")) { //$NON-NLS-1$
-                    return bundleGroups[i].getVersion();
-                }
-            }
-        }
-        return null;
     }
 
     /**
