@@ -86,7 +86,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * @param file the file handle
      * @return true if the file needs to be created, false if the file already exists
      * @throws CoreException if an Exception occurs during the creation procedure
-     * @throws RuntimeExcepion if the provided file parameter is <code>null</code>
+     * @throws RuntimeException if the provided file parameter is <code>null</code>
      */
     protected boolean createFileIfNotThere(IFile file) throws CoreException {
 
@@ -115,7 +115,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * @param folder the folder handle
      * @return true if the folder needs to be created, false if the folder already exists
      * @throws CoreException if an Exception occurs during the creation procedure
-     * @throws RuntimeExcepion if the provided folder parameter is <code>null</code>
+     * @throws RuntimeException if the provided folder parameter is <code>null</code>
      */
     protected boolean createFolderIfNotThere(IFolder folder) throws CoreException {
 

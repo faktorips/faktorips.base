@@ -145,7 +145,6 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     /**
      * Template method to create the set's builders.
      * 
-     * @throws CoreException
      */
     protected abstract IIpsArtefactBuilder[] createBuilders() throws CoreException;
 

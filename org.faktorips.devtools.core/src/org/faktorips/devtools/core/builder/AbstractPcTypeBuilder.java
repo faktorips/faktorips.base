@@ -121,10 +121,10 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * therefore code can be generated.
      * 
      * @param attribute The attribute source code should be generated for.
-     * @param datatypeHelper The data type code generation helper for the attribute's data type.
+     * @param helper The data type code generation helper for the attribute's data type.
      * @param constantBuilder The code fragment builder for the static section
-     * @param memberVarsBuilder The code fragment builder to build the member variables section.
-     * @param memberVarsBuilder The code fragment builder to build the method section.
+     * @param memberVarBuilder The code fragment builder to build the member variables section.
+     * @param methodBuilder The code fragment builder to build the method section.
      */
     @Override
     protected abstract void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute attribute,
@@ -136,6 +136,10 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
     /**
      * Generates the code for the validation rules of the ProductCmptType which is assigned to this
      * builder.
+     * 
+     * @param constantBuilder The code fragment builder for the static section
+     * @param memberVarBuilder The code fragment builder to build the member variables section.
+     * @param methodBuilder The code fragment builder to build the method section.
      * 
      * @throws CoreException if an exception occurs while generating code
      */
@@ -160,7 +164,6 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * Generates the code for the provided validation rule.
      * 
      * @param validationRule the validation rule for which this method can generate code
-     * @throws CoreException
      */
     protected abstract void generateCodeForValidationRule(IValidationRule validationRule) throws CoreException;
 
@@ -206,7 +209,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * 
      * @param association the association source code should be generated for
      * @param fieldsBuilder the code fragment builder to build the member variables section.
-     * @param fieldsBuilder the code fragment builder to build the method section.
+     * @param methodsBuilder the code fragment builder to build the method section.
      * @throws Exception Any exception thrown leads to an interruption of the current build cycle of
      *             this builder. Alternatively it is possible to catch an exception and log it by
      *             means of the addToBuildStatus() method of the super class.
@@ -225,7 +228,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * @param subAssociations a group of association instances that have the same container
      *            association
      * @param memberVarsBuilder the code fragment builder to build the member variables section.
-     * @param memberVarsBuilder the code fragment builder to build the method section.
+     * @param methodsBuilder the code fragment builder to build the method section.
      * @throws Exception implementations of this method don't have to take care about rising checked
      *             exceptions. An exception that had been thrown leads to an interruption of the
      *             current build cycle of this builder. Alternatively it is possible to catch an
@@ -261,7 +264,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
                         }
                     } catch (Exception e) {
                         addToBuildStatus(new IpsStatus("Error building container association implementation. " //$NON-NLS-1$
-                                + "ContainerAssociation: " + association + "Implementing Type: " + getPcType(), e)); //$NON-NLS-1$
+                                + "ContainerAssociation: " + association + "Implementing Type: " + getPcType(), e)); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }
