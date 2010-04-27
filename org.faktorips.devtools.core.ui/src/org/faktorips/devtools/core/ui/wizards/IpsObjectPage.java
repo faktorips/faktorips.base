@@ -18,8 +18,6 @@ import org.apache.commons.lang.WordUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -84,11 +82,10 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
     private IpsObjectType ipsObjectType;
 
     /**
-     * @param ipsObjectType
-     * @param selection
-     * @param pageName
+     * @param ipsObjectType the object type to show must not be null
+     * @param selection a structure selection
+     * @param pageName the name of the page
      * 
-     * @throws JavaModelException
      */
     public IpsObjectPage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) {
         super(selection, pageName);
@@ -182,11 +179,11 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * There is no layout set for the additional composite, so subclasses must first set a layout to
      * the <code>additionalComposite</code>.
      * 
-     * @param additionalComposite
-     * @param toolkit
+     * @param additionalComposite the additional composite to fill
+     * @param toolkit the toolkit to get widgets
      */
     protected void fillAdditionalComposite(Composite additionalComposite, UIToolkit toolkit) {
-
+        // may be override by subclass
     }
 
     /**
@@ -248,11 +245,11 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
     }
 
     protected void packageChanged() {
-
+        // may be override by subclasses
     }
 
     protected void nameChanged() {
-
+        // may be override by subclasses
     }
 
     /**
@@ -333,10 +330,12 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * specific <code>org.faktorips.devtools.core.ui.controller.EditField</code>s with the this
      * page's value change lister to take appropriate action if the control's value has changed.
      * 
-     * @param e
+     * @param e the event containing the changed field
+     * 
+     * @throws CoreException in case of exception
      */
     protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
-
+        // may be override by subclasses
     }
 
     /**
@@ -375,7 +374,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      *             displayed in an error dialog
      */
     protected void validatePageExtension() throws CoreException {
-
+        // may be override by subclasses
     }
 
     /**
@@ -414,7 +413,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * Subclasses may extend this method to perform their own validation.
      * </p>
      * 
-     * @throws CoreException
+     * @throws CoreException in case of exception
      */
     protected void validateName() throws CoreException {
         if (getIpsProject() == null) {
@@ -432,11 +431,11 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
                 if (ml.getSeverity() == Message.ERROR) {
                     setErrorMessage(msgText);
                 } else if (ml.getSeverity() == Message.WARNING) {
-                    setMessage(msgText, DialogPage.WARNING);
+                    setMessage(msgText, IMessageProvider.WARNING);
                 } else if (ml.getSeverity() == Message.INFO) {
-                    setMessage(msgText, DialogPage.INFORMATION);
+                    setMessage(msgText, IMessageProvider.INFORMATION);
                 } else {
-                    setMessage(msgText, DialogPage.NONE);
+                    setMessage(msgText, IMessageProvider.NONE);
                 }
                 return;
             }

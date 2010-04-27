@@ -35,8 +35,6 @@ public abstract class AbstractCheckbox extends ControlComposite {
     }
 
     /**
-     * @param parent
-     * @param style
      */
     protected AbstractCheckbox(Composite parent, UIToolkit toolkit, int checkboxStyle) {
         super(parent, SWT.NONE);

@@ -11,12 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.internal.adjustmentdate;
+package org.faktorips.devtools.core.ui.internal.generationdate;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.internal.adjustmentdate.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.internal.generationdate.messages"; //$NON-NLS-1$
     public static String AdjustmentDate_infinite;
     static {
         // initialize resource bundle
@@ -24,5 +24,6 @@ public class Messages extends NLS {
     }
 
     private Messages() {
+        // do not instantiate
     }
 }

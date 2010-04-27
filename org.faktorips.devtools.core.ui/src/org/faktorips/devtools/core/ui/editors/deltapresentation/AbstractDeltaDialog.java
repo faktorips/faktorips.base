@@ -30,11 +30,10 @@ public abstract class AbstractDeltaDialog extends TitleAreaDialog {
     protected UIToolkit toolkit;
 
     /**
-     * @param parentShell
      */
     public AbstractDeltaDialog(Shell parentShell) {
         super(parentShell);
-        this.toolkit = new UIToolkit(null);
+        toolkit = new UIToolkit(null);
 
     }
 

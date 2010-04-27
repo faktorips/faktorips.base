@@ -87,6 +87,7 @@ public class ResizableWizard extends Wizard {
             size.x = section.getInt(BOUNDS_WIDTH_KEY);
             size.y = section.getInt(BOUNDS_HEIGHT_KEY);
         } catch (NumberFormatException e) {
+            // ignore format exceptions
         }
         return size;
     }

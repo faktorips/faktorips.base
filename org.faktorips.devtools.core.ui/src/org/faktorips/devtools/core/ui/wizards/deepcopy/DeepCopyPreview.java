@@ -158,7 +158,7 @@ public class DeepCopyPreview {
             String name = file.getEnclosingResource().getFullPath().toString();
             IProductCmptStructureReference node = filename2productMap.get(name);
             if (node instanceof IProductCmptReference) {
-                if (node != null && ((IProductCmptReference)node).getProductCmpt() != correspondingIpsObject) {
+                if (((IProductCmptReference)node).getProductCmpt() != correspondingIpsObject) {
                     addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision, errorElements);
                     addMessage(filename2productMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision,
                             errorElements);
@@ -169,7 +169,7 @@ public class DeepCopyPreview {
                 ITableContents tableContents;
                 try {
                     tableContents = tableContentUsage.findTableContents(deepCopyWizard.getIpsProject());
-                    if (node != null && (tableContents != correspondingIpsObject)) {
+                    if ((tableContents != correspondingIpsObject)) {
                         addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision, errorElements);
                         addMessage(filename2productMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision,
                                 errorElements);
@@ -231,7 +231,7 @@ public class DeepCopyPreview {
      */
     private String buildTargetPackageName(IIpsPackageFragment targetBase, IIpsObject source, int segmentsToIgnore) {
         if (targetBase == null || !targetBase.getRoot().exists()) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         IPath subPath = source.getIpsPackageFragment().getRelativePath().removeFirstSegments(segmentsToIgnore);
         String toAppend = subPath.toString().replace('/', '.');

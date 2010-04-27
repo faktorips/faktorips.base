@@ -130,9 +130,9 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
             public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
                 IWizardPage[] pages = getPages();
                 if (pages.length > 1) {
-                    monitor.beginTask("Creating objects", pages.length * 4); //$NON-NLS-1$
+                    monitor.beginTask(Messages.NewIpsObjectWizard_creatingObjects, pages.length * 4);
                 } else {
-                    monitor.beginTask("Creating object", 4); //$NON-NLS-1$
+                    monitor.beginTask(Messages.NewIpsObjectWizard_creatingObject, 4);
                 }
                 for (IWizardPage page2 : pages) {
                     if (page2 instanceof AbstractIpsObjectNewWizardPage) {
@@ -140,14 +140,15 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
                         if (page.canCreateIpsSrcFile()) {
                             IIpsSrcFile srcFile = page.createIpsSrcFile(new SubProgressMonitor(monitor, 2));
                             if (srcFile == null) {
-                                IpsPlugin.logAndShowErrorDialog(new IpsStatus("Unable to create the IPS Source File."));
-                            }
-                            ArrayList<IIpsObject> modifiedIpsObjects = new ArrayList<IIpsObject>(0);
-                            page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);
-                            srcFile.save(true, new SubProgressMonitor(monitor, 1));
-                            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
-                            for (IIpsObject modifiedIpsObject : modifiedIpsObjects) {
-                                modifiedIpsObject.getIpsSrcFile().save(true, subMonitor);
+                                IpsPlugin.logAndShowErrorDialog(new IpsStatus(Messages.NewIpsObjectWizard_error_unableToCreateIpsSrcFile));
+                            } else {
+                                ArrayList<IIpsObject> modifiedIpsObjects = new ArrayList<IIpsObject>(0);
+                                page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);
+                                srcFile.save(true, new SubProgressMonitor(monitor, 1));
+                                SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+                                for (IIpsObject modifiedIpsObject : modifiedIpsObjects) {
+                                    modifiedIpsObject.getIpsSrcFile().save(true, subMonitor);
+                                }
                             }
                         }
                     }

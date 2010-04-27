@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.internal.adjustmentdate;
+package org.faktorips.devtools.core.ui.internal.generationdate;
 
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -19,17 +19,22 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-public class AdjustmentDateViewer extends ComboViewer {
+/**
+ * A simple combo box viewer to view a list of generation dates
+ * 
+ * @author dirmeier
+ */
+public class GenerationDateViewer extends ComboViewer {
 
-    public AdjustmentDateViewer(Composite parent) {
+    public GenerationDateViewer(Composite parent) {
         super(parent, SWT.READ_ONLY);
     }
 
-    public AdjustmentDate getSelectedDate() {
+    public GenerationDate getSelectedDate() {
         if (getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection)getSelection();
-            if (structuredSelection.getFirstElement() instanceof AdjustmentDate) {
-                return (AdjustmentDate)structuredSelection.getFirstElement();
+            if (structuredSelection.getFirstElement() instanceof GenerationDate) {
+                return (GenerationDate)structuredSelection.getFirstElement();
             }
         }
         return null;

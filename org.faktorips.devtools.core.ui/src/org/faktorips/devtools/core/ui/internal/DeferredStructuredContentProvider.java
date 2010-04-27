@@ -136,7 +136,7 @@ public abstract class DeferredStructuredContentProvider extends Observable imple
             }
             return new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, null);
         }
-    };
+    }
 
     private class JobDoneAdapter extends JobChangeAdapter {
 

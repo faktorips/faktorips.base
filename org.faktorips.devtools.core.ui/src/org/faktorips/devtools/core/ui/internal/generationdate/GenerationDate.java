@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.internal.adjustmentdate;
+package org.faktorips.devtools.core.ui.internal.generationdate;
 
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
@@ -19,13 +19,19 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.Assert;
 import org.faktorips.devtools.core.IpsPlugin;
 
-public class AdjustmentDate {
+/**
+ * This class represents a generation date, containing valid from and valid to. It also have the
+ * ability to parse the two dates to a readable string to view on UI
+ * 
+ * @author dirmeier
+ */
+public class GenerationDate {
 
     private final GregorianCalendar validFrom;
 
     private GregorianCalendar validTo;
 
-    public AdjustmentDate(GregorianCalendar validFrom, GregorianCalendar validTo) {
+    public GenerationDate(GregorianCalendar validFrom, GregorianCalendar validTo) {
         Assert.isNotNull(validFrom);
         this.validFrom = validFrom;
         setValidTo(validTo);
@@ -45,8 +51,8 @@ public class AdjustmentDate {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof AdjustmentDate) {
-            AdjustmentDate other = (AdjustmentDate)obj;
+        if (obj instanceof GenerationDate) {
+            GenerationDate other = (GenerationDate)obj;
             return validFrom.getTimeInMillis() == other.validFrom.getTimeInMillis()
                     && (validTo != null && other.validTo != null ? validTo.getTimeInMillis() == other.validTo
                             .getTimeInMillis() : validTo == other.validTo);
@@ -67,7 +73,7 @@ public class AdjustmentDate {
 
     @Override
     public String toString() {
-        return "AdjustmentDate: " + getText(); //$NON-NLS-1$
+        return "GenerationDate: " + getText(); //$NON-NLS-1$
     }
 
     public String getText() {

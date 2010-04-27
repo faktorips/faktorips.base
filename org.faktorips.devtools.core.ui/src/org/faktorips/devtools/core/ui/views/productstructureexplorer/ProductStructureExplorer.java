@@ -89,8 +89,9 @@ import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
-import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
-import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDateViewer;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
@@ -138,7 +139,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private Composite viewerPanel;
 
-    private AdjustmentDateViewer adjustmentDateViewer;
+    private GenerationDateViewer generationDateViewer;
 
     private Button prevButton;
 
@@ -394,24 +395,24 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         adjustmentDatePanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         adjustmentDatePanel.setLayout(new GridLayout(3, false));
 
-        adjustmentDateViewer = new AdjustmentDateViewer(adjustmentDatePanel);
-        adjustmentDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-        adjustmentDateViewer.getCombo().setToolTipText(
+        generationDateViewer = new GenerationDateViewer(adjustmentDatePanel);
+        generationDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        generationDateViewer.getCombo().setToolTipText(
                 NLS.bind(Messages.ProductStructureExplorer_selectAdjustmentToolTip, generationConceptName));
-        AdjustmentDateContentProvider adjustmentContentProvider = new AdjustmentDateContentProvider();
+        GenerationDateContentProvider adjustmentContentProvider = new GenerationDateContentProvider();
         adjustmentContentProvider.addCollectorFinishedListener(new ICollectorFinishedListener() {
 
             public void update(Observable o, Object arg) {
-                adjustmentDateViewer.setSelection(0);
+                generationDateViewer.setSelection(0);
             }
 
         });
-        adjustmentDateViewer.setContentProvider(adjustmentContentProvider);
-        adjustmentDateViewer.setLabelProvider(new LabelProvider() {
+        generationDateViewer.setContentProvider(adjustmentContentProvider);
+        generationDateViewer.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
-                if (element instanceof AdjustmentDate) {
-                    return ((AdjustmentDate)element).getText();
+                if (element instanceof GenerationDate) {
+                    return ((GenerationDate)element).getText();
                 }
                 return super.getText(element);
             }
@@ -432,8 +433,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         prevButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
-                int selectedIndex = adjustmentDateViewer.getCombo().getSelectionIndex();
-                adjustmentDateViewer.setSelection(selectedIndex + 1);
+                int selectedIndex = generationDateViewer.getCombo().getSelectionIndex();
+                generationDateViewer.setSelection(selectedIndex + 1);
             }
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -443,18 +444,18 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         nextButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
-                int selectedIndex = adjustmentDateViewer.getCombo().getSelectionIndex();
-                adjustmentDateViewer.setSelection(selectedIndex - 1);
+                int selectedIndex = generationDateViewer.getCombo().getSelectionIndex();
+                generationDateViewer.setSelection(selectedIndex - 1);
             }
 
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
 
-        adjustmentDateViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+        generationDateViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                AdjustmentDate adjDate = adjustmentDateViewer.getSelectedDate();
+                GenerationDate adjDate = generationDateViewer.getSelectedDate();
                 if (adjDate != null) {
                     setAdjustmentDate(adjDate);
                 }
@@ -614,23 +615,23 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         productComponent = product;
         file = product.getIpsSrcFile();
-        adjustmentDateViewer.setInput(product);
-        adjustmentDateViewer.setSelection(0);
+        generationDateViewer.setInput(product);
+        generationDateViewer.setSelection(0);
         // setting the adjustment date to null updates the treeViewer content with latest adjustment
         // until the valid adjustment dates are collected
         setAdjustmentDate(null);
     }
 
-    public void setAdjustmentDate(AdjustmentDate adjustmentDate) {
+    public void setAdjustmentDate(GenerationDate generationDate) {
         try {
             GregorianCalendar validFrom = null;
-            if (adjustmentDate != null) {
-                validFrom = adjustmentDate.getValidFrom();
+            if (generationDate != null) {
+                validFrom = generationDate.getValidFrom();
             }
             IProductCmptTreeStructure structure = productComponent.getStructure(validFrom, productComponent
                     .getIpsProject());
             updateButtons();
-            labelProvider.setAdjustmentDate(adjustmentDate);
+            labelProvider.setAdjustmentDate(generationDate);
             showTreeInput(structure);
         } catch (CycleInProductStructureException e) {
             handleCircle(e);
@@ -638,9 +639,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void updateButtons() {
-        int index = adjustmentDateViewer.getCombo().getSelectionIndex();
+        int index = generationDateViewer.getCombo().getSelectionIndex();
         nextButton.setEnabled(index > 0);
-        prevButton.setEnabled(index < adjustmentDateViewer.getCombo().getItems().length - 1);
+        prevButton.setEnabled(index < generationDateViewer.getCombo().getItems().length - 1);
     }
 
     private void refresh() {

@@ -86,7 +86,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
     // Label shows the current working date
     private Label workingDateLabel;
 
-    /*
+    /**
      * @param type The type of the wizard displaying this page.
      * 
      * @return The title for this page - which depends on the given type.
@@ -98,8 +98,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
     /**
      * Create a new page to show the previously selected products with new names and allow the user
      * to choose between copy and reference, select the target package, search- and replace-pattern.
-     * 
-     * @param deepCopyWizard
      * 
      * @param structure The product component structure to copy.
      * @param sourcePage The page to get the objects selected for copy, the target package and the
@@ -286,7 +284,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
                     packageName = productCmptReference.getProductCmpt().getIpsPackageFragment().getName();
                 }
                 if (StringUtils.isEmpty(packageName)) {
-                    packageName = "";
+                    packageName = ""; //$NON-NLS-1$
                 }
                 return " - " + packageName; //$NON-NLS-1$
             } else if (item instanceof IProductCmptStructureTblUsageReference) {

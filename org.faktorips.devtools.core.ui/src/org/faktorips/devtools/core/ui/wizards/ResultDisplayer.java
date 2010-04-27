@@ -135,11 +135,11 @@ public class ResultDisplayer implements Runnable {
         if (invalidObjectProperties == null || invalidObjectProperties.length == 0) {
             return text;
         }
-        text += ": ";
+        text += ": "; //$NON-NLS-1$
         for (int i = 0; i < invalidObjectProperties.length; i++) {
             text += invalidObjectProperties[i].getObject();
             if (i + 1 < invalidObjectProperties.length) {
-                text += "\n  ";
+                text += "\n  "; //$NON-NLS-1$
             }
         }
         return text;

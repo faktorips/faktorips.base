@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.productstructureexplorer;
+package org.faktorips.devtools.core.ui.internal.generationdate;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -25,9 +25,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 
-public class AdjustmentDateContentProviderTest extends AbstractIpsPluginTest {
+public class GenerationDateContentProviderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private ProductCmpt rootCmpt;
@@ -152,7 +153,7 @@ public class AdjustmentDateContentProviderTest extends AbstractIpsPluginTest {
     private void assertResult(Object[] result, int... expecteds) {
         assertEquals(expecteds.length, result.length);
         for (int i = 0; i < expecteds.length; i++) {
-            AdjustmentDate adjDate = (AdjustmentDate)result[i];
+            GenerationDate adjDate = (GenerationDate)result[i];
             assertEquals(validFroms[expecteds[i]].getTimeInMillis(), adjDate.getValidFrom().getTimeInMillis());
             if (i > 0) {
                 GregorianCalendar expectedValidTo = validFroms[expecteds[i - 1]];
@@ -166,7 +167,7 @@ public class AdjustmentDateContentProviderTest extends AbstractIpsPluginTest {
     }
 
     // need to test protected method
-    private static class MyTestContentProvider extends AdjustmentDateContentProvider {
+    private static class MyTestContentProvider extends GenerationDateContentProvider {
 
         @Override
         public Object[] collectElements(Object inputElement, IProgressMonitor monitor) {

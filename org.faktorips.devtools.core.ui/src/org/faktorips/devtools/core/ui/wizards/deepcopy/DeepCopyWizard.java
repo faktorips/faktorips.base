@@ -280,6 +280,7 @@ public class DeepCopyWizard extends ResizableWizard {
             size.x = section.getInt(BOUNDS_WIDTH_KEY);
             size.y = section.getInt(BOUNDS_HEIGHT_KEY);
         } catch (NumberFormatException e) {
+            // ignore number format exceptions
         }
         return size;
     }

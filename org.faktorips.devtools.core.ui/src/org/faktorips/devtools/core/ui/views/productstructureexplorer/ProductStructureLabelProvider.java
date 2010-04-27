@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.util.StringUtil;
 
 public class ProductStructureLabelProvider extends LabelProvider implements IStyledLabelProvider {
@@ -41,7 +41,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     /** need to know for decorations */
     private boolean showAssociationNodes = false;
 
-    private AdjustmentDate adjustmentDate;
+    private GenerationDate generationDate;
 
     private boolean showTableStructureUsageName = false;
 
@@ -106,12 +106,12 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         return showTableStructureUsageName;
     }
 
-    public void setAdjustmentDate(AdjustmentDate adjustmentDate) {
-        this.adjustmentDate = adjustmentDate;
+    public void setAdjustmentDate(GenerationDate generationDate) {
+        this.generationDate = generationDate;
     }
 
-    public AdjustmentDate getAdjustmentDate() {
-        return adjustmentDate;
+    public GenerationDate getAdjustmentDate() {
+        return generationDate;
     }
 
     public StyledString getStyledText(Object element) {
@@ -180,8 +180,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                     .getGenerationConceptNameSingular();
             return " " + NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForDate, generationText);
         } else {
-            AdjustmentDate genAdjDate = new AdjustmentDate(generation.getValidFrom(), generation.getValidTo());
-            if (!genAdjDate.equals(adjustmentDate)) {
+            GenerationDate genAdjDate = new GenerationDate(generation.getValidFrom(), generation.getValidTo());
+            if (!genAdjDate.equals(generationDate)) {
                 return " (" + genAdjDate.getText() + ")";
             } else {
                 return "";

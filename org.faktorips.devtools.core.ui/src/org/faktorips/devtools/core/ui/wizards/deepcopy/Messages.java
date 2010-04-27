@@ -19,6 +19,7 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.deepcopy.messages"; //$NON-NLS-1$
 
     private Messages() {
+        // do not instantiate
     }
 
     static {

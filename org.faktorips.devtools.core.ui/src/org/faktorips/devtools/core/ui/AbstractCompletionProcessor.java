@@ -41,6 +41,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     private boolean computeProposalForEmptyPrefix = false;
 
     public AbstractCompletionProcessor() {
+        // default constructor
     }
 
     public AbstractCompletionProcessor(IIpsProject ipsProject) {

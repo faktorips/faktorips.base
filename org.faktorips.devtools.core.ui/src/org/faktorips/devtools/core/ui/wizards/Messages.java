@@ -19,6 +19,7 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.messages"; //$NON-NLS-1$
 
     private Messages() {
+        // do not instantiate
     }
 
     static {
@@ -31,6 +32,9 @@ public class Messages extends NLS {
     public static String IpsObjectPage_msgIpsObjectAlreadyExists3;
     public static String IpsObjectPage_msgIpsObjectAlreadyExists4;
     public static String IpsObjectPage_msgIpsObjectAlreadyExists5;
+    public static String NewIpsObjectWizard_creatingObject;
+    public static String NewIpsObjectWizard_creatingObjects;
+    public static String NewIpsObjectWizard_error_unableToCreateIpsSrcFile;
     public static String NewIpsObjectWizard_title;
     public static String IpsObjectPage_msgNew;
     public static String IpsObjectPage_labelSrcFolder;

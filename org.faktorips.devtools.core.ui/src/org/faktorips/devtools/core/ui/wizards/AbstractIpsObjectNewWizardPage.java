@@ -138,9 +138,15 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
         }
     }
 
-    /** Subclasses may overwrite to set default values based upon the user selection. */
+    /**
+     * 
+     * Subclasses may override to set default values based upon the user selection.
+     * 
+     * @param selectedResource the selected resource
+     * @throws CoreException in any case of exception
+     * */
     protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
-
+        // subclasses may override
     }
 
     /**
@@ -185,7 +191,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * This method is called when the page is entered. By default it calls the setDefaultFocus()
      * method.
      * 
-     * @throws CoreException
+     * @throws CoreException in any case of exception
      */
     protected void pageEntered() throws CoreException {
         setDefaultFocus();
@@ -245,6 +251,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * @throws CoreException if an exception occurs during finishing
      */
     protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
+        // subclasses may override
     }
 
     /**

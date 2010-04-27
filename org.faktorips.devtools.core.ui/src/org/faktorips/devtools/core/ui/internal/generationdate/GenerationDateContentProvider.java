@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.productstructureexplorer;
+package org.faktorips.devtools.core.ui.internal.generationdate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,9 +34,16 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
-import org.faktorips.devtools.core.ui.internal.adjustmentdate.AdjustmentDate;
+import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
 
-public class AdjustmentDateContentProvider extends DeferredStructuredContentProvider {
+/**
+ * Content provider to collect all generation dates of a product component structure. This contains
+ * the generation dates of a given product component and also the dates of every component connected
+ * by a composition.
+ * 
+ * @author dirmeier
+ */
+public class GenerationDateContentProvider extends DeferredStructuredContentProvider {
 
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
@@ -45,11 +52,11 @@ public class AdjustmentDateContentProvider extends DeferredStructuredContentProv
             try {
                 TreeSet<GregorianCalendar> validFromDates = collectValidFromDates(productCmpt,
                         new HashSet<IProductCmptGeneration>(), productCmpt.getIpsProject(), monitor);
-                List<AdjustmentDate> result = new ArrayList<AdjustmentDate>();
+                List<GenerationDate> result = new ArrayList<GenerationDate>();
                 GregorianCalendar lastDate = null;
-                AdjustmentDate lastAdjDate = null;
+                GenerationDate lastAdjDate = null;
                 for (GregorianCalendar nextDate : validFromDates) {
-                    lastAdjDate = new AdjustmentDate(nextDate, lastDate);
+                    lastAdjDate = new GenerationDate(nextDate, lastDate);
                     lastDate = (GregorianCalendar)nextDate.clone();
                     // valitTo Dates are always one millisecond before next valid from
                     lastDate.add(Calendar.MILLISECOND, -1);
@@ -150,10 +157,10 @@ public class AdjustmentDateContentProvider extends DeferredStructuredContentProv
         for (IIpsObjectGeneration aGeneration : target.getGenerations()) {
             if (aGeneration instanceof IProductCmptGeneration) {
                 IProductCmptGeneration prodGeneration = (IProductCmptGeneration)aGeneration;
-                // all generations with prodGeneration.validFrom must before or equal
+                // all generations with prodGeneration.validFrom have to be before or equal
                 // reference.validTo and
-                // prodGeneration.validTo after or equal reference.validFrom
-                // validTo == null should be infinite
+                // prodGeneration.validTo have to be after or equal reference.validFrom.
+                // validTo == null is equal infinite
                 if (!prodGeneration.getValidFrom().after(reference.getValidTo())
                         && !reference.getValidFrom().after(prodGeneration.getValidTo())) {
                     result.add(prodGeneration);
@@ -165,6 +172,6 @@ public class AdjustmentDateContentProvider extends DeferredStructuredContentProv
 
     @Override
     public void dispose() {
-
+        // nothing to dispose
     }
 }
