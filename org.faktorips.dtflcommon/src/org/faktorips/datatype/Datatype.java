@@ -110,7 +110,7 @@ public interface Datatype extends Comparable<Datatype> {
      * @see GregorianCalendarDatatype
      */
     @Deprecated
-    public final static ValueDatatype GREGORIAN_CALENDAR_DATE = new GregorianCalendarDatatype("Date", false);
+    public final static ValueDatatype GREGORIAN_CALENDAR_DATE = new GregorianCalendarDatatype("Date", false); //$NON-NLS-1$
 
     /**
      * Returns the datatype's name.

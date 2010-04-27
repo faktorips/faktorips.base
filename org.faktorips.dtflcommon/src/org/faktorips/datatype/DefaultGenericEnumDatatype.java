@@ -15,15 +15,15 @@ package org.faktorips.datatype;
 
 public class DefaultGenericEnumDatatype extends GenericEnumDatatype {
 
-    private Class adaptedClass;
+    private Class<?> adaptedClass;
 
-    public DefaultGenericEnumDatatype(Class adaptedClass) {
+    public DefaultGenericEnumDatatype(Class<?> adaptedClass) {
         super();
         this.adaptedClass = adaptedClass;
     }
 
     @Override
-    public Class getAdaptedClass() {
+    public Class<?> getAdaptedClass() {
         return adaptedClass;
     }
 

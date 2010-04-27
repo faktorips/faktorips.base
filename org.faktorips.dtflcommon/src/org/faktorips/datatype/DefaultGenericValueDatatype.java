@@ -24,13 +24,13 @@ import org.faktorips.util.StringUtil;
  */
 public class DefaultGenericValueDatatype extends GenericValueDatatype {
 
-    private Class adaptedClass;
+    private Class<?> adaptedClass;
 
     public DefaultGenericValueDatatype() {
         super();
     }
 
-    public DefaultGenericValueDatatype(Class adaptedClass) {
+    public DefaultGenericValueDatatype(Class<?> adaptedClass) {
         ArgumentCheck.notNull(adaptedClass);
         this.adaptedClass = adaptedClass;
         setQualifiedName(StringUtil.unqualifiedName(adaptedClass.getName()));
@@ -40,7 +40,7 @@ public class DefaultGenericValueDatatype extends GenericValueDatatype {
      * Overridden.
      */
     @Override
-    public Class getAdaptedClass() {
+    public Class<?> getAdaptedClass() {
         return adaptedClass;
     }
 

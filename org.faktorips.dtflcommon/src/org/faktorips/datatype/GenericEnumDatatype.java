@@ -27,9 +27,9 @@ import org.apache.commons.lang.ObjectUtils;
  */
 public abstract class GenericEnumDatatype extends GenericValueDatatype implements EnumDatatype {
 
-    private String getAllValuesMethodName = "getAllValues";
+    private String getAllValuesMethodName = "getAllValues"; //$NON-NLS-1$
 
-    private String getNameMethodName = "getName";
+    private String getNameMethodName = "getName"; //$NON-NLS-1$
 
     private boolean isSupportingNames = false;
 
@@ -85,7 +85,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
      * Sets the name of the getName(String) method.
      */
     public void setGetNameMethodName(String getNameMethodName) {
-        this.getNameMethod = null;
+        getNameMethod = null;
         this.getNameMethodName = getNameMethodName;
         clearCache();
     }
@@ -112,7 +112,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
                 ids = getAllValueIdsFromClass();
             }
             int indexOfNull = getIndeoxOfNullOrNullObject(ids);
-            ArrayList result = new ArrayList();
+            ArrayList<String> result = new ArrayList<String>();
             result.addAll(Arrays.asList(ids));
             if (!includeNull && indexOfNull >= 0) {
                 result.remove(indexOfNull);
@@ -123,9 +123,9 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
                     result.add(null);
                 }
             }
-            return (String[])result.toArray(new String[result.size()]);
+            return result.toArray(new String[result.size()]);
         } catch (Exception e) {
-            throw new RuntimeException("Error invoking method " + getAllValuesMethodName, e);
+            throw new RuntimeException("Error invoking method " + getAllValuesMethodName, e); //$NON-NLS-1$
         }
     }
 
@@ -137,7 +137,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         Object[] values = (Object[])getGetAllValuesMethod().invoke(null, new Object[0]);
         String[] ids = new String[values.length];
         for (int i = 0; i < ids.length; i++) {
-            ids[i] = this.valueToString(values[i]);
+            ids[i] = valueToString(values[i]);
         }
         return ids;
     }
@@ -167,8 +167,8 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
                     throw new NullPointerException();
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Can't get method getAllValues(), Class: " + getAdaptedClass()
-                        + ", Methodname: " + getAllValuesMethodName);
+                throw new RuntimeException("Can't get method getAllValues(), Class: " + getAdaptedClass() //$NON-NLS-1$
+                        + ", Methodname: " + getAllValuesMethodName); //$NON-NLS-1$
             }
         }
         return getAllValuesMethod;
@@ -184,8 +184,8 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
             try {
                 getNameMethod = getAdaptedClass().getMethod(getNameMethodName, new Class[0]);
             } catch (Exception e) {
-                throw new RuntimeException("Unable to access the method " + getNameMethodName
-                        + " on the adapted class " + getAdaptedClass(), e);
+                throw new RuntimeException("Unable to access the method " + getNameMethodName //$NON-NLS-1$
+                        + " on the adapted class " + getAdaptedClass(), e); //$NON-NLS-1$
             }
         }
         return getNameMethod;
@@ -197,7 +197,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     public String getValueName(String id) {
         if (!isSupportingNames) {
             throw new UnsupportedOperationException(
-                    "This enumeration type does not support a getName(String) method, enumeration type class: "
+                    "This enumeration type does not support a getName(String) method, enumeration type class: " //$NON-NLS-1$
                             + getAdaptedClass());
         }
         String[] ids = getAllValueIdsFromCache();
@@ -221,8 +221,8 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
             return (String)getGetNameMethod().invoke(value, new Object[0]);
 
         } catch (Exception e) {
-            throw new RuntimeException("Unable to invoke the method to get the value name " + getNameMethodName
-                    + " on the class: " + getAdaptedClass(), e);
+            throw new RuntimeException("Unable to invoke the method to get the value name " + getNameMethodName //$NON-NLS-1$
+                    + " on the class: " + getAdaptedClass(), e); //$NON-NLS-1$
         }
     }
 
@@ -272,7 +272,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
      */
     String[] getAllValueNamesFromCache() {
         if (!isSupportingNames) {
-            throw new RuntimeException("Datatype " + this + " does not support names.");
+            throw new RuntimeException("Datatype " + this + " does not support names."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (!cacheData) {
             return null;
@@ -291,7 +291,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         try {
             ids = getAllValueIdsFromClass();
         } catch (Exception e) {
-            throw new RuntimeException("Error initializing cache for datatype " + this, e);
+            throw new RuntimeException("Error initializing cache for datatype " + this, e); //$NON-NLS-1$
         }
         cachedValueIds = new String[ids.length];
         if (isSupportingNames) {
@@ -308,7 +308,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     @Override
     protected void clearCache() {
         super.clearCache();
-        this.getAllValuesMethod = null;
+        getAllValuesMethod = null;
         cachedValueIds = null;
         cachedValueNames = null;
     }
