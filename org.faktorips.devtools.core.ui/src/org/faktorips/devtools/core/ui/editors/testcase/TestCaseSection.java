@@ -2101,23 +2101,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 return null;
             }
 
+            /*
+             * Returns true if generateUniqueNameForTestPolicyCmpt() creates the same string as the
+             * given one.
+             */
             private boolean isNameValid(String nameCandidate) {
                 ITestCase testCase = testPolicyCmpt.getTestCase();
-                try {
-                    return isNameValid(testCase, nameCandidate);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-                return false;
-            }
-
-            private boolean isNameValid(ITestCase testCase, String nameCandidate) throws CoreException {
-                for (ITestPolicyCmpt polCmpt : testCase.getAllTestPolicyCmpt()) {
-                    if (polCmpt.getName().equals(nameCandidate)) {
-                        return false;
-                    }
-                }
-                return true;
+                return testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, nameCandidate)
+                        .equals(nameCandidate);
             }
         };
 
