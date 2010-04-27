@@ -210,7 +210,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
         ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "TestCase1");
         ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();
-        testPolicyCmpt.setProductCmpt(coverage.getQualifiedName());
+        // apply standard-naming
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(coverage.getQualifiedName());
         testCase.getIpsSrcFile().save(true, null);
 
         MoveOperation move = new MoveOperation(coverage, targetName);
@@ -230,8 +231,16 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         move = new MoveOperation(productCmpt, targetName + "_2");
         move.run(null);
         productCmpt = ipsProject.findProductCmptByRuntimeId(coverage.getRuntimeId());
-
+        // test standard naming update
         assertEquals(StringUtil.unqualifiedName(productCmpt.getQualifiedName()), testPolicyCmpt.getName());
+
+        // TestPolicyCmpt with manual name -> name unchanged
+        testPolicyCmpt.setName("DUMMY_NAME");
+        move = new MoveOperation(productCmpt, targetName + "_3");
+        move.run(null);
+        productCmpt = ipsProject.findProductCmptByRuntimeId(coverage.getRuntimeId());
+        // manual name was retained
+        assertEquals("DUMMY_NAME", testPolicyCmpt.getName());
     }
 
     /**
