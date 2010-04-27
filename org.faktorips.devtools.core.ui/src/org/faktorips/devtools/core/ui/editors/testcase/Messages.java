@@ -35,6 +35,7 @@ public class Messages extends NLS {
     public static String TestCaseEditor_Title_Success;
     public static String TestCaseEditor_Combined_SectionTitle;
     public static String TestCaseEditor_Combined_Description;
+    public static String TestCaseSection_RenameActionLabel;
     public static String TestCaseSection_ButtonAdd;
     public static String TestCaseSection_ButtonRemove;
     public static String TestCaseSection_ChangeProductCmpt;
@@ -83,9 +84,15 @@ public class Messages extends NLS {
     public static String TestCaseSection_MessageDialog_TitleRunTestAndStoreExpectedResults;
     public static String TestCaseSection_MessageDialog_QuestionRunTestAndStoreExpectedResults;
     public static String TestCaseSection_RemoveProductComponentAction_Text;
+    public static String TestCaseSection_Rename_Problem_ChooseDifferentName;
+    public static String TestCaseSection_Rename_Problem_NameInUse;
+    public static String TestCaseSection_RenameDialogDescription;
+    public static String TestCaseSection_RenameDialogTitle;
     public static String TestCaseSection_SectionTitleToolTip_StoredExpectedResults;
     public static String TestCaseSection_SelectDialogValidationRule_Title;
     public static String TestCaseSection_SelectDialogValidationRule_Decription;
+    public static String TestCaseSection_SelectTypeDialog_Description;
+    public static String TestCaseSection_SelectTypeDialog_Title;
     public static String TestCaseDetailArea_Label_Violation;
     public static String TestCaseDetailArea_Label_Value;
     public static String SetTemplateDialog_DialogTemplate_Title;

@@ -267,6 +267,10 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                 testPolicyCmpt.setProductCmpt(runtimeId);
             }
 
+            /*
+             * setProductCmptAndNameAfterIfApplicable() is not called because of the potential
+             * naming after the runtime-id.
+             */
             ITestCase testCase = testPolicyCmpt.getTestCase();
             uniqueLabel = testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, uniqueLabel);
             testPolicyCmpt.setName(uniqueLabel);

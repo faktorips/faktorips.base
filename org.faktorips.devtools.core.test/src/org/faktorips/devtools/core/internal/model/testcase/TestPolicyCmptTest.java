@@ -814,4 +814,68 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
 
     }
+
+    public void testSetProductCmptAndNameAfterIfApplicable() throws CoreException {
+        TestContent testContent = new TestContent();
+        testContent.init(project);
+
+        ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();
+        testPolicyCmpt.setTestPolicyCmptTypeParameter(testContent.parameter.getName());
+        testPolicyCmpt.setName(testContent.parameter.getName());
+        ITestPolicyCmptLink testPolicyCmptAssociation = testPolicyCmpt.newTestPolicyCmptLink();
+        testPolicyCmptAssociation.setTestPolicyCmptTypeParameter(testContent.childParameter.getName());
+        ITestPolicyCmpt testPolicyCmptChild = testPolicyCmptAssociation.newTargetTestPolicyCmptChild();
+        testPolicyCmptChild.setTestPolicyCmptTypeParameter(testContent.childParameter.getName());
+        testPolicyCmptChild.setName(testContent.childParameter.getName());
+        ITestPolicyCmptLink testPolicyCmptAssociation2 = testPolicyCmpt.newTestPolicyCmptLink();
+        testPolicyCmptAssociation2.setTestPolicyCmptTypeParameter(testContent.childParameter.getName());
+        ITestPolicyCmpt testPolicyCmptChild2 = testPolicyCmptAssociation2.newTargetTestPolicyCmptChild();
+        testPolicyCmptChild2.setTestPolicyCmptTypeParameter(testContent.childParameter.getName());
+        testPolicyCmptChild2.setName(testContent.childParameter.getName());
+
+        // set name of prodCmpt
+        testPolicyCmpt.setName("");
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(testContent.policyProduct.getQualifiedName());
+        assertEquals(testContent.policyProduct.getName(), testPolicyCmpt.getName());
+
+        // reset name to PCTParameter
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable("");
+        assertEquals(testContent.parameter.getName(), testPolicyCmpt.getName());
+
+        // again set name of prodCmpt, even if name not empty
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(testContent.policyProduct.getQualifiedName());
+        assertEquals(testContent.policyProduct.getName(), testPolicyCmpt.getName());
+
+        // retain manually set name
+        testPolicyCmpt.setName("DUMMY_NAME");
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(testContent.policyProduct.getQualifiedName());
+        assertEquals("DUMMY_NAME", testPolicyCmpt.getName());
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable("");
+        assertEquals("DUMMY_NAME", testPolicyCmpt.getName());
+
+        // PCTParameter name is assumed as manual name if prodCmpt is set
+        testPolicyCmpt.setName(testContent.parameter.getName());
+        testPolicyCmpt.setProductCmpt(testContent.coverageProductA.getQualifiedName());
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(testContent.policyProduct.getQualifiedName());
+        assertEquals(testContent.parameter.getName(), testPolicyCmpt.getName());
+        testPolicyCmpt.setName(testContent.policyProduct.getName());
+
+        // Test name uniqueness
+        testPolicyCmptChild.setProductCmptAndNameAfterIfApplicable(testContent.coverageProductA.getQualifiedName());
+        testPolicyCmptChild2.setProductCmptAndNameAfterIfApplicable(testContent.coverageProductA.getQualifiedName());
+        assertEquals(testContent.coverageProductA.getName(), testPolicyCmptChild.getName());
+        assertEquals(testContent.coverageProductA.getName() + " (2)", testPolicyCmptChild2.getName());
+
+        // test whether unique name is recognized as standard name even with postfix " (2)"
+        testPolicyCmptChild2.setProductCmptAndNameAfterIfApplicable(testContent.coverageProductB.getQualifiedName());
+        assertEquals(testContent.coverageProductB.getName(), testPolicyCmptChild2.getName());
+
+        // test Uniqueness with manual name
+        testPolicyCmptChild.setProductCmptAndNameAfterIfApplicable(testContent.coverageProductA.getQualifiedName());
+        testPolicyCmptChild.setName("DUMMY_NAME");
+        testPolicyCmptChild2.setProductCmptAndNameAfterIfApplicable(testContent.coverageProductA.getQualifiedName());
+        assertEquals("DUMMY_NAME", testPolicyCmptChild.getName());
+        assertEquals(testContent.coverageProductA.getName(), testPolicyCmptChild2.getName());
+
+    }
 }

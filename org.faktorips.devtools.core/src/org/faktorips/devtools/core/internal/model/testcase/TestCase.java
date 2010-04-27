@@ -340,6 +340,7 @@ public class TestCase extends IpsObject implements ITestCase {
         String name = testPolicyCmptTypeParameter.getName();
         ITestPolicyCmpt testPolicyCpmt = newTestPolicyCmpt();
         testPolicyCpmt.setTestPolicyCmptTypeParameter(name);
+        // Standard naming if no product component is available
         testPolicyCpmt.setName(name);
         // add test attributes values
         ITestAttribute[] attrs = testPolicyCmptTypeParameter.getTestAttributes();

@@ -771,9 +771,7 @@ public class MoveOperation implements IRunnableWithProgress {
         ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
         for (ITestPolicyCmpt element : allTestPolicyCmpt) {
             if (oldName.equals(element.getProductCmpt())) {
-                element.setProductCmpt(newName);
-                element.setName(element.getTestCase().generateUniqueNameForTestPolicyCmpt(element,
-                        StringUtil.unqualifiedName(newName)));
+                element.setProductCmptAndNameAfterIfApplicable(newName);
             }
         }
         testCase.getIpsSrcFile().save(true, null);

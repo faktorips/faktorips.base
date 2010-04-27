@@ -175,9 +175,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
     private void replaceAllProductCmpts(ITestPolicyCmpt testPolicyCmpt,
             IProductCmpt productCmpt,
             IProductCmpt newProductCmpt) throws CoreException {
-        ITestCase testCase = testPolicyCmpt.getTestCase();
-        testPolicyCmpt.setProductCmpt(newProductCmpt.getQualifiedName());
-        testPolicyCmpt.setName(testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, newProductCmpt.getName()));
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(newProductCmpt.getQualifiedName());
 
         String newVersionId = newProductCmpt.getVersionId();
         replaceChildsProductCmpts(testPolicyCmpt, newProductCmpt, newVersionId);
@@ -186,7 +184,6 @@ public class TestCaseCopyWizard extends ResizableWizard {
     private void replaceChildsProductCmpts(ITestPolicyCmpt testPolicyCmpt,
             IProductCmpt parentProductCmpt,
             String newVersionId) throws CoreException {
-        ITestCase testCase = testPolicyCmpt.getTestCase();
         IIpsProject ipsProject = targetTestCase.getIpsProject();
         IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
         ITestPolicyCmptLink[] testPolicyCmptlinks = testPolicyCmpt.getTestPolicyCmptLinks();
@@ -212,9 +209,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
                     }
                 }
                 if (newProductCmptChild != null) {
-                    testPolicyCmptChild.setProductCmpt(newProductCmptChild.getQualifiedName());
-                    testPolicyCmptChild.setName(testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmptChild,
-                            newProductCmptChild.getName()));
+                    testPolicyCmptChild.setProductCmptAndNameAfterIfApplicable(newProductCmptChild.getQualifiedName());
                     productCmptChild = newProductCmptChild;
                 }
                 replaceChildsProductCmpts(testPolicyCmptChild, productCmptChild, newVersionId);

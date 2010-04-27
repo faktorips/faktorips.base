@@ -320,4 +320,33 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @since FIPS 3.0.0
      */
     public boolean hasProductCmpt();
+
+    /**
+     * Sets this instance's product component to the given qualified name and modifies this
+     * instance's display-name accordingly (if applicable). Renaming {@link ITestPolicyCmpt} will
+     * retain the standard-naming or manual naming respectively as well as the uniqueness of the
+     * name.
+     * <p/>
+     * The standard naming of a {@link ITestPolicyCmpt} is as follows:
+     * <ul>
+     * <li>If this TestPolicyComponent has a product component, it is named after it (with possible
+     * postfix "(x)" for uniqueness)</li>
+     * <li>If this TestPolicyComponent does not have a product component, it is named after its
+     * TestPolicyCmptTypeParameter.</li>
+     * </ul>
+     * In all other cases the name is assumed to be manually modified.
+     * <p/>
+     * This method renames this {@link ITestPolicyCmpt} if it has standard-naming, but does not
+     * change it if it was set manually. If the given qualified name is empty (null or "") there are
+     * two cases:
+     * <ul>
+     * <li>if this {@link ITestPolicyCmpt} has a standard name it will be named after its
+     * TestPolicyCmptTypeParameter (reset to default)</li>
+     * <li>If this {@link ITestPolicyCmpt} has a manual name, it will not be changed at all.</li>
+     * </ul>
+     * 
+     * @since FIPS 3.0.0
+     * @param prodCmptQName the qualified name of this test component's new product component.
+     */
+    public void setProductCmptAndNameAfterIfApplicable(String prodCmptQName);
 }

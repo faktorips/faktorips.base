@@ -152,6 +152,12 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return testPolicyCmptType;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Use {@link #setProductCmptAndNameAfterIfApplicable(String)} if standard naming (or manual
+     * naming) should be retained.
+     */
     public void setProductCmpt(String newProductCmpt) {
         String oldTestProductCmpt = productCmpt;
         productCmpt = newProductCmpt;
@@ -160,6 +166,30 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     public String getProductCmpt() {
         return productCmpt;
+    }
+
+    public void setProductCmptAndNameAfterIfApplicable(String prodCmptQName) {
+        String oldProdCmptName = StringUtil.unqualifiedName(getProductCmpt());
+        String pctParameterName = StringUtil.unqualifiedName(getTestPolicyCmptTypeParameter());
+
+        setProductCmpt(prodCmptQName);
+
+        /*
+         * Regular expression to match product component names with and without a " (<number>)"
+         * postfix.
+         */
+        if (getName() == null || getName().matches(oldProdCmptName + "( \\([1-9][0-9]*\\))?") //$NON-NLS-1$
+                || (StringUtils.isEmpty(oldProdCmptName) && getName().equals(pctParameterName))) {
+            String uniqueName = null;
+            if (StringUtils.isEmpty(prodCmptQName)) {
+                uniqueName = getTestCase().generateUniqueNameForTestPolicyCmpt(this,
+                        StringUtil.unqualifiedName(pctParameterName));
+            } else {
+                uniqueName = getTestCase().generateUniqueNameForTestPolicyCmpt(this,
+                        StringUtil.unqualifiedName(prodCmptQName));
+            }
+            setName(uniqueName);
+        }
     }
 
     public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreException {
@@ -174,6 +204,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return !StringUtils.isEmpty(productCmpt);
     }
 
+    /**
+     * For test purposes and special cases only. Use
+     * {@link #setProductCmptAndNameAfterIfApplicable(String)} if standard naming (or manual naming)
+     * should be retained.
+     */
     @Override
     public void setName(String newName) {
         String oldName = name;
@@ -358,20 +393,10 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
             ITestPolicyCmpt newTestPolicyCmpt = newTestPcTypeLink.newTargetTestPolicyCmptChild();
             newTestPolicyCmpt.setTestPolicyCmptTypeParameter(typeParam.getName());
-            newTestPolicyCmpt.setProductCmpt(StringUtils.isEmpty(productCmpt) ? "" : productCmpt); //$NON-NLS-1$
             newTestPolicyCmpt.setPolicyCmptType(StringUtils.isEmpty(policyCmptType) ? "" : policyCmptType); //$NON-NLS-1$
+            newTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmpt);
 
-            // sets the label for the new child test policy component
-            String name = ""; //$NON-NLS-1$
-            if (StringUtils.isEmpty(productCmpt)) {
-                name = newTestPolicyCmpt.getTestPolicyCmptTypeParameter();
-            } else {
-                name = productCmpt;
-            }
-            newTestPolicyCmpt.setName(getTestCase().generateUniqueNameForTestPolicyCmpt(newTestPolicyCmpt,
-                    StringUtil.unqualifiedName(name)));
-
-            // add all test attribute values as spedified in the test parameter type
+            // add all test attribute values as specified in the test parameter type
             ITestAttribute attributes[] = typeParam.getTestAttributes();
             for (ITestAttribute attribute : attributes) {
                 ITestAttributeValue attrValue = newTestPolicyCmpt.newTestAttributeValue();

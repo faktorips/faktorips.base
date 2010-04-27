@@ -33,6 +33,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -253,6 +255,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         boolean addEnable = false;
         boolean moveEnable = false;
         boolean openInNewEditorEnable = true;
+        boolean renameEnable = false;
     }
 
     /*
@@ -684,8 +687,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // identify with obj.child => obj#0.child#0
         String fieldKeyWithOffset = failureDetails.getObjectName().replaceAll(
                 "\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
-        uniqueEditFieldKey = getUniqueEditFieldKey(
-                fieldKeyWithOffset + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetails.getAttributeName()); //$NON-NLS-1$
+        uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", //$NON-NLS-1$
+                failureDetails.getAttributeName());
         editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
         if (editField != null) {
             return uniqueEditFieldKey;
@@ -806,7 +809,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         @Override
         public void run(IStructuredSelection selection) {
             try {
-                resetProductCmptToNull();
+                resetProductCmptToEmpty();
             } catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
@@ -943,6 +946,36 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
+            }
+        }
+    }
+
+    /*
+     * Lets the user enter a new name for a policy component
+     */
+    private class RenamePolicyCmptAction extends IpsAction {
+        public RenamePolicyCmptAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseSection_RenameActionLabel);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.renameEnable;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void run(IStructuredSelection selection) {
+            Object firstElement = selection.getFirstElement();
+            if (firstElement instanceof ITestPolicyCmpt) {
+                renamePolicyCmpt((ITestPolicyCmpt)firstElement);
             }
         }
     }
@@ -1382,7 +1415,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 // root elements couldn't be deleted
                 actionEnableState.removeEnable = true;
                 // root elements couldn't be deleted
-                actionEnableState.moveEnable = !((ITestPolicyCmpt)selection).isRoot();
+                actionEnableState.moveEnable = !testPolicyCmpt.isRoot();
+                actionEnableState.renameEnable = true;
 
                 IPolicyCmptType paramType = param.findPolicyCmptType(ipsProject);
                 if (param != null) {
@@ -1533,6 +1567,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         manager.add(new Separator());
         manager.add(new AddAction());
         manager.add(new RemoveAction());
+        manager.add(new Separator());
+        manager.add(new RenamePolicyCmptAction());
         manager.add(new ProductCmptChangeAction());
         manager.add(new ProductCmptRemoveAction());
         manager.add(new Separator());
@@ -1618,7 +1654,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         if (selected instanceof ITestPolicyCmptLink) {
             ITestPolicyCmptLink link = (ITestPolicyCmptLink)selected;
-            uniquePath = "." + link.getTestPolicyCmptTypeParameter() + TestCaseHierarchyPath.OFFSET_SEPARATOR + link.getId(); //$NON-NLS-1$
+            uniquePath = "." + link.getTestPolicyCmptTypeParameter() + TestCaseHierarchyPath.OFFSET_SEPARATOR //$NON-NLS-1$
+                    + link.getId();
         }
         ITestPolicyCmpt currTestPolicyCmpt = getTestPolicyCmpFromDomainObject(selected);
         if (currTestPolicyCmpt == null) {
@@ -1973,8 +2010,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                                 ((TestCaseContentProvider)treeViewer.getContentProvider())
                                         .clearChildDummyObjectsInCache((ITestPolicyCmpt)currElement);
                             } else {
-                                throw new RuntimeException(
-                                        "Remove object with type " + currElement.getClass().getName() + " is not supported!"); //$NON-NLS-1$ //$NON-NLS-2$
+                                throw new RuntimeException("Remove object with type " //$NON-NLS-1$
+                                        + currElement.getClass().getName() + " is not supported!"); //$NON-NLS-1$
                             }
                         }
                         refreshTreeAndDetailArea();
@@ -2015,12 +2052,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // cancel
             return;
         }
-        testPolicyCmpt.setProductCmpt(productCmptQualifiedNames[0]);
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmptQualifiedNames[0]);
         // reset the stored policy cmpt type, because the policy cmpt type can now
         // be searched using the product cmpt
         testPolicyCmpt.setPolicyCmptType(""); //$NON-NLS-1$
-        testPolicyCmpt.setName(testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, StringUtil
-                .unqualifiedName(productCmptQualifiedNames[0])));
 
         boolean updateTestAttrValuesWithDefault = MessageDialog.openQuestion(getShell(),
                 Messages.TestCaseSection_DialogOverwriteWithDefault_Title,
@@ -2043,14 +2078,55 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
     }
 
-    private void resetProductCmptToNull() {
+    private void resetProductCmptToEmpty() {
         ISelection selection = treeViewer.getSelection();
         if (selection instanceof IStructuredSelection) {
             Object selectedObj = ((IStructuredSelection)selection).getFirstElement();
             if (selectedObj instanceof ITestPolicyCmpt) {
-                ((ITestPolicyCmpt)selectedObj).setProductCmpt(null);
+                ((ITestPolicyCmpt)selectedObj).setProductCmptAndNameAfterIfApplicable(""); //$NON-NLS-1$
                 treeViewer.setSelection(selection);
             }
+        }
+    }
+
+    private void renamePolicyCmpt(final ITestPolicyCmpt testPolicyCmpt) {
+        IInputValidator validator = new IInputValidator() {
+            public String isValid(String nameCandidate) {
+                if (testPolicyCmpt.getName().equals(nameCandidate)) {
+                    return Messages.TestCaseSection_Rename_Problem_ChooseDifferentName;
+                }
+                if (!isNameValid(nameCandidate)) {
+                    return Messages.TestCaseSection_Rename_Problem_NameInUse;
+                }
+                return null;
+            }
+
+            private boolean isNameValid(String nameCandidate) {
+                ITestCase testCase = testPolicyCmpt.getTestCase();
+                try {
+                    return isNameValid(testCase, nameCandidate);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+                return false;
+            }
+
+            private boolean isNameValid(ITestCase testCase, String nameCandidate) throws CoreException {
+                for (ITestPolicyCmpt polCmpt : testCase.getAllTestPolicyCmpt()) {
+                    if (polCmpt.getName().equals(nameCandidate)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+
+        InputDialog dialog = new InputDialog(getShell(), Messages.TestCaseSection_RenameDialogTitle,
+                Messages.TestCaseSection_RenameDialogDescription, testPolicyCmpt.getName(), validator);
+        dialog.setBlockOnOpen(true);
+        int result = dialog.open();
+        if (result == Window.OK) {
+            testPolicyCmpt.setName(dialog.getValue());
         }
     }
 
@@ -2177,7 +2253,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private String[] selectProductCmptsDialog(ITestPolicyCmptTypeParameter testTypeParam,
             ITestPolicyCmpt testPolicyCmptParent,
             boolean multiSelectiion) throws CoreException {
-        return selectIpsSrcFileDialog(multiSelectiion, getProductCmptSrcFiles(testTypeParam, testPolicyCmptParent));
+        return selectIpsSrcFileDialog(multiSelectiion, getProductCmptSrcFiles(testTypeParam, testPolicyCmptParent),
+                Messages.TestCaseSection_DialogSelectProductCmpt_Title,
+                Messages.TestCaseSection_DialogSelectProductCmpt_Description);
     }
 
     /*
@@ -2192,13 +2270,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         SubPolicyCmptTypesSrcFileFinder runnable = new SubPolicyCmptTypesSrcFileFinder(testTypeParam,
                 testPolicyCmptParent);
         BusyIndicator.showWhile(getDisplay(), runnable);
-        return selectIpsSrcFileDialog(multiSelectiion, runnable.getPolicyCmptTypesSrcFiles());
+        return selectIpsSrcFileDialog(multiSelectiion, runnable.getPolicyCmptTypesSrcFiles(),
+                Messages.TestCaseSection_SelectTypeDialog_Title, Messages.TestCaseSection_SelectTypeDialog_Description);
     }
 
-    private String[] selectIpsSrcFileDialog(boolean multiSelectiion, IIpsSrcFile[] elements) throws CoreException {
-        IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(),
-                Messages.TestCaseSection_DialogSelectProductCmpt_Title,
-                Messages.TestCaseSection_DialogSelectProductCmpt_Description);
+    private String[] selectIpsSrcFileDialog(boolean multiSelectiion,
+            IIpsSrcFile[] elements,
+            String title,
+            String description) throws CoreException {
+        IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(), title, description);
         dialog.setElements(elements);
         dialog.setMultipleSelection(multiSelectiion);
         if (dialog.open() == Window.OK) {

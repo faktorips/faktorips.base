@@ -384,10 +384,7 @@ public class TestCaseStructurePage extends WizardPage {
             IpsPlugin.logAndShowErrorDialog(e);
             return null;
         }
-        testPolicyCmpt.setProductCmpt(cmpt.getQualifiedName());
-        String testPolicyCmptName = testPolicyCmpt.getTestCase().generateUniqueNameForTestPolicyCmpt(testPolicyCmpt,
-                cmpt.getName());
-        testPolicyCmpt.setName(testPolicyCmptName);
+        testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(cmpt.getQualifiedName());
 
         return oldProductCmp;
     }
