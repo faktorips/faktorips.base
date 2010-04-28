@@ -56,7 +56,7 @@
 			<delete file="${jarfile}" />
 			<delete file="${temp_jarfile}" />
 			
-			<delete includeemptydirs="true" >
+			<delete failonerror="false" includeemptydirs="true" >
 				<fileset dir="${log}">
 					<exclude name=".keep"/>
 					<include name="**/*" />
@@ -112,7 +112,7 @@
 	    		</fileset>
 	    	</delete>
     	
-	    	<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
+	    	<junit fork="yes" haltonerror="no" haltonfailure="no" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
 	    		<jvmarg value="-Djava.endorsed.dirs=${src}/../endorsed/"/>
 	    		<formatter type="xml" usefile="true"/>
 	    		<classpath>
