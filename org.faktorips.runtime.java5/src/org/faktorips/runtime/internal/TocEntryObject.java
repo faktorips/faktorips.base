@@ -48,6 +48,7 @@ public class TocEntryObject extends TocEntry {
     public static final String PROPERTY_KIND_ID = "kindId";
     public static final String PROPERTY_VERSION_ID = "versionId";
     public static final String PROPERTY_VALID_TO = "validTo";
+    public static final String PROPERTY_GENERATION_IMPL_CLASS_NAME = "generationImplClassName";
 
     /**
      * The identifier of the ips object (either the qualified name for a table or the runtime id for
@@ -73,7 +74,16 @@ public class TocEntryObject extends TocEntry {
      */
     private String versionId;
 
+    /**
+     * If this entry is for a product component: the date until this product component is valid
+     */
     private DateTime validTo;
+
+    /**
+     * If this entry is for a product component type: the name of the implementation class for the
+     * generation object
+     */
+    private String generationImplClassName;
 
     private List<TocEntryGeneration> generationEntries = new ArrayList<TocEntryGeneration>(0);
 
@@ -84,28 +94,34 @@ public class TocEntryObject extends TocEntry {
         String xmlResourceName = entryElement.getAttribute(PROPERTY_XML_RESOURCE);
         String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
         DateTime validTo = DateTime.parseIso(entryElement.getAttribute(PROPERTY_VALID_TO));
+        String generationImplClassName = entryElement.getAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME);
 
         TocEntryObject newEntry;
+
+        Builder builder = new Builder(ipsObjectId, implementationClassName, entryType);
+
         if (PRODUCT_CMPT_ENTRY_TYPE.equals(entryType)) {
             String kindId = entryElement.getAttribute(PROPERTY_KIND_ID);
             String versionId = entryElement.getAttribute(PROPERTY_VERSION_ID);
-            newEntry = createProductCmptTocEntry(ipsObjectId, ipsObjectName, kindId, versionId, xmlResourceName,
-                    implementationClassName, validTo);
+            newEntry = builder.xmlResourceName(xmlResourceName).ipsObjectQualifiedName(ipsObjectName).kindId(kindId)
+                    .versionId(versionId).validTo(validTo).build();
         } else if (TABLE_ENTRY_TYPE.equals(entryType)) {
-            newEntry = createTableTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
+            newEntry = builder.xmlResourceName(xmlResourceName).ipsObjectQualifiedName(ipsObjectName).build();
         } else if (TEST_CASE_ENTRY_TYPE.equals(entryType)) {
-            newEntry = createTestCaseTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
+            newEntry = builder.xmlResourceName(xmlResourceName).ipsObjectQualifiedName(ipsObjectName).build();
         } else if (ENUM_CONTENT_ENTRY_TYPE.equals(entryType)) {
-            newEntry = createEnumContentTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
+            newEntry = builder.xmlResourceName(xmlResourceName).ipsObjectQualifiedName(ipsObjectName).build();
         } else if (ENUM_XML_ADAPTER_TYPE.equals(entryType)) {
-            newEntry = createEnumXmlAdapterTocEntry(ipsObjectId, implementationClassName);
+            newEntry = builder.build();
         } else if (FORMULA_TEST_ENTRY_TYPE.equals(entryType)) {
             String kindId = entryElement.getAttribute(PROPERTY_KIND_ID);
             String versionId = entryElement.getAttribute(PROPERTY_VERSION_ID);
-            newEntry = createFormulaTestTocEntry(ipsObjectId, ipsObjectName, kindId, versionId, xmlResourceName,
-                    implementationClassName);
+            newEntry = builder.xmlResourceName(xmlResourceName).ipsObjectQualifiedName(ipsObjectName).kindId(kindId)
+                    .versionId(versionId).build();
         } else if (MODEL_TYPE_ENTRY_TYPE.equals(entryType)) {
-            newEntry = createModelTypeTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
+            // TODO check if ipsObjectId is really needed
+            newEntry = builder.xmlResourceName(xmlResourceName).ipsObjectQualifiedName(ipsObjectName)
+                    .generationImplClassName(generationImplClassName).build();
         } else {
             throw new IllegalArgumentException("Unknown entry type " + entryType);
         }
@@ -137,8 +153,9 @@ public class TocEntryObject extends TocEntry {
             String xmlResourceName,
             String implementationClassName,
             DateTime validTo) {
-        return new TocEntryObject(PRODUCT_CMPT_ENTRY_TYPE, ipsObjectId, ipsObjectQualifiedName, kindId, versionId,
-                xmlResourceName, implementationClassName, validTo);
+        return new Builder(ipsObjectId, implementationClassName, PRODUCT_CMPT_ENTRY_TYPE).xmlResourceName(
+                xmlResourceName).ipsObjectQualifiedName(ipsObjectQualifiedName).kindId(kindId).versionId(versionId)
+                .validTo(validTo).build();
     }
 
     /**
@@ -150,8 +167,9 @@ public class TocEntryObject extends TocEntry {
             String versionId,
             String xmlResourceName,
             String implementationClassName) {
-        return new TocEntryObject(FORMULA_TEST_ENTRY_TYPE, ipsObjectId, ipsObjectQualifiedName, kindId, versionId,
-                xmlResourceName, implementationClassName, null);
+        return new Builder(ipsObjectId, implementationClassName, FORMULA_TEST_ENTRY_TYPE).xmlResourceName(
+                xmlResourceName).ipsObjectQualifiedName(ipsObjectQualifiedName).kindId(kindId).versionId(versionId)
+                .build();
     }
 
     /**
@@ -161,8 +179,8 @@ public class TocEntryObject extends TocEntry {
             String ipsObjectQualifiedName,
             String xmlResourceName,
             String implementationClassName) {
-        return new TocEntryObject(TABLE_ENTRY_TYPE, ipsObjectId, ipsObjectQualifiedName, "", "", xmlResourceName,
-                implementationClassName, null);
+        return new Builder(ipsObjectId, implementationClassName, TABLE_ENTRY_TYPE).xmlResourceName(xmlResourceName)
+                .ipsObjectQualifiedName(ipsObjectQualifiedName).build();
     }
 
     /**
@@ -172,8 +190,8 @@ public class TocEntryObject extends TocEntry {
             String ipsObjectQualifiedName,
             String xmlResourceName,
             String implementationClassName) {
-        return new TocEntryObject(TEST_CASE_ENTRY_TYPE, ipsObjectId, ipsObjectQualifiedName, "", "", xmlResourceName,
-                implementationClassName, null);
+        return new Builder(ipsObjectId, implementationClassName, TEST_CASE_ENTRY_TYPE).xmlResourceName(xmlResourceName)
+                .ipsObjectQualifiedName(ipsObjectQualifiedName).build();
     }
 
     /**
@@ -183,8 +201,8 @@ public class TocEntryObject extends TocEntry {
             String ipsObjectQualifiedName,
             String xmlResourceName,
             String implementationClassName) {
-        return new TocEntryObject(ENUM_CONTENT_ENTRY_TYPE, ipsObjectId, ipsObjectQualifiedName, "", "",
-                xmlResourceName, implementationClassName, null);
+        return new Builder(ipsObjectId, implementationClassName, ENUM_CONTENT_ENTRY_TYPE).xmlResourceName(
+                xmlResourceName).ipsObjectQualifiedName(ipsObjectQualifiedName).build();
     }
 
     /**
@@ -193,38 +211,32 @@ public class TocEntryObject extends TocEntry {
     public final static TocEntryObject createModelTypeTocEntry(String ipsObjectId,
             String ipsObjectQualifiedName,
             String xmlResourceName,
-            String implementationClassName) {
-        return new TocEntryObject(MODEL_TYPE_ENTRY_TYPE, ipsObjectId, ipsObjectQualifiedName, "", "", xmlResourceName,
-                implementationClassName, null);
+            String implementationClassName,
+            String generationImplClassName) {
+        return new Builder(ipsObjectId, implementationClassName, MODEL_TYPE_ENTRY_TYPE)
+                .xmlResourceName(xmlResourceName).ipsObjectQualifiedName(ipsObjectQualifiedName)
+                .generationImplClassName(generationImplClassName).build();
     }
 
     /**
      * Creates an entry that referes to an enumeration xml adapter.
      */
     public final static TocEntryObject createEnumXmlAdapterTocEntry(String ipsObjectId, String implementationClassName) {
-        return new TocEntryObject(ENUM_XML_ADAPTER_TYPE, ipsObjectId, "", "", "", "", implementationClassName, null);
+        return new Builder(ipsObjectId, implementationClassName, ENUM_XML_ADAPTER_TYPE).build();
     }
 
     /**
      * 
-     * @param entryType
-     * @param ipsObjectId
-     * @param ipsObjectQualifiedName
-     * @param kindId
-     * @param versionId
-     * @param xmlResourceName
-     * @param implementationClassName
-     * @param validTo
      */
-    private TocEntryObject(String entryType, String ipsObjectId, String ipsObjectQualifiedName, String kindId,
-            String versionId, String xmlResourceName, String implementationClassName, DateTime validTo) {
-        super(implementationClassName, xmlResourceName);
-        this.ipsObjectId = ipsObjectId;
-        this.ipsObjectQualifiedName = ipsObjectQualifiedName;
-        this.kindId = kindId;
-        this.versionId = versionId;
-        this.entryType = entryType;
-        this.validTo = validTo;
+    private TocEntryObject(Builder builder) {
+        super(builder.implementationClassName, builder.xmlResourceName);
+        this.ipsObjectId = builder.ipsObjectId;
+        this.ipsObjectQualifiedName = builder.ipsObjectQualifiedName;
+        this.kindId = builder.kindId;
+        this.versionId = builder.versionId;
+        this.entryType = builder.entryType;
+        this.validTo = builder.validTo;
+        this.generationImplClassName = builder.generationImplClassName;
     }
 
     /**
@@ -423,6 +435,7 @@ public class TocEntryObject extends TocEntry {
         entryElement.setAttribute(PROPERTY_KIND_ID, kindId);
         entryElement.setAttribute(PROPERTY_VERSION_ID, versionId);
         entryElement.setAttribute(PROPERTY_VALID_TO, validTo != null ? validTo.toIsoFormat() : "");
+        entryElement.setAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME, generationImplClassName);
 
         for (TocEntryGeneration generationEntry : generationEntries) {
             entryElement.appendChild(generationEntry.toXml(doc));
@@ -461,5 +474,71 @@ public class TocEntryObject extends TocEntry {
             return 1;
         }
 
+    }
+
+    /**
+     * A builder for {@link TocEntryObject} described in 'Effective Java' Item 2
+     * 
+     * @author INSERT YOUR NAME
+     */
+    public static class Builder {
+
+        private String ipsObjectId;
+
+        private String ipsObjectQualifiedName;
+
+        private String entryType;
+
+        private String kindId;
+
+        private String versionId;
+
+        private DateTime validTo;
+
+        private String generationImplClassName;
+
+        private String implementationClassName;
+
+        private String xmlResourceName;
+
+        public Builder(String ipsObjectId, String implementationClassName, String entryType) {
+            this.ipsObjectId = ipsObjectId;
+            this.implementationClassName = implementationClassName;
+            this.entryType = entryType;
+        }
+
+        public Builder xmlResourceName(String xmlResourceName) {
+            this.xmlResourceName = xmlResourceName;
+            return this;
+        }
+
+        public Builder ipsObjectQualifiedName(String ipsObjectQualifiedName) {
+            this.ipsObjectQualifiedName = ipsObjectQualifiedName;
+            return this;
+        }
+
+        public Builder kindId(String kindId) {
+            this.kindId = kindId;
+            return this;
+        }
+
+        public Builder versionId(String versionId) {
+            this.versionId = versionId;
+            return this;
+        }
+
+        public Builder validTo(DateTime validTo) {
+            this.validTo = validTo;
+            return this;
+        }
+
+        public Builder generationImplClassName(String generationImplClassName) {
+            this.generationImplClassName = generationImplClassName;
+            return this;
+        }
+
+        public TocEntryObject build() {
+            return new TocEntryObject(this);
+        }
     }
 }

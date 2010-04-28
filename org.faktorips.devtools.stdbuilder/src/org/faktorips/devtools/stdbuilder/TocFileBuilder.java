@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
@@ -374,9 +375,14 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 getToc(ipsSrcFile).removeEntry(object.getQualifiedName());
             }
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus(
-                    "Unable to update the runtime repository toc file with the entry for: " //$NON-NLS-1$
-                            + object.getQualifiedName(), e));
+            IStatus status;
+            if (object == null) {
+                status = new IpsStatus("Unable to update the runtime repository toc file, ips object is null", e); //$NON-NLS-1$;
+            } else {
+                status = new IpsStatus("Unable to update the runtime repository toc file with the entry for: " //$NON-NLS-1$
+                        + object.getQualifiedName(), e);
+            }
+            throw new CoreException(status);
         }
     }
 
@@ -547,11 +553,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
         }
         String id = type.getQualifiedName(); // for model types, the qualified name is also the id.
-        // TocEntryObject entry = TocEntryObject.createModelTypeTocEntry(id,
-        // type.getQualifiedName(), xmlResourceName,
-        // javaImplClass, generationImplClassName);
         TocEntryObject entry = TocEntryObject.createModelTypeTocEntry(id, type.getQualifiedName(), xmlResourceName,
-                javaImplClass);
+                javaImplClass, generationImplClassName);
         return entry;
     }
 
