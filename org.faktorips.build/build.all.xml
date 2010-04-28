@@ -9,6 +9,7 @@
 	
 	<target name="test.all">
 		<property name="target" value="test"/>
+		<property name="haltOnProblem" value="no"/>
 		<antcall target="-build.all.target"/>
 	</target>
 
