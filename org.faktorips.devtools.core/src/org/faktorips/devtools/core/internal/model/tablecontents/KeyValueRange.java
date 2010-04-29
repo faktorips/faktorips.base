@@ -81,7 +81,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      * Returns <code>true</code> if the 'from'- and 'to'-value are parsable. For instance the values
      * are not parsable if the table contents row is erroneous.
      * 
-     * @see ValueDatatype#isParseable
+     * @see ValueDatatype#isParsable(String)
      */
     public boolean isParsable() {
         if (valueDatatype == null) {
@@ -135,7 +135,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      * also #isValid())
      */
     private String evalValueFrom(Row row, ColumnRange columnRange) {
-        return evalValue(structure, row, columnRange, columnRange.getFromColumn());
+        return evalValue(structure, row, columnRange.getFromColumn());
     }
 
     /*
@@ -143,7 +143,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      * The 'to' value will be read using the given row and column range.
      */
     private String evalValueTo(Row row, ColumnRange columnRange) {
-        return evalValue(structure, row, columnRange, columnRange.getToColumn());
+        return evalValue(structure, row, columnRange.getToColumn());
     }
 
     /**
@@ -192,7 +192,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
         return null;
     }
 
-    private static String evalValue(ITableStructure tableStructure, Row row, ColumnRange columnRange, String columnName) {
+    private static String evalValue(ITableStructure tableStructure, Row row, String columnName) {
         IColumn column = tableStructure.getColumn(columnName);
         if (column == null) {
             return null;
@@ -206,12 +206,12 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
             Row row,
             Row otherRow) {
         String fromColumnName = otherColumnRange.getFromColumn();
-        String from = evalValue(tableStructure, row, otherColumnRange, fromColumnName);
+        String from = evalValue(tableStructure, row, fromColumnName);
 
         String toColumnName = otherColumnRange.getToColumn();
-        String to = evalValue(tableStructure, row, otherColumnRange, toColumnName);
-        String otherFrom = evalValue(tableStructure, otherRow, otherColumnRange, fromColumnName);
-        String otherTo = evalValue(tableStructure, otherRow, otherColumnRange, toColumnName);
+        String to = evalValue(tableStructure, row, toColumnName);
+        String otherFrom = evalValue(tableStructure, otherRow, fromColumnName);
+        String otherTo = evalValue(tableStructure, otherRow, toColumnName);
 
         ValueDatatype valueDatatype = getValueDatatypeOfColumnRange(tableStructure, valueDatatypes, otherColumnRange);
         int fromCompareToOtherFrom = compareTo(valueDatatype, from, otherFrom);

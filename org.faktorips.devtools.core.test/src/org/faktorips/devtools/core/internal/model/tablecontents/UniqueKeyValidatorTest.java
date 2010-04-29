@@ -45,6 +45,54 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Tc");
     }
 
+    public void testUniqueKeysTwoRanges() throws CoreException {
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
+        table.setTableStructure(structure.getQualifiedName());
+
+        // init table structure
+        IColumn column = structure.newColumn();
+        column.setName("start1");
+        column.setDatatype("Integer");
+        column = structure.newColumn();
+        column.setName("end1");
+        column.setDatatype("Integer");
+        column = structure.newColumn();
+        column.setName("start2");
+        column.setDatatype("Integer");
+        column = structure.newColumn();
+        column.setName("end2");
+        column.setDatatype("Integer");
+
+        IUniqueKey uniqueKey = structure.newUniqueKey();
+        // range 1
+        IColumnRange range = structure.newRange();
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setFromColumn("start1");
+        range.setToColumn("end1");
+        ((ColumnRange)range).setParameterName("start1-end1");
+        uniqueKey.addKeyItem(range.getName());
+        // range 2
+        range = structure.newRange();
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setFromColumn("start2");
+        range.setToColumn("end2");
+        uniqueKey.addKeyItem(range.getName());
+
+        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        table.newColumn("start1");
+        table.newColumn("end1");
+        table.newColumn("start2");
+        table.newColumn("end2");
+        createRow(gen1, new String[] { "7", "7", "1", "999" });
+        createRow(gen1, new String[] { "1", "2", "500", "999" });
+        createRow(gen1, new String[] { "1", "30", "1", "999" });
+
+        MessageList messageList = null;
+        messageList = table.validate(project);
+
+        assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+    }
+
     public void testUniqueKeysMultipleKeys() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
@@ -408,9 +456,12 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         assertRangeCollision("7", new String[][] { new String[] { "a", "1", "19", "10", "19" },
                 new String[] { "a", "20", "29", "20", "29" }, new String[] { "a", "30", "39", "30", "39" },
                 new String[] { "a", "1", "19", "40", "49" } }, false);
-        assertRangeCollision("8", new String[][] { new String[] { "a", "1", "19", "10", "19" },
-                new String[] { "a", "20", "29", "20", "29" }, new String[] { "a", "30", "39", "30", "39" },
-                new String[] { "a", "1", "19", "20", "29" } }, false);
+        assertRangeCollision("8", new String[][] { //
+                new String[] { "a", "1", "19", "10", "19" }, //
+                        new String[] { "a", "20", "29", "20", "29" }, //
+                        new String[] { "a", "30", "39", "30", "39" }, //
+                        new String[] { "a", "1", "19", "20", "29" } }, //
+                false);
         assertRangeCollision("9", new String[][] { new String[] { "a", "1", "19", "10", "19" },
                 new String[] { "a", "20", "29", "20", "29" }, new String[] { "a", "30", "39", "30", "39" },
                 new String[] { "a", "1", "19", "10", "19" } }, true);

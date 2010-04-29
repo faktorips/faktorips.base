@@ -90,8 +90,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     /**
-     * Sets the rownumber of this row. To keep row numbers up to date the tableContents object calls
-     * this method every time the list of rows changes.
+     * Sets the row number of this row. To keep row numbers up to date the tableContents object
+     * calls this method every time the list of rows changes.
      * 
      * @param rowNumber
      */

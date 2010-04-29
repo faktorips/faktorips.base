@@ -23,6 +23,7 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.tablecontents.messages"; //$NON-NLS-1$
 
     private Messages() {
+        // 
     }
 
     static {

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -57,6 +58,13 @@ import org.faktorips.util.message.ObjectProperty;
 public class UniqueKeyValidator {
     public static final int HANDLE_UNIQUEKEY_ROW_REMOVED = 1;
     public static final int HANDLE_UNIQUEKEY_ROW_CHANGED = 2;
+
+    public final static boolean TRACE_VALIDATION_CACHE;
+
+    static {
+        TRACE_VALIDATION_CACHE = Boolean.valueOf(
+                Platform.getDebugOption("org.faktorips.devtools.core/trace/tablecontentvalidation")).booleanValue(); //$NON-NLS-1$
+    }
 
     // cache to validate simple column unique keys
     private Map<IUniqueKey, Map<AbstractKeyValue, Object>> uniqueKeyMapColumn = new HashMap<IUniqueKey, Map<AbstractKeyValue, Object>>();
@@ -282,10 +290,13 @@ public class UniqueKeyValidator {
     /**
      * Validate all unique keys in all caches.
      */
-    public void validateAllUniqueKeys(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes)
-            throws CoreException {
+    public void validateAllUniqueKeys(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
         cachedValueDatatypes = datatypes;
         cachedTableStructure = tableStructure;
+
+        if (TRACE_VALIDATION_CACHE) {
+            printCachedContent();
+        }
 
         MessageList validationErrors = new MessageList();
         validateUniqueKeys(validationErrors, uniqueKeyMapColumn);
@@ -295,8 +306,15 @@ public class UniqueKeyValidator {
         currentErrorStatus = validationErrors.getNoOfMessages() > 0;
     }
 
+    private void printCachedContent() {
+        System.out.println("uniqueKeyValidatorForTwoColumnRange:"); //$NON-NLS-1$
+        for (UniqueKeyValidatorRange entry : uniqueKeyValidatorForTwoColumnRange.values()) {
+            entry.printCachedContent("  "); //$NON-NLS-1$
+        }
+    }
+
     private void validateUniqueKeysRange(MessageList list,
-            Map<IUniqueKey, UniqueKeyValidatorRange> uniqueKeyValidatorForTwoColumnRange) throws CoreException {
+            Map<IUniqueKey, UniqueKeyValidatorRange> uniqueKeyValidatorForTwoColumnRange) {
         for (UniqueKeyValidatorRange uniqueKeyValidatorRange : uniqueKeyValidatorForTwoColumnRange.values()) {
             uniqueKeyValidatorRange.validate(list);
         }
@@ -310,7 +328,7 @@ public class UniqueKeyValidator {
      */
     private void validateUniqueKeys(MessageList list, Map<IUniqueKey, Map<AbstractKeyValue, Object>> uniqueKeyMap2) {
         // iterate all unique keys, specified in the table structure
-        for (Map<AbstractKeyValue, Object> keyValuesForUniqueKeyCache : uniqueKeyMapColumn.values()) {
+        for (Map<AbstractKeyValue, Object> keyValuesForUniqueKeyCache : uniqueKeyMap2.values()) {
             List<AbstractKeyValue> invalidkeyValues = new ArrayList<AbstractKeyValue>();
 
             // iterate all key values and check if there is a unique key violation
@@ -449,8 +467,8 @@ public class UniqueKeyValidator {
                 .getName());
         List<ObjectProperty> objectProperties = new ArrayList<ObjectProperty>();
         createObjectProperties(uniqueKey, row, objectProperties);
-        list.add(new Message(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION, text, Message.ERROR,
-                (ObjectProperty[])objectProperties.toArray(new ObjectProperty[objectProperties.size()])));
+        list.add(new Message(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION, text, Message.ERROR, objectProperties
+                .toArray(new ObjectProperty[objectProperties.size()])));
     }
 
     private void createObjectProperties(IUniqueKey uniqueKey, Row row, List<ObjectProperty> objectProperties) {
