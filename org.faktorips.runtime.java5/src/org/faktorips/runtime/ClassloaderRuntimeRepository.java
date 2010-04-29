@@ -220,7 +220,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * @param basePackage The name of the base package that contains the data.
      * @param pathToToc Path from the base package to the resource containing the toc, e.g.
      *            "faktorips-repository-toc.xml" or "motor/motor-repository-toc.xml"
-     * @param The document builder used to parse the xml data.
+     * @param docBuilder The document builder used to parse the xml data.
      * 
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws IllegalArgumentException if the basePackage does not contain the table of contents
@@ -479,12 +479,10 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         } catch (Exception e) {
             throw new RuntimeException("Can't parse xml resource " + resource, e);
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("Unable to close the input stream of the resource: " + resource, e);
-                }
+            try {
+                is.close();
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to close the input stream of the resource: " + resource, e);
             }
         }
         return table;
@@ -531,12 +529,10 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         } catch (Exception e) {
             throw new RuntimeException("Can't parse xml resource " + resource, e);
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("Unable to close the input stream of the resource: " + resource, e);
-                }
+            try {
+                is.close();
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to close the input stream of the resource: " + resource, e);
             }
         }
         Element element = doc.getDocumentElement();

@@ -119,7 +119,6 @@ public class TocEntryObject extends TocEntry {
             newEntry = builder.xmlResourceName(xmlResourceName).ipsObjectQualifiedName(ipsObjectName).kindId(kindId)
                     .versionId(versionId).build();
         } else if (MODEL_TYPE_ENTRY_TYPE.equals(entryType)) {
-            // TODO check if ipsObjectId is really needed
             newEntry = builder.xmlResourceName(xmlResourceName).ipsObjectQualifiedName(ipsObjectName)
                     .generationImplClassName(generationImplClassName).build();
         } else {
@@ -290,6 +289,13 @@ public class TocEntryObject extends TocEntry {
      */
     public int getNumberOfGenerationEntries() {
         return generationEntries == null ? 0 : generationEntries.size();
+    }
+
+    /**
+     * Returns the name of the generation implementation class
+     */
+    public String getGenerationImplClassName() {
+        return generationImplClassName;
     }
 
     /**
