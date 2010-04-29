@@ -877,5 +877,21 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals("DUMMY_NAME", testPolicyCmptChild.getName());
         assertEquals(testContent.coverageProductA.getName(), testPolicyCmptChild2.getName());
 
+        // Test null-tolerance
+        ITestPolicyCmpt testPolicyCmptNULL = testCase.newTestPolicyCmpt();
+        testPolicyCmptNULL.setTestPolicyCmptTypeParameter(null);
+        testPolicyCmptNULL.setProductCmpt(null);
+        testPolicyCmptNULL.setName(null);
+        testPolicyCmptNULL.setProductCmptAndNameAfterIfApplicable(testContent.coverageProductA.getQualifiedName());
+        // no NPE!
+        assertEquals(testContent.coverageProductA.getName(), testPolicyCmptNULL.getName());
+
+        // new Product Component also null
+        testPolicyCmptNULL.setTestPolicyCmptTypeParameter(null);
+        testPolicyCmptNULL.setProductCmpt(null);
+        testPolicyCmptNULL.setName(null);
+        testPolicyCmptNULL.setProductCmptAndNameAfterIfApplicable(null);
+        // no NPE!
+        assertEquals("", testPolicyCmptNULL.getName());
     }
 }

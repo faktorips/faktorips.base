@@ -169,8 +169,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     public void setProductCmptAndNameAfterIfApplicable(String prodCmptQName) {
-        String oldProdCmptName = StringUtil.unqualifiedName(getProductCmpt());
-        String pctParameterName = StringUtil.unqualifiedName(getTestPolicyCmptTypeParameter());
+        String oldProdCmptName = getNullSafeUnqualifiedName(getProductCmpt());
+        String pctParameterName = getNullSafeUnqualifiedName(getTestPolicyCmptTypeParameter());
 
         setProductCmpt(prodCmptQName);
 
@@ -178,18 +178,21 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
          * Regular expression to match product component names with and without a " (<number>)"
          * postfix.
          */
-        if (getName() == null || getName().matches(oldProdCmptName + "( \\([1-9][0-9]*\\))?") //$NON-NLS-1$
-                || (StringUtils.isEmpty(oldProdCmptName) && getName().equals(pctParameterName))) {
+        if (getName() == null || (StringUtils.isEmpty(oldProdCmptName) && getName().equals(pctParameterName))
+                || getName().matches(oldProdCmptName + "( \\([1-9][0-9]*\\))?")) { //$NON-NLS-1$
             String uniqueName = null;
             if (StringUtils.isEmpty(prodCmptQName)) {
-                uniqueName = getTestCase().generateUniqueNameForTestPolicyCmpt(this,
-                        StringUtil.unqualifiedName(pctParameterName));
+                uniqueName = getTestCase().generateUniqueNameForTestPolicyCmpt(this, pctParameterName);
             } else {
                 uniqueName = getTestCase().generateUniqueNameForTestPolicyCmpt(this,
                         StringUtil.unqualifiedName(prodCmptQName));
             }
             setName(uniqueName);
         }
+    }
+
+    private String getNullSafeUnqualifiedName(String qName) {
+        return qName == null ? "" : StringUtil.unqualifiedName(qName); //$NON-NLS-1$
     }
 
     public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreException {
