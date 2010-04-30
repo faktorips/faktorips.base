@@ -57,13 +57,22 @@ public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyD
             return defaultValue;
         }
         int qualifiedNameDelimiterPos = cdata.getData().lastIndexOf(".");
-        String id = "";
+        String id = ""; //$NON-NLS-1$
         if (qualifiedNameDelimiterPos < 0) {
             id = cdata.getData();
         } else {
             id = cdata.getData().substring(qualifiedNameDelimiterPos + 1);
         }
         return enumType.getEnumValue(id);
+    }
+
+    /**
+     * Returns this ExtensionProperty's {@link EnumType}.
+     * 
+     * @return the {@link EnumType}
+     */
+    public EnumType getEnumType() {
+        return enumType;
     }
 
 }
