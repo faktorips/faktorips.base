@@ -40,7 +40,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenAttribute;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.ValueSet;
 
 /**
@@ -50,12 +49,13 @@ import org.faktorips.valueset.ValueSet;
  */
 public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
+    public static final String JAVA4_CLASS_EnumValueSet = "org.faktorips.valueset.EnumValueSet";
+
     protected final DatatypeHelper valuesetDatatypeHelper;
 
     private IProductCmptType productCmptType;
 
-    public GenPolicyCmptTypeAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a)
-            throws CoreException {
+    public GenPolicyCmptTypeAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) {
 
         super(genPolicyCmptType, a, new LocalizedStringsSet(GenPolicyCmptTypeAttribute.class));
         valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(a.getIpsProject(), getDatatypeHelper());
@@ -79,7 +79,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      * public final static String PROPERTY_PREMIUM = &quot;premium&quot;;
      * </pre>
      */
-    protected void generateAttributeNameConstant(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateAttributeNameConstant(JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc("FIELD_PROPERTY_NAME", getAttribute().getName(), builder);
         builder.append("public final static ");
         builder.appendClassName(String.class);
@@ -98,7 +98,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      * public Money getPremium();
      * </pre>
      */
-    protected void generateGetterInterface(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateGetterInterface(JavaCodeFragmentBuilder builder) {
         String description = StringUtils.isEmpty(getAttribute().getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
                 + "<p>" + SystemUtils.LINE_SEPARATOR + getAttribute().getDescription();
 
@@ -117,7 +117,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      * }
      * </pre>
      */
-    protected void generateGetterImplementation(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateGetterImplementation(JavaCodeFragmentBuilder methodsBuilder) {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (isPublished()) {
             appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
@@ -130,8 +130,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         methodsBuilder.closeBracket();
     }
 
-    public void generateDeltaComputation(JavaCodeFragmentBuilder methodsBuilder, String deltaVar, String otherVar)
-            throws CoreException {
+    public void generateDeltaComputation(JavaCodeFragmentBuilder methodsBuilder, String deltaVar, String otherVar) {
 
         methodsBuilder.append(deltaVar);
         methodsBuilder.append('.');
@@ -181,7 +180,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      * public Money getPremium()
      * </pre>
      */
-    protected void generateGetterSignature(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateGetterSignature(JavaCodeFragmentBuilder methodsBuilder) {
         int modifier = java.lang.reflect.Modifier.PUBLIC;
         String methodName = getMethodNameGetPropertyValue(getAttribute().getName(), getDatatype());
         methodsBuilder.signature(modifier, getJavaClassName(), methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
@@ -249,7 +248,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
                 return Java5ClassNames.OrderedValueSet_QualifiedName + '<' + valuesetDatatypeHelper.getJavaClassName()
                         + '>';
             } else {
-                return EnumValueSet.class.getName();
+                return JAVA4_CLASS_EnumValueSet;
             }
         }
         throw new RuntimeException("Can't handle value set " + valueSet);

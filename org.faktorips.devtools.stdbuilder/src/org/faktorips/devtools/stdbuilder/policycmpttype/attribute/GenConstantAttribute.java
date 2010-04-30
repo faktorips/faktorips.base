@@ -74,7 +74,7 @@ public class GenConstantAttribute extends GenPolicyCmptTypeAttribute {
      * public final static String NAME = &quot;MotorPlus&quot;;
      * </pre>
      */
-    protected void generateConstant(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateConstant(JavaCodeFragmentBuilder builder) {
         String comment = getLocalizedText("FIELD_VALUE_JAVADOC", getAttribute().getName());
         builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         int modifier = java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL

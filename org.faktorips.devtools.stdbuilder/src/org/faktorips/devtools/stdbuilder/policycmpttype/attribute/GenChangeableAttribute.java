@@ -46,7 +46,6 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuil
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.valueset.EnumValueSet;
 
 /**
  * Code generator for a changeable attribute.
@@ -93,7 +92,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * public void setPremium(Money newValue)
      * </pre>
      */
-    protected void generateSetterSignature(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateSetterSignature(JavaCodeFragmentBuilder methodsBuilder) {
         int modifier = java.lang.reflect.Modifier.PUBLIC;
         String methodName = getMethodNametSetPropertyValue(getAttribute().getName(), getDatatype());
         String paramName = getParamNameForSetterMethod();
@@ -104,7 +103,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     /**
      * Generates the signature for the method to access an attribute's set of allowed ENUM values.
      */
-    public void generateSignatureGetSetOfAllowedValues(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureGetSetOfAllowedValues(JavaCodeFragmentBuilder methodsBuilder) {
         String methodName = getMethodNameGetSetOfAllowedValues();
         methodsBuilder.signature(Modifier.PUBLIC, getJavaTypeForValueSet(getValueSet()), methodName,
                 new String[] { "context" }, new String[] { IValidationContext.class.getName() });
@@ -115,8 +114,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * generation-method is used for the method in the policy component type AND the product
      * component type generation.
      */
-    public void generateMethodGetSetOfAllowedValuesInterface(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    public void generateMethodGetSetOfAllowedValuesInterface(JavaCodeFragmentBuilder methodsBuilder) {
 
         String lookup = getLookupPrefixForMethodNameGetSetOfAllowedValues();
         appendLocalizedJavaDoc(lookup, getAttribute().getName(), methodsBuilder);
@@ -131,8 +129,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * public Integer getDefaultMinAge()
      * </pre>
      */
-    void generateSignatureGetDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder)
-            throws CoreException {
+    void generateSignatureGetDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) {
 
         String methodName = getMethodNameGetDefaultValue();
         builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, EMPTY_STRING_ARRAY,
@@ -232,7 +229,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      */
     private void generateMethodGetDefaultValue(DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder,
-            boolean generatesInterface) throws CoreException {
+            boolean generatesInterface) {
 
         if (!generatesInterface) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -265,7 +262,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * }
      * </pre>
      */
-    protected void generateSetterMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateSetterMethod(JavaCodeFragmentBuilder methodsBuilder) {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (isPublished()) {
             appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
@@ -338,8 +335,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * Generates a product component type's method that returns the set of allowed values for an
      * attribute
      */
-    private void generateMethodGetSetOfAllowedValuesForProductCmptType(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    private void generateMethodGetSetOfAllowedValuesForProductCmptType(JavaCodeFragmentBuilder methodsBuilder) {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (getAttribute().isOverwrite()) {
@@ -372,8 +368,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * private Integer minAge;
      * </pre>
      */
-    private void generateFieldDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder)
-            throws CoreException {
+    private void generateFieldDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder) {
 
         appendLocalizedJavaDoc("FIELD_DEFAULTVALUE", getAttribute().getName(), memberVarsBuilder);
         JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(getAttribute().getDefaultValue());
@@ -400,7 +395,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * public void setPremium(Money newValue);
      * </pre>
      */
-    protected void generateSetterInterface(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateSetterInterface(JavaCodeFragmentBuilder methodsBuilder) {
         String description = StringUtils.isEmpty(getAttribute().getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
                 + "<p>" + SystemUtils.LINE_SEPARATOR + getAttribute().getDescription();
         String[] replacements = new String[] { getAttribute().getName(), description };
@@ -409,8 +404,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         methodsBuilder.appendln(";");
     }
 
-    public void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder, IIpsProject ipsProject)
-            throws CoreException {
+    public void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder, IIpsProject ipsProject) {
 
         JavaCodeFragment initialValueExpression = getDatatypeHelper().newInstance(getAttribute().getDefaultValue());
         generateCallToMethodSetPropertyValue(initialValueExpression, builder);
@@ -488,7 +482,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         builder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
                 | java.lang.reflect.Modifier.STATIC,
                 isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
-                        + valuesetDatatypeHelper.getJavaClassName() + ">" : EnumValueSet.class.getName(),
+                        + valuesetDatatypeHelper.getJavaClassName() + ">" : JAVA4_CLASS_EnumValueSet,
                 getConstantName(getValueSet()), frag);
     }
 
