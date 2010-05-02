@@ -149,8 +149,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
                 public void menuAboutToShow(IMenuManager manager) {
                     MenuManager refactorSubmenu = new MenuManager(Messages.EnumAttributesSection_submenuRefactor);
                     refactorSubmenu.add(renameAction);
-                    // TODO AW: Rename of enumeration attributes not yet working.
-                    // manager.add(refactorSubmenu);
+                    manager.add(refactorSubmenu);
                 }
             });
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
