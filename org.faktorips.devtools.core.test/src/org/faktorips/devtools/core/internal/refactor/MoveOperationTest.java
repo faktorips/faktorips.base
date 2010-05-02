@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -379,8 +380,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         move.run(null);
 
         assertTrue(target.exists());
-        // TODO AW: Out commented temporarily
-        // assertFalse(sourcePackage.exists());
+        assertFalse(sourcePackage.exists());
 
         target = target.getRoot().getIpsPackageFragment("moved.coverages");
 
@@ -664,7 +664,14 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IFolder rootFolder = ipsProject.getProject().getFolder("targetRoot");
         rootFolder.create(true, true, null);
-        path.newSourceFolderEntry(rootFolder);
+        IIpsSrcFolderEntry existingEntry = path.getSourceFolderEntries()[0];
+        IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(rootFolder);
+        newEntry.setSpecificBasePackageNameForDerivedJavaClasses(existingEntry
+                .getBasePackageNameForDerivedJavaClasses());
+        newEntry.setSpecificBasePackageNameForMergableJavaClasses(existingEntry
+                .getBasePackageNameForMergableJavaClasses());
+        newEntry.setSpecificOutputFolderForDerivedJavaFiles(existingEntry.getOutputFolderForDerivedJavaFiles());
+        newEntry.setSpecificOutputFolderForMergableJavaFiles(existingEntry.getOutputFolderForMergableJavaFiles());
         ipsProject.setIpsObjectPath(path);
         IIpsPackageFragmentRoot targetRoot = ipsProject.getIpsPackageFragmentRoot("targetRoot");
         assertNotNull(targetRoot);
