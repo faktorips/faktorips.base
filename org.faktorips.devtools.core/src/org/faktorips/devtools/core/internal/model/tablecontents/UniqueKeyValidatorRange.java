@@ -153,8 +153,7 @@ public class UniqueKeyValidatorRange {
             list.add(uniqueKeyValidationErrors);
 
             // store entries with same 'from'-value, these entries must be handled separately,
-            // because the sorted map
-            // couldn't take care of those key value ranges
+            // because the sorted map couldn't take care of those key value ranges
             // note that these could be a performance bottleneck if there are many column ranges
             // with same from values
             allRangesRowsSameFromValue = mergeRowsInMap(allRangesRowsSameFromValue, rowsSameFromValue);
@@ -203,11 +202,9 @@ public class UniqueKeyValidatorRange {
             for (Entry<KeyValueRange, Set<Row>> entry : prevRangesRowsSameFromValue.entrySet()) {
                 KeyValueRange keyValue = entry.getKey();
                 Set<Row> rows = entry.getValue();
-                // add all rows to the set rowsViolation which are exists at least two times in the
-                // second set
+                // add all rows to the set rowsViolation which are collision with second set
                 for (Entry<KeyValueRange, Set<Row>> entryInSecondSet : rowsSameFromValue.entrySet()) {
-                    addRowsWhichExistsInBoth(rowsViolation, keyValue, rows, entryInSecondSet.getKey(), entryInSecondSet
-                            .getValue());
+                    addOverlappingRows(rowsViolation, keyValue, rows, entryInSecondSet.getValue());
                 }
                 if (rowsViolation.size() > 0) {
                     result.put(keyValue, rowsViolation);
@@ -218,21 +215,26 @@ public class UniqueKeyValidatorRange {
     }
 
     /*
-     * Add all rows which are exists in both maps if at least two rows exists, if only one row
-     * exists in both sets then this row will not be added.
+     * Check all row to each other if there are overlapping rows
      */
-    private void addRowsWhichExistsInBoth(Set<Row> rowsViolation,
+    private void addOverlappingRows(Set<Row> rowsViolation,
             KeyValueRange keyValue,
             Set<Row> rows,
-            KeyValueRange keyValueRangeSecond,
             Set<Row> rowsInSecondSet) {
         for (Row row : rows) {
-            if (rowsInSecondSet.contains(row)) {
-                Set<Row> rowsViolated = new HashSet<Row>();
-                validateKeyValueRangeFor(rowsViolated, keyValue.getUniqueKey(), keyValue, keyValueRangeSecond, row);
-                if (rowsViolated.size() > 0) {
-                    rowsViolation.add(row);
+            boolean collision = false;
+            for (Row rowSecond : rowsInSecondSet) {
+                if (row == rowSecond) {
+                    continue;
                 }
+                collision = collisionInAllRanges(keyValue.getUniqueKey(), row, rowSecond);
+                if (collision) {
+                    rowsViolation.add(row);
+                    break;
+                }
+            }
+            if (collision) {
+                break;
             }
         }
     }

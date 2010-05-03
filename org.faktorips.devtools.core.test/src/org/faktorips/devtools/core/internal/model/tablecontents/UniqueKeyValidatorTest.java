@@ -46,7 +46,34 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     }
 
     public void testUniqueKeysTwoRanges() throws CoreException {
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
+        ITableContentsGeneration gen1 = createTwoRangeTable("T1");
+
+        createRow(gen1, new String[] { "7", "7", "1", "999" });
+        createRow(gen1, new String[] { "1", "2", "500", "999" });
+        createRow(gen1, new String[] { "1", "30", "1", "999" });
+
+        MessageList messageList = null;
+        messageList = table.validate(project);
+        assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+    }
+
+    public void testUniqueKeysTwoRangesSameFrom() throws CoreException {
+        ITableContentsGeneration gen1 = createTwoRangeTable("T2");
+        createRow(gen1, new String[] { "405", "405", "101", "101" });
+        createRow(gen1, new String[] { "1", "1", "111", "111" });
+        createRow(gen1, new String[] { "2", "2", "1", "999" });
+        createRow(gen1, new String[] { "405", "405", "1", "999" });
+        createRow(gen1, new String[] { "3", "3", "1", "999" });
+        createRow(gen1, new String[] { "4", "4", "1", "999" });
+
+        // 405 in last ColumnRange
+        MessageList messageList = null;
+        messageList = table.validate(project);
+        assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+    }
+
+    private ITableContentsGeneration createTwoRangeTable(String name) throws CoreException {
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, name);
         table.setTableStructure(structure.getQualifiedName());
 
         // init table structure
@@ -83,14 +110,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         table.newColumn("end1");
         table.newColumn("start2");
         table.newColumn("end2");
-        createRow(gen1, new String[] { "7", "7", "1", "999" });
-        createRow(gen1, new String[] { "1", "2", "500", "999" });
-        createRow(gen1, new String[] { "1", "30", "1", "999" });
 
-        MessageList messageList = null;
-        messageList = table.validate(project);
-
-        assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+        return gen1;
     }
 
     public void testUniqueKeysMultipleKeys() throws CoreException {
