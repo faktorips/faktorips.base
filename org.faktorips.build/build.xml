@@ -81,7 +81,7 @@
         		<compilerarg value="-Xlint:none" />
         	</javac>
         	
-        	<copy todir="${test_classes}" failonerror="false">
+        	<copy todir="${test_classes}">
         	    <fileset dir="${test_src}" >
         	      <include name="**/*.properties" />
         	      <include name="**/*.xml" />
