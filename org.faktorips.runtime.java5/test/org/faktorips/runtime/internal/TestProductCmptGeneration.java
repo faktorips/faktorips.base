@@ -16,6 +16,7 @@ package org.faktorips.runtime.internal;
 import java.util.List;
 import java.util.Map;
 
+import org.faktorips.runtime.FormulaExecutionException;
 import org.w3c.dom.Element;
 
 /**
@@ -31,10 +32,15 @@ public class TestProductCmptGeneration extends ProductComponentGeneration {
 
     @Override
     protected void doInitPropertiesFromXml(Map<String, Element> map) {
+        // only for test
     }
 
     @Override
     protected void doInitReferencesFromXml(Map<String, List<Element>> map) {
+        // only for test
     }
 
+    public int computeTestFormula(int parameter_1, String parameter_2) throws FormulaExecutionException {
+        return (Integer)getFormulaEvaluator().evaluate("computeTestFormula", parameter_1, parameter_2);
+    }
 }

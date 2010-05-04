@@ -20,6 +20,8 @@ import java.util.Map;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
+import org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
@@ -27,11 +29,11 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
 
     private IRuntimeRepository repository;
     private ProductComponent pc;
-    private ProductComponentGeneration gen;
+    private TestProductCmptGeneration gen;
 
     @Override
     public void setUp() {
-        repository = new InMemoryRuntimeRepository();
+        repository = new InternalRuntimeRepository();
         pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
         gen = new TestProductCmptGeneration(pc);
     }
@@ -103,6 +105,22 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         ProductComponentGeneration.addToCardinalityMap(cardinalityMap, "relation4", relEl);
         cardinality = cardinalityMap.get("relation4");
         assertEquals(new IntegerRange(0, Integer.MAX_VALUE), cardinality);
+
+    }
+
+    public void testFormulaEvaluation() {
+        Element genEl = getTestDocument().getDocumentElement();
+        gen.doInitFormulaFromXml(genEl);
+        int result = gen.computeTestFormula(123, "abc");
+        assertEquals(1, result);
+    }
+
+    private class InternalRuntimeRepository extends InMemoryRuntimeRepository {
+
+        @Override
+        public IFormulaEvaluatorBuilder getFormulaEvaluatorBuilder() {
+            return new GroovyEvaluator.Builder();
+        }
 
     }
 }

@@ -43,7 +43,7 @@ public class GroovyEvaluator extends AbstractFormulaEvaluator {
     private String getSourceCode(List<String> formulaList) {
         StringBuilder sourceCode = new StringBuilder();
         for (String formula : formulaList) {
-            formula.replaceAll("this", THIS_CLASS_VAR);
+            formula = formula.replaceAll("this", THIS_CLASS_VAR);
             sourceCode.append(formula).append('\n');
         }
         return sourceCode.toString();
