@@ -53,46 +53,46 @@ public class PdsRuntimeRepository extends ClassloaderRuntimeRepository {
         return formulaEvaluator;
     }
 
-    @Override
-    protected <T> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected IProductComponent createProductCmpt(TocEntryObject tocEntry) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected IProductComponentGeneration createProductCmptGeneration(TocEntryGeneration tocEntryGeneration) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected ITable createTable(TocEntryObject tocEntry) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected IpsTestCaseBase createTestCase(TocEntryObject tocEntry, IRuntimeRepository runtimeRepository) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected AbstractReadonlyTableOfContents loadTableOfContents() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean isModifiable() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+//    @Override
+//    protected <T> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+//
+//    @Override
+//    protected IProductComponent createProductCmpt(TocEntryObject tocEntry) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+//
+//    @Override
+//    protected IProductComponentGeneration createProductCmptGeneration(TocEntryGeneration tocEntryGeneration) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+//
+//    @Override
+//    protected ITable createTable(TocEntryObject tocEntry) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+//
+//    @Override
+//    protected IpsTestCaseBase createTestCase(TocEntryObject tocEntry, IRuntimeRepository runtimeRepository) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+//
+//    @Override
+//    protected AbstractReadonlyTableOfContents loadTableOfContents() {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+//
+//    @Override
+//    public boolean isModifiable() {
+//        // TODO Auto-generated method stub
+//        return false;
+//    }
 
 }

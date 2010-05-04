@@ -43,11 +43,4 @@ public interface IFormulaEvaluatorBuilder {
      */
     public IFormulaEvaluatorBuilder addFormula(String formulaString);
 
-    /**
-     * Returns the XML tag within this evaluator expects the formula expression
-     * 
-     * @return the XML tag for the formula expression
-     */
-    public abstract String getExpressionXmlTag();
-
 }

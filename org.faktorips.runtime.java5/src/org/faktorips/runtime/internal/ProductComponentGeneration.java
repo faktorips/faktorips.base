@@ -175,7 +175,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
                 for (int i = 0; i < formulas.getLength(); i++) {
                     Element aFormula = (Element)formulas.item(i);
                     String name = aFormula.getAttribute("formulaSignature");
-                    NodeList nodeList = aFormula.getElementsByTagName(formulaEvaluatorBuilder.getExpressionXmlTag());
+                    NodeList nodeList = aFormula.getElementsByTagName(IFormulaEvaluator.EXPRESSION_XML_TAG);
                     if (nodeList.getLength() == 1) {
                         Element expression = (Element)nodeList.item(0);
                         String formulaExpression = expression.getTextContent();

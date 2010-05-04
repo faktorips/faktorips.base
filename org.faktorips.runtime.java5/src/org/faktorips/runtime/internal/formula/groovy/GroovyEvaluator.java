@@ -26,11 +26,9 @@ import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 
 public class GroovyEvaluator extends AbstractFormulaEvaluator {
 
-    public static final String EXPRESSION_XML_TAG = "javaExpression";
-
     public static final String THIS_CLASS_VAR = "thiz"; //$NON-NLS-1$
 
-    private Binding binding;
+    private Binding binding = new Binding();
 
     private Script groovyScript;
 
@@ -38,18 +36,21 @@ public class GroovyEvaluator extends AbstractFormulaEvaluator {
         super(builder.thiz);
         setVariable(THIS_CLASS_VAR, builder.thiz);
         GroovyShell groovyShell = new GroovyShell(binding);
+        String sourceCode = getSourceCode(builder.formulaList);
+        groovyScript = groovyShell.parse(sourceCode);
+    }
+
+    private String getSourceCode(List<String> formulaList) {
         StringBuilder sourceCode = new StringBuilder();
-        for (String formula : builder.formulaList) {
+        for (String formula : formulaList) {
+            formula.replaceAll("this", THIS_CLASS_VAR);
             sourceCode.append(formula).append('\n');
         }
-        groovyScript = groovyShell.parse(sourceCode.toString());
+        return sourceCode.toString();
     }
 
     @Override
     public void setVariable(String name, Object value) {
-        if (binding == null) {
-            binding = new Binding();
-        }
         binding.setVariable(name, value);
     }
 
@@ -79,10 +80,6 @@ public class GroovyEvaluator extends AbstractFormulaEvaluator {
         public IFormulaEvaluatorBuilder addFormula(String formulaCode) {
             formulaList.add(formulaCode);
             return this;
-        }
-
-        public String getExpressionXmlTag() {
-            return EXPRESSION_XML_TAG;
         }
 
     }

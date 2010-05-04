@@ -13,9 +13,6 @@
 
 package org.faktorips.runtime.internal.formula;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.faktorips.runtime.FormulaExecutionException;
 import org.w3c.dom.Element;
 
@@ -27,7 +24,6 @@ import org.w3c.dom.Element;
  */
 public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
 
-    private Map<String, String> formulaExpressionMap = new HashMap<String, String>(1);
     private final Object thiz;
 
     public AbstractFormulaEvaluator(Object thiz) {
@@ -53,8 +49,7 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
                     parameterValues.append(", ");
                 }
             }
-            throw new FormulaExecutionException(thiz.toString(), formulaExpressionMap.get(formularName),
-                    parameterValues.toString(), e);
+            throw new FormulaExecutionException(thiz.toString(), formularName, parameterValues.toString(), e);
         }
 
     }

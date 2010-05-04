@@ -13,8 +13,9 @@
 
 package org.faktorips.runtime.internal.formula;
 
-
 public interface IFormulaEvaluator {
+
+    public static final String EXPRESSION_XML_TAG = "compiledExpression";
 
     void setVariable(String name, Object value);
 
