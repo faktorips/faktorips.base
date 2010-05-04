@@ -82,7 +82,7 @@ public class SoftReferenceCache<T> implements ICache<T> {
     private void processQueue() {
         Reference<? extends T> ref = queue.poll();
         while ((ref = queue.poll()) != null) {
-            SoftValue sv = (SoftValue)ref;
+            SoftValue<? extends T> sv = (SoftValue<? extends T>)ref;
             hash.remove(sv.key);
         }
     }
