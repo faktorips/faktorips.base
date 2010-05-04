@@ -443,7 +443,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     }
 
     private Constructor<?> getConstructor(TocEntryGeneration tocEntry) {
-        Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
+        Class<?> implClass = getClass(getProductComponentGenerationImplClass(tocEntry), cl);
         try {
             String productCmptClassName = tocEntry.getParent().getImplementationClassName();
             Class<?> productCmptClass = getClass(productCmptClassName, cl);
@@ -452,6 +452,10 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
             throw new RuntimeException("Can't get constructor for class " + implClass.getName() + " , toc entry "
                     + tocEntry, e);
         }
+    }
+
+    protected String getProductComponentGenerationImplClass(TocEntryGeneration tocEntry) {
+        return tocEntry.getImplementationClassName();
     }
 
     /**

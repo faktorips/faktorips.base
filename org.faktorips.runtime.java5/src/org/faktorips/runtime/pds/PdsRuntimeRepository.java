@@ -13,22 +13,13 @@
 
 package org.faktorips.runtime.pds;
 
-import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
-import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.IProductComponentGeneration;
-import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.internal.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.TocEntryGeneration;
-import org.faktorips.runtime.internal.TocEntryObject;
 import org.faktorips.runtime.internal.formula.FormulaEvaluatorBuilderFactory;
 import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 import org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator;
-import org.faktorips.runtime.test.IpsTestCaseBase;
 
 public class PdsRuntimeRepository extends ClassloaderRuntimeRepository {
 
@@ -40,7 +31,7 @@ public class PdsRuntimeRepository extends ClassloaderRuntimeRepository {
 
     @Override
     public IFormulaEvaluatorBuilder getFormulaEvaluatorBuilder() {
-        // TODO load classname by property
+        // TODO load classname by property?
         if (formulaEvaluator == null) {
             try {
                 formulaEvaluator = FormulaEvaluatorBuilderFactory.createFormulaEvaluatorBuilder(getClassLoader(),
@@ -53,46 +44,9 @@ public class PdsRuntimeRepository extends ClassloaderRuntimeRepository {
         return formulaEvaluator;
     }
 
-//    @Override
-//    protected <T> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    protected IProductComponent createProductCmpt(TocEntryObject tocEntry) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    protected IProductComponentGeneration createProductCmptGeneration(TocEntryGeneration tocEntryGeneration) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    protected ITable createTable(TocEntryObject tocEntry) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    protected IpsTestCaseBase createTestCase(TocEntryObject tocEntry, IRuntimeRepository runtimeRepository) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    protected AbstractReadonlyTableOfContents loadTableOfContents() {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public boolean isModifiable() {
-//        // TODO Auto-generated method stub
-//        return false;
-//    }
+    @Override
+    protected String getProductComponentGenerationImplClass(TocEntryGeneration tocEntry) {
+        return tocEntry.getParent().getGenerationImplClassName();
+    }
 
 }

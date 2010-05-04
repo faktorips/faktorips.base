@@ -435,19 +435,37 @@ public class TocEntryObject extends TocEntry {
         Element entryElement = doc.createElement(AbstractReadonlyTableOfContents.TOC_ENTRY_XML_ELEMENT);
         super.addToXml(entryElement);
 
-        entryElement.setAttribute(PROPERTY_ENTRYTYPE, entryType);
-        entryElement.setAttribute(PROPERTY_IPS_OBJECT_ID, ipsObjectId);
-        entryElement.setAttribute(PROPERTY_IPS_OBJECT_QNAME, ipsObjectQualifiedName);
-        entryElement.setAttribute(PROPERTY_KIND_ID, kindId);
-        entryElement.setAttribute(PROPERTY_VERSION_ID, versionId);
-        entryElement.setAttribute(PROPERTY_VALID_TO, validTo != null ? validTo.toIsoFormat() : "");
-        entryElement.setAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME, generationImplClassName);
+        if (!isEmpty(entryType)) {
+            entryElement.setAttribute(PROPERTY_ENTRYTYPE, entryType);
+        }
+        if (!isEmpty(ipsObjectId)) {
+            entryElement.setAttribute(PROPERTY_IPS_OBJECT_ID, ipsObjectId);
+        }
+        if (!isEmpty(ipsObjectQualifiedName)) {
+            entryElement.setAttribute(PROPERTY_IPS_OBJECT_QNAME, ipsObjectQualifiedName);
+        }
+        if (!isEmpty(kindId)) {
+            entryElement.setAttribute(PROPERTY_KIND_ID, kindId);
+        }
+        if (!isEmpty(versionId)) {
+            entryElement.setAttribute(PROPERTY_VERSION_ID, versionId);
+        }
+        if (validTo != null) {
+            entryElement.setAttribute(PROPERTY_VALID_TO, validTo.toIsoFormat());
+        }
+        if (!isEmpty(generationImplClassName)) {
+            entryElement.setAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME, generationImplClassName);
+        }
 
         for (TocEntryGeneration generationEntry : generationEntries) {
             entryElement.appendChild(generationEntry.toXml(doc));
         }
 
         return entryElement;
+    }
+
+    private static boolean isEmpty(String string) {
+        return string == null || string.equals("");
     }
 
     /**

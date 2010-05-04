@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="E:/Ips4to5/runtime-workspace-FIPS2/org.faktorips.integrationtest.java5/lib/faktorips-runtime.java5.jar"/>
+    <jar path="/home/dirmeier/runtime-FaktorIps/org.faktorips.integrationtest.java5/lib/faktorips-runtime.java5.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/org.faktorips.runtime.java5/faktorips-runtime.java5.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -11,18 +11,8 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <file path="/org.faktorips.runtime.java5/.cvsignore"/>
-        <file path="/org.faktorips.runtime.java5/description.txt"/>
-        <file path="/org.faktorips.runtime.java5/faktorips-runtime.java5-src.jardesc"/>
-        <file path="/org.faktorips.runtime.java5/faktorips-runtime.java5.jardesc"/>
-        <javaElement handleIdentifier="=org.faktorips.runtime.java5/test"/>
-        <folder path="/org.faktorips.runtime.java5/META-INF"/>
-        <javaElement handleIdentifier="=org.faktorips.runtime.java5/src"/>
-        <file path="/org.faktorips.runtime.java5/build.properties"/>
         <folder path="/org.faktorips.runtime.java5/build"/>
-        <folder path="/org.faktorips.runtime.java5/lib"/>
-        <file path="/org.faktorips.runtime.java5/.project"/>
-        <file path="/org.faktorips.runtime.java5/.classpath"/>
+        <javaElement handleIdentifier="=org.faktorips.runtime.java5/src"/>
+        <file path="/org.faktorips.runtime.java5/description.txt"/>
     </selectedElements>
-    <fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
 </jardesc>
