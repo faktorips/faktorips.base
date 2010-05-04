@@ -397,7 +397,8 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.integrationtest-->
         <!--set htmlemail='false' to avoid email publisher-->
-        <!--=====================================================-->    
+        <!--=====================================================-->
+        <!-- deactivated in version FIPS 3.0    
         <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
             testmerge="*Test.xml" scheduleintervall="300"
@@ -407,7 +408,8 @@
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
-
+ 		-->
+ 
         <!--============================================================-->
         <!--Project definition: org.faktorips.integrationtest.java5-->
         <!--============================================================-->    
