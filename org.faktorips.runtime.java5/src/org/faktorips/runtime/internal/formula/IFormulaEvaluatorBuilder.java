@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.pds;
+package org.faktorips.runtime.internal.formula;
 
 /**
  * Interface for builders to build {@link IFormulaEvaluator}. The Builder implementation normally is
@@ -30,5 +30,24 @@ public interface IFormulaEvaluatorBuilder {
      * @throws IllegalArgumentException if there are missing arguments
      */
     public IFormulaEvaluator build();
+
+    /**
+     * Setting the object context in which the formula should be executed
+     */
+    public IFormulaEvaluatorBuilder thiz(Object thiz);
+
+    /**
+     * Adding the sourcecode for a formula. This method should be called for every formula you want
+     * to evaluate.
+     * 
+     */
+    public IFormulaEvaluatorBuilder addFormula(String formulaString);
+
+    /**
+     * Returns the XML tag within this evaluator expects the formula expression
+     * 
+     * @return the XML tag for the formula expression
+     */
+    public abstract String getExpressionXmlTag();
 
 }

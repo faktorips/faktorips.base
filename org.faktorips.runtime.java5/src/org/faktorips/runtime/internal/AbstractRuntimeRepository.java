@@ -44,6 +44,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 import org.faktorips.runtime.jaxb.IpsJAXBContext;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.internal.ModelType;
@@ -614,10 +615,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             InputStream in = xmlFile.openStream();
             XMLStreamReader parser = factory.createXMLStreamReader(in);
 
-            for (int event = parser.next(); event != XMLStreamConstants.START_ELEMENT && parser.hasNext(); event = parser
-                    .next()) {
-                ;
+            while (parser.hasNext() && parser.next() != XMLStreamConstants.START_ELEMENT) {
+                // goto start element
             }
+
             modelType.initFromXml(parser);
         } catch (IOException e) {
             throw new RuntimeException(
@@ -844,6 +845,16 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * For default there is no formula evaluation supported.
+     * 
+     * If you want to support formula evaluation you have to override this method
+     * 
+     */
+    public IFormulaEvaluatorBuilder getFormulaEvaluatorBuilder() {
+        return null;
     }
 
 }

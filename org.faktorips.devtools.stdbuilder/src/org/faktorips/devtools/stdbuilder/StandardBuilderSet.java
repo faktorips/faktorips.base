@@ -439,12 +439,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this,
                 DefaultBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL);
 
-        // product component builders
-        ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(this,
-                KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL);
-        IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this,
-                KIND_PRODUCT_CMPT);
-
         // table structure builders
         tableImplBuilder = new TableImplBuilder(this, KIND_TABLE_IMPL);
         tableRowBuilder = new TableRowBuilder(this, KIND_TABLE_ROW);
@@ -479,7 +473,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         //
         productCmptGenImplClassBuilder.setEnumTypeBuilder(enumTypeBuilder);
 
-        // product component builders.
+        // product component builders
+        ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(this,
+                KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL);
+        IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this,
+                KIND_PRODUCT_CMPT, productCmptGenerationImplBuilder);
+
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
         productCmptGenInterfaceBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);

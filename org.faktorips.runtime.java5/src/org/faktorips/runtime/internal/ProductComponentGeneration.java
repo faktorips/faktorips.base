@@ -26,6 +26,8 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluator;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,6 +40,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     private ProductComponent productCmpt;
 
     private DateTime validFrom;
+
+    private IFormulaEvaluator formulaEvaluator;
 
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
@@ -94,6 +98,13 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     /**
+     * @return Returns the formulaEvaluator.
+     */
+    public IFormulaEvaluator getFormulaEvaluator() {
+        return formulaEvaluator;
+    }
+
+    /**
      * Initializes the generation with the data from the xml element.
      * 
      * @throws IllegalRepositoryModificationException if the component has already been initialized
@@ -110,10 +121,13 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         doInitPropertiesFromXml(propertyElements);
         doInitTableUsagesFromXml(propertyElements);
         doInitReferencesFromXml(getLinkElements(genElement));
+        doInitFormulaFromXml(genElement);
     }
 
     /**
      * Initializes the properties with the data in the map.
+     * 
+     * @param map the map of property elements
      */
     protected void doInitPropertiesFromXml(Map<String, Element> map) {
         // nothing to do in the base class
@@ -124,6 +138,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     /**
      * Initializes the links with the data in the map.
+     * 
+     * @param map the map of property elements
      */
     protected void doInitReferencesFromXml(Map<String, List<Element>> map) {
         // nothing to do in the base class
@@ -135,12 +151,42 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     /**
      * Initializes the table content usages with the data in the map. The map contains the table
      * structure usage roles as key and the qualified table content name as value.
+     * 
+     * @param map the map of property elements
      */
     protected void doInitTableUsagesFromXml(Map<String, Element> map) {
         // nothing to do in the base class
         //
         // Note that the method is deliberately not declared as abstract to
         // allow in subclasses calls to doInitTableUsagesFromXml().
+    }
+
+    /**
+     * Initializes all formulas contained by genElement. If formula evaluation is supported, the map
+     * contains the compiled expression for every formula.
+     * 
+     */
+    protected void doInitFormulaFromXml(Element genElement) {
+        IFormulaEvaluatorBuilder formulaEvaluatorBuilder;
+        if (getRepository() != null) {
+            formulaEvaluatorBuilder = getRepository().getFormulaEvaluatorBuilder();
+            if (formulaEvaluatorBuilder != null) {
+                NodeList formulas = genElement.getElementsByTagName("Formula");
+                for (int i = 0; i < formulas.getLength(); i++) {
+                    Element aFormula = (Element)formulas.item(i);
+                    String name = aFormula.getAttribute("formulaSignature");
+                    NodeList nodeList = aFormula.getElementsByTagName(formulaEvaluatorBuilder.getExpressionXmlTag());
+                    if (nodeList.getLength() == 1) {
+                        Element expression = (Element)nodeList.item(0);
+                        String formulaExpression = expression.getTextContent();
+                        formulaEvaluatorBuilder.addFormula(formulaExpression);
+                    } else {
+                        throw new RuntimeException("Expression for Formula: " + name + " not found");
+                    }
+                }
+                formulaEvaluator = formulaEvaluatorBuilder.thiz(this).build();
+            }
+        }
     }
 
     /**

@@ -26,6 +26,7 @@ public class DefaultCacheFactory implements ICacheFactory {
     private int initialCapacityForEnumContentByClassName = 100;
 
     public DefaultCacheFactory() {
+        // do nothing
     }
 
     public DefaultCacheFactory(int initialCapacityForProductCmpts, int initialCapacityForProductCmptGenerations,
@@ -42,18 +43,18 @@ public class DefaultCacheFactory implements ICacheFactory {
     /**
      * {@inheritDoc}
      */
-    public ICache<?> createCache(Type type) {
+    public <T> ICache<T> createCache(Type type, Class<T> typeClass) {
         switch (type) {
             case PRODUCT_CMPT_CHACHE:
-                return new SoftReferenceCache(initialCapacityForProductCmpts);
+                return new SoftReferenceCache<T>(initialCapacityForProductCmpts);
             case PRODUCT_CMPT_GENERATION_CHACHE:
-                return new SoftReferenceCache(initialCapacityForProductCmptGenerations);
+                return new SoftReferenceCache<T>(initialCapacityForProductCmptGenerations);
             case TABLE_BY_CLASSNAME_CACHE:
-                return new SoftReferenceCache(initialCapacityForTablesByClassname);
+                return new SoftReferenceCache<T>(initialCapacityForTablesByClassname);
             case TABLE_BY_QUALIFIED_NAME_CACHE:
-                return new SoftReferenceCache(initialCapacityForTablesByQname);
+                return new SoftReferenceCache<T>(initialCapacityForTablesByQname);
             case ENUM_CONTENT_BY_CLASS:
-                return new SoftReferenceCache(initialCapacityForEnumContentByClassName);
+                return new SoftReferenceCache<T>(initialCapacityForEnumContentByClassName);
         }
         throw new IllegalArgumentException("Unknown cache type " + type);
     }

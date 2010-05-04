@@ -140,8 +140,7 @@ public interface IRuntimeRepository {
 
     /**
      * Returns the enumeration value for the provided unique Id. The unique Id is specified as
-     * follows <i>qualifiedClassName'#'valueId</i>. The valueId is the value that is returned by the
-     * method {@link IEnumValue#getEnumValueId()}.
+     * follows <i>qualifiedClassName'#'valueId</i>.
      */
     public Object getEnumValue(String uniqueId);
 
@@ -378,4 +377,12 @@ public interface IRuntimeRepository {
      * the context can also handle the classes defined in these other repositories.
      */
     public JAXBContext newJAXBContext();
+
+    /**
+     * Getting a formula evaluator builder to create a new formula evaluator. If formula evaluation
+     * is not supported, this method should return null.
+     * 
+     * @return The configured formula evaluator or null if no evaluation is supported
+     */
+    public org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder getFormulaEvaluatorBuilder();
 }

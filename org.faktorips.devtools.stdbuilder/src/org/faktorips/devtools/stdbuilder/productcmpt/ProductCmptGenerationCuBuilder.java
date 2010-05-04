@@ -157,7 +157,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     /**
      * Generates the method to compute a value as specified by a formula configuration element and
      */
-    private void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder) throws CoreException {
+    public void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder) throws CoreException {
         generateMethodForFormula(formula, builder, null, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
 
@@ -258,7 +258,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         builder.closeBracket();
     }
 
-    private JavaCodeFragment compileFormulaToJava(IFormula formula,
+    public JavaCodeFragment compileFormulaToJava(IFormula formula,
             IProductCmptTypeMethod formulaSignature,
             boolean formulaTest) {
 

@@ -61,14 +61,13 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
 
     protected abstract AbstractReadonlyTableOfContents loadTableOfContents();
 
-    @SuppressWarnings("unchecked")
     private void initCaches() {
-        productCmptCache = (ICache<IProductComponent>)cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_CHACHE);
-        productCmptGenerationCache = (ICache<IProductComponentGeneration>)cacheFactory
-                .createCache(ICacheFactory.Type.PRODUCT_CMPT_GENERATION_CHACHE);
-        tableCacheByQName = (ICache<ITable>)cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_QUALIFIED_NAME_CACHE);
-        tableCacheByClass = (ICache<ITable>)cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_CLASSNAME_CACHE);
-        enumValuesCacheByClass = (ICache<List>)cacheFactory.createCache(ICacheFactory.Type.ENUM_CONTENT_BY_CLASS);
+        productCmptCache = cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_CHACHE, IProductComponent.class);
+        productCmptGenerationCache = cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_GENERATION_CHACHE,
+                IProductComponentGeneration.class);
+        tableCacheByQName = cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_QUALIFIED_NAME_CACHE, ITable.class);
+        tableCacheByClass = cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_CLASSNAME_CACHE, ITable.class);
+        enumValuesCacheByClass = cacheFactory.createCache(ICacheFactory.Type.ENUM_CONTENT_BY_CLASS, List.class);
         enumXmlAdapters = new LinkedList<XmlAdapter<?, ?>>();
     }
 
@@ -108,8 +107,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected <T> List<T> getEnumValuesInternal(Class<T> clazz) {
+        @SuppressWarnings("unchecked")
         List<T> enumValues = enumValuesCacheByClass.getObject(clazz);
         if (enumValues != null) {
             return enumValues;
@@ -236,9 +235,9 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
      */
     @Override
     public synchronized ITable getTableInternal(Class<?> tableClass) {
-        Object obj = tableCacheByClass.getObject(tableClass);
+        ITable obj = tableCacheByClass.getObject(tableClass);
         if (obj != null) {
-            return (ITable)obj;
+            return obj;
         }
         String tableClassName = tableClass.getName();
         TocEntryObject tocEntry = toc.getTableTocEntryByClassname(tableClassName);
@@ -250,9 +249,9 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
      */
     @Override
     public synchronized ITable getTableInternal(String qualifiedTableName) {
-        Object obj = tableCacheByQName.getObject(qualifiedTableName);
+        ITable obj = tableCacheByQName.getObject(qualifiedTableName);
         if (obj != null) {
-            return (ITable)obj;
+            return obj;
         }
         TocEntryObject tocEntry = toc.getTableTocEntryByQualifiedTableName(qualifiedTableName);
         return getTableInternal(tocEntry);
@@ -439,4 +438,5 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         XmlAdapter<String, ?> instance = constructor.newInstance(repository);
         return instance;
     }
+
 }

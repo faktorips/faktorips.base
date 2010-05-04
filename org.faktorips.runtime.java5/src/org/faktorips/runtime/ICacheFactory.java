@@ -38,5 +38,5 @@ public interface ICacheFactory {
      * @see Type#TABLE_BY_QUALIFIED_NAME_CACHE
      * @see Type#ENUM_CONTENT_BY_CLASS
      */
-    public ICache<?> createCache(Type type);
+    public <T> ICache<T> createCache(Type type, Class<T> typeClass);
 }

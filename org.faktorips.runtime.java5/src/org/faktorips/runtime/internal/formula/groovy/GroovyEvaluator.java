@@ -11,34 +11,38 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.pds.groovy;
+package org.faktorips.runtime.internal.formula.groovy;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.faktorips.runtime.pds.AbstractFormulaEvaluator;
-import org.faktorips.runtime.pds.IFormulaEvaluator;
-import org.faktorips.runtime.pds.IFormulaEvaluatorBuilder;
+import org.faktorips.runtime.internal.formula.AbstractFormulaEvaluator;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluator;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 
 public class GroovyEvaluator extends AbstractFormulaEvaluator {
 
-    public static final String THIS_CLASS_VAR = "thisClass"; //$NON-NLS-1$
+    public static final String EXPRESSION_XML_TAG = "javaExpression";
 
-    private GroovyShell groovyShell;
-
-    private Map<String, Script> scriptMap;
+    public static final String THIS_CLASS_VAR = "thiz"; //$NON-NLS-1$
 
     private Binding binding;
 
-    public GroovyEvaluator(Builder builder) {
-        super();
+    private Script groovyScript;
+
+    private GroovyEvaluator(Builder builder) {
+        super(builder.thiz);
         setVariable(THIS_CLASS_VAR, builder.thiz);
-        scriptMap = new HashMap<String, Script>(2);
-        groovyShell = new GroovyShell(binding);
+        GroovyShell groovyShell = new GroovyShell(binding);
+        StringBuilder sourceCode = new StringBuilder();
+        for (String formula : builder.formulaList) {
+            sourceCode.append(formula).append('\n');
+        }
+        groovyScript = groovyShell.parse(sourceCode.toString());
     }
 
     @Override
@@ -50,23 +54,19 @@ public class GroovyEvaluator extends AbstractFormulaEvaluator {
     }
 
     @Override
-    public void parseFormula(String name, String content) {
-        groovyShell = new GroovyShell(binding);
-        Script script = groovyShell.parse(content);
-        scriptMap.put(name, script);
-    }
-
-    @Override
-    public Object evaluate(String formularName, Object... parameters) {
-        return scriptMap.get(formularName).invokeMethod(formularName, parameters);
+    protected Object evaluateInternal(String formularName, Object... parameters) {
+        return groovyScript.invokeMethod(formularName, parameters);
     }
 
     public static class Builder implements IFormulaEvaluatorBuilder {
 
         private Object thiz;
 
-        public void thiz(Object thiz) {
+        private List<String> formulaList = new ArrayList<String>(1);
+
+        public Builder thiz(Object thiz) {
             this.thiz = thiz;
+            return this;
         }
 
         public IFormulaEvaluator build() {
@@ -74,6 +74,15 @@ public class GroovyEvaluator extends AbstractFormulaEvaluator {
                 throw new IllegalStateException("The variable thiz have to be set");
             }
             return new GroovyEvaluator(this);
+        }
+
+        public IFormulaEvaluatorBuilder addFormula(String formulaCode) {
+            formulaList.add(formulaCode);
+            return this;
+        }
+
+        public String getExpressionXmlTag() {
+            return EXPRESSION_XML_TAG;
         }
 
     }

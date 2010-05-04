@@ -62,8 +62,8 @@ import org.w3c.dom.Element;
  */
 public class Formula extends BaseIpsObjectPart implements IFormula {
 
-    final static String TAG_NAME = "Formula"; //$NON-NLS-1$
-    private final static String TAG_NAME_FOR_EXPRESSION = "Expression"; //$NON-NLS-1$
+    public final static String TAG_NAME = "Formula"; //$NON-NLS-1$
+    public final static String TAG_NAME_FOR_EXPRESSION = "Expression"; //$NON-NLS-1$
 
     private String formulaSignature = ""; //$NON-NLS-1$
     private String expression = ""; //$NON-NLS-1$

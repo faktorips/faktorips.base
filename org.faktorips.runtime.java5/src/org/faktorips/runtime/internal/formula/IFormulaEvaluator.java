@@ -11,13 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.pds;
+package org.faktorips.runtime.internal.formula;
 
-import org.w3c.dom.Element;
 
 public interface IFormulaEvaluator {
-
-    void parseFormula(String name, Element formulaElement);
 
     void setVariable(String name, Object value);
 

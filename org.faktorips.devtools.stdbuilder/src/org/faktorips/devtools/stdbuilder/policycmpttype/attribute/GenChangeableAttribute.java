@@ -54,7 +54,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
-    public GenChangeableAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
+    public GenChangeableAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) {
         super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.isChangeable());
     }
@@ -66,7 +66,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      */
     public void generateCodeForProductCmptType(boolean generatesInterface,
             IIpsProject ipsProject,
-            TypeSection mainSection) throws CoreException {
+            TypeSection mainSection) {
         if (!generatesInterface) {
             generateMemberVariablesForProductCmptTypeImpl(mainSection.getMemberVarBuilder(), ipsProject,
                     generatesInterface);
@@ -164,7 +164,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      */
     protected void generateMemberVariablesForProductCmptTypeImpl(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
-            boolean generatesInterface) throws CoreException {
+            boolean generatesInterface) {
         if (!generatesInterface) {
             generateFieldDefaultValue(getDatatypeHelper(), builder);
             generateFieldForTheAllowedSetOfValues(builder);
@@ -205,7 +205,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      */
     protected void generateMethodsForProductCmptType(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
-            boolean generatesInterface) throws CoreException {
+            boolean generatesInterface) {
 
         if (!generatesInterface) {
             generateMethodGetDefaultValue(getDatatypeHelper(), builder, generatesInterface);

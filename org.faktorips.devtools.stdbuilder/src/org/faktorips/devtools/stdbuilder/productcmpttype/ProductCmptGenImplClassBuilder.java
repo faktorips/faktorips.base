@@ -119,6 +119,11 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         if ((modifier & Modifier.ABSTRACT) > 0) {
             return modifier;
         }
+        // TODO CD check for groovy builder property
+        if (true) {
+            return modifier;
+        }
+
         GetClassModifierFunction fct = new GetClassModifierFunction(getIpsProject(), modifier);
         fct.start(getProductCmptType());
         return fct.getModifier();
@@ -169,6 +174,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.append(" productCmpt)"); //$NON-NLS-1$
         builder.openBracket();
         builder.appendln("super(productCmpt);"); //$NON-NLS-1$
+
         builder.closeBracket();
     }
 

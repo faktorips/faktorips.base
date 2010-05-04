@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.pds;
+package org.faktorips.runtime.internal.formula;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

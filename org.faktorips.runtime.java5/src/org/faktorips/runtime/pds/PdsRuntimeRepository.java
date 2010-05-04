@@ -15,22 +15,42 @@ package org.faktorips.runtime.pds;
 
 import java.util.List;
 
-import org.faktorips.runtime.ICacheFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.AbstractReadonlyTableOfContents;
-import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.TocEntryGeneration;
 import org.faktorips.runtime.internal.TocEntryObject;
+import org.faktorips.runtime.internal.formula.FormulaEvaluatorBuilderFactory;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
+import org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 
-public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
+public class PdsRuntimeRepository extends ClassloaderRuntimeRepository {
 
-    public PdsRuntimeRepository(String name, ICacheFactory cacheFactory) {
-        super(name, cacheFactory);
-        // TODO Auto-generated constructor stub
+    public PdsRuntimeRepository(ClassLoader cl, String basePackage) throws ParserConfigurationException {
+        super(cl, basePackage);
+    }
+
+    private IFormulaEvaluatorBuilder formulaEvaluator;
+
+    @Override
+    public IFormulaEvaluatorBuilder getFormulaEvaluatorBuilder() {
+        // TODO load classname by property
+        if (formulaEvaluator == null) {
+            try {
+                formulaEvaluator = FormulaEvaluatorBuilderFactory.createFormulaEvaluatorBuilder(getClassLoader(),
+                        GroovyEvaluator.Builder.class.getName());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return formulaEvaluator;
     }
 
     @Override
@@ -69,6 +89,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
         return null;
     }
 
+    @Override
     public boolean isModifiable() {
         // TODO Auto-generated method stub
         return false;

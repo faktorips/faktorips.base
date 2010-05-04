@@ -16,19 +16,30 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.BuilderHelper;
+import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -40,24 +51,75 @@ import org.w3c.dom.NodeList;
  */
 public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
-    public ProductCmptXMLBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, String kind) {
+    private final ProductCmptBuilder productCmptGenerationImplBuilder;
+
+    public ProductCmptXMLBuilder(IpsObjectType type, StandardBuilderSet builderSet, String kind,
+            ProductCmptBuilder productCmptGenerationImplBuilder) {
         super(type, builderSet, kind);
+        this.productCmptGenerationImplBuilder = productCmptGenerationImplBuilder;
     }
 
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        Element root = productCmpt.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument());
+        Document document = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Element root = productCmpt.toXml(document);
 
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
         for (int i = 0; i < generations.length; i++) {
             updateTargetRuntimeId((IProductCmptGeneration)generations[i], (Element)generationNodes.item(i));
+
+            // creating compiled formula expressions
+            // TODO CD check for groovy builder property
+            IFormula[] formulas = ((IProductCmptGeneration)generations[i]).getFormulas();
+            NodeList formulaElements = ((Element)generationNodes.item(i)).getElementsByTagName(Formula.TAG_NAME);
+            addCompiledFormulaExpressions(document, formulas, formulaElements);
         }
         try {
             super.build(ipsSrcFile, XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset()));
         } catch (TransformerException e) {
             throw new CoreException(new IpsStatus(e));
         }
+    }
+
+    private void addCompiledFormulaExpressions(Document document, IFormula[] formulas, NodeList formulaElements)
+            throws CoreException {
+        for (int formulaIndex = 0; formulaIndex < formulas.length; formulaIndex++) {
+            IFormula formula = formulas[formulaIndex];
+            Element formulaElement = (Element)formulaElements.item(formulaIndex);
+            // TODO which TAG?
+            Element javaExpression = document.createElement("javaExpression");
+            JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+            IProductCmptTypeMethod formulaSignature = formula.findFormulaSignature(getIpsProject());
+            JavaCodeFragment formulaFragment = productCmptGenerationImplBuilder.getGenerationBuilder()
+                    .compileFormulaToJava(formula, formulaSignature, false);
+
+            generateMethodSignature(formula.findFormulaSignature(getIpsProject()), builder);
+
+            builder.openBracket();
+            builder.append("return ").append(formulaFragment).append(';');
+            builder.closeBracket();
+            CDATASection javaCode = document.createCDATASection(builder.getFragment().getSourcecode());
+            javaExpression.appendChild(javaCode);
+            formulaElement.appendChild(javaExpression);
+        }
+    }
+
+    private void generateMethodSignature(IMethod method, JavaCodeFragmentBuilder builder) throws CoreException {
+        IParameter[] parameters = method.getParameters();
+        int modifier = method.getJavaModifier();
+        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), false,
+                (StandardBuilderSet)getBuilderSet(), getIpsProject());
+
+        String[] parameterNames = BuilderHelper.extractParameterNames(parameters);
+        String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, false,
+                (StandardBuilderSet)getBuilderSet(), getIpsProject());
+        String[] parameterInSignatur = parameterNames;
+        String[] parameterTypesInSignatur = parameterTypes;
+
+        String methodName = method.getName();
+        // extend the method signature with the given parameter names
+        builder.signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur, false);
     }
 
     private void updateTargetRuntimeId(IProductCmptGeneration generation, Element generationElement)
