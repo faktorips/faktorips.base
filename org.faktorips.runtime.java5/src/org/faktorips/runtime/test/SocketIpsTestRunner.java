@@ -65,6 +65,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
     }
 
     public SocketIpsTestRunner() {
+        // nothing to do
     }
 
     public SocketIpsTestRunner(int port, String repositoryPackages, String additionalRepositoryPackages) {
@@ -188,6 +189,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
                 // wait and try to connect again
                 Thread.sleep(1000);
             } catch (InterruptedException e1) {
+                // ignore exceptions
             }
         }
         if (lastException != null) {

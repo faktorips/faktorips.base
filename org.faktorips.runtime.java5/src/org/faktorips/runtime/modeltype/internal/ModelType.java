@@ -128,7 +128,6 @@ public class ModelType extends AbstractModelElement implements IModelType {
     /**
      * {@inheritDoc}
      * 
-     * @throws ClassNotFoundException
      */
     public Class<?> getJavaClass() throws ClassNotFoundException {
         return loadClass(className);
@@ -137,7 +136,6 @@ public class ModelType extends AbstractModelElement implements IModelType {
     /**
      * {@inheritDoc}
      * 
-     * @throws ClassNotFoundException
      */
     public Class<?> getJavaInterface() throws ClassNotFoundException {
         String interfaceName = className.replace(".internal", "");
@@ -187,9 +185,6 @@ public class ModelType extends AbstractModelElement implements IModelType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void initModelTypeAttributesFromXML(XMLStreamReader parser) throws XMLStreamException {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
@@ -210,9 +205,6 @@ public class ModelType extends AbstractModelElement implements IModelType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void initModelTypeAssociationsFromXML(XMLStreamReader parser) throws XMLStreamException {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {

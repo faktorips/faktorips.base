@@ -36,7 +36,6 @@ public abstract class TypeHierarchyVisitor {
      * Visits the given type and all it's super types. Does nothing if the type is <code>null</code>
      * .
      * 
-     * @param type
      */
     public void visitHierarchy(IModelType type) {
         visitTypeInternal(type);

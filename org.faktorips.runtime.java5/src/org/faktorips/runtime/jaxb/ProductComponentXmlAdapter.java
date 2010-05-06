@@ -18,6 +18,7 @@ public class ProductComponentXmlAdapter extends XmlAdapter<String, IProductCompo
     private IRuntimeRepository repository;
 
     public ProductComponentXmlAdapter() {
+        // nothing to do
     }
 
     public ProductComponentXmlAdapter(IRuntimeRepository repository) {

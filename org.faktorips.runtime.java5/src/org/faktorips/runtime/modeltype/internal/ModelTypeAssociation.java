@@ -79,7 +79,6 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     /**
      * {@inheritDoc}
      * 
-     * @throws ClassNotFoundException
      */
     public IModelType getTarget() throws ClassNotFoundException {
         if (targetJavaClassName != null && targetJavaClassName.length() > 0) {

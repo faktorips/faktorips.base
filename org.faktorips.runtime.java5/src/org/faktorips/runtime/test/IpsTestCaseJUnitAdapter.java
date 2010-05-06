@@ -59,6 +59,7 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
      * Dummy test do prevent JUnit "no test found" warning if selecting this test case.
      */
     public void testNothing() {
+        // do nothing
     }
 
     /**

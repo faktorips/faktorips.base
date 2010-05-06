@@ -44,7 +44,6 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     /**
      * {@inheritDoc}
      * 
-     * @throws ClassNotFoundException
      */
     public Class<?> getDatatype() throws ClassNotFoundException {
         if (datatype == null) {
@@ -94,7 +93,7 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         initExtPropertiesFromXml(parser);
     }
 
-    protected Class<?> findDatatype() throws ClassNotFoundException {
+    protected Class<?> findDatatype() {
         String actualName = datatypeName;
         int arraydepth = 0;
         while (actualName.lastIndexOf('[') > 0) {

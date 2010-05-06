@@ -41,6 +41,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
     private IpsTestSuite testSuite = null;
 
     public AbstractIpsTestRunner() {
+        // nothing to do
     }
 
     /**
@@ -244,8 +245,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
             }
 
             // search for tests in the repository
-            ((IpsTestSuite)testSuite).addTest(createdRepositories.get(i).getIpsTest(getFirstTest(names),
-                    additionalRepositories));
+            (testSuite).addTest(createdRepositories.get(i).getIpsTest(getFirstTest(names), additionalRepositories));
             names = getNextNames(names);
         }
 

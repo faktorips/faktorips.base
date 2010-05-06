@@ -43,7 +43,7 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
     }
 
     /**
-     * @param repositoryPackage package name of the classpath repository
+     * @param repositoryPackages package name of the classpath repository
      */
     public CmdLineIpsTestRunner(String repositoryPackages) {
         super();
@@ -58,7 +58,7 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
         List<String> repositoryNameList = getRepositoryListFromInputString(getRepositoryPackages());
         List<IRuntimeRepository> runtimeRepositories = new ArrayList<IRuntimeRepository>(repositoryNameList.size());
         for (String repositoryName : repositoryNameList) {
-            runtimeRepositories.add(ClassloaderRuntimeRepository.create((String)repositoryName, classLoader));
+            runtimeRepositories.add(ClassloaderRuntimeRepository.create(repositoryName, classLoader));
         }
         return runtimeRepositories;
     }

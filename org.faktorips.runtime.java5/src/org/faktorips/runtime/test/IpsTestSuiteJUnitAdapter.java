@@ -37,7 +37,7 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
      * tests.
      */
     public void testDummy() {
-
+        // do nothing
     }
 
     /**
