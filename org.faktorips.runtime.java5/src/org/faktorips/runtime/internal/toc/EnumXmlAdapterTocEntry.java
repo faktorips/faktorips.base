@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 
 public class EnumXmlAdapterTocEntry extends TocEntryObject implements IEnumXmlAdapterTocEntry {
 
-    public static EnumXmlAdapterTocEntry createFromXml(Element entryElement) {
+    public static IEnumXmlAdapterTocEntry createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
         return new EnumXmlAdapterTocEntry(ipsObjectId, implementationClassName);
@@ -25,7 +25,11 @@ public class EnumXmlAdapterTocEntry extends TocEntryObject implements IEnumXmlAd
 
     public EnumXmlAdapterTocEntry(String ipsObjectId, String implementationClassName) {
         super(implementationClassName, "", ipsObjectId, "");
-        entryType = ENUM_XML_ADAPTER_TYPE;
+    }
+
+    @Override
+    protected String getXmlElementTag() {
+        return XML_TAG;
     }
 
 }

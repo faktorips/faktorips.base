@@ -30,7 +30,6 @@ import org.w3c.dom.NodeList;
 public abstract class AbstractReadonlyTableOfContents {
 
     public final static String TOC_XML_ELEMENT = "FaktorIps-TableOfContents";
-    protected final static String TOC_ENTRY_XML_ELEMENT = "Entry";
 
     public AbstractReadonlyTableOfContents() {
         // do nothing
@@ -42,7 +41,7 @@ public abstract class AbstractReadonlyTableOfContents {
     public final void initFromXml(Element tocElement) {
         NodeList nl = tocElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i).getNodeName().equals(TOC_ENTRY_XML_ELEMENT)) {
+            if (nl.item(i) instanceof Element) {
                 Element entryElement = (Element)nl.item(i);
                 internalAddEntry(TocEntryObject.createFromXml(entryElement));
             }

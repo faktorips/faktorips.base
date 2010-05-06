@@ -95,7 +95,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
     }
 
     public void testGetGenerationEntry() {
-        ProductCmptTocEntry entry = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
+        IProductCmptTocEntry entry = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorPolice.ipsproduct", "java.lang.String", "java.lang.String", new DateTime(2010, 1, 1));
         Calendar effectiveDate = new GregorianCalendar(2005, 0, 1);
         assertNull(entry.getGenerationEntry(effectiveDate));
@@ -112,7 +112,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         ITocEntryObject entry = new ProductCmptTocEntry("MotorProduct 2005-01", "motor.MotorProduct 2005-01",
                 "MotorProduct", "2005-01", "MotorPolice.ipsproduct", "java.lang.String", "java.lang.String",
                 new DateTime(2010, 1, 1));
-        assertEquals("TocEntry(productComponent:MotorProduct 2005-01)", entry.toString());
+        assertEquals("TocEntry(ProductComponent:MotorProduct 2005-01)", entry.toString());
     }
 
     public void testCreateTableTocEntry() {

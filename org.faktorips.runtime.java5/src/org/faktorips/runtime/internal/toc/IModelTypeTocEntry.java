@@ -15,6 +15,6 @@ package org.faktorips.runtime.internal.toc;
 
 public interface IModelTypeTocEntry extends ITocEntryObject {
 
-    public final static String MODEL_TYPE_ENTRY_TYPE = "modelType";
+    public static final String XML_TAG = "ModelType";
 
 }

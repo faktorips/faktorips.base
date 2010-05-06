@@ -15,7 +15,7 @@ package org.faktorips.runtime.internal.toc;
 
 public interface IFormulaTestTocEntry extends ITocEntryObject {
 
-    public final static String FORMULA_TEST_ENTRY_TYPE = "formulaTest";
+    public static final String XML_TAG = "FormulaTest";
 
     /**
      * Returns the id of the product component kind, if this entry describes a product component,

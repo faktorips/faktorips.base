@@ -15,6 +15,6 @@ package org.faktorips.runtime.internal.toc;
 
 public interface IEnumContentTocEntry extends ITocEntryObject {
 
-    public final static String ENUM_CONTENT_ENTRY_TYPE = "enumContent";
+    public static final String XML_TAG = "EnumContent";
 
 }

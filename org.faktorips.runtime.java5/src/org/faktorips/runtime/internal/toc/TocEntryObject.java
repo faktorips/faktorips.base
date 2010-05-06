@@ -34,33 +34,30 @@ public abstract class TocEntryObject extends TocEntry implements ITocEntryObject
      * The identifier of the ips object (either the qualified name for a table or the runtime id for
      * a product component).
      */
-    String ipsObjectId;
+    private String ipsObjectId;
 
     /** The qualified name of the ips object. */
-    String ipsObjectQualifiedName;
-
-    /** Indicates the type of ips object that is represented by this entry. */
-    String entryType;
+    private String ipsObjectQualifiedName;
 
     public static ITocEntryObject createFromXml(Element entryElement) {
-        String entryType = entryElement.getAttribute(PROPERTY_ENTRYTYPE);
+        String entryName = entryElement.getNodeName();
 
-        if (IProductCmptTocEntry.PRODUCT_CMPT_ENTRY_TYPE.equals(entryType)) {
+        if (IProductCmptTocEntry.XML_TAG.equals(entryName)) {
             return ProductCmptTocEntry.createFromXml(entryElement);
-        } else if (ITableContentTocEntry.TABLE_ENTRY_TYPE.equals(entryType)) {
+        } else if (ITableContentTocEntry.XML_TAG.equals(entryName)) {
             return TableContentTocEntry.createFromXml(entryElement);
-        } else if (ITestCaseTocEntry.TEST_CASE_ENTRY_TYPE.equals(entryType)) {
+        } else if (ITestCaseTocEntry.XML_TAG.equals(entryName)) {
             return TestCaseTocEntry.createFromXml(entryElement);
-        } else if (IEnumContentTocEntry.ENUM_CONTENT_ENTRY_TYPE.equals(entryType)) {
+        } else if (IEnumContentTocEntry.XML_TAG.equals(entryName)) {
             return EnumContentTocEntry.createFromXml(entryElement);
-        } else if (IEnumXmlAdapterTocEntry.ENUM_XML_ADAPTER_TYPE.equals(entryType)) {
+        } else if (IEnumXmlAdapterTocEntry.XML_TAG.equals(entryName)) {
             return EnumXmlAdapterTocEntry.createFromXml(entryElement);
-        } else if (IFormulaTestTocEntry.FORMULA_TEST_ENTRY_TYPE.equals(entryType)) {
+        } else if (IFormulaTestTocEntry.XML_TAG.equals(entryName)) {
             return FormulaTestTocEntry.createFromXml(entryElement);
-        } else if (IModelTypeTocEntry.MODEL_TYPE_ENTRY_TYPE.equals(entryType)) {
+        } else if (IModelTypeTocEntry.XML_TAG.equals(entryName)) {
             return ModelTypeTocEntry.createFromXml(entryElement);
         } else {
-            throw new IllegalArgumentException("Unknown entry type " + entryType);
+            throw new IllegalArgumentException("Unknown element: " + entryName);
         }
 
     }
@@ -88,15 +85,19 @@ public abstract class TocEntryObject extends TocEntry implements ITocEntryObject
     }
 
     public final Element toXml(Document doc) {
-        Element entryElement = doc.createElement(AbstractReadonlyTableOfContents.TOC_ENTRY_XML_ELEMENT);
+        Element entryElement = doc.createElement(getXmlElementTag());
         addToXml(entryElement);
         return entryElement;
     }
 
+    /**
+     * Getting the xml element tag for this toc entry
+     */
+    protected abstract String getXmlElementTag();
+
     @Override
     protected void addToXml(Element entryElement) {
         super.addToXml(entryElement);
-        entryElement.setAttribute(PROPERTY_ENTRYTYPE, entryType);
         entryElement.setAttribute(PROPERTY_IPS_OBJECT_ID, ipsObjectId);
         entryElement.setAttribute(PROPERTY_IPS_OBJECT_QNAME, ipsObjectQualifiedName);
     }
@@ -106,8 +107,8 @@ public abstract class TocEntryObject extends TocEntry implements ITocEntryObject
      */
     @Override
     public String toString() {
-        return new StringBuffer().append("TocEntry(").append(entryType).append(':').append(ipsObjectId).append(')')
-                .toString();
+        return new StringBuffer().append("TocEntry(").append(getXmlElementTag()).append(':').append(ipsObjectId)
+                .append(')').toString();
     }
 
     static class TocEntryGeneratorComparator implements Comparator<TocEntryGeneration> {

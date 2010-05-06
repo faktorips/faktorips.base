@@ -15,6 +15,6 @@ package org.faktorips.runtime.internal.toc;
 
 public interface ITableContentTocEntry extends ITocEntryObject {
 
-    public static final String TABLE_ENTRY_TYPE = "table";
+    public static final String XML_TAG = "TableContent";
 
 }

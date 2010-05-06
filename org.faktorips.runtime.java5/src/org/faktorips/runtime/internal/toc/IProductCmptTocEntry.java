@@ -20,11 +20,11 @@ import org.faktorips.runtime.internal.DateTime;
 
 public interface IProductCmptTocEntry extends ITocEntryObject {
 
-    public static final String PRODUCT_CMPT_ENTRY_TYPE = "productComponent";
     public static final String PROPERTY_KIND_ID = "kindId";
     public static final String PROPERTY_VERSION_ID = "versionId";
     public static final String PROPERTY_VALID_TO = "validTo";
     public static final String PROPERTY_GENERATION_IMPL_CLASS_NAME = "generationImplClassName";
+    public static final String XML_TAG = "ProductComponent";
 
     /**
      * Returns the id of the product component kind, if this entry describes a product component,

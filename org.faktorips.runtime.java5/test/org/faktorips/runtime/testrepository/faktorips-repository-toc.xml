@@ -5,20 +5,20 @@
       HomePolicy and MotorPolicy are both derived from a common super class called PCPolicy.
 -->
 <FaktorIps-TableOfContents>	
-	<Entry entryType="productComponent" ipsObjectId="motor.MotorPlus" ipsObjectQualifiedName="motor.MotorPlus" kindId="motor.MotorPlus" versionId="2005-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProduct" policyCmptClass="org.faktorips.runtime.testrepository.motor.MotorPolicy" validTo="2010-01-16">
-		<Entry validFrom="2005-01-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProductGen"/>
-		<Entry validFrom="2006-01-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProductGen"/>
-		<Entry validFrom="2007-01-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProductGen"/>
-	</Entry>
-	<Entry entryType="productComponent" ipsObjectId="motor.MotorBasic" ipsObjectQualifiedName="motor.MotorBasic" kindId="motor.MotorBasic" versionId="2005-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorBasic.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProduct" policyCmptClass="org.faktorips.runtime.testrepository.motor.MotorPolicy"> 
-		<Entry validFrom="2005-01-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorBasic.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProductGen"/>
-	</Entry>
-	<Entry entryType="productComponent" ipsObjectId="home.HomeBasic" ipsObjectQualifiedName="home.HomeBasic" kindId="home.HomeBasic" versionId="2005-01" xmlResource="org/faktorips/runtime/testrepository/home/HomeBasic.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.home.HomeProduct" policyCmptClass="org.faktorips.runtime.testrepository.home.HomePolicy"> 
-		<Entry validFrom="2005-01-01" xmlResource="org/faktorips/runtime/testrepository/home/HomeBasic.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.home.HomeProductGen"/>
-	</Entry>
-	<Entry entryType="table" ipsObjectId="motor.RateTable" ipsObjectQualifiedName="motor.RateTable" implementationClass="org.faktorips.runtime.testrepository.motor.RateTable" xmlResource="org/faktorips/runtime/testrepository/motor/RateTable.xml"/> 
-	<Entry entryType="table" ipsObjectId="motor.RateTableAlternate" ipsObjectQualifiedName="motor.RateTableAlternate" implementationClass="org.faktorips.runtime.testrepository.motor.RateTable" xmlResource="org/faktorips/runtime/testrepository/motor/RateTable.xml"/> 
-	<Entry entryType="testCase" ipsObjectId="test/CalculationTest1.ipstestcase" ipsObjectQualifiedName="test.CalculationTest1" implementationClass="org.faktorips.runtime.testrepository.test.TestPremiumCalculation" xmlResource="org/faktorips/runtime/testrepository/test/CalculationTest1.xml"/> 
-	<Entry entryType="testCase" ipsObjectId="test/CalculationTest2.ipstestcase" ipsObjectQualifiedName="test.CalculationTest2" implementationClass="org.faktorips.runtime.testrepository.test.TestPremiumCalculation" xmlResource="org/faktorips/runtime/testrepository/test/CalculationTest2.xml"/> 
-	<Entry entryType="formulaTest" ipsObjectId="motor/MotorBasic.ipsproduct" ipsObjectQualifiedName="motor.MotorBasic" implementationClass="org.faktorips.runtime.test.MyFormulaTestCase" xmlResource=""/> 
+	<ProductComponent ipsObjectId="motor.MotorPlus" ipsObjectQualifiedName="motor.MotorPlus" kindId="motor.MotorPlus" versionId="2005-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProduct" policyCmptClass="org.faktorips.runtime.testrepository.motor.MotorPolicy" validTo="2010-01-16">
+		<Generation validFrom="2005-01-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProductGen"/>
+		<Generation validFrom="2006-01-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProductGen"/>
+		<Generation validFrom="2007-01-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProductGen"/>
+	</ProductComponent>
+	<ProductComponent ipsObjectId="motor.MotorBasic" ipsObjectQualifiedName="motor.MotorBasic" kindId="motor.MotorBasic" versionId="2005-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorBasic.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProduct" policyCmptClass="org.faktorips.runtime.testrepository.motor.MotorPolicy"> 
+		<Generation validFrom="2005-01-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorBasic.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProductGen"/>
+	</ProductComponent>
+	<ProductComponent ipsObjectId="home.HomeBasic" ipsObjectQualifiedName="home.HomeBasic" kindId="home.HomeBasic" versionId="2005-01" xmlResource="org/faktorips/runtime/testrepository/home/HomeBasic.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.home.HomeProduct" policyCmptClass="org.faktorips.runtime.testrepository.home.HomePolicy"> 
+		<Generation validFrom="2005-01-01" xmlResource="org/faktorips/runtime/testrepository/home/HomeBasic.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.home.HomeProductGen"/>
+	</ProductComponent>
+	<TableContent ipsObjectId="motor.RateTable" ipsObjectQualifiedName="motor.RateTable" implementationClass="org.faktorips.runtime.testrepository.motor.RateTable" xmlResource="org/faktorips/runtime/testrepository/motor/RateTable.xml"/> 
+	<TableContent ipsObjectId="motor.RateTableAlternate" ipsObjectQualifiedName="motor.RateTableAlternate" implementationClass="org.faktorips.runtime.testrepository.motor.RateTable" xmlResource="org/faktorips/runtime/testrepository/motor/RateTable.xml"/> 
+	<TestCase ipsObjectId="test/CalculationTest1.ipstestcase" ipsObjectQualifiedName="test.CalculationTest1" implementationClass="org.faktorips.runtime.testrepository.test.TestPremiumCalculation" xmlResource="org/faktorips/runtime/testrepository/test/CalculationTest1.xml"/> 
+	<TestCase entryTypeipsObjectId="test/CalculationTest2.ipstestcase" ipsObjectQualifiedName="test.CalculationTest2" implementationClass="org.faktorips.runtime.testrepository.test.TestPremiumCalculation" xmlResource="org/faktorips/runtime/testrepository/test/CalculationTest2.xml"/> 
+	<FormulaTest ipsObjectId="motor/MotorBasic.ipsproduct" ipsObjectQualifiedName="motor.MotorBasic" implementationClass="org.faktorips.runtime.test.MyFormulaTestCase" xmlResource=""/> 
 </FaktorIps-TableOfContents>

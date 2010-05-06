@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Entry 
+<ProductComponent 
 	entryType="productComponent"
 	ipsObjectId="motor.MotorPlus" 
 	ipsObjectQualifiedName="motor.MotorPlus"
@@ -10,6 +10,6 @@
 	generationImplClass="org.faktorips.sample.motor.MotorPolicyPkAnpStufe" 
 	policyCmptClass="org.faktorips.sample.motor.MotorPolicy"
 	validTo="2010-01-16"> 
-	<Entry validFrom="2005-01-01" implementationClass="GenerationClass" xmlResource="GenerationRessource.xml"/>
-	<Entry validFrom="2006-01-01" implementationClass="GenerationClass" xmlResource="GenerationRessource.xml"/>
-</Entry>
+	<Generation validFrom="2005-01-01" implementationClass="GenerationClass" xmlResource="GenerationRessource.xml"/>
+	<Generation validFrom="2006-01-01" implementationClass="GenerationClass" xmlResource="GenerationRessource.xml"/>
+</ProductComponent>

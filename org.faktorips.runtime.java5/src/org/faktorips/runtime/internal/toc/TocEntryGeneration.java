@@ -26,6 +26,8 @@ import org.w3c.dom.Element;
  */
 public class TocEntryGeneration extends TocEntry {
 
+    protected final static String GENERATION_ENTRY_XML_ELEMENT = "Generation";
+
     private final static TimeZone defaultTimeZone = TimeZone.getDefault();
 
     public final static TocEntryGeneration createFromXml(IProductCmptTocEntry parent, Element element) {
@@ -88,7 +90,7 @@ public class TocEntryGeneration extends TocEntry {
      * @param doc The document used as factory for new element.
      */
     public Element toXml(Document doc) {
-        Element entryElement = doc.createElement(AbstractReadonlyTableOfContents.TOC_ENTRY_XML_ELEMENT);
+        Element entryElement = doc.createElement(GENERATION_ENTRY_XML_ELEMENT);
         super.addToXml(entryElement);
         entryElement.setAttribute("validFrom", validFrom.toIsoFormat());
         return entryElement;

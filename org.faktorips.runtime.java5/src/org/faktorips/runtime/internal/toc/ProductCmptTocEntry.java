@@ -45,7 +45,7 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
      */
     protected final String generationImplClassName;
 
-    public static ProductCmptTocEntry createFromXml(Element entryElement) {
+    public static IProductCmptTocEntry createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String ipsObjectName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
         String xmlResourceName = entryElement.getAttribute(PROPERTY_XML_RESOURCE);
@@ -59,12 +59,10 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
         ProductCmptTocEntry newEntry = new ProductCmptTocEntry(ipsObjectId, ipsObjectName, kindId, versionId,
                 xmlResourceName, implementationClassName, generationImplClassName, validTo);
 
-        NodeList nl = entryElement.getElementsByTagName(AbstractReadonlyTableOfContents.TOC_ENTRY_XML_ELEMENT);
+        NodeList nl = entryElement.getElementsByTagName(TocEntryGeneration.GENERATION_ENTRY_XML_ELEMENT);
         newEntry.generationEntries = new ArrayList<TocEntryGeneration>(nl.getLength());
         for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i).getNodeName().equals(AbstractReadonlyTableOfContents.TOC_ENTRY_XML_ELEMENT)) {
-                newEntry.generationEntries.add(TocEntryGeneration.createFromXml(newEntry, (Element)nl.item(i)));
-            }
+            newEntry.generationEntries.add(TocEntryGeneration.createFromXml(newEntry, (Element)nl.item(i)));
         }
         Collections.sort(newEntry.generationEntries, new TocEntryGeneratorComparator());
         return newEntry;
@@ -77,7 +75,6 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
         this.versionId = versionId;
         this.validTo = validTo;
         this.generationImplClassName = generationImplClassName;
-        entryType = PRODUCT_CMPT_ENTRY_TYPE;
     }
 
     /**
@@ -216,6 +213,11 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
         for (TocEntryGeneration generationEntry : generationEntries) {
             entryElement.appendChild(generationEntry.toXml(entryElement.getOwnerDocument()));
         }
+    }
+
+    @Override
+    protected String getXmlElementTag() {
+        return XML_TAG;
     }
 
 }

@@ -15,6 +15,6 @@ package org.faktorips.runtime.internal.toc;
 
 public interface ITestCaseTocEntry extends ITocEntryObject {
 
-    public final static String TEST_CASE_ENTRY_TYPE = "testCase";
+    public static final String XML_TAG = "TestCase";
 
 }

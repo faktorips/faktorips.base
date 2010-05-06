@@ -15,6 +15,6 @@ package org.faktorips.runtime.internal.toc;
 
 public interface IEnumXmlAdapterTocEntry extends ITocEntryObject {
 
-    public final static String ENUM_XML_ADAPTER_TYPE = "enumXmlAdapter";
+    public static final String XML_TAG = "EnumXmlAdapter";
 
 }

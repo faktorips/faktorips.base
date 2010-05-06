@@ -22,11 +22,11 @@ import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.IFormulaTestTocEntry;
+import org.faktorips.runtime.internal.toc.IModelTypeTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntryObject;
-import org.faktorips.runtime.internal.toc.ModelTypeTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -129,7 +129,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             return true;
         }
 
-        if (entry instanceof ModelTypeTocEntry) {
+        if (entry instanceof IModelTypeTocEntry) {
             ITocEntryObject currentEntry = modelTypeNameTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
                 return false;

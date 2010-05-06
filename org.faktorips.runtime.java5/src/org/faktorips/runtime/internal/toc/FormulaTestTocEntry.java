@@ -36,7 +36,6 @@ public class FormulaTestTocEntry extends TocEntryObject implements IFormulaTestT
         super(implementationClassName, "", ipsObjectId, ipsObjectQualifiedName);
         this.kindId = kindId;
         this.versionId = versionId;
-        entryType = FORMULA_TEST_ENTRY_TYPE;
     }
 
     /**
@@ -58,6 +57,11 @@ public class FormulaTestTocEntry extends TocEntryObject implements IFormulaTestT
         super.addToXml(entryElement);
         entryElement.setAttribute(IProductCmptTocEntry.PROPERTY_KIND_ID, kindId);
         entryElement.setAttribute(IProductCmptTocEntry.PROPERTY_VERSION_ID, versionId);
+    }
+
+    @Override
+    protected String getXmlElementTag() {
+        return XML_TAG;
     }
 
 }

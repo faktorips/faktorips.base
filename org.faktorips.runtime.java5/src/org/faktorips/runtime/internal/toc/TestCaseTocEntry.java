@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 
 public class TestCaseTocEntry extends TocEntryObject implements ITestCaseTocEntry {
 
-    public static TestCaseTocEntry createFromXml(Element entryElement) {
+    public static ITestCaseTocEntry createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String ipsObjectQualifiedName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
         String xmlResourceName = entryElement.getAttribute(PROPERTY_XML_RESOURCE);
@@ -31,7 +31,11 @@ public class TestCaseTocEntry extends TocEntryObject implements ITestCaseTocEntr
     public TestCaseTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName,
             String implementationClassName) {
         super(implementationClassName, xmlResourceName, ipsObjectId, ipsObjectQualifiedName);
-        entryType = TEST_CASE_ENTRY_TYPE;
+    }
+
+    @Override
+    protected String getXmlElementTag() {
+        return XML_TAG;
     }
 
 }
