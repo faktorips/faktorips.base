@@ -88,6 +88,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
             repository.putTable(null);
             fail();
         } catch (NullPointerException e) {
+            // ok
         }
     }
 
@@ -359,6 +360,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
             repository.getLatestProductComponentGeneration(null);
             fail();
         } catch (NullPointerException e) {
+            // ok
         }
     }
 
@@ -496,14 +498,14 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
     }
 
     class TestTable2 extends TestTable {
-
+        // do nothing
     }
 
     private class TestXmlAdapter extends XmlAdapter<String, TestEnumValue> {
 
         @Override
         public String marshal(TestEnumValue value) throws Exception {
-            return (String)value.getEnumValueId();
+            return value.getEnumValueId();
         }
 
         @Override
@@ -518,7 +520,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         private String id;
 
         public TestEnumValue(String id) {
-            id = id;
+            this.id = id;
         }
 
         public String getEnumValueId() {

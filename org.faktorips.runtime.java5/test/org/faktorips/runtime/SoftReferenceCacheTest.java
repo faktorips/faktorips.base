@@ -45,13 +45,13 @@ public class SoftReferenceCacheTest extends TestCase {
      */
     public void _testASoftReferenceMap0() {
         // no OutOfMemoryError expected by using the SoftReferenceCache
-        testMap(new SoftReferenceCache(5));
+        testMap(new SoftReferenceCache<Object>(5));
         System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
     }
 
     public void _testBSoftReferenceMap1() {
         // no OutOfMemoryError expected by using the SoftReferenceCache
-        testMap(new SoftReferenceCache(5));
+        testMap(new SoftReferenceCache<Object>(5));
         System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
     }
 
@@ -75,7 +75,7 @@ public class SoftReferenceCacheTest extends TestCase {
 
     public void _testDSoftReferenceMap() {
         // no OutOfMemoryError expected by using the SoftReferenceCache
-        testMap(new SoftReferenceCache(60));
+        testMap(new SoftReferenceCache<Object>(60));
         System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
     }
 
@@ -83,7 +83,7 @@ public class SoftReferenceCacheTest extends TestCase {
         // no OutOfMemoryError expected by using the SoftReferenceCache
         // the last 5 entries will be stored as hard references, and not removed
         // by the garbage collector
-        testMap(new SoftReferenceCache(60, 5));
+        testMap(new SoftReferenceCache<Object>(60, 5));
         System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
     }
 
@@ -96,7 +96,7 @@ public class SoftReferenceCacheTest extends TestCase {
         System.out.println("Six=" + map.get("Six"));
     }
 
-    private static void print(ICache map) {
+    private static void print(ICache<Object> map) {
         System.out.println("One=" + map.getObject("One"));
         System.out.println("Two=" + map.getObject("Two"));
         System.out.println("Three=" + map.getObject("Three"));
@@ -125,7 +125,7 @@ public class SoftReferenceCacheTest extends TestCase {
         block[0] = block[0];
     }
 
-    private static void testMap(ICache map) {
+    private static void testMap(ICache<Object> map) {
         System.out.println("Testing: " + map.getClass());
         map.put("One", new BigEntry(1));
         map.getObject("One");
@@ -146,6 +146,7 @@ public class SoftReferenceCacheTest extends TestCase {
     }
 
     private static class BigEntry {
+        @SuppressWarnings("unused")
         byte[] block = new byte[ENTRY_SIZE_IN_MB * 1024 * 1024];
         private final Integer value;
 

@@ -13,18 +13,12 @@
 
 package org.faktorips.runtime.internal;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -39,8 +33,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         super.setUp();
     }
 
-    public void testGetFirstElement() throws TransformerException, UnsupportedEncodingException, SAXException,
-            IOException, ParserConfigurationException {
+    public void testGetFirstElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
         assertNotNull(docElement);
@@ -50,8 +43,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertNull(XmlUtil.getFirstElement(docElement, "UnknownElement"));
     }
 
-    public void testGetElement() throws TransformerException, UnsupportedEncodingException, SAXException, IOException,
-            ParserConfigurationException {
+    public void testGetElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
 

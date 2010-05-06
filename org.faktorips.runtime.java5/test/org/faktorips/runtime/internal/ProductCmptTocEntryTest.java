@@ -19,13 +19,20 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
+import org.faktorips.runtime.internal.toc.ITocEntryObject;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TocEntryGeneration;
+import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.w3c.dom.Element;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class TocEntryObjectTest extends XmlAbstractTestCase {
+public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
 
     /*
      * @see TestCase#setUp()
@@ -37,7 +44,7 @@ public class TocEntryObjectTest extends XmlAbstractTestCase {
 
     public void testCreateFromXml() {
         Element element = getTestDocument().getDocumentElement();
-        TocEntryObject entry = TocEntryObject.createFromXml(element);
+        IProductCmptTocEntry entry = (IProductCmptTocEntry)TocEntryObject.createFromXml(element);
         assertEquals("motor.MotorPlus", entry.getIpsObjectId());
         assertEquals("MotorPlus", entry.getKindId());
         assertEquals("2005-01", entry.getVersionId());
@@ -55,29 +62,31 @@ public class TocEntryObjectTest extends XmlAbstractTestCase {
     }
 
     public void testToXml() {
-        TocEntryObject entry = TocEntryObject
-                .createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
-                        "org/samples/MotorPolice.ipsproduct", "org.samples.MotorPolicyPk", new DateTime(2010, 1, 18));
+        IProductCmptTocEntry entry = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
+                "org/samples/MotorPolice.ipsproduct", "org.samples.MotorPolicyPk", "org.samples.MotorPolicyPkAnpStufe",
+                new DateTime(2010, 1, 18));
         Element element = entry.toXml(newDocument());
-        entry = TocEntryObject.createFromXml(element);
+        entry = (IProductCmptTocEntry)TocEntryObject.createFromXml(element);
         assertEquals("MotorPolicy", entry.getIpsObjectId());
         assertEquals("MotorProduct", entry.getKindId());
         assertEquals("2005-01", entry.getVersionId());
         assertEquals("MotorPolicy", entry.getIpsObjectId());
         assertEquals("org/samples/MotorPolice.ipsproduct", entry.getXmlResourceName());
         assertEquals("org.samples.MotorPolicyPk", entry.getImplementationClassName());
+        assertEquals("org.samples.MotorPolicyPkAnpStufe", entry.getGenerationImplClassName());
         assertEquals(0, entry.getGenerationEntries().size());
         assertEquals(new DateTime(2010, 1, 18), entry.getValidTo());
 
         // with generation entries
-        entry = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
-                "org/samples/MotorPolice.ipsproduct", "org.samples.MotorPolicyPk", new DateTime(2010, 1, 1));
+        entry = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
+                "org/samples/MotorPolice.ipsproduct", "org.samples.MotorPolicyPk", "org.samples.MotorPolicyPk",
+                new DateTime(2010, 1, 1));
         TocEntryGeneration genEntry0 = new TocEntryGeneration(entry, new DateTime(2006, 1, 1), "class", "resource");
         TocEntryGeneration genEntry1 = new TocEntryGeneration(entry, new DateTime(2005, 1, 1), "class", "resource");
         entry.setGenerationEntries(Arrays.asList(genEntry0, genEntry1));
 
         element = entry.toXml(newDocument());
-        entry = TocEntryObject.createFromXml(element);
+        entry = (IProductCmptTocEntry)TocEntryObject.createFromXml(element);
         assertEquals(2, entry.getGenerationEntries().size());
         assertEquals(new DateTime(2006, 1, 1), entry.getGenerationEntries().get(0).getValidFrom());
         assertEquals("class", entry.getGenerationEntries().get(0).getImplementationClassName());
@@ -86,8 +95,8 @@ public class TocEntryObjectTest extends XmlAbstractTestCase {
     }
 
     public void testGetGenerationEntry() {
-        TocEntryObject entry = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct",
-                "2005-01", "MotorPolice.ipsproduct", "java.lang.String", new DateTime(2010, 1, 1));
+        ProductCmptTocEntry entry = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
+                "MotorPolice.ipsproduct", "java.lang.String", "java.lang.String", new DateTime(2010, 1, 1));
         Calendar effectiveDate = new GregorianCalendar(2005, 0, 1);
         assertNull(entry.getGenerationEntry(effectiveDate));
         TocEntryGeneration genEntry0 = new TocEntryGeneration(entry, new DateTime(2005, 1, 1), "class", "resource");
@@ -100,18 +109,18 @@ public class TocEntryObjectTest extends XmlAbstractTestCase {
     }
 
     public void testToString() {
-        TocEntryObject entry = TocEntryObject.createProductCmptTocEntry("MotorProduct 2005-01",
-                "motor.MotorProduct 2005-01", "MotorProduct", "2005-01", "MotorPolice.ipsproduct", "java.lang.String",
+        ITocEntryObject entry = new ProductCmptTocEntry("MotorProduct 2005-01", "motor.MotorProduct 2005-01",
+                "MotorProduct", "2005-01", "MotorPolice.ipsproduct", "java.lang.String", "java.lang.String",
                 new DateTime(2010, 1, 1));
         assertEquals("TocEntry(productComponent:MotorProduct 2005-01)", entry.toString());
     }
 
     public void testCreateTableTocEntry() {
-        TocEntryObject toc = TocEntryObject.createTableTocEntry("RateTable", "RateTable", "RateTable.ipstablecontents",
+        ITocEntryObject toc = new TableContentTocEntry("RateTable", "RateTable", "RateTable.ipstablecontents",
                 "RateTable");
         assertEquals("RateTable", toc.getIpsObjectId());
         assertEquals("RateTable.ipstablecontents", toc.getXmlResourceName());
         assertEquals("RateTable", toc.getImplementationClassName());
-        assertTrue(toc.isTableTocEntry());
+        assertTrue(toc instanceof ITableContentTocEntry);
     }
 }

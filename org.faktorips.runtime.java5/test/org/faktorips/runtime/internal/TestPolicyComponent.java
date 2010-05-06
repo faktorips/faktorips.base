@@ -32,7 +32,6 @@ public class TestPolicyComponent extends AbstractConfigurableModelObject {
     }
 
     /**
-     * @param productCmpt
      */
     public TestPolicyComponent(IProductComponent productCmpt) {
         super(productCmpt);
@@ -50,6 +49,7 @@ public class TestPolicyComponent extends AbstractConfigurableModelObject {
      */
     @Override
     public void removeChildModelObjectInternal(IModelObject child) {
+        // do nothing
     }
 
 }

@@ -14,6 +14,8 @@
 package org.faktorips.runtime.internal;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 
 /**
  * 

@@ -127,6 +127,7 @@ public class MessageListTest extends TestCase {
             list.getMessage(2);
             fail();
         } catch (IndexOutOfBoundsException e) {
+            // ok
         }
     }
 

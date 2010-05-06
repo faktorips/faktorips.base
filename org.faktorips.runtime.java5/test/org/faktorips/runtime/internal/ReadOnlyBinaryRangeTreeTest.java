@@ -295,7 +295,6 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @param values
          */
         public TestReadOnlyBinaryRangTree(Map map, KeyType keyType) {
             super(map, keyType);
@@ -326,7 +325,6 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         private static final long serialVersionUID = 42L;
 
         /**
-         * @param map
          */
         public TestTwoColumnReadOnlyBinaryRangeTree(Map map) {
             super(map, ReadOnlyBinaryRangeTree.KEY_IS_TWO_COLUMN_KEY);

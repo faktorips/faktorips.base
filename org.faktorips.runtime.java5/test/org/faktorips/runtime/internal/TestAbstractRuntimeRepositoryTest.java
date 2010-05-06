@@ -333,6 +333,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
             mainRepository.getIpsTest(null);
             fail();
         } catch (Exception e) {
+            // ok
         }
     }
 
@@ -403,13 +404,13 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
             values.add(new TestEnumValue("value3"));
             fail();
         } catch (UnsupportedOperationException e) {
-
+            // ok
         }
 
     }
 
     class TestTable implements ITable {
-
+        // test class
     }
 
     private class Lookup implements IEnumValueLookupService<TestEnumValue> {

@@ -322,6 +322,8 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             }
         }
 
+        @SuppressWarnings("unused")
+        // reflection
         public void setChild(ChildXmlPc child) {
             this.child = child;
         }
@@ -339,7 +341,10 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             return null;
         }
 
+        @SuppressWarnings("unused")
+        // reflection
         public void setInsuredPerson(PcA person) {
+            // do nothing
         }
 
         /**
@@ -367,6 +372,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
+            // do nothing
         }
 
     }
@@ -401,11 +407,11 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
+            // do nothing
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @SuppressWarnings("unused")
+        // reflection
         public IModelObject getParentModelObject() {
             return parent;
         }

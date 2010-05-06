@@ -144,6 +144,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
+            // do nothing
         }
     }
 
@@ -168,6 +169,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
+            // do nothing
         }
 
         /**
@@ -265,6 +267,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             }
         }
 
+        @SuppressWarnings("unused")
+        // reflection
         public void setChild(ChildXmlPc child) {
             this.child = child;
         }
@@ -282,7 +286,10 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             return null;
         }
 
+        @SuppressWarnings("unused")
+        // reflection
         public void setInsuredPerson(PcA person) {
+            // do nothing
         }
 
         /**
@@ -303,6 +310,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
+            // do nothing
         }
 
     }
@@ -324,9 +332,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             this.parent = parent;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @SuppressWarnings("unused")
+        // reflection
         public IModelObject getParentPolicyComponent() {
             return parent;
         }
@@ -336,6 +343,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
+            // do nothing
         }
     }
 }

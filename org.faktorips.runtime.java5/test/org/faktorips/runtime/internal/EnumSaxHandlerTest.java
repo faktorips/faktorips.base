@@ -43,6 +43,7 @@ public class EnumSaxHandlerTest extends TestCase {
             try {
                 is.close();
             } catch (IOException e) {
+                // ignore
             }
         }
     }
@@ -74,6 +75,7 @@ public class EnumSaxHandlerTest extends TestCase {
             saxParser.parse(is, handler);
             fail("Exception expected because of wrong content.");
         } catch (SAXException e) {
+            // ignore
         }
     }
 
@@ -82,7 +84,6 @@ public class EnumSaxHandlerTest extends TestCase {
      * for a tag content. This happens for example if the value within a tag contains carriage
      * return characters.
      * 
-     * @throws Exception
      */
     public void testCRContent() throws Exception {
         is = createInputStream("WithCRContent.xml");

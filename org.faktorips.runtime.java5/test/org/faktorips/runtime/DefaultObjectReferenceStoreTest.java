@@ -30,10 +30,10 @@ public class DefaultObjectReferenceStoreTest extends TestCase {
     }
 
     interface IMyInterface {
-
+        // do nothing
     }
 
     class MyImplementation implements IMyInterface {
-
+        // do nothing
     }
 }

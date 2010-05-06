@@ -39,7 +39,6 @@ public abstract class XmlAbstractTestCase extends TestCase {
     }
 
     /**
-     * @param name
      */
     public XmlAbstractTestCase(String name) {
         super(name);

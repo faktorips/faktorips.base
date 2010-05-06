@@ -7,6 +7,7 @@
 	versionId="2005-01"	
 	xmlResource="org/faktorips/samples/motor/MotorPlus.ipsproduct"
 	implementationClass="org.faktorips.sample.motor.MotorPolicyPk" 
+	generationImplClass="org.faktorips.sample.motor.MotorPolicyPkAnpStufe" 
 	policyCmptClass="org.faktorips.sample.motor.MotorPolicy"
 	validTo="2010-01-16"> 
 	<Entry validFrom="2005-01-01" implementationClass="GenerationClass" xmlResource="GenerationRessource.xml"/>

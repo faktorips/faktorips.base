@@ -20,6 +20,7 @@ import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
+import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
@@ -41,7 +42,7 @@ import org.faktorips.values.Money;
  */
 public class ClassloaderRuntimeRepositoryTest extends TestCase {
 
-    private ClassloaderRuntimeRepository repository;
+    private AbstractTocBasedRuntimeRepository repository;
 
     /**
      * @see junit.framework.TestCase#setUp()

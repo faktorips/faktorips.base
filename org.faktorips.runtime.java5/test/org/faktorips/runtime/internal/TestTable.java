@@ -25,7 +25,7 @@ public class TestTable extends Table {
      */
     @Override
     protected void initKeyMaps() {
-
+        // do nothing
     }
 
     @Override
