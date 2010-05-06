@@ -49,6 +49,7 @@ public class PnCProductGen extends ProductComponentGeneration {
 
     @Override
     protected void doInitReferencesFromXml(Map<String, List<Element>> map) {
+        // do nothing
     }
 
 }

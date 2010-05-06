@@ -35,18 +35,22 @@ public class IpsTestCase2TestAssertsTest extends TestCase {
 
         @Override
         public void executeAsserts(IpsTestResult result) throws Exception {
+            // do nothing
         }
 
         @Override
         public void executeBusinessLogic() throws Exception {
+            // do nothing
         }
 
         @Override
         protected void initExpectedResultFromXml(Element resultEl) {
+            // do nothing
         }
 
         @Override
         protected void initInputFromXml(Element inputEl) {
+            // do nothing
         }
     }
 

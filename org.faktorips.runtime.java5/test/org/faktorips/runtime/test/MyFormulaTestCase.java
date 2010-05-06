@@ -40,6 +40,7 @@ public class MyFormulaTestCase extends IpsFormulaTestCase {
      */
     @Override
     public void executeBusinessLogic() throws Exception {
+        // do nothing
     }
 
     public void addDummyFailures(int failures) {

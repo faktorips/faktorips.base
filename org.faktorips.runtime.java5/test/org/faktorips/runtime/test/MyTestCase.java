@@ -35,7 +35,7 @@ class MyTestCase extends IpsTestCase2 {
      */
     @Override
     protected void initInputFromXml(Element inputEl) {
-
+        // do nothing
     }
 
     /**
@@ -43,7 +43,7 @@ class MyTestCase extends IpsTestCase2 {
      */
     @Override
     protected void initExpectedResultFromXml(Element resultEl) {
-
+        // do nothing
     }
 
     /**
@@ -51,7 +51,7 @@ class MyTestCase extends IpsTestCase2 {
      */
     @Override
     public void executeBusinessLogic() throws Exception {
-
+        // do nothing
     }
 
     /**

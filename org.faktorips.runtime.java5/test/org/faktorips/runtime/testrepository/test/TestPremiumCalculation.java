@@ -68,6 +68,7 @@ public class TestPremiumCalculation extends IpsTestCase2 {
      */
     @Override
     public void executeBusinessLogic() throws Exception {
+        // do nothing
     }
 
     /**
@@ -75,8 +76,10 @@ public class TestPremiumCalculation extends IpsTestCase2 {
      */
     @Override
     public void executeAsserts(IpsTestResult result) throws Exception {
+        // do nothing
     }
 
     public void testDummy() {
+        // do nothing
     }
 }

@@ -26,11 +26,13 @@ public class RateTable extends Table {
 
     @Override
     protected void initKeyMaps() {
+        // do nothing
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected void addRow(List columns, IRuntimeRepository repository) {
+        // do nothing
     }
 
 }
