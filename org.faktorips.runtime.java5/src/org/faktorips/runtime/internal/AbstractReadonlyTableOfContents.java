@@ -33,7 +33,7 @@ public abstract class AbstractReadonlyTableOfContents {
     protected final static String TOC_ENTRY_XML_ELEMENT = "Entry";
 
     public AbstractReadonlyTableOfContents() {
-
+        // do nothing
     }
 
     /**
