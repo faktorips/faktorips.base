@@ -24,7 +24,7 @@ import org.w3c.dom.NodeList;
 
 public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptTocEntry {
 
-    protected List<TocEntryGeneration> generationEntries = new ArrayList<TocEntryGeneration>(0);
+    protected List<GenerationTocEntry> generationEntries = new ArrayList<GenerationTocEntry>(0);
     /**
      * If this entry is a product component: the (runtime) id if of the product component kind,
      * empty string otherwise.
@@ -59,10 +59,10 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
         ProductCmptTocEntry newEntry = new ProductCmptTocEntry(ipsObjectId, ipsObjectName, kindId, versionId,
                 xmlResourceName, implementationClassName, generationImplClassName, validTo);
 
-        NodeList nl = entryElement.getElementsByTagName(TocEntryGeneration.GENERATION_ENTRY_XML_ELEMENT);
-        newEntry.generationEntries = new ArrayList<TocEntryGeneration>(nl.getLength());
+        NodeList nl = entryElement.getElementsByTagName(GenerationTocEntry.XML_TAG);
+        newEntry.generationEntries = new ArrayList<GenerationTocEntry>(nl.getLength());
         for (int i = 0; i < nl.getLength(); i++) {
-            newEntry.generationEntries.add(TocEntryGeneration.createFromXml(newEntry, (Element)nl.item(i)));
+            newEntry.generationEntries.add(GenerationTocEntry.createFromXml(newEntry, (Element)nl.item(i)));
         }
         Collections.sort(newEntry.generationEntries, new TocEntryGeneratorComparator());
         return newEntry;
@@ -104,7 +104,7 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
      * Returns the generation entries or an empty array if this entry does not contain any
      * generation entries.
      */
-    public List<TocEntryGeneration> getGenerationEntries() {
+    public List<GenerationTocEntry> getGenerationEntries() {
         return generationEntries;
     }
 
@@ -125,17 +125,17 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
     /**
      * Sets the generation entries.
      */
-    public void setGenerationEntries(List<TocEntryGeneration> entries) {
+    public void setGenerationEntries(List<GenerationTocEntry> entries) {
         generationEntries = entries;
         Collections.sort(generationEntries, new TocEntryGeneratorComparator());
     }
 
     /**
-     * Returns the {@link TocEntryGeneration} successor of the one that is found for the provided
+     * Returns the {@link GenerationTocEntry} successor of the one that is found for the provided
      * validity date. Returns <code>null</code> if either no entry is found for the provided date or
      * if the found one doesn't have a successor.
      */
-    public TocEntryGeneration getNextGenerationEntry(Calendar validFrom) {
+    public GenerationTocEntry getNextGenerationEntry(Calendar validFrom) {
         Integer index = getGenerationEntryIndex(validFrom);
         if (index == null) {
             return null;
@@ -148,11 +148,11 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
     }
 
     /**
-     * Returns the {@link TocEntryGeneration} that is prior to the one that is found for the
+     * Returns the {@link GenerationTocEntry} that is prior to the one that is found for the
      * provided validity date. Returns <code>null</code> if either no entry is found for the
      * provided date or if the found one doesn't have a predecessor.
      */
-    public TocEntryGeneration getPreviousGenerationEntry(Calendar validFrom) {
+    public GenerationTocEntry getPreviousGenerationEntry(Calendar validFrom) {
         Integer index = getGenerationEntryIndex(validFrom);
         if (index == null) {
             return null;
@@ -165,9 +165,9 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
     }
 
     /**
-     * Returns the latest {@link TocEntryGeneration} with repect to the generations validity date.
+     * Returns the latest {@link GenerationTocEntry} with repect to the generations validity date.
      */
-    public TocEntryGeneration getLatestGenerationEntry() {
+    public GenerationTocEntry getLatestGenerationEntry() {
         if (generationEntries.size() > 0) {
             return generationEntries.get(0);
         }
@@ -179,7 +179,7 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
      * <code>null</code> if no generation is effective on the given date or the effective is
      * <code>null</code>.
      */
-    public TocEntryGeneration getGenerationEntry(Calendar effectiveDate) {
+    public GenerationTocEntry getGenerationEntry(Calendar effectiveDate) {
         Integer index = getGenerationEntryIndex(effectiveDate);
         if (index == null) {
             return null;
@@ -210,7 +210,7 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
             entryElement.setAttribute(PROPERTY_VALID_TO, validTo.toIsoFormat());
         }
         entryElement.setAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME, generationImplClassName);
-        for (TocEntryGeneration generationEntry : generationEntries) {
+        for (GenerationTocEntry generationEntry : generationEntries) {
             entryElement.appendChild(generationEntry.toXml(entryElement.getOwnerDocument()));
         }
     }

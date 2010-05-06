@@ -57,22 +57,24 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * Maps a qualified test case name to the toc entry that contains information about a test case
      * object.
      */
-    protected Map<String, ITocEntryObject> testCaseNameTocEntryMap = new HashMap<String, ITocEntryObject>(10);
+    protected Map<String, ITestCaseTocEntry> testCaseNameTocEntryMap = new HashMap<String, ITestCaseTocEntry>(10);
 
     /**
      * Maps a qualified model type name to the toc entry that contains information about the model
      * type.
      */
-    protected Map<String, ITocEntryObject> modelTypeNameTocEntryMap = new HashMap<String, ITocEntryObject>(100);
+    protected Map<String, IModelTypeTocEntry> modelTypeNameTocEntryMap = new HashMap<String, IModelTypeTocEntry>(100);
 
     /** A map that contains the runtime id of enum contents as key and the toc entry as value. */
-    protected Map<String, ITocEntryObject> enumContentNameTocEntryMap = new HashMap<String, ITocEntryObject>(100);
+    protected Map<String, IEnumContentTocEntry> enumContentNameTocEntryMap = new HashMap<String, IEnumContentTocEntry>(
+            100);
 
     /**
      * Maps the qualified name of an enumtype to a toc entry of an XmlAdapter. Only for enum type
      * that defer their content XmlAdapters and hence entries into this map are created.
      */
-    protected Map<String, ITocEntryObject> enumXmlAdapterTocEntryMap = new HashMap<String, ITocEntryObject>(100);
+    protected Map<String, IEnumXmlAdapterTocEntry> enumXmlAdapterTocEntryMap = new HashMap<String, IEnumXmlAdapterTocEntry>(
+            100);
 
     /**
      * Creats a new toc.
@@ -106,26 +108,26 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         }
 
         if (entry instanceof ITestCaseTocEntry) {
-            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (ITestCaseTocEntry)entry);
             return;
         }
 
         if (entry instanceof IFormulaTestTocEntry) {
-            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (ITestCaseTocEntry)entry);
             return;
         }
 
         if (entry instanceof IModelTypeTocEntry) {
-            modelTypeNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            modelTypeNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (IModelTypeTocEntry)entry);
             return;
         }
 
         if (entry instanceof IEnumContentTocEntry) {
-            enumContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            enumContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (IEnumContentTocEntry)entry);
             return;
         }
         if (entry instanceof IEnumXmlAdapterTocEntry) {
-            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), entry);
+            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), (IEnumXmlAdapterTocEntry)entry);
             return;
         }
         throw new IllegalArgumentException("Unknown entry type " + entry);
@@ -225,7 +227,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public ITocEntryObject getTestCaseTocEntryByQName(String qName) {
+    public ITestCaseTocEntry getTestCaseTocEntryByQName(String qName) {
         return testCaseNameTocEntryMap.get(qName);
     }
 
@@ -233,21 +235,21 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public Set<ITocEntryObject> getModelTypeTocEntries() {
-        return new HashSet<ITocEntryObject>(modelTypeNameTocEntryMap.values());
+    public Set<IModelTypeTocEntry> getModelTypeTocEntries() {
+        return new HashSet<IModelTypeTocEntry>(modelTypeNameTocEntryMap.values());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Set<ITocEntryObject> getEnumContentTocEntries() {
-        return new HashSet<ITocEntryObject>(enumContentNameTocEntryMap.values());
+    public Set<IEnumContentTocEntry> getEnumContentTocEntries() {
+        return new HashSet<IEnumContentTocEntry>(enumContentNameTocEntryMap.values());
     }
 
     @Override
-    public Set<ITocEntryObject> getEnumXmlAdapterTocEntries() {
-        return new HashSet<ITocEntryObject>(enumXmlAdapterTocEntryMap.values());
+    public Set<IEnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries() {
+        return new HashSet<IEnumXmlAdapterTocEntry>(enumXmlAdapterTocEntryMap.values());
     }
 
     private class VersionIdTocEntry {

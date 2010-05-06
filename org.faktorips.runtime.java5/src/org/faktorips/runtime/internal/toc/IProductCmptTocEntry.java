@@ -47,7 +47,7 @@ public interface IProductCmptTocEntry extends ITocEntryObject {
      * Returns the generation entries or an empty array if this entry does not contain any
      * generation entries.
      */
-    public List<TocEntryGeneration> getGenerationEntries();
+    public List<GenerationTocEntry> getGenerationEntries();
 
     /**
      * Returns the number of genertion entries.
@@ -62,32 +62,32 @@ public interface IProductCmptTocEntry extends ITocEntryObject {
     /**
      * Sets the generation entries.
      */
-    public void setGenerationEntries(List<TocEntryGeneration> entries);
+    public void setGenerationEntries(List<GenerationTocEntry> entries);
 
     /**
-     * Returns the {@link TocEntryGeneration} successor of the one that is found for the provided
+     * Returns the {@link GenerationTocEntry} successor of the one that is found for the provided
      * validity date. Returns <code>null</code> if either no entry is found for the provided date or
      * if the found one doesn't have a successor.
      */
-    public TocEntryGeneration getNextGenerationEntry(Calendar validFrom);
+    public GenerationTocEntry getNextGenerationEntry(Calendar validFrom);
 
     /**
-     * Returns the {@link TocEntryGeneration} that is prior to the one that is found for the
+     * Returns the {@link GenerationTocEntry} that is prior to the one that is found for the
      * provided validity date. Returns <code>null</code> if either no entry is found for the
      * provided date or if the found one doesn't have a predecessor.
      */
-    public TocEntryGeneration getPreviousGenerationEntry(Calendar validFrom);
+    public GenerationTocEntry getPreviousGenerationEntry(Calendar validFrom);
 
     /**
-     * Returns the latest {@link TocEntryGeneration} with repect to the generations validity date.
+     * Returns the latest {@link GenerationTocEntry} with repect to the generations validity date.
      */
-    public TocEntryGeneration getLatestGenerationEntry();
+    public GenerationTocEntry getLatestGenerationEntry();
 
     /**
      * Returns the toc entry for the generation valid on the given effective date, or
      * <code>null</code> if no generation is effective on the given date or the effective is
      * <code>null</code>.
      */
-    public TocEntryGeneration getGenerationEntry(Calendar effectiveDate);
+    public GenerationTocEntry getGenerationEntry(Calendar effectiveDate);
 
 }

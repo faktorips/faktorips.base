@@ -183,14 +183,14 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 StringBuffer keyName = new StringBuffer();
                 String[] keyItems = keys[i].getKeyItemNames();
                 keyName.append("By");
-                for (int j = 0; j < keyItems.length; j++) {
+                for (String keyItem : keyItems) {
 
-                    if (getTableStructure().hasColumn(keyItems[j])) {
-                        keyName.append(StringUtils.capitalize(keyItems[j]));
+                    if (getTableStructure().hasColumn(keyItem)) {
+                        keyName.append(StringUtils.capitalize(keyItem));
                         continue;
                     }
 
-                    IColumnRange range = getTableStructure().getRange(keyItems[j]);
+                    IColumnRange range = getTableStructure().getRange(keyItem);
                     keyName.append(StringUtils.capitalize(range.getParameterName()));
                 }
                 findMethodNames[i] = keyName.toString();
@@ -242,19 +242,19 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             List<String> keyClassParameterTypes = new ArrayList<String>();
             List<String> keyClassParameterNames = new ArrayList<String>();
             boolean isColumn = false;
-            for (int j = 0; j < keyItems.length; j++) {
+            for (String keyItem : keyItems) {
 
-                allParameterTypes.add(getJavaClassName(keyItems[j]));
+                allParameterTypes.add(getJavaClassName(keyItem));
 
-                if (getTableStructure().hasColumn(keyItems[j])) {
-                    keyClassParameterNames.add(StringUtils.uncapitalize(keyItems[j]));
-                    keyClassParameterTypes.add(getJavaClassName(keyItems[j]));
-                    parameters.add(StringUtils.uncapitalize(keyItems[j]));
+                if (getTableStructure().hasColumn(keyItem)) {
+                    keyClassParameterNames.add(StringUtils.uncapitalize(keyItem));
+                    keyClassParameterTypes.add(getJavaClassName(keyItem));
+                    parameters.add(StringUtils.uncapitalize(keyItem));
                     isColumn = true;
                     continue;
                 }
 
-                IColumnRange range = getTableStructure().getRange(keyItems[j]);
+                IColumnRange range = getTableStructure().getRange(keyItem);
 
                 parameters.add(range.getParameterName());
                 if (!isColumn && range != null && range.getColumnRangeType().isTwoColumn()) {
@@ -601,8 +601,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     System.arraycopy(parameterNames, keyClassParameterNames.length, rangeParameterNames, 0,
                             rangeParameterNames.length);
                 }
-                for (int j = 0; j < rangeParameterNames.length; j++) {
-                    IColumnRange range = fRanges.get(rangeParameterNames[j]);
+                for (String rangeParameterName : rangeParameterNames) {
+                    IColumnRange range = fRanges.get(rangeParameterName);
                     if (range != null && range.getColumnRangeType().isTwoColumn()) {
                         keyClassName = TwoColumnKey.class.getName();
                     }
@@ -729,8 +729,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             fragment.append("[] {");
             String[] keyItemNames = keys[i].getKeyItemNames();
             boolean firstEntry = true;
-            for (int j = 0; j < keyItemNames.length; j++) {
-                IColumnRange range = getTableStructure().getRange(keyItemNames[j]);
+            for (String keyItemName : keyItemNames) {
+                IColumnRange range = getTableStructure().getRange(keyItemName);
                 if (range == null) {
                     continue;
                 }
@@ -843,11 +843,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
 
         JavaCodeFragment constructorBody = new JavaCodeFragment();
-        for (int i = 0; i < keyNames.length; i++) {
+        for (String keyName : keyNames) {
             constructorBody.append("this.");
-            constructorBody.append(keyNames[i]);
+            constructorBody.append(keyName);
             constructorBody.append(" = ");
-            constructorBody.append(keyNames[i]);
+            constructorBody.append(keyName);
             constructorBody.append(';');
             constructorBody.appendln();
         }
@@ -864,9 +864,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.appendln("int result = 17;");
-        for (int i = 0; i < keyNames.length; i++) {
+        for (String keyName : keyNames) {
             methodBody.append("result = 37 * result + ");
-            methodBody.append(keyNames[i]);
+            methodBody.append(keyName);
             methodBody.appendln(".hashCode();");
         }
         methodBody.appendln("return result;");
@@ -1152,8 +1152,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         if (fDatatypes == null) {
             Datatype[] datatypes = getTableStructure().getIpsProject().findDatatypes(false, true);
             fDatatypes = new HashMap<String, Datatype>(datatypes.length);
-            for (int i = 0; i < datatypes.length; i++) {
-                fDatatypes.put(datatypes[i].getQualifiedName(), datatypes[i]);
+            for (Datatype datatype : datatypes) {
+                fDatatypes.put(datatype.getQualifiedName(), datatype);
             }
         }
         return (Datatype)fDatatypes.get(name);

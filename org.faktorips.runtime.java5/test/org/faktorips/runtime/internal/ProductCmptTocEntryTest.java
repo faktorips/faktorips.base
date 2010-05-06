@@ -24,7 +24,7 @@ import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntryObject;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
-import org.faktorips.runtime.internal.toc.TocEntryGeneration;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.w3c.dom.Element;
 
@@ -53,7 +53,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         assertEquals("org.faktorips.sample.motor.MotorPolicyPk", entry.getImplementationClassName());
         assertEquals(new DateTime(2010, 1, 16), entry.getValidTo());
 
-        List<TocEntryGeneration> genEntries = entry.getGenerationEntries();
+        List<GenerationTocEntry> genEntries = entry.getGenerationEntries();
         assertEquals(2, genEntries.size());
         assertEquals(new DateTime(2006, 1, 1), genEntries.get(0).getValidFrom());
         assertEquals("GenerationClass", genEntries.get(0).getImplementationClassName());
@@ -81,8 +81,8 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         entry = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "org/samples/MotorPolice.ipsproduct", "org.samples.MotorPolicyPk", "org.samples.MotorPolicyPk",
                 new DateTime(2010, 1, 1));
-        TocEntryGeneration genEntry0 = new TocEntryGeneration(entry, new DateTime(2006, 1, 1), "class", "resource");
-        TocEntryGeneration genEntry1 = new TocEntryGeneration(entry, new DateTime(2005, 1, 1), "class", "resource");
+        GenerationTocEntry genEntry0 = new GenerationTocEntry(entry, new DateTime(2006, 1, 1), "class", "resource");
+        GenerationTocEntry genEntry1 = new GenerationTocEntry(entry, new DateTime(2005, 1, 1), "class", "resource");
         entry.setGenerationEntries(Arrays.asList(genEntry0, genEntry1));
 
         element = entry.toXml(newDocument());
@@ -99,8 +99,8 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
                 "MotorPolice.ipsproduct", "java.lang.String", "java.lang.String", new DateTime(2010, 1, 1));
         Calendar effectiveDate = new GregorianCalendar(2005, 0, 1);
         assertNull(entry.getGenerationEntry(effectiveDate));
-        TocEntryGeneration genEntry0 = new TocEntryGeneration(entry, new DateTime(2005, 1, 1), "class", "resource");
-        TocEntryGeneration genEntry1 = new TocEntryGeneration(entry, new DateTime(2006, 1, 1), "class", "resource");
+        GenerationTocEntry genEntry0 = new GenerationTocEntry(entry, new DateTime(2005, 1, 1), "class", "resource");
+        GenerationTocEntry genEntry1 = new GenerationTocEntry(entry, new DateTime(2006, 1, 1), "class", "resource");
         entry.setGenerationEntries(Arrays.asList(genEntry0, genEntry1));
         assertNull(entry.getGenerationEntry(new GregorianCalendar(2004, 11, 31)));
         assertSame(genEntry0, entry.getGenerationEntry(new GregorianCalendar(2005, 0, 1)));

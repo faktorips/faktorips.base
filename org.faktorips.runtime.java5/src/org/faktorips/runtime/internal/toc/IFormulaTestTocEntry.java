@@ -13,7 +13,7 @@
 
 package org.faktorips.runtime.internal.toc;
 
-public interface IFormulaTestTocEntry extends ITocEntryObject {
+public interface IFormulaTestTocEntry extends ITestCaseTocEntry {
 
     public static final String XML_TAG = "FormulaTest";
 

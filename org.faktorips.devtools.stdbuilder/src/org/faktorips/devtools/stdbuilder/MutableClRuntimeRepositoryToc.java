@@ -124,7 +124,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             if (entry.equals(currentEntry)) {
                 return false;
             }
-            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (ITestCaseTocEntry)entry);
             ++modificationStamp;
             return true;
         }
@@ -134,7 +134,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             if (entry.equals(currentEntry)) {
                 return false;
             }
-            modelTypeNameTocEntryMap.put(entry.getIpsObjectId(), entry);
+            modelTypeNameTocEntryMap.put(entry.getIpsObjectId(), (IModelTypeTocEntry)entry);
             ++modificationStamp;
             return true;
         }
@@ -147,7 +147,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             // formula test a kind of test cases therefore the same entry map will be used
             // the formula test will be stored with the qualified name as key, only so it could be
             // removed if a product cmpt will be removed
-            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (IFormulaTestTocEntry)entry);
             ++modificationStamp;
             return true;
         }
@@ -158,7 +158,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
                 return false;
             }
 
-            enumContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            enumContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (IEnumContentTocEntry)entry);
             ++modificationStamp;
 
             return true;
@@ -169,7 +169,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
                 return false;
             }
 
-            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), entry);
+            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), (IEnumXmlAdapterTocEntry)entry);
             ++modificationStamp;
 
             return true;
@@ -216,8 +216,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
                 return true;
             }
         }
-        for (Iterator<ITocEntryObject> it = testCaseNameTocEntryMap.values().iterator(); it.hasNext();) {
-            ITocEntryObject entry = it.next();
+        for (Iterator<ITestCaseTocEntry> it = testCaseNameTocEntryMap.values().iterator(); it.hasNext();) {
+            ITestCaseTocEntry entry = it.next();
             if (entry.getIpsObjectQualifiedName().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
@@ -225,8 +225,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             }
         }
 
-        for (Iterator<ITocEntryObject> it = modelTypeNameTocEntryMap.values().iterator(); it.hasNext();) {
-            ITocEntryObject entry = it.next();
+        for (Iterator<IModelTypeTocEntry> it = modelTypeNameTocEntryMap.values().iterator(); it.hasNext();) {
+            IModelTypeTocEntry entry = it.next();
             if (entry.getIpsObjectQualifiedName().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
@@ -234,8 +234,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             }
         }
 
-        for (Iterator<ITocEntryObject> it = enumXmlAdapterTocEntryMap.values().iterator(); it.hasNext();) {
-            ITocEntryObject entry = it.next();
+        for (Iterator<IEnumXmlAdapterTocEntry> it = enumXmlAdapterTocEntryMap.values().iterator(); it.hasNext();) {
+            IEnumXmlAdapterTocEntry entry = it.next();
             if (entry.getIpsObjectId().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;

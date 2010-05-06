@@ -22,10 +22,11 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITocEntryObject;
-import org.faktorips.runtime.internal.toc.TocEntryGeneration;
+import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 
 public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
@@ -36,7 +37,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     }
 
     @Override
-    protected <T> List<T> createEnumValues(ITocEntryObject tocEntry, Class<T> clazz) {
+    protected <T> List<T> createEnumValues(IEnumContentTocEntry tocEntry, Class<T> clazz) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -48,7 +49,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     }
 
     @Override
-    protected IProductComponentGeneration createProductCmptGeneration(TocEntryGeneration tocEntryGeneration) {
+    protected IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry generationTocEntry) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -60,7 +61,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     }
 
     @Override
-    protected IpsTestCaseBase createTestCase(ITocEntryObject tocEntry, IRuntimeRepository runtimeRepository) {
+    protected IpsTestCaseBase createTestCase(ITestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -111,7 +112,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     // Calendar validFromAsCalendar = Calendar.getInstance();
     // validFromAsCalendar.setTime(validFromAsDate);
     // TocEntryObject tocEntry = toc.getProductCmptTocEntry(id);
-    // TocEntryGeneration tocEntryGeneration = tocEntry.getNextGenerationEntry(validFromAsCalendar);
+    // GenerationTocEntry tocEntryGeneration = tocEntry.getNextGenerationEntry(validFromAsCalendar);
     // if (tocEntryGeneration == null) {
     // return null;
     // }
@@ -133,7 +134,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     // Calendar validFromAsCalendar = Calendar.getInstance();
     // validFromAsCalendar.setTime(validFromAsDate);
     // TocEntryObject tocEntry = toc.getProductCmptTocEntry(id);
-    // TocEntryGeneration tocEntryGeneration =
+    // GenerationTocEntry tocEntryGeneration =
     // tocEntry.getPreviousGenerationEntry(validFromAsCalendar);
     // if (tocEntryGeneration == null) {
     // return null;
@@ -152,7 +153,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     // if (tocEntry == null) {
     // return null;
     // }
-    // TocEntryGeneration tocEntryGeneration = tocEntry.getGenerationEntry(effectiveDate);
+    // GenerationTocEntry tocEntryGeneration = tocEntry.getGenerationEntry(effectiveDate);
     // if (tocEntryGeneration == null) {
     // return null;
     // }
@@ -238,7 +239,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     // }
     //
     // @Override
-    // protected IProductComponentGeneration createProductCmptGeneration(TocEntryGeneration
+    // protected IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry
     // tocEntryGeneration) {
     // // TODO Auto-generated method stub
     // return null;

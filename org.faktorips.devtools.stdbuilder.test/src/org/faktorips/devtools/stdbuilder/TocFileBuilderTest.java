@@ -41,7 +41,7 @@ import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntryObject;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
-import org.faktorips.runtime.internal.toc.TocEntryGeneration;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.w3c.dom.Document;
 
@@ -176,7 +176,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
 
         IProductCmptTocEntry entry0 = toc.getProductCmptTocEntry(motorProduct.getRuntimeId());
         assertNotNull(entry0);
-        TocEntryGeneration genEntry0 = entry0.getGenerationEntry(validFrom);
+        GenerationTocEntry genEntry0 = entry0.getGenerationEntry(validFrom);
         assertNotNull(genEntry0);
 
         // asserts for table entry

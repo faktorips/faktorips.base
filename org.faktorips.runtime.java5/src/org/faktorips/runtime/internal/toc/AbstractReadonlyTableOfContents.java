@@ -89,7 +89,7 @@ public abstract class AbstractReadonlyTableOfContents {
     /**
      * Returns a toc entry representing a test case for the given qualified name.
      */
-    public abstract ITocEntryObject getTestCaseTocEntryByQName(String qName);
+    public abstract ITestCaseTocEntry getTestCaseTocEntryByQName(String qName);
 
     /**
      * Returns a toc entry representing a table for the table's class object.
@@ -104,17 +104,17 @@ public abstract class AbstractReadonlyTableOfContents {
     /**
      * Returns all toc's entries representing model types.
      */
-    public abstract Set<ITocEntryObject> getModelTypeTocEntries();
+    public abstract Set<IModelTypeTocEntry> getModelTypeTocEntries();
 
     /**
      * Returns all toc's entries representing enum contents.
      */
-    public abstract Set<ITocEntryObject> getEnumContentTocEntries();
+    public abstract Set<IEnumContentTocEntry> getEnumContentTocEntries();
 
     /**
      * Returns all toc entries that link to an enumeration xml adapter.
      */
-    public abstract Set<ITocEntryObject> getEnumXmlAdapterTocEntries();
+    public abstract Set<IEnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries();
 
     /**
      * {@inheritDoc}

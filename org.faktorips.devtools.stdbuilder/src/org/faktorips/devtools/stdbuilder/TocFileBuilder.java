@@ -75,7 +75,7 @@ import org.faktorips.runtime.internal.toc.ModelTypeTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.TocEntryGeneration;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -421,7 +421,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         IProductCmptTocEntry entry = new ProductCmptTocEntry(ipsObjectId, ipsObjectQName, kindId, versionId,
                 xmlResourceName, implementationClass, generationImplClass, validTo);
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        List<TocEntryGeneration> genEntries = new ArrayList<TocEntryGeneration>(generations.length);
+        List<GenerationTocEntry> genEntries = new ArrayList<GenerationTocEntry>(generations.length);
         for (IIpsObjectGeneration generation : generations) {
             DateTime validFrom = DateTime.createDateOnly(generation.getValidFrom());
             IProductCmptGeneration gen = (IProductCmptGeneration)generation;
@@ -431,7 +431,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             } else {
                 generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(pcType);
             }
-            genEntries.add(new TocEntryGeneration(entry, validFrom, generationClassName, xmlResourceName));
+            genEntries.add(new GenerationTocEntry(entry, validFrom, generationClassName, xmlResourceName));
         }
         entry.setGenerationEntries(genEntries);
         return entry;

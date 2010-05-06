@@ -16,7 +16,6 @@ package org.faktorips.runtime.internal.toc;
 import java.util.Comparator;
 import java.util.TimeZone;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -84,17 +83,6 @@ public abstract class TocEntryObject extends TocEntry implements ITocEntryObject
         return ipsObjectQualifiedName;
     }
 
-    public final Element toXml(Document doc) {
-        Element entryElement = doc.createElement(getXmlElementTag());
-        addToXml(entryElement);
-        return entryElement;
-    }
-
-    /**
-     * Getting the xml element tag for this toc entry
-     */
-    protected abstract String getXmlElementTag();
-
     @Override
     protected void addToXml(Element entryElement) {
         super.addToXml(entryElement);
@@ -111,12 +99,12 @@ public abstract class TocEntryObject extends TocEntry implements ITocEntryObject
                 .append(')').toString();
     }
 
-    static class TocEntryGeneratorComparator implements Comparator<TocEntryGeneration> {
+    static class TocEntryGeneratorComparator implements Comparator<GenerationTocEntry> {
 
         /**
          * {@inheritDoc}
          */
-        public int compare(TocEntryGeneration first, TocEntryGeneration second) {
+        public int compare(GenerationTocEntry first, GenerationTocEntry second) {
 
             long firstValidFrom = first.getValidFromInMillisec(TimeZone.getDefault());
             long secondValidFrom = second.getValidFromInMillisec(TimeZone.getDefault());

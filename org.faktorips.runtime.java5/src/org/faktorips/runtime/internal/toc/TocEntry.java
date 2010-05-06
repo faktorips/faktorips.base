@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime.internal.toc;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -47,5 +48,16 @@ public abstract class TocEntry implements ITocEntry {
         element.setAttribute(PROPERTY_XML_RESOURCE, xmlResourceName);
         element.setAttribute(PROPERTY_IMPLEMENTATION_CLASS, implementationClassName);
     }
+
+    public final Element toXml(Document doc) {
+        Element entryElement = doc.createElement(getXmlElementTag());
+        addToXml(entryElement);
+        return entryElement;
+    }
+
+    /**
+     * Getting the xml element tag for this toc entry
+     */
+    protected abstract String getXmlElementTag();
 
 }

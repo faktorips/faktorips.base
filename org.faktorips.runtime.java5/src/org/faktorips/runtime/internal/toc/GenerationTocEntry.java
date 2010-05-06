@@ -16,7 +16,6 @@ package org.faktorips.runtime.internal.toc;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.internal.DateTime;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -24,24 +23,24 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class TocEntryGeneration extends TocEntry {
+public class GenerationTocEntry extends TocEntry {
 
-    protected final static String GENERATION_ENTRY_XML_ELEMENT = "Generation";
+    protected final static String XML_TAG = "Generation";
 
     private final static TimeZone defaultTimeZone = TimeZone.getDefault();
 
-    public final static TocEntryGeneration createFromXml(IProductCmptTocEntry parent, Element element) {
+    public final static GenerationTocEntry createFromXml(IProductCmptTocEntry parent, Element element) {
         DateTime validFrom = DateTime.parseIso(element.getAttribute("validFrom"));
         String className = element.getAttribute("implementationClass");
         String xmlResourceName = element.getAttribute("xmlResource");
-        return new TocEntryGeneration(parent, validFrom, className, xmlResourceName);
+        return new GenerationTocEntry(parent, validFrom, className, xmlResourceName);
     }
 
     private IProductCmptTocEntry parent;
     private DateTime validFrom;
     private long validFromAsLongInDefaultTimeZone;
 
-    public TocEntryGeneration(IProductCmptTocEntry parent, DateTime validFrom, String className, String xmlResourceName) {
+    public GenerationTocEntry(IProductCmptTocEntry parent, DateTime validFrom, String className, String xmlResourceName) {
         super(className, xmlResourceName);
         this.parent = parent;
         this.validFrom = validFrom;
@@ -84,16 +83,10 @@ public class TocEntryGeneration extends TocEntry {
         return validFrom.toDate(zone).getTime();
     }
 
-    /**
-     * Transforms the toc entry to xml.
-     * 
-     * @param doc The document used as factory for new element.
-     */
-    public Element toXml(Document doc) {
-        Element entryElement = doc.createElement(GENERATION_ENTRY_XML_ELEMENT);
-        super.addToXml(entryElement);
-        entryElement.setAttribute("validFrom", validFrom.toIsoFormat());
-        return entryElement;
+    @Override
+    protected void addToXml(Element element) {
+        super.addToXml(element);
+        element.setAttribute("validFrom", validFrom.toIsoFormat());
     }
 
     /**
@@ -102,6 +95,11 @@ public class TocEntryGeneration extends TocEntry {
     @Override
     public String toString() {
         return parent.toString() + " " + validFrom;
+    }
+
+    @Override
+    protected String getXmlElementTag() {
+        return XML_TAG;
     }
 
 }

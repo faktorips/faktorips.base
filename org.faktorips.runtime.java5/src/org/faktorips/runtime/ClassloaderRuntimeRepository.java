@@ -33,12 +33,13 @@ import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Table;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
+import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntry;
-import org.faktorips.runtime.internal.toc.ITocEntryObject;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
-import org.faktorips.runtime.internal.toc.TocEntryGeneration;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.w3c.dom.Document;
@@ -363,7 +364,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     }
 
     @Override
-    protected <T> List<T> createEnumValues(ITocEntryObject tocEntry, Class<T> clazz) {
+    protected <T> List<T> createEnumValues(IEnumContentTocEntry tocEntry, Class<T> clazz) {
 
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
         if (is == null) {
@@ -416,7 +417,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * {@inheritDoc}
      */
     @Override
-    protected IProductComponentGeneration createProductCmptGeneration(TocEntryGeneration tocEntry) {
+    protected IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry tocEntry) {
         ProductComponent productCmpt = (ProductComponent)getProductComponent(tocEntry.getParent().getIpsObjectId());
         if (productCmpt == null) {
             throw new RuntimeException("Can't get product component for toc entry " + tocEntry);
@@ -444,7 +445,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         throw new RuntimeException("Can't find the generation for the toc entry " + tocEntry);
     }
 
-    private Constructor<?> getConstructor(TocEntryGeneration tocEntry) {
+    private Constructor<?> getConstructor(GenerationTocEntry tocEntry) {
         Class<?> implClass = getClass(getProductComponentGenerationImplClass(tocEntry), cl);
         try {
             String productCmptClassName = tocEntry.getParent().getImplementationClassName();
@@ -456,7 +457,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         }
     }
 
-    protected String getProductComponentGenerationImplClass(TocEntryGeneration tocEntry) {
+    protected String getProductComponentGenerationImplClass(GenerationTocEntry tocEntry) {
         return tocEntry.getImplementationClassName();
     }
 
@@ -498,7 +499,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * {@inheritDoc}
      */
     @Override
-    protected IpsTestCaseBase createTestCase(ITocEntryObject tocEntry, IRuntimeRepository runtimeRepository) {
+    protected IpsTestCaseBase createTestCase(ITestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
         IpsTestCaseBase test;
         try {
