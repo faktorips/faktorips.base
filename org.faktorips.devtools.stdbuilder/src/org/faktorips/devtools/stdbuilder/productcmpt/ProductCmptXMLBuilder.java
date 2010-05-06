@@ -96,19 +96,21 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
                 JavaCodeFragment formulaFragment = productCmptGenerationImplBuilder.getGenerationBuilder()
                         .compileFormulaToJava(formula, formulaSignature, false);
 
-                generateMethodSignature(method, builder);
+                generateFormulaMethodSignature(method, builder);
 
                 builder.openBracket();
                 builder.append("return ").append(formulaFragment).append(';');
                 builder.closeBracket().appendln();
-                CDATASection javaCode = document.createCDATASection(builder.getFragment().getSourcecode());
+                String sourceCode = builder.getFragment().getImportDeclaration().toString() + '\n'
+                        + builder.getFragment().getSourcecode();
+                CDATASection javaCode = document.createCDATASection(sourceCode);
                 javaExpression.appendChild(javaCode);
                 formulaElement.appendChild(javaExpression);
             }
         }
     }
 
-    private void generateMethodSignature(IMethod method, JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateFormulaMethodSignature(IMethod method, JavaCodeFragmentBuilder builder) throws CoreException {
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier();
         String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), false,

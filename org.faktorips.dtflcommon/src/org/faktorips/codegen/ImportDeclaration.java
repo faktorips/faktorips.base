@@ -77,7 +77,7 @@ public class ImportDeclaration {
         ImportDeclaration temp = new ImportDeclaration(decl);
         temp.add(packageImport);
         for (Iterator<String> it = temp.iterator(); it.hasNext();) {
-            String importSpec = (String)it.next();
+            String importSpec = it.next();
             if (!importSpec.equals(packageImport)) {
                 add(importSpec);
             }
@@ -100,7 +100,7 @@ public class ImportDeclaration {
             return;
         }
         for (Iterator<String> it = decl.iterator(); it.hasNext();) {
-            add((String)it.next());
+            add(it.next());
         }
     }
 
@@ -138,7 +138,7 @@ public class ImportDeclaration {
      */
     private void removeClassImports(String packageImport) {
         for (Iterator<String> it = classes.iterator(); it.hasNext();) {
-            String classImport = (String)it.next();
+            String classImport = it.next();
             if (classImportCoveredByPackageImport(classImport, packageImport)) {
                 it.remove();
             }
@@ -207,9 +207,9 @@ public class ImportDeclaration {
     }
 
     /**
-     * Returns those imports in the <code>importsToTest>/code> declaration that are not
-     * covered this one. Returns an empty import declaration if either all imports are covered
-     * or importsToTest is <code>null</code>.
+     * Returns those imports in the <code>importsToTest</code> declaration that are not covered this
+     * one. Returns an empty import declaration if either all imports are covered or importsToTest
+     * is <code>null</code>.
      */
     public ImportDeclaration getUncoveredImports(ImportDeclaration importsToTest) {
         ImportDeclaration uncovered = new ImportDeclaration();
@@ -217,7 +217,7 @@ public class ImportDeclaration {
             return uncovered;
         }
         for (Iterator<String> it = importsToTest.iterator(); it.hasNext();) {
-            String importToTest = (String)it.next();
+            String importToTest = it.next();
             if (!isCovered(importToTest)) {
                 uncovered.add(importToTest);
             }
@@ -226,18 +226,44 @@ public class ImportDeclaration {
     }
 
     /**
-     * Returns true if the indicated objects is an import specification with the same import
-     * specifications in the same order.
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
+     * {@inheritDoc}
      */
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof ImportDeclaration)) {
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((classes == null) ? 0 : classes.hashCode());
+        result = prime * result + ((packages == null) ? 0 : packages.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ImportDeclaration)) {
             return false;
         }
-        ImportDeclaration other = (ImportDeclaration)o;
-        return classes.equals(other.classes) && packages.equals(other.packages);
+        ImportDeclaration other = (ImportDeclaration)obj;
+        if (classes == null) {
+            if (other.classes != null) {
+                return false;
+            }
+        } else if (!classes.equals(other.classes)) {
+            return false;
+        }
+        if (packages == null) {
+            if (other.packages != null) {
+                return false;
+            }
+        } else if (!packages.equals(other.packages)) {
+            return false;
+        }
+        return true;
     }
 
     /**

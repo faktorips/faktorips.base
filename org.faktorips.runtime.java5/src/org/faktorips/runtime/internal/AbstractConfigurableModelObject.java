@@ -136,7 +136,7 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
      * Initializes the policy component with the defaults from it's product component generation.
      */
     public void initialize() {
-
+        // subclasses may override this method
     }
 
     /**

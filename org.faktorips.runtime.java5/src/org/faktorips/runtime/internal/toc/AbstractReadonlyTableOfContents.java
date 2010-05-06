@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal;
+package org.faktorips.runtime.internal.toc;
 
 import java.util.List;
 import java.util.Set;
@@ -52,70 +52,70 @@ public abstract class AbstractReadonlyTableOfContents {
     /**
      * Adds the entry to the table of contents.
      */
-    protected abstract void internalAddEntry(TocEntryObject entry);
+    protected abstract void internalAddEntry(ITocEntryObject entry);
 
     /**
      * Returns the toc entry representing a product component for the given id or null if no entry
      * exists for the given id.
      */
-    public abstract TocEntryObject getProductCmptTocEntry(String id);
+    public abstract IProductCmptTocEntry getProductCmptTocEntry(String id);
 
     /**
      * Returns the toc entry representing a product component for the given product component kind
      * id and versionId or null if no such entry exists.
      */
-    public abstract TocEntryObject getProductCmptTocEntry(String kindId, String versionId);
+    public abstract IProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId);
 
     /**
      * Returns all toc's entries representing product components.
      */
-    public abstract List<TocEntryObject> getProductCmptTocEntries();
+    public abstract List<IProductCmptTocEntry> getProductCmptTocEntries();
 
     /**
      * Returns all toc's entries representing product components that belong to the indicated
      * product component kind.
      */
-    public abstract List<TocEntryObject> getProductCmptTocEntries(String kindId);
+    public abstract List<IProductCmptTocEntry> getProductCmptTocEntries(String kindId);
 
     /**
      * Returns all toc's entries representing tables.
      */
-    public abstract List<TocEntryObject> getTableTocEntries();
+    public abstract List<ITableContentTocEntry> getTableTocEntries();
 
     /**
      * Returns all toc's entries representing test cases.
      */
-    public abstract List<TocEntryObject> getTestCaseTocEntries();
+    public abstract List<ITocEntryObject> getTestCaseTocEntries();
 
     /**
      * Returns a toc entry representing a test case for the given qualified name.
      */
-    public abstract TocEntryObject getTestCaseTocEntryByQName(String qName);
+    public abstract ITocEntryObject getTestCaseTocEntryByQName(String qName);
 
     /**
      * Returns a toc entry representing a table for the table's class object.
      */
-    public abstract TocEntryObject getTableTocEntryByClassname(String implementationClass);
+    public abstract ITableContentTocEntry getTableTocEntryByClassname(String implementationClass);
 
     /**
      * Returns a toc entry representing a table for this table's qualified table name.
      */
-    public abstract TocEntryObject getTableTocEntryByQualifiedTableName(String qualifiedTableName);
+    public abstract ITableContentTocEntry getTableTocEntryByQualifiedTableName(String qualifiedTableName);
 
     /**
      * Returns all toc's entries representing model types.
      */
-    public abstract Set<TocEntryObject> getModelTypeTocEntries();
+    public abstract Set<ITocEntryObject> getModelTypeTocEntries();
 
     /**
      * Returns all toc's entries representing enum contents.
      */
-    public abstract Set<TocEntryObject> getEnumContentTocEntries();
+    public abstract Set<ITocEntryObject> getEnumContentTocEntries();
 
     /**
      * Returns all toc entries that link to an enumeration xml adapter.
      */
-    public abstract Set<TocEntryObject> getEnumXmlAdapterTocEntries();
+    public abstract Set<ITocEntryObject> getEnumXmlAdapterTocEntries();
 
     /**
      * {@inheritDoc}
@@ -124,20 +124,20 @@ public abstract class AbstractReadonlyTableOfContents {
     public String toString() {
         StringBuffer buf = new StringBuffer("TOC");
         buf.append(System.getProperty("line.separator"));
-        List<TocEntryObject> entries = getProductCmptTocEntries();
-        for (TocEntryObject entry : entries) {
+        List<IProductCmptTocEntry> entries = getProductCmptTocEntries();
+        for (IProductCmptTocEntry entry : entries) {
             buf.append(entry.toString());
             buf.append(System.getProperty("line.separator"));
         }
 
-        entries = getTableTocEntries();
-        for (TocEntryObject entry : entries) {
+        List<ITableContentTocEntry> tableEntries = getTableTocEntries();
+        for (ITocEntryObject entry : tableEntries) {
             buf.append(entry.toString());
             buf.append(System.getProperty("line.separator"));
         }
 
-        entries = getTestCaseTocEntries();
-        for (TocEntryObject entry : entries) {
+        List<ITocEntryObject> testEntries = getTestCaseTocEntries();
+        for (ITocEntryObject entry : testEntries) {
             buf.append(entry.toString());
             buf.append(System.getProperty("line.separator"));
         }

@@ -26,17 +26,19 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.faktorips.runtime.internal.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.EnumSaxHandler;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
-import org.faktorips.runtime.internal.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.Table;
-import org.faktorips.runtime.internal.TocEntry;
-import org.faktorips.runtime.internal.TocEntryGeneration;
-import org.faktorips.runtime.internal.TocEntryObject;
+import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
+import org.faktorips.runtime.internal.toc.ITocEntry;
+import org.faktorips.runtime.internal.toc.ITocEntryObject;
+import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.TocEntryGeneration;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.w3c.dom.Document;
@@ -330,8 +332,8 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     @Override
     public List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
-        List<TocEntryObject> entries = toc.getProductCmptTocEntries();
-        for (TocEntryObject entry : entries) {
+        List<IProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
+        for (IProductCmptTocEntry entry : entries) {
             Class<?> clazz = getClass(entry.getImplementationClassName(), cl);
             if (productCmptClass.isAssignableFrom(clazz)) {
                 result.add(getProductComponentInternal(entry));
@@ -344,7 +346,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * {@inheritDoc}
      */
     @Override
-    protected IProductComponent createProductCmpt(TocEntryObject tocEntry) {
+    protected IProductComponent createProductCmpt(IProductCmptTocEntry tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
         ProductComponent productCmpt;
         try {
@@ -361,7 +363,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     }
 
     @Override
-    protected <T> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
+    protected <T> List<T> createEnumValues(ITocEntryObject tocEntry, Class<T> clazz) {
 
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
         if (is == null) {
@@ -462,7 +464,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * {@inheritDoc}
      */
     @Override
-    protected ITable createTable(TocEntryObject tocEntry) {
+    protected ITable createTable(ITableContentTocEntry tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
         Table table;
         try {
@@ -496,7 +498,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * {@inheritDoc}
      */
     @Override
-    protected IpsTestCaseBase createTestCase(TocEntryObject tocEntry, IRuntimeRepository runtimeRepository) {
+    protected IpsTestCaseBase createTestCase(ITocEntryObject tocEntry, IRuntimeRepository runtimeRepository) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
         IpsTestCaseBase test;
         try {
@@ -521,7 +523,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         return test;
     }
 
-    private Element getDocumentElement(TocEntry tocEntry) {
+    private Element getDocumentElement(ITocEntry tocEntry) {
         String resource = tocEntry.getXmlResourceName();
         InputStream is = cl.getResourceAsStream(resource);
         if (is == null) {

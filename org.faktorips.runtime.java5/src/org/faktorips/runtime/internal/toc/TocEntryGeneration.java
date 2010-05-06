@@ -11,10 +11,11 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal;
+package org.faktorips.runtime.internal.toc;
 
 import java.util.TimeZone;
 
+import org.faktorips.runtime.internal.DateTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -27,18 +28,18 @@ public class TocEntryGeneration extends TocEntry {
 
     private final static TimeZone defaultTimeZone = TimeZone.getDefault();
 
-    public final static TocEntryGeneration createFromXml(TocEntryObject parent, Element element) {
+    public final static TocEntryGeneration createFromXml(IProductCmptTocEntry parent, Element element) {
         DateTime validFrom = DateTime.parseIso(element.getAttribute("validFrom"));
         String className = element.getAttribute("implementationClass");
         String xmlResourceName = element.getAttribute("xmlResource");
         return new TocEntryGeneration(parent, validFrom, className, xmlResourceName);
     }
 
-    private TocEntryObject parent;
+    private IProductCmptTocEntry parent;
     private DateTime validFrom;
     private long validFromAsLongInDefaultTimeZone;
 
-    public TocEntryGeneration(TocEntryObject parent, DateTime validFrom, String className, String xmlResourceName) {
+    public TocEntryGeneration(IProductCmptTocEntry parent, DateTime validFrom, String className, String xmlResourceName) {
         super(className, xmlResourceName);
         this.parent = parent;
         this.validFrom = validFrom;
@@ -57,7 +58,7 @@ public class TocEntryGeneration extends TocEntry {
     /**
      * @return Returns the parent entry.
      */
-    public TocEntryObject getParent() {
+    public IProductCmptTocEntry getParent() {
         return parent;
     }
 

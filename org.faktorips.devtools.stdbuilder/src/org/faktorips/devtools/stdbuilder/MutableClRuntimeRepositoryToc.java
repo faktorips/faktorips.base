@@ -18,9 +18,16 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.faktorips.runtime.internal.AbstractReadonlyTableOfContents;
-import org.faktorips.runtime.internal.ReadonlyTableOfContents;
-import org.faktorips.runtime.internal.TocEntryObject;
+import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
+import org.faktorips.runtime.internal.toc.IEnumXmlAdapterTocEntry;
+import org.faktorips.runtime.internal.toc.IFormulaTestTocEntry;
+import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
+import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.ITocEntryObject;
+import org.faktorips.runtime.internal.toc.ModelTypeTocEntry;
+import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -42,7 +49,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    protected void internalAddEntry(TocEntryObject entry) {
+    protected void internalAddEntry(ITocEntryObject entry) {
         super.internalAddEntry(entry);
         ++modificationStamp;
     }
@@ -81,24 +88,24 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
      *         entry was added or the entry has replcaed an existing entry with a differnt content.
      *         Returns <code>false</code> if the operation hasn't changed the table of contents.
      */
-    public boolean addOrReplaceTocEntry(TocEntryObject entry) {
+    public boolean addOrReplaceTocEntry(ITocEntryObject entry) {
         if (entry == null) {
             return false;
         }
 
-        if (entry.isProductCmptTypeTocEntry()) {
-            TocEntryObject currentEntry = (TocEntryObject)pcIdTocEntryMap.get(entry.getIpsObjectId());
+        if (entry instanceof IProductCmptTocEntry) {
+            ITocEntryObject currentEntry = pcIdTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
                 return false;
             }
-            pcIdTocEntryMap.put(entry.getIpsObjectId(), entry);
-            pcNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            pcIdTocEntryMap.put(entry.getIpsObjectId(), (IProductCmptTocEntry)entry);
+            pcNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (IProductCmptTocEntry)entry);
             ++modificationStamp;
             return true;
         }
 
-        if (entry.isTableTocEntry()) {
-            TocEntryObject currentEntry = (TocEntryObject)tableContentNameTocEntryMap.get(entry.getIpsObjectId());
+        if (entry instanceof ITableContentTocEntry) {
+            ITocEntryObject currentEntry = tableContentNameTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
                 return false;
             }
@@ -106,14 +113,14 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             // both maps
             // client must know whether to ask for qualified table name (single and multi content
             // tables) or class name (single content tables only)
-            tableContentNameTocEntryMap.put(entry.getIpsObjectId(), entry);
-            tableImplClassTocEntryMap.put(entry.getImplementationClassName(), entry);
+            tableContentNameTocEntryMap.put(entry.getIpsObjectId(), (ITableContentTocEntry)entry);
+            tableImplClassTocEntryMap.put(entry.getImplementationClassName(), (ITableContentTocEntry)entry);
             ++modificationStamp;
             return true;
         }
 
-        if (entry.isTestCaseTocEntry()) {
-            TocEntryObject currentEntry = (TocEntryObject)testCaseNameTocEntryMap.get(entry.getIpsObjectId());
+        if (entry instanceof ITestCaseTocEntry) {
+            ITocEntryObject currentEntry = testCaseNameTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
                 return false;
             }
@@ -122,8 +129,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             return true;
         }
 
-        if (entry.isModelTypeTocEntry()) {
-            TocEntryObject currentEntry = (TocEntryObject)modelTypeNameTocEntryMap.get(entry.getIpsObjectId());
+        if (entry instanceof ModelTypeTocEntry) {
+            ITocEntryObject currentEntry = modelTypeNameTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
                 return false;
             }
@@ -132,8 +139,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             return true;
         }
 
-        if (entry.isFormulaTestTocEntry()) {
-            TocEntryObject currentEntry = (TocEntryObject)testCaseNameTocEntryMap.get(entry.getIpsObjectId());
+        if (entry instanceof IFormulaTestTocEntry) {
+            ITocEntryObject currentEntry = testCaseNameTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
                 return false;
             }
@@ -145,8 +152,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             return true;
         }
 
-        if (entry.isEnumContentTypeTocEntry()) {
-            TocEntryObject currentEntry = (TocEntryObject)enumContentNameTocEntryMap.get(entry.getIpsObjectId());
+        if (entry instanceof IEnumContentTocEntry) {
+            ITocEntryObject currentEntry = enumContentNameTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
                 return false;
             }
@@ -156,8 +163,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
 
             return true;
         }
-        if (entry.isEnumXmlAdapterTocEntry()) {
-            TocEntryObject currentEntry = (TocEntryObject)enumXmlAdapterTocEntryMap.get(entry.getIpsObjectId());
+        if (entry instanceof IEnumXmlAdapterTocEntry) {
+            ITocEntryObject currentEntry = enumXmlAdapterTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
                 return false;
             }
@@ -177,9 +184,9 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
      * entry.
      */
     public boolean removeEntry(String objectId) {
-        TocEntryObject removed = (TocEntryObject)pcNameTocEntryMap.remove(objectId);
+        ITocEntryObject removed = pcNameTocEntryMap.remove(objectId);
         if (removed == null) {
-            removed = (TocEntryObject)pcIdTocEntryMap.remove(objectId);
+            removed = pcIdTocEntryMap.remove(objectId);
         }
 
         if (removed != null) {
@@ -192,8 +199,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             return true;
         }
 
-        for (Iterator<TocEntryObject> it = tableContentNameTocEntryMap.values().iterator(); it.hasNext();) {
-            TocEntryObject entry = (TocEntryObject)it.next();
+        for (Iterator<ITableContentTocEntry> it = tableContentNameTocEntryMap.values().iterator(); it.hasNext();) {
+            ITocEntryObject entry = it.next();
             if (entry.getIpsObjectId().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
@@ -201,16 +208,16 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             }
         }
 
-        for (Iterator<TocEntryObject> it = tableImplClassTocEntryMap.values().iterator(); it.hasNext();) {
-            TocEntryObject entry = (TocEntryObject)it.next();
+        for (Iterator<ITableContentTocEntry> it = tableImplClassTocEntryMap.values().iterator(); it.hasNext();) {
+            ITocEntryObject entry = it.next();
             if (entry.getImplementationClassName().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
                 return true;
             }
         }
-        for (Iterator<TocEntryObject> it = testCaseNameTocEntryMap.values().iterator(); it.hasNext();) {
-            TocEntryObject entry = (TocEntryObject)it.next();
+        for (Iterator<ITocEntryObject> it = testCaseNameTocEntryMap.values().iterator(); it.hasNext();) {
+            ITocEntryObject entry = it.next();
             if (entry.getIpsObjectQualifiedName().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
@@ -218,8 +225,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             }
         }
 
-        for (Iterator<TocEntryObject> it = modelTypeNameTocEntryMap.values().iterator(); it.hasNext();) {
-            TocEntryObject entry = (TocEntryObject)it.next();
+        for (Iterator<ITocEntryObject> it = modelTypeNameTocEntryMap.values().iterator(); it.hasNext();) {
+            ITocEntryObject entry = it.next();
             if (entry.getIpsObjectQualifiedName().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
@@ -227,8 +234,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             }
         }
 
-        for (Iterator<TocEntryObject> it = enumXmlAdapterTocEntryMap.values().iterator(); it.hasNext();) {
-            TocEntryObject entry = (TocEntryObject)it.next();
+        for (Iterator<ITocEntryObject> it = enumXmlAdapterTocEntryMap.values().iterator(); it.hasNext();) {
+            ITocEntryObject entry = it.next();
             if (entry.getIpsObjectId().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
@@ -247,21 +254,21 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
      */
     public Element toXml(Document doc) {
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
-        Comparator<TocEntryObject> c = new Comparator<TocEntryObject>() {
+        Comparator<ITocEntryObject> c = new Comparator<ITocEntryObject>() {
 
-            public int compare(TocEntryObject o1, TocEntryObject o2) {
+            public int compare(ITocEntryObject o1, ITocEntryObject o2) {
                 return o1.getIpsObjectId().compareTo(o2.getIpsObjectId());
             }
 
         };
-        SortedSet<TocEntryObject> sortedEntries = new TreeSet<TocEntryObject>(c);
+        SortedSet<ITocEntryObject> sortedEntries = new TreeSet<ITocEntryObject>(c);
         sortedEntries.addAll(pcIdTocEntryMap.values());
         sortedEntries.addAll(tableContentNameTocEntryMap.values());
         sortedEntries.addAll(testCaseNameTocEntryMap.values());
         sortedEntries.addAll(modelTypeNameTocEntryMap.values());
         sortedEntries.addAll(enumContentNameTocEntryMap.values());
         sortedEntries.addAll(enumXmlAdapterTocEntryMap.values());
-        for (TocEntryObject entry : sortedEntries) {
+        for (ITocEntryObject entry : sortedEntries) {
             element.appendChild(entry.toXml(doc));
         }
         return element;

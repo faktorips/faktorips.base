@@ -11,17 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime;
+package org.faktorips.runtime.internal.toc;
 
-import org.faktorips.runtime.internal.DateTime;
-import org.faktorips.runtime.internal.ReadonlyTableOfContents;
+public interface IModelTypeTocEntry extends ITocEntryObject {
 
-public interface IProductDataProvider {
-
-    long getModificationStamp();
-
-    ReadonlyTableOfContents loadToc();
-
-    IProductComponentGeneration getProductCmptGeneration(String ipsObjectId, DateTime validFrom);
+    public final static String MODEL_TYPE_ENTRY_TYPE = "modelType";
 
 }
