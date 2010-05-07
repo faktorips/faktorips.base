@@ -54,7 +54,9 @@ public abstract class AbstractModelObject implements IModelObject {
      * 
      * @param child The child you want to remove
      */
-    public abstract void removeChildModelObjectInternal(IModelObject child);
+    public void removeChildModelObjectInternal(IModelObject child) {
+        // empty default implementation
+    }
 
     /**
      * {@inheritDoc}
