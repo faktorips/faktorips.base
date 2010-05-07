@@ -16,4 +16,4 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.pds,
  org.faktorips.runtime.test
 Bundle-ClassPath: faktorips-runtime-java5.jar
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
