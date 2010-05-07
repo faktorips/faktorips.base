@@ -80,9 +80,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
         assertNotNull(enumType.getEnumAttribute(newAttributeName));
         assertTrue(enumAttribute.getName().equals(newAttributeName));
 
-        // Check for enumeration content update.
-        assertNull(enumContent.getEnumAttributeReference(ENUM_ATTRIBUTE_NAME));
-        assertNotNull(enumContent.getEnumAttributeReference(newAttributeName));
+        // TODO AW: Write extra test for enumeration content reference.
 
         // Check for inherited attribute update.
         assertNull(subEnumType.getEnumAttributeIncludeSupertypeCopies(ENUM_ATTRIBUTE_NAME));
