@@ -51,10 +51,10 @@ public abstract class AbstractModelObject implements IModelObject {
     /**
      * Removes the given child object from this object. If the given object is not a child of this
      * model object or the given object is <code>null</code>, the method does nothing.
+     * 
+     * @param child The child you want to remove
      */
-    public void removeChildModelObjectInternal(IModelObject child) {
-        // default implementation does nothing
-    }
+    public abstract void removeChildModelObjectInternal(IModelObject child);
 
     /**
      * {@inheritDoc}
@@ -94,12 +94,15 @@ public abstract class AbstractModelObject implements IModelObject {
      * <p>
      * The default implementation does nothing. Should be overridden in subclasses.
      * 
+     * @param list The message list
+     * 
      * @param context provides additional external information that might be necessary to execute
      *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information
      * @throws NullPointerException if list is <code>null</code> and a message is generated.
      */
     protected void validateDependants(MessageList list, IValidationContext context) {
+        // empty default implementation
     }
 
     /**
@@ -107,6 +110,8 @@ public abstract class AbstractModelObject implements IModelObject {
      * message generated to the given list.
      * <p>
      * The default implementation does nothing. Should be overridden in subclasses.
+     * 
+     * @param list the message list
      * 
      * @param context provides additional external information that might be necessary to execute
      *            the validation. E.g. the business context, the locale to provide locale specific
@@ -236,9 +241,17 @@ public abstract class AbstractModelObject implements IModelObject {
         propMap.put(propName, value);
     }
 
+    /**
+     * @param propMap The property map
+     * @param productRepository the runtime repository
+     */
     protected void initPropertiesFromXml(Map<String, String> propMap, IRuntimeRepository productRepository) {
+        // default implementation does nothing
     }
 
+    /**
+     * @param childEl The child element
+     */
     protected AbstractModelObject createChildFromXml(Element childEl) {
         return null;
     }
@@ -259,6 +272,12 @@ public abstract class AbstractModelObject implements IModelObject {
         store.addUnresolvedReference(reference);
     }
 
+    /**
+     * 
+     * @param objectId object id
+     * @param targetRole target role
+     * @param targetId target id
+     */
     protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId)
             throws Exception {
         return null;

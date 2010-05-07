@@ -33,6 +33,7 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
      * Creates a new policy component effective from now on.
      */
     protected DefaultConfigurableModelObject() {
+        // nothing to do
     }
 
     /**
@@ -88,9 +89,10 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
     }
 
     /**
-     * {@inheritDoc}
+     * @param propMap The property map
      */
     protected void initPropertiesFromXml(Map<String, String> propMap) {
+        // empty default implementation
     }
 
     /**
@@ -115,6 +117,7 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
      */
     @Override
     public void removeChildModelObjectInternal(IModelObject child) {
+        // empty default implementation
     }
 
 }
