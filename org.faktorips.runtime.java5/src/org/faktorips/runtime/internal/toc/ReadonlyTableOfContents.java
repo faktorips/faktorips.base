@@ -219,8 +219,8 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public List<ITocEntryObject> getTestCaseTocEntries() {
-        return new ArrayList<ITocEntryObject>(testCaseNameTocEntryMap.values());
+    public List<ITestCaseTocEntry> getTestCaseTocEntries() {
+        return new ArrayList<ITestCaseTocEntry>(testCaseNameTocEntryMap.values());
     }
 
     /**

@@ -15,38 +15,21 @@ package org.faktorips.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
-import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
-import org.faktorips.runtime.internal.DateTime;
-import org.faktorips.runtime.internal.EnumSaxHandler;
-import org.faktorips.runtime.internal.ProductComponent;
-import org.faktorips.runtime.internal.ProductComponentGeneration;
-import org.faktorips.runtime.internal.Table;
-import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
-import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.test.IpsTestCase2;
-import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -54,7 +37,7 @@ import org.xml.sax.SAXParseException;
  * 
  * @author Jan Ortmann
  */
-public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeRepository {
+public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
 
     /**
      * Name of the xml element representing the product component registry.
@@ -76,7 +59,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static ClassloaderRuntimeRepository create(String tocResource) {
+    public final static AbstractClassLoaderRuntimeRepository create(String tocResource) {
         return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), createDocumentBuilder(),
                 new DefaultCacheFactory());
     }
@@ -92,7 +75,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static ClassloaderRuntimeRepository create(String tocResource, ICacheFactory cacheFactory) {
+    public final static AbstractClassLoaderRuntimeRepository create(String tocResource, ICacheFactory cacheFactory) {
         return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), createDocumentBuilder(),
                 cacheFactory);
     }
@@ -108,7 +91,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static ClassloaderRuntimeRepository create(String tocResource, ClassLoader cl) {
+    public final static AbstractClassLoaderRuntimeRepository create(String tocResource, ClassLoader cl) {
         return create(tocResource, cl, createDocumentBuilder(), new DefaultCacheFactory());
     }
 
@@ -124,7 +107,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static ClassloaderRuntimeRepository create(String tocResource,
+    public final static AbstractClassLoaderRuntimeRepository create(String tocResource,
             ClassLoader cl,
             ICacheFactory cacheFactory) {
         return create(tocResource, cl, createDocumentBuilder(), cacheFactory);
@@ -142,7 +125,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static ClassloaderRuntimeRepository create(String tocResource,
+    public final static AbstractClassLoaderRuntimeRepository create(String tocResource,
             ClassLoader cl,
             DocumentBuilder docBuilder) {
         return new ClassloaderRuntimeRepository(tocResource, cl, docBuilder, new DefaultCacheFactory());
@@ -161,15 +144,12 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static ClassloaderRuntimeRepository create(String tocResource,
+    public final static AbstractClassLoaderRuntimeRepository create(String tocResource,
             ClassLoader cl,
             DocumentBuilder docBuilder,
             ICacheFactory cacheFactory) {
         return new ClassloaderRuntimeRepository(tocResource, cl, docBuilder, cacheFactory);
     }
-
-    // the classloader the data is loaded from
-    private ClassLoader cl;
 
     // path to the resource containing the toc.
     private String tocResourcePath;
@@ -232,7 +212,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      */
     public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage, String pathToToc,
             DocumentBuilder docBuilder, ICacheFactory cacheFactory) {
-        super(basePackage, cacheFactory);
+        super(basePackage, cacheFactory, cl);
         if (cl == null) {
             throw new NullPointerException();
         }
@@ -245,7 +225,6 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         if (docBuilder == null) {
             throw new NullPointerException();
         }
-        this.cl = cl;
         if (basePackage.equals("")) {
             tocResourcePath = pathToToc;
         } else {
@@ -269,7 +248,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      */
     private ClassloaderRuntimeRepository(String tocResource, ClassLoader cl, DocumentBuilder docBuilder,
             ICacheFactory cacheFactory) {
-        super(tocResource, cacheFactory);
+        super(tocResource, cacheFactory, cl);
         if (tocResource == null) {
             throw new NullPointerException();
         }
@@ -279,7 +258,6 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         if (docBuilder == null) {
             throw new NullPointerException();
         }
-        this.cl = cl;
         tocResourcePath = tocResource;
         this.docBuilder = docBuilder;
         reload();
@@ -289,19 +267,11 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      * {@inheritDoc}
      */
     @Override
-    public ClassLoader getClassLoader() {
-        return cl;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected AbstractReadonlyTableOfContents loadTableOfContents() {
+    protected ReadonlyTableOfContents loadTableOfContents() {
         InputStream is = null;
         Document doc;
         try {
-            is = cl.getResourceAsStream(tocResourcePath);
+            is = getClassLoader().getResourceAsStream(tocResourcePath);
             if (is == null) {
                 throw new IllegalArgumentException("Can' find table of contents file " + tocResourcePath);
             }
@@ -319,7 +289,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         }
         try {
             Element tocElement = doc.getDocumentElement();
-            AbstractReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+            ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
             toc.initFromXml(tocElement);
             return toc;
         } catch (Exception e) {
@@ -327,206 +297,34 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {
-        List<IProductComponent> result = new ArrayList<IProductComponent>();
-        List<IProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
-        for (IProductCmptTocEntry entry : entries) {
-            Class<?> clazz = getClass(entry.getImplementationClassName(), cl);
-            if (productCmptClass.isAssignableFrom(clazz)) {
-                result.add(getProductComponentInternal(entry));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected IProductComponent createProductCmpt(IProductCmptTocEntry tocEntry) {
-        Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
-        ProductComponent productCmpt;
-        try {
-            Constructor<?> constructor = implClass.getConstructor(new Class[] { IRuntimeRepository.class, String.class,
-                    String.class, String.class });
-            productCmpt = (ProductComponent)constructor.newInstance(new Object[] { this, tocEntry.getIpsObjectId(),
-                    tocEntry.getKindId(), tocEntry.getVersionId() });
-        } catch (Exception e) {
-            throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
-        }
-        Element docElement = getDocumentElement(tocEntry);
-        productCmpt.initFromXml(docElement);
-        return productCmpt;
+    protected String getProductComponentGenerationImplClass(GenerationTocEntry tocEntry) {
+        return tocEntry.getImplementationClassName();
     }
 
     @Override
-    protected <T> List<T> createEnumValues(IEnumContentTocEntry tocEntry, Class<T> clazz) {
+    protected Element getDocumentElement(IProductCmptTocEntry tocEntry) {
+        return getDocumentElement((ITocEntry)tocEntry);
+    }
 
+    @Override
+    protected Element getDocumentElement(ITestCaseTocEntry tocEntry) {
+        return getDocumentElement((ITocEntry)tocEntry);
+    }
+
+    @Override
+    protected InputStream getXmlAsStream(IEnumContentTocEntry tocEntry) {
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
         if (is == null) {
             throw new RuntimeException("Cant't load the input stream for the enumeration content resource "
                     + tocEntry.getXmlResourceName());
         }
-        EnumSaxHandler saxhandler = new EnumSaxHandler();
-        try {
-            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-            saxParser.parse(new InputSource(is), saxhandler);
-        } catch (Exception e) {
-            throw new RuntimeException("Can't parse the enumeration content of the resource "
-                    + tocEntry.getXmlResourceName());
-        }
-        T enumValue = null;
-        ArrayList<T> enumValues = new ArrayList<T>();
-        try {
-            Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-            Constructor<T> constructor = null;
-            for (Constructor<?> currentConstructor : constructors) {
-                if ((currentConstructor.getModifiers() & Modifier.PROTECTED) > 0) {
-                    Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
-                    if (parameterTypes.length == 2 && parameterTypes[0] == List.class
-                            && parameterTypes[1] == IRuntimeRepository.class) {
-                        @SuppressWarnings("unchecked")
-                        // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
-                        // while returning Contructor<T>[]
-                        // The Javaoc Class.getDeclaredConstructors() for more information
-                        Constructor<T> castedConstructor = (Constructor<T>)currentConstructor;
-                        constructor = castedConstructor;
-                    }
-                }
-            }
-            if (constructor == null) {
-                throw new RuntimeException(
-                        "No valid constructor found to create enumerations instances for the toc entry " + tocEntry);
-            }
-            for (List<String> enumValueAsStrings : saxhandler.getEnumValueList()) {
-                constructor.setAccessible(true);
-                enumValue = constructor.newInstance(new Object[] { enumValueAsStrings, this });
-                enumValues.add(enumValue);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Can't create enumeration instance for toc entry " + tocEntry, e);
-        }
-        return enumValues;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry tocEntry) {
-        ProductComponent productCmpt = (ProductComponent)getProductComponent(tocEntry.getParent().getIpsObjectId());
-        if (productCmpt == null) {
-            throw new RuntimeException("Can't get product component for toc entry " + tocEntry);
-        }
-        ProductComponentGeneration productCmptGen;
-        try {
-            Constructor<?> constructor = getConstructor(tocEntry);
-            productCmptGen = (ProductComponentGeneration)constructor.newInstance(new Object[] { productCmpt });
-        } catch (Exception e) {
-            throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
-        }
-        Element docElement = getDocumentElement(tocEntry);
-        NodeList nl = docElement.getChildNodes();
-        DateTime validFrom = tocEntry.getValidFrom();
-        for (int i = 0; i < nl.getLength(); i++) {
-            if ("Generation".equals(nl.item(i).getNodeName())) {
-                Element genElement = (Element)nl.item(i);
-                DateTime generationValidFrom = DateTime.parseIso(genElement.getAttribute("validFrom"));
-                if (validFrom.equals(generationValidFrom)) {
-                    productCmptGen.initFromXml(genElement);
-                    return productCmptGen;
-                }
-            }
-        }
-        throw new RuntimeException("Can't find the generation for the toc entry " + tocEntry);
-    }
-
-    private Constructor<?> getConstructor(GenerationTocEntry tocEntry) {
-        Class<?> implClass = getClass(getProductComponentGenerationImplClass(tocEntry), cl);
-        try {
-            String productCmptClassName = tocEntry.getParent().getImplementationClassName();
-            Class<?> productCmptClass = getClass(productCmptClassName, cl);
-            return implClass.getConstructor(new Class[] { productCmptClass });
-        } catch (Exception e) {
-            throw new RuntimeException("Can't get constructor for class " + implClass.getName() + " , toc entry "
-                    + tocEntry, e);
-        }
-    }
-
-    protected String getProductComponentGenerationImplClass(GenerationTocEntry tocEntry) {
-        return tocEntry.getImplementationClassName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected ITable createTable(ITableContentTocEntry tocEntry) {
-        Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
-        Table table;
-        try {
-            Constructor<?> constructor = implClass.getConstructor(new Class[0]);
-            table = (Table)constructor.newInstance(new Object[0]);
-        } catch (Exception e) {
-            throw new RuntimeException("Can't create table instance for toc entry " + tocEntry, e);
-        }
-
-        String resource = tocEntry.getXmlResourceName();
-        InputStream is = cl.getResourceAsStream(resource);
-        if (is == null) {
-            throw new RuntimeException("Can' find resource " + resource + " for toc entry " + tocEntry);
-        }
-
-        try {
-            table.initFromXml(is, this);
-        } catch (Exception e) {
-            throw new RuntimeException("Can't parse xml resource " + resource, e);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to close the input stream of the resource: " + resource, e);
-            }
-        }
-        return table;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected IpsTestCaseBase createTestCase(ITestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository) {
-        Class<?> implClass = getClass(tocEntry.getImplementationClassName(), cl);
-        IpsTestCaseBase test;
-        try {
-            Constructor<?> constructor = implClass.getConstructor(new Class[] { String.class });
-            test = (IpsTestCaseBase)constructor.newInstance(new Object[] { tocEntry.getIpsObjectQualifiedName() });
-        } catch (Exception e) {
-            throw new RuntimeException("Can't create test case instance for toc entry " + tocEntry, e);
-        }
-        // sets the runtime repository which will be used to instantiate the test case,
-        // this could be a different one (e.g. contains more dependence repositories) as the test
-        // case belongs to,
-        // because the test case itself could contain objects from different repositories, the
-        // runtime repository
-        // should contain all needed repositories
-        test.setRepository(runtimeRepository);
-        if (test instanceof IpsTestCase2) {
-            // only classes of type ips test case 2 supports xml input
-            Element docElement = getDocumentElement(tocEntry);
-            ((IpsTestCase2)test).initFromXml(docElement);
-        }
-        test.setFullPath(tocEntry.getIpsObjectId());
-        return test;
+        return is;
     }
 
     private Element getDocumentElement(ITocEntry tocEntry) {
         String resource = tocEntry.getXmlResourceName();
-        InputStream is = cl.getResourceAsStream(resource);
+        InputStream is = getClassLoader().getResourceAsStream(resource);
         if (is == null) {
             throw new RuntimeException("Can't find resource " + resource + " for toc entry " + tocEntry);
         }
@@ -579,6 +377,16 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      */
     public boolean isModifiable() {
         return false;
+    }
+
+    @Override
+    protected InputStream getXmlAsStream(ITableContentTocEntry tocEntry) {
+        InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
+        if (is == null) {
+            throw new RuntimeException("Can' find resource " + tocEntry.getXmlResourceName() + " for toc entry "
+                    + tocEntry);
+        }
+        return is;
     }
 
 }

@@ -24,6 +24,7 @@ import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
+import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntryObject;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
@@ -240,7 +241,7 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         readOnlyToc.initFromXml(tocElement);
         List<IProductCmptTocEntry> entries = readOnlyToc.getProductCmptTocEntries();
         assertEquals(2, entries.size());
-        List<ITocEntryObject> testEntries = readOnlyToc.getTestCaseTocEntries();
+        List<ITestCaseTocEntry> testEntries = readOnlyToc.getTestCaseTocEntries();
         assertEquals(1, testEntries.size());
         List<ITableContentTocEntry> tableEntries = readOnlyToc.getTableTocEntries();
         assertEquals(1, tableEntries.size());

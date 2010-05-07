@@ -84,7 +84,7 @@ public abstract class AbstractReadonlyTableOfContents {
     /**
      * Returns all toc's entries representing test cases.
      */
-    public abstract List<ITocEntryObject> getTestCaseTocEntries();
+    public abstract List<ITestCaseTocEntry> getTestCaseTocEntries();
 
     /**
      * Returns a toc entry representing a test case for the given qualified name.
@@ -130,13 +130,13 @@ public abstract class AbstractReadonlyTableOfContents {
         }
 
         List<ITableContentTocEntry> tableEntries = getTableTocEntries();
-        for (ITocEntryObject entry : tableEntries) {
+        for (ITableContentTocEntry entry : tableEntries) {
             buf.append(entry.toString());
             buf.append(System.getProperty("line.separator"));
         }
 
-        List<ITocEntryObject> testEntries = getTestCaseTocEntries();
-        for (ITocEntryObject entry : testEntries) {
+        List<ITestCaseTocEntry> testEntries = getTestCaseTocEntries();
+        for (ITestCaseTocEntry entry : testEntries) {
             buf.append(entry.toString());
             buf.append(System.getProperty("line.separator"));
         }
