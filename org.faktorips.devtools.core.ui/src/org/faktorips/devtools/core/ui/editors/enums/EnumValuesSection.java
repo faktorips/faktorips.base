@@ -105,7 +105,7 @@ import org.faktorips.util.message.MessageList;
 public class EnumValuesSection extends IpsSection implements ContentsChangeListener {
 
     /** Key to store the state of the action in the dialog settings. */
-    private static final String SETTINGS_KEY_LOCK_AND_SYNC = "lockAndSyncLiteralNames";
+    private static final String SETTINGS_KEY_LOCK_AND_SYNC = "lockAndSyncLiteralNames"; //$NON-NLS-1$
 
     /** The <tt>IEnumValueContainer</tt> holding the <tt>IEnumValue</tt>s to be edited. */
     private IEnumValueContainer enumValueContainer;
@@ -211,9 +211,13 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         registerAsChangeListenerToEnumValueContainer();
     }
 
-    private void loadDialogSettings() throws CoreException {
+    private void loadDialogSettings() {
         IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings();
-        lockAndSynchronizeLiteralNames = settings.getBoolean(SETTINGS_KEY_LOCK_AND_SYNC);
+        if (enumTypeEditing) {
+            lockAndSynchronizeLiteralNames = settings.getBoolean(SETTINGS_KEY_LOCK_AND_SYNC);
+        } else {
+            lockAndSynchronizeLiteralNames = false;
+        }
     }
 
     @Override
@@ -246,7 +250,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         // Key listener for deleting rows with the DEL key.
         enumValuesTable.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
-
+                // Nothing to do when key pressed.
             }
 
             public void keyReleased(KeyEvent e) {
@@ -297,13 +301,13 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /** Adds a new column with the given name to the end of the table. */
-    private void addTableColumn(String columnName, boolean identifierColumnn) throws CoreException {
+    private void addTableColumn(String columnName, boolean identifierColumnn) {
         TableColumn newColumn = new TableColumn(enumValuesTable, SWT.LEFT);
         newColumn.setText(columnName);
         newColumn.setWidth(200);
 
         if (identifierColumnn) {
-            newColumn.setImage(IpsUIPlugin.getImageHandling().getSharedImage("TableKeyColumn.gif", true));
+            newColumn.setImage(IpsUIPlugin.getImageHandling().getSharedImage("TableKeyColumn.gif", true)); //$NON-NLS-1$
         }
         columnNames.add(columnName);
     }
@@ -431,7 +435,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
 
             public void focusLost(FocusEvent e) {
-
+                // Nothing to do on focus lost event.
             }
         });
     }
@@ -667,11 +671,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
 
             public void cancelEditor() {
-
+                // Nothing to do on this event.
             }
 
             public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-
+                // Nothing to do on this event.
             }
 
         });
@@ -698,7 +702,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /** Renames the column identified by the given column name to the given new column name. */
-    public void renameTableColumn(String columnName, String newColumnName) throws CoreException {
+    public void renameTableColumn(String columnName, String newColumnName) {
         if (!(columnNames.contains(columnName))) {
             throw new NoSuchElementException();
         }
@@ -838,11 +842,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
 
         public void dispose() {
-
+            // Nothing to dispose.
         }
 
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+            // Nothing to do on input change event.
         }
 
     }
@@ -930,11 +934,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /** The cell modifier for the table viewer. */
     private class EnumCellModifier implements ICellModifier {
 
-        /**
-         * {@inheritDoc}
-         * <p>
-         * Returns <tt>true</tt>.
-         */
         public boolean canModify(Object element, String property) {
             return true;
         }
@@ -1020,7 +1019,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                      * TODO pk 10-07-2009: this is not really correct. We actually need an
                      * empty-string-representation-value
                      */
-                    if (!(attrValue.getValue().trim().equals(""))) {
+                    if (!(attrValue.getValue().trim().length() == 0)) {
                         return false;
                     }
                 }
