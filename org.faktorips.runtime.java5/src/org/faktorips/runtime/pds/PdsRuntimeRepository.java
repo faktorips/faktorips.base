@@ -13,92 +13,82 @@
 
 package org.faktorips.runtime.pds;
 
-import java.util.List;
+import java.io.InputStream;
 
-import org.faktorips.runtime.ICacheFactory;
-import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.IProductComponentGeneration;
-import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
+import org.faktorips.runtime.AbstractClassLoaderRuntimeRepository;
+import org.faktorips.runtime.DefaultCacheFactory;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
+import org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.test.IpsTestCaseBase;
+import org.w3c.dom.Element;
 
-public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
+public class PdsRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
 
-    public PdsRuntimeRepository(String name, ICacheFactory cacheFactory) {
-        super(name, cacheFactory);
-        // TODO Auto-generated constructor stub
+    private final IProductDataProvider productDataProvider;
+
+    public PdsRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider) {
+        super(name, new DefaultCacheFactory(), cl);
+        this.productDataProvider = productDataProvider;
+        reload();
     }
 
     @Override
-    protected <T> List<T> createEnumValues(IEnumContentTocEntry tocEntry, Class<T> clazz) {
-        // TODO Auto-generated method stub
-        return null;
+    public IFormulaEvaluatorBuilder getFormulaEvaluatorBuilder() {
+        return new GroovyEvaluator.Builder();
     }
 
     @Override
-    protected IProductComponent createProductCmpt(IProductCmptTocEntry tocEntry) {
-        // TODO Auto-generated method stub
-        return null;
+    protected Element getDocumentElement(IProductCmptTocEntry tocEntry) {
+        return productDataProvider.getProductCmptData(tocEntry);
     }
 
     @Override
-    protected IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry generationTocEntry) {
-        // TODO Auto-generated method stub
-        return null;
+    protected Element getDocumentElement(ITestCaseTocEntry tocEntry) {
+        return productDataProvider.getTestcaseElement(tocEntry);
     }
 
     @Override
-    protected ITable createTable(ITableContentTocEntry tocEntry) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected IpsTestCaseBase createTestCase(ITestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository) {
-        // TODO Auto-generated method stub
-        return null;
+    protected String getProductComponentGenerationImplClass(GenerationTocEntry tocEntry) {
+        return tocEntry.getParent().getGenerationImplClassName();
     }
 
     @Override
     protected AbstractReadonlyTableOfContents loadTableOfContents() {
-        // TODO Auto-generated method stub
-        return null;
+        return productDataProvider.loadToc();
+    }
+
+    @Override
+    protected InputStream getXmlAsStream(IEnumContentTocEntry tocEntry) {
+        return productDataProvider.getXmlAsStream(tocEntry);
+    }
+
+    @Override
+    protected InputStream getXmlAsStream(ITableContentTocEntry tocEntry) {
+        return productDataProvider.getXmlAsStream(tocEntry);
     }
 
     public boolean isModifiable() {
-        // TODO Auto-generated method stub
         return false;
     }
 
-    // private IProductDataProvider productDataProvider;
-    //
-    // private ReadonlyTableOfContents productDataToc;
-    //
-    // @Override
-    // public IFormulaEvaluatorBuilder getFormulaEvaluatorBuilder() {
-    // return new GroovyEvaluator.Builder();
-    // }
-    //
     // @Override
     // public IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent
     // productCmpt) {
     // if (productCmpt == null) {
     // throw new NullPointerException("The parameter productCmpt must not be null.");
     // }
-    // TocEntryObject tocEntry = productDataToc.getProductCmptTocEntry(productCmpt.getId());
+    // IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(productCmpt.getId());
     // DateTime validFrom = tocEntry.getLatestGenerationEntry().getValidFrom();
     // String ipsObjectId = tocEntry.getIpsObjectId();
     // Element productCmptData = productDataProvider.getProductCmptData(ipsObjectId);
-    // String implClassName = getGenerationImplClassName(productCmptData);
+    // String genImplClassName = tocEntry.getGenerationImplClassName();
     // Element generationData = getGenerationElement(productCmptData, validFrom);
-    // return loadProductComponentGeneration(productCmpt, implClassName, generationData);
+    // return loadProductComponentGeneration(productCmpt, genImplClassName, generationData);
     // }
     //
     // @Override
@@ -111,7 +101,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     // Date validFromAsDate = generation.getValidFrom(timeZone);
     // Calendar validFromAsCalendar = Calendar.getInstance();
     // validFromAsCalendar.setTime(validFromAsDate);
-    // TocEntryObject tocEntry = toc.getProductCmptTocEntry(id);
+    // IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
     // GenerationTocEntry tocEntryGeneration = tocEntry.getNextGenerationEntry(validFromAsCalendar);
     // if (tocEntryGeneration == null) {
     // return null;
@@ -133,7 +123,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     // Date validFromAsDate = generation.getValidFrom(timeZone);
     // Calendar validFromAsCalendar = Calendar.getInstance();
     // validFromAsCalendar.setTime(validFromAsDate);
-    // TocEntryObject tocEntry = toc.getProductCmptTocEntry(id);
+    // IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
     // GenerationTocEntry tocEntryGeneration =
     // tocEntry.getPreviousGenerationEntry(validFromAsCalendar);
     // if (tocEntryGeneration == null) {
@@ -149,7 +139,7 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     // @Override
     // protected IProductComponentGeneration getProductComponentGenerationInternal(String id,
     // Calendar effectiveDate) {
-    // IProductCmptTocEntry tocEntry = productDataToc.getProductCmptTocEntry(id);
+    // IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
     // if (tocEntry == null) {
     // return null;
     // }
@@ -159,21 +149,10 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     // }
     // IProductComponent productCmpt = getProductComponent(id);
     // Element productCmptData = productDataProvider.getProductCmptData(id);
-    // String generationImplClassName = getGenerationImplClassName(productCmptData);
+    // String generationImplClassName = tocEntry.getGenerationImplClassName();
     // Element generationData = getGenerationElement(productCmptData,
     // tocEntryGeneration.getValidFrom());
     // return loadProductComponentGeneration(productCmpt, generationImplClassName, generationData);
-    // }
-    //
-    // private String getGenerationImplClassName(Element productCmptData) {
-    // String productCmptType = productCmptData.getAttribute("productCmptType");
-    // for (ITocEntryObject entry : toc.getModelTypeTocEntries()) {
-    // if (entry.getIpsObjectQualifiedName().equals(productCmptType)) {
-    // return entry.getGenerationImplClassName();
-    // }
-    // }
-    // throw new IllegalArgumentException("Could not find a generation implemenation class for " +
-    // productCmptType);
     // }
     //
     // private IProductComponentGeneration loadProductComponentGeneration(IProductComponent
@@ -207,48 +186,6 @@ public class PdsRuntimeRepository extends AbstractTocBasedRuntimeRepository {
     // throw new IllegalArgumentException("Could not find generation for " + validFrom +
     // "in product component "
     // + prodCmptData.getAttribute("runtimeId"));
-    // }
-    //
-    // @Override
-    // protected <T> List<T> createEnumValues(ITocEntryObject tocEntry, Class<T> clazz) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // @Override
-    // protected IProductComponent createProductCmpt(IProductCmptTocEntry tocEntry) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // @Override
-    // protected ITable createTable(ITableContentTocEntry tocEntry) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // @Override
-    // protected IpsTestCaseBase createTestCase(ITocEntryObject tocEntry, IRuntimeRepository
-    // runtimeRepository) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // public boolean isModifiable() {
-    // return false;
-    // }
-    //
-    // @Override
-    // protected IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry
-    // tocEntryGeneration) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // @Override
-    // protected AbstractReadonlyTableOfContents loadTableOfContents() {
-    // // TODO Auto-generated method stub
-    // return null;
     // }
 
 }
