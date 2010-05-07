@@ -59,7 +59,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static AbstractClassLoaderRuntimeRepository create(String tocResource) {
+    public final static ClassloaderRuntimeRepository create(String tocResource) {
         return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), createDocumentBuilder(),
                 new DefaultCacheFactory());
     }
@@ -75,7 +75,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static AbstractClassLoaderRuntimeRepository create(String tocResource, ICacheFactory cacheFactory) {
+    public final static ClassloaderRuntimeRepository create(String tocResource, ICacheFactory cacheFactory) {
         return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), createDocumentBuilder(),
                 cacheFactory);
     }
@@ -91,7 +91,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static AbstractClassLoaderRuntimeRepository create(String tocResource, ClassLoader cl) {
+    public final static ClassloaderRuntimeRepository create(String tocResource, ClassLoader cl) {
         return create(tocResource, cl, createDocumentBuilder(), new DefaultCacheFactory());
     }
 
@@ -107,7 +107,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static AbstractClassLoaderRuntimeRepository create(String tocResource,
+    public final static ClassloaderRuntimeRepository create(String tocResource,
             ClassLoader cl,
             ICacheFactory cacheFactory) {
         return create(tocResource, cl, createDocumentBuilder(), cacheFactory);
@@ -125,7 +125,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static AbstractClassLoaderRuntimeRepository create(String tocResource,
+    public final static ClassloaderRuntimeRepository create(String tocResource,
             ClassLoader cl,
             DocumentBuilder docBuilder) {
         return new ClassloaderRuntimeRepository(tocResource, cl, docBuilder, new DefaultCacheFactory());
@@ -144,7 +144,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public final static AbstractClassLoaderRuntimeRepository create(String tocResource,
+    public final static ClassloaderRuntimeRepository create(String tocResource,
             ClassLoader cl,
             DocumentBuilder docBuilder,
             ICacheFactory cacheFactory) {
