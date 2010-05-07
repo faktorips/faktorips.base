@@ -27,6 +27,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -114,28 +115,41 @@ public class RenameRefactoringParticipant extends RenameParticipant {
 
         @Override
         protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
-            boolean success = false;
             if (ipsElement instanceof IAttribute) {
-                success = initializeTargetJavaElementsForAttribute((IAttribute)ipsElement, builderSet);
+                return initializeTargetJavaElements((IAttribute)ipsElement, builderSet);
 
             } else if (ipsElement instanceof IIpsObject) {
                 IIpsObject ipsObject = (IIpsObject)ipsElement;
                 IIpsPackageFragment targetIpsPackageFragment = ipsObject.getIpsPackageFragment();
                 String newName = getArguments().getNewName();
-                success = initTargetJavaElements(ipsObject, targetIpsPackageFragment, newName, builderSet);
+                return initTargetJavaElements(ipsObject, targetIpsPackageFragment, newName, builderSet);
+
+            } else if (ipsElement instanceof IEnumAttribute) {
+                return initializeTargetJavaElements((IEnumAttribute)ipsElement, builderSet);
+
             }
-            return success;
+
+            throw new RuntimeException("This kind of IPS element is not supported by the rename participant.");
         }
 
-        /**
-         * Initializes the list of the <tt>IJavaElement</tt>s generated for the <tt>IAttribute</tt>
-         * after it has been refactored.
-         */
-        private boolean initializeTargetJavaElementsForAttribute(IAttribute attribute, StandardBuilderSet builderSet) {
+        private boolean initializeTargetJavaElements(IAttribute attribute, StandardBuilderSet builderSet) {
             String oldName = attribute.getName();
             attribute.setName(getArguments().getNewName());
             setTargetJavaElements(builderSet.getGeneratedJavaElements(attribute));
             attribute.setName(oldName);
+            return true;
+        }
+
+        /*
+         * TODO AW: This needs to be extended to include all Java elements generated for copies of
+         * the attribute due to inheritance. This also applies to the original Java elements where
+         * we need to override functionality in order to extend them.
+         */
+        private boolean initializeTargetJavaElements(IEnumAttribute enumAttribute, StandardBuilderSet builderSet) {
+            String oldName = enumAttribute.getName();
+            enumAttribute.setName(getArguments().getNewName());
+            setTargetJavaElements(builderSet.getGeneratedJavaElements(enumAttribute));
+            enumAttribute.setName(oldName);
             return true;
         }
 

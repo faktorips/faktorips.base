@@ -56,20 +56,24 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         getEnumAttribute().setName(getNewName());
+        getIpsSrcFile().save(true, null);
 
+        getEnumAttribute().getIpsModel().clearValidationCache();
         MessageList validationMessageList = getEnumAttribute().validate(getIpsProject());
         validationMessageList.add(getEnumType().validate(getIpsProject()));
         addValidationMessagesToStatus(validationMessageList, status);
 
         getEnumAttribute().setName(getOriginalName());
+        getIpsSrcFile().save(true, null);
+    }
 
-        // The source file was not really modified.
-        getEnumAttribute().getIpsSrcFile().markAsClean();
+    private IIpsSrcFile getIpsSrcFile() {
+        return getEnumAttribute().getIpsSrcFile();
     }
 
     @Override
     protected void addIpsSrcFiles() throws CoreException {
-        addIpsSrcFile(getEnumAttribute().getIpsSrcFile());
+        addIpsSrcFile(getIpsSrcFile());
         enumTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.ENUM_TYPE);
         for (IIpsSrcFile ipsSrcFile : enumTypeSrcFiles) {
             addIpsSrcFile(ipsSrcFile);
@@ -85,12 +89,12 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
         updateSubclassReferences();
-        if (getEnumType().isContainingValues()) {
-            if (!(getEnumType().isAbstract())) {
+        if (!(getEnumType().isAbstract())) {
+            if (getEnumType().isContainingValues()) {
                 updateLiteralNameReference();
+            } else {
+                updateEnumContentReference();
             }
-        } else {
-            updateEnumContentReference();
         }
         updateEnumAttributeName();
     }
@@ -118,9 +122,11 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     /** Updates the reference to the enumeration attribute in the enumeration content. */
     private void updateEnumContentReference() throws CoreException {
         IEnumContent enumContent = getEnumType().findEnumContent(getIpsProject());
-        IEnumAttributeReference attributeReference = enumContent.getEnumAttributeReference(getOriginalName());
-        if (attributeReference != null) {
-            attributeReference.setName(getNewName());
+        if (enumContent != null) {
+            IEnumAttributeReference attributeReference = enumContent.getEnumAttributeReference(getOriginalName());
+            if (attributeReference != null) {
+                attributeReference.setName(getNewName());
+            }
         }
     }
 
@@ -139,7 +145,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
 
     @Override
     public String getIdentifier() {
-        return "org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumAttributeProcessor";
+        return "org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumAttributeProcessor"; //$NON-NLS-1$
     }
 
     @Override

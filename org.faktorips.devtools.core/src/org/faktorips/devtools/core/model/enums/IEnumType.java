@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.enums;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
@@ -187,7 +188,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * enumeration type candidate, <tt>false</tt> otherwise. Returns also <tt>false</tt> if the
      * super enumeration type candidate is <tt>null</tt>.
      * 
-     * @param superEnumTypeCandidate The type which is the possibly a super enumeration type of this
+     * @param superEnumTypeCandidate The type which is possibly a super enumeration type of this
      *            <tt>IEnumType</tt>.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
@@ -227,6 +228,13 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Searches and returns all enumeration types that subclass this enumeration type.
+     * 
+     * @throws CoreException If an error occurs while searching for subclassing enumeration types.
+     */
+    public Set<IEnumType> findAllSubclassingEnumTypes() throws CoreException;
+
+    /**
      * Sets the abstract property for this <tt>IEnumType</tt>.
      * 
      * @param isAbstract Flag indicating whether this <tt>IEnumType</tt> shall be abstract (
@@ -256,8 +264,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * <tt>IEnumAttribute</tt>s that are inherited from the supertype hierarchy are
      * <strong>not</strong> included.
      * 
-     * @see #getEnumAttributesIncludeSupertypeCopies()
-     * @see #findAllEnumAttributesIncludeSupertypeOriginals()
+     * @see #getEnumAttributesIncludeSupertypeCopies(boolean)
+     * @see #findAllEnumAttributesIncludeSupertypeOriginals(boolean, IIpsProject)
      * 
      * @param includeLiteralName When set to <tt>true</tt> the <tt>IEnumLiteralNameAttribute</tt>s
      *            will be contained in the returned list.
@@ -480,9 +488,10 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * <tt>IEnumType</tt>, <tt>false</tt> if not (following the behavior of the Java collections
      * here).
      * 
+     * @param enumAttribute The <tt>IEnumAttribute</tt> to delete.
+     * 
      * @throws CoreException If an error occurs while searching the given IPS project for the super
      *             enumeration types.
-     * @param enumAttribute The <tt>IEnumAttribute</tt> to delete.
      */
     public boolean deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) throws CoreException;
 

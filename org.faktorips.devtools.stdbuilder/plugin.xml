@@ -110,6 +110,9 @@
                <instanceof
                      value="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
                </instanceof>
+               <instanceof
+                     value="org.faktorips.devtools.core.model.enums.IEnumAttribute">
+               </instanceof>
             </or></enablement>
       </renameParticipant>
    </extension>

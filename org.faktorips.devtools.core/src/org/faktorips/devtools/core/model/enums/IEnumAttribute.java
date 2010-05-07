@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.enums;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -274,7 +276,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * <tt>unique</tt> property. The method <tt>findIsUnique()</tt> takes the supertype hierarchy
      * into account.
      * 
-     * @see #findIsUnique()
+     * @see #findIsUnique(IIpsProject)
      */
     public boolean isUnique();
 
@@ -321,7 +323,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * <tt>usedAsNameInFaktorIpsUi</tt> property if this <tt>IEnumAttribute</tt> is inherited. Use
      * <tt>findIsUsedAsNameInFaktorIpsUi()</tt> in this case.
      * 
-     * @see #findIsUsedAsNameInFaktorIpsUi()
+     * @see #findIsUsedAsNameInFaktorIpsUi(IIpsProject)
      */
     public boolean isUsedAsNameInFaktorIpsUi();
 
@@ -386,9 +388,8 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @see #isIdentifier()
      * 
-     * @param ipsProject The IPS project which IPS object path is used for the search of the super
-     *            <tt>IEnumAttribute</tt>. This is not necessarily the project this
-     *            <tt>IEnumAttribute</tt> is part of.
+     * @param ipsProject The IPS project which IPS object path is used for the search. This is not
+     *            necessarily the project this <tt>IEnumAttribute</tt> is part of.
      * 
      * @throws CoreException If an error occurs while searching the given IPS project for the super
      *             <tt>IEnumAttribute</tt>.
@@ -406,5 +407,17 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * due to inheritance.
      */
     public boolean isLiteralNameDefaultValueProvider();
+
+    /**
+     * Returns a list containing all copies of this <tt>IEnumAttribute</tt> in the hierarchy of
+     * subclasses.
+     * 
+     * @param ipsProject The IPS project which IPS object path is used for the search. This is not
+     *            necessarily the project this <tt>IEnumAttribute</tt> is part of.
+     * 
+     * @throws CoreException If an error occurs while searching for the copies.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
+     */
+    public List<IEnumAttribute> findAllInheritedCopies(IIpsProject ipsProject) throws CoreException;
 
 }

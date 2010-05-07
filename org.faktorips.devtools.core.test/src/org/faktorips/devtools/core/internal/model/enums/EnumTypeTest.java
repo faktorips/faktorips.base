@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -307,7 +308,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueId, newEnumValue.getEnumAttributeValues().get(1));
         assertEquals(valueName, newEnumValue.getEnumAttributeValues().get(2));
 
-        // Nothing must change if the enum attribute is the first one already
+        // Nothing must change if the enumeration attribute is the first one already.
         newIndex = genderEnumType.moveEnumAttribute(newEnumAttribute, true);
         assertEquals(0, newIndex);
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes(true).get(0));
@@ -593,6 +594,46 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
             fail();
         } catch (NullPointerException e) {
         }
+    }
+
+    public void testFindAllSubclassingEnumTypesNoSubclasses() throws CoreException {
+        Set<IEnumType> subclasses = genderEnumType.findAllSubclassingEnumTypes();
+        assertEquals(0, subclasses.size());
+    }
+
+    public void testFindAllSubclassingEnumTypesOneSubclass() throws CoreException {
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+
+        Set<IEnumType> subclasses = genderEnumType.findAllSubclassingEnumTypes();
+        assertEquals(1, subclasses.size());
+        assertTrue(subclasses.contains(subEnumType));
+    }
+
+    public void testFindAllSubclassingEnumTypesSubclassInOtherProject() throws CoreException {
+        IIpsProject otherProject = newIpsProject("OtherProject");
+        IIpsObjectPath ipsObjectPath = otherProject.getIpsObjectPath();
+        ipsObjectPath.newIpsProjectRefEntry(ipsProject);
+        otherProject.setIpsObjectPath(ipsObjectPath);
+
+        IEnumType subEnumType = newEnumType(otherProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+
+        Set<IEnumType> subclasses = genderEnumType.findAllSubclassingEnumTypes();
+        assertEquals(1, subclasses.size());
+        assertTrue(subclasses.contains(subEnumType));
+    }
+
+    public void testFindAllSubclassingEnumTypesTwoSubclasses() throws CoreException {
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        IEnumType deepEnumType = newEnumType(ipsProject, "DeepEnumType");
+        deepEnumType.setSuperEnumType(subEnumType.getQualifiedName());
+
+        Set<IEnumType> subclasses = genderEnumType.findAllSubclassingEnumTypes();
+        assertEquals(2, subclasses.size());
+        assertTrue(subclasses.contains(subEnumType));
+        assertTrue(subclasses.contains(deepEnumType));
     }
 
     public void testGetIndexOfEnumAttribute() throws CoreException {

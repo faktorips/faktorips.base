@@ -64,7 +64,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     @Override
     protected void addIpsSrcFiles() throws CoreException {
-        addIpsSrcFile(getAttribute().getIpsSrcFile());
+        addIpsSrcFile(getIpsSrcFile());
         productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             addIpsSrcFile(ipsSrcFile);
@@ -78,15 +78,18 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         getAttribute().setName(getNewName());
+        getIpsSrcFile().save(true, null);
 
         MessageList validationMessageList = getAttribute().validate(getIpsProject());
         validationMessageList.add(getType().validate(getIpsProject()));
         addValidationMessagesToStatus(validationMessageList, status);
 
         getAttribute().setName(getOriginalName());
+        getIpsSrcFile().save(true, null);
+    }
 
-        // The source file was not really modified.
-        getAttribute().getIpsSrcFile().markAsClean();
+    private IIpsSrcFile getIpsSrcFile() {
+        return getAttribute().getIpsSrcFile();
     }
 
     @Override

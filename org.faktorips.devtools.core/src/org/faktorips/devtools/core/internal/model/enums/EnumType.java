@@ -15,9 +15,11 @@ package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
@@ -86,10 +88,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public EnumType(IIpsSrcFile file) {
         super(file);
 
-        superEnumType = "";
+        superEnumType = ""; //$NON-NLS-1$
         containingValues = false;
         isAbstract = false;
-        enumContentPackageFragment = "";
+        enumContentPackageFragment = ""; //$NON-NLS-1$
         enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class, IEnumAttribute.class,
                 IEnumAttribute.XML_TAG);
     }
@@ -611,6 +613,23 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
+    @Override
+    public Set<IEnumType> findAllSubclassingEnumTypes() throws CoreException {
+        // TODO AW: Better way to search for subclasses?
+        Set<IEnumType> collectedEnumTypes = new HashSet<IEnumType>(25);
+        IIpsProject[] ipsProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
+        for (IIpsProject ipsProject : ipsProjects) {
+            IIpsSrcFile[] srcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
+            for (IIpsSrcFile ipsSrcFile : srcFiles) {
+                IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
+                if (enumType.isSubEnumTypeOf(this, ipsProject)) {
+                    collectedEnumTypes.add(enumType);
+                }
+            }
+        }
+        return collectedEnumTypes;
+    }
+
     public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
             if (EnumUtil.findEnumAttributeIsIdentifier(currentEnumAttribute, ipsProject)) {
@@ -767,8 +786,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 }
             }
             if (!partOfSupertypeHierarchy) {
-                throw new IllegalArgumentException("The given enum attribute " + currentSuperEnumAttributeName
-                        + " is not part of the supertype hierarchy.");
+                throw new IllegalArgumentException("The given enum attribute " + currentSuperEnumAttributeName //$NON-NLS-1$
+                        + " is not part of the supertype hierarchy."); //$NON-NLS-1$
             }
 
             // Every check passed, inherit the EnumAttribute.

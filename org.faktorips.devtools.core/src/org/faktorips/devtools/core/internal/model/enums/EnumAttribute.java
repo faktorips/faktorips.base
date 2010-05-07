@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -209,7 +210,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         Datatype ipsDatatype = getIpsProject().findDatatype(datatype);
 
         // The data type must be specified.
-        if (datatype.equals("")) {
+        if (datatype.length() == 0) {
             text = Messages.EnumAttribute_DatatypeMissing;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
@@ -259,7 +260,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             IEnumType adaptedEnumType = adapter.getEnumType();
             if (adaptedEnumType.equals(enumType)
                     || adaptedEnumType.findAllSuperEnumTypes(ipsProject).contains(enumType)) {
-                text = Messages.EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;;
+                text = Messages.EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS,
                         text, Message.ERROR, this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
@@ -315,7 +316,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         valueChanged(oldIsInherited, isInherited);
 
         if (isInherited) {
-            setDatatype("");
+            setDatatype(""); //$NON-NLS-1$
             setUnique(false);
             setIdentifier(false);
             setUsedAsNameInFaktorIpsUi(false);
@@ -345,12 +346,25 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     public IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
-        if (!inherited) {
+        if (!(inherited)) {
             return null;
         }
 
         IEnumType enumType = getEnumType();
         return enumType.findEnumAttributeIncludeSupertypeOriginals(ipsProject, name);
+    }
+
+    @Override
+    public List<IEnumAttribute> findAllInheritedCopies(IIpsProject ipsProject) throws CoreException {
+        Set<IEnumType> subclassingEnumTypes = getEnumType().findAllSubclassingEnumTypes();
+        List<IEnumAttribute> inheritedAttributeCopies = new ArrayList<IEnumAttribute>(subclassingEnumTypes.size());
+        for (IEnumType subclassingEnumType : subclassingEnumTypes) {
+            IEnumAttribute inheritedAttribute = subclassingEnumType.getEnumAttributeIncludeSupertypeCopies(name);
+            if (inheritedAttribute != null) {
+                inheritedAttributeCopies.add(inheritedAttribute);
+            }
+        }
+        return inheritedAttributeCopies;
     }
 
     public boolean isUnique() {

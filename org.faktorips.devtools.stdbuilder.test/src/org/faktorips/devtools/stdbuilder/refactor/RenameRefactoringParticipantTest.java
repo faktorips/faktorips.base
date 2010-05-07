@@ -14,7 +14,9 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.faktorips.runtime.IValidationContext;
 
 /**
@@ -25,7 +27,6 @@ import org.faktorips.runtime.IValidationContext;
 public class RenameRefactoringParticipantTest extends RefactoringParticipantTest {
 
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
-        // Rename the attribute.
         performRenameRefactoring(policyCmptTypeAttribute, "test");
 
         // The former Java elements must no longer exist.
@@ -69,7 +70,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         performFullBuild();
 
-        // Rename the attribute.
         performRenameRefactoring(policyCmptTypeAttribute, "test");
 
         // The former Java elements must no longer exist.
@@ -95,7 +95,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         performFullBuild();
 
-        // Rename the attribute.
         performRenameRefactoring(policyCmptTypeAttribute, "test");
 
         // The former Java elements must no longer exist.
@@ -117,7 +116,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     public void testRenameProductCmptTypeAttribute() throws CoreException {
-        // Rename the attribute.
         performRenameRefactoring(productCmptTypeAttribute, "test");
 
         // The former Java elements must no longer exist.
@@ -133,9 +131,41 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         // Expect new Java elements for implementation.
         assertTrue(productGenClass.getField("test").exists());
-        assertTrue(productGenClass.getMethod("getTest", new String[] {}).exists());
+        assertTrue(productGenClass.getMethod("getTest", new String[0]).exists());
         assertTrue(productGenClass.getMethod("setTest", new String[] { "QString;" }).exists());
-        assertTrue(policyClass.getMethod("getTest", new String[] {}).exists());
+        assertTrue(policyClass.getMethod("getTest", new String[0]).exists());
+    }
+
+    public void testRenameEnumAttributeAbstractUseEnums() throws CoreException {
+        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
+        enumType.setAbstract(true);
+        performFullBuild();
+        IType enumJavaType = getJavaType("", ENUM_TYPE_NAME, true, false);
+
+        performRenameRefactoring(enumAttribute, "test");
+
+        // The former Java elements must no longer exist.
+        assertFalse(enumJavaType.getMethod("getId", new String[0]).exists());
+
+        // Expect the new Java elements.
+        assertTrue(enumJavaType.getMethod("getTest", new String[0]).exists());
+    }
+
+    public void testRenameEnumAttributeAbstractNoEnums() throws CoreException {
+        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
+        enumType.setAbstract(true);
+        performFullBuild();
+        IType enumJavaType = getJavaType("", ENUM_TYPE_NAME, true, false);
+
+        performRenameRefactoring(enumAttribute, "test");
+
+        // The former Java elements must no longer exist.
+        assertFalse(enumJavaType.getField("id").exists());
+        assertFalse(enumJavaType.getMethod("getId", new String[0]).exists());
+
+        // Expect the new Java elements.
+        assertTrue(enumJavaType.getField("test").exists());
+        assertTrue(enumJavaType.getMethod("getTest", new String[0]).exists());
     }
 
     public void testRenamePolicyCmptType() throws CoreException {

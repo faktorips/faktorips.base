@@ -21,10 +21,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 
 public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
@@ -75,21 +73,13 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         javaEnum = getGeneratedJavaType(enumType, false, false, ENUM_TYPE_NAME);
     }
 
-    private void setUpUseJava5Enums(boolean useFeature) throws CoreException {
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        IIpsArtefactBuilderSetConfigModel builderConfig = properties.getBuilderSetConfig();
-        String booleanLiteral = useFeature ? "true" : "false";
-        builderConfig.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_ENUMS, booleanLiteral, null);
-        ipsProject.setProperties(properties);
-    }
-
     public void testGetGeneratedJavaElementsForType() {
         generatedJavaElements = builder.getGeneratedJavaElements(enumType);
         assertTrue(generatedJavaElements.contains(javaEnum));
     }
 
     public void testGetGeneratedJavaElementsForAttributeAbstractAndUseEnums() throws CoreException {
-        setUpUseJava5Enums(true);
+        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
 
         generatedJavaElements = builder.getGeneratedJavaElements(idAttribute);
         expectMemberVar(idAttribute, false);
@@ -105,7 +95,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
     }
 
     public void testGetGeneratedJavaElementsForAttributeAbstractAndNotUseEnums() throws CoreException {
-        setUpUseJava5Enums(false);
+        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
 
         generatedJavaElements = builder.getGeneratedJavaElements(idAttribute);
         expectMemberVar(idAttribute, true);
@@ -122,7 +112,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
     public void testGetGeneratedJavaElementsForAttributeNotAbstractAndUseEnums() throws CoreException {
         enumType.setAbstract(false);
-        setUpUseJava5Enums(true);
+        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
 
         generatedJavaElements = builder.getGeneratedJavaElements(idAttribute);
         expectMemberVar(idAttribute, true);
@@ -139,7 +129,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
     public void testGetGeneratedJavaElementsForAttributeNotAbstractAndNotUseEnums() throws CoreException {
         enumType.setAbstract(false);
-        setUpUseJava5Enums(false);
+        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
 
         generatedJavaElements = builder.getGeneratedJavaElements(idAttribute);
         expectMemberVar(idAttribute, true);
@@ -170,7 +160,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         }
     }
 
-    private void expectGetterMethod(IEnumAttribute enumAttribute, boolean shallExist) throws CoreException {
+    private void expectGetterMethod(IEnumAttribute enumAttribute, boolean shallExist) {
         String methodName = builder.getMethodNameGetter(enumAttribute);
         IMethod getterMethod = javaEnum.getMethod(methodName, new String[0]);
         if (shallExist) {

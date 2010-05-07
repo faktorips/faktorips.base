@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -44,6 +46,42 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         inheritedEnumAttributeName = subEnumType.newEnumAttribute();
         inheritedEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         inheritedEnumAttributeName.setInherited(true);
+    }
+
+    public void testFindSuperEnumAttribute() throws CoreException {
+        try {
+            genderEnumAttributeId.findSuperEnumAttribute(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        assertNull(genderEnumAttributeId.findSuperEnumAttribute(ipsProject));
+
+        assertEquals(genderEnumAttributeId, inheritedEnumAttributeId.findSuperEnumAttribute(ipsProject));
+    }
+
+    public void testFindAllInheritedCopiesOneSubtype() throws CoreException {
+        List<IEnumAttribute> attributes = genderEnumAttributeId.findAllInheritedCopies(ipsProject);
+        assertEquals(1, attributes.size());
+        assertEquals(inheritedEnumAttributeId, attributes.get(0));
+    }
+
+    public void testFindAllInheritedCopiesNoSubtypes() throws CoreException {
+        List<IEnumAttribute> attributes = inheritedEnumAttributeId.findAllInheritedCopies(ipsProject);
+        assertEquals(0, attributes.size());
+    }
+
+    public void testFindAllInheritedCopiesTwoSubtypes() throws CoreException {
+        IEnumType deepEnumType = newEnumType(ipsProject, "DeepEnumType");
+        deepEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        IEnumAttribute deepEnumAttributeId = deepEnumType.newEnumAttribute();
+        deepEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+        deepEnumAttributeId.setInherited(true);
+
+        List<IEnumAttribute> attributes = genderEnumAttributeId.findAllInheritedCopies(ipsProject);
+        assertEquals(2, attributes.size());
+        assertTrue(attributes.contains(inheritedEnumAttributeId));
+        assertTrue(attributes.contains(deepEnumAttributeId));
     }
 
     public void testGetSetName() {
@@ -335,7 +373,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertNull(genderEnumAttributeId.findIsUnique(ipsProject));
     }
 
-    public void testFindIsUsedAsIdInFaktorIpsUi() throws CoreException {
+    public void testFindIsIdentifier() throws CoreException {
         try {
             inheritedEnumAttributeId.findIsIdentifier(null);
             fail();
