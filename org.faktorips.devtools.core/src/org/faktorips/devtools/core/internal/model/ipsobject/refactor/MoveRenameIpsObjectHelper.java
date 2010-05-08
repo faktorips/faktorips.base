@@ -117,8 +117,7 @@ public final class MoveRenameIpsObjectHelper {
 
         for (IIpsSrcFile ipsSrcFile : targetIpsPackageFragment.getIpsSrcFiles()) {
             String sourceFileName = ipsSrcFile.getName();
-            String relevantNamePart = sourceFileName.substring(0, sourceFileName.lastIndexOf('.'));
-            if (relevantNamePart.equals(newName)) {
+            if (sourceFileName.equals(newName + '.' + toBeRefactored.getIpsObjectType().getFileExtension())) {
                 status.addFatalError(NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileAlreadyExists, newName,
                         targetIpsPackageFragment.getName()));
                 break;

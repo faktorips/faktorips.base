@@ -24,6 +24,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -373,6 +375,34 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
                 IpsObjectType.TABLE_CONTENTS.getFileName("table"));
         assertTrue(target.exists());
         assertFalse(file.exists());
+    }
+
+    public void testMoveEnumContentToPackageWithEnumTypeSameNames() throws CoreException, InvocationTargetException,
+            InterruptedException {
+
+        IEnumType enumType = newEnumType(ipsRoot, "model.EnumType");
+        enumType.setContainingValues(false);
+        enumType.setEnumContentName("model.deep.EnumType");
+        IEnumContent enumContent = newEnumContent(enumType, "model.deep.EnumType");
+
+        IIpsSrcFile enumTypeSrcFile = enumType.getIpsSrcFile();
+        enumTypeSrcFile.save(true, null);
+        IIpsSrcFile enumContentSrcFile = enumContent.getIpsSrcFile();
+        enumContentSrcFile.save(true, null);
+
+        assertTrue(enumTypeSrcFile.exists());
+        assertTrue(enumContentSrcFile.exists());
+
+        MoveOperation moveOp = new MoveOperation(new IIpsElement[] { enumContent }, ipsRoot
+                .getIpsPackageFragment("model"));
+        moveOp.run(null);
+
+        IIpsSrcFile originalFile = ipsRoot.getIpsPackageFragment("model.deep").getIpsSrcFile("EnumType",
+                IpsObjectType.ENUM_CONTENT);
+        assertFalse(originalFile.exists());
+        IIpsSrcFile targetFile = ipsRoot.getIpsPackageFragment("model").getIpsSrcFile("EnumType",
+                IpsObjectType.ENUM_CONTENT);
+        assertTrue(targetFile.exists());
     }
 
     public void testRenameTableContent() throws Exception {

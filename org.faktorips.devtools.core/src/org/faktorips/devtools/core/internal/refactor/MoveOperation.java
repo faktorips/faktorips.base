@@ -62,7 +62,6 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
@@ -367,8 +366,8 @@ public class MoveOperation implements IRunnableWithProgress {
                             moveTestCase((ITestCase)toMove, targetNames[i], currMonitor);
                         } else if (toMove instanceof IFile) {
                             moveNoneIpsElement((IFile)sourceObjects[i], targetNames[i]);
-                        } else if (toMove instanceof IType) {
-                            moveIpsObject((IType)sourceObjects[i], targetNames[i], targetRoot, currMonitor);
+                        } else if (toMove instanceof IIpsObject) {
+                            moveIpsObject((IIpsObject)sourceObjects[i], targetNames[i], targetRoot, currMonitor);
                         } else if (toMove instanceof File) {
                             moveNoneIpsElement((File)sourceObjects[i], targetNames[i]);
                         }
