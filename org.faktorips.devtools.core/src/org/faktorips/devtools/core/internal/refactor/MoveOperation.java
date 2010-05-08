@@ -180,8 +180,7 @@ public class MoveOperation implements IRunnableWithProgress {
         sourceObjects = prepare(sources);
         this.targetProject = targetProject;
 
-        // init the targets for each given source
-        // the target is always the given target
+        // Initialize the targets for each given source.
         targetNames = new String[sources.length];
         for (int i = 0; i < sources.length; i++) {
             targetNames[i] = target;
@@ -851,27 +850,13 @@ public class MoveOperation implements IRunnableWithProgress {
      * Check all sources to exist and to be saved. If not so, an IpsStatus containing the error will
      * be returned. Returns <code>null</code> if no error was found.
      */
-    public static IpsStatus checkSourcesForInvalidContent(Object[] source) throws CoreException {
-        for (int i = 0; i < source.length; i++) {
+    public static IpsStatus checkSourcesForInvalidContent(Object[] sources) throws CoreException {
+        for (Object currentSource : sources) {
             IIpsElement toTest = null;
-            if (source[i] instanceof IIpsSrcFile) {
-                toTest = ((IIpsSrcFile)source[i]).getIpsObject();
-            } else if (source[i] instanceof IIpsElement) {
-                toTest = (IIpsElement)source[i];
-            }
-
-            if (toTest instanceof IProductCmpt || toTest instanceof ITableContents || toTest instanceof ITestCase
-                    || toTest instanceof IType) {
-                IIpsObject ipsObject = (IIpsObject)toTest;
-                if (!ipsObject.getIpsSrcFile().exists()) {
-                    String msg = NLS.bind(Messages.MoveOperation_msgSourceMissing, getQualifiedSourceName(ipsObject));
-                    return new IpsStatus(msg);
-                }
-
-                if (ipsObject.getIpsSrcFile().isDirty()) {
-                    String msg = NLS.bind(Messages.MoveOperation_msgSourceModified, getQualifiedSourceName(ipsObject));
-                    return new IpsStatus(msg);
-                }
+            if (currentSource instanceof IIpsSrcFile) {
+                toTest = ((IIpsSrcFile)currentSource).getIpsObject();
+            } else if (currentSource instanceof IIpsElement) {
+                toTest = (IIpsElement)currentSource;
             }
 
             if (toTest instanceof IIpsPackageFragment) {
@@ -888,45 +873,43 @@ public class MoveOperation implements IRunnableWithProgress {
                 if (status != null) {
                     return status;
                 }
-            } else if (toTest instanceof IProductCmpt) {
-                IProductCmpt productCmpt = (IProductCmpt)toTest;
-                if (!productCmpt.exists()) {
-                    String msg = NLS.bind(Messages.MoveOperation_msgErrorProductCmptIsMissing, productCmpt.getName());
+
+            } else if (toTest instanceof IIpsObject) {
+                IIpsObject ipsObject = (IIpsObject)toTest;
+                if (!(ipsObject.getIpsSrcFile().exists())) {
+                    String msg = NLS.bind(Messages.MoveOperation_msgSourceMissing, getQualifiedSourceName(ipsObject));
                     return new IpsStatus(msg);
                 }
-            } else if (toTest instanceof ITableContents) {
-                ITableContents table = (ITableContents)toTest;
-                if (!table.exists()) {
-                    String msg = NLS.bind(Messages.MoveOperation_tableContentIsMissing, table.getName());
+
+                if (ipsObject.getIpsSrcFile().isDirty()) {
+                    String msg = NLS.bind(Messages.MoveOperation_msgSourceModified, getQualifiedSourceName(ipsObject));
                     return new IpsStatus(msg);
                 }
-            } else if (toTest instanceof ITestCase) {
-                ITestCase testCase = (ITestCase)toTest;
-                if (!testCase.exists()) {
-                    String msg = NLS.bind(Messages.MoveOperation_testCaseIsMissing, testCase.getName());
+
+                if (!(ipsObject.exists())) {
+                    String msg = NLS.bind(Messages.MoveOperation_errorIpsObjectMissing, ipsObject.getName());
                     return new IpsStatus(msg);
                 }
-            } else if (toTest instanceof IType) {
-                IType type = (IType)toTest;
-                if (!type.exists()) {
-                    String msg = NLS.bind(Messages.MoveOperation_typeIsMissing, type.getName());
-                    return new IpsStatus(msg);
-                }
-            } else if (source[i] instanceof IFile) {
-                if (!((IFile)source[i]).exists()) {
-                    String msg = NLS.bind(Messages.MoveOperation_errorMessageSourceNotExists, ((IFile)source[i])
+
+            } else if (currentSource instanceof IFile) {
+                if (!((IFile)currentSource).exists()) {
+                    String msg = NLS.bind(Messages.MoveOperation_errorMessageSourceNotExists, ((IFile)currentSource)
                             .getLocation().toOSString());
                     return new IpsStatus(msg);
                 }
-            } else if (source[i] instanceof String) {
-                if (!(new File((String)source[i]).exists())) {
-                    String msg = NLS.bind(Messages.MoveOperation_errorMessageSourceNotExists, source[i]);
+
+            } else if (currentSource instanceof String) {
+                if (!(new File((String)currentSource).exists())) {
+                    String msg = NLS.bind(Messages.MoveOperation_errorMessageSourceNotExists, currentSource);
                     return new IpsStatus(msg);
                 }
+
             } else {
-                // Localization of the following messages is necessary because the exception is
-                // expected to be caught later and the messages are expected to be displayed to the
-                // user.
+                /*
+                 * Localization of the following messages is necessary because the exception is
+                 * expected to be caught later and the messages are expected to be displayed to the
+                 * user.
+                 */
                 String msg = null;
                 if (toTest instanceof IIpsObject) {
                     msg = NLS.bind(Messages.MoveOperation_msgUnsupportedType, ((IIpsObject)toTest).getIpsObjectType()
@@ -934,11 +917,12 @@ public class MoveOperation implements IRunnableWithProgress {
                 } else if (toTest != null) {
                     msg = NLS.bind(Messages.MoveOperation_msgUnsupportedObject, toTest.getName());
                 } else {
-                    msg = NLS.bind(Messages.MoveOperation_msgUnsupportedObject, source[i]);
+                    msg = NLS.bind(Messages.MoveOperation_msgUnsupportedObject, currentSource);
                 }
                 return new IpsStatus(msg);
             }
         }
+
         return null;
     }
 

@@ -329,41 +329,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertNotNull(target.getIpsSrcFile(policyCmptType.getName(), IpsObjectType.POLICY_CMPT_TYPE));
     }
 
-    public void testMovePackageWithUnsupportetFile() throws Exception {
-        IIpsPackageFragment sourcePackage = coverage.getIpsPackageFragment();
-        IIpsPackageFragment target = sourcePackage.getRoot().getIpsPackageFragment("moved");
-
-        assertFalse(target.exists());
-        assertTrue(coverage.getIpsSrcFile().exists());
-
-        // test move of unsupported file
-        testMoveOfUnsupportedObject(IpsObjectType.TEST_CASE_TYPE, sourcePackage, target);
-        testMoveOfUnsupportedObject(IpsObjectType.TABLE_STRUCTURE, sourcePackage, target);
-
-        // test move valid types again
-        MoveOperation move = new MoveOperation(new IIpsElement[] { sourcePackage }, target);
-        move.run(null);
-        assertTrue(target.exists());
-        assertFalse(sourcePackage.exists());
-    }
-
-    private void testMoveOfUnsupportedObject(IpsObjectType type,
-            IIpsPackageFragment sourcePackage,
-            IIpsPackageFragment target) throws CoreException, InvocationTargetException, InterruptedException {
-        IIpsSrcFile src = sourcePackage.createIpsFile(type, "unsupported", true, null);
-        boolean exceptionThrown = false;
-        try {
-            MoveOperation move = new MoveOperation(new IIpsElement[] { sourcePackage }, target);
-            move.run(null);
-        } catch (CoreException e) {
-            exceptionThrown = true;
-        }
-        assertTrue(exceptionThrown);
-        assertFalse(target.exists());
-        assertTrue(sourcePackage.exists());
-        src.getCorrespondingFile().delete(true, null);
-    }
-
     public void testMovePackageInDifferentRoot() throws Exception {
         IIpsPackageFragmentRoot targetRoot = createIpsPackageFrgmtRoot();
 
@@ -514,17 +479,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
         assertFalse(level1.exists());
         assertTrue(ipsRoot.getIpsPackageFragment("levela").exists());
-
-        super.newIpsObject(ipsRoot, IpsObjectType.TABLE_STRUCTURE, "levela.level2_2.TableStructure");
-
-        try {
-            move = new MoveOperation(new IIpsElement[] { ipsRoot.getIpsPackageFragment("levela") },
-                    new String[] { "levelb" });
-            move.run(null);
-            fail();
-        } catch (CoreException ce) {
-            // success
-        }
     }
 
     public void testMovePackageInRootContainingEmptyPackage() throws Exception {

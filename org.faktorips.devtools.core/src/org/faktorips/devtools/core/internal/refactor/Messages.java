@@ -41,7 +41,6 @@ public class Messages extends NLS {
     public static String IpsMoveProcessor_msgTargetLocationEqualsOriginalLocation;
 
     public static String MoveOperation_errorMessageSourceNotExists;
-    public static String MoveOperation_msgErrorProductCmptIsMissing;
     public static String MoveOperation_msgErrorTheTargetIsIncludedInTheSource;
     public static String MoveOperation_titleAborted;
     public static String MoveOperation_msgAborted;
@@ -52,8 +51,6 @@ public class Messages extends NLS {
     public static String MoveOperation_msgPackageMissing;
     public static String MoveOperation_msgUnsupportedType;
     public static String MoveOperation_msgUnsupportedObject;
-    public static String MoveOperation_tableContentIsMissing;
-    public static String MoveOperation_testCaseIsMissing;
-    public static String MoveOperation_typeIsMissing;
+    public static String MoveOperation_errorIpsObjectMissing;
 
 }
