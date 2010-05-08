@@ -84,7 +84,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     private IEnumContent createdEnumContent;
 
     /**
-     * Creates the <tt>EnumContentPage</tt>.
+     * Creates the <tt>EnumContentEditorPage</tt>.
      * 
      * @param selection If a selection is provided default values for some fields can be derived
      *            from that.

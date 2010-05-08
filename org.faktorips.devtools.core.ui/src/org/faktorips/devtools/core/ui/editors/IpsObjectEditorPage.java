@@ -53,7 +53,6 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * 
      * @param editor The editor the page belongs to.
      * @param id Page id used to identify the page.
-     * @param title The title shown at the top of the page when the page is selected.
      * @param tabPageName The page name shown at the bottom of the editor as tab page.
      */
     public IpsObjectEditorPage(IpsObjectEditor editor, String id, String tabPageName) {

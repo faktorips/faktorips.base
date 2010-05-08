@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 
 /**
@@ -29,26 +29,16 @@ import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSu
  * 
  * @since 2.3
  */
-public class EnumContentEditor extends TypeEditor implements IModelDescriptionSupport {
+public class EnumContentEditor extends IpsObjectEditor implements IModelDescriptionSupport {
 
     @Override
-    protected void addAllInOneSinglePage() throws PartInitException {
-        addPage(new EnumContentPage(this));
-    }
-
-    @Override
-    protected void addSplittedInMorePages() throws PartInitException {
-        addPage(new EnumContentPage(this));
+    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+        addPage(new EnumContentEditorPage(this));
     }
 
     @Override
     protected String getUniformPageTitle() {
         return Messages.EnumContentEditor_title + getIpsObject().getName();
-    }
-
-    @Override
-    protected boolean hasDescriptionPage() {
-        return false;
     }
 
     /** Returns the <tt>IEnumContent</tt> this editor is currently editing. */

@@ -27,11 +27,11 @@ import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditorPage;
 
 /**
- * The <tt>EnumContentPage</tt> shows general information about an <tt>IEnumContent</tt> and
+ * The <tt>EnumContentEditorPage</tt> shows general information about an <tt>IEnumContent</tt> and
  * provides controls to edit, import and export its values. It is intended to be used with the
  * <tt>EnumContentEditor</tt>.
  * <p>
@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorPage;
  * 
  * @since 2.3
  */
-public class EnumContentPage extends TypeEditorPage implements ContentsChangeListener {
+public class EnumContentEditorPage extends IpsObjectEditorPage implements ContentsChangeListener {
 
     /**
      * The <tt>IEnumContent</tt> the <tt>EnumContentEditor</tt> this page belongs to is currently
@@ -64,12 +64,12 @@ public class EnumContentPage extends TypeEditorPage implements ContentsChangeLis
     EnumValuesSection enumValuesSection;
 
     /**
-     * Creates a new <tt>EnumContentPage</tt>.
+     * Creates a new <tt>EnumContentEditorPage</tt>.
      * 
      * @param editor The <tt>EnumContentEditor</tt> this page belongs to.
      */
-    public EnumContentPage(EnumContentEditor editor) {
-        super(editor, false, Messages.EnumContentValuesPage_title, "EnumContentPage"); //$NON-NLS-1$
+    public EnumContentEditorPage(EnumContentEditor editor) {
+        super(editor, "EnumContentEditorPage", Messages.EnumContentValuesPage_title); //$NON-NLS-1$
         enumContent = editor.getEnumContent();
         enumContent.getIpsModel().addChangeListener(this);
     }
@@ -80,29 +80,20 @@ public class EnumContentPage extends TypeEditorPage implements ContentsChangeLis
     }
 
     @Override
-    protected void createContentForSingleStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        createContent(parentContainer, toolkit);
-    }
+    protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+        formBody.setLayout(createPageLayout(1, false));
 
-    @Override
-    protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        createContent(parentContainer, toolkit);
-    }
-
-    /** Creates the content of this page. */
-    private void createContent(Composite parentContainer, UIToolkit toolkit) {
         createToolbarActions();
         createToolbar();
 
-        new EnumContentGeneralInfoSection(this, enumContent, parentContainer, toolkit);
+        new EnumContentGeneralInfoSection(this, enumContent, formBody, toolkit);
         try {
-            enumValuesSection = new EnumValuesSection(enumContent, parentContainer, toolkit);
+            enumValuesSection = new EnumValuesSection(enumContent, formBody, toolkit);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /** Creates the actions for the tool bar. */
     private void createToolbarActions() {
         openFixEnumContentDialogAction = new OpenFixEnumContentWizardAction(this, enumContent, getSite().getShell());
         importAction = new EnumImportExportActionInEditor(getSite().getShell(), enumContent, true);
@@ -110,7 +101,6 @@ public class EnumContentPage extends TypeEditorPage implements ContentsChangeLis
 
     }
 
-    /** Creates the tool bar of this page. */
     private void createToolbar() {
         ScrolledForm form = getManagedForm().getForm();
         form.getToolBarManager().add(openFixEnumContentDialogAction);
@@ -145,11 +135,6 @@ public class EnumContentPage extends TypeEditorPage implements ContentsChangeLis
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-        // No general page info section necessary.
     }
 
     public void contentsChanged(ContentChangeEvent event) {

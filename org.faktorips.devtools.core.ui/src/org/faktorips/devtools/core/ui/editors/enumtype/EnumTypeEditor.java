@@ -13,9 +13,10 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 /**
  * The Faktor-IPS editor to edit <tt>IEnumType</tt> objects with.
@@ -26,17 +27,7 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
  * 
  * @since 2.3
  */
-public class EnumTypeEditor extends TypeEditor {
-
-    @Override
-    protected void addAllInOneSinglePage() throws PartInitException {
-        addPage(new EnumTypeStructurePage(this, false));
-    }
-
-    @Override
-    protected void addSplittedInMorePages() throws PartInitException {
-        addPage(new EnumTypeStructurePage(this, false));
-    }
+public class EnumTypeEditor extends IpsObjectEditor {
 
     @Override
     protected String getUniformPageTitle() {
@@ -46,6 +37,11 @@ public class EnumTypeEditor extends TypeEditor {
     /** Returns the <tt>IEnumType</tt> this editor is currently editing. */
     IEnumType getEnumType() {
         return (IEnumType)getIpsObject();
+    }
+
+    @Override
+    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+        addPage(new EnumTypeEditorPage(this));
     }
 
 }

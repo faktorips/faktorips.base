@@ -83,7 +83,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The UI section for the <tt>EnumTypePage</tt> and the <tt>EnumContentPage</tt> that contains the
+ * The UI section for the <tt>EnumTypePage</tt> and the <tt>EnumContentEditorPage</tt> that contains the
  * <tt>enumValuesTable</tt> to be edited.
  * <p>
  * If the IPS object being edited is an <tt>IEnumType</tt> then in-place fixing of the
@@ -96,7 +96,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeStructurePage
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeValuesPage
- * @see org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentPage
+ * @see org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditorPage
  * 
  * @author Alexander Weickmann
  * 

@@ -13,17 +13,20 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditorPage;
 
 /**
  * Base page for <tt>IEnumType</tt> editors providing controls to edit its properties and
@@ -33,11 +36,12 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorPage;
  * 
  * @see EnumTypeEditor
  * 
+ * @author Alexander Weickmann
  * @author Roman Grutza
  * 
  * @since 2.3
  */
-public abstract class EnumTypeEditorPage extends TypeEditorPage {
+public class EnumTypeEditorPage extends IpsObjectEditorPage {
 
     /**
      * The <tt>IEnumType</tt> the <tt>EnumTypeEditor</tt> this page belongs to is currently editing.
@@ -68,10 +72,12 @@ public abstract class EnumTypeEditorPage extends TypeEditorPage {
      */
     protected ContentsChangeListener changeListener;
 
-    public EnumTypeEditorPage(TypeEditor editor, IEnumType type, boolean twoSectionsWhenTrueOtherwiseFour, String title) {
-        super(editor, twoSectionsWhenTrueOtherwiseFour, title, "EnumTypeEditorPage"); //$NON-NLS-1$
+    public EnumTypeEditorPage(EnumTypeEditor editor) {
+        super(editor, "EnumTypeEditorPage", Messages.EnumTypeStructurePage_title); //$NON-NLS-1$
+        setPartName(Messages.EnumTypeStructurePage_title + ' ' + Messages.EnumTypeStructurePage_andLiteral + ' '
+                + Messages.EnumTypeValuesPage_title);
 
-        enumType = type;
+        enumType = editor.getEnumType();
         changeListener = new ContentsChangeListener() {
             public void contentsChanged(ContentChangeEvent event) {
                 if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
@@ -89,8 +95,24 @@ public abstract class EnumTypeEditorPage extends TypeEditorPage {
         enumType.getIpsModel().removeChangeListener(changeListener);
     }
 
-    /** Creates actions for import and export */
-    protected void createToolbarActions() {
+    @Override
+    protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+        formBody.setLayout(createPageLayout(1, false));
+
+        createToolbarActions();
+
+        new EnumTypeGeneralInfoSection(enumType, formBody, toolkit);
+
+        Composite remainerSection = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_HORIZONTAL);
+        enumAttributesSection = new EnumAttributesSection(this, enumType, remainerSection, toolkit);
+        try {
+            enumValuesSection = new EnumValuesSection(enumType, formBody, toolkit);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createToolbarActions() {
         importAction = new EnumImportExportActionInEditor(getSite().getShell(), enumType, true);
         exportAction = new EnumImportExportActionInEditor(getSite().getShell(), enumType, false);
 

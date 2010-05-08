@@ -48,7 +48,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
     private IEnumContent enumContent;
 
     /** The wizard page of the <tt>EnumContentEditor</tt>. */
-    private EnumContentPage enumContentPage;
+    private EnumContentEditorPage enumContentEditorPage;
 
     /** The label showing the base <tt>IEnumType</tt>. */
     Label enumTypeLabel;
@@ -56,7 +56,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
     /**
      * Creates a new <tt>EnumContentGeneralInfoSection</tt> using the specified parameters.
      * 
-     * @param enumContentPage The wizard page of the <tt>EnumContentEditor</tt>.
+     * @param enumContentEditorPage The wizard page of the <tt>EnumContentEditor</tt>.
      * @param enumContent The <tt>IEnumContent</tt> the <tt>EnumContentEditor</tt> is currently
      *            editing.
      * @param parent The parent UI composite to attach this info section to.
@@ -64,13 +64,13 @@ public class EnumContentGeneralInfoSection extends IpsSection {
      * 
      * @throws NullPointerException If <tt>enumContent</tt> is <tt>null</tt>.
      */
-    public EnumContentGeneralInfoSection(EnumContentPage enumContentPage, IEnumContent enumContent, Composite parent,
+    public EnumContentGeneralInfoSection(EnumContentEditorPage enumContentEditorPage, IEnumContent enumContent, Composite parent,
             UIToolkit toolkit) {
 
         super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(enumContent);
 
-        this.enumContentPage = enumContentPage;
+        this.enumContentEditorPage = enumContentEditorPage;
         this.enumContent = enumContent;
         initControls();
         setText(Messages.EnumContentGeneralInfoSection_title);
@@ -118,7 +118,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
             if (validationMessages.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST) != null
                     || validationMessages
                             .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null) {
-                enumContentPage.enumValuesSection.reinit();
+                enumContentEditorPage.enumValuesSection.reinit();
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
