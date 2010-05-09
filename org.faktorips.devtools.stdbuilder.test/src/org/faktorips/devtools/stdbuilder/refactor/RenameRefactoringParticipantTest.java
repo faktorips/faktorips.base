@@ -15,6 +15,9 @@ package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.faktorips.runtime.IValidationContext;
@@ -136,7 +139,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(policyClass.getMethod("getTest", new String[0]).exists());
     }
 
-    public void testRenameEnumAttributeAbstractUseEnums() throws CoreException {
+    public void testRenameEnumAttributeAbstractJava5Enums() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
         enumType.setAbstract(true);
         performFullBuild();
@@ -151,7 +154,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(enumJavaType.getMethod("getTest", new String[0]).exists());
     }
 
-    public void testRenameEnumAttributeAbstractNoEnums() throws CoreException {
+    public void testRenameEnumAttributeAbstract() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
         enumType.setAbstract(true);
         performFullBuild();
@@ -166,6 +169,42 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         // Expect the new Java elements.
         assertTrue(enumJavaType.getField("test").exists());
         assertTrue(enumJavaType.getMethod("getTest", new String[0]).exists());
+    }
+
+    /** Assures that the referring Java elements in the subclass hierarchy are renamed. */
+    public void testRenameEnumAttributeHierarchy() throws CoreException {
+        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
+        enumType.setAbstract(true);
+
+        // Create the hierarchy.
+        IEnumType midEnumType = newEnumType(ipsProject, "MidEnumType");
+        midEnumType.setSuperEnumType(enumType.getQualifiedName());
+        midEnumType.setAbstract(true);
+        IEnumAttribute midAttribute = midEnumType.newEnumAttribute();
+        midAttribute.setName("id");
+        midAttribute.setInherited(true);
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(midEnumType.getQualifiedName());
+        subEnumType.setContainingValues(true);
+        IEnumAttribute subAttribute = subEnumType.newEnumAttribute();
+        subAttribute.setName("id");
+        subAttribute.setInherited(true);
+        subEnumType.newEnumLiteralNameAttribute();
+
+        performFullBuild();
+        performRenameRefactoring(enumAttribute, "test");
+
+        IType subJavaType = getJavaType("", "SubEnumType", true, false);
+
+        assertFalse(subJavaType.getMethod("getValueById",
+                new String[] { "Q" + Datatype.STRING.getQualifiedName() + ";" }).exists());
+        assertFalse(subJavaType.getMethod("isValueById",
+                new String[] { "Q" + Datatype.STRING.getQualifiedName() + ";" }).exists());
+
+        assertTrue(subJavaType.getMethod("getValueByTest",
+                new String[] { "Q" + Datatype.STRING.getQualifiedName() + ";" }).exists());
+        assertTrue(subJavaType.getMethod("isValueByTest",
+                new String[] { "Q" + Datatype.STRING.getQualifiedName() + ";" }).exists());
     }
 
     public void testRenamePolicyCmptType() throws CoreException {

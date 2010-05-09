@@ -78,7 +78,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         assertTrue(generatedJavaElements.contains(javaEnum));
     }
 
-    public void testGetGeneratedJavaElementsForAttributeAbstractAndUseEnums() throws CoreException {
+    public void testGetGeneratedJavaElementsForAttributeAbstractJava5Enums() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
 
         generatedJavaElements = builder.getGeneratedJavaElements(idAttribute);
@@ -94,7 +94,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         expectIsValueByMethod(nameAttribute, false);
     }
 
-    public void testGetGeneratedJavaElementsForAttributeAbstractAndNotUseEnums() throws CoreException {
+    public void testGetGeneratedJavaElementsForAttributeAbstract() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
 
         generatedJavaElements = builder.getGeneratedJavaElements(idAttribute);
@@ -110,7 +110,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         expectIsValueByMethod(nameAttribute, false);
     }
 
-    public void testGetGeneratedJavaElementsForAttributeNotAbstractAndUseEnums() throws CoreException {
+    public void testGetGeneratedJavaElementsForAttributeNotAbstractJava5Enums() throws CoreException {
         enumType.setAbstract(false);
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
 
@@ -127,7 +127,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         expectIsValueByMethod(nameAttribute, false);
     }
 
-    public void testGetGeneratedJavaElementsForAttributeNotAbstractAndNotUseEnums() throws CoreException {
+    public void testGetGeneratedJavaElementsForAttributeNotAbstract() throws CoreException {
         enumType.setAbstract(false);
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
 
