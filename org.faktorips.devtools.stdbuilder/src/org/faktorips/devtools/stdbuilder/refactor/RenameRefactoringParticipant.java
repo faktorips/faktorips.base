@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -113,6 +116,43 @@ public class RenameRefactoringParticipant extends RenameParticipant {
             return descriptor.createRefactoring(status);
         }
 
+        /**
+         * Overridden to add extra functionality in case an <tt>IEnumAttribute</tt> shall be
+         * renamed.
+         */
+        @Override
+        protected boolean initializeOriginalJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+            boolean success = super.initializeOriginalJavaElements(ipsElement, builderSet);
+            if (ipsElement instanceof IEnumAttribute) {
+                try {
+                    success = initializeOriginalJavaElements((IEnumAttribute)ipsElement, builderSet);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return success;
+        }
+
+        /**
+         * For <tt>IEnumAttribute</tt>s it's necessary to add Java elements from subclasses that
+         * semantically reference the <tt>IEnumAttribute</tt> to be renamed. This is so, because on
+         * the model side the inherited copies in subclassing <tt>IEnumType</tt>s will be renamed.
+         * In this case the model and the code would be out of sync.
+         * <p>
+         * A re-generation of the source code will not be sufficient because of protected code
+         * regions. These regions would not be reached when renaming one of the inherited copies
+         * later on.
+         */
+        private boolean initializeOriginalJavaElements(IEnumAttribute enumAttribute, StandardBuilderSet builderSet)
+                throws CoreException {
+
+            List<IEnumAttribute> inheritedCopies = enumAttribute.searchInheritedCopies(enumAttribute.getIpsProject());
+            for (IEnumAttribute inheritedCopy : inheritedCopies) {
+                getOriginalJavaElements().addAll(builderSet.getGeneratedJavaElements(inheritedCopy));
+            }
+            return true;
+        }
+
         @Override
         protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
             if (ipsElement instanceof IAttribute) {
@@ -125,7 +165,11 @@ public class RenameRefactoringParticipant extends RenameParticipant {
                 return initTargetJavaElements(ipsObject, targetIpsPackageFragment, newName, builderSet);
 
             } else if (ipsElement instanceof IEnumAttribute) {
-                return initializeTargetJavaElements((IEnumAttribute)ipsElement, builderSet);
+                try {
+                    return initializeTargetJavaElements((IEnumAttribute)ipsElement, builderSet);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
 
             }
 
@@ -140,16 +184,33 @@ public class RenameRefactoringParticipant extends RenameParticipant {
             return true;
         }
 
-        /*
-         * TODO AW: This needs to be extended to include all Java elements generated for copies of
-         * the attribute due to inheritance. This also applies to the original Java elements where
-         * we need to override functionality in order to extend them.
-         */
-        private boolean initializeTargetJavaElements(IEnumAttribute enumAttribute, StandardBuilderSet builderSet) {
+        private boolean initializeTargetJavaElements(IEnumAttribute enumAttribute, StandardBuilderSet builderSet)
+                throws CoreException {
+
             String oldName = enumAttribute.getName();
-            enumAttribute.setName(getArguments().getNewName());
-            setTargetJavaElements(builderSet.getGeneratedJavaElements(enumAttribute));
+            String newName = getArguments().getNewName();
+            List<IEnumAttribute> inheritedCopies = enumAttribute.searchInheritedCopies(enumAttribute.getIpsProject());
+
+            // 1) Set all enumeration attribute names to the new name.
+            enumAttribute.setName(newName);
+            for (IEnumAttribute inheritedCopy : inheritedCopies) {
+                inheritedCopy.setName(newName);
+            }
+
+            // 2) Build together the target Java elements.
+            List<IJavaElement> targetJavaElements = new ArrayList<IJavaElement>(getOriginalJavaElements().size());
+            targetJavaElements.addAll(builderSet.getGeneratedJavaElements(enumAttribute));
+            for (IEnumAttribute inheritedCopy : inheritedCopies) {
+                targetJavaElements.addAll(builderSet.getGeneratedJavaElements(inheritedCopy));
+            }
+            setTargetJavaElements(targetJavaElements);
+
+            // 3) Reset every enumeration attribute to it's old name.
             enumAttribute.setName(oldName);
+            for (IEnumAttribute inheritedCopy : inheritedCopies) {
+                inheritedCopy.setName(oldName);
+            }
+
             return true;
         }
 

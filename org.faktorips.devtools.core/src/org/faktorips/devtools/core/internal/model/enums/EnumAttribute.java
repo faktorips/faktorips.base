@@ -355,8 +355,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public List<IEnumAttribute> findAllInheritedCopies(IIpsProject ipsProject) throws CoreException {
-        Set<IEnumType> subclassingEnumTypes = getEnumType().findAllSubclassingEnumTypes();
+    public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws CoreException {
+        Set<IEnumType> subclassingEnumTypes = getEnumType().searchSubclassingEnumTypes();
         List<IEnumAttribute> inheritedAttributeCopies = new ArrayList<IEnumAttribute>(subclassingEnumTypes.size());
         for (IEnumType subclassingEnumType : subclassingEnumTypes) {
             IEnumAttribute inheritedAttribute = subclassingEnumType.getEnumAttributeIncludeSupertypeCopies(name);

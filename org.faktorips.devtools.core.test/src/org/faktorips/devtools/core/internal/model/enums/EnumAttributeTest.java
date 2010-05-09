@@ -60,25 +60,25 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumAttributeId, inheritedEnumAttributeId.findSuperEnumAttribute(ipsProject));
     }
 
-    public void testFindAllInheritedCopiesOneSubtype() throws CoreException {
-        List<IEnumAttribute> attributes = genderEnumAttributeId.findAllInheritedCopies(ipsProject);
+    public void testSearchInheritedCopiesOneSubtype() throws CoreException {
+        List<IEnumAttribute> attributes = genderEnumAttributeId.searchInheritedCopies(ipsProject);
         assertEquals(1, attributes.size());
         assertEquals(inheritedEnumAttributeId, attributes.get(0));
     }
 
-    public void testFindAllInheritedCopiesNoSubtypes() throws CoreException {
-        List<IEnumAttribute> attributes = inheritedEnumAttributeId.findAllInheritedCopies(ipsProject);
+    public void testSearchInheritedCopiesNoSubtypes() throws CoreException {
+        List<IEnumAttribute> attributes = inheritedEnumAttributeId.searchInheritedCopies(ipsProject);
         assertEquals(0, attributes.size());
     }
 
-    public void testFindAllInheritedCopiesTwoSubtypes() throws CoreException {
+    public void testSearchInheritedCopiesTwoSubtypes() throws CoreException {
         IEnumType deepEnumType = newEnumType(ipsProject, "DeepEnumType");
         deepEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         IEnumAttribute deepEnumAttributeId = deepEnumType.newEnumAttribute();
         deepEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         deepEnumAttributeId.setInherited(true);
 
-        List<IEnumAttribute> attributes = genderEnumAttributeId.findAllInheritedCopies(ipsProject);
+        List<IEnumAttribute> attributes = genderEnumAttributeId.searchInheritedCopies(ipsProject);
         assertEquals(2, attributes.size());
         assertTrue(attributes.contains(inheritedEnumAttributeId));
         assertTrue(attributes.contains(deepEnumAttributeId));

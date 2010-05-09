@@ -614,7 +614,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public Set<IEnumType> findAllSubclassingEnumTypes() throws CoreException {
+    public Set<IEnumType> searchSubclassingEnumTypes() throws CoreException {
         // TODO AW: Better way to search for subclasses?
         Set<IEnumType> collectedEnumTypes = new HashSet<IEnumType>(25);
         IIpsProject[] ipsProjects = getIpsProject().findReferencingProjectLeavesOrSelf();

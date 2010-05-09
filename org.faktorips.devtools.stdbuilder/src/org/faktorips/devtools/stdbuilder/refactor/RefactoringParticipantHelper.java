@@ -181,10 +181,21 @@ public abstract class RefactoringParticipantHelper {
         IIpsElement ipsElement = (IIpsElement)element;
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsElement.getIpsProject().getIpsArtefactBuilderSet();
 
-        originalJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
-        boolean success = initializeTargetJavaElements(ipsElement, builderSet);
-
+        boolean success = initializeOriginalJavaElements(ipsElement, builderSet);
+        if (success) {
+            success = initializeTargetJavaElements(ipsElement, builderSet);
+        }
         return success;
+    }
+
+    /**
+     * Initializes the original Java elements generated for the given <tt>IIpsElement</tt>. This
+     * implementation asks the builder set for the generated elements of the given
+     * <tt>IIpsElement</tt>. This behavior may be overwritten by subclasses.
+     */
+    protected boolean initializeOriginalJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+        originalJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
+        return true;
     }
 
     /**

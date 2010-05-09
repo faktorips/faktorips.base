@@ -418,6 +418,6 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * @throws CoreException If an error occurs while searching for the copies.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public List<IEnumAttribute> findAllInheritedCopies(IIpsProject ipsProject) throws CoreException;
+    public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws CoreException;
 
 }

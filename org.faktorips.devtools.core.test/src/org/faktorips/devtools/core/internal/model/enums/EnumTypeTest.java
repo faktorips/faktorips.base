@@ -596,21 +596,21 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         }
     }
 
-    public void testFindAllSubclassingEnumTypesNoSubclasses() throws CoreException {
-        Set<IEnumType> subclasses = genderEnumType.findAllSubclassingEnumTypes();
+    public void testSearchSubclassingEnumTypesNoSubclasses() throws CoreException {
+        Set<IEnumType> subclasses = genderEnumType.searchSubclassingEnumTypes();
         assertEquals(0, subclasses.size());
     }
 
-    public void testFindAllSubclassingEnumTypesOneSubclass() throws CoreException {
+    public void testSearchSubclassingEnumTypesOneSubclass() throws CoreException {
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
 
-        Set<IEnumType> subclasses = genderEnumType.findAllSubclassingEnumTypes();
+        Set<IEnumType> subclasses = genderEnumType.searchSubclassingEnumTypes();
         assertEquals(1, subclasses.size());
         assertTrue(subclasses.contains(subEnumType));
     }
 
-    public void testFindAllSubclassingEnumTypesSubclassInOtherProject() throws CoreException {
+    public void testSearchSubclassingEnumTypesSubclassInOtherProject() throws CoreException {
         IIpsProject otherProject = newIpsProject("OtherProject");
         IIpsObjectPath ipsObjectPath = otherProject.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(ipsProject);
@@ -619,18 +619,18 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumType subEnumType = newEnumType(otherProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
 
-        Set<IEnumType> subclasses = genderEnumType.findAllSubclassingEnumTypes();
+        Set<IEnumType> subclasses = genderEnumType.searchSubclassingEnumTypes();
         assertEquals(1, subclasses.size());
         assertTrue(subclasses.contains(subEnumType));
     }
 
-    public void testFindAllSubclassingEnumTypesTwoSubclasses() throws CoreException {
+    public void testSearchSubclassingEnumTypesTwoSubclasses() throws CoreException {
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         IEnumType deepEnumType = newEnumType(ipsProject, "DeepEnumType");
         deepEnumType.setSuperEnumType(subEnumType.getQualifiedName());
 
-        Set<IEnumType> subclasses = genderEnumType.findAllSubclassingEnumTypes();
+        Set<IEnumType> subclasses = genderEnumType.searchSubclassingEnumTypes();
         assertEquals(2, subclasses.size());
         assertTrue(subclasses.contains(subEnumType));
         assertTrue(subclasses.contains(deepEnumType));

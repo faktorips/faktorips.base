@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -37,8 +39,10 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -397,7 +401,31 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     }
 
     protected final void performFullBuild() throws CoreException {
+        clearOutputFolders(); // To avoid code merging problems.
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    }
+
+    private void clearOutputFolders() throws CoreException {
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
+            for (IIpsSrcFolderEntry srcFolderEntry : ipsObjectPath.getSourceFolderEntries()) {
+                IFolder outputFolderDerived = srcFolderEntry.getOutputFolderForDerivedJavaFiles();
+                IFolder outputFolderMergable = srcFolderEntry.getOutputFolderForMergableJavaFiles();
+                clearFolder(outputFolderDerived);
+                clearFolder(outputFolderMergable);
+            }
+        } else {
+            IFolder outputFolderDerived = ipsObjectPath.getOutputFolderForDerivedSources();
+            IFolder outputFolderMergable = ipsObjectPath.getOutputFolderForMergableSources();
+            clearFolder(outputFolderDerived);
+            clearFolder(outputFolderMergable);
+        }
+    }
+
+    private void clearFolder(IFolder folder) throws CoreException {
+        for (IResource resource : folder.members()) {
+            resource.delete(true, null);
+        }
     }
 
 }

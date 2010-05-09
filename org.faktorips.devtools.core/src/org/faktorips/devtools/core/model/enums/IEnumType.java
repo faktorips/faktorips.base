@@ -232,7 +232,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * 
      * @throws CoreException If an error occurs while searching for subclassing enumeration types.
      */
-    public Set<IEnumType> findAllSubclassingEnumTypes() throws CoreException;
+    public Set<IEnumType> searchSubclassingEnumTypes() throws CoreException;
 
     /**
      * Sets the abstract property for this <tt>IEnumType</tt>.

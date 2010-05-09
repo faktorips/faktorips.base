@@ -63,14 +63,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** The package id identifying the builder */
     public final static String PACKAGE_STRUCTURE_KIND_ID = "EnumTypeBuilder.enumtype.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
 
-    /** The builder config property name that indicates whether to use java 5 enum types. */
+    /** The builder configuration property name that indicates whether to use Java 5 enum types. */
     private final static String USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY = "useJavaEnumTypes"; //$NON-NLS-1$
 
     /**
-     * Creates a new <code>EnumTypeBuilder</code> that will belong to the given ips artefact builder
+     * Creates a new <code>EnumTypeBuilder</code> that will belong to the given IPS artefact builder
      * set.
      * 
-     * @param builderSet The ips artefact builder set this builder shall be a part of.
+     * @param builderSet The IPS artefact builder set this builder shall be a part of.
      */
     public EnumTypeBuilder(IIpsArtefactBuilderSet builderSet) {
         super(builderSet, PACKAGE_STRUCTURE_KIND_ID, new LocalizedStringsSet(EnumTypeBuilder.class));
@@ -84,7 +84,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return false;
     }
 
-    /** Returns <code>true</code> if Java5 Enums are available. */
+    /** Returns <code>true</code> if Java 5 enums are available. */
     private boolean isJava5EnumsAvailable() {
         return ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())
                 && getIpsProject().getIpsArtefactBuilderSet().getConfig().getPropertyValueAsBoolean(
@@ -239,7 +239,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * 7932454078331259392L;
      * </pre>
      */
-    private void generateConstantForSerialVersionNumber(JavaCodeFragmentBuilder constantBuilder) throws CoreException {
+    private void generateConstantForSerialVersionNumber(JavaCodeFragmentBuilder constantBuilder) {
         IEnumType enumType = getEnumType();
         appendLocalizedJavaDoc("SERIALVERSIONUID", enumType, constantBuilder); //$NON-NLS-1$
         constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Long.TYPE,
@@ -247,19 +247,18 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         constantBuilder.appendln(' ');
     }
 
-    /** Generates the java code for the enum values. */
     private void generateCodeForEnumValues(TypeSection mainSection, boolean javaAtLeast5) throws CoreException {
         IEnumType enumType = getEnumType();
         /*
-         * If no enum value definition is added we need to make the semicolon anyway telling the
-         * compiler that now the attribute section begins.
+         * If no enumeration value definition is added we need to make the semicolon anyway telling
+         * the compiler that now the attribute section begins.
          */
         boolean appendSemicolon = javaAtLeast5;
         boolean lastEnumValueGenerated = false;
 
         /*
-         * Generate the enum values if they are part of the model and if the enum type is not
-         * abstract.
+         * Generate the enumeration values if they are part of the model and if the enumeration type
+         * is not abstract.
          */
         IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
         if (enumType.isContainingValues() && !(enumType.isAbstract()) && literalNameAttribute != null) {
@@ -294,15 +293,15 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /**
      * Returns a java code fragment that contains the code for the instantiation of the provided
-     * enum value of the provided enum type. Code snippet:
+     * enumeration value of the provided enumeration type. Code snippet:
      * 
      * <pre>
-     *  [javadoc]
+     *  [Javadoc]
      *  Gender.MALE
      * </pre>
      * 
      * <pre>
-     *  [javadoc]
+     *  [Javadoc]
      *  repository.getEnumValue(Gender.class, &quot;m&quot;)
      * </pre>
      * 
@@ -339,16 +338,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * 
-     * @param enumType The enum type the new instance is a value of.
-     * @param valueOrExpression Either an unqoted value in String format like <code>male</code> or
+     * @param enumType The enumeration type the new instance is a value of.
+     * @param valueOrExpression Either an unquoted value in String format like <code>male</code> or
      *            an expression to get this value like <code>values.getValue(i)</code>
      * @param isExpression <code>true</code> if the parameter <code>valueOrExpression</code>is an
      *            expression, <code>false</code> otherwise.
-     * @param repositoryExp Expression to get the runtime repository instance that contains the enum
-     *            type, e.g. <code>getRepository()</code>
-     * @return
-     * @throws CoreException
+     * @param repositoryExp Expression to get the runtime repository instance that contains the
+     *            enumeration type, e.g. <code>getRepository()</code>
      */
     private JavaCodeFragment getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(IEnumType enumType,
             String valueOrExpression,
@@ -375,9 +371,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (!isExpression) {
             expression = "\"" + valueOrExpression + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        // as the datatype of the identifier attribute needn't be a String, we have to convert
-        // the String expression to an instance of the appropriate datatype.
-        // see bug #1586
+        /*
+         * As the data type of the identifier attribute needn't be a String, we have to convert the
+         * String expression to an instance of the appropriate data type. (see bug #1586)
+         */
         fragment.append(datatypeHelper.newInstanceFromExpression(expression));
         fragment.append(")"); //$NON-NLS-1$
         return fragment;
@@ -388,17 +385,15 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * Code snippet:
      * 
      * <pre>
-     *  [javadoc]
+     *  [Javadoc]
      *  Gender.getValueById(&quot;male&quot;)
      * </pre>
      * 
      * <pre>
-     *  [javadoc]
+     *  [Javadoc]
      *  repository.getEnumValue(Gender.class, &quot;m&quot;)
      * </pre>
      * 
-     * @param enumAttribute The enum attribute by that the enum value is searched.
-     * @param expressionValue The value of the enum attribute to search the enum value for.
      * 
      * @throws CoreException If an exception occurs while processing.
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
@@ -406,6 +401,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     public JavaCodeFragment getCallGetValueByIdentifierCodeFragment(IEnumType enumType,
             String expressionValue,
             JavaCodeFragment repositoryExp) throws CoreException {
+
         ArgumentCheck.notNull(enumType);
 
         if (enumType.isContainingValues()) {
@@ -441,8 +437,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * This method expects the literal name attribute value of an enum value as parameter to provide
-     * the accurate constant name for it.
+     * This method expects the literal name attribute value of an enumeration value as parameter to
+     * provide the accurate constant name for it.
      */
     private String getConstantNameForEnumAttributeValue(IEnumAttributeValue literalNameAttributeValue) {
         if (literalNameAttributeValue.getValue() == null) {
@@ -453,13 +449,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * Generates the java source code for an enum value as enum definition (java at least 5).
+     * Generates the Java source code for an enumeration value as enum definition (Java at least 5).
      * 
-     * @see #generateConstant(IEnumType, List, IEnumAttributeValue, JavaCodeFragmentBuilder)
-     * 
-     * @param enumAttributeValues The enum attribute values of the enum value to create.
-     * @param literalEnumAttributeValue The enum attribute value that refers to the literal name
-     *            enum attribute.
+     * @param enumAttributeValues The enumeration attribute values of the enumeration value to
+     *            create.
+     * @param literalEnumAttributeValue The enumeration attribute value that refers to the literal
+     *            name enumeration attribute.
      * @param lastEnumDefinition Flag indicating whether this enum definition will be the last one.
      * @param enumDefinitionBuilder The java source code builder to use for creating enum
      *            definitions.
@@ -469,7 +464,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             boolean lastEnumDefinition,
             JavaCodeFragmentBuilder enumDefinitionBuilder) throws CoreException {
 
-        // Create enum definition source fragment
+        // Create enumeration definition source fragment
         appendLocalizedJavaDoc("ENUMVALUE", getEnumType(), enumDefinitionBuilder); //$NON-NLS-1$
         JavaCodeFragment enumDefinitionFragment = new JavaCodeFragment();
         enumDefinitionFragment.append(literalEnumAttributeValue.getValue().toUpperCase());
@@ -489,15 +484,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * Generates the java source code for an enum value as constant (java less than 5).
+     * Generates the Java source code for an enumeration value as constant (Java less than 5).
      * 
-     * @see #generateEnumDefinition(IEnumType, List, IEnumAttributeValue, boolean,
-     *      JavaCodeFragmentBuilder)
-     * 
-     * @param enumAttributeValues The enum attribute values of the enum value to create.
-     * @param literalEnumAttributeValue The enum attribute value that refers to the literal name
-     *            enum attribute.
-     * @param constantBuilder The java source code builder to use for creating constants.
+     * @param enumAttributeValues The enumeration attribute values of the enumeration value to
+     *            create.
+     * @param literalEnumAttributeValue The enumeration attribute value that refers to the literal
+     *            name enumeration attribute.
+     * @param constantBuilder The Java source code builder to use for creating constants.
      */
     private void createEnumValueAsConstant(List<IEnumAttributeValue> enumAttributeValues,
             IEnumAttributeValue literalEnumAttributeValue,
@@ -520,7 +513,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         constantBuilder.appendln(' ');
     }
 
-    /** Appends the parameter values to an enum value creation code fragment. */
+    /** Appends the parameter values to an enumeration value creation code fragment. */
     private void appendEnumValueParameters(List<IEnumAttributeValue> enumAttributeValues,
             JavaCodeFragment javaCodeFragment) throws CoreException {
 
@@ -544,7 +537,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    /** Generates the java code for the attributes. */
     private void generateCodeForEnumAttributes(JavaCodeFragmentBuilder attributeBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         int modifier = enumType.isAbstract() ? Modifier.PROTECTED : Modifier.PRIVATE | Modifier.FINAL;
@@ -577,7 +569,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return getJavaNamingConvention().getMemberVarName(attributeName);
     }
 
-    /** Generates the java code for the constructor. */
     private void generateCodeForConstructor(JavaCodeFragmentBuilder constructorBuilder) throws CoreException {
         generateConstructorForEnumsWithSeparateContent(constructorBuilder);
         generateConstructurForEnumsWithContent(constructorBuilder);
@@ -684,7 +675,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             i++;
         }
         if (!isJava5EnumsAvailable()) {
-            body.appendln("//This method is only called to avoid the compiler warning for an " //$NON-NLS-1$
+            body.appendln("// This method is only called to avoid the compiler warning for an " //$NON-NLS-1$
                     + "unused method. see the java doc of this method for further explanation."); //$NON-NLS-1$
             body.append(getMethodNameGetEnumValueId());
             body.appendln("();"); //$NON-NLS-1$
@@ -720,7 +711,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    /** Generates the java code for the methods. */
     private void generateCodeForMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         generateMethodGetValueBy(methodBuilder);
         generateMethodIsValueBy(methodBuilder);
@@ -733,7 +723,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateMethodGetEnumValueId(methodBuilder);
     }
 
-    /** Generates the java code for the getter methods. */
     private void generateMethodGetterMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
@@ -784,12 +773,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * Generates the java code for <code>getValueByXXX()</code> methods for each enum value.
+     * Generates the Java code for <code>getValueByXXX()</code> methods for each enumeration value.
      * 
      * Code snippet:
      * 
      * <pre>
-     *  [javadoc]
+     *  [Javadoc]
      *  public final static Gender getValueById(String id) {
      *      if (id == null) {
      *          return null;
@@ -920,8 +909,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * }
      * </pre>
      * 
-     * Not generated for java5 enum generation because for java5 enums the method is provided by
-     * java itself.
+     * Not generated for Java 5 enumeration generation because for Java 5 enumerations the method is
+     * provided by Java itself.
      */
     private void generateMethodValues(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
@@ -978,7 +967,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * }
      * </pre>
      * 
-     * Only generated for class generation because java5 enums are serializable out of the box.
+     * Only generated for class generation because Java 5 enumerations are serializable out of the
+     * box.
      */
     private void generateMethodReadResolve(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
@@ -1014,9 +1004,17 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 new Class[] { ObjectStreamException.class }, methodBody, null);
     }
 
-    /*
-     * public boolean equals(Object obj){ if(obj instanceof PaymentOption){ return
-     * this.getId().equals(((PaymentOption)obj).getId()); } return false; }
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * public boolean equals(Object obj) {
+     *     if (obj instanceof PaymentOption) {
+     *         return this.getId().equals(((PaymentOption)obj).getId());
+     *     }
+     *     return false;
+     * }
+     * </pre>
      */
     private void generateMethodEquals(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         if (!useClassGeneration()) {
@@ -1112,7 +1110,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBuilder.method(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0], methodBody, null); //$NON-NLS-1$
     }
 
-    /** Returns the enum type for that code is being generated. */
+    /** Returns the enumeration type for that code is being generated. */
     private IEnumType getEnumType() {
         return (IEnumType)getIpsObject();
     }
@@ -1147,9 +1145,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         } else {
             addMemberVarToGeneratedJavaElements(javaElements, enumAttribute, javaType);
             addGetterMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
-            if (enumAttribute.isUnique()) {
-                addGetValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
-                addIsValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
+            try {
+                if (EnumUtil.findEnumAttributeIsUnique(enumAttribute, enumAttribute.getIpsProject())) {
+                    addGetValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
+                    addIsValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -1168,9 +1170,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 addMemberVarToGeneratedJavaElements(javaElements, enumAttribute, javaType);
                 addGetterMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
             }
-            if (enumAttribute.isUnique()) {
-                addGetValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
-                addIsValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
+            try {
+                if (EnumUtil.findEnumAttributeIsUnique(enumAttribute, enumAttribute.getIpsProject())) {
+                    addGetValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
+                    addIsValueByMethodToGeneratedJavaElements(javaElements, enumAttribute, javaType);
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -1196,20 +1202,22 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private void addGetValueByMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
             IEnumAttribute enumAttribute,
-            IType javaType) {
+            IType javaType) throws CoreException {
 
         String methodName = getMethodNameGetValueBy(enumAttribute);
-        String[] parameterTypeSignature = new String[] { "Q" + enumAttribute.getDatatype() + ";" };
+        String[] parameterTypeSignature = new String[] { "Q"
+                + enumAttribute.findDatatype(enumAttribute.getIpsProject()) + ";" };
         IMethod getValueByMethod = javaType.getMethod(methodName, parameterTypeSignature);
         javaElements.add(getValueByMethod);
     }
 
     private void addIsValueByMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
             IEnumAttribute enumAttribute,
-            IType javaType) {
+            IType javaType) throws CoreException {
 
         String methodName = getMethodNameIsValueBy(enumAttribute);
-        String[] parameterTypeSignature = new String[] { "Q" + enumAttribute.getDatatype() + ";" };
+        String[] parameterTypeSignature = new String[] { "Q"
+                + enumAttribute.findDatatype(enumAttribute.getIpsProject()) + ";" };
         IMethod isValueByMethod = javaType.getMethod(methodName, parameterTypeSignature);
         javaElements.add(isValueByMethod);
     }
