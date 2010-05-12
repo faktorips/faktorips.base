@@ -192,7 +192,7 @@
                 <cvs module="org.faktorips.util"/>
                 <cvs module="org.faktorips.valuetypes"/>
                 <cvs module="org.faktorips.dtflcommon"/>
-                <cvs module="org.faktorips.runtime"/>
+                <cvs module="org.faktorips.runtime.java5"/>
                 <cvs module="org.faktorips.fl"/>
                 <cvs module="org.faktorips.devtools.core"/>
                 <cvs module="org.faktorips.devtools.stdbuilder"/>
@@ -582,9 +582,12 @@ TODO bbv und msgp
         <!--=====================================================-->
         <!-- publisher for all projects, htmlemail used in all projects -->
         <!--   attribute spamwhilebroken=true : e-mail reports -->
-        <!--     on failed builds will continue for subsequent failed builds. -->
-        <!--     see http://cruisecontrol.sourceforge.net/main/configxml.html#email -->
-        <!--     NOTE: use htmlemail='false' in project node to ignore email publisher in project -->
+        <!--     on failed builds will continue for subsequent failed builds.
+-->
+        <!--     see http://cruisecontrol.sourceforge.net/main/configxml.html#email
+-->
+        <!--     NOTE: use htmlemail='false' in project node to ignore email publisher in project
+-->
         <!--=====================================================-->
         <publisher id="htmlemail">
             <htmlemail 
@@ -606,14 +609,16 @@ TODO bbv und msgp
                      <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}" />
                 -->
                  
-                <!-- mail mappings are specified in ENTITY mailmapping see this xml header -->
+                <!-- mail mappings are specified in ENTITY mailmapping see this xml header
+-->
                 &mailmapping;
                 
             </htmlemail>
         </publisher>
         
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest" id="copy.artifacts">
             <antpublisher 
@@ -628,7 +633,8 @@ TODO bbv und msgp
         </publisher>
 
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest.java5" id="copy.artifacts">
             <antpublisher 
@@ -643,7 +649,8 @@ TODO bbv und msgp
         </publisher>
         
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.pluginbuilder" id="copy.artifacts">
             <antpublisher 
@@ -660,7 +667,8 @@ TODO bbv und msgp
         <!-- branch publisher -->
         
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest.v2_2_patches" id="copy.artifacts">
             <antpublisher 
@@ -675,7 +683,8 @@ TODO bbv und msgp
         </publisher>
 
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest.java5.v2_2_patches" id="copy.artifacts">
             <antpublisher 
@@ -690,7 +699,8 @@ TODO bbv und msgp
         </publisher>
         
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.pluginbuilder.v2_2_patches" id="copy.artifacts">
             <antpublisher 
@@ -705,7 +715,8 @@ TODO bbv und msgp
         </publisher>
         
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest.v2_3_patches" id="copy.artifacts">
             <antpublisher 
@@ -720,7 +731,8 @@ TODO bbv und msgp
         </publisher>
 
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest.java5.v2_3_patches" id="copy.artifacts">
             <antpublisher 
@@ -735,7 +747,8 @@ TODO bbv und msgp
         </publisher>
         
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.pluginbuilder.v2_3_patches" id="copy.artifacts">
             <antpublisher 
@@ -750,7 +763,8 @@ TODO bbv und msgp
         </publisher>
 
        <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest.v2_4_patches" id="copy.artifacts">
             <antpublisher 
@@ -765,7 +779,8 @@ TODO bbv und msgp
         </publisher>
 
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest.java5.v2_4_patches" id="copy.artifacts">
             <antpublisher 
@@ -780,7 +795,8 @@ TODO bbv und msgp
         </publisher>
         
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.pluginbuilder.v2_4_patches" id="copy.artifacts">
             <antpublisher 
@@ -795,7 +811,8 @@ TODO bbv und msgp
         </publisher>   
         
        <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest.v2_5_patches" id="copy.artifacts">
             <antpublisher 
@@ -810,7 +827,8 @@ TODO bbv und msgp
         </publisher>
 
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest.java5.v2_5_patches" id="copy.artifacts">
             <antpublisher 
@@ -825,7 +843,8 @@ TODO bbv und msgp
         </publisher>
         
         <!--===========================================================================================-->
-        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory -->
+        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory
+-->
         <!--===========================================================================================-->
         <publisher project="org.faktorips.pluginbuilder.v2_5_patches" id="copy.artifacts">
             <antpublisher 
