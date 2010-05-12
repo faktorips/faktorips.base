@@ -229,7 +229,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IModelObject.class.getName(), MethodNames.NEW_COPY,
                 new String[0], new String[0]);
         methodsBuilder.openBracket();
-        // declare Map<AbstractModelObject, AbstractModelObject> copyMap = new HashMap<...>()
+        // declare Map<IModelObject, IModelObject> copyMap = new HashMap<...>()
         String varCopyMap = "copyMap";
         methodsBuilder.append(getHashMapFragment(false)).append(' ').append(varCopyMap).append(" = ") //
                 .append("new ").append(getHashMapFragment(true)).appendln("();");
@@ -254,7 +254,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             hashMapFragmentBuilder.appendClassName(Map.class);
         }
         hashMapFragmentBuilder.append(' ');
-        appendGenerics(hashMapFragmentBuilder, AbstractModelObject.class, AbstractModelObject.class);
+        appendGenerics(hashMapFragmentBuilder, IModelObject.class, IModelObject.class);
         return hashMapFragmentBuilder.getFragment();
     }
 
@@ -262,7 +262,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Code sample:
      * 
      * <pre>
-     * protected IModelObject newCopy(HashMap&lt;AbstractModelObject, AbstractModelObject&gt; copyMap) {
+     * protected IModelObject newCopy(HashMap&lt;IModelObject, IModelObject&gt; copyMap) {
      *     Policy newCopy = new Policy();
      *     copyProperties(newCopy, copyMap);
      *     return newCopy;
@@ -327,7 +327,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Code sample
      * 
      * <pre>
-     * protected void copyProperties(CpParent copy, HashMap&lt;AbstractModelObject, AbstractModelObject&gt; copyMap) {
+     * protected void copyProperties(CpParent copy, Map&lt;IModelObject, IModelObject&gt; copyMap) {
      *     super.copyProperties(copy); // if class has superclass
      *     copy.changeableAttr = changeableAttr;
      *     copy.derivedExplicitCall = derivedExplicitCall;
@@ -430,9 +430,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             appendOverrideAnnotation(methodsBuilder, false);
         }
 
+        methodsBuilder.addImport(Map.class);
         methodsBuilder.methodBegin(Modifier.PUBLIC, "void", METHOD_COPY_ASSOCIATIONS, new String[] { varAbstractCopy,
-                varCopyMap }, new String[] { AbstractModelObject.class.getName(),
-                getHashMapFragment(false).getSourcecode() });
+                varCopyMap }, new String[] { IModelObject.class.getName(), getHashMapFragment(false).getSourcecode() });
 
         if (getPcType().hasSupertype()) {
             methodsBuilder.appendln("super.").append(METHOD_COPY_ASSOCIATIONS) //
