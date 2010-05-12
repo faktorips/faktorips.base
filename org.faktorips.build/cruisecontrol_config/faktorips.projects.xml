@@ -109,7 +109,7 @@
         <project name="org.faktorips.devtools.stdbuilder" mainbuildtarget="devtools.stdbuilder">
             <depends>
                 <project name="org.faktorips.fl"/>
-                <project name="org.faktorips.runtime"/>
+                <project name="org.faktorips.runtime.java5"/>
                 <project name="org.faktorips.devtools.core"/>
             </depends>            
         </project>
