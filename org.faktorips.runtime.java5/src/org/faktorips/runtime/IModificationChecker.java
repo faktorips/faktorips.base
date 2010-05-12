@@ -11,10 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.toc;
+package org.faktorips.runtime;
 
-public interface IModelTypeTocEntry extends ITocEntryObject {
+public interface IModificationChecker {
 
-    public static final String XML_TAG = "ModelType";
+    public boolean isExpired(long timestamp);
+
+    public long getModificationStamp();
 
 }

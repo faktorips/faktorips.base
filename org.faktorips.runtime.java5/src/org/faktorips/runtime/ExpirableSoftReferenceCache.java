@@ -13,29 +13,23 @@
 
 package org.faktorips.runtime;
 
-/**
- * A factory for creating caches used by the repository.
- * 
- * @author Jan Ortmann
- */
-public interface ICacheFactory {
+public class ExpirableSoftReferenceCache<T> extends SoftReferenceCache<T> {
 
-    public enum Type {
-        PRODUCT_CMPT_CHACHE,
-        PRODUCT_CMPT_GENERATION_CHACHE,
-        TABLE_BY_CLASSNAME_CACHE,
-        TABLE_BY_QUALIFIED_NAME_CACHE,
-        ENUM_CONTENT_BY_CLASS;
+    private final IModificationChecker modificationChecker;
+
+    private long timestamp;
+
+    public ExpirableSoftReferenceCache(IModificationChecker modificationChecker, int initialSize) {
+        super(initialSize);
+        this.modificationChecker = modificationChecker;
     }
 
-    /**
-     * Creates a new cache of the given type.
-     * 
-     * @see Type#PRODUCT_CMPT_CHACHE
-     * @see Type#PRODUCT_CMPT_GENERATION_CHACHE
-     * @see Type#TABLE_BY_CLASSNAME_CACHE
-     * @see Type#TABLE_BY_QUALIFIED_NAME_CACHE
-     * @see Type#ENUM_CONTENT_BY_CLASS
-     */
-    public <T> ICache<T> createCache(Type type, Class<T> typeClass);
+    @Override
+    public T getObject(Object key) {
+        if (modificationChecker.isExpired(timestamp)) {
+            clear();
+            timestamp = modificationChecker.getModificationStamp();
+        }
+        return super.getObject(key);
+    }
 }

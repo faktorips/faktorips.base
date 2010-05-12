@@ -69,13 +69,14 @@ import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.FormulaTestTocEntry;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntryObject;
-import org.faktorips.runtime.internal.toc.ModelTypeTocEntry;
+import org.faktorips.runtime.internal.toc.PolicyCmptTypeTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.ProductCmptTypeTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -92,7 +93,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     private Map<IIpsPackageFragmentRoot, Long> packFrgmtRootTocModStamps = new HashMap<IIpsPackageFragmentRoot, Long>();
 
     // a map that contains the table of contents objects (value) for each table of contents file.
-    private Map<IFile, MutableClRuntimeRepositoryToc> tocFileMap = new HashMap<IFile, MutableClRuntimeRepositoryToc>();
+    private Map<IFile, TableOfContent> tocFileMap = new HashMap<IFile, TableOfContent>();
 
     // required builders
     private ProductCmptImplClassBuilder productCmptTypeImplClassBuilder;
@@ -294,7 +295,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         tocFile.setContents(is, true, true, null);
     }
 
-    private MutableClRuntimeRepositoryToc getToc(IIpsSrcFile ipsSrcFile) throws CoreException {
+    private TableOfContent getToc(IIpsSrcFile ipsSrcFile) throws CoreException {
         IIpsPackageFragmentRoot root = ipsSrcFile.getIpsObject().getIpsPackageFragment().getRoot();
         return getToc(root);
     }
@@ -305,12 +306,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * 
      * @throws CoreException if an error occurs while accessing the toc file.
      */
-    public MutableClRuntimeRepositoryToc getToc(IIpsPackageFragmentRoot root) throws CoreException {
+    public TableOfContent getToc(IIpsPackageFragmentRoot root) throws CoreException {
         IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
         IFile tocFile = builderSet.getRuntimeRepositoryTocFile(root);
-        MutableClRuntimeRepositoryToc toc = tocFileMap.get(tocFile);
+        TableOfContent toc = tocFileMap.get(tocFile);
         if (toc == null) {
-            toc = new MutableClRuntimeRepositoryToc();
+            toc = new TableOfContent();
             if (tocFile != null && tocFile.exists()) {
                 InputStream is = tocFile.getContents(true);
                 Document doc;
@@ -381,7 +382,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
             } else {
                 // no toc entry has been newly created, remove the previous toc entry
-                getToc(ipsSrcFile).removeEntry(object.getQualifiedName());
+                getToc(ipsSrcFile).removeEntry(object.getQualifiedNameType());
             }
         } catch (Exception e) {
             IStatus status;
@@ -458,7 +459,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         ITocEntryObject entry = new FormulaTestTocEntry(objectId, productCmpt.getQualifiedName(), kindId, productCmpt
                 .getVersionId(), formulaTestCaseName);
         // new TestCaseTocEntry(objectId, productCmpt.getQualifiedName(), "", formulaTestCaseName);
-        // TODO nicht FormulaTestTocEntry???
+        // TODO CD: bisher stand hier TestCaseTocEntry nicht FormulaTestTocEntry???
 
         return entry;
     }
@@ -469,8 +470,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      */
     private void removeFormulaTestEntry(IIpsSrcFile ipsSrcFile) throws CoreException {
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-        if (getToc(ipsSrcFile).getTestCaseTocEntryByQName(ipsObject.getQualifiedName()) != null) {
-            getToc(ipsSrcFile).removeEntry(ipsObject.getQualifiedName());
+        getToc(ipsSrcFile).removeEntry(ipsObject.getQualifiedNameType());
+        if (formulaTestBuilder != null) {
             formulaTestBuilder.delete(ipsSrcFile);
         }
     }
@@ -548,8 +549,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (enumType.isContainingValues() || enumType.isAbstract()) {
             return null;
         }
-        ITocEntryObject entry = new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumXmlAdapterBuilder
-                .getQualifiedClassName(enumType));
+        ITocEntryObject entry = new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumType.getQualifiedName(),
+                enumXmlAdapterBuilder.getQualifiedClassName(enumType));
         return entry;
     }
 
@@ -559,26 +560,26 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public TocEntryObject createTocEntry(IType type) throws CoreException {
         String javaImplClass;
         String xmlResourceName;
+        String id = type.getQualifiedName(); // for model types, the qualified name is also the id.
         if (type instanceof IPolicyCmptType) {
             javaImplClass = policyCmptImplClassBuilder.getQualifiedClassName(type);
             xmlResourceName = policyModelTypeXmlBuilder.getXmlResourcePath(type);
+            return new PolicyCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName, javaImplClass);
         } else if (type instanceof IProductCmptType) {
             javaImplClass = productCmptTypeImplClassBuilder.getQualifiedClassName(type);
             xmlResourceName = productModelTypeXmlBuilder.getXmlResourcePath(type);
+            return new ProductCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName, javaImplClass);
         } else {
             throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
         }
-        String id = type.getQualifiedName(); // for model types, the qualified name is also the id.
-        TocEntryObject entry = new ModelTypeTocEntry(id, type.getQualifiedName(), xmlResourceName, javaImplClass);
-        return entry;
     }
 
     /**
      * {@inheritDoc}
      */
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-        MutableClRuntimeRepositoryToc toc = getToc(ipsSrcFile.getIpsPackageFragment().getRoot());
-        toc.removeEntry(ipsSrcFile.getQualifiedNameType().getName());
+        TableOfContent toc = getToc(ipsSrcFile.getIpsPackageFragment().getRoot());
+        toc.removeEntry(ipsSrcFile.getQualifiedNameType());
     }
 
     /**

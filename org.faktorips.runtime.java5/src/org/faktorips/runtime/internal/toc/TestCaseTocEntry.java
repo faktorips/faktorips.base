@@ -30,7 +30,7 @@ public class TestCaseTocEntry extends TocEntryObject implements ITestCaseTocEntr
      */
     public TestCaseTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName,
             String implementationClassName) {
-        super(implementationClassName, xmlResourceName, ipsObjectId, ipsObjectQualifiedName);
+        super(ipsObjectId, ipsObjectQualifiedName, xmlResourceName, implementationClassName);
     }
 
     @Override

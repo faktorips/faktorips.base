@@ -20,16 +20,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * A read-only table contents for the runtime repository.
+ * A table contents for the runtime repository.
  * <p>
  * The table of contents contains a list of toc entries that contain the information needed to
  * identify and load the objects stored in the repository.
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractReadonlyTableOfContents {
-
-    public final static String TOC_XML_ELEMENT = "FaktorIps-TableOfContents";
+public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableOfContents {
 
     public AbstractReadonlyTableOfContents() {
         // do nothing
@@ -104,7 +102,7 @@ public abstract class AbstractReadonlyTableOfContents {
     /**
      * Returns all toc's entries representing model types.
      */
-    public abstract Set<IModelTypeTocEntry> getModelTypeTocEntries();
+    public abstract Set<ModelTypeTocEntry> getModelTypeTocEntries();
 
     /**
      * Returns all toc's entries representing enum contents.

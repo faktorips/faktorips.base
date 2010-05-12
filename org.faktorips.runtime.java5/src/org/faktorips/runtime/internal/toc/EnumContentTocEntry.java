@@ -30,7 +30,7 @@ public class EnumContentTocEntry extends TocEntryObject implements IEnumContentT
      */
     public EnumContentTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName,
             String implementationClassName) {
-        super(implementationClassName, xmlResourceName, ipsObjectId, ipsObjectQualifiedName);
+        super(ipsObjectId, ipsObjectQualifiedName, xmlResourceName, implementationClassName);
     }
 
     @Override

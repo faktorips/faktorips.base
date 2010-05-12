@@ -21,7 +21,7 @@ import java.util.Map;
  * 
  * @author Jan Ortmann
  */
-public class SimpleCache implements ICache {
+public class SimpleCache implements ICache<Object> {
 
     private Map<Object, Object> objects;
 

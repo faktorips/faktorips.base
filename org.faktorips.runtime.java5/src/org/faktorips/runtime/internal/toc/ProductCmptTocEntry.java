@@ -70,7 +70,7 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
 
     public ProductCmptTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String kindId, String versionId,
             String xmlResourceName, String implementationClassName, String generationImplClassName, DateTime validTo) {
-        super(implementationClassName, xmlResourceName, ipsObjectId, ipsObjectQualifiedName);
+        super(ipsObjectId, ipsObjectQualifiedName, xmlResourceName, implementationClassName);
         this.kindId = kindId;
         this.versionId = versionId;
         this.validTo = validTo;

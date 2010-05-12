@@ -30,15 +30,15 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.IModelTypeTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntryObject;
-import org.faktorips.runtime.internal.toc.GenerationTocEntry;
+import org.faktorips.runtime.internal.toc.ModelTypeTocEntry;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 
@@ -50,7 +50,7 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
  */
 public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeRepository {
 
-    protected AbstractReadonlyTableOfContents toc;
+    protected IReadonlyTableOfContents toc;
 
     private ICacheFactory cacheFactory;
 
@@ -68,7 +68,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         initCaches();
     }
 
-    protected abstract AbstractReadonlyTableOfContents loadTableOfContents();
+    protected abstract IReadonlyTableOfContents loadTableOfContents();
 
     private void initCaches() {
         productCmptCache = cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_CHACHE, IProductComponent.class);
@@ -408,7 +408,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
 
     @Override
     protected void getAllModelTypeImplementationClasses(Set<String> result) {
-        Set<IModelTypeTocEntry> entries = toc.getModelTypeTocEntries();
+        Set<ModelTypeTocEntry> entries = toc.getModelTypeTocEntries();
         for (ITocEntryObject tocEntryObject : entries) {
             result.add(tocEntryObject.getImplementationClassName());
         }

@@ -20,11 +20,12 @@ public class EnumXmlAdapterTocEntry extends TocEntryObject implements IEnumXmlAd
     public static IEnumXmlAdapterTocEntry createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
-        return new EnumXmlAdapterTocEntry(ipsObjectId, implementationClassName);
+        String qualifiedName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
+        return new EnumXmlAdapterTocEntry(ipsObjectId, qualifiedName, implementationClassName);
     }
 
-    public EnumXmlAdapterTocEntry(String ipsObjectId, String implementationClassName) {
-        super(implementationClassName, "", ipsObjectId, "");
+    public EnumXmlAdapterTocEntry(String ipsObjectId, String qualifiedName, String implementationClassName) {
+        super(ipsObjectId, qualifiedName, "", implementationClassName);
     }
 
     @Override

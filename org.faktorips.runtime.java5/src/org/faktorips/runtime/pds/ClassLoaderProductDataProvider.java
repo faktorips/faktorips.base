@@ -26,13 +26,13 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class InstantProductDataProvider implements IProductDataProvider {
+public class ClassLoaderProductDataProvider implements IProductDataProvider {
 
     private final ClassLoader cl;
     private final DocumentBuilder docBuilder;
     private String tocResourcePath;
 
-    public InstantProductDataProvider(ClassLoader cl, String tocResourcePath, DocumentBuilder docBuilder) {
+    public ClassLoaderProductDataProvider(ClassLoader cl, String tocResourcePath, DocumentBuilder docBuilder) {
         this.cl = cl;
         this.tocResourcePath = tocResourcePath;
         this.docBuilder = docBuilder;
@@ -52,7 +52,7 @@ public class InstantProductDataProvider implements IProductDataProvider {
         return getDocumentElement(resourcePath);
     }
 
-    public InputStream getXmlAsStream(IEnumContentTocEntry tocEntry) {
+    public InputStream getTableContentAsStream(IEnumContentTocEntry tocEntry) {
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
@@ -112,6 +112,10 @@ public class InstantProductDataProvider implements IProductDataProvider {
             throw new RuntimeException("Xml resource " + resourcePath + " hasn't got a document element.");
         }
         return element;
+    }
+
+    public boolean isExpired(long timestamp) {
+        return getModificationStamp() != timestamp;
     }
 
 }

@@ -19,10 +19,10 @@ import org.faktorips.runtime.AbstractClassLoaderRuntimeRepository;
 import org.faktorips.runtime.DefaultCacheFactory;
 import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 import org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator;
-import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.w3c.dom.Element;
@@ -58,13 +58,13 @@ public class PdsRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
     }
 
     @Override
-    protected AbstractReadonlyTableOfContents loadTableOfContents() {
+    protected IReadonlyTableOfContents loadTableOfContents() {
         return productDataProvider.loadToc();
     }
 
     @Override
     protected InputStream getXmlAsStream(IEnumContentTocEntry tocEntry) {
-        return productDataProvider.getXmlAsStream(tocEntry);
+        return productDataProvider.getTableContentAsStream(tocEntry);
     }
 
     @Override

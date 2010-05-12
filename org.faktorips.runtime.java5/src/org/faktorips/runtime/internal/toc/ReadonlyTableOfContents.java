@@ -63,7 +63,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * Maps a qualified model type name to the toc entry that contains information about the model
      * type.
      */
-    protected Map<String, IModelTypeTocEntry> modelTypeNameTocEntryMap = new HashMap<String, IModelTypeTocEntry>(100);
+    protected Map<String, ModelTypeTocEntry> modelTypeNameTocEntryMap = new HashMap<String, ModelTypeTocEntry>(100);
 
     /** A map that contains the runtime id of enum contents as key and the toc entry as value. */
     protected Map<String, IEnumContentTocEntry> enumContentNameTocEntryMap = new HashMap<String, IEnumContentTocEntry>(
@@ -113,12 +113,12 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         }
 
         if (entry instanceof IFormulaTestTocEntry) {
-            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (ITestCaseTocEntry)entry);
+            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (IFormulaTestTocEntry)entry);
             return;
         }
 
-        if (entry instanceof IModelTypeTocEntry) {
-            modelTypeNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (IModelTypeTocEntry)entry);
+        if (entry instanceof ModelTypeTocEntry) {
+            modelTypeNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (ModelTypeTocEntry)entry);
             return;
         }
 
@@ -235,8 +235,8 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public Set<IModelTypeTocEntry> getModelTypeTocEntries() {
-        return new HashSet<IModelTypeTocEntry>(modelTypeNameTocEntryMap.values());
+    public Set<ModelTypeTocEntry> getModelTypeTocEntries() {
+        return new HashSet<ModelTypeTocEntry>(modelTypeNameTocEntryMap.values());
     }
 
     /**

@@ -15,6 +15,7 @@ package org.faktorips.runtime.pds;
 
 import java.io.InputStream;
 
+import org.faktorips.runtime.IModificationChecker;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
@@ -22,18 +23,16 @@ import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.w3c.dom.Element;
 
-public interface IProductDataProvider {
+public interface IProductDataProvider extends IModificationChecker {
 
-    long getModificationStamp();
+    public ReadonlyTableOfContents loadToc();
 
-    ReadonlyTableOfContents loadToc();
+    public Element getProductCmptData(IProductCmptTocEntry tocEntry);
 
-    Element getProductCmptData(IProductCmptTocEntry tocEntry);
+    public Element getTestcaseElement(ITestCaseTocEntry tocEntry);
 
-    Element getTestcaseElement(ITestCaseTocEntry tocEntry);
+    public InputStream getTableContentAsStream(IEnumContentTocEntry tocEntry);
 
-    InputStream getXmlAsStream(IEnumContentTocEntry tocEntry);
-
-    InputStream getXmlAsStream(ITableContentTocEntry tocEntry);
+    public InputStream getXmlAsStream(ITableContentTocEntry tocEntry);
 
 }

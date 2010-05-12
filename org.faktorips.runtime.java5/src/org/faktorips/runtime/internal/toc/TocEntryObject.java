@@ -53,16 +53,18 @@ public abstract class TocEntryObject extends TocEntry implements ITocEntryObject
             return EnumXmlAdapterTocEntry.createFromXml(entryElement);
         } else if (IFormulaTestTocEntry.XML_TAG.equals(entryName)) {
             return FormulaTestTocEntry.createFromXml(entryElement);
-        } else if (IModelTypeTocEntry.XML_TAG.equals(entryName)) {
-            return ModelTypeTocEntry.createFromXml(entryElement);
+        } else if (ProductCmptTypeTocEntry.XML_TAG.equals(entryName)) {
+            return ProductCmptTypeTocEntry.createFromXml(entryElement);
+        } else if (PolicyCmptTypeTocEntry.XML_TAG.equals(entryName)) {
+            return PolicyCmptTypeTocEntry.createFromXml(entryElement);
         } else {
             throw new IllegalArgumentException("Unknown element: " + entryName);
         }
 
     }
 
-    protected TocEntryObject(String implementationClassName, String xmlResourceName, String ipsObjectId,
-            String ipsObjectQualifiedName) {
+    protected TocEntryObject(String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName,
+            String implementationClassName) {
         super(implementationClassName, xmlResourceName);
         this.ipsObjectId = ipsObjectId;
         this.ipsObjectQualifiedName = ipsObjectQualifiedName;

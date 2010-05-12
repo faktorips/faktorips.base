@@ -15,12 +15,12 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
-public class FormulaTestTocEntry extends TocEntryObject implements IFormulaTestTocEntry {
+public class FormulaTestTocEntry extends TestCaseTocEntry implements IFormulaTestTocEntry {
 
     private final String kindId;
     private final String versionId;
 
-    public static ITocEntryObject createFromXml(Element entryElement) {
+    public static FormulaTestTocEntry createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
 
@@ -33,7 +33,7 @@ public class FormulaTestTocEntry extends TocEntryObject implements IFormulaTestT
 
     public FormulaTestTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String kindId, String versionId,
             String implementationClassName) {
-        super(implementationClassName, "", ipsObjectId, ipsObjectQualifiedName);
+        super(ipsObjectId, ipsObjectQualifiedName, "", implementationClassName);
         this.kindId = kindId;
         this.versionId = versionId;
     }
@@ -61,7 +61,7 @@ public class FormulaTestTocEntry extends TocEntryObject implements IFormulaTestT
 
     @Override
     protected String getXmlElementTag() {
-        return XML_TAG;
+        return IFormulaTestTocEntry.XML_TAG;
     }
 
 }
