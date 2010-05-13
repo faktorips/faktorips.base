@@ -16,9 +16,12 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -70,21 +73,37 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         private void createContextMenu() {
-            IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
+            // TODO AW: Duplicate code in attributes section of pctype
+            final IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
             final IWorkbenchAction renameAction = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
-            IActionBars actionBars = editorSite.getActionBars();
-            actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
-                    getPartsComposite()));
+            final IActionBars actionBars = editorSite.getActionBars();
+
+            /*
+             * The action handler is the implementation of the global rename action. It will be set
+             * every time when the section needs to be painted hence when it becomes visible to the
+             * user. This is necessary because other editor instances are overwriting the setting
+             * with their own rename action implementation because they want to pass to it their own
+             * selection provider.
+             */
+            addPaintListener(new PaintListener() {
+                public void paintControl(PaintEvent e) {
+                    RenameAction ipsRenameActionHandler = new RenameAction(editorSite.getShell(), getPartsComposite());
+                    actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), ipsRenameActionHandler);
+                    actionBars.updateActionBars();
+                }
+            });
 
             MenuManager manager = new MenuManager();
             manager.setRemoveAllWhenShown(true);
             manager.addMenuListener(new IMenuListener() {
                 public void menuAboutToShow(IMenuManager manager) {
+                    manager.add(new Separator());
                     MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
                     refactorSubmenu.add(renameAction);
                     manager.add(refactorSubmenu);
                 }
             });
+
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
         }

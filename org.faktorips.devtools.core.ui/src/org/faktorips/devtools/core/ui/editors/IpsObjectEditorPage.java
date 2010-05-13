@@ -63,7 +63,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     }
 
     /** Returns the <tt>IpsObjectEditor</tt> this page belongs to. */
-    protected IpsObjectEditor getIpsObjectEditor() {
+    public IpsObjectEditor getIpsObjectEditor() {
         return (IpsObjectEditor)getEditor();
     }
 
@@ -72,7 +72,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * <tt>null</tt> if the source file couldn't determine the IPS object (e.g. if the source file
      * is stored outside an IPS package).
      */
-    protected IIpsObject getIpsObject() {
+    public IIpsObject getIpsObject() {
         /*
          * Null checking is necessary since it might be the case that the IPS source file cannot be
          * determined. E.g. in the special case that one tries to open an IPS source file which is
