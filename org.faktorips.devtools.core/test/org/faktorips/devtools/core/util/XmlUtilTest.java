@@ -13,26 +13,16 @@
 
 package org.faktorips.devtools.core.util;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.GregorianCalendar;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
-/**
- *
- */
 public class XmlUtilTest extends XmlAbstractTestCase {
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -60,8 +50,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         XmlUtil.nodeToString(doc, "Cp1252"); //$NON-NLS-1$
     }
 
-    public void testGetFirstElement() throws TransformerException, UnsupportedEncodingException, SAXException,
-            IOException, ParserConfigurationException {
+    public void testGetFirstElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
         assertNotNull(docElement);
@@ -78,8 +67,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertEquals("TestElement", XmlUtil.getElement(rootEl, 2).getNodeName()); //$NON-NLS-1$
     }
 
-    public void testGetElement() throws TransformerException, UnsupportedEncodingException, SAXException, IOException,
-            ParserConfigurationException {
+    public void testGetElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
 
@@ -102,16 +90,17 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertNotNull(text);
         assertEquals("blabla", text.getData()); //$NON-NLS-1$
 
-        // test after manually processing a document
-        // e.g. using xsl transformation text nodes could be split into several sibling text nodes
-        // this test ensures that the node will be normalized before returning the text of the child
-        // text nodes
-        // see Interface org.w3c.dom.Text
-        Element child = doc.createElement("Child");
+        /*
+         * Test after manually processing a document, e.g. using XSL transformation text nodes could
+         * be split into several sibling text nodes this test ensures that the node will be
+         * normalized before returning the text of the child text nodes (see Interface
+         * org.w3c.dom.Text)
+         */
+        Element child = doc.createElement("Child"); //$NON-NLS-1$
         testElement.appendChild(child);
-        child.appendChild(doc.createTextNode("1"));
-        child.appendChild(doc.createTextNode("2"));
-        child.appendChild(doc.createTextNode("3"));
-        assertEquals("123", XmlUtil.getTextNode(child).getData());
+        child.appendChild(doc.createTextNode("1")); //$NON-NLS-1$
+        child.appendChild(doc.createTextNode("2")); //$NON-NLS-1$
+        child.appendChild(doc.createTextNode("3")); //$NON-NLS-1$
+        assertEquals("123", XmlUtil.getTextNode(child).getData()); //$NON-NLS-1$
     }
 }

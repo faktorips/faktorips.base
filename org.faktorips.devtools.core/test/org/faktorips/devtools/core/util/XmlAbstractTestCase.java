@@ -27,27 +27,21 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * A test case that makes it easier to write test cases that read data from an xml file.
+ * A test case that makes it easier to write test cases that read data from an XML file.
  */
 public abstract class XmlAbstractTestCase extends TestCase {
 
-    /**
-     * 
-     */
     public XmlAbstractTestCase() {
         super();
     }
 
-    /**
-     * @param name
-     */
     public XmlAbstractTestCase(String name) {
         super(name);
     }
 
     /**
-     * Returns the xml document that is associated with the test case. This document has the same
-     * name as the test case class and the ending "+.xml".
+     * Returns the XML document that is associated with the test case. This document has the same
+     * name as the test case class and the ending ".XML".
      */
     public Document getTestDocument() {
         try {

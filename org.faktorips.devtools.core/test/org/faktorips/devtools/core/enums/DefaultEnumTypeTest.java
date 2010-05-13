@@ -15,10 +15,11 @@ package org.faktorips.devtools.core.enums;
 
 import junit.framework.TestCase;
 
-/**
- *
- */
 public class DefaultEnumTypeTest extends TestCase {
+
+    private static final String MALE_VALUE = "male"; //$NON-NLS-1$
+    private static final String FEMALE_VALUE = "female"; //$NON-NLS-1$
+    private static final String GENDER_ENUM_TYPE_NAME = "Gender"; //$NON-NLS-1$
 
     private DefaultEnumType gender;
     private DefaultEnumValue male;
@@ -26,12 +27,9 @@ public class DefaultEnumTypeTest extends TestCase {
 
     @Override
     protected void setUp() {
-        gender = new DefaultEnumType("Gender", DefaultEnumValue.class);
-        male = new DefaultEnumValue(gender, "male");
-        female = new DefaultEnumValue(gender, "female");
-    }
-
-    public void testAddValue() {
+        gender = new DefaultEnumType(GENDER_ENUM_TYPE_NAME, DefaultEnumValue.class);
+        male = new DefaultEnumValue(gender, MALE_VALUE);
+        female = new DefaultEnumValue(gender, FEMALE_VALUE);
     }
 
     public void testGetValues() {
@@ -39,36 +37,21 @@ public class DefaultEnumTypeTest extends TestCase {
         assertEquals(male, gender.getValues()[0]);
         assertEquals(female, gender.getValues()[1]);
 
-        // defensive copy test
-        gender.getValues()[0] = null; // modifiy resulting array
+        // Defensive copy test
+        gender.getValues()[0] = null; // Modify resulting array
         assertEquals(male, gender.getValues()[0]);
     }
 
     public void testGetValueIds() {
         assertEquals(2, gender.getValueIds().length);
-        assertEquals("male", gender.getValueIds()[0]);
-        assertEquals("female", gender.getValueIds()[1]);
+        assertEquals("male", gender.getValueIds()[0]); //$NON-NLS-1$
+        assertEquals("female", gender.getValueIds()[1]); //$NON-NLS-1$
     }
 
     public void testContainsValue() {
-        assertTrue(gender.containsValue("male"));
-        assertTrue(gender.containsValue("female"));
-        assertFalse(gender.containsValue("unknown"));
-    }
-
-    public void testGetEnumValue() {
-    }
-
-    public void testContains() {
-    }
-
-    public void testContainsNull() {
-    }
-
-    public void testGetNumOfValues() {
-    }
-
-    public void testCompareTo() {
+        assertTrue(gender.containsValue(MALE_VALUE));
+        assertTrue(gender.containsValue(FEMALE_VALUE));
+        assertFalse(gender.containsValue("unknown")); //$NON-NLS-1$
     }
 
     public void testGetEnumValue_int() {
