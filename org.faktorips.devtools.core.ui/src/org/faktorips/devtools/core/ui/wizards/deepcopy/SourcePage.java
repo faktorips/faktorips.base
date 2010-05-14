@@ -404,8 +404,12 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         }
 
         public void focusLost(FocusEvent e) {
+            boolean refreshDone = false;
             for (int i = 0; i < textControls.length; i++) {
-                if (hasValueChanged(textControls[i])) {
+                if (!refreshDone && hasValueChanged(textControls[i])) {
+                    // refresh has been performed
+                    // so we don't need to check the other controls
+                    refreshDone = true;
                     final int idx = i;
                     getShell().getDisplay().asyncExec(new Runnable() {
                         public void run() {
@@ -418,18 +422,14 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                                 getDeepCopyWizard().applyWorkingDate();
                                 // set the version id text as previous value
                                 // to avoid second refresh
-                                prevValues.put(versionId, versionId.getText());
+                                hasValueChanged(versionId);
                                 refreshPageAferValueChange();
                                 updateColumnWidth();
                             } else {
                                 refreshPageAferValueChange();
-
                             }
                         }
                     });
-                    // refresh has been performed
-                    // so we don't need to check the other controls
-                    break;
                 }
             }
         }
