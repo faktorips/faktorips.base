@@ -71,6 +71,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -284,10 +285,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
                     setMessagePleaseEnterWorkingDate();
 
-                    // clear version id because is user mus first change the working date
+                    // clear version id because is user must first change the working date
                     versionId.setText(""); //$NON-NLS-1$
                     prevValues.put(versionId, null);
-                    // trigger a new validate after focus lost on workingDate test field
+                    // trigger a new validate after focus lost on workingDate text field
                     prevValues.put(workingDate, null);
                 } else {
                     refreshPageAferValueChange();
@@ -358,6 +359,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     protected void refreshPageAferValueChange() {
+        getDeepCopyWizard().getDeepCopyPreview().resetCacheAfterValueChange();
         refreshTree();
         validate();
         updatePageComplete();
@@ -402,8 +404,12 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         }
 
         public void focusLost(FocusEvent e) {
+            boolean refreshDone = false;
             for (int i = 0; i < textControls.length; i++) {
-                if (hasValueChanged(textControls[i])) {
+                if (!refreshDone && hasValueChanged(textControls[i])) {
+                    // refresh has been performed
+                    // so we don't need to check the other controls
+                    refreshDone = true;
                     final int idx = i;
                     getShell().getDisplay().asyncExec(new Runnable() {
                         public void run() {
@@ -414,6 +420,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                             // focus doesn't change
                             if (textControls[idx] == workingDateField.getTextControl()) {
                                 getDeepCopyWizard().applyWorkingDate();
+                                // set the version id text as previous value
+                                // to avoid second refresh
+                                hasValueChanged(versionId);
                                 refreshPageAferValueChange();
                                 updateColumnWidth();
                             } else {
@@ -483,12 +492,14 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             @Override
             public void update(ViewerCell cell) {
                 Object element = cell.getElement();
-                if (linkedElements.contains(element)) {
-                    cell.setText(Messages.SourcePage_operationLink);
-                } else if (getDeepCopyWizard().getDeepCopyPreview().isCopy(element)) {
-                    cell.setText(Messages.SourcePage_operationCopy);
-                } else {
+                boolean linked = getDeepCopyWizard().getDeepCopyPreview().isLinked(element);
+                if (element instanceof ProductCmptTypeAssociationReference) {
                     cell.setText(""); //$NON-NLS-1$
+                } else if (linked) {
+                    cell.setText(Messages.SourcePage_operationLink);
+                } else {
+                    // if this is no link then it must be a copy
+                    cell.setText(Messages.SourcePage_operationCopy);
                 }
             }
         });
@@ -507,6 +518,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             @Override
             protected boolean canEdit(Object element) {
                 if (!(element instanceof IProductCmptStructureReference)) {
+                    return false;
+                }
+                if (element instanceof ProductCmptTypeAssociationReference) {
+                    // no operation for association nodes
                     return false;
                 }
                 if (structure.getRoot() == element) {
@@ -553,18 +568,27 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             @Override
             protected void setValue(Object element, Object value) {
                 Integer index = (Integer)value;
+                boolean doRefresh = false;
                 if (!(element instanceof IProductCmptTypeAssociationReference)) {
                     boolean linkElement = index == 1;
                     if (linkElement) {
-                        linkedElements.add(element);
+                        if (!linkedElements.contains(element)) {
+                            linkedElements.add(element);
+                            doRefresh = true;
+                        }
                     } else {
-                        linkedElements.remove(element);
+                        if (linkedElements.contains(element)) {
+                            linkedElements.remove(element);
+                            doRefresh = true;
+                        }
                     }
-                    if (element instanceof IProductCmptReference) {
+                    if (doRefresh && element instanceof IProductCmptReference) {
                         setSameOperationForAllChilds((IProductCmptReference)element, linkElement);
                     }
                 }
-                refreshPageAferValueChange();
+                if (doRefresh) {
+                    refreshPageAferValueChange();
+                }
             }
 
             private void setSameOperationForAllChilds(IProductCmptReference element, boolean asLink) {
