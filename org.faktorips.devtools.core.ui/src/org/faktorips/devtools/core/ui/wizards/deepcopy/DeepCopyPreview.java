@@ -42,6 +42,8 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 public class DeepCopyPreview {
+    private Integer segmentsToIgnoreCached = null;
+    private Object[] nonLinkElementsCached = null;
 
     private DeepCopyWizard deepCopyWizard;
     private SourcePage sourcePage;
@@ -60,6 +62,11 @@ public class DeepCopyPreview {
         initCaches();
     }
 
+    public void resetCacheAfterValueChange() {
+        segmentsToIgnoreCached = null;
+        nonLinkElementsCached = null;
+    }
+
     private void initCaches() {
         filename2productMap = new Hashtable<String, IProductCmptStructureReference>();
         product2filenameMap = new Hashtable<IProductCmptStructureReference, String>();
@@ -67,20 +74,12 @@ public class DeepCopyPreview {
         errorElements = new Hashtable<IProductCmptStructureReference, String>();
     }
 
-    public void checkForInvalidTarget(IProductCmptReference modified, boolean checked) {
-        errorElements.remove(modified);
-        String name = product2filenameMap.remove(modified);
-        if (name != null) {
-            filename2productMap.remove(name);
+    public int getSegmentsToIgnore() {
+        if (segmentsToIgnoreCached != null) {
+            return segmentsToIgnoreCached;
         }
-
-        if (!checked) {
-            return;
-        }
-
-        int segmentsToIgnore = sourcePage.getSegmentsToIgnore(getProductCmptStructRefToCopy());
-        IIpsPackageFragment base = sourcePage.getTargetPackage();
-        validateTarget(modified, segmentsToIgnore, base, errorElements);
+        segmentsToIgnoreCached = sourcePage.getSegmentsToIgnore(getProductCmptStructRefToCopy());
+        return segmentsToIgnoreCached;
     }
 
     public boolean newTargetHasError(IProductCmptStructureReference ref) {
@@ -215,6 +214,9 @@ public class DeepCopyPreview {
     }
 
     private Object[] getNonLinkElements() {
+        if (nonLinkElementsCached != null) {
+            return nonLinkElementsCached;
+        }
         List<Object> result = new ArrayList<Object>();
         Set<Object> linkedElements = sourcePage.getLinkedElements();
         List<Object> allChecked = Arrays.asList(sourcePage.getTree().getCheckedElements());
@@ -225,7 +227,8 @@ public class DeepCopyPreview {
             }
             result.add(currElement);
         }
-        return result.toArray(new Object[result.size()]);
+        nonLinkElementsCached = result.toArray(new Object[result.size()]);
+        return nonLinkElementsCached;
     }
 
     /**
@@ -394,7 +397,7 @@ public class DeepCopyPreview {
 
     public String getPackageName(IProductCmptStructureReference toCopy) {
         return buildTargetPackageName(sourcePage.getTargetPackage(), sourcePage.getCorrespondingIpsObject(toCopy),
-                sourcePage.getSegmentsToIgnore(getProductCmptStructRefToCopy()));
+                getSegmentsToIgnore());
     }
 
     private IIpsSrcFile getNewIpsSrcFile(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
@@ -407,7 +410,9 @@ public class DeepCopyPreview {
     }
 
     public boolean isCopy(Object element) {
-        return getProductCmptStructRefToCopyInternal().contains(element);
+        // we don't use: getProductCmptStructRefToCopyInternal().contains(element)
+        // because of performance reason
+        return !isLinked(element);
     }
 
     public boolean isChecked(Object element) {

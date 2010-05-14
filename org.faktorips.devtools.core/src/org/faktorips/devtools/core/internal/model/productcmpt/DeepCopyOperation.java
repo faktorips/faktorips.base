@@ -251,10 +251,9 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 IProductCmptTypeAssociationReference parentTypeRel = (IProductCmptTypeAssociationReference)productCmptStructureReference
                         .getParent();
                 IProductCmptStructureReference parent = parentTypeRel.getParent();
-                tblContentUsageAndLinkDataRefer
-                        .add(new LinkData((IProductCmpt)parent.getWrappedIpsObject(),
-                                (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(), parentTypeRel
-                                        .getAssociation()));
+                tblContentUsageAndLinkDataRefer.add(new LinkData((IProductCmpt)parent.getWrappedIpsObject(),
+                        (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(), parentTypeRel
+                                .getAssociation()));
             }
         }
         return tblContentUsageAndLinkDataRefer;
@@ -377,45 +376,59 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             this.productCmptTypeAssociation = productCmptTypeAssociation;
         }
 
-        public IProductCmpt getSourceProductCmpt() {
-            return sourceProductCmpt;
-        }
-
-        public IProductCmpt getTargetProductCmpt() {
-            return targetProductCmpt;
-        }
-
-        public IProductCmptTypeAssociation getProductCmptTypeAssociation() {
-            return productCmptTypeAssociation;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if ((this == other)) {
-                return true;
-            }
-            if ((other == null)) {
-                return false;
-            }
-            if (!(other instanceof LinkData)) {
-                return false;
-            }
-            LinkData castOther = (LinkData)other;
-            return (getSourceProductCmpt() != null && getSourceProductCmpt().equals(castOther.getSourceProductCmpt()))
-                    && (getTargetProductCmpt() != null && getTargetProductCmpt().equals(
-                            castOther.getTargetProductCmpt()))
-                    && (getProductCmptTypeAssociation() != null && getProductCmptTypeAssociation().equals(
-                            castOther.getProductCmptTypeAssociation()));
-
-        }
-
         @Override
         public int hashCode() {
-            int result = 17;
-            result = 37 * result + sourceProductCmpt.hashCode();
-            result = 37 * result + targetProductCmpt.hashCode();
-            result = 37 * result + productCmptTypeAssociation.hashCode();
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result
+                    + ((productCmptTypeAssociation == null) ? 0 : productCmptTypeAssociation.hashCode());
+            result = prime * result + ((sourceProductCmpt == null) ? 0 : sourceProductCmpt.hashCode());
+            result = prime * result + ((targetProductCmpt == null) ? 0 : targetProductCmpt.hashCode());
             return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            LinkData other = (LinkData)obj;
+            if (!getOuterType().equals(other.getOuterType())) {
+                return false;
+            }
+            if (productCmptTypeAssociation == null) {
+                if (other.productCmptTypeAssociation != null) {
+                    return false;
+                }
+            } else if (!productCmptTypeAssociation.equals(other.productCmptTypeAssociation)) {
+                return false;
+            }
+            if (sourceProductCmpt == null) {
+                if (other.sourceProductCmpt != null) {
+                    return false;
+                }
+            } else if (!sourceProductCmpt.equals(other.sourceProductCmpt)) {
+                return false;
+            }
+            if (targetProductCmpt == null) {
+                if (other.targetProductCmpt != null) {
+                    return false;
+                }
+            } else if (!targetProductCmpt.equals(other.targetProductCmpt)) {
+                return false;
+            }
+            return true;
+        }
+
+        private DeepCopyOperation getOuterType() {
+            return DeepCopyOperation.this;
         }
     }
 
