@@ -433,21 +433,6 @@
             menubarPath="faktorIPSMenu/faktorIpsGroup"
             tooltip="%org.faktorips.devtools.core.Migrate.tooltip"/>
         </objectContribution>
-        <!--objectContribution
-              adaptable="true"
-              id="org.faktorips.devtools.core.ui.ipsObjectPartContribution"
-              objectClass="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
-           <action
-                 class="org.faktorips.devtools.core.ui.actions.IpsObjectPartDeleteAction"
-                 definitionId="delete"
-                 enablesFor="*"
-                 id="org.faktorips.devtools.core.ui.ipsDeleteAction"
-                 label="Delete">
-              <selection
-                    class="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
-              </selection>
-           </action>
-        </objectContribution-->
 
   </extension>
 

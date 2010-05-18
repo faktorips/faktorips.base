@@ -99,13 +99,13 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  */
 public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
-    public static final String NEW_MENU_ID = "group.new";
+    public static final String NEW_MENU_ID = "group.new"; //$NON-NLS-1$
 
-    public static final String GROUP_MODELDEF = "group.modeldef";
+    public static final String GROUP_MODELDEF = "group.modeldef"; //$NON-NLS-1$
 
-    public static final String GROUP_PRODUCTDEF = "group.productdef";
+    public static final String GROUP_PRODUCTDEF = "group.productdef"; //$NON-NLS-1$
 
-    public static final String GROUP_COMMON = "group.common";
+    public static final String GROUP_COMMON = "group.common"; //$NON-NLS-1$
 
     private ActionGroup openActionGroup;
 

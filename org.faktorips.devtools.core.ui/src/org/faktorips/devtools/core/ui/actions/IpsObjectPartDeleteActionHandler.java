@@ -91,12 +91,12 @@ public class IpsObjectPartDeleteActionHandler extends AbstractHandler {
         if (editorPart instanceof IIpsSrcFileEditor) {
             IpsObjectEditor ipsEditor = (IpsObjectEditor)editorPart;
             if (ipsEditor.getIpsSrcFile().equals(srcFile)) {
-                // action was called from the editor that's sourcefile we look at -> better not safe
+                // action was called from the editor that's sourcefile we look at -> not save
                 return false;
             }
         }
         // action seems to be called from an editor that is not responsible for this srcfile ->
-        // better safe
+        // better save
         return true;
     }
 

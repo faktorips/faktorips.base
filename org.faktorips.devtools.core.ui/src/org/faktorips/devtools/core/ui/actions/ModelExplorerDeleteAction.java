@@ -58,10 +58,7 @@ public class ModelExplorerDeleteAction extends IpsAction implements IShellProvid
 
     @Override
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
-        if (selection instanceof IStructuredSelection) {
-            return canDelete(selection);
-        }
-        return false;
+        return canDelete(selection);
     }
 
     @Override

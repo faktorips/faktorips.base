@@ -214,7 +214,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             addFocusControl(treeViewer.getTree());
             registerDoubleClickListener();
             registerOpenLinkListener();
-            ModelViewerSynchronizer synchronizer = new ModelViewerSynchronizer(generation, treeViewer);
+            ModelViewerSynchronizer synchronizer = new ModelViewerSynchronizer(treeViewer);
             synchronizer.setWidget(client);
             IpsPlugin.getDefault().getIpsModel().addChangeListener(synchronizer);
         }
@@ -441,9 +441,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             IIpsSrcFile file = link.getIpsObject().getIpsSrcFile();
             IIpsSrcFileMemento memento = file.newMemento();
             LinkEditDialog dialog = new LinkEditDialog(link, getShell());
-            if (dialog == null) {
-                return;
-            }
             dialog.setDataChangeable(isDataChangeable());
             int rc = dialog.open();
             if (rc == Window.CANCEL) {
@@ -561,7 +558,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
         private List<Integer> lastSelectionPath = null;
 
-        private ModelViewerSynchronizer(IProductCmptGeneration generation, TreeViewer treeViewer) {
+        private ModelViewerSynchronizer(TreeViewer treeViewer) {
             treeViewer.getTree().addSelectionListener(this);
         }
 
