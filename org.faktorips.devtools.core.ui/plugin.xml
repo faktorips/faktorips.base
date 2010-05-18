@@ -1233,11 +1233,9 @@
                class="org.faktorips.devtools.core.ui.actions.RenameHandler">
          </class>
          <enabledWhen>
-            <not>
-               <count
-                     value="0">
-               </count>
-            </not>
+            <count
+                  value="1">
+            </count>
          </enabledWhen>
       </handler>
       <handler
@@ -1258,11 +1256,9 @@
                class="org.faktorips.devtools.core.ui.actions.MoveHandler">
          </class>
          <enabledWhen>
-            <not>
-               <count
-                     value="0">
-               </count>
-            </not>
+            <count
+                  value="1">
+            </count>
          </enabledWhen>
       </handler>
    </extension>
