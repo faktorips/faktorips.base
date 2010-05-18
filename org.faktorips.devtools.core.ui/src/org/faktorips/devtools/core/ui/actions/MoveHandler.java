@@ -102,9 +102,9 @@ public class MoveHandler extends IpsRefactoringHandler {
     }
 
     public static ContributionItem getContributionItem() {
-        CommandContributionItem renameItem = new CommandContributionItem(new CommandContributionItemParameter(
-                PlatformUI.getWorkbench(), null, COMMAND_ID, CommandContributionItem.STYLE_PUSH));
-        return renameItem;
+        CommandContributionItem moveItem = new CommandContributionItem(new CommandContributionItemParameter(PlatformUI
+                .getWorkbench(), null, COMMAND_ID, CommandContributionItem.STYLE_PUSH));
+        return moveItem;
     }
 
 }
