@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -52,6 +53,10 @@ public class DeepCopyWizard extends ResizableWizard {
     public static final int TYPE_NEW_VERSION = 100;
 
     private static final String SECTION_NAME = "DeepCopyWizard"; //$NON-NLS-1$
+
+    private static boolean TRACE = true;
+
+    private Map<String, Long> traceTimer;
 
     private ProductCmptTreeStructure structure;
     private SourcePage sourcePage;
@@ -93,6 +98,13 @@ public class DeepCopyWizard extends ResizableWizard {
     public DeepCopyWizard(IProductCmpt product, GregorianCalendar validFromOfGenerationSource, int type)
             throws IllegalArgumentException {
         super(SECTION_NAME, IpsPlugin.getDefault().getDialogSettings(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        String logText = "Constructor DeepCopyWizard() " + product;
+        if (TRACE) {
+            traceTimer = new HashMap<String, Long>();
+        }
+        logTraceStart(logText);
+
         setNeedsProgressMonitor(true);
 
         if (type != TYPE_COPY_PRODUCT && type != TYPE_NEW_VERSION) {
@@ -126,6 +138,8 @@ public class DeepCopyWizard extends ResizableWizard {
             super.setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                     "wizards/NewVersionWizard.png")); //$NON-NLS-1$
         }
+
+        logTraceEnd(logText);
     }
 
     /**
@@ -170,10 +184,12 @@ public class DeepCopyWizard extends ResizableWizard {
                 @Override
                 protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
                         InterruptedException {
+                    logTraceStart("DeepCopyOperation.run");
                     DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
                     dco.run(monitor);
                     copiedRoot = dco.getCopiedRoot();
+                    logTraceEnd("DeepCopyOperation.run");
                 }
             };
             getContainer().run(true, true, operation);
@@ -282,5 +298,45 @@ public class DeepCopyWizard extends ResizableWizard {
         } catch (NumberFormatException e) {
         }
         return size;
+    }
+
+    void logTraceStart(String methodName) {
+        if (!TRACE) {
+            return;
+        }
+        logTraceStartInternal(methodName);
+    }
+
+    private synchronized void logTraceStartInternal(String methodName) {
+        trace(methodName + " - start");
+        traceTimer.put(methodName, System.nanoTime());
+    }
+
+    void logTraceEnd(String methodName) {
+        if (!TRACE) {
+            return;
+        }
+        logTraceEndIntenal(methodName);
+    }
+
+    private synchronized void logTraceEndIntenal(String methodName) {
+        if (traceTimer.get(methodName) == null) {
+            throw new RuntimeException(methodName + " timer not started!");
+        }
+        long durration = System.nanoTime() - traceTimer.get(methodName);
+        traceTimer.remove(methodName);
+        trace(methodName + " - end: " + ((double)durration) / 1000 / 1000 / 1000 + " s");
+    }
+
+    private void trace(String text) {
+        System.out.println(getTracePrefix() + text);
+    }
+
+    private String getTracePrefix() {
+        String offset = "";
+        for (int i = 0; i < traceTimer.size(); i++) {
+            offset += " ";
+        }
+        return offset;
     }
 }
