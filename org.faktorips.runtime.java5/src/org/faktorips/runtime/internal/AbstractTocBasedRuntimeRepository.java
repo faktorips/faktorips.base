@@ -71,12 +71,11 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     protected abstract IReadonlyTableOfContents loadTableOfContents();
 
     private void initCaches() {
-        productCmptCache = cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_CHACHE, IProductComponent.class);
-        productCmptGenerationCache = cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_GENERATION_CHACHE,
-                IProductComponentGeneration.class);
-        tableCacheByQName = cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_QUALIFIED_NAME_CACHE, ITable.class);
-        tableCacheByClass = cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_CLASSNAME_CACHE, ITable.class);
-        enumValuesCacheByClass = cacheFactory.createCache(ICacheFactory.Type.ENUM_CONTENT_BY_CLASS, List.class);
+        productCmptCache = cacheFactory.createProductCmptCache();
+        productCmptGenerationCache = cacheFactory.createProductCmptGenerationCache();
+        tableCacheByQName = cacheFactory.createTableCache();
+        tableCacheByClass = cacheFactory.createTableCache();
+        enumValuesCacheByClass = cacheFactory.createCache(List.class);
         enumXmlAdapters = new LinkedList<XmlAdapter<?, ?>>();
     }
 
@@ -130,6 +129,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         for (IEnumContentTocEntry tocEntryObject : tocEntries) {
             if (tocEntryObject.getImplementationClassName().equals(clazz.getName())) {
                 currentTocEntry = tocEntryObject;
+                break;
             }
         }
         if (currentTocEntry == null) {

@@ -25,7 +25,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
-import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.EnumSaxHandler;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
@@ -38,7 +37,6 @@ import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBasedRuntimeRepository {
@@ -132,20 +130,9 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
         } catch (Exception e) {
             throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
         }
-        Element docElement = getDocumentElement(tocEntry.getParent());
-        NodeList nl = docElement.getChildNodes();
-        DateTime validFrom = tocEntry.getValidFrom();
-        for (int i = 0; i < nl.getLength(); i++) {
-            if ("Generation".equals(nl.item(i).getNodeName())) {
-                Element genElement = (Element)nl.item(i);
-                DateTime generationValidFrom = DateTime.parseIso(genElement.getAttribute("validFrom"));
-                if (validFrom.equals(generationValidFrom)) {
-                    productCmptGen.initFromXml(genElement);
-                    return productCmptGen;
-                }
-            }
-        }
-        throw new RuntimeException("Can't find the generation for the toc entry " + tocEntry);
+        Element genElement = getDocumentElement(tocEntry);
+        productCmptGen.initFromXml(genElement);
+        return productCmptGen;
     }
 
     private Constructor<?> getConstructor(GenerationTocEntry tocEntry) {
@@ -245,6 +232,8 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
     }
 
     protected abstract Element getDocumentElement(IProductCmptTocEntry tocEntry);
+
+    protected abstract Element getDocumentElement(GenerationTocEntry tocEntry);
 
     protected abstract Element getDocumentElement(ITestCaseTocEntry tocEntry);
 

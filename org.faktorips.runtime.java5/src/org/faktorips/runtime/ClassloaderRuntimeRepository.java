@@ -20,6 +20,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
@@ -29,6 +30,7 @@ import org.faktorips.runtime.internal.toc.ITocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -305,6 +307,23 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
     @Override
     protected Element getDocumentElement(IProductCmptTocEntry tocEntry) {
         return getDocumentElement((ITocEntry)tocEntry);
+    }
+
+    @Override
+    protected Element getDocumentElement(GenerationTocEntry tocEntry) {
+        Element docElement = getDocumentElement(tocEntry.getParent());
+        NodeList nl = docElement.getChildNodes();
+        DateTime validFrom = tocEntry.getValidFrom();
+        for (int i = 0; i < nl.getLength(); i++) {
+            if ("Generation".equals(nl.item(i).getNodeName())) {
+                Element genElement = (Element)nl.item(i);
+                DateTime generationValidFrom = DateTime.parseIso(genElement.getAttribute("validFrom"));
+                if (validFrom.equals(generationValidFrom)) {
+                    return genElement;
+                }
+            }
+        }
+        throw new RuntimeException("Can't find the generation for the toc entry " + tocEntry);
     }
 
     @Override

@@ -16,7 +16,7 @@ package org.faktorips.runtime.pds;
 import java.io.InputStream;
 
 import org.faktorips.runtime.AbstractClassLoaderRuntimeRepository;
-import org.faktorips.runtime.DefaultCacheFactory;
+import org.faktorips.runtime.ExpirableCacheFactory;
 import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 import org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -27,12 +27,12 @@ import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.w3c.dom.Element;
 
-public class PdsRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
+public class ProductDataRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
 
     private final IProductDataProvider productDataProvider;
 
-    public PdsRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider) {
-        super(name, new DefaultCacheFactory(), cl);
+    public ProductDataRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider) {
+        super(name, new ExpirableCacheFactory(productDataProvider), cl);
         this.productDataProvider = productDataProvider;
         reload();
     }
@@ -45,6 +45,11 @@ public class PdsRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
     @Override
     protected Element getDocumentElement(IProductCmptTocEntry tocEntry) {
         return productDataProvider.getProductCmptData(tocEntry);
+    }
+
+    @Override
+    protected Element getDocumentElement(GenerationTocEntry tocEntry) {
+        return productDataProvider.getProductCmptGenerationData(tocEntry);
     }
 
     @Override

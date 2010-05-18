@@ -13,23 +13,17 @@
 
 package org.faktorips.runtime;
 
-/**
- * A factory for creating caches used by the repository.
- * 
- * @author Jan Ortmann
- */
-public interface ICacheFactory {
+public class ExpirableCacheFactory extends DefaultCacheFactory {
 
-    /**
-     * Creates a new cache of the given type.
-     * 
-     */
-    public <T> ICache<T> createCache(Class<T> typeClass);
+    private final IModificationChecker modificationChecker;
 
-    public ICache<IProductComponent> createProductCmptCache();
+    public ExpirableCacheFactory(IModificationChecker modificationChecker) {
+        this.modificationChecker = modificationChecker;
+    }
 
-    public ICache<IProductComponentGeneration> createProductCmptGenerationCache();
-
-    public ICache<ITable> createTableCache();
+    @Override
+    public <T> ICache<T> createCache(Class<T> typeClass) {
+        return new ExpirableSoftReferenceCache<T>(modificationChecker, getInitialSiez(typeClass));
+    }
 
 }

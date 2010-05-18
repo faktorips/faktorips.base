@@ -18,6 +18,8 @@ import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
@@ -25,12 +27,14 @@ import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class ClassLoaderProductDataProvider implements IProductDataProvider {
 
     private final ClassLoader cl;
     private final DocumentBuilder docBuilder;
     private String tocResourcePath;
+    private long modificationStamp;
 
     public ClassLoaderProductDataProvider(ClassLoader cl, String tocResourcePath, DocumentBuilder docBuilder) {
         this.cl = cl;
@@ -38,13 +42,25 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
         this.docBuilder = docBuilder;
     }
 
-    public long getModificationStamp() {
-        return 0;
-    }
-
     public Element getProductCmptData(IProductCmptTocEntry tocEntry) {
         String resourcePath = tocEntry.getXmlResourceName();
         return getDocumentElement(resourcePath);
+    }
+
+    public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) {
+        Element docElement = getDocumentElement(tocEntry.getParent().getXmlResourceName());
+        NodeList nl = docElement.getChildNodes();
+        DateTime validFrom = tocEntry.getValidFrom();
+        for (int i = 0; i < nl.getLength(); i++) {
+            if ("Generation".equals(nl.item(i).getNodeName())) {
+                Element genElement = (Element)nl.item(i);
+                DateTime generationValidFrom = DateTime.parseIso(genElement.getAttribute("validFrom"));
+                if (validFrom.equals(generationValidFrom)) {
+                    return genElement;
+                }
+            }
+        }
+        throw new RuntimeException("Can't find the generation for the toc entry " + tocEntry);
     }
 
     public Element getTestcaseElement(ITestCaseTocEntry tocEntry) {
@@ -116,6 +132,14 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
 
     public boolean isExpired(long timestamp) {
         return getModificationStamp() != timestamp;
+    }
+
+    public long getModificationStamp() {
+        return modificationStamp;
+    }
+
+    public void modify() {
+        modificationStamp++;
     }
 
 }

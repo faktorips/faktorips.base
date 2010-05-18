@@ -13,49 +13,80 @@
 
 package org.faktorips.runtime;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Default cache factory. Uses SoftReferenceCaches for each object type.
  * 
  * @author Jan Ortmann
  */
 public class DefaultCacheFactory implements ICacheFactory {
-    private int initialCapacityForProductCmpts = 500;
-    private int initialCapacityForProductCmptGenerations = 5000;
-    private int initialCapacityForTablesByClassname = 100;
-    private int initialCapacityForTablesByQname = 100;
-    private int initialCapacityForEnumContentByClassName = 100;
+
+    private Map<Class<?>, Integer> initialSizeMap = new HashMap<Class<?>, Integer>();
+
+    private int defaultInitialSize = 100;
 
     public DefaultCacheFactory() {
-        // do nothing
+        setInitialSize(IProductComponent.class, 500);
+        setInitialSize(IProductComponentGeneration.class, 5000);
+        setInitialSize(ITable.class, 100);
     }
 
+    /**
+     * Constructor to set the initial capacity of the caches
+     * 
+     * @param initialCapacityForTablesByQname not used anymore!
+     * @param initialCapacityForEnumContentByClassName not used anymore!
+     * 
+     * @deprecated use the default constructor and set the cache size by calling
+     *             {@link #setInitialSize(Class, int)} instead
+     */
+    @Deprecated
     public DefaultCacheFactory(int initialCapacityForProductCmpts, int initialCapacityForProductCmptGenerations,
             int initialCapacityForTablesByClassname, int initialCapacityForTablesByQname,
             int initialCapacityForEnumContentByClassName) {
         super();
-        this.initialCapacityForProductCmpts = initialCapacityForProductCmpts;
-        this.initialCapacityForProductCmptGenerations = initialCapacityForProductCmptGenerations;
-        this.initialCapacityForTablesByClassname = initialCapacityForTablesByClassname;
-        this.initialCapacityForTablesByQname = initialCapacityForTablesByQname;
-        this.initialCapacityForEnumContentByClassName = initialCapacityForEnumContentByClassName;
+        setInitialSize(IProductComponent.class, initialCapacityForProductCmpts);
+        setInitialSize(IProductComponentGeneration.class, initialCapacityForProductCmptGenerations);
+        setInitialSize(ITable.class, initialCapacityForTablesByClassname);
+    }
+
+    public void setInitialSize(Class<?> typeClass, int size) {
+        initialSizeMap.put(typeClass, size);
+    }
+
+    /**
+     * @param defaultInitialSize The defaultInitialSize to set.
+     */
+    public void setDefaultInitialSize(int defaultInitialSize) {
+        this.defaultInitialSize = defaultInitialSize;
+    }
+
+    protected int getInitialSiez(Class<?> typeClass) {
+        Integer initSize = initialSizeMap.get(typeClass);
+        if (initSize == null) {
+            initSize = defaultInitialSize;
+        }
+        return initSize;
     }
 
     /**
      * {@inheritDoc}
      */
-    public <T> ICache<T> createCache(Type type, Class<T> typeClass) {
-        switch (type) {
-            case PRODUCT_CMPT_CHACHE:
-                return new SoftReferenceCache<T>(initialCapacityForProductCmpts);
-            case PRODUCT_CMPT_GENERATION_CHACHE:
-                return new SoftReferenceCache<T>(initialCapacityForProductCmptGenerations);
-            case TABLE_BY_CLASSNAME_CACHE:
-                return new SoftReferenceCache<T>(initialCapacityForTablesByClassname);
-            case TABLE_BY_QUALIFIED_NAME_CACHE:
-                return new SoftReferenceCache<T>(initialCapacityForTablesByQname);
-            case ENUM_CONTENT_BY_CLASS:
-                return new SoftReferenceCache<T>(initialCapacityForEnumContentByClassName);
-        }
-        throw new IllegalArgumentException("Unknown cache type " + type);
+    public <T> ICache<T> createCache(Class<T> typeClass) {
+        return new SoftReferenceCache<T>(getInitialSiez(typeClass));
+    }
+
+    public ICache<IProductComponent> createProductCmptCache() {
+        return createCache(IProductComponent.class);
+    }
+
+    public ICache<IProductComponentGeneration> createProductCmptGenerationCache() {
+        return createCache(IProductComponentGeneration.class);
+    }
+
+    public ICache<ITable> createTableCache() {
+        return createCache(ITable.class);
     }
 }
