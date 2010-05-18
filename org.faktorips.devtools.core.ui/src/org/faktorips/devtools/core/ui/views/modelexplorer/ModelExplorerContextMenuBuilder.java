@@ -76,7 +76,6 @@ import org.faktorips.devtools.core.ui.actions.IpsTestAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestCaseCopyAction;
 import org.faktorips.devtools.core.ui.actions.MigrateProjectAction;
 import org.faktorips.devtools.core.ui.actions.ModelExplorerDeleteAction;
-import org.faktorips.devtools.core.ui.actions.MoveAction;
 import org.faktorips.devtools.core.ui.actions.NewBusinessFunctionAction;
 import org.faktorips.devtools.core.ui.actions.NewEnumContentAction;
 import org.faktorips.devtools.core.ui.actions.NewEnumTypeAction;
@@ -91,7 +90,6 @@ import org.faktorips.devtools.core.ui.actions.NewTableStructureAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
@@ -125,10 +123,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     private IWorkbenchAction delete;
 
     private IWorkbenchAction refresh;
-
-    private IWorkbenchAction rename;
-
-    private IWorkbenchAction move;
 
     private IWorkbenchAction properties;
 
@@ -164,8 +158,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         paste = ActionFactory.PASTE.create(viewSite.getWorkbenchWindow());
         delete = ActionFactory.DELETE.create(viewSite.getWorkbenchWindow());
         refresh = ActionFactory.REFRESH.create(viewSite.getWorkbenchWindow());
-        rename = ActionFactory.RENAME.create(viewSite.getWorkbenchWindow());
-        move = ActionFactory.MOVE.create(viewSite.getWorkbenchWindow());
         properties = ActionFactory.PROPERTIES.create(viewSite.getWorkbenchWindow());
 
         IActionBars actionBars = viewSite.getActionBars();
@@ -175,10 +167,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 .getShell()));
         actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
         actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refresh);
-        actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(workbenchPartSite.getShell(),
-                treeViewer));
-        actionBars.setGlobalActionHandler(ActionFactory.MOVE.getId(), new MoveAction(workbenchPartSite.getShell(),
-                treeViewer));
         actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), propertiesAction);
     }
 
@@ -540,10 +528,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile
                 | selected instanceof IFolder) {
             if (!isRootArchive(selected)) {
-                MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
-                subMm.add(rename);
-                move.setText(Messages.ModelExplorer_menuItemMove);
-                subMm.add(move);
+                MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor, "org.faktorips.refactoring");
+                // commands added via extension point org.eclipse.ui.menus
                 manager.add(subMm);
             }
         }

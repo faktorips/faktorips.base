@@ -13,28 +13,19 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.RenameAction;
+import org.faktorips.devtools.core.ui.actions.RenameHandler;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -48,12 +39,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class AttributesSection extends SimpleIpsPartsSection {
 
-    private IpsObjectEditorPage page;
-
     public AttributesSection(IpsObjectEditorPage page, IProductCmptType type, Composite parent, UIToolkit toolkit) {
         super(type, parent, Messages.AttributesSection_title, toolkit);
         ArgumentCheck.notNull(page);
-        this.page = page;
         ((AttributesComposite)getPartsComposite()).createContextMenu();
     }
 
@@ -73,37 +61,12 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         private void createContextMenu() {
-            // TODO AW: Duplicate code in attributes section of pctype
-            final IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
-            final IWorkbenchAction renameAction = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
-            final IActionBars actionBars = editorSite.getActionBars();
+            MenuManager manager = new MenuManager(Messages.AttributesSection_submenuRefactor);
+            MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
 
-            /*
-             * The action handler is the implementation of the global rename action. It will be set
-             * every time when the section needs to be painted hence when it becomes visible to the
-             * user. This is necessary because other editor instances are overwriting the setting
-             * with their own rename action implementation because they want to pass to it their own
-             * selection provider.
-             */
-            addPaintListener(new PaintListener() {
-                public void paintControl(PaintEvent e) {
-                    RenameAction ipsRenameActionHandler = new RenameAction(editorSite.getShell(), getPartsComposite());
-                    actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), ipsRenameActionHandler);
-                    actionBars.updateActionBars();
-                }
-            });
+            refactorSubmenu.add(RenameHandler.getContributionItem());
 
-            MenuManager manager = new MenuManager();
-            manager.setRemoveAllWhenShown(true);
-            manager.addMenuListener(new IMenuListener() {
-                public void menuAboutToShow(IMenuManager manager) {
-                    manager.add(new Separator());
-                    MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
-                    refactorSubmenu.add(renameAction);
-                    manager.add(refactorSubmenu);
-                }
-            });
-
+            manager.add(refactorSubmenu);
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
         }
