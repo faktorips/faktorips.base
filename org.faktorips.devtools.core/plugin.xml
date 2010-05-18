@@ -244,7 +244,7 @@
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
             file-extensions="ipstablecontents"
-            id="TableContents"
+            id="tableContents"
             name="Table Contents"
             priority="normal"/>
       <content-type
