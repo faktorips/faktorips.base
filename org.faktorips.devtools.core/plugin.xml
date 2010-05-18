@@ -196,7 +196,7 @@
    
 
    <extension
-         point="org.eclipse.core.runtime.contentTypes">
+         point="org.eclipse.core.contenttype.contentTypes">
       <!-- the ipsSrcFile content-type will be used to open the standard text editor
            if the ips object editor is not available, e.g. ips src file outside ips package -->
       <content-type
@@ -223,7 +223,7 @@
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
             file-extensions="ipsproductcmpttype"
-            id="policyCmptType"
+            id="productCmptType"
             name="Product Component Type"
             priority="normal"/>
       <content-type
