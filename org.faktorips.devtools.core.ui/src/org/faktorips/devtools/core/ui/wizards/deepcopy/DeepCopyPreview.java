@@ -75,13 +75,10 @@ public class DeepCopyPreview {
     }
 
     public int getSegmentsToIgnore() {
-        deepCopyWizard.logTraceStart("getSegmentsToIgnore");
         if (segmentsToIgnoreCached != null) {
-            deepCopyWizard.logTraceEnd("getSegmentsToIgnore");
             return segmentsToIgnoreCached;
         }
         segmentsToIgnoreCached = sourcePage.getSegmentsToIgnore(getProductCmptStructRefToCopy());
-        deepCopyWizard.logTraceEnd("getSegmentsToIgnore");
         return segmentsToIgnoreCached;
     }
 
@@ -136,7 +133,6 @@ public class DeepCopyPreview {
         if (base == null || !base.getRoot().exists()) {
             return;
         }
-        deepCopyWizard.logTraceStart("validateTarget");
         IIpsObject correspondingIpsObject = sourcePage.getCorrespondingIpsObject(modified);
 
         StringBuffer message = new StringBuffer();
@@ -191,7 +187,6 @@ public class DeepCopyPreview {
                 product2filenameMap.put(modified, name);
             }
         }
-        deepCopyWizard.logTraceEnd("validateTarget");
     }
 
     /**
@@ -268,9 +263,7 @@ public class DeepCopyPreview {
      * name is the old name.
      */
     public String getNewName(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
-        deepCopyWizard.logTraceStart("getNewName");
         String newName = getNewNameInternal(targetPackage, correspondingIpsObject, 0);
-        deepCopyWizard.logTraceEnd("getNewName");
         return newName;
     }
 
