@@ -20,7 +20,6 @@ import java.util.Set;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
