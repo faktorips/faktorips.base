@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.pds;
+package org.faktorips.runtime.productprovider;
 
 import java.io.InputStream;
 
@@ -74,7 +74,7 @@ public class ProductDataRuntimeRepository extends AbstractClassLoaderRuntimeRepo
 
     @Override
     protected InputStream getXmlAsStream(ITableContentTocEntry tocEntry) {
-        return productDataProvider.getXmlAsStream(tocEntry);
+        return productDataProvider.getEnumContentAsStream(tocEntry);
     }
 
     public boolean isModifiable() {

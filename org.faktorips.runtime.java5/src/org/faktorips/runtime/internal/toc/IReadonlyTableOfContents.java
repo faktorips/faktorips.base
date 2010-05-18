@@ -74,9 +74,9 @@ public interface IReadonlyTableOfContents {
     public Set<ModelTypeTocEntry> getModelTypeTocEntries();
 
     /**
-     * Returns all toc's entries representing enum contents.
+     * Returns the toc entry representing enum contents for the specified implementation class.
      */
-    public Set<IEnumContentTocEntry> getEnumContentTocEntries();
+    public IEnumContentTocEntry getEnumContentTocEntry(String className);
 
     /**
      * Returns all toc entries that link to an enumeration xml adapter.

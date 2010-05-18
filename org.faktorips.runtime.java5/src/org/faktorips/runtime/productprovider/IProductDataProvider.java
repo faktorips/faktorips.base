@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.pds;
+package org.faktorips.runtime.productprovider;
 
 import java.io.InputStream;
 
@@ -36,6 +36,6 @@ public interface IProductDataProvider extends IModificationChecker {
 
     public InputStream getTableContentAsStream(IEnumContentTocEntry tocEntry);
 
-    public InputStream getXmlAsStream(ITableContentTocEntry tocEntry);
+    public InputStream getEnumContentAsStream(ITableContentTocEntry tocEntry);
 
 }

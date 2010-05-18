@@ -66,7 +66,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     protected Map<String, ModelTypeTocEntry> modelTypeNameTocEntryMap = new HashMap<String, ModelTypeTocEntry>(100);
 
     /** A map that contains the runtime id of enum contents as key and the toc entry as value. */
-    protected Map<String, IEnumContentTocEntry> enumContentNameTocEntryMap = new HashMap<String, IEnumContentTocEntry>(
+    protected Map<String, IEnumContentTocEntry> enumContentImplClassTocEntryMap = new HashMap<String, IEnumContentTocEntry>(
             100);
 
     /**
@@ -103,7 +103,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
              * This stores only the last found toc entry.
              */
             tableImplClassTocEntryMap.put(entry.getImplementationClassName(), (ITableContentTocEntry)entry);
-            tableContentNameTocEntryMap.put(entry.getIpsObjectId(), (ITableContentTocEntry)entry);
+            tableContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (ITableContentTocEntry)entry);
             return;
         }
 
@@ -123,7 +123,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         }
 
         if (entry instanceof IEnumContentTocEntry) {
-            enumContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (IEnumContentTocEntry)entry);
+            enumContentImplClassTocEntryMap.put(entry.getImplementationClassName(), (IEnumContentTocEntry)entry);
             return;
         }
         if (entry instanceof IEnumXmlAdapterTocEntry) {
@@ -243,8 +243,8 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public Set<IEnumContentTocEntry> getEnumContentTocEntries() {
-        return new HashSet<IEnumContentTocEntry>(enumContentNameTocEntryMap.values());
+    public IEnumContentTocEntry getEnumContentTocEntry(String className) {
+        return enumContentImplClassTocEntryMap.get(className);
     }
 
     @Override

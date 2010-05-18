@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.pds;
+package org.faktorips.runtime.productprovider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +72,7 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
-    public InputStream getXmlAsStream(ITableContentTocEntry tocEntry) {
+    public InputStream getEnumContentAsStream(ITableContentTocEntry tocEntry) {
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 

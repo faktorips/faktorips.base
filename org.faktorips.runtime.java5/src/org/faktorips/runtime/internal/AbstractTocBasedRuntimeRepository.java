@@ -121,21 +121,11 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         if (enumValues != null) {
             return enumValues;
         }
-        Set<IEnumContentTocEntry> tocEntries = toc.getEnumContentTocEntries();
+        IEnumContentTocEntry tocEntries = toc.getEnumContentTocEntry(clazz.getName());
         if (tocEntries == null) {
             return null;
         }
-        IEnumContentTocEntry currentTocEntry = null;
-        for (IEnumContentTocEntry tocEntryObject : tocEntries) {
-            if (tocEntryObject.getImplementationClassName().equals(clazz.getName())) {
-                currentTocEntry = tocEntryObject;
-                break;
-            }
-        }
-        if (currentTocEntry == null) {
-            return null;
-        }
-        enumValues = createEnumValues(currentTocEntry, clazz);
+        enumValues = createEnumValues(tocEntries, clazz);
         if (enumValues != null) {
             enumValuesCacheByClass.put(clazz, enumValues);
         }
