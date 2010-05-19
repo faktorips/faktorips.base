@@ -948,7 +948,7 @@
             id="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareViewer"/>
       <contentTypeBinding
             contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareViewer"
-            contentTypeId="org.faktorips.devtools.core.TableContents"/>
+            contentTypeId="org.faktorips.devtools.core.tableContents"/>
    </extension>
    <extension
          point="org.eclipse.compare.structureCreators">
@@ -964,7 +964,7 @@
             extensions="ipstablecontents"
             id="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareItemCreator"/>
       <contentTypeBinding
-            contentTypeId="org.faktorips.devtools.core.TableContents"
+            contentTypeId="org.faktorips.devtools.core.tableContents"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareItemCreator"/>
    </extension>
 
