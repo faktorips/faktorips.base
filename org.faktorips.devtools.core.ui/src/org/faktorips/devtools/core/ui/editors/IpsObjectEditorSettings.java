@@ -45,6 +45,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public void put(IIpsSrcFile file, String key, String value) {
         if (file == null) {
             return;
@@ -68,6 +69,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public String get(IIpsSrcFile file, String key) {
         if (file == null) {
             return null;
@@ -82,6 +84,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public void put(IIpsSrcFile file, String key, boolean value) {
         put(file, key, "" + value); //$NON-NLS-1$
     }
@@ -89,6 +92,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean getBoolean(IIpsSrcFile file, String key) {
         String s = get(file, key);
         if (s == null) {
@@ -100,6 +104,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public void remove(IIpsSrcFile file) {
         if (file == null) {
             return;
@@ -114,6 +119,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public void remove(IIpsSrcFile file, String key) {
         if (file == null) {
             return;
@@ -183,6 +189,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public void saving(ISaveContext context) throws CoreException {
         if (context.getKind() != ISaveContext.FULL_SAVE) {
             return;
@@ -219,6 +226,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public void doneSaving(ISaveContext context) {
         // nothing to do
     }
@@ -226,6 +234,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public void prepareToSave(ISaveContext context) throws CoreException {
         // nothing to do
     }
@@ -233,6 +242,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     /**
      * {@inheritDoc}
      */
+    @Override
     public void rollback(ISaveContext context) {
         // nothing to do
     }

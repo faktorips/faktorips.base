@@ -172,14 +172,17 @@ public class XmlUtil {
             throw new RuntimeException(e);
         }
         builder.setErrorHandler(new ErrorHandler() {
+            @Override
             public void error(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void fatalError(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void warning(SAXParseException e) throws SAXException {
                 throw e;
             }
@@ -199,14 +202,17 @@ public class XmlUtil {
             throw new RuntimeException(e);
         }
         builder.setErrorHandler(new ErrorHandler() {
+            @Override
             public void error(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void fatalError(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void warning(SAXParseException e) throws SAXException {
                 throw e;
             }

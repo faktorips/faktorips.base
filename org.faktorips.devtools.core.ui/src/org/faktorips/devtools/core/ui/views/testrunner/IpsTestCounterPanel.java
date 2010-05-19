@@ -58,6 +58,7 @@ public class IpsTestCounterPanel extends Composite {
                 " 0 "); //$NON-NLS-1$ 
 
         addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 disposeResources();
             }

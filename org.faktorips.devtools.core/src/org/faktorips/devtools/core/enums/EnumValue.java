@@ -42,5 +42,6 @@ public interface EnumValue extends Comparable<Object> {
      * Returns the type's id followed by a dot followed by the value's id, e.g.
      * <code>Gender.male</code>
      */
+    @Override
     public abstract String toString();
 }

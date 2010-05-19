@@ -30,6 +30,7 @@ public class BusinessFunctionEditPartFactory implements EditPartFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EditPart createEditPart(EditPart context, Object model) {
         EditPart child = null;
 

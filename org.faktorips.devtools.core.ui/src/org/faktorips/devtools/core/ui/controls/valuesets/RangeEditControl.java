@@ -147,6 +147,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public ValueSetType getValueSetType() {
         return ValueSetType.RANGE;
     }
@@ -154,6 +155,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
         if (valueSet == null) {
             return false;
@@ -164,6 +166,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValueSet getValueSet() {
         return range;
     }
@@ -171,6 +174,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValueSet(IValueSet valueSet, ValueDatatype valueDatatype) {
         range = (RangeValueSet)valueSet;
         uiController.remove(upperfield);
@@ -236,6 +240,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
@@ -243,6 +248,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
 

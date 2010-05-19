@@ -60,6 +60,7 @@ public class ElementSelectionPage extends WizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         Composite root = new Composite(parent, SWT.NONE);
         root.setLayout(new GridLayout(1, true));
@@ -76,6 +77,7 @@ public class ElementSelectionPage extends WizardPage {
 
         treeViewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 Object element = event.getElement();
                 if (element instanceof IIpsPackageFragment) {
@@ -161,6 +163,7 @@ public class ElementSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object[] getChildren(Object parentElement) {
             if (parentElement instanceof IIpsPackageFragment) {
                 return (packages.get(parentElement)).toArray();
@@ -171,6 +174,7 @@ public class ElementSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object getParent(Object element) {
             if (element instanceof IpsObject) {
                 return ((IpsObject)element).getIpsPackageFragment();
@@ -181,6 +185,7 @@ public class ElementSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean hasChildren(Object element) {
             if (element instanceof IIpsPackageFragment) {
                 return packages.get(element) != null;
@@ -191,6 +196,7 @@ public class ElementSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object[] getElements(Object inputElement) {
             return packages.keySet().toArray();
         }
@@ -202,6 +208,7 @@ public class ElementSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dispose() {
             // nothing to do
         }
@@ -209,6 +216,7 @@ public class ElementSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // nothing to do
         }

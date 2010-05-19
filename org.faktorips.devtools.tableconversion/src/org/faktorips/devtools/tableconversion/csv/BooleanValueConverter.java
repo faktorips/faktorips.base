@@ -23,6 +23,7 @@ public class BooleanValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
@@ -35,6 +36,7 @@ public class BooleanValueConverter extends AbstractValueConverter {
      * 
      * {@inheritDoc}
      */
+    @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
             return Boolean.valueOf((String)externalDataValue).toString();
@@ -48,6 +50,7 @@ public class BooleanValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Datatype getSupportedDatatype() {
         return Datatype.BOOLEAN;
     }

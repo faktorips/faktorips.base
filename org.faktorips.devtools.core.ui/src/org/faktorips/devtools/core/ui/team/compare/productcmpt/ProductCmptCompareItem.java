@@ -255,7 +255,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         for (IProductCmptLink relation : relations) {
             relationTypes.add(relation.getAssociation());
         }
-        return (String[])relationTypes.toArray(new String[relationTypes.size()]);
+        return relationTypes.toArray(new String[relationTypes.size()]);
     }
 
     /**
@@ -430,6 +430,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     /**
      * Returns "ipsproduct". {@inheritDoc}
      */
+    @Override
     public String getType() {
         return IpsObjectType.PRODUCT_CMPT.getFileExtension();
     }

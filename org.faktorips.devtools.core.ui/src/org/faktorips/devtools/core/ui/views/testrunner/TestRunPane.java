@@ -78,6 +78,7 @@ public class TestRunPane {
         this.testRunnerViewPart = testRunnerViewPart;
         fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
         fTable.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (e.item instanceof TableItem) {
                     TableItem selectedTestCase = (TableItem)e.item;
@@ -85,14 +86,17 @@ public class TestRunPane {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
             }
         });
         fTable.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (fTable.getSelectionCount() > 0) {
                     if (getSelectedTestFullPath() != null) {
@@ -116,6 +120,7 @@ public class TestRunPane {
     }
 
     private class TableMenu extends MenuManager implements IMenuListener {
+        @Override
         public void menuAboutToShow(IMenuManager manager) {
             if (!(fTable.getItemCount() > 0) && getSelectedItem() != null) {
                 return;

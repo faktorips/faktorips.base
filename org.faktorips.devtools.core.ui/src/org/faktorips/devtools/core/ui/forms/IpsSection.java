@@ -190,6 +190,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /**
      * Returns whether the contents of this section can be changed by the user.
      */
+    @Override
     public boolean isDataChangeable() {
         return changeable;
     }
@@ -197,6 +198,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /**
      * Enables or disables whether the section's content can be changed by the user.
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         this.changeable = changeable;
         toolkit.setDataChangeable(section.getClient(), changeable);
@@ -212,6 +214,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         }
     }
 
+    @Override
     public void addDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
         if (listener == null) {
             return;
@@ -224,6 +227,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         dataChangeableStateChangeListeners.add(listener);
     }
 
+    @Override
     public void removeDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
         if (dataChangeableStateChangeListeners == null) {
             return;
@@ -294,6 +298,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         focusPredecessor = predecessor;
     }
 
+    @Override
     public void widgetDisposed(DisposeEvent e) {
         if (e.widget == this) {
             bindingContext.dispose();
@@ -312,6 +317,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      */
     private FocusListener focusHandler = new FocusListener() {
 
+        @Override
         public void focusGained(FocusEvent e) {
             focusCtrl = (Control)e.getSource();
 
@@ -327,6 +333,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
             }
         }
 
+        @Override
         public void focusLost(FocusEvent e) {
             // nothing to do
         }

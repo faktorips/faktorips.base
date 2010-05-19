@@ -37,6 +37,7 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements EnumDat
         super(ipsProject);
     }
 
+    @Override
     public String[] getAllValueIds(boolean includeNull) {
         if (getAdaptedClass() == null) {
             throw new RuntimeException("Datatype " + getQualifiedName() //$NON-NLS-1$
@@ -85,10 +86,12 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements EnumDat
         return getNameMethodName;
     }
 
+    @Override
     public boolean isSupportingNames() {
         return isSupportingNames;
     }
 
+    @Override
     public String getValueName(String id) {
         if (!isSupportingNames) {
             IpsPlugin.log(new IpsStatus(

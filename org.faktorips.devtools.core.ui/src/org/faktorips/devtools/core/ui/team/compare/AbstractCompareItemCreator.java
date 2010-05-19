@@ -59,6 +59,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
      * <code>IpsSrcFileImmutable</code> (<code>FilteredBufferedResourceNode</code>) is created
      * reading remote contents via an input stream. {@inheritDoc}
      */
+    @Override
     public IStructureComparator getStructure(Object input) {
         if (input instanceof ResourceNode) {
             IResource file = ((ResourceNode)input).getResource();
@@ -109,6 +110,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
     /**
      * No implementation needed. Returns null. {@inheritDoc}
      */
+    @Override
     public IStructureComparator locate(Object path, Object input) {
         return null;
     }
@@ -126,6 +128,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
      * @see AbstractCompareItem#getContentStringWithoutWhiteSpace()
      * 
      */
+    @Override
     public String getContents(Object node, boolean ignoreWhitespace) {
         if (node instanceof AbstractCompareItem) {
             if (ignoreWhitespace) {
@@ -139,6 +142,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
     /**
      * Empty implementation. Nothing to be saved. {@inheritDoc}
      */
+    @Override
     public void save(IStructureComparator node, Object input) {
         // Empty implementation. Nothing to be saved.
     }

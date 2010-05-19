@@ -67,10 +67,12 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         super(path);
     }
 
+    @Override
     public IIpsArchive getIpsArchive() {
         return archive;
     }
 
+    @Override
     public IPath getArchivePath() {
         if (archive == null) {
             return null;
@@ -78,6 +80,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return archive.getArchivePath();
     }
 
+    @Override
     public void setArchivePath(IIpsProject ipsProject, IPath newArchivePath) {
         if (newArchivePath == null) {
             archive = null;
@@ -89,14 +92,17 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         archive = new IpsArchive(ipsProject, newArchivePath);
     }
 
+    @Override
     public String getType() {
         return IIpsObjectPathEntry.TYPE_ARCHIVE;
     }
 
+    @Override
     public String getIpsPackageFragmentRootName() {
         return getIpsArchive().getArchivePath().lastSegment();
     }
 
+    @Override
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
         return archive.getRoot();
     }
@@ -178,6 +184,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return element;
     }
 
+    @Override
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
         if (archive == null || !archive.exists()) {
@@ -194,10 +201,12 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return "ArchiveEntry[" + getArchivePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
     public boolean isContained(IResourceDelta delta) {
         return ((IpsArchive)archive).isContained(delta);
     }
 
+    @Override
     public InputStream getRessourceAsStream(String path) throws CoreException {
         return archive.getResourceAsStream(path);
     }

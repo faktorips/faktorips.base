@@ -112,6 +112,7 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
 
     private void sortGenerationsInList(List<?> foundElemList) {
         Collections.sort(foundElemList, new Comparator<Object>() {
+            @Override
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof IIpsObjectGeneration && o2 instanceof IIpsObjectGeneration) {
                     IIpsObjectGeneration gen1 = (IIpsObjectGeneration)o1;
@@ -167,6 +168,7 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
     }
 
     private class ProductCmptGenerationComparator implements Comparator<IIpsElement> {
+        @Override
         public int compare(IIpsElement o1, IIpsElement o2) {
             if (o1 instanceof IProductCmptGeneration && o2 instanceof IProductCmptGeneration) {
                 return ((IProductCmptGeneration)o1).getProductCmpt().getQualifiedName().compareTo(

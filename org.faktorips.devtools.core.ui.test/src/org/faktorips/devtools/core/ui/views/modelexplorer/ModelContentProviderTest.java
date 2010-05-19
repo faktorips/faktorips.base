@@ -379,6 +379,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
      */
     public void testGetElements() throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 IProject project = newPlatformProject("TestJavaProject");
                 addJavaCapabilities(project);

@@ -83,6 +83,7 @@ public class PropertyValueComparator implements Comparator<IPropertyValue> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compare(IPropertyValue o1, IPropertyValue o2) {
         IPropertyValue prop1 = o1;
         IPropertyValue prop2 = o2;

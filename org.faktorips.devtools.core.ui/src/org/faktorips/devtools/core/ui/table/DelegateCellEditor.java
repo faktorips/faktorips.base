@@ -53,26 +53,32 @@ public class DelegateCellEditor extends CellEditor {
             return null;
         }
 
+        @Override
         public String getDefaultValue() {
             return null;
         }
 
+        @Override
         public ValueDatatype getWrapperType() {
             return null;
         }
 
+        @Override
         public boolean supportsCompare() {
             return false;
         }
 
+        @Override
         public String getJavaClassName() {
             return null;
         }
 
+        @Override
         public String getName() {
             return null;
         }
 
+        @Override
         public String getQualifiedName() {
             return null;
         }

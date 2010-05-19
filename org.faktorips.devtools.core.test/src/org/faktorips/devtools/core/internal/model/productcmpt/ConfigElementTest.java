@@ -490,50 +490,62 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     private class InvalidDatatype implements ValueDatatype {
 
+        @Override
         public ValueDatatype getWrapperType() {
             return null;
         }
 
+        @Override
         public boolean isEnum() {
             return false;
         }
 
+        @Override
         public boolean isParsable(String value) {
             return true;
         }
 
+        @Override
         public String getName() {
             return getQualifiedName();
         }
 
+        @Override
         public String getQualifiedName() {
             return "InvalidDatatype";
         }
 
+        @Override
         public String getDefaultValue() {
             return null;
         }
 
+        @Override
         public boolean isVoid() {
             return false;
         }
 
+        @Override
         public boolean isPrimitive() {
             return false;
         }
 
+        @Override
         public boolean isAbstract() {
             return false;
         }
 
+        @Override
         public boolean isValueDatatype() {
             return true;
         }
 
+        @Override
         public String getJavaClassName() {
             return null;
         }
 
+        @Override
         public MessageList checkReadyToUse() {
             MessageList ml = new MessageList();
 
@@ -542,34 +554,42 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
             return ml;
         }
 
+        @Override
         public int compareTo(Datatype o) {
             return -1;
         }
 
+        @Override
         public boolean hasNullObject() {
             return false;
         }
 
+        @Override
         public boolean isNull(String value) {
             return false;
         }
 
+        @Override
         public boolean supportsCompare() {
             return false;
         }
 
+        @Override
         public int compare(String valueA, String valueB) throws UnsupportedOperationException {
             return 0;
         }
 
+        @Override
         public boolean areValuesEqual(String valueA, String valueB) {
             return false;
         }
 
+        @Override
         public boolean isMutable() {
             return true;
         }
 
+        @Override
         public boolean isImmutable() {
             return false;
         }
@@ -583,10 +603,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
             return null;
         }
 
+        @Override
         public JavaCodeFragment nullExpression() {
             return null;
         }
 
+        @Override
         public JavaCodeFragment newInstance(String value) {
             return null;
         }

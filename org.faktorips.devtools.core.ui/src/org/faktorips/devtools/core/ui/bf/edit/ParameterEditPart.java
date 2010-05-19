@@ -65,9 +65,11 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
         // the upper left corner while scrolling the viewport of the editor
         viewportScolllistener = new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 refreshVisuals();
             }
@@ -155,6 +157,7 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
     /**
      * {@inheritDoc}
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getBusinessFunction())) {
             refreshVisuals();

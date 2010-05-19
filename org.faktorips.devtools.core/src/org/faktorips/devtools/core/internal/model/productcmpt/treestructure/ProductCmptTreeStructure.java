@@ -88,6 +88,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public GregorianCalendar getValidAt() {
         return workingDate;
     }
@@ -95,6 +96,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptReference getRoot() {
         return root;
     }
@@ -102,6 +104,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void refresh() throws CycleInProductStructureException {
         root = buildNode(root.getProductCmpt(), null, null);
     }
@@ -109,6 +112,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptStructureReference[] toArray(boolean productCmptOnly) {
         List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
         result.add(root);
@@ -290,6 +294,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptReference getParentProductCmptReference(IProductCmptStructureReference child) {
         ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
         IProductCmptStructureReference result = ref.getParent();
@@ -304,6 +309,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAssociationReference getParentProductCmptTypeRelationReference(IProductCmptStructureReference child) {
         ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
         IProductCmptStructureReference result = ref.getParent();
@@ -318,6 +324,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptReference[] getChildProductCmptReferences(IProductCmptStructureReference parent) {
         if (parent instanceof IProductCmptTypeAssociationReference) {
             IProductCmptStructureReference[] children = ((ProductCmptTypeAssociationReference)parent).getChildren();
@@ -343,10 +350,12 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent) {
         return getChildProductCmptTypeAssociationReferences(parent, true);
     }
 
+    @Override
     public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent,
             boolean includeEmptyAssociations) {
         if (parent instanceof IProductCmptReference) {
@@ -379,6 +388,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(IProductCmptStructureReference parent) {
         List<ProductCmptStructureTblUsageReference> tblUsageReferences = new ArrayList<ProductCmptStructureTblUsageReference>();
         IProductCmptStructureReference[] children = getChildren(parent);

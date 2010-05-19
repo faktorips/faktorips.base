@@ -583,9 +583,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     private void addResizeListener(Composite parent) {
         parent.addControlListener(new ControlListener() {
+            @Override
             public void controlMoved(ControlEvent e) {
             }
 
+            @Override
             public void controlResized(ControlEvent e) {
                 computeOrientation();
             }
@@ -663,6 +665,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     }
 
     private class TableEntryQueueDrainer implements Runnable {
+        @Override
         public void run() {
             while (true) {
                 TestCaseEntry testCaseEntry;
@@ -741,6 +744,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     private void reset(final int testCount) {
         postSyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -796,6 +800,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     private void aboutToStart() {
         postSyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (!isDisposed()) {
                     fTestRunPane.aboutToStart();
@@ -813,6 +818,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     private void postStartTest(final String testId, final String qualifiedTestName) {
         postSyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -824,6 +830,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     private void postErrorInTest(final String testId, final String qualifiedTestName, final String[] errorDetails) {
         postSyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -835,6 +842,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     private void postEndTest(final String testId, final String qualifiedTestName) {
         postSyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -847,6 +855,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     private void postFailureTest(final String testId, final String[] failureDetails) {
         postSyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -858,6 +867,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     private void postEndTestRun() {
         postSyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -927,6 +937,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testFailureOccured(String qualifiedTestName, String[] failureDetails) {
         isFailure = true;
         postFailureTest(getTestId(qualifiedTestName), failureDetails);
@@ -936,12 +947,14 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testFinished(String qualifiedTestName) {
         if (fExecutedTests > fCounterPanel.getTotal()) {
             // set correct total size
             // if there are more test case executed as previously expected
             // e.g. if an ips test case starts itself several ips tests
             postSyncRunnable(new Runnable() {
+                @Override
                 public void run() {
                     if (isDisposed()) {
                         return;
@@ -960,6 +973,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testStarted(String qualifiedTestName) {
         setInfoMessage(StringUtil.unqualifiedName(qualifiedTestName));
         isFailure = false;
@@ -970,6 +984,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testTableEntry(final String qualifiedName, final String fullPath) {
         // get a new or a cached test id
         String testId = getTestId(qualifiedName);
@@ -992,6 +1007,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testTableEntries(final String[] qualifiedNames, final String[] fullPaths) {
         // get a new or a cached test id
 
@@ -1016,6 +1032,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testRunStarted(int testCount, String classpathRepository, String testPackage) {
         this.classpathRepository = classpathRepository;
         this.testPackage = testPackage;
@@ -1046,6 +1063,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testRunEnded(String elapsedTime) {
         fExecutedTests--;
         stopUpdateJobs();
@@ -1075,6 +1093,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testErrorOccured(String qualifiedTestName, String[] errorDetails) {
         fErrorCount++;
         postErrorInTest(getTestId(qualifiedTestName), qualifiedTestName, errorDetails);
@@ -1120,6 +1139,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canNavigateToFailure() {
         return false;
     }

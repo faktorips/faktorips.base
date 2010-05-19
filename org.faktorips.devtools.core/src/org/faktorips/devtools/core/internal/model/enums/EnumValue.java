@@ -69,6 +69,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         return doc.createElement(XML_TAG);
     }
 
+    @Override
     public List<IEnumAttributeValue> getEnumAttributeValues() {
         // I'm not returning the backing list due to mutability concerns.
         List<IEnumAttributeValue> attributeValuesList = new ArrayList<IEnumAttributeValue>();
@@ -79,10 +80,12 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         return attributeValuesList;
     }
 
+    @Override
     public IEnumAttributeValue newEnumAttributeValue() throws CoreException {
         return (IEnumAttributeValue)newPart(EnumAttributeValue.class);
     }
 
+    @Override
     public int moveEnumAttributeValue(IEnumAttributeValue enumAttributeValue, boolean up) {
         ArgumentCheck.notNull(enumAttributeValue);
         int index = getIndexOfEnumAttributeValue(enumAttributeValue);
@@ -134,14 +137,17 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         }
     }
 
+    @Override
     public int getEnumAttributeValuesCount() {
         return enumAttributeValues.size();
     }
 
+    @Override
     public IEnumValueContainer getEnumValueContainer() {
         return (IEnumValueContainer)getParent();
     }
 
+    @Override
     public IEnumAttributeValue getEnumAttributeValue(IEnumAttribute enumAttribute) {
         if (enumAttribute == null) {
             return null;
@@ -153,11 +159,13 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         return enumAttributeValues.getPart(attributeIndex);
     }
 
+    @Override
     public void setEnumAttributeValue(IEnumAttribute enumAttribute, String value) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
         getEnumAttributeValue(enumAttribute).setValue(value);
     }
 
+    @Override
     public void setEnumAttributeValue(String enumAttributeName, String value) throws CoreException {
         ArgumentCheck.notNull(enumAttributeName);
         IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
@@ -168,6 +176,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         setEnumAttributeValue(enumAttribute, value);
     }
 
+    @Override
     public void setEnumAttributeValue(int enumAttributeIndex, String value) {
         if (!(enumAttributeIndex > -1 && enumAttributeIndex < enumAttributeValues.size())) {
             throw new IndexOutOfBoundsException();
@@ -175,6 +184,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         enumAttributeValues.getBackingList().get(enumAttributeIndex).setValue(value);
     }
 
+    @Override
     public List<IEnumAttributeValue> findUniqueEnumAttributeValues(List<IEnumAttribute> uniqueEnumAttributes,
             IIpsProject ipsProject) throws CoreException {
 
@@ -187,6 +197,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         return uniqueAttributeValues;
     }
 
+    @Override
     public int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue) {
         ArgumentCheck.notNull(enumAttributeValue);
         return enumAttributeValues.indexOf(enumAttributeValue);
@@ -221,6 +232,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         super.delete();
     }
 
+    @Override
     public IEnumAttributeValue getLiteralNameAttributeValue() {
         if (getEnumValueContainer() instanceof IEnumType) {
             IEnumType enumType = (IEnumType)getEnumValueContainer();

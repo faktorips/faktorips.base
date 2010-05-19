@@ -97,6 +97,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
             } else if (type.equals("integer")) { //$NON-NLS-1$
                 editor = new TextCellEditor(viewer.getTable());
                 editor.setValidator(new ICellEditorValidator() {
+                    @Override
                     public String isValid(Object value) {
                         if (value == null || !value.toString().matches("[0-9]+")) { //$NON-NLS-1$
                             return Messages.BuilderSetPropertyEditingSupport_validatorErrorMessage;

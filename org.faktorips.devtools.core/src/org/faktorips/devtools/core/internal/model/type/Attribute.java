@@ -60,6 +60,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         return doc.createElement(TAG_NAME);
     }
 
+    @Override
     public IType getType() {
         return (IType)getParent();
     }
@@ -71,10 +72,12 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         valueChanged(oldName, newName);
     }
 
+    @Override
     public Modifier getModifier() {
         return modifier;
     }
 
+    @Override
     public void setModifier(Modifier newModifer) {
         ArgumentCheck.notNull(newModifer);
         Modifier oldModifier = modifier;
@@ -82,16 +85,19 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         valueChanged(oldModifier, newModifer);
     }
 
+    @Override
     public String getDatatype() {
         return datatype;
     }
 
+    @Override
     public void setDatatype(String newDatatype) {
         String oldDatatype = datatype;
         datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype);
     }
 
+    @Override
     public ValueDatatype findDatatype(IIpsProject project) throws CoreException {
         return project.findValueDatatype(datatype);
     }
@@ -100,10 +106,12 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         return project.findValueDatatype(datatype);
     }
 
+    @Override
     public String getDefaultValue() {
         return defaultValue;
     }
 
+    @Override
     public void setDefaultValue(String newValue) {
         String oldValue = defaultValue;
         defaultValue = newValue;

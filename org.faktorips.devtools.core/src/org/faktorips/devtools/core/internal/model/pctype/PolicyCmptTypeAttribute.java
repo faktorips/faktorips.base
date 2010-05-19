@@ -78,10 +78,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
+    @Override
     public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getIpsObject();
     }
 
+    @Override
     public IPolicyCmptTypeAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException {
         IType supertype = getPolicyCmptType().findSupertype(ipsProject);
         if (supertype == null) {
@@ -94,12 +96,14 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return (IPolicyCmptTypeAttribute)candidate;
     }
 
+    @Override
     public void setAttributeType(AttributeType newType) {
         AttributeType oldType = attributeType;
         attributeType = newType;
         valueChanged(oldType, newType);
     }
 
+    @Override
     public IValidationRule findValueSetRule(IIpsProject ipsProject) {
         IValidationRule[] rules = getPolicyCmptType().getRules();
 
@@ -114,6 +118,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return null;
     }
 
+    @Override
     public IValidationRule createValueSetRule() {
         IValidationRule rule = findValueSetRule(getIpsProject());
         if (rule != null) {
@@ -129,6 +134,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return rule;
     }
 
+    @Override
     public void deleteValueSetRule() {
         IValidationRule rule = findValueSetRule(getIpsProject());
         if (rule != null) {
@@ -136,18 +142,22 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
+    @Override
     public AttributeType getAttributeType() {
         return attributeType;
     }
 
+    @Override
     public boolean isChangeable() {
         return getAttributeType() == AttributeType.CHANGEABLE;
     }
 
+    @Override
     public boolean isDerived() {
         return getAttributeType().isDerived();
     }
 
+    @Override
     public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(computationMethodSignature)) {
             return null;
@@ -159,10 +169,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return (IProductCmptTypeMethod)productCmptType.findMethod(computationMethodSignature, ipsProject);
     }
 
+    @Override
     public boolean isProductRelevant() {
         return productRelevant;
     }
 
+    @Override
     public void setProductRelevant(boolean newValue) {
         boolean oldValue = productRelevant;
         productRelevant = newValue;
@@ -172,10 +184,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         valueChanged(oldValue, newValue);
     }
 
+    @Override
     public IValueSet getValueSet() {
         return valueSet;
     }
 
+    @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         List<ValueSetType> types = ipsProject.getValueSetTypes(findDatatype(ipsProject));
         for (Iterator<ValueSetType> it = types.iterator(); it.hasNext();) {
@@ -190,6 +204,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return types;
     }
 
+    @Override
     public void setValueSetType(ValueSetType type) {
         if (valueSet != null && type == valueSet.getValueSetType()) {
             return;
@@ -198,19 +213,23 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         objectHasChanged();
     }
 
+    @Override
     public IValueSet changeValueSetType(ValueSetType newType) {
         setValueSetType(newType);
         return valueSet;
     }
 
+    @Override
     public boolean isValueSetUpdateable() {
         return true;
     }
 
+    @Override
     public String getComputationMethodSignature() {
         return computationMethodSignature;
     }
 
+    @Override
     public void setComputationMethodSignature(String newMethodName) {
         String oldName = computationMethodSignature;
         computationMethodSignature = newMethodName;
@@ -322,6 +341,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     // TODO Joerg Merge Persistence Branch: warum ueber Reflection und nicht
     // instanceof wie z.B. in
     // org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType.newPart(Class)
+    @Override
     public IIpsObjectPart newPart(Class partType) {
         try {
             Constructor<? extends IIpsObjectPart> constructor = partType.getConstructor(IIpsObjectPart.class,
@@ -359,16 +379,19 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return null;
     }
 
+    @Override
     public boolean isOverwrite() {
         return overwrites;
     }
 
+    @Override
     public void setOverwrite(boolean overwrites) {
         boolean old = this.overwrites;
         this.overwrites = overwrites;
         valueChanged(old, overwrites);
     }
 
+    @Override
     public void setValueSetCopy(IValueSet source) {
         IValueSet oldset = valueSet;
         valueSet = source.copy(this, getNextPartId());
@@ -386,14 +409,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
+    @Override
     public String getProposalValueSetRuleName() {
         return NLS.bind(Messages.Attribute_proposalForRuleName, StringUtils.capitalize(getName()));
     }
 
+    @Override
     public String getProposalMsgCodeForValueSetRule() {
         return NLS.bind(Messages.Attribute_proposalForMsgCode, getName().toUpperCase());
     }
 
+    @Override
     public String getPropertyName() {
         if (productRelevant) {
             return name;
@@ -401,14 +427,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return ""; //$NON-NLS-1$
     }
 
+    @Override
     public ProdDefPropertyType getProdDefPropertyType() {
         return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
 
+    @Override
     public String getPropertyDatatype() {
         return getDatatype();
     }
 
+    @Override
     public IPersistentAttributeInfo getPersistenceAttributeInfo() {
         return (IPersistentAttributeInfo)persistenceAttributeInfo;
     }

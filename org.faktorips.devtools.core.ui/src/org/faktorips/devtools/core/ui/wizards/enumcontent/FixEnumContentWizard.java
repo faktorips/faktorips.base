@@ -129,6 +129,7 @@ public class FixEnumContentWizard extends Wizard {
         if (confirmed) {
             try {
                 IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
+                    @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
                         deleteObsoleteEnumAttributeValues();
                         createNewEnumAttributeValues();
@@ -465,6 +466,7 @@ public class FixEnumContentWizard extends Wizard {
             setPageComplete(false);
         }
 
+        @Override
         public void createControl(Composite parent) {
             Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
             workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -474,6 +476,7 @@ public class FixEnumContentWizard extends Wizard {
             final IpsObjectRefControl enumTypeRefControl = uiToolkit.createEnumTypeRefControl(enumContent
                     .getIpsProject(), workArea, false);
             enumTypeRefControl.getTextControl().addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent event) {
                     try {
                         enumTypeModified(enumTypeRefControl);
@@ -573,6 +576,7 @@ public class FixEnumContentWizard extends Wizard {
             setPageComplete(false);
         }
 
+        @Override
         public void createControl(Composite parent) {
             ScrolledComposite scrolledControl = new ScrolledComposite(parent, SWT.V_SCROLL);
             setControl(scrolledControl);
@@ -621,6 +625,7 @@ public class FixEnumContentWizard extends Wizard {
                     String listItem = (j == 0) ? "" : " - ";
                     combos[i].add(listItem + availableColumns.get(j));
                     combos[i].addModifyListener(new ModifyListener() {
+                        @Override
                         public void modifyText(ModifyEvent event) {
                             combosModified();
                         }

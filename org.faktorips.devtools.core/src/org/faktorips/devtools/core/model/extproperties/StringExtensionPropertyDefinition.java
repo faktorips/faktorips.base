@@ -32,6 +32,7 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
         super();
     }
 
+    @Override
     public Object getValueFromXml(Element valueElement) {
         CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
         if (cdata == null) {
@@ -40,6 +41,7 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
         return cdata.getData();
     }
 
+    @Override
     public Object getValueFromString(String value) {
         return value;
     }

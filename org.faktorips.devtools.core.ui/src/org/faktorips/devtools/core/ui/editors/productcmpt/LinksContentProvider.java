@@ -43,6 +43,7 @@ public class LinksContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         if (!(inputElement instanceof IProductCmptGeneration)) {
             throw new RuntimeException("Unknown input element type " + inputElement.getClass()); //$NON-NLS-1$
@@ -84,12 +85,14 @@ public class LinksContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput instanceof IProductCmptGeneration) {
             generation = (IProductCmptGeneration)newInput;
@@ -101,6 +104,7 @@ public class LinksContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (!(parentElement instanceof String) || generation == null) {
             return new Object[0];
@@ -111,6 +115,7 @@ public class LinksContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         if (element instanceof String) {
             return generation;
@@ -125,6 +130,7 @@ public class LinksContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         Object[] children = getChildren(element);
         if (children == null) {

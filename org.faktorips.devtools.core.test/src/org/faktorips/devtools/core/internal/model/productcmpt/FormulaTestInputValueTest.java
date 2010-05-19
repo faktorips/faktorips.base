@@ -94,7 +94,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
 
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
-        formulaTestInputValue.initFromXml((Element)doc.getDocumentElement());
+        formulaTestInputValue.initFromXml(doc.getDocumentElement());
 
         assertEquals("formulaTestInputValue1", formulaTestInputValue.getIdentifier());
         assertEquals("4711", formulaTestInputValue.getValue());

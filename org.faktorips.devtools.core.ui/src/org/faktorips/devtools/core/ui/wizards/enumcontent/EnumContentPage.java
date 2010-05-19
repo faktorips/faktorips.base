@@ -277,6 +277,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         return createdEnumContent;
     }
 
+    @Override
     public final void valueChanged(FieldValueChangedEvent e) {
         if (e.field == sourceFolderField) {
             sourceFolderChanged();

@@ -57,6 +57,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
     }
 
+    @Override
     public String getDefaultValue(IIpsProject ipsProject) {
         return defaultValue;
     }
@@ -64,6 +65,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     /**
      * Returns the descripton specified in the plugin descriptor.
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -71,6 +73,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDisableValue(IIpsProject ipsProject) {
         return disableValue;
     }
@@ -78,10 +81,12 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     /**
      * Returns the name specified in the plugin descriptor.
      */
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
@@ -89,10 +94,12 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     /**
      * Returns the type specified in the plugin descriptor.
      */
+    @Override
     public String getType() {
         return type;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public IStatus initialize(IIpsModel ipsModel, Map properties) {
         type = (String)properties.get("type"); //$NON-NLS-1$
@@ -106,6 +113,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return null;
     }
 
+    @Override
     public Object parseValue(String value) {
         if (value == null) {
             return null;
@@ -127,11 +135,13 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
                 + "\" cannot be converted into an instance of the type " + type + " of this IpsBuilderSetPropertyDef."); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
     public boolean isAvailable(IIpsProject ipsProject) {
         String optionValue = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
         return supportedJdkVersions.isEmpty() || supportedJdkVersions.contains(optionValue);
     }
 
+    @Override
     public Message validateValue(String value) {
 
         if (value == null) {
@@ -165,10 +175,12 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
                         + "\" of this property \"" + getName() + "\"", Message.ERROR); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
     public String[] getDiscreteValues() {
         return discretePropertyValues.toArray(new String[discretePropertyValues.size()]);
     }
 
+    @Override
     public boolean hasDiscreteValues() {
         return discretePropertyValues.size() != 0;
     }

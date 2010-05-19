@@ -52,16 +52,19 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         super(parent, id);
     }
 
+    @Override
     public String getTestPolicyCmptTypeParameter() {
         return testPolicyCmptTypeParameter;
     }
 
+    @Override
     public void setTestPolicyCmptTypeParameter(String newPolicyCmptType) {
         String oldPolicyCmptType = testPolicyCmptTypeParameter;
         testPolicyCmptTypeParameter = newPolicyCmptType;
         valueChanged(oldPolicyCmptType, newPolicyCmptType);
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testPolicyCmptTypeParameter)) {
             return null;
@@ -69,16 +72,19 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this, ipsProject);
     }
 
+    @Override
     public String getTarget() {
         return target;
     }
 
+    @Override
     public void setTarget(String target) {
         String oldTarget = this.target;
         this.target = target;
         valueChanged(oldTarget, target);
     }
 
+    @Override
     public ITestPolicyCmpt findTarget() throws CoreException {
         if (targetChild != null) {
             return targetChild;
@@ -113,10 +119,12 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     /**
      * This object has no parts.
      */
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
+    @Override
     public ITestPolicyCmpt newTargetTestPolicyCmptChild() {
         ITestPolicyCmpt param = newTargetTestPolicyCmptChildInternal(getNextPartId());
         return param;
@@ -131,10 +139,12 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         return testPc;
     }
 
+    @Override
     public boolean isComposition() {
         return targetChild != null;
     }
 
+    @Override
     public boolean isAccoziation() {
         return targetChild == null;
     }
@@ -187,6 +197,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
+    @Override
     public ITestCase getTestCase() {
         return ((ITestPolicyCmpt)getParent()).getTestCase();
     }

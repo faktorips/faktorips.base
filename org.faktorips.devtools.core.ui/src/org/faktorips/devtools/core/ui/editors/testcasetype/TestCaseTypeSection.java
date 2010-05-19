@@ -211,11 +211,13 @@ public class TestCaseTypeSection extends IpsSection {
             attributeExpandable.setLayoutData(gd);
             attributeExpandable.setLayout(new GridLayout(1, true));
             attributeExpandable.addExpansionListener(new IExpansionListener() {
+                @Override
                 public void expansionStateChanged(ExpansionEvent e) {
                     redrawForm();
                     manualTriggered = true;
                 }
 
+                @Override
                 public void expansionStateChanging(ExpansionEvent e) {
                 }
             });
@@ -426,9 +428,11 @@ public class TestCaseTypeSection extends IpsSection {
          * Helper class to handle common button functionality
          */
         private class ButtonSelectionListener implements SelectionListener {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     ISelection selection = attributeTableViewer.getSelection();
@@ -549,6 +553,7 @@ public class TestCaseTypeSection extends IpsSection {
             this.object = object;
         }
 
+        @Override
         public void mouseDown(MouseEvent e) {
             currSelectedDetailObject = object;
             if (section == null) {
@@ -561,10 +566,12 @@ public class TestCaseTypeSection extends IpsSection {
             }
         }
 
+        @Override
         public void mouseDoubleClick(MouseEvent e) {
             // nothing to do
         }
 
+        @Override
         public void mouseUp(MouseEvent e) {
             // nothing to do
         }
@@ -583,6 +590,7 @@ public class TestCaseTypeSection extends IpsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean canModify(Object element, String property) {
             ITestAttribute testAttributeFromObject = getTestAttributeFromObject(element);
             if (property.equals(ITestAttribute.PROPERTY_DATATYPE)) {
@@ -597,6 +605,7 @@ public class TestCaseTypeSection extends IpsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object getValue(Object element, String property) {
             if (property.equals(ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE)) {
                 return getTestAttributeFromObject(element).getTestAttributeType().getIndex();
@@ -611,6 +620,7 @@ public class TestCaseTypeSection extends IpsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void modify(Object element, String property, Object value) {
             TableItem tableItem = (TableItem)element;
             if (property.equals(ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE)) {
@@ -656,6 +666,7 @@ public class TestCaseTypeSection extends IpsSection {
             super.dispose();
         }
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             Image baseImage;
             try {
@@ -705,6 +716,7 @@ public class TestCaseTypeSection extends IpsSection {
             }
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if (element instanceof ITestAttribute) {
                 ITestAttribute testAttribute = (ITestAttribute)element;
@@ -764,6 +776,7 @@ public class TestCaseTypeSection extends IpsSection {
             this.object = object;
         }
 
+        @Override
         public void expansionStateChanged(ExpansionEvent e) {
             currSelectedDetailObject = object;
             selectSection(section);
@@ -779,6 +792,7 @@ public class TestCaseTypeSection extends IpsSection {
             try {
                 if (!object.isValid() && !e.getState()) {
                     postAsyncRunnable(new Runnable() {
+                        @Override
                         public void run() {
                             if (isDisposed()) {
                                 return;
@@ -793,6 +807,7 @@ public class TestCaseTypeSection extends IpsSection {
             }
         }
 
+        @Override
         public void expansionStateChanging(ExpansionEvent e) {
             // nothing to do
         }
@@ -1393,6 +1408,7 @@ public class TestCaseTypeSection extends IpsSection {
 
         // add listener to the table
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
                     Object firstElement = ((IStructuredSelection)event.getSelection()).getFirstElement();
@@ -1741,6 +1757,7 @@ public class TestCaseTypeSection extends IpsSection {
         openInNewEditorAction = new OpenInNewEditorAction();
 
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
                     IStructuredSelection selection = (IStructuredSelection)event.getSelection();
@@ -1759,6 +1776,7 @@ public class TestCaseTypeSection extends IpsSection {
             }
         };
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 Object selection = event.getSelection();
                 if (!(selection instanceof IStructuredSelection)) {
@@ -1773,12 +1791,14 @@ public class TestCaseTypeSection extends IpsSection {
             }
         });
         treeViewer.getTree().addKeyListener(new KeyListener() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.DEL) {
                     removeClicked();
                 }
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
             }
         });
@@ -1820,6 +1840,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void hookButtonListeners() {
         removeButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     removeClicked();
@@ -1828,10 +1849,12 @@ public class TestCaseTypeSection extends IpsSection {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         addParameterButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     addParameterClicked();
@@ -1840,10 +1863,12 @@ public class TestCaseTypeSection extends IpsSection {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         moveUpButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveUpClicked(getSelectedObjectInTree());
@@ -1852,10 +1877,12 @@ public class TestCaseTypeSection extends IpsSection {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         moveDownButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveDownClicked(getSelectedObjectInTree());
@@ -1864,6 +1891,7 @@ public class TestCaseTypeSection extends IpsSection {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -2315,6 +2343,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void postRefreshAll() {
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -2341,6 +2370,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void postSelectedTestParameterInTree(final ITestParameter testParam) {
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 treeViewer.setSelection(new StructuredSelection(testParam));
             }

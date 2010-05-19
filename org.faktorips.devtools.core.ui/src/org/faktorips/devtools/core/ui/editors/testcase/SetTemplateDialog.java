@@ -63,6 +63,7 @@ public class SetTemplateDialog extends EditDialog {
         template = new TestCaseTypeRefControl(testCase.getIpsProject(), workArea, uiToolkit);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 try {
                     if (StringUtils.isEmpty(getTestCaseType())

@@ -32,6 +32,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -39,6 +40,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setId(String id) {
         this.id = id;
     }
@@ -68,6 +70,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLogConditionExp(int level, String loggerInstanceExp, List<String> usedClasses) {
         return build(level, loggerInstanceExp, null, new LogConditionExpBuilder(usedClasses));
     }
@@ -75,6 +78,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLogStmtForMessage(int level, String msgConstant, String loggerInstanceExp, List<String> usedClasses) {
         return build(level, loggerInstanceExp, msgConstant, new LogStmtForMessageBuilder());
     }
@@ -82,6 +86,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLogStmtForMessageExp(int level, String msgExp, String loggerInstanceExp, List<String> usedClasses) {
         return build(level, loggerInstanceExp, msgExp, new LogStmtForMessageExpBuilder());
     }
@@ -89,6 +94,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLogStmtForThrowable(int level,
             String msgExp,
             String throwableExp,
@@ -100,6 +106,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLoggerClassName() {
         return Logger.class.getName();
     }
@@ -107,6 +114,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLoggerInstanceStmt(String scopeExp, List<String> usedClasses) {
         usedClasses.add(Logger.class.getName());
         return "Logger.getLogger(" + scopeExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -133,23 +141,28 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
             this.usedClasses = usedClasses;
         }
 
+        @Override
         public String buildDebug(String message) {
             return ".isDebugEnabled()"; //$NON-NLS-1$
         }
 
+        @Override
         public String buildError(String message) {
             usedClasses.add(Level.class.getName());
             return ".isEnabledFor(Level.ERROR)"; //$NON-NLS-1$
         }
 
+        @Override
         public String buildInfo(String message) {
             return ".isInfoEnabled()"; //$NON-NLS-1$
         }
 
+        @Override
         public String buildTrace(String message) {
             return ".isTraceEnabled()"; //$NON-NLS-1$
         }
 
+        @Override
         public String buildWarning(String message) {
             usedClasses.add(Level.class.getName());
             return ".isEnabledFor(Level.WARN)"; //$NON-NLS-1$
@@ -158,22 +171,27 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
 
     private static class LogStmtForMessageBuilder implements Builder {
 
+        @Override
         public String buildDebug(String message) {
             return ".debug(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+        @Override
         public String buildError(String message) {
             return ".error(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+        @Override
         public String buildInfo(String message) {
             return ".info(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+        @Override
         public String buildTrace(String message) {
             return ".trace(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+        @Override
         public String buildWarning(String message) {
             return ".warn(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -181,22 +199,27 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
 
     private static class LogStmtForMessageExpBuilder implements Builder {
 
+        @Override
         public String buildDebug(String message) {
             return ".debug(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+        @Override
         public String buildError(String message) {
             return ".error(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+        @Override
         public String buildInfo(String message) {
             return ".info(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+        @Override
         public String buildTrace(String message) {
             return ".trace(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+        @Override
         public String buildWarning(String message) {
             return ".warn(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -210,22 +233,27 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
             this.throwableExp = throwableExp;
         }
 
+        @Override
         public String buildDebug(String message) {
             return ".debug(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
+        @Override
         public String buildError(String message) {
             return ".error(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
+        @Override
         public String buildInfo(String message) {
             return ".info(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
+        @Override
         public String buildTrace(String message) {
             return ".trace(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
+        @Override
         public String buildWarning(String message) {
             return ".warn(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }

@@ -97,14 +97,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 IPolicyCmptTypeAttribute.class, PolicyCmptTypeAttribute.TAG_NAME);
     }
 
+    @Override
     public String getProductCmptType() {
         return productCmptType;
     }
 
+    @Override
     public boolean isConfigurableByProductCmptType() {
         return configurableByProductCmptType;
     }
 
+    @Override
     public void setConfigurableByProductCmptType(boolean newValue) {
         boolean oldValue = configurableByProductCmptType;
         configurableByProductCmptType = newValue;
@@ -114,10 +117,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         valueChanged(oldValue, newValue);
     }
 
+    @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findProductCmptType(getProductCmptType());
     }
 
+    @Override
     public void setProductCmptType(String newName) {
         ArgumentCheck.notNull(newName);
         String oldName = productCmptType;
@@ -125,16 +130,19 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         valueChanged(oldName, newName);
     }
 
+    @Override
     public boolean isForceExtensionCompilationUnitGeneration() {
         return forceExtensionCompilationUnitGeneration;
     }
 
+    @Override
     public void setForceExtensionCompilationUnitGeneration(boolean flag) {
         boolean oldValue = forceExtensionCompilationUnitGeneration;
         forceExtensionCompilationUnitGeneration = flag;
         valueChanged(oldValue, forceExtensionCompilationUnitGeneration);
     }
 
+    @Override
     public boolean isExtensionCompilationUnitGenerated() {
         if (forceExtensionCompilationUnitGeneration) {
             return true;
@@ -160,21 +168,25 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return false;
     }
 
+    @Override
     public IPolicyCmptTypeAttribute[] getPolicyCmptTypeAttributes() {
         IPolicyCmptTypeAttribute[] a = new IPolicyCmptTypeAttribute[attributes.size()];
         attributes.toArray(a);
         return a;
     }
 
+    @Override
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute(String name) {
         return (IPolicyCmptTypeAttribute)getAttribute(name);
     }
 
+    @Override
     public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject)
             throws CoreException {
         return (IPolicyCmptTypeAttribute)findAttribute(name, ipsProject);
     }
 
+    @Override
     public IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute() {
         return (IPolicyCmptTypeAttribute)newAttribute();
     }
@@ -195,16 +207,19 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return methods.getBackingList();
     }
 
+    @Override
     public boolean isAggregateRoot() throws CoreException {
         IsAggregrateRootVisitor visitor = new IsAggregrateRootVisitor();
         visitor.start(this);
         return visitor.isRoot();
     }
 
+    @Override
     public boolean isDependantType() throws CoreException {
         return !isAggregateRoot();
     }
 
+    @Override
     public IPolicyCmptTypeAssociation[] getPolicyCmptTypeAssociations() {
         IPolicyCmptTypeAssociation[] r = new IPolicyCmptTypeAssociation[associations.size()];
         associations.toArray(r);
@@ -219,10 +234,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return associations.getBackingList();
     }
 
+    @Override
     public IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation() {
         return (IPolicyCmptTypeAssociation)newAssociation();
     }
 
+    @Override
     public IValidationRule[] getRules() {
         IValidationRule[] r = new IValidationRule[rules.size()];
         rules.toArray(r);
@@ -236,18 +253,22 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return rules.getBackingList();
     }
 
+    @Override
     public IValidationRule newRule() {
         return rules.newPart();
     }
 
+    @Override
     public int getNumOfRules() {
         return rules.size();
     }
 
+    @Override
     public int[] moveRules(int[] indexes, boolean up) {
         return rules.moveParts(indexes, up);
     }
 
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.POLICY_CMPT_TYPE;
     }
@@ -329,14 +350,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
     }
 
+    @Override
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
         return TypeHierarchy.getSupertypeHierarchy(this);
     }
 
+    @Override
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
         return TypeHierarchy.getSubtypeHierarchy(this);
     }
 
+    @Override
     public IPolicyCmptTypeAttribute[] findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType supertype = (IPolicyCmptType)findSupertype(ipsProject);
 
@@ -366,6 +390,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return result.toArray(new IPolicyCmptTypeAttribute[result.size()]);
     }
 
+    @Override
     public IPolicyCmptTypeAttribute[] overrideAttributes(IPolicyCmptTypeAttribute[] attributes) {
         IPolicyCmptTypeAttribute[] newAttributes = new IPolicyCmptTypeAttribute[attributes.length];
         for (int i = 0; i < attributes.length; i++) {
@@ -462,10 +487,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     }
 
+    @Override
     public IPersistentTypeInfo getPersistenceTypeInfo() {
         return (IPersistentTypeInfo)persistenceTypeInfo;
     }
 
+    @Override
     public boolean isPersistentEnabled() {
         return getPersistenceTypeInfo() != null && getPersistenceTypeInfo().isEnabled();
     }
@@ -534,6 +561,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return children.toArray(new IIpsElement[children.size()]);
     }
 
+    @Override
     public void initPersistentTypeInfo() throws CoreException {
         if (!getIpsProject().isPersistenceSupportEnabled()) {
             throw new CoreException(new IpsStatus(

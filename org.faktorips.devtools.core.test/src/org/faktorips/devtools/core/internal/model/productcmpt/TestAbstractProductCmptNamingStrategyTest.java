@@ -148,6 +148,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean supportsVersionId() {
             return true;
         }
@@ -155,6 +156,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getNextVersionId(IProductCmpt pc) {
             return "nextId";
         }
@@ -162,6 +164,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         /**
          * {@inheritDoc}
          */
+        @Override
         public MessageList validateVersionId(String versionId) {
             return new MessageList();
         }
@@ -184,6 +187,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getExtensionId() {
             return "TestStrategy";
         }
@@ -191,6 +195,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
             throw new UnsupportedOperationException();
         }

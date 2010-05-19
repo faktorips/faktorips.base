@@ -126,6 +126,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             menuManager.setRemoveAllWhenShown(true);
             // display menu only if one element is selected
             menuManager.addMenuListener(new IMenuListener() {
+                @Override
                 public void menuAboutToShow(IMenuManager manager) {
                     ISelection selection = getViewer().getSelection();
                     if (selection.isEmpty()) {
@@ -206,6 +207,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             wizardNewButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_BEGINNING));
             wizardNewButton.addSelectionListener(new SelectionListener() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     try {
                         newWizardClicked();
@@ -214,6 +216,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
                     }
                 }
 
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
                     // nothing to do
                 }
@@ -249,14 +252,17 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         }
 
         private class RelationContentProvider implements IStructuredContentProvider {
+            @Override
             public Object[] getElements(Object inputElement) {
                 return getPcType().getPolicyCmptTypeAssociations();
             }
 
+            @Override
             public void dispose() {
                 // nothing todo
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing todo
             }

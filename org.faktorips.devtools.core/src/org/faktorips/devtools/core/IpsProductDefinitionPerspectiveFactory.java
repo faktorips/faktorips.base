@@ -25,6 +25,7 @@ public class IpsProductDefinitionPerspectiveFactory implements IPerspectiveFacto
 
     public final static String PRODUCTDEFINITIONPERSPECTIVE_ID = "org.faktorips.devtools.core.productDefinitionPerspective"; //$NON-NLS-1$
 
+    @Override
     public void createInitialLayout(IPageLayout layout) {
         // nothing to do
     }

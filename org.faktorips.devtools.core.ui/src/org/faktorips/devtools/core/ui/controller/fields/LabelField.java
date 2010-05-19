@@ -41,6 +41,7 @@ public class LabelField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control getControl() {
         return label;
     }
@@ -63,6 +64,7 @@ public class LabelField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue) {
         label.setText((String)super.prepareObjectForSet(newValue));
     }
@@ -70,6 +72,7 @@ public class LabelField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText() {
         return label.getText();
     }
@@ -77,6 +80,7 @@ public class LabelField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setText(String newText) {
         label.setText(newText);
     }
@@ -84,6 +88,7 @@ public class LabelField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void insertText(String text) {
         label.setText(text);
     }
@@ -91,6 +96,7 @@ public class LabelField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectAll() {
         // nothing to do
     }

@@ -86,6 +86,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
         return validateIpsObjectNameInternal(type, name, true);
     }
@@ -93,6 +94,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
         ArgumentCheck.notNull(type);
         return validateIpsObjectNameInternal(type, name, false);
@@ -212,6 +214,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     /*
      * Validate if the name is a valid java type identifier
      */
+    @Override
     public MessageList validateJavaTypeName(String name, boolean qualifiedCheck) {
         return validateJavaTypeName(name, qualifiedCheck, Messages.DefaultIpsProjectNamingConventions_msgNameNotValid,
                 Messages.DefaultIpsProjectNamingConventions_msgNameIdDiscouraged);
@@ -261,6 +264,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
      * 
      * {@inheritDoc}
      */
+    @Override
     public MessageList validateIpsPackageName(String name) {
         MessageList ml = new MessageList();
         if (name.equals("")) { //$NON-NLS-1$
@@ -291,6 +295,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validateIpsPackageRootName(String name) throws CoreException {
         return new MessageList();
     }
@@ -298,6 +303,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     /**
      * {@inheritDoc}
      */
+    @Override
     public Message validateIfValidJavaIdentifier(String name,
             String text,
             Object validatedObject,

@@ -125,6 +125,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         return canCreate;
     }
 
+    @Override
     public boolean isDataChangeable() {
         return canCreate || canEdit || canMove || canDelete;
     }
@@ -134,6 +135,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         return false;
     }
 
+    @Override
     public void setDataChangeable(boolean flag) {
         table.setEnabled(true);
         canCreate = flag;
@@ -313,6 +315,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         newButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonNew);
         newButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         newButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     newPart();
@@ -322,6 +325,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -331,6 +335,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         editButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonEdit);
         editButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         editButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     editPart();
@@ -339,6 +344,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -348,6 +354,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         deleteButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonDelete);
         deleteButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         deleteButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     deletePart();
@@ -356,6 +363,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -365,6 +373,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         upButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonUp);
         upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         upButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveParts(true);
@@ -373,12 +382,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         downButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonDown);
         downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         downButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveParts(false);
@@ -387,6 +398,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -467,10 +479,12 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         return (IIpsObjectPart)getSelectedObject();
     }
 
+    @Override
     public ISelection getSelection() {
         return getViewer().getSelection();
     }
 
+    @Override
     public void setSelection(ISelection selection) {
         getViewer().setSelection(selection);
     }
@@ -558,6 +572,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * Adds the listener as one being notified when the selected part changes.
      */
+    @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         getViewer().addSelectionChangedListener(listener);
     }
@@ -565,6 +580,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * Removes the listener as one being notified when the selected part changes.
      */
+    @Override
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         getViewer().removeSelectionChangedListener(listener);
     }
@@ -641,10 +657,12 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
     }
 
+    @Override
     public ISelectionProvider getSelectionProvider() {
         return viewer;
     }
 
+    @Override
     public boolean isActivated() {
         if (viewer == null) {
             return false;

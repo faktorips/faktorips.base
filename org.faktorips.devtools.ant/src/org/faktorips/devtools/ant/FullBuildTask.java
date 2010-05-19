@@ -59,6 +59,7 @@ public class FullBuildTask extends AbstractIpsTask {
     /**
      * Excecutes the Ant-Task {@inheritDoc}
      */
+    @Override
     public void executeInternal() throws Exception {
 
         // Fetch Workspace

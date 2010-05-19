@@ -77,6 +77,7 @@ public class FormulaEditControl extends TextButtonControl implements IDataChange
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         // set changeable for the text control,
         // the button control will be always enabled, because formula tests
@@ -88,6 +89,7 @@ public class FormulaEditControl extends TextButtonControl implements IDataChange
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }

@@ -83,6 +83,7 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
     }

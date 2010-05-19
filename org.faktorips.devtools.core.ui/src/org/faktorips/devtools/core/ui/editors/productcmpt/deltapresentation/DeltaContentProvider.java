@@ -36,6 +36,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         delta = (IGenerationToTypeDelta)newInput;
     }
@@ -43,6 +44,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         List<DeltaType> elements = new ArrayList<DeltaType>();
         for (DeltaType element : DeltaType.ALL_TYPES) {
@@ -56,6 +58,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         return element instanceof DeltaType;
     }
@@ -63,6 +66,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (!(parentElement instanceof DeltaType)) {
             return new Object[0];
@@ -73,6 +77,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         if (element instanceof IDeltaEntry) {
             return ((IDeltaEntry)element).getDeltaType();
@@ -83,6 +88,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
 
     }

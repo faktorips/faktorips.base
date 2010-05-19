@@ -119,12 +119,14 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         tableViewer.setLabelProvider(createLabelProvider());
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonsEnabledState();
             }
         });
 
         table.addTraverseListener(new TraverseListener() {
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_RETURN && e.stateMask == SWT.NONE) {
                     editColumnOrNextPossible(0);
@@ -164,6 +166,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
         Control control = editor.getControl();
         control.addTraverseListener(new TraverseListener() {
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 switch (e.detail) {
                     case SWT.TRAVERSE_TAB_NEXT:
@@ -243,15 +246,18 @@ public abstract class EditTableControl extends Composite implements IDataChangea
              * [refactoring] CellEditors validate on keystroke by updating model on
              * editorValueChanged(..)
              */
+            @Override
             public void applyEditorValue() {
                 // default behavior is OK
             }
 
+            @Override
             public void cancelEditor() {
                 // must reset model to original value:
                 editor.fireModifyEvent(editor.getOriginalValue(), editorColumn);
             }
 
+            @Override
             public void editorValueChanged(boolean oldValidState, boolean newValidState) {
                 editor.fireModifyEvent(editor.getValue(), editorColumn);
             }
@@ -528,6 +534,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             fContentAssistant = assistant;
             // workaround for bugs 53629, 58777:
             text.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent e) {
                     if (fSaveNextModification) {
                         fSaveNextModification = false;
@@ -545,6 +552,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
         addButton.setEnabled(changeable);
@@ -560,6 +568,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }

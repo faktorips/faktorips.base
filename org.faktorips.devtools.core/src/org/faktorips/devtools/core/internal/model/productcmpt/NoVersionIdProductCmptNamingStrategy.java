@@ -39,6 +39,7 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getExtensionId() {
         return EXTENSION_ID;
     }
@@ -46,6 +47,7 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean supportsVersionId() {
         return false;
     }
@@ -69,6 +71,7 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getNextVersionId(IProductCmpt productCmpt) {
         return ""; //$NON-NLS-1$
     }
@@ -84,6 +87,7 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validateVersionId(String versionId) {
         return new MessageList();
     }
@@ -107,6 +111,7 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
         String id = project.getRuntimeIdPrefix() + productCmptName;
         String uniqueId = id;

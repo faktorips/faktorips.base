@@ -78,6 +78,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValue() {
         return value;
     }
@@ -85,6 +86,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object value) {
         // DEBUG
         if (value == null) {
@@ -97,6 +99,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getType() {
         return type;
     }
@@ -104,6 +107,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isFolderForDerivedSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type) || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES
                 .equals(type));
@@ -112,6 +116,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isFolderForMergableSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type) || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES
                 .equals(type));
@@ -120,6 +125,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTocPath() {
         return (IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH.equals(type));
     }
@@ -127,6 +133,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPackageNameForDerivedSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED.equals(type) || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED
                 .equals(type)));
@@ -135,6 +142,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPackageNameForMergableSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE.equals(type) || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE
                 .equals(type)));
@@ -143,6 +151,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
 

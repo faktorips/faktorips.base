@@ -124,6 +124,7 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
      * <code>ContentChangeEvent.TYPE_PART_ADDED</code> or
      * <code>ContentChangeEvent.TYPE_PART_REMOVED</code> occurs.
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (!event.getIpsSrcFile().equals(getBusinessFunction().getIpsSrcFile())) {
             return;

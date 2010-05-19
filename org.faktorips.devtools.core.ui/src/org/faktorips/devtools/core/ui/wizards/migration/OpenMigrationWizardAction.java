@@ -46,6 +46,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         // nothing to do
     }
@@ -53,6 +54,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbenchWindow window) {
         this.window = window;
     }
@@ -60,6 +62,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IAction action) {
         // save dirty editors
         if (!IpsUIPlugin.getDefault().saveAllEditors()) {
@@ -75,6 +78,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection.isEmpty()) {
             action.setEnabled(false);
@@ -130,6 +134,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         window = targetPart.getSite().getWorkbenchWindow();
     }

@@ -210,6 +210,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * Returns <tt>true</tt> if the content shown on this page is changeable, otherwise
      * <tt>false</tt>.
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
@@ -270,6 +271,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         }
     }
 
+    @Override
     public void addDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
         if (listener == null) {
             return;
@@ -282,6 +284,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         dataChangeableStateChangeListeners.add(listener);
     }
 
+    @Override
     public void removeDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
         if (dataChangeableStateChangeListeners == null) {
             return;

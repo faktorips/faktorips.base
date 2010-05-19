@@ -72,7 +72,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
 
         // Build product component types
         productCmpt = newProductCmpt(productCmptType, "products.TestProduct");
-        productCmptGen = (IProductCmptGeneration)productCmpt.getProductCmptGeneration(0);
+        productCmptGen = productCmpt.getProductCmptGeneration(0);
         ITableContentUsage tcu = productCmptGen.newTableContentUsage();
         tcu.setStructureUsage(tsu1.getRoleName());
         tcu.setTableContentName("tableContent1");

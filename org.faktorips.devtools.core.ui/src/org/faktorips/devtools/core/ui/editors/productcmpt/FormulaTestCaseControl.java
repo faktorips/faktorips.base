@@ -282,6 +282,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             super.dispose();
         }
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (!(element instanceof ExtDataForFormulaTestCase)) {
                 return null;
@@ -312,6 +313,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             return null;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if (element instanceof ExtDataForFormulaTestCase) {
                 ExtDataForFormulaTestCase ftc = (ExtDataForFormulaTestCase)element;
@@ -426,10 +428,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         Button btnExecFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_ExecuteAll);
         btnExecFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnExecFormulaTestCase.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 executeClicked();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -442,10 +446,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             btnNewFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_New);
             btnNewFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
             btnNewFormulaTestCase.addSelectionListener(new SelectionListener() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     newClicked();
                 }
 
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
             });
@@ -455,10 +461,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         btnDeleteFormulaTestCase.setEnabled(false);
         btnDeleteFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnDeleteFormulaTestCase.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 deleteClicked();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -467,10 +475,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         btnMoveFormulaTestCaseUp.setEnabled(false);
         btnMoveFormulaTestCaseUp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnMoveFormulaTestCaseUp.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 moveFormulaTestInputValues(getSelectedFormulaTestCase(), true);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -479,10 +489,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         btnMoveFormulaTestCaseDown.setEnabled(false);
         btnMoveFormulaTestCaseDown.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnMoveFormulaTestCaseDown.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 moveFormulaTestInputValues(getSelectedFormulaTestCase(), false);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -493,10 +505,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         btnUpdateFormulaTestCase.setEnabled(false);
         btnUpdateFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnUpdateFormulaTestCase.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 updateClicked();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -642,6 +656,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
 
         Runnable calculate = new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -784,6 +799,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         formulaTestCaseTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             Object prevObject;
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
                     final Object selObject = ((IStructuredSelection)event.getSelection()).getFirstElement();
@@ -933,6 +949,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         return messageList;
     }
 
+    @Override
     public void valueChanged(ColumnIdentifier columnIdentifier, Object value) {
         // resets the color of the last test run
         ExtDataForFormulaTestCase tc = getSelectedFormulaTestCase();
@@ -952,6 +969,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
 
@@ -965,6 +983,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }

@@ -199,6 +199,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
      * 
      * {@inheritDoc}
      */
+    @Override
     public int compareTo(QualifiedNameType other) {
         int c = getPackageName().compareTo(other.getPackageName());
         if (c != 0) {

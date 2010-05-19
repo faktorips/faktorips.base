@@ -123,6 +123,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createdFromParsableFileContents = props.createdFromParsableFileContents;
     }
 
+    @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         try {
             MessageList list = new MessageList();
@@ -210,6 +211,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getBuilderSetId() {
         return builderSetId;
     }
@@ -217,6 +219,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setBuilderSetId(String id) {
         ArgumentCheck.notNull(id);
         builderSetId = id;
@@ -225,6 +228,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPath getIpsObjectPath() {
         return path;
     }
@@ -232,6 +236,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isModelProject() {
         return modelProject;
     }
@@ -239,6 +244,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setModelProject(boolean modelProject) {
         this.modelProject = modelProject;
     }
@@ -246,6 +252,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isProductDefinitionProject() {
         return productDefinitionProject;
     }
@@ -253,6 +260,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setProductDefinitionProject(boolean productDefinitionProject) {
         this.productDefinitionProject = productDefinitionProject;
     }
@@ -260,6 +268,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
         return productCmptNamingStrategy;
     }
@@ -267,6 +276,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy) {
         ArgumentCheck.notNull(newStrategy);
         productCmptNamingStrategy = newStrategy;
@@ -275,6 +285,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setChangesOverTimeNamingConventionIdForGeneratedCode(String changesInTimeConventionIdForGeneratedCode) {
         this.changesInTimeConventionIdForGeneratedCode = changesInTimeConventionIdForGeneratedCode;
     }
@@ -282,6 +293,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getChangesOverTimeNamingConventionIdForGeneratedCode() {
         return changesInTimeConventionIdForGeneratedCode;
     }
@@ -289,6 +301,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setIpsObjectPath(IIpsObjectPath path) {
         ArgumentCheck.notNull(path);
         this.path = path;
@@ -297,6 +310,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getPredefinedDatatypesUsed() {
         return predefinedDatatypesUsed;
     }
@@ -304,6 +318,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPredefinedDatatypesUsed(String[] datatypes) {
         ArgumentCheck.notNull(datatypes);
         predefinedDatatypesUsed = datatypes;
@@ -312,6 +327,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPredefinedDatatypesUsed(ValueDatatype[] datatypes) {
         ArgumentCheck.notNull(datatypes);
         predefinedDatatypesUsed = new String[datatypes.length];
@@ -323,6 +339,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Datatype> getDefinedDatatypes() {
         return definedDatatypes;
     }
@@ -330,6 +347,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DynamicValueDatatype[] getDefinedValueDatatypes() {
         List<DynamicValueDatatype> valuetypes = new ArrayList<DynamicValueDatatype>(definedDatatypes.size());
         for (Datatype datatype : definedDatatypes) {
@@ -343,6 +361,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefinedDatatypes(DynamicValueDatatype[] datatypes) {
         definedDatatypes = new ArrayList<Datatype>(datatypes.length);
         for (DynamicValueDatatype datatype : datatypes) {
@@ -353,6 +372,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefinedDatatypes(Datatype[] datatypes) {
         definedDatatypes = new ArrayList<Datatype>(datatypes.length);
         for (Datatype datatype : datatypes) {
@@ -675,6 +695,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addDefinedDatatype(DynamicValueDatatype newDatatype) {
         addDefinedDatatype((Datatype)newDatatype);
     }
@@ -682,6 +703,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addDefinedDatatype(Datatype newDatatype) {
         /* replace, if Datatype already registered */
         for (int i = 0; i < definedDatatypes.size(); i++) {
@@ -697,6 +719,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getRuntimeIdPrefix() {
         return runtimeIdPrefix;
     }
@@ -704,6 +727,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setRuntimeIdPrefix(String runtimeIdPrefix) {
         if (runtimeIdPrefix == null) {
             throw new NullPointerException("RuntimeIdPrefix can not be null"); //$NON-NLS-1$
@@ -714,6 +738,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isJavaProjectContainsClassesForDynamicDatatypes() {
         return javaProjectContainsClassesForDynamicDatatypes;
     }
@@ -721,6 +746,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setJavaProjectContainsClassesForDynamicDatatypes(boolean newValue) {
         javaProjectContainsClassesForDynamicDatatypes = newValue;
     }
@@ -728,6 +754,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDerivedUnionIsImplementedRuleEnabled() {
         return derivedUnionIsImplementedRuleEnabled;
     }
@@ -735,6 +762,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDerivedUnionIsImplementedRuleEnabled(boolean enabled) {
         derivedUnionIsImplementedRuleEnabled = enabled;
     }
@@ -742,6 +770,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled() {
         return referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled;
     }
@@ -756,6 +785,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setRulesWithoutReferencesAllowedEnabled(boolean enabled) {
         rulesWithoutReferencesAllowed = enabled;
     }
@@ -763,6 +793,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled) {
         referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enabled;
     }
@@ -984,6 +1015,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsArtefactBuilderSetConfigModel getBuilderSetConfig() {
         return builderSetConfig;
     }
@@ -991,6 +1023,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config) {
         ArgumentCheck.notNull(config);
         builderSetConfig = config;
@@ -999,6 +1032,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getRequiredIpsFeatureIds() {
         return requiredFeatures.keySet().toArray(new String[requiredFeatures.size()]);
     }
@@ -1006,6 +1040,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getMinRequiredVersionNumber(String featureId) {
         return requiredFeatures.get(featureId);
     }
@@ -1013,6 +1048,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMinRequiredVersionNumber(String featureId, String version) {
         requiredFeatures.put(featureId, version);
     }
@@ -1036,6 +1072,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Long getLastPersistentModificationTimestamp() {
         return lastPersistentModificationTimestamp;
     }
@@ -1043,6 +1080,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setLastPersistentModificationTimestamp(Long timestamp) {
         lastPersistentModificationTimestamp = timestamp;
     }
@@ -1050,6 +1088,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EnumType getQuestionAssignedUserGroup() {
         DefaultEnumType type = new DefaultEnumType("QuestionAssignedUserGroup", QuestionAssignedUserGroup.class); //$NON-NLS-1$
         new QuestionAssignedUserGroup(type,
@@ -1066,6 +1105,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EnumType getQuestionStatus() {
         DefaultEnumType type = new DefaultEnumType("QuestionStatus", QuestionStatus.class); //$NON-NLS-1$
         new QuestionStatus(type, "open", Messages.IpsProjectProperties_ENUM_QUESTION_STATUS_OPEN); //$NON-NLS-1$
@@ -1074,30 +1114,37 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return type;
     }
 
+    @Override
     public boolean isPersistenceSupportEnabled() {
         return persistentProject;
     }
 
+    @Override
     public void setPersistenceSupport(boolean persistentProject) {
         this.persistentProject = persistentProject;
     }
 
+    @Override
     public IPersistenceOptions getPersistenceOptions() {
         return persistenceOptions;
     }
 
+    @Override
     public ITableColumnNamingStrategy getTableColumnNamingStrategy() {
         return getPersistenceOptions().getTableColumnNamingStrategy();
     }
 
+    @Override
     public ITableNamingStrategy getTableNamingStrategy() {
         return getPersistenceOptions().getTableNamingStrategy();
     }
 
+    @Override
     public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy) {
         getPersistenceOptions().setTableColumnNamingStrategy(newStrategy);
     }
 
+    @Override
     public void setTableNamingStrategy(ITableNamingStrategy newStrategy) {
         getPersistenceOptions().setTableNamingStrategy(newStrategy);
     }

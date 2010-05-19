@@ -181,6 +181,7 @@ public class RuleFunctionsControl extends EditTableControl {
     }
 
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex != 0) {
                 return null;
@@ -195,6 +196,7 @@ public class RuleFunctionsControl extends EditTableControl {
             }
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if (columnIndex == 0) {
                 return ""; //$NON-NLS-1$
@@ -221,6 +223,7 @@ public class RuleFunctionsControl extends EditTableControl {
 
     private class ContentProvider implements IStructuredContentProvider {
 
+        @Override
         public Object[] getElements(Object inputElement) {
             String[] bfNames = getRule().getBusinessFunctions();
             IndexFctNameWrapper[] wrappers = new IndexFctNameWrapper[bfNames.length];
@@ -230,9 +233,11 @@ public class RuleFunctionsControl extends EditTableControl {
             return wrappers;
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
 
@@ -240,15 +245,18 @@ public class RuleFunctionsControl extends EditTableControl {
 
     private class CellModifier implements ICellModifier {
 
+        @Override
         public boolean canModify(Object element, String property) {
             return isDataChangeable();
         }
 
+        @Override
         public Object getValue(Object element, String property) {
             IndexFctNameWrapper wrapper = (IndexFctNameWrapper)element;
             return wrapper.getFctName();
         }
 
+        @Override
         public void modify(Object element, String property, Object value) {
             if (element instanceof Item) {
                 element = ((Item)element).getData();

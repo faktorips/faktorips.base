@@ -37,6 +37,7 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
     /**
      * Returns the title for the structure-differences viewer. {@inheritDoc}
      */
+    @Override
     public String getName() {
         return Messages.ProductCmptCompareItemCreator_StructureViewer_title;
     }

@@ -67,6 +67,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
@@ -108,12 +109,14 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == editFieldAssociation) {
             associationChanged(editFieldAssociation.getText());
         }
 
         wizard.postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (wizard.getShell().isDisposed()) {
                     return;
@@ -152,6 +155,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
      */
     private void postNewTestParameter() {
         wizard.postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (wizard.getShell().isDisposed()) {
                     return;

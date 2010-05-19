@@ -61,6 +61,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         List<IProductCmptStructureReference> children = new ArrayList<IProductCmptStructureReference>();
 
@@ -141,6 +142,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         if (structure == null) {
             return null;
@@ -160,6 +162,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
     }
@@ -167,6 +170,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         structure = null;
     }
@@ -174,6 +178,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         if (structure == inputElement) {
             return new Object[] { structure.getRoot() };
@@ -185,6 +190,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput == null || !(newInput instanceof IProductCmptTreeStructure)) {
             structure = null;

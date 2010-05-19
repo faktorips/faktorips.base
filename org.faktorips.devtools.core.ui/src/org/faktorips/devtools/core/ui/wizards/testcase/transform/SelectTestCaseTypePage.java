@@ -57,6 +57,7 @@ public class SelectTestCaseTypePage extends WizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
@@ -84,6 +85,7 @@ public class SelectTestCaseTypePage extends WizardPage {
         extensionField.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         extensionField.addChangeListener(new ValueChangeListener() {
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 wizard.setNewTestCaseNameExtension((String)e.field.getValue());
             }
@@ -118,6 +120,7 @@ public class SelectTestCaseTypePage extends WizardPage {
 
             testCaseTypeField = new TextButtonField(superTypeControl);
             testCaseTypeField.addChangeListener(new ValueChangeListener() {
+                @Override
                 public void valueChanged(FieldValueChangedEvent e) {
                     wizard.setTestCaseTypeName((String)e.field.getValue());
                 }

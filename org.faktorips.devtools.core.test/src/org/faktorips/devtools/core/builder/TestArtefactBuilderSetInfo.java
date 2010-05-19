@@ -62,6 +62,7 @@ public class TestArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         this.builderSetId = builderSetId;
     }
 
+    @Override
     public IIpsArtefactBuilderSet create(IIpsProject ipsProject) {
         for (IIpsArtefactBuilderSet builderSet : builderSets) {
             if (builderSet.getIpsProject().equals(ipsProject)) {
@@ -71,31 +72,38 @@ public class TestArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         return null;
     }
 
+    @Override
     public String getBuilderSetId() {
         return builderSetId;
     }
 
+    @Override
     public String getBuilderSetLabel() {
         return null;
     }
 
+    @Override
     public IIpsBuilderSetPropertyDef getPropertyDefinition(String name) {
         return null;
     }
 
+    @Override
     public IIpsBuilderSetPropertyDef[] getPropertyDefinitions() {
         return new IIpsBuilderSetPropertyDef[0];
     }
 
+    @Override
     public MessageList validateIpsArtefactBuilderSetConfig(IIpsProject ipsProject,
             IIpsArtefactBuilderSetConfigModel builderSetConfig) {
         return null;
     }
 
+    @Override
     public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject, String propertyName, String propertyValue) {
         return null;
     }
 
+    @Override
     public IIpsArtefactBuilderSetConfigModel createDefaultConfiguration(IIpsProject ipsProject) {
         return null;
     }

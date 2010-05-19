@@ -89,24 +89,28 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
     /**
      * Empty implementeration of the {@link ISaveParticipant} interface method
      */
+    @Override
     public void doneSaving(ISaveContext context) {
     }
 
     /**
      * Empty implementeration of the {@link ISaveParticipant} interface method
      */
+    @Override
     public void prepareToSave(ISaveContext context) throws CoreException {
     }
 
     /**
      * Empty implementeration of the {@link ISaveParticipant} interface method
      */
+    @Override
     public void rollback(ISaveContext context) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void saving(ISaveContext context) throws CoreException {
         if (context.getKind() == ISaveContext.FULL_SAVE) {
             IpsPlugin plugin = IpsPlugin.getDefault();

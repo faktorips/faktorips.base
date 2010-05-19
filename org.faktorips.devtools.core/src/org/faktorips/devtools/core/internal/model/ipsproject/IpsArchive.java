@@ -83,6 +83,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPath getLocation() {
         if (archivePath == null) {
             return null;
@@ -111,6 +112,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPath getArchivePath() {
         return archivePath;
     }
@@ -118,6 +120,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean exists() {
         IResource resource = getCorrespondingResource();
         if (resource == null) {
@@ -131,6 +134,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getNonEmptyPackages() throws CoreException {
         readArchiveContentIfNecessary();
         String[] packNames = new String[packs.size()];
@@ -145,6 +149,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean containsPackage(String name) throws CoreException {
         if (name == null) {
             return false;
@@ -168,6 +173,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getNonEmptySubpackages(String parentPack) throws CoreException {
         if (parentPack == null) {
             return new String[0];
@@ -205,6 +211,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean contains(QualifiedNameType qnt) throws CoreException {
         readArchiveContentIfNecessary();
         return qNameTypes.containsKey(qnt);
@@ -213,6 +220,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Set<QualifiedNameType> getQNameTypes() throws CoreException {
         readArchiveContentIfNecessary();
         return qNameTypes.keySet();
@@ -221,6 +229,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreException {
         readArchiveContentIfNecessary();
         Set<QualifiedNameType> qnts = packs.get(packName);
@@ -231,6 +240,7 @@ public class IpsArchive implements IIpsArchive {
         return packContent;
     }
 
+    @Override
     public InputStream getSortDefinitionContent(String packName) throws CoreException {
         if (packName == null) {
             return null;
@@ -250,6 +260,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public InputStream getContent(QualifiedNameType qnt) throws CoreException {
         if (qnt == null) {
             return null;
@@ -412,6 +423,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException {
         readArchiveContentIfNecessary();
         IpsObjectProperties props = qNameTypes.get(qnt);
@@ -424,6 +436,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException {
         readArchiveContentIfNecessary();
         IpsObjectProperties props = qNameTypes.get(qnt);
@@ -461,6 +474,7 @@ public class IpsArchive implements IIpsArchive {
         return project.getFile(archivePath);
     }
 
+    @Override
     public IIpsPackageFragmentRoot getRoot() {
         return root;
     }
@@ -477,6 +491,7 @@ public class IpsArchive implements IIpsArchive {
 
     }
 
+    @Override
     public InputStream getResourceAsStream(String path) throws CoreException {
         if (path == null) {
             return null;

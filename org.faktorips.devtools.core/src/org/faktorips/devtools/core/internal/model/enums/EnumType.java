@@ -96,34 +96,41 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 IEnumAttribute.XML_TAG);
     }
 
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.ENUM_TYPE;
     }
 
+    @Override
     public boolean isAbstract() {
         return isAbstract;
     }
 
+    @Override
     public void setAbstract(boolean isAbstract) {
         boolean oldIsAbstract = this.isAbstract;
         this.isAbstract = isAbstract;
         valueChanged(oldIsAbstract, isAbstract);
     }
 
+    @Override
     public boolean isContainingValues() {
         return containingValues;
     }
 
+    @Override
     public void setContainingValues(boolean containingValues) {
         boolean oldContainingValues = this.containingValues;
         this.containingValues = containingValues;
         valueChanged(oldContainingValues, containingValues);
     }
 
+    @Override
     public String getSuperEnumType() {
         return superEnumType;
     }
 
+    @Override
     public void setSuperEnumType(String superEnumTypeQualifiedName) {
         ArgumentCheck.notNull(superEnumTypeQualifiedName);
 
@@ -132,6 +139,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         valueChanged(oldSupertype, superEnumType);
     }
 
+    @Override
     public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException {
         if (superEnumTypeCandidate == null) {
             return false;
@@ -148,6 +156,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return visitor.isSubtype();
     }
 
+    @Override
     public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException {
         if (equals(superEnumTypeCandidate)) {
             return true;
@@ -155,10 +164,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return isSubEnumTypeOf(superEnumTypeCandidate, ipsProject);
     }
 
+    @Override
     public List<IEnumAttribute> getEnumAttributes(boolean includeLiteralName) {
         return getEnumAttributesInternal(false, includeLiteralName);
     }
 
+    @Override
     public List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies(boolean includeLiteralName) {
         return getEnumAttributesInternal(true, includeLiteralName);
     }
@@ -186,6 +197,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return attributesList;
     }
 
+    @Override
     public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals(boolean includeLiteralName,
             IIpsProject ipsProject) throws CoreException {
 
@@ -203,10 +215,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return attributesList;
     }
 
+    @Override
     public IEnumAttribute newEnumAttribute() throws CoreException {
         return createNewEnumAttribute(EnumAttribute.class);
     }
 
+    @Override
     public IEnumLiteralNameAttribute newEnumLiteralNameAttribute() throws CoreException {
         IEnumLiteralNameAttribute literalNameAttribute = (IEnumLiteralNameAttribute)createNewEnumAttribute(EnumLiteralNameAttribute.class);
         literalNameAttribute.setName(IEnumLiteralNameAttribute.DEFAULT_NAME);
@@ -239,19 +253,23 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         });
     }
 
+    @Override
     public IEnumType findEnumType(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
         return this;
     }
 
+    @Override
     public int getEnumAttributesCount(boolean includeLiteralName) {
         return getEnumAttributes(includeLiteralName).size();
     }
 
+    @Override
     public int getEnumAttributesCountIncludeSupertypeCopies(boolean includeLiteralName) {
         return getEnumAttributesIncludeSupertypeCopies(includeLiteralName).size();
     }
 
+    @Override
     public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
             throws CoreException {
 
@@ -295,6 +313,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
     }
 
+    @Override
     public int moveEnumAttribute(final IEnumAttribute enumAttribute, final boolean up) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
         if (enumAttribute.getEnumType() != this) {
@@ -344,11 +363,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         });
     }
 
+    @Override
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
         ArgumentCheck.notNull(enumAttribute);
         return enumAttributes.indexOf(enumAttribute);
     }
 
+    @Override
     public int getIndexOfEnumLiteralNameAttribute() {
         if (getEnumLiteralNameAttribute() == null) {
             return -1;
@@ -368,11 +389,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
+    @Override
     public IEnumAttribute getEnumAttribute(String name) {
         ArgumentCheck.notNull(name);
         return getEnumAttribute(name, false);
     }
 
+    @Override
     public IEnumAttribute getEnumAttributeIncludeSupertypeCopies(String name) {
         ArgumentCheck.notNull(name);
         return getEnumAttribute(name, true);
@@ -400,6 +423,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
+    @Override
     public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name)
             throws CoreException {
 
@@ -521,6 +545,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
+    @Override
     public int getEnumLiteralNameAttributesCount() {
         int count = 0;
         for (IEnumAttribute currentEnumAttribute : enumAttributes.getBackingList()) {
@@ -603,6 +628,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return returnAttributesList;
     }
 
+    @Override
     public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -630,6 +656,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return collectedEnumTypes;
     }
 
+    @Override
     public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
             if (EnumUtil.findEnumAttributeIsIdentifier(currentEnumAttribute, ipsProject)) {
@@ -639,6 +666,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
+    @Override
     public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
             if (EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(currentEnumAttribute, ipsProject)) {
@@ -648,6 +676,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
+    @Override
     public boolean deleteEnumAttributeWithValues(final IEnumAttribute enumAttribute) throws CoreException {
         if (enumAttribute == null) {
             return false;
@@ -701,14 +730,17 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
+    @Override
     public boolean hasSuperEnumType() {
         return StringUtils.isNotEmpty(superEnumType);
     }
 
+    @Override
     public boolean hasExistingSuperEnumType(IIpsProject ipsProject) throws CoreException {
         return findSuperEnumType(ipsProject) != null;
     }
 
+    @Override
     public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -728,6 +760,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return superEnumTypes;
     }
 
+    @Override
     public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -763,6 +796,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return false;
     }
 
+    @Override
     public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException {
         List<IEnumAttribute> newEnumAttributes = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentSuperEnumAttribute : superEnumAttributes) {
@@ -800,10 +834,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return newEnumAttributes;
     }
 
+    @Override
     public String getEnumContentName() {
         return enumContentPackageFragment;
     }
 
+    @Override
     public void setEnumContentName(String packageFragmentQualifiedName) {
         ArgumentCheck.notNull(packageFragmentQualifiedName);
 
@@ -812,6 +848,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         valueChanged(oldEnumContentPackageFragment, packageFragmentQualifiedName);
     }
 
+    @Override
     public IEnumContent findEnumContent(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findEnumContent(this);
     }
@@ -828,6 +865,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
+    @Override
     public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
 
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
@@ -839,14 +877,17 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
+    @Override
     public boolean containsEnumAttribute(String attributeName) {
         return containsEnumAttribute(attributeName, false);
     }
 
+    @Override
     public boolean containsEnumAttributeIncludeSupertypeCopies(String attributeName) {
         return containsEnumAttribute(attributeName, true);
     }
 
+    @Override
     public boolean containsEnumLiteralNameAttribute() {
         return getEnumLiteralNameAttribute() != null;
     }
@@ -876,6 +917,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return super.newPart(xmlTag, id);
     }
 
+    @Override
     public IEnumLiteralNameAttribute getEnumLiteralNameAttribute() {
         for (IEnumAttribute currentAttribute : enumAttributes.getBackingList()) {
             if (currentAttribute instanceof IEnumLiteralNameAttribute) {
@@ -885,6 +927,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
+    @Override
     public boolean hasEnumLiteralNameAttribute() {
         return getEnumLiteralNameAttribute() != null;
     }
@@ -895,6 +938,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Returns <tt>true</tt> if this <tt>IEnumType</tt> is not abstract and is configured to contain
      * values.
      */
+    @Override
     public boolean isCapableOfContainingValues() {
         return !isAbstract && containingValues;
     }

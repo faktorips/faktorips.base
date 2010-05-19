@@ -91,6 +91,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
 
         if (ipsproject == null) {

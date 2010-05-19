@@ -209,23 +209,28 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
         // hide actions not usefull in this product
         window.addPageListener(new IPageListener() {
+            @Override
             public void pageOpened(IWorkbenchPage page) {
                 disableUnwantedActionSets(page);
             }
 
+            @Override
             public void pageClosed(IWorkbenchPage page) {
             }
 
+            @Override
             public void pageActivated(IWorkbenchPage page) {
             }
         });
 
         window.addPerspectiveListener(new IPerspectiveListener() {
 
+            @Override
             public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, String changeId) {
                 fixPerspective(page);
             }
 
+            @Override
             public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
             }
         });

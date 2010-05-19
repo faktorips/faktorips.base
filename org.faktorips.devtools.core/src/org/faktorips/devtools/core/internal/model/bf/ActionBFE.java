@@ -49,6 +49,7 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
         return doc.createElement(IActionBFE.XML_TAG);
     }
 
+    @Override
     public String getReferencedBfQualifiedName() {
         if (getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
             return getTarget();
@@ -56,6 +57,7 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
         return null;
     }
 
+    @Override
     public String getReferencedBfUnqualifedName() {
         if (getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
             int index = StringUtils.lastIndexOf(getTarget(), '.');
@@ -67,6 +69,7 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
         return null;
     }
 
+    @Override
     public IBusinessFunction findReferencedBusinessFunction() throws CoreException {
         return (IBusinessFunction)getIpsProject().findIpsObject(BusinessFunctionIpsObjectType.getInstance(),
                 getTarget());

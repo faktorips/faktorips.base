@@ -152,19 +152,23 @@ public class ContentPage extends IpsObjectEditorPage {
         // editor first
         // if the user scrolls to another cell in the table
         table.getVerticalBar().addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 deactivateCellEditors();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 deactivateCellEditors();
             }
         });
         table.getHorizontalBar().addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 deactivateCellEditors();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 deactivateCellEditors();
             }
@@ -311,6 +315,7 @@ public class ContentPage extends IpsObjectEditorPage {
         // because @since 3.2 in edit mode the cell becomes a border and the bottom pixel of the
         // text is hidden
         Listener paintListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 switch (event.type) {
                     case SWT.MeasureItem: {
@@ -461,6 +466,7 @@ public class ContentPage extends IpsObjectEditorPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String isValid(String newText) {
             StringTokenizer tokenizer = getTokenizer(newText);
             int tokenizerItemCount = tokenizer.countTokens();

@@ -35,10 +35,12 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
         super(parent, id);
     }
 
+    @Override
     public String getDatatype() {
         return datatype;
     }
 
+    @Override
     public void setDatatype(String datatype) {
         String old = this.datatype;
         this.datatype = datatype;
@@ -56,6 +58,7 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
         if (getType().equals(BFElementType.DECISION_METHODCALL)) {
             IMethod method = findMethod(ipsProject);

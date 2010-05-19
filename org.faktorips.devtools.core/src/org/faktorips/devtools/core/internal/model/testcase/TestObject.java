@@ -37,14 +37,17 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
      */
     public static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
 
+    @Override
     public abstract ITestObject getRoot();
 
+    @Override
     public abstract boolean isRoot();
 
     public TestObject(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
+    @Override
     public boolean isInput() {
         TestObject root = (TestObject)getRoot();
         TestCase testCase = (TestCase)root.getParent();
@@ -64,6 +67,7 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         return testCase.isTypeOrDefault(root.getTestParameterName(), TestParameterType.INPUT, DEFAULT_TYPE);
     }
 
+    @Override
     public boolean isExpectedResult() {
         // TODO: mit Joerg klaeren
         TestObject root = (TestObject)getRoot();
@@ -85,6 +89,7 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         return testCase.isTypeOrDefault(root.getTestParameterName(), TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
     }
 
+    @Override
     public boolean isCombined() {
         TestObject root = (TestObject)getRoot();
         TestCase testCase = (TestCase)root.getParent();
@@ -111,6 +116,7 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
     }
 
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }

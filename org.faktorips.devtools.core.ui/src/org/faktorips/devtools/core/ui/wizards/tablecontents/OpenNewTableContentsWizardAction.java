@@ -33,6 +33,7 @@ public class OpenNewTableContentsWizardAction extends OpenNewWizardAction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         // nothing to do
     }

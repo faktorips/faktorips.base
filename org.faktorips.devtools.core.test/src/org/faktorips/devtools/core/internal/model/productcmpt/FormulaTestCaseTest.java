@@ -91,7 +91,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
 
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
-        formulaTestCase.initFromXml((Element)doc.getDocumentElement());
+        formulaTestCase.initFromXml(doc.getDocumentElement());
 
         assertEquals("formulaTestCase", formulaTestCase.getName());
         assertEquals("4711", formulaTestCase.getExpectedResult());

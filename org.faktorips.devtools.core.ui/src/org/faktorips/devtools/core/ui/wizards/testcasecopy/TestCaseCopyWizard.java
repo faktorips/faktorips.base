@@ -122,6 +122,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
 
         try {
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     IIpsSrcFile targetTestCaseSrcFile = targetIpsPackageFragment.createIpsFileFromTemplate(
                             testCaseCopyDestinationPage.getTargetTestCaseName(), sourceTestCase, null, true, null);
@@ -264,6 +265,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
 
     private void deleteUnselectedTestObjects() throws CoreException {
         IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 ITestObject[] testObjects;
                 testObjects = targetTestCase.getAllTestObjects();

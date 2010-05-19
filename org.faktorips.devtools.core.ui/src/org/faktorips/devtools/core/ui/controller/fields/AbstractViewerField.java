@@ -36,6 +36,7 @@ public abstract class AbstractViewerField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control getControl() {
         return viewer.getControl();
     }
@@ -43,6 +44,7 @@ public abstract class AbstractViewerField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void insertText(String text) {
         // viewer.setSelection(new StructuredSelection(text));
     }
@@ -50,6 +52,7 @@ public abstract class AbstractViewerField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectAll() {
         // viewer.setSelection(new StructuredSelection(viewer.getInput()));
     }
@@ -61,6 +64,7 @@ public abstract class AbstractViewerField extends DefaultEditField {
     protected void addListenerToControl() {
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 notifyChangeListeners(new FieldValueChangedEvent(AbstractViewerField.this));
             }

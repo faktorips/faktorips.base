@@ -68,6 +68,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         Composite pageComposite = wizard.createPageComposite(parent);
 
@@ -166,6 +167,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getProperties() {
         return visibleProperties;
     }
@@ -181,6 +183,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefaultFocus() {
         updateDefaultTargetRoleSingular();
         targetRoleSingularText.setFocus();

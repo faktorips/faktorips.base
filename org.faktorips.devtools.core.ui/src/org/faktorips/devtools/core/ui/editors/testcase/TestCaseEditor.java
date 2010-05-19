@@ -150,6 +150,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPage createModelDescriptionPage() throws CoreException {
         return new TestCaseModelDescriptionPage(this);
     }

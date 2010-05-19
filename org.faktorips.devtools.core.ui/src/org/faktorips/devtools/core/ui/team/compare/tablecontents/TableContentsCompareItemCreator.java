@@ -38,6 +38,7 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
     /**
      * Returns the title for the structure-differences viewer. {@inheritDoc}
      */
+    @Override
     public String getName() {
         return Messages.TableContentsCompareItemCreator_TableContentsStructureCompare;
     }

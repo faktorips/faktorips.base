@@ -65,6 +65,7 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         selectionSource = selection;
         uiToolkit = new UIToolkit(null);

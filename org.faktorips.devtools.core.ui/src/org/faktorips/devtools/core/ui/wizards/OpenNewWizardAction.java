@@ -39,6 +39,7 @@ public abstract class OpenNewWizardAction implements IWorkbenchWindowActionDeleg
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbenchWindow window) {
         this.window = window;
     }
@@ -46,6 +47,7 @@ public abstract class OpenNewWizardAction implements IWorkbenchWindowActionDeleg
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         // nothing to do
     }
@@ -58,6 +60,7 @@ public abstract class OpenNewWizardAction implements IWorkbenchWindowActionDeleg
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IAction action) {
         INewWizard wizard = createWizard();
         IStructuredSelection selection = getCurrentSelection();

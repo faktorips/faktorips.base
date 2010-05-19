@@ -55,7 +55,7 @@ public class ProductEditorDeleteAction extends IpsAction {
         if (!editor.isActiveGenerationEditable()) {
             return false;
         }
-        Object[] items = ((IStructuredSelection)selection).toArray();
+        Object[] items = (selection).toArray();
         for (Object item : items) {
             IpsObjectPart part = canBeProcessed(item);
             if (part != null) {

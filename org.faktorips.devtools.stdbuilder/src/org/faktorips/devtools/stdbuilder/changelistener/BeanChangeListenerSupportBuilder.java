@@ -49,6 +49,7 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
      * 
      * {@inheritDoc}
      */
+    @Override
     public void generateChangeListenerSupportBeforeChange(JavaCodeFragmentBuilder methodsBuilder,
             ChangeEventType eventType,
             String fieldType,
@@ -75,6 +76,7 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
     /**
      * {@inheritDoc}
      */
+    @Override
     public void generateChangeListenerSupportAfterChange(JavaCodeFragmentBuilder methodsBuilder,
             ChangeEventType eventType,
             String fieldType,
@@ -144,6 +146,7 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
     /**
      * {@inheritDoc}
      */
+    @Override
     public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder,
             String[] parentObjectFieldNames,
             boolean createPropertyChangeListenerMethods) {
@@ -270,6 +273,7 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
      * protected final IpsPropertyChangeSupport propertyChangeSupport = new IpsPropertyChangeSupport(this);
      * </pre>
      */
+    @Override
     public void generateChangeListenerConstants(JavaCodeFragmentBuilder builder) {
         localizedTextHelper.appendLocalizedJavaDoc("FIELD_PROPERTY_CHANGE_SUPPORT", builder, genPolicyCmptType
                 .getLanguageUsedInGeneratedSourceCode());
@@ -302,6 +306,7 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
      * 
      * {@inheritDoc}
      */
+    @Override
     public String getNotificationSupportInterfaceName() {
         return INotificationSupport.class.getName();
     }

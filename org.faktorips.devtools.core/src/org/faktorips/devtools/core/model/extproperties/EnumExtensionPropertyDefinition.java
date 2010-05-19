@@ -44,6 +44,7 @@ public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyD
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValueFromString(String value) {
         return enumType.getEnumValue(value);
     }
@@ -51,6 +52,7 @@ public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyD
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValueFromXml(Element valueElement) {
         CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
         if (cdata == null) {

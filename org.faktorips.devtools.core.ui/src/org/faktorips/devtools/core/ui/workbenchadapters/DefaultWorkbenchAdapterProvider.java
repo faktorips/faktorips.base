@@ -81,6 +81,7 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         registerAdapters();
     }
 
+    @Override
     public Map<Class<? extends IpsElement>, IpsElementWorkbenchAdapter> getAdapterMap() {
         return workbenchAdapterMap;
     }

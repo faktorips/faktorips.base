@@ -36,6 +36,7 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
     /**
      * {@inheritDoc}
      */
+    @Override
     public void decorate(Object element, IDecoration decoration) {
 
         MessageList ml = null;
@@ -133,18 +134,21 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addListener(ILabelProviderListener listener) { /* nothing to do */
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() { /* nothing to do */
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
@@ -152,6 +156,7 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeListener(ILabelProviderListener listener) { /* nothing to do */
     }
 

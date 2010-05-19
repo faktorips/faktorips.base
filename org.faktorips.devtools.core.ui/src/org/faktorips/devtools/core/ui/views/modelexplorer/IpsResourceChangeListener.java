@@ -53,11 +53,13 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void resourceChanged(final IResourceChangeEvent event) {
         Control ctrl = viewer.getControl();
         if (ctrl != null && !ctrl.isDisposed()) {
             ctrl.getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     IResourceDelta delta = event.getDelta();
                     try {

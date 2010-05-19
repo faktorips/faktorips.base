@@ -95,6 +95,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return "TestCaseBuilder";
     }
@@ -122,6 +123,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * 
      * @throws IOException
      */
+    @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         ArgumentCheck.isTrue(ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE);
         ITestCase testCase = (ITestCase)ipsSrcFile.getIpsObject();
@@ -165,6 +167,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TEST_CASE);
     }
@@ -172,6 +175,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getXmlContentFile(ipsSrcFile);
         if (file.exists()) {

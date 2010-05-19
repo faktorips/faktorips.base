@@ -51,6 +51,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         return (TableStructure)getParent();
     }
 
+    @Override
     public ITableStructure getTableStructure() {
         return (ITableStructure)getParent();
     }
@@ -60,14 +61,17 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         return from + '-' + to;
     }
 
+    @Override
     public String getAccessParameterName() {
         return getName();
     }
 
+    @Override
     public String getFromColumn() {
         return from;
     }
 
+    @Override
     public void setFromColumn(String columnName) {
         ArgumentCheck.notNull(columnName);
         String oldColumnName = from;
@@ -75,10 +79,12 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         valueChanged(oldColumnName, from);
     }
 
+    @Override
     public String getToColumn() {
         return to;
     }
 
+    @Override
     public void setToColumn(String columnName) {
         ArgumentCheck.notNull(columnName);
         String oldColumnName = to;
@@ -147,6 +153,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         }
     }
 
+    @Override
     public void setColumnRangeType(ColumnRangeType rangeType) {
         ArgumentCheck.notNull(rangeType);
         Object oldValue = this.rangeType;
@@ -154,10 +161,12 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         valueChanged(oldValue, rangeType);
     }
 
+    @Override
     public ColumnRangeType getColumnRangeType() {
         return rangeType;
     }
 
+    @Override
     public String getDatatype() {
         if (rangeType.isTwoColumn() || rangeType.isOneColumnFrom()) {
             return getDatatype(getFromColumn());
@@ -173,6 +182,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         return null;
     }
 
+    @Override
     public String getParameterName() {
         return parameterName;
     }
@@ -210,6 +220,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         element.setAttribute(PROPERTY_PARAMETER_NAME, parameterName);
     }
 
+    @Override
     public IColumn[] getColumns() {
         List<IColumn> columns = new ArrayList<IColumn>();
         if (!rangeType.isOneColumnTo()) {

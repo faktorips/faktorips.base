@@ -42,6 +42,7 @@ public abstract class StandardJavaSourceFileBuilder extends DefaultJavaSourceFil
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean buildsPublishedArtefacts() {
         return buildsPublishedArtefacts;
     }

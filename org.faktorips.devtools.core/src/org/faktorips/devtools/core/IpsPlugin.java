@@ -210,6 +210,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         plugin.getLog().log(status);
         Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
         display.asyncExec(new Runnable() {
+            @Override
             public void run() {
                 ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
                         Messages.IpsPlugin_msgUnexpectedError, status);
@@ -239,6 +240,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     public final static void showErrorDialog(final IStatus status) {
         Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
         display.asyncExec(new Runnable() {
+            @Override
             public void run() {
                 ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog, null,
                         status);

@@ -207,6 +207,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         createVersionSection();
     }
 
+    @Override
     public String getName() {
         return StringUtil.unqualifiedName(getClass().getName());
     }
@@ -692,6 +693,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Implementation of the build procedure of this builder.
      */
+    @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (!isBuilderFor(ipsSrcFile)) {
             return;
@@ -757,6 +759,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getJavaFile(ipsSrcFile);
         IContainer parent = file.getParent();

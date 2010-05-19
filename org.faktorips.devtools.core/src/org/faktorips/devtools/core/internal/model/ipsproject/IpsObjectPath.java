@@ -124,6 +124,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
@@ -143,6 +144,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsProjectRefEntry[] getProjectRefEntries() {
         List<IIpsProjectRefEntry> projectRefEntries = new ArrayList<IIpsProjectRefEntry>();
         for (IIpsObjectPathEntry entrie : entries) {
@@ -156,6 +158,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsSrcFolderEntry[] getSourceFolderEntries() {
         List<IIpsSrcFolderEntry> srcEntries = new ArrayList<IIpsSrcFolderEntry>();
         for (IIpsObjectPathEntry entrie : entries) {
@@ -170,6 +173,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * 
      * {@inheritDoc}
      */
+    @Override
     public IIpsArchiveEntry[] getArchiveEntries() {
         List<IIpsArchiveEntry> archiveEntries = new ArrayList<IIpsArchiveEntry>();
         for (IIpsObjectPathEntry entrie : entries) {
@@ -183,6 +187,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPathEntry getEntry(String rootName) {
         if (rootName == null) {
             return null;
@@ -198,6 +203,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPathEntry[] getEntries() {
         IIpsObjectPathEntry[] copy = new IIpsObjectPathEntry[entries.length];
         System.arraycopy(entries, 0, copy, 0, entries.length);
@@ -207,6 +213,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setEntries(IIpsObjectPathEntry[] newEntries) {
         entries = new IIpsObjectPathEntry[newEntries.length];
         System.arraycopy(newEntries, 0, entries, 0, newEntries.length);
@@ -215,6 +222,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsProject[] getReferencedIpsProjects() {
         List<IIpsProject> projects = new ArrayList<IIpsProject>();
         for (IIpsObjectPathEntry entrie : entries) {
@@ -228,6 +236,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder) {
         IIpsSrcFolderEntry newEntry = new IpsSrcFolderEntry(this, srcFolder);
         IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
@@ -240,6 +249,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException {
         IIpsArchiveEntry newEntry = new IpsArchiveEntry(this);
         newEntry.setArchivePath(ipsProject, archivePath);
@@ -253,6 +263,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject referencedIpsProject) {
         if (containsProjectRefEntry(referencedIpsProject)) {
             for (IIpsObjectPathEntry entry : entries) {
@@ -275,6 +286,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean containsProjectRefEntry(IIpsProject ipsProject) {
         for (IIpsObjectPathEntry entry : entries) {
             if (entry instanceof IpsProjectRefEntry) {
@@ -290,6 +302,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeProjectRefEntry(IIpsProject ipsProject) {
         for (int i = 0; i < entries.length; i++) {
             IIpsObjectPathEntry entry = entries[i];
@@ -308,6 +321,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean containsArchiveEntry(IIpsArchive ipsArchive) {
         for (IIpsObjectPathEntry entry : entries) {
             if (entry instanceof IpsArchiveEntry) {
@@ -323,6 +337,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeArchiveEntry(IIpsArchive ipsArchive) {
         for (int i = 0; i < entries.length; i++) {
             IIpsObjectPathEntry entry = entries[i];
@@ -341,6 +356,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean containsSrcFolderEntry(IFolder folder) {
         for (IIpsObjectPathEntry entry : entries) {
             if (entry instanceof IpsSrcFolderEntry) {
@@ -356,6 +372,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeSrcFolderEntry(IFolder srcFolder) {
         for (int i = 0; i < entries.length; i++) {
             IIpsObjectPathEntry entry = entries[i];
@@ -374,6 +391,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isOutputDefinedPerSrcFolder() {
         return outputDefinedPerSourceFolder;
     }
@@ -381,6 +399,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setOutputDefinedPerSrcFolder(boolean newValue) {
         outputDefinedPerSourceFolder = newValue;
     }
@@ -388,6 +407,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFolder getOutputFolderForMergableSources() {
         return outputFolderMergableSources;
     }
@@ -395,6 +415,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setOutputFolderForMergableSources(IFolder outputFolder) {
         outputFolderMergableSources = outputFolder;
     }
@@ -402,6 +423,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFolder[] getOutputFolders() {
         if (!outputDefinedPerSourceFolder) {
             if (outputFolderMergableSources == null) {
@@ -426,6 +448,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getBasePackageNameForMergableJavaClasses() {
         return basePackageMergable;
     }
@@ -433,6 +456,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setBasePackageNameForMergableJavaClasses(String name) {
         basePackageMergable = name;
     }
@@ -440,6 +464,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFolder getOutputFolderForDerivedSources() {
         return outputFolderDerivedSources;
     }
@@ -447,6 +472,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setOutputFolderForDerivedSources(IFolder outputFolder) {
         outputFolderDerivedSources = outputFolder;
     }
@@ -454,6 +480,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getBasePackageNameForDerivedJavaClasses() {
         return basePackageDerived;
     }
@@ -461,6 +488,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setBasePackageNameForDerivedJavaClasses(String name) {
         basePackageDerived = name;
     }
@@ -669,6 +697,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validate() throws CoreException {
         MessageList list = new MessageList();
         if (!isOutputDefinedPerSrcFolder()) {
@@ -760,6 +789,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] moveEntries(int[] indices, boolean up) {
 
         ArgumentCheck.notNull(indices, this);
@@ -779,6 +809,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
+    @Override
     public InputStream getResourceAsStream(String path) {
         for (IIpsObjectPathEntry entry : entries) {
             try {

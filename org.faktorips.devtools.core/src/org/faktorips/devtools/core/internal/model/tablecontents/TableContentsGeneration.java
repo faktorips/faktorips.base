@@ -50,12 +50,14 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         super.setValidFromInternal(validFrom);
     }
 
+    @Override
     public IRow[] getRows() {
         IRow[] r = new IRow[rows.size()];
         rows.toArray(r);
         return r;
     }
 
+    @Override
     public IRow getRow(int rowIndex) {
         if (rowIndex < 0 || rowIndex >= getNumOfRows()) {
             return null;
@@ -63,10 +65,12 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         return rows.get(rowIndex);
     }
 
+    @Override
     public int getNumOfRows() {
         return rows.size();
     }
 
+    @Override
     public IRow newRow() {
         IRow newRow = newRowInternal(getNextPartId());
         objectHasChanged();
@@ -177,6 +181,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         if (partType.equals(IRow.class)) {
             return newRowInternal(getNextPartId());
@@ -188,6 +193,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * {@inheritDoc}
      */
+    @Override
     public void clear() {
         rows.clear();
         clearUniqueKeyValidator();
@@ -216,6 +222,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * {@inheritDoc}
      */
+    @Override
     public IRow insertRowAfter(int rowIndex) {
         int newRowIndex = (rowIndex + 1) > getNumOfRows() ? getNumOfRows() : rowIndex + 1;
         Row newRow = new Row(this, getNextPartId());

@@ -29,6 +29,7 @@ import org.faktorips.values.DateUtil;
 
 public class GregorianCalendarValueConverter extends AbstractValueConverter {
 
+    @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
@@ -52,6 +53,7 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
      * 
      * {@inheritDoc}
      */
+    @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         GregorianCalendar cal = new GregorianCalendar();
         GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
@@ -79,6 +81,7 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Datatype getSupportedDatatype() {
         return Datatype.GREGORIAN_CALENDAR;
     }

@@ -174,18 +174,21 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getName() {
             return "AssertThatFullBuildIsTriggeredBuilder";
         }
@@ -193,6 +196,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
             return false;
         }
@@ -215,18 +219,22 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getName() {
             return "TestRemoveIpsArtefactBuilder";
         }
 
+        @Override
         public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
             buildCalled = true;
         }
 
+        @Override
         public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
             return true;
         }
 
+        @Override
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
             deleteCalled = true;
         }
@@ -270,22 +278,26 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             ipsProjectOfAfterBuildProcess = null;
         }
 
+        @Override
         public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
             builtIpsObjects.add(ipsSrcFile.getIpsObject());
         }
 
+        @Override
         public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
             return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)
                     || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
                     || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT);
         }
 
+        @Override
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getName() {
             return "TestDependencyIpsArtefactBuilder";
         }
@@ -407,6 +419,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         // it is necessary to remove the listener after assertion sind the workspace will be the
         // same for all test cases that are executed in one test suite
         IResourceChangeListener listener = new IResourceChangeListener() {
+            @Override
             public void resourceChanged(IResourceChangeEvent event) {
                 getIpsModel().getWorkspace().removeResourceChangeListener(this);
                 List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();

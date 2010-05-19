@@ -54,10 +54,12 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         super.delete();
     }
 
+    @Override
     public String getDisplayString() {
         return getName();
     }
 
+    @Override
     public BFElementType getType() {
         return type;
     }
@@ -67,6 +69,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         this.type = type;
     }
 
+    @Override
     public void addIncomingControlFlow(IControlFlow controlFlow) {
         if (incommingControlFlows.contains(controlFlow.getId())) {
             return;
@@ -76,6 +79,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         controlFlow.setTarget(this);
     }
 
+    @Override
     public List<IControlFlow> getIncomingControlFlow() {
         ArrayList<IControlFlow> inList = new ArrayList<IControlFlow>();
         List<IControlFlow> controlFlowList = getBusinessFunction().getControlFlows();
@@ -89,6 +93,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         return inList;
     }
 
+    @Override
     public List<IControlFlow> getAllControlFlows() {
         List<IControlFlow> allEdges = new ArrayList<IControlFlow>();
         allEdges.addAll(getIncomingControlFlow());
@@ -96,6 +101,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         return allEdges;
     }
 
+    @Override
     public boolean removeIncomingControlFlow(IControlFlow controlFlow) {
         if (incommingControlFlows.remove(controlFlow.getId())) {
             objectHasChanged();
@@ -105,14 +111,17 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         return false;
     }
 
+    @Override
     public void removeAllIncommingControlFlows() {
         incommingControlFlows.clear();
     }
 
+    @Override
     public void removeAllOutgoingControlFlows() {
         outgoingControlFlows.clear();
     }
 
+    @Override
     public void addOutgoingControlFlow(IControlFlow controlFlow) {
         if (outgoingControlFlows.contains(controlFlow.getId())) {
             return;
@@ -122,6 +131,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         controlFlow.setSource(this);
     }
 
+    @Override
     public List<IControlFlow> getOutgoingControlFlow() {
         ArrayList<IControlFlow> outList = new ArrayList<IControlFlow>();
         List<IControlFlow> controlFlowList = getBusinessFunction().getControlFlows();
@@ -135,6 +145,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         return outList;
     }
 
+    @Override
     public boolean removeOutgoingControlFlow(IControlFlow controlFlow) {
         if (outgoingControlFlows.remove(controlFlow.getId())) {
             objectHasChanged();
@@ -144,20 +155,24 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         return false;
     }
 
+    @Override
     public Point getLocation() {
         return location;
     }
 
+    @Override
     public void setLocation(Point location) {
         Point old = this.location;
         this.location = location;
         valueChanged(old, location);
     }
 
+    @Override
     public Dimension getSize() {
         return size;
     }
 
+    @Override
     public void setSize(Dimension size) {
         Dimension old = this.size;
         this.size = size;
@@ -171,6 +186,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         valueChanged(old, name);
     }
 
+    @Override
     public IBusinessFunction getBusinessFunction() {
         return (IBusinessFunction)getParent();
     }
@@ -270,6 +286,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
 
     }
 
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         return null;
     }

@@ -119,6 +119,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         setMergeEnabled(true);
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TEST_CASE_TYPE);
     }
@@ -147,8 +148,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setSuperClass(getSuperClassName());
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection
-                .getJavaDocForTypeBuilder());
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(),
+                mainSection.getJavaDocForTypeBuilder());
 
         JavaCodeFragmentBuilder xmlCallbackBuilder = new JavaCodeFragmentBuilder();
         buildXmlCallbackClasses(xmlCallbackBuilder, testCaseType);
@@ -198,8 +199,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             ITestValueParameter testValueParam = testValueParams[i];
             DatatypeHelper helper = getCachedDatatypeHelper(testValueParam);
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
-            codeBuilder.varDeclaration(Modifier.PRIVATE, helper.getJavaClassName(), variablePrefix
-                    + StringUtils.capitalize(testValueParam.getName()));
+            codeBuilder.varDeclaration(Modifier.PRIVATE, helper.getJavaClassName(),
+                    variablePrefix + StringUtils.capitalize(testValueParam.getName()));
         }
     }
 
@@ -235,13 +236,13 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             // violation type: violated
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, isUseTypesafeCollections() ? List.class.getName() + "<"
-                    + String.class.getName() + ">" : List.class.getName(), getRuleMemberVariableName(variablePrefix,
-                    violationTypePrefixViolated, testRuleParams[i]));
+                    + String.class.getName() + ">" : List.class.getName(),
+                    getRuleMemberVariableName(variablePrefix, violationTypePrefixViolated, testRuleParams[i]));
             // violation type: not violated
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, isUseTypesafeCollections() ? List.class.getName() + "<"
-                    + String.class.getName() + ">" : List.class.getName(), getRuleMemberVariableName(variablePrefix,
-                    violationTypePrefixNotViolated, testRuleParams[i]));
+                    + String.class.getName() + ">" : List.class.getName(),
+                    getRuleMemberVariableName(variablePrefix, violationTypePrefixNotViolated, testRuleParams[i]));
         }
     }
 
@@ -817,13 +818,17 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             javaDoc = getJavaDocCommentForOverriddenMethod();
             method = new JavaCodeFragmentBuilder();
 
-            method.method(Modifier.PUBLIC, "void", "initProperties", new String[] { "pathFromAggregateRoot",
-                    "modelObject", "propMap" }, new String[] {
-                    String.class.getName(),
-                    IModelObject.class.getName(),
-                    Map.class.getName()
-                            + (isUseTypesafeCollections() ? "<" + String.class.getName() + ", "
-                                    + String.class.getName() + ">" : "") }, body, javaDoc, ANNOTATION_GENERATED);
+            method.method(
+                    Modifier.PUBLIC,
+                    "void",
+                    "initProperties",
+                    new String[] { "pathFromAggregateRoot", "modelObject", "propMap" },
+                    new String[] {
+                            String.class.getName(),
+                            IModelObject.class.getName(),
+                            Map.class.getName()
+                                    + (isUseTypesafeCollections() ? "<" + String.class.getName() + ", "
+                                            + String.class.getName() + ">" : "") }, body, javaDoc, ANNOTATION_GENERATED);
             builder.append(method.getFragment());
             builder.appendln("}");
         }

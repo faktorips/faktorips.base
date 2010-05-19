@@ -56,6 +56,7 @@ public class InverseAssociationPage extends WizardPage {
         setPageComplete(true);
     }
 
+    @Override
     public void createControl(Composite parent) {
         Composite pageComposite = wizard.createPageComposite(parent);
 
@@ -87,6 +88,7 @@ public class InverseAssociationPage extends WizardPage {
      * Listener for the radio buttons.
      */
     private class InverseAssociationSelectionListener implements SelectionListener {
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (prevSelection != e.getSource()) {
                 prevSelection = (Button)e.getSource();
@@ -103,6 +105,7 @@ public class InverseAssociationPage extends WizardPage {
             }
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }

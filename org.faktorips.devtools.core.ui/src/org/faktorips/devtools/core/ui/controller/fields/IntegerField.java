@@ -37,6 +37,7 @@ public class IntegerField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control getControl() {
         return text;
     }
@@ -60,6 +61,7 @@ public class IntegerField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue) {
         ArgumentCheck.isInstanceOf(newValue, Integer.class);
         newValue = super.prepareObjectForSet(newValue);
@@ -69,6 +71,7 @@ public class IntegerField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText() {
         return text.getText();
     }
@@ -76,6 +79,7 @@ public class IntegerField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setText(String newText) {
         text.setText(newText);
     }
@@ -83,6 +87,7 @@ public class IntegerField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void insertText(String s) {
         text.insert(s);
     }
@@ -90,6 +95,7 @@ public class IntegerField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectAll() {
         text.selectAll();
     }
@@ -101,6 +107,7 @@ public class IntegerField extends DefaultEditField {
     protected void addListenerToControl() {
         text.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 notifyChangeListeners(new FieldValueChangedEvent(IntegerField.this));
             }

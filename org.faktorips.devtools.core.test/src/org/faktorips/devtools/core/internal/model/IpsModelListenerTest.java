@@ -196,6 +196,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         int count = 0;
         ContentChangeEvent lastEvent;
 
+        @Override
         public void contentsChanged(ContentChangeEvent event) {
             lastEvent = event;
             count++;
@@ -211,6 +212,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
             lastEvent = event;
             count++;

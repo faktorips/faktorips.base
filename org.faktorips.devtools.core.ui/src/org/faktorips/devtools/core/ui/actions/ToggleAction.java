@@ -46,6 +46,7 @@ public class ToggleAction extends Action {
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(iconName));
 
         value.addValueChangeListener(new IValueChangeListener() {
+            @Override
             public void handleValueChange(ValueChangeEvent event) {
                 ToggleAction.this.setChecked((Boolean)event.getObservableValue().getValue());
             }

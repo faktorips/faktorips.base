@@ -46,12 +46,14 @@ public class TreeViewerExpandStateStorage {
     }
 
     private class SelectStrategy implements TreeItemActionStrategy {
+        @Override
         public void execute(TreeItem treeItem) {
             treeViewer.setSelection(new StructuredSelection(treeItem.getData()));
         }
     }
 
     private class ExpandStrategy implements TreeItemActionStrategy {
+        @Override
         public void execute(TreeItem treeItem) {
             treeViewer.setExpandedState(treeItem.getData(), true);
         }

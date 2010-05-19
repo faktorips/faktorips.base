@@ -87,14 +87,17 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
         private class TblsStructureUsageContentProvider implements IStructuredContentProvider {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return productCmptType.getTableStructureUsages();
             }
 
+            @Override
             public void dispose() {
                 // nothing todo
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing todo
             }

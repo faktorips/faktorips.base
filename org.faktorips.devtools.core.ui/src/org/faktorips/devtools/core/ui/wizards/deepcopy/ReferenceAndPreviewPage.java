@@ -136,6 +136,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
 
         if (structure == null) {
@@ -183,6 +184,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
             pmd.setOpenOnRun(true);
             try {
                 getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
+                    @Override
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         updateWorkingDateLabel();
 

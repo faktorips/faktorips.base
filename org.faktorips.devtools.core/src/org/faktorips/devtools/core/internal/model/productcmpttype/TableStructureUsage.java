@@ -76,6 +76,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return doc.createElement(TAG_NAME);
     }
 
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         if (partType.equals(TableStructureReference.class)) {
             return newTableStructureReference();
@@ -128,26 +129,31 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, "" + mandatoryTableContent); //$NON-NLS-1$
     }
 
+    @Override
     public String getRoleName() {
         return name;
     }
 
+    @Override
     public void setRoleName(String newRoleName) {
         String oldRoleName = name;
         name = newRoleName;
         valueChanged(oldRoleName, newRoleName);
     }
 
+    @Override
     public boolean isMandatoryTableContent() {
         return mandatoryTableContent;
     }
 
+    @Override
     public void setMandatoryTableContent(boolean mandatoryTableContent) {
         boolean oldIsMandatory = this.mandatoryTableContent;
         this.mandatoryTableContent = mandatoryTableContent;
         valueChanged(oldIsMandatory, mandatoryTableContent);
     }
 
+    @Override
     public String[] getTableStructures() {
         String[] result = new String[tableStructures.size()];
         for (int i = 0; i < result.length; i++) {
@@ -157,6 +163,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return result;
     }
 
+    @Override
     public void addTableStructure(String tableStructure) {
         if (getTableStructureReference(tableStructure) != null) {
             // the table structure is already assign, do nothing
@@ -170,6 +177,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isUsed(String tableStructure) {
         if (tableStructure == null) {
             return false;
@@ -200,6 +208,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeTableStructure(String tableStructure) {
         TableStructureReference toBeDeleted = getTableStructureReference(tableStructure);
         if (toBeDeleted != null) {
@@ -227,6 +236,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         }
     }
 
+    @Override
     public int[] moveTableStructure(int[] indexes, boolean up) {
         ListElementMover<TableStructureReference> mover = new ListElementMover<TableStructureReference>(tableStructures);
         return mover.move(indexes, up);
@@ -279,14 +289,17 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         }
     }
 
+    @Override
     public String getPropertyName() {
         return name;
     }
 
+    @Override
     public ProdDefPropertyType getProdDefPropertyType() {
         return ProdDefPropertyType.TABLE_CONTENT_USAGE;
     }
 
+    @Override
     public String getPropertyDatatype() {
         return ""; //$NON-NLS-1$
     }

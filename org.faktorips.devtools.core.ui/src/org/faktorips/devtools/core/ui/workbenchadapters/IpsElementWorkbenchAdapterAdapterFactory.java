@@ -44,6 +44,7 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     // IWorkbenchAdapter is not generic
     public Object getAdapter(Object adaptableObject, Class adapterType) {
@@ -107,6 +108,7 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
         workbenchAdapterMap.remove(adaptableClass);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     // IWorkbenchAdapter is not generic
     public Class[] getAdapterList() {

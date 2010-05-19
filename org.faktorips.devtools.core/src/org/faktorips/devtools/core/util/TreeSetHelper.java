@@ -34,6 +34,7 @@ public class TreeSetHelper {
      */
     public static TreeSet<IIpsSrcFile> newIpsSrcFileTreeSet() {
         return new TreeSet<IIpsSrcFile>(new Comparator<IIpsSrcFile>() {
+            @Override
             public int compare(IIpsSrcFile o1, IIpsSrcFile o2) {
                 if (o1.equals(o2)) {
                     return 0;

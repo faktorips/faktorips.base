@@ -49,6 +49,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * Overridden.
      */
+    @Override
     public ITableStructure getTableStructure() {
         return (ITableStructure)getParent();
     }
@@ -56,6 +57,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * Overridden.
      */
+    @Override
     public String[] getKeyItemNames() {
         return items.toArray(new String[items.size()]);
     }
@@ -63,6 +65,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IKeyItem[] getKeyItems() {
         List<IKeyItem> keyItems = new ArrayList<IKeyItem>();
         for (String item : items) {
@@ -82,6 +85,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setKeyItems(String[] itemNames) {
         items = CollectionUtil.toArrayList(itemNames);
         objectHasChanged();
@@ -90,6 +94,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addKeyItem(String name) {
         items.add(name);
 
@@ -98,6 +103,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeKeyItem(String name) {
         items.remove(name);
     }
@@ -105,6 +111,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNumOfKeyItems() {
         return items.size();
     }
@@ -112,6 +119,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IKeyItem[] getItemCandidates() {
         return getItemCandidates(getTableStructure());
     }
@@ -177,6 +185,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getIndexForKeyItem(IKeyItem item) {
 
         IKeyItem[] keyItems = getKeyItems();
@@ -192,6 +201,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getIndexForKeyItemName(String itemName) {
 
         for (int i = 0; i < items.size(); i++) {
@@ -207,6 +217,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IKeyItem getKeyItemAt(int index) {
         return getKeyItems()[index];
     }
@@ -214,6 +225,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getNameOfKeyItemAt(int index) {
         return items.get(index);
     }

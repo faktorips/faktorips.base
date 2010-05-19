@@ -33,6 +33,7 @@ public class DecimalValueConverter extends AbstractValueConverter {
      * 
      * {@inheritDoc}
      */
+    @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
             try {
@@ -55,6 +56,7 @@ public class DecimalValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         try {
             return Decimal.valueOf(ipsValue);
@@ -68,6 +70,7 @@ public class DecimalValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Datatype getSupportedDatatype() {
         return Datatype.DECIMAL;
     }

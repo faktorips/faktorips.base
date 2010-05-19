@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.type.IType;
 public class IpsObjectPartContainerAdapterFactory extends AbstractIpsAdapterFactory {
 
     // required because the signature of this method is fixed by IAdapterFactory
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (!(adaptableObject instanceof IIpsObjectPartContainer)) {
@@ -51,6 +52,7 @@ public class IpsObjectPartContainerAdapterFactory extends AbstractIpsAdapterFact
         return ((IIpsObjectPartContainer)adaptableObject).getIpsSrcFile();
     }
 
+    @Override
     public Class<?>[] getAdapterList() {
         return new Class[] { IIpsSrcFile.class, IProductCmpt.class, IType.class };
     }

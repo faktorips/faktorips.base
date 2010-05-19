@@ -90,6 +90,7 @@ public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
             return null;
         }
 
+        @Override
         public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
             validateUserInputCalled = true;
             return null;

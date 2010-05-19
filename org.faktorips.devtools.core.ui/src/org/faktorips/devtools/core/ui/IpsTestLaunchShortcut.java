@@ -31,6 +31,7 @@ public class IpsTestLaunchShortcut implements ILaunchShortcut {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void launch(IEditorPart editor, String mode) {
         if (editor instanceof IpsObjectEditor) {
             IIpsObject objectInEditor = ((IpsObjectEditor)editor).getIpsObject();
@@ -42,6 +43,7 @@ public class IpsTestLaunchShortcut implements ILaunchShortcut {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void launch(ISelection selection, String mode) {
         IpsTestAction runTestAction = new IpsTestAction(null, mode);
         runTestAction.run(new StructuredSelection(selection));

@@ -61,6 +61,7 @@ public class SetStructureDialog extends EditDialog {
         template = new TableStructureRefControl(contents.getIpsProject(), workArea, uiToolkit);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 if (StringUtils.isEmpty(template.getText())) {
                     getButton(OK).setEnabled(false);

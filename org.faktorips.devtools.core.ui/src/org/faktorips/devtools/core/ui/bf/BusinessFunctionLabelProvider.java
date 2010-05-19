@@ -40,6 +40,7 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Image getImage(Object element) {
         IStructuredSelection sel = (IStructuredSelection)element;
         EditPart editPart = (EditPart)sel.getFirstElement();
@@ -77,6 +78,7 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText(Object element) {
         IStructuredSelection sel = (IStructuredSelection)element;
         EditPart editPart = (EditPart)sel.getFirstElement();
@@ -119,18 +121,21 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
     /**
      * Empty implementation.
      */
+    @Override
     public void addListener(ILabelProviderListener listener) {
     }
 
     /**
      * Empty implementation.
      */
+    @Override
     public void dispose() {
     }
 
     /**
      * Returns false.
      */
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
@@ -138,6 +143,7 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
     /**
      * Empty implementation.
      */
+    @Override
     public void removeListener(ILabelProviderListener listener) {
     }
 

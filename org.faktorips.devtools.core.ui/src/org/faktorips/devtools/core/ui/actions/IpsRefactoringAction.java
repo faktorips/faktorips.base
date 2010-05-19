@@ -102,6 +102,7 @@ public abstract class IpsRefactoringAction extends IpsAction implements IShellPr
     }
 
     /** Returns the <tt>Shell</tt> used by this action. */
+    @Override
     public final Shell getShell() {
         return shell;
     }

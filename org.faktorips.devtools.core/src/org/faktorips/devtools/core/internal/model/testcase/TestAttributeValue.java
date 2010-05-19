@@ -73,16 +73,19 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         return (ITestPolicyCmpt)getParent();
     }
 
+    @Override
     public String getTestAttribute() {
         return testAttribute;
     }
 
+    @Override
     public void setTestAttribute(String testAttribute) {
         String oldTestAttribute = this.testAttribute;
         this.testAttribute = testAttribute;
         valueChanged(oldTestAttribute, testAttribute);
     }
 
+    @Override
     public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testAttribute)) {
             return null;
@@ -95,6 +98,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         return typeParam.getTestAttribute(testAttribute);
     }
 
+    @Override
     public IAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
         ITestAttribute testAttr = findTestAttribute(ipsProject);
         if (testAttr == null) {
@@ -114,16 +118,19 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         }
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public void setValue(String newValue) {
         String oldValue = value;
         value = newValue;
         valueChanged(oldValue, newValue);
     }
 
+    @Override
     public void setDefaultValue() throws CoreException {
         IAttribute modelAttribute = findAttribute(getIpsProject());
         if (modelAttribute == null) {
@@ -160,10 +167,12 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
     }
 
+    @Override
     public boolean isExpextedResultAttribute(IIpsProject ipsProject) {
         return isTypeOrDefault(TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE, ipsProject);
     }
 
+    @Override
     public boolean isInputAttribute(IIpsProject ipsProject) {
         return isTypeOrDefault(TestParameterType.INPUT, DEFAULT_TYPE, ipsProject);
     }
@@ -202,6 +211,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         return false;
     }
 
+    @Override
     public void updateDefaultTestAttributeValue() throws CoreException {
         IProductCmptGeneration generation = ((TestPolicyCmpt)getParent()).findProductCmpsCurrentGeneration(getParent()
                 .getIpsProject());

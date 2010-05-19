@@ -171,6 +171,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         FlFunction[] functions = compiler.getFunctions();
         Arrays.sort(functions, new Comparator<FlFunction>() {
 
+            @Override
             public int compare(FlFunction o1, FlFunction o2) {
                 FlFunction f1 = o1;
                 FlFunction f2 = o2;

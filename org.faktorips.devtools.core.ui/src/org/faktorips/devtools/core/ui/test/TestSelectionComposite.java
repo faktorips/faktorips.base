@@ -109,6 +109,7 @@ public class TestSelectionComposite extends Composite {
         viewer = createViewer(tableWithBtns, toolkit);
         viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonEnabledStates();
             }
@@ -161,6 +162,7 @@ public class TestSelectionComposite extends Composite {
         newButton = toolkit.createButton(buttons, Messages.TestSelectionComposite_labelButtonAddTestCase);
         newButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         newButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     newTest(buttons);
@@ -169,6 +171,7 @@ public class TestSelectionComposite extends Composite {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -178,6 +181,7 @@ public class TestSelectionComposite extends Composite {
         newSuiteButton = toolkit.createButton(buttons, Messages.TestSelectionComposite_labelButtonAddTestSuite);
         newSuiteButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         newSuiteButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     newTestSuite(buttons);
@@ -186,6 +190,7 @@ public class TestSelectionComposite extends Composite {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -195,6 +200,7 @@ public class TestSelectionComposite extends Composite {
         deleteButton = toolkit.createButton(buttons, Messages.TestSelectionComposite_labelButtonDelete);
         deleteButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         deleteButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     deleteElement();
@@ -203,6 +209,7 @@ public class TestSelectionComposite extends Composite {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -229,6 +236,7 @@ public class TestSelectionComposite extends Composite {
         upButton = toolkit.createButton(buttons, Messages.TestSelectionComposite_labelButtonUp);
         upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         upButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveParts(true);
@@ -237,12 +245,14 @@ public class TestSelectionComposite extends Composite {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         downButton = toolkit.createButton(buttons, Messages.TestSelectionComposite_labelButtonDown);
         downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         downButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveParts(false);
@@ -251,6 +261,7 @@ public class TestSelectionComposite extends Composite {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });

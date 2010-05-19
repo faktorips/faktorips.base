@@ -53,6 +53,7 @@ public class ProjectSelectionPage extends WizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         Composite root = new Composite(parent, SWT.NONE);
         root.setLayout(new GridLayout(1, true));
@@ -67,6 +68,7 @@ public class ProjectSelectionPage extends WizardPage {
 
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 setPageComplete(getProjects().length > 0);
             }
@@ -105,6 +107,7 @@ public class ProjectSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object[] getChildren(Object parentElement) {
             return new Object[0];
         }
@@ -112,6 +115,7 @@ public class ProjectSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object getParent(Object element) {
             return null;
         }
@@ -119,6 +123,7 @@ public class ProjectSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean hasChildren(Object element) {
             return false;
         }
@@ -126,6 +131,7 @@ public class ProjectSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object[] getElements(Object inputElement) {
             List<IIpsProject> result = new ArrayList<IIpsProject>();
             IIpsProject[] projects;
@@ -156,6 +162,7 @@ public class ProjectSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dispose() {
             // nothing to do
         }
@@ -163,6 +170,7 @@ public class ProjectSelectionPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // nothing to do
         }

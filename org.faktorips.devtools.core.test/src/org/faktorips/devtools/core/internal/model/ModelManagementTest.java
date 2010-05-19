@@ -43,6 +43,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         super.setUp();
         IWorkspaceRunnable action = new IWorkspaceRunnable() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 IIpsProject project = newIpsProject("TestProject");
                 IFolder folder = (IFolder)project.getIpsPackageFragmentRoots()[0].getCorrespondingResource();

@@ -174,6 +174,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         @Override
         public void run() {
             BusyIndicator.showWhile(pageRoot.getDisplay(), new Runnable() {
+                @Override
                 public void run() {
                     IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(getGeneration().getValidFrom());
                     ((ProductCmptEditor)getEditor()).setActiveGeneration(getGeneration(), true);

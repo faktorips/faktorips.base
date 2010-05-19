@@ -46,6 +46,7 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
     /**
      * Registers the provided listener with this ISelectionProvider.
      */
+    @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         changeListeners.add(listener);
     }
@@ -54,6 +55,7 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
      * Determines the currently active ISelectionProvider and returns its selection. If no active
      * ISelectionProvider could be found <code>null</code> is returned.
      */
+    @Override
     public ISelection getSelection() {
 
         determineCurrentActivation();
@@ -86,6 +88,7 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
     /**
      * Unregisters the provided listener with this ISelectionProvider.
      */
+    @Override
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         changeListeners.remove(listener);
     }
@@ -94,6 +97,7 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
      * Determines the currently active ISelectionProvider and sets the provided ISelection. If no
      * ISelectionProvider could be found the ISelection will not be set.
      */
+    @Override
     public void setSelection(ISelection selection) {
         determineCurrentActivation();
         if (currentActivation != null) {
@@ -127,6 +131,7 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
      * Informs the ISelectionChangedListeners registered with this dispatcher when a changed event
      * of the currently active ISelectionProvider occurs.
      */
+    @Override
     public final void selectionChanged(SelectionChangedEvent event) {
         for (ISelectionChangedListener listener : changeListeners) {
             listener.selectionChanged(event);

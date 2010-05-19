@@ -300,6 +300,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         fragmentHierarchy.clear();
     }
@@ -307,6 +308,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to implement
     }
@@ -338,6 +340,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)parentElement;
@@ -356,6 +359,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
 
         if (element instanceof IIpsPackageFragment) {
@@ -370,6 +374,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
@@ -389,6 +394,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof IpsProjectSortOrdersPM) {
             IpsProjectSortOrdersPM sortOrderPO = (IpsProjectSortOrdersPM)inputElement;

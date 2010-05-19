@@ -93,6 +93,7 @@ public interface IType extends IIpsObject, Datatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isAbstract();
 
     /**

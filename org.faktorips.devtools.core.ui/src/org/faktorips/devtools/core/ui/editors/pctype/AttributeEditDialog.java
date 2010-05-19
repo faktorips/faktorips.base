@@ -222,10 +222,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         createDescriptionTabItem(tabFolder);
 
         tabFolder.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (ruleUIController != null) {
                     ruleUIController.updateUI();
@@ -309,6 +311,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
         overwrittenField.addChangeListener(new ValueChangeListener() {
 
+            @Override
             public void valueChanged(FieldValueChangedEvent event) {
                 if (cb.isChecked()) {
                     try {
@@ -388,10 +391,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         label.setText(Messages.AttributeEditDialog_methodLink);
         label.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 editMethodInDialog();
             }
@@ -408,10 +413,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         link.setText(Messages.AttributeEditDialog_createNewMethod);
         link.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 createMethodAndOpenDialog();
             }
@@ -648,10 +655,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         validationRuleAdded.setToolTipText(Messages.AttributeEditDialog_tooltipActivateValidationRule);
         validationRuleAdded.getButton().addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 enableCheckValueAgainstValueSetRule(((Button)e.getSource()).getSelection());
             }

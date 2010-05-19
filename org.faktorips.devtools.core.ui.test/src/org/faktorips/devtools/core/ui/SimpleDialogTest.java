@@ -75,6 +75,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
     /**
      * {@inheritDoc}
      */
+    @Override
     public void logging(IStatus status, String plugin) {
         // never ever should a logentry appear...
         fail();
@@ -83,6 +84,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean getBooleanAnswer() {
         return false;
     }
@@ -90,6 +92,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getStringAnswer() {
         return null;
     }
@@ -97,10 +100,12 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getAnswer() {
         return null;
     }
 
+    @Override
     public int getIntAnswer() {
         return answer;
     }

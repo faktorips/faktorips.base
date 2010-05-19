@@ -110,9 +110,11 @@ public class OutputFolderEditDialog extends StatusDialog {
 
         buttonDefaultFolderSelected.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 folderSelectionControl.setEnabled(false);
                 customFolderSelected = false;
@@ -121,9 +123,11 @@ public class OutputFolderEditDialog extends StatusDialog {
 
         buttonCustomFolderSelected.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 folderSelectionControl.setEnabled(true);
                 customFolderSelected = true;

@@ -148,19 +148,23 @@ public class ValidatedAttributesControl extends EditTableControl {
 
     private class ContentProvider implements IStructuredContentProvider {
 
+        @Override
         public Object[] getElements(Object inputElement) {
             return getWrappersForAttributes();
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
     }
 
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex != 0) {
                 return null;
@@ -169,6 +173,7 @@ public class ValidatedAttributesControl extends EditTableControl {
             return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()), false);
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
 
             if (columnIndex == 1) {
@@ -210,6 +215,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 
     private class CellModifier implements ICellModifier {
 
+        @Override
         public boolean canModify(Object element, String property) {
             if (!isDataChangeable()) {
                 return false;
@@ -221,10 +227,12 @@ public class ValidatedAttributesControl extends EditTableControl {
             return false;
         }
 
+        @Override
         public Object getValue(Object element, String property) {
             return ((IndexedValidatedAttributeWrapper)element).getAttributeName();
         }
 
+        @Override
         public void modify(Object element, String property, Object value) {
             if (element instanceof Item) {
                 element = ((Item)element).getData();

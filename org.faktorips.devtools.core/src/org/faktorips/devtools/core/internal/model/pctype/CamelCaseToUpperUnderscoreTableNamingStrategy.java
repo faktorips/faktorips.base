@@ -36,6 +36,7 @@ public class CamelCaseToUpperUnderscoreTableNamingStrategy implements ITableNami
 
     private IIpsProject ipsProject;
 
+    @Override
     public String getTableName(String baseName) {
         if (baseName == null) {
             throw new NullPointerException("Cannot derive a table identifier from null.");
@@ -43,6 +44,7 @@ public class CamelCaseToUpperUnderscoreTableNamingStrategy implements ITableNami
         return toUnderscoreUppercase(baseName);
     }
 
+    @Override
     public String getTableName(String baseName, int maxLength) {
         if (baseName == null) {
             throw new NullPointerException("Cannot derive a table identifier from null.");
@@ -54,6 +56,7 @@ public class CamelCaseToUpperUnderscoreTableNamingStrategy implements ITableNami
         return derivedName.substring(0, Math.min(derivedName.length(), maxLength));
     }
 
+    @Override
     public void setIpsProject(IIpsProject project) {
         if (project == null) {
             throw new NullPointerException();
@@ -61,20 +64,24 @@ public class CamelCaseToUpperUnderscoreTableNamingStrategy implements ITableNami
         ipsProject = project;
     }
 
+    @Override
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
 
+    @Override
     public void initFromXml(Element el) {
         // nothing to do, this strategy has no sub-elements
     }
 
+    @Override
     public Element toXml(Document doc) {
         Element strategyEl = doc.createElement(ITableNamingStrategy.XML_TAG_NAME);
         strategyEl.setAttribute("id", EXTENSION_ID); //$NON-NLS-1$
         return strategyEl;
     }
 
+    @Override
     public void validate(String name) {
         // nothing to do, this strategy has no state
     }

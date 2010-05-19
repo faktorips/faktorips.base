@@ -75,6 +75,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         uniqueIdentifierValidationCache = new HashMap<Integer, Map<String, List<IEnumAttributeValue>>>();
     }
 
+    @Override
     public List<IEnumValue> getEnumValues() {
         List<IEnumValue> valuesList = new ArrayList<IEnumValue>();
         IIpsObjectPart[] parts = enumValues.getParts();
@@ -84,6 +85,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return valuesList;
     }
 
+    @Override
     public List<String> findAllIdentifierAttributeValues(IIpsProject ipsProject) {
         try {
             List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
@@ -105,6 +107,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
     }
 
+    @Override
     public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException {
         if (identifierAttributeValue == null) {
             return null;
@@ -125,6 +128,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return null;
     }
 
+    @Override
     public IEnumValue newEnumValue() throws CoreException {
         final IEnumType enumType = findEnumType(getIpsProject());
 
@@ -165,10 +169,12 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         });
     }
 
+    @Override
     public int getEnumValuesCount() {
         return enumValues.size();
     }
 
+    @Override
     public int[] moveEnumValues(final List<IEnumValue> enumValuesToMove, final boolean up) throws CoreException {
         ArgumentCheck.notNull(enumValuesToMove);
         final int numberToMove = enumValuesToMove.size();
@@ -200,11 +206,13 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         });
     }
 
+    @Override
     public int getIndexOfEnumValue(IEnumValue enumValue) {
         ArgumentCheck.notNull(enumValue);
         return enumValues.indexOf(enumValue);
     }
 
+    @Override
     public void clear() {
         clearUniqueIdentifierValidationCache();
         enumValues.clear();
@@ -435,6 +443,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return keys.toArray(new Integer[keys.size()]);
     }
 
+    @Override
     public void clearUniqueIdentifierValidationCache() {
         uniqueIdentifierValidationCache.clear();
         uniqueIdentifierValidationCacheInitialized = false;
@@ -446,6 +455,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         clearUniqueIdentifierValidationCache();
     }
 
+    @Override
     public boolean deleteEnumValues(final List<IEnumValue> enumValuesToDelete) {
         if (enumValuesToDelete == null) {
             return false;

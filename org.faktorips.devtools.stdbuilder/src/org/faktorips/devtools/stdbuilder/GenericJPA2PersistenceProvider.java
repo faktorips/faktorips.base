@@ -23,22 +23,27 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
  */
 public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
 
+    @Override
     public boolean isSupportingConverters() {
         return false;
     }
 
+    @Override
     public boolean isSupportingOrphanRemoval() {
         return true;
     }
 
+    @Override
     public void addAnnotationOrphanRemoval(JavaCodeFragment javaCodeFragment) {
         // nothing to do
     }
 
+    @Override
     public String getRelationshipAnnotationAttributeOrphanRemoval() {
         return "orphanRemoval=true"; //$NON-NLS-1$
     }
 
+    @Override
     public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,
             IPersistentAttributeInfo persistentAttributeInfo) {
         throw new UnsupportedOperationException();

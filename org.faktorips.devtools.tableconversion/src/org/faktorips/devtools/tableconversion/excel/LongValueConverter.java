@@ -31,13 +31,14 @@ public class LongValueConverter extends AbstractValueConverter {
      * 
      * {@inheritDoc}
      */
+    @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof Long) {
             return ((Long)externalDataValue).toString();
         } else if (externalDataValue instanceof Double) {
             long value = ((Double)externalDataValue).longValue();
             Double restored = new Double(value);
-            if (!restored.equals((Double)externalDataValue)) {
+            if (!restored.equals(externalDataValue)) {
                 messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(
                         "" + externalDataValue, restored.toString())); //$NON-NLS-1$
                 return externalDataValue.toString();
@@ -62,6 +63,7 @@ public class LongValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
@@ -81,6 +83,7 @@ public class LongValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Datatype getSupportedDatatype() {
         return Datatype.LONG;
     }

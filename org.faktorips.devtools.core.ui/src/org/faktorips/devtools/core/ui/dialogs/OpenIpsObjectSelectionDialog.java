@@ -170,6 +170,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     protected Comparator<IIpsElement> getItemsComparator() {
 
         return new Comparator<IIpsElement>() {
+            @Override
             public int compare(IIpsElement o1, IIpsElement o2) {
                 return o1.getName().compareTo(o2.getName());
             }
@@ -275,14 +276,17 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             }
         }
 
+        @Override
         public Image decorateImage(Image image, Object element) {
             return image;
         }
 
+        @Override
         public String decorateText(String text, Object element) {
             return getText(element);
         }
 
+        @Override
         public StyledString getStyledText(Object element) {
             String text = getText(element);
             StyledString string = new StyledString(text);

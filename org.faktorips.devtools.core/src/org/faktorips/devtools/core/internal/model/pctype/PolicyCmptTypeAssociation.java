@@ -54,26 +54,32 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
     }
 
+    @Override
     public IPolicyCmptType getPolicyCmptType() {
         return (PolicyCmptType)getIpsObject();
     }
 
+    @Override
     public boolean isComposition() {
         return type.isCompositionDetailToMaster() || type.isCompositionMasterToDetail();
     }
 
+    @Override
     public boolean isCompositionMasterToDetail() {
         return type.isCompositionMasterToDetail();
     }
 
+    @Override
     public boolean isCompositionDetailToMaster() {
         return type.isCompositionDetailToMaster();
     }
 
+    @Override
     public boolean isContainerRelationApplicable() {
         return isAssoziation() || isCompositionMasterToDetail();
     }
 
+    @Override
     public boolean isInverseOfDerivedUnion() throws CoreException {
         if (!isCompositionDetailToMaster()) {
             return false;
@@ -98,14 +104,17 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         super.setAssociationType(newType);
     }
 
+    @Override
     public IPolicyCmptType findTargetPolicyCmptType(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findPolicyCmptType(target);
     }
 
+    @Override
     public boolean isConstrainedByProductStructure(IIpsProject ipsProject) throws CoreException {
         return findMatchingProductCmptTypeAssociation(ipsProject) != null;
     }
 
+    @Override
     public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
             throws CoreException {
         IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(ipsProject);
@@ -141,16 +150,19 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         throw new RuntimeException("Can't get index of association " + this); //$NON-NLS-1$
     }
 
+    @Override
     public boolean isQualified() {
         return qualified;
     }
 
+    @Override
     public void setQualified(boolean newValue) {
         boolean oldValue = qualified;
         qualified = newValue;
         valueChanged(oldValue, newValue);
     }
 
+    @Override
     public boolean isQualificationPossible(IIpsProject ipsProject) throws CoreException {
         if (!isCompositionMasterToDetail()) {
             return false;
@@ -162,6 +174,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return true;
     }
 
+    @Override
     public String findQualifierCandidate(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType targetType = findTargetPolicyCmptType(ipsProject);
         if (targetType == null || !targetType.isConfigurableByProductCmptType()) {
@@ -170,6 +183,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return targetType.getProductCmptType();
     }
 
+    @Override
     public IProductCmptType findQualifier(IIpsProject ipsProject) throws CoreException {
         if (!qualified) {
             return null;
@@ -177,20 +191,24 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return ipsProject.findProductCmptType(findQualifierCandidate(ipsProject));
     }
 
+    @Override
     public String getInverseAssociation() {
         return inverseAssociation;
     }
 
+    @Override
     public boolean hasInverseAssociation() {
         return StringUtils.isNotEmpty(inverseAssociation);
     }
 
+    @Override
     public void setInverseAssociation(String newRelation) {
         String oldValue = inverseAssociation;
         inverseAssociation = newRelation;
         valueChanged(oldValue, newRelation);
     }
 
+    @Override
     public IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(inverseAssociation)) {
             return null;
@@ -233,6 +251,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return null;
     }
 
+    @Override
     public IPolicyCmptTypeAssociation newInverseAssociation() throws CoreException {
         IPolicyCmptType targetPolicyCmptType = findTargetPolicyCmptType(getIpsProject());
         if (targetPolicyCmptType == null) {
@@ -437,6 +456,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
     }
 
+    @Override
     public IPersistentAssociationInfo getPersistenceAssociatonInfo() {
         return (IPersistentAssociationInfo)persistenceAssociationInfo;
     }

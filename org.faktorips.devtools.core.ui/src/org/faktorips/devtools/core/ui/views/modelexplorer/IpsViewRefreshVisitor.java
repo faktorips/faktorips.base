@@ -47,6 +47,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         this.contentProvider = contentProvider;
     }
 
+    @Override
     public boolean visit(IResourceDelta delta) throws CoreException {
         IResource resource = delta.getResource();
         if (resource.isTeamPrivateMember()) {

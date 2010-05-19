@@ -61,6 +61,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (value == null) {
             return new JavaCodeFragment("null");
@@ -76,6 +77,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment nullExpression() {
         return new JavaCodeFragment("null");
     }

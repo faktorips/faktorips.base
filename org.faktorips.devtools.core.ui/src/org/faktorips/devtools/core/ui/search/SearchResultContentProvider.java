@@ -47,6 +47,7 @@ public class SearchResultContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof Object[]) {
             Object[] elementArray = (Object[])parentElement;
@@ -62,6 +63,7 @@ public class SearchResultContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         if (element instanceof IIpsElement) {
             if (element instanceof IProductCmptGeneration) {
@@ -77,6 +79,7 @@ public class SearchResultContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         if (element instanceof Object[]) {
             return ((Object[])element).length > 1;
@@ -87,6 +90,7 @@ public class SearchResultContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         // nothing to do.
     }
@@ -94,6 +98,7 @@ public class SearchResultContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof ReferenceSearchResult) {
             ReferenceSearchResult searchResult = (ReferenceSearchResult)inputElement;
@@ -107,6 +112,7 @@ public class SearchResultContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         initialize((ReferenceSearchResult)newInput);
     }

@@ -44,10 +44,12 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
         super(parent, id);
     }
 
+    @Override
     public String getDatatype() {
         return getValueDatatype();
     }
 
+    @Override
     public void setDatatype(String datatype) {
         setValueDatatype(datatype);
     }
@@ -62,16 +64,19 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
         valueChanged(oldType, testParameterType);
     }
 
+    @Override
     public String getValueDatatype() {
         return datatype;
     }
 
+    @Override
     public void setValueDatatype(String datatypeId) {
         String oldDatatype = datatype;
         datatype = datatypeId;
         valueChanged(oldDatatype, datatypeId);
     }
 
+    @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findValueDatatype(datatype);
     }

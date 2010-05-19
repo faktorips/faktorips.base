@@ -38,6 +38,7 @@ public class CompositeUIController implements UIController {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void updateModel() {
         for (UIController c : controllers) {
             c.updateModel();
@@ -47,6 +48,7 @@ public class CompositeUIController implements UIController {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void updateUI() {
         for (UIController c : controllers) {
             c.updateUI();

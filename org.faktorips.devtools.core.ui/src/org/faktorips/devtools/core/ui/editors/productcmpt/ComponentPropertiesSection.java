@@ -175,6 +175,7 @@ public class ComponentPropertiesSection extends IpsSection {
         // to null, so invalid strings like "egon" can not be validated in the normal way by
         // validating the object itself
         validToText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 String value = validToText.getText();
                 if (value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
@@ -205,6 +206,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
         // update enablement state of runtime-id-input if preference changed
         IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent event) {
                 if (!event.getProperty().equals(IpsPreferences.MODIFY_RUNTIME_ID)) {
                     return;
@@ -254,6 +256,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
     private class MyModifyListener implements ModifyListener {
 
+        @Override
         public void modifyText(ModifyEvent e) {
             productCmptTypeControl.getTextControl().removeModifyListener(this);
             uiMasterController.updateUI();

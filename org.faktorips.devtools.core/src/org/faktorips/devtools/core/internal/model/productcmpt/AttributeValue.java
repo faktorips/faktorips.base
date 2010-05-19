@@ -60,6 +60,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }
@@ -75,6 +76,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getAttribute() {
         return attribute;
     }
@@ -82,6 +84,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setAttribute(String newAttribute) {
         String oldAttr = attribute;
         attribute = newAttribute;
@@ -92,6 +95,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getValue() {
         return value;
     }
@@ -99,6 +103,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(String newValue) {
         String oldValue = value;
         value = newValue;
@@ -108,6 +113,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPropertyName() {
         return attribute;
     }
@@ -115,6 +121,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findAttribute(ipsProject);
     }
@@ -122,6 +129,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public ProdDefPropertyType getPropertyType() {
         return ProdDefPropertyType.VALUE;
     }
@@ -129,6 +137,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPropertyValue() {
         return value;
     }
@@ -136,6 +145,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
         IProductCmptType type = getProductCmptGeneration().findProductCmptType(ipsProject);
         if (type == null) {

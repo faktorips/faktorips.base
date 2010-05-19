@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.type.IType;
  */
 public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
 
+    @Override
     @SuppressWarnings("unchecked")
     // can suppress warning as eclipse IAdapterFactory is not generic
     public Object getAdapter(Object adaptableObject, Class adapterType) {
@@ -64,6 +65,7 @@ public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
         return wrapper.getWrappedIpsSrcFile();
     }
 
+    @Override
     public Class<?>[] getAdapterList() {
         return new Class<?>[] { IIpsElement.class, IIpsSrcFile.class, IProductCmpt.class, IType.class };
     }

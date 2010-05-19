@@ -88,6 +88,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
@@ -291,6 +292,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         return nameComposite;
     }
 
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == sourceFolderField) {
             sourceFolderChanged();

@@ -27,6 +27,7 @@ public class PolicyCmptImplClassJaxbAnnGenFactory implements AnnotationGenerator
         this.standardBuilderSet = standardBuilderSet;
     }
 
+    @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException {
         switch (type) {
             case POLICY_CMPT_IMPL_CLASS_ASSOCIATION:
@@ -38,6 +39,7 @@ public class PolicyCmptImplClassJaxbAnnGenFactory implements AnnotationGenerator
         }
     }
 
+    @Override
     public boolean isRequiredFor(IIpsProject ipsProject) {
         return standardBuilderSet.isGenerateJaxbSupport();
     }

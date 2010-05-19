@@ -281,11 +281,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getWorkspace().removeResourceChangeListener(this);
     }
 
+    @Override
     public void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor) throws CoreException {
 
         runAndQueueChangeEvents(action, getWorkspace().getRoot(), IWorkspace.AVOID_UPDATE, monitor);
     }
 
+    @Override
     public void runAndQueueChangeEvents(IWorkspaceRunnable action,
             ISchedulingRule rule,
             int flags,
@@ -299,6 +301,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         final Set<IIpsSrcFile> changedSrcFiles = new LinkedHashSet<IIpsSrcFile>();
         ContentsChangeListener batchListener = new ContentsChangeListener() {
 
+            @Override
             public void contentsChanged(ContentChangeEvent event) {
                 changedSrcFiles.add(event.getIpsSrcFile());
             }
@@ -312,6 +315,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         final Set<IIpsSrcFile> modifiedSrcFiles = new LinkedHashSet<IIpsSrcFile>(0);
         IModificationStatusChangeListener batchModifiyListener = new IModificationStatusChangeListener() {
 
+            @Override
             public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
                 modifiedSrcFiles.add(event.getIpsSrcFile());
             }
@@ -343,10 +347,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     }
 
+    @Override
     public IWorkspace getWorkspace() {
         return ResourcesPlugin.getWorkspace();
     }
 
+    @Override
     public IIpsProject createIpsProject(IJavaProject javaProject) throws CoreException {
         if (javaProject.getProject().getNature(IIpsProject.NATURE_ID) != null) {
             return getIpsProject(javaProject.getProject());
@@ -364,6 +370,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return ipsProject;
     }
 
+    @Override
     public IIpsProject[] getIpsProjects() throws CoreException {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         IIpsProject[] ipsProjects = new IIpsProject[projects.length];
@@ -382,6 +389,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return shrinked;
     }
 
+    @Override
     public IIpsProject[] getIpsModelProjects() throws CoreException {
         IIpsProject[] allIpsProjects = getIpsProjects();
         List<IIpsProject> modelProjects = new ArrayList<IIpsProject>(allIpsProjects.length);
@@ -393,6 +401,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return modelProjects.toArray(new IIpsProject[modelProjects.size()]);
     }
 
+    @Override
     public IIpsProject[] getIpsProductDefinitionProjects() throws CoreException {
         IIpsProject[] allIpsProjects = getIpsProjects();
         List<IIpsProject> productDefinitionProjects = new ArrayList<IIpsProject>(allIpsProjects.length);
@@ -404,6 +413,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return productDefinitionProjects.toArray(new IIpsProject[productDefinitionProjects.size()]);
     }
 
+    @Override
     public IResource[] getNonIpsProjects() throws CoreException {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         IProject[] nonIpsProjects = new IProject[projects.length];
@@ -427,10 +437,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return this;
     }
 
+    @Override
     public IIpsProject getIpsProject(String name) {
         return new IpsProject(this, name);
     }
 
+    @Override
     public IIpsProject getIpsProject(IProject project) {
         return new IpsProject(this, project.getName());
     }
@@ -438,6 +450,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Returns the workspace root. Overridden method.
      */
+    @Override
     public IResource getCorrespondingResource() {
         return ResourcesPlugin.getWorkspace().getRoot();
     }
@@ -447,6 +460,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return getIpsProjects();
     }
 
+    @Override
     public IIpsElement getIpsElement(IResource resource) {
         ArgumentCheck.notNull(resource);
         if (resource.getType() == IResource.ROOT) {
@@ -487,6 +501,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return ipsFolder.getIpsSrcFile(resource.getName());
     }
 
+    @Override
     public IIpsElement findIpsElement(IResource resource) {
         if (resource == null) {
             return null;
@@ -554,6 +569,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return false;
     }
 
+    @Override
     public void addModifcationStatusChangeListener(IModificationStatusChangeListener listener) {
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.addModificationStatusChangeListener(): " + listener); //$NON-NLS-1$
@@ -564,6 +580,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         modificationStatusChangeListeners.add(listener);
     }
 
+    @Override
     public void removeModificationStatusChangeListener(IModificationStatusChangeListener listener) {
         if (modificationStatusChangeListeners != null) {
             boolean wasRemoved = modificationStatusChangeListeners.remove(listener);
@@ -584,6 +601,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
         display.syncExec(new Runnable() {
+            @Override
             public void run() {
                 List<IModificationStatusChangeListener> copy = new ArrayList<IModificationStatusChangeListener>(
                         modificationStatusChangeListeners); // copy do avoid
@@ -610,6 +628,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         });
     }
 
+    @Override
     public void addChangeListener(ContentsChangeListener listener) {
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.addChangeListeners(): " + listener); //$NON-NLS-1$
@@ -617,6 +636,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         changeListeners.add(listener);
     }
 
+    @Override
     public void removeChangeListener(ContentsChangeListener listener) {
         boolean wasRemoved = changeListeners.remove(listener);
         if (TRACE_MODEL_CHANGE_LISTENERS) {
@@ -632,6 +652,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.notfiyChangeListeners(): " + changeListeners.size() + " listeners"); //$NON-NLS-1$  //$NON-NLS-2$
         }
         final Runnable notifier = new Runnable() {
+            @Override
             public void run() {
                 List<ContentsChangeListener> copy = new ArrayList<ContentsChangeListener>(changeListeners); // copy
                 // do
@@ -676,6 +697,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return "IpsModel"; //$NON-NLS-1$
     }
 
+    @Override
     public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreException {
         List<IIpsPackageFragmentRoot> result = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsProject[] projects = getIpsProjects();
@@ -970,6 +992,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         IResourceDelta delta = event.getDelta();
         if (delta != null) {
@@ -1009,6 +1032,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>(Arrays.asList(builderSetInfos));
     }
 
+    @Override
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces) {
         if (typeExtensionPropertiesMap == null) {
@@ -1021,6 +1045,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         // Sort extension property definitions by id to avoid random arrangement at return
         Arrays.sort(properties, new Comparator<IExtensionPropertyDefinition>() {
 
+            @Override
             public int compare(IExtensionPropertyDefinition def1, IExtensionPropertyDefinition def2) {
                 return def1.getPropertyId().compareTo(def2.getPropertyId());
             }
@@ -1029,6 +1054,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return properties;
     }
 
+    @Override
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class<?> type,
             String propertyId,
             boolean includeSupertypesAndInterfaces) {
@@ -1214,6 +1240,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         datatypeHelpersMap.put(helper.getDatatype(), helper);
     }
 
+    @Override
     public ValueDatatype[] getPredefinedValueDatatypes() {
         if (datatypes == null) {
             initDatatypesDefinedViaExtension();
@@ -1222,6 +1249,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return c.toArray(new ValueDatatype[c.size()]);
     }
 
+    @Override
     public boolean isPredefinedValueDatatype(String valueDatatypeId) {
         if (datatypes == null) {
             initDatatypesDefinedViaExtension();
@@ -1229,12 +1257,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return datatypes.containsKey(valueDatatypeId);
     }
 
+    @Override
     public void delete(IIpsElement toDelete) {
         if (toDelete instanceof IIpsObjectPart) {
             ((IIpsObjectPart)toDelete).delete();
         }
     }
 
+    @Override
     public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention(String id) {
 
         initChangesOverTimeNamingConventionIfNecessary();
@@ -1255,6 +1285,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return new ChangesOverTimeNamingConvention("VAA"); //$NON-NLS-1$
     }
 
+    @Override
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
         initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
@@ -1458,6 +1489,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             fileExtensionsOfInterest.add(IpsProject.PROPERTY_FILE_EXTENSION);
         }
 
+        @Override
         public boolean visit(final IResourceDelta delta) {
             IResource resource = delta.getResource();
             try {
@@ -1513,6 +1545,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
     }
 
+    @Override
     public void clearValidationCache() {
         getValidationResultCache().removeStaleData(null);
     }
@@ -1531,11 +1564,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * represents an IpsArtefactBuilderSet that is a registered at the corresponding extension
      * point.
      */
+    @Override
     public IIpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos() {
         createIpsArtefactBuilderSetInfosIfNecessary();
         return builderSetInfoList.toArray(new IIpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
     }
 
+    @Override
     public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id) {
         createIpsArtefactBuilderSetInfosIfNecessary();
         for (Object name2 : builderSetInfoList) {
@@ -1547,10 +1582,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return null;
     }
 
+    @Override
     public IpsObjectType[] getIpsObjectTypes() {
         return ipsObjectTypes;
     }
 
+    @Override
     public IpsObjectType getIpsObjectType(String name) {
         for (IpsObjectType ipsObjectType : ipsObjectTypes) {
             if (ipsObjectType.getId().equals(name)) {
@@ -1560,6 +1597,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return null;
     }
 
+    @Override
     public IpsObjectType getIpsObjectTypeByFileExtension(String fileExtension) {
         for (IpsObjectType ipsObjectType : ipsObjectTypes) {
             if (ipsObjectType.getFileExtension().equals(fileExtension)) {
@@ -1666,6 +1704,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return false;
     }
 
+    @Override
     public List<ITestCase> searchReferencingTestCases(IProductCmpt cmpt) throws CoreException {
         IIpsProject baseProject = cmpt.getIpsProject();
         IIpsProject[] projects = getIpsModel().getIpsProjects();

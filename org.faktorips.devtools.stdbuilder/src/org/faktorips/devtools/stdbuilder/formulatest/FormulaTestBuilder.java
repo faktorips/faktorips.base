@@ -126,6 +126,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         this.productCmptBuilder = productCmptBuilder;
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (!IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
             return false;

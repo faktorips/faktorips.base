@@ -562,6 +562,7 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
             monitor = new NullProgressMonitor();

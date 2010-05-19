@@ -73,6 +73,7 @@ public class TestRule extends TestObject implements ITestRule {
         element.setAttribute(PROPERTY_VIOLATED, violationType.getId());
     }
 
+    @Override
     public String getTestParameterName() {
         return testRuleParameter;
     }
@@ -89,20 +90,24 @@ public class TestRule extends TestObject implements ITestRule {
         return this;
     }
 
+    @Override
     public String getTestRuleParameter() {
         return testRuleParameter;
     }
 
+    @Override
     public void setTestRuleParameter(String testRuleParameter) {
         String oldTestRuleParameter = this.testRuleParameter;
         this.testRuleParameter = testRuleParameter;
         valueChanged(oldTestRuleParameter, testRuleParameter);
     }
 
+    @Override
     public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
         return findTestRuleParameter(ipsProject);
     }
 
+    @Override
     public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testRuleParameter)) {
             return null;
@@ -119,25 +124,30 @@ public class TestRule extends TestObject implements ITestRule {
         return null;
     }
 
+    @Override
     public String getValidationRule() {
         return validationRule;
     }
 
+    @Override
     public void setValidationRule(String validationRule) {
         String oldValidationRule = this.validationRule;
         this.validationRule = validationRule;
         valueChanged(oldValidationRule, validationRule);
     }
 
+    @Override
     public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreException {
         ITestCase testCase = (ITestCase)getParent();
         return testCase.findValidationRule(validationRule, ipsProject);
     }
 
+    @Override
     public TestRuleViolationType getViolationType() {
         return violationType;
     }
 
+    @Override
     public void setViolationType(TestRuleViolationType violationType) {
         TestRuleViolationType oldViolationType = this.violationType;
         this.violationType = violationType;

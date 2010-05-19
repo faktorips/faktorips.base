@@ -43,6 +43,7 @@ public class StaticContentSelectIpsObjectContext implements ISelectIpsObjectCont
         ipsSrcFiles = Arrays.asList(iIpsSrcFiles);
     }
 
+    @Override
     public ViewerFilter getContextFilter() {
         return new ViewerFilter() {
 
@@ -62,6 +63,7 @@ public class StaticContentSelectIpsObjectContext implements ISelectIpsObjectCont
         };
     }
 
+    @Override
     public List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
         return ipsSrcFiles;
     }

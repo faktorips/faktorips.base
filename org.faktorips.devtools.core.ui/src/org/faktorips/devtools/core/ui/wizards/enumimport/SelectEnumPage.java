@@ -47,6 +47,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
         super(selection, Messages.SelectEnumPage_title);
     }
 
+    @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;

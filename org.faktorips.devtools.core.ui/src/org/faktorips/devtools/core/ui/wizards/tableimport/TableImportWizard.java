@@ -164,6 +164,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
 
             try {
                 IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                    @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
                         format.executeTableImport(structure, new Path(filename), generation, nullRepresentation,
                                 ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());

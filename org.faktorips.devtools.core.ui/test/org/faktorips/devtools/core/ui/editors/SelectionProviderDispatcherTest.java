@@ -113,14 +113,17 @@ public class SelectionProviderDispatcherTest extends TestCase {
 
         public boolean activated = false;
 
+        @Override
         public ISelectionProvider getSelectionProvider() {
             return selectionProvider;
         }
 
+        @Override
         public boolean isActivated() {
             return activated;
         }
 
+        @Override
         public boolean isDisposed() {
             return false;
         }
@@ -130,18 +133,22 @@ public class SelectionProviderDispatcherTest extends TestCase {
 
         public ISelection selection;
 
+        @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
             //            
         }
 
+        @Override
         public ISelection getSelection() {
             return selection;
         }
 
+        @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
             //            
         }
 
+        @Override
         public void setSelection(ISelection selection) {
             this.selection = selection;
         }
@@ -149,6 +156,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
 
     private class TestSelection implements ISelection {
 
+        @Override
         public boolean isEmpty() {
             return false;
         }
@@ -159,6 +167,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
 
         public boolean informed = false;
 
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             informed = true;
         }

@@ -49,6 +49,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean executeTableExport(ITableContents contents,
             IPath filename,
             String nullRepresentationString,
@@ -65,6 +66,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         }
     }
 
+    @Override
     public void executeTableImport(ITableStructure structure,
             IPath filename,
             ITableContentsGeneration targetGeneration,
@@ -82,6 +84,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean executeEnumExport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
@@ -99,6 +102,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         }
     }
 
+    @Override
     public void executeEnumImport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
@@ -114,6 +118,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValidImportSource(String source) {
         File file = new File(source);
 
@@ -141,6 +146,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         return false;
     }
 
+    @Override
     public List<String[]> getImportTablePreview(ITableStructure structure,
             IPath filename,
             int maxNumberOfRows,
@@ -149,6 +155,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
+    @Override
     public List<String[]> getImportEnumPreview(IEnumType structure,
             IPath filename,
             int maxNumberOfRows,

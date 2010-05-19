@@ -132,6 +132,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench) {
         setPreferenceStore(IpsPlugin.getDefault().getPreferenceStore());
     }

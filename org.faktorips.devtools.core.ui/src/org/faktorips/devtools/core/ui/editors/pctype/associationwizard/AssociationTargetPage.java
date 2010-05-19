@@ -54,6 +54,7 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
         setPageComplete(false);
     }
 
+    @Override
     public void createControl(Composite parent) {
         Composite pageComposite = wizard.createPageComposite(parent);
 
@@ -93,6 +94,7 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getProperties() {
         return visibleProperties;
     }

@@ -165,6 +165,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void classpathContentsChanges(IJavaProject project) {
             clearCache();
             IpsProject ipsProject = (IpsProject)IpsPlugin.getDefault().getIpsModel()

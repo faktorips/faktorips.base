@@ -114,6 +114,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             menuManager.setRemoveAllWhenShown(true);
             // display menu only if one element is selected
             menuManager.addMenuListener(new IMenuListener() {
+                @Override
                 public void menuAboutToShow(IMenuManager manager) {
                     ISelection selection = getViewer().getSelection();
                     if (selection.isEmpty()) {
@@ -134,14 +135,17 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         protected IStructuredContentProvider createContentProvider() {
             return new IStructuredContentProvider() {
 
+                @Override
                 public Object[] getElements(Object inputElement) {
                     return getProductCmptType().getAssociations();
                 }
 
+                @Override
                 public void dispose() {
 
                 }
 
+                @Override
                 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 }
 

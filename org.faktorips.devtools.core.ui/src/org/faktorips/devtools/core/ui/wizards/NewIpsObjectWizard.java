@@ -116,6 +116,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     /**
      * {@inheritDoc}
      */
+    @Override
     public IpsObjectType getIpsObjectType() {
         return objectPage.getIpsObjectType();
     }
@@ -127,6 +128,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     public final boolean performFinish() {
         final IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
         IWorkspaceRunnable op = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
                 IWizardPage[] pages = getPages();
                 if (pages.length > 1) {
@@ -183,6 +185,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
     }
@@ -192,6 +195,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
      * implements the IPageChangeProvider interface. Hence the IpsObjectsPages will be informed via
      * the pageEntered method when the page is about to be entered (will be shown to the user).
      */
+    @Override
     public void pageChanged(PageChangedEvent event) {
         IWizardPage page = (IWizardPage)event.getSelectedPage();
         setWindowTitle(page.getTitle());

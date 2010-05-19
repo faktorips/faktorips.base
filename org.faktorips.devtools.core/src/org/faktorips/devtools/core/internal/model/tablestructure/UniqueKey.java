@@ -104,6 +104,7 @@ public class UniqueKey extends Key implements IUniqueKey {
         return;
     }
 
+    @Override
     public boolean containsRangesOnly() {
         String[] items = getKeyItemNames();
         for (String item : items) {
@@ -114,6 +115,7 @@ public class UniqueKey extends Key implements IUniqueKey {
         return true;
     }
 
+    @Override
     public boolean containsRanges() {
         String[] items = getKeyItemNames();
         for (String item : items) {
@@ -124,6 +126,7 @@ public class UniqueKey extends Key implements IUniqueKey {
         return false;
     }
 
+    @Override
     public boolean containsTwoColumnRanges() {
         IKeyItem[] keyItems = getKeyItems();
         for (IKeyItem keyItem : keyItems) {
@@ -138,6 +141,7 @@ public class UniqueKey extends Key implements IUniqueKey {
         return false;
     }
 
+    @Override
     public boolean containsColumns() {
         String[] items = getKeyItemNames();
         for (String item : items) {

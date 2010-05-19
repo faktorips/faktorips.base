@@ -63,6 +63,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         }
     }
 
+    @Override
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
 
         List<IIpsPackageFragment> list = getChildIpsPackageFragmentsAsList();
@@ -70,6 +71,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
+    @Override
     public IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
         IIpsArchive archive = root.getIpsArchive();
@@ -85,6 +87,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         return srcFiles;
     }
 
+    @Override
     public IResource[] getNonIpsResources() throws CoreException {
         return new IResource[0];
     }
@@ -94,6 +97,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         return new ArchiveIpsSrcFile(this, name);
     }
 
+    @Override
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
             throws CoreException {
         try {
@@ -106,18 +110,21 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         throw newCantModifyPackageStoredInArchive();
     }
 
+    @Override
     public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
             throws CoreException {
 
         throw newCantModifyPackageStoredInArchive();
     }
 
+    @Override
     public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
             throws CoreException {
 
         throw newCantModifyPackageStoredInArchive();
     }
 
+    @Override
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
             GregorianCalendar date,
@@ -127,6 +134,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         throw newCantModifyPackageStoredInArchive();
     }
 
+    @Override
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
         throw new CoreException(new IpsStatus("Can't modifiy package stored in an archive.")); //$NON-NLS-1$
@@ -136,6 +144,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         return new CoreException(new IpsStatus("Can't modifiy package stored in an archive.")); //$NON-NLS-1$
     }
 
+    @Override
     public IResource getCorrespondingResource() {
         return null;
     }
@@ -185,6 +194,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
         // TODO the sort definition for archives needs to be implemented
         return null;
@@ -193,6 +203,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
         // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
         List<IIpsPackageFragment> sortedPacks = getChildIpsPackageFragmentsAsList();
@@ -222,6 +233,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     /**
      * This method is not supported for archives and throws a {@link RuntimeException} if called.
      */
+    @Override
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
         throw new RuntimeException("Can't set the sort definition in archives!"); //$NON-NLS-1$
     }
@@ -229,10 +241,12 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     /**
      * This method returns null since this archive package fragment doesn't have a sort order file.
      */
+    @Override
     public IFile getSortOrderFile() {
         return null;
     }
 
+    @Override
     public boolean hasChildIpsPackageFragments() throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
         String[] packNames = root.getIpsArchive().getNonEmptySubpackages(getName());

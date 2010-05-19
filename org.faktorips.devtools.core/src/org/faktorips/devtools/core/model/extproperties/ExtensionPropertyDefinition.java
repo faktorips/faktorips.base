@@ -50,6 +50,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class<?> getExtendedType() {
         return extendedType;
     }
@@ -62,6 +63,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPropertyId() {
         return propertyId;
     }
@@ -73,6 +75,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getDefaultValue() {
         return defaultValue;
     }
@@ -92,6 +95,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         this.position = position;
     }
 
+    @Override
     public String getPosition() {
         return position;
     }
@@ -99,6 +103,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -110,6 +115,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getOrder() {
         return order;
     }
@@ -124,6 +130,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueToXml(Element valueElement, Object value) {
         CDATASection valueSection = valueElement.getOwnerDocument().createCDATASection(value.toString());
         valueElement.appendChild(valueSection);
@@ -132,6 +139,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * Default implementation returns <code>null</code>.
      */
+    @Override
     public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws CoreException {
         return null;
     }
@@ -139,12 +147,14 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * Default implementation doesn nothing.
      */
+    @Override
     public void afterSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
     }
 
     /**
      * Default implementation does nothing.
      */
+    @Override
     public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
         return true;
     }
@@ -152,6 +162,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compareTo(IExtensionPropertyDefinition other) {
         if (order == other.getOrder()) {
             return propertyId.compareTo(other.getPropertyId());

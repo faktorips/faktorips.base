@@ -41,10 +41,12 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     protected IpsObjectGeneration() {
     }
 
+    @Override
     public ITimedIpsObject getTimedIpsObject() {
         return (ITimedIpsObject)getIpsObject();
     }
 
+    @Override
     public int getGenerationNo() {
         IIpsObjectGeneration[] generations = ((ITimedIpsObject)getIpsObject()).getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
@@ -71,10 +73,12 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         return format.format(validFrom.getTime());
     }
 
+    @Override
     public GregorianCalendar getValidFrom() {
         return validFrom;
     }
 
+    @Override
     public void setValidFrom(GregorianCalendar validFrom) {
         GregorianCalendar oldValue = this.validFrom;
         setValidFromInternal(validFrom);
@@ -88,6 +92,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         this.validFrom = validFrom;
     }
 
+    @Override
     public Boolean isValidFromInPast() {
         if (validFrom == null) {
             return null;
@@ -122,6 +127,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         element.setAttribute(PROPERTY_VALID_FROM, XmlUtil.gregorianCalendarToXmlDateString(validFrom));
     }
 
+    @Override
     public void initFromGeneration(IIpsObjectGeneration source, GregorianCalendar validFrom) {
         String id = getId();
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
@@ -130,6 +136,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         // note: do not call event triggering methods here (e.g. partWasEdited, objectHasChanged)
     }
 
+    @Override
     public GregorianCalendar getValidTo() {
         IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerationsOrderedByValidDate();
 
@@ -168,6 +175,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
     }
 
+    @Override
     public IIpsObjectGeneration getNextByValidDate() {
         IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerationsOrderedByValidDate();
         int genIndex = getGenerationNo();
@@ -178,6 +186,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         return null;
     }
 
+    @Override
     public IIpsObjectGeneration getPreviousByValidDate() {
         IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerationsOrderedByValidDate();
         int genIndex = getGenerationNo() - 2;

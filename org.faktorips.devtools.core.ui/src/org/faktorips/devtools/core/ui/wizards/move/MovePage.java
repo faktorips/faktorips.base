@@ -76,6 +76,7 @@ public class MovePage extends WizardPage implements ModifyListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
 
@@ -102,6 +103,7 @@ public class MovePage extends WizardPage implements ModifyListener {
         tree.setLayoutData(gridData);
 
         targetInput.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 setPageComplete();
             }
@@ -191,6 +193,7 @@ public class MovePage extends WizardPage implements ModifyListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void modifyText(ModifyEvent e) {
         setPageComplete();
     }
@@ -230,6 +233,7 @@ public class MovePage extends WizardPage implements ModifyListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object[] getChildren(Object parentElement) {
             try {
                 if (parentElement instanceof IIpsProject) {
@@ -255,6 +259,7 @@ public class MovePage extends WizardPage implements ModifyListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object getParent(Object element) {
             if (element instanceof IIpsPackageFragment) {
                 return ((IIpsPackageFragment)element).getParent();
@@ -267,6 +272,7 @@ public class MovePage extends WizardPage implements ModifyListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean hasChildren(Object element) {
             return getChildren(element).length > 0;
         }
@@ -274,6 +280,7 @@ public class MovePage extends WizardPage implements ModifyListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object[] getElements(Object inputElement) {
             if (inputElement instanceof IIpsProject[]) {
                 return (IIpsProject[])inputElement;
@@ -284,6 +291,7 @@ public class MovePage extends WizardPage implements ModifyListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dispose() {
             // nothing to do
         }
@@ -291,6 +299,7 @@ public class MovePage extends WizardPage implements ModifyListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // nothing to do
         }

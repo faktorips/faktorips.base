@@ -114,6 +114,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         return generationDate;
     }
 
+    @Override
     public StyledString getStyledText(Object element) {
         StyledString styledString = new StyledString(getText(element));
         if (element instanceof IProductCmptReference) {

@@ -135,10 +135,12 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         treeWidget.setFont(parent.getFont());
 
         treeWidget.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 handleDefaultSelected();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 handleWidgetSelected();
             }

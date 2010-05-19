@@ -147,6 +147,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     /**
      * Returns "ipstablecontents". {@inheritDoc}
      */
+    @Override
     public String getType() {
         return "ipstablecontents"; //$NON-NLS-1$
     }
@@ -158,7 +159,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     public void init() {
         if (isRoot()) {
             if (hasChildren()) {
-                IIpsElement element = ((AbstractCompareItem)children.get(0)).getIpsElement();
+                IIpsElement element = (children.get(0)).getIpsElement();
                 if (element instanceof ITableContents) {
                     initColumnWidths((ITableContents)element);
                 }

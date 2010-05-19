@@ -96,6 +96,7 @@ public class TestCaseStructurePage extends WizardPage {
         return (TestCaseCopyWizard)super.getWizard();
     }
 
+    @Override
     public void createControl(Composite parent) {
         Composite root = toolkit.createComposite(parent);
         root.setLayout(new GridLayout(2, true));
@@ -124,6 +125,7 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.expandAll();
 
         treeViewer.addCheckStateListener(new ICheckStateListener() {
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 pageChanged();
                 treeViewer.refresh();
@@ -171,14 +173,17 @@ public class TestCaseStructurePage extends WizardPage {
                 new CheckboxCellEditor(tableViewer.getTable()) });
 
         tableViewer.setCellModifier(new ICellModifier() {
+            @Override
             public boolean canModify(Object element, String property) {
                 return true;
             }
 
+            @Override
             public Object getValue(Object element, String property) {
                 return Boolean.TRUE;
             }
 
+            @Override
             public void modify(Object element, String property, Object value) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)((TableItem)element).getData();
                 checkedProductCmpt = ipsSrcFile;
@@ -222,6 +227,7 @@ public class TestCaseStructurePage extends WizardPage {
         });
 
         tableViewer.setContentProvider(new IStructuredContentProvider() {
+            @Override
             public Object[] getElements(Object inputElement) {
                 if (inputElement instanceof IIpsSrcFile[]) {
                     return (IIpsSrcFile[])inputElement;
@@ -230,13 +236,16 @@ public class TestCaseStructurePage extends WizardPage {
                 }
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
         });
         tableViewer.setLabelProvider(new ITableLabelProvider() {
+            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 if (columnIndex == 1) {
                     return defaultLabelProvider.getImage(element);
@@ -246,6 +255,7 @@ public class TestCaseStructurePage extends WizardPage {
                 }
             }
 
+            @Override
             public String getColumnText(Object element, int columnIndex) {
                 if (columnIndex == 1) {
                     return defaultLabelProvider.getText(element);
@@ -254,16 +264,20 @@ public class TestCaseStructurePage extends WizardPage {
                 }
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
         });
@@ -271,6 +285,7 @@ public class TestCaseStructurePage extends WizardPage {
 
     private void hookTreeListeners() {
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 try {
                     ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmptFromSelection(event.getSelection());
@@ -393,6 +408,7 @@ public class TestCaseStructurePage extends WizardPage {
         boolean pageComplete = validatePage();
         setPageComplete(pageComplete);
         getShell().getDisplay().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 getContainer().updateButtons();
             }

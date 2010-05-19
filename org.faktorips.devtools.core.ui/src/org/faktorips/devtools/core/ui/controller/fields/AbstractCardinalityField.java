@@ -39,6 +39,7 @@ public abstract class AbstractCardinalityField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue) {
         ArgumentCheck.isInstanceOf(newValue, Integer.class);
         if (newValue instanceof Integer) {
@@ -59,6 +60,7 @@ public abstract class AbstractCardinalityField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setText(String newText) {
         try {
             Integer value = Integer.valueOf(newText);

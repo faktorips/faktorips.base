@@ -54,6 +54,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean changesOn(GregorianCalendar date) {
         for (IIpsObjectGeneration gen : generations) {
             if (gen.getValidFrom().equals(date)) {
@@ -66,6 +67,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectGeneration getFirstGeneration() {
         if (generations.size() > 0) {
             return getGenerationsOrderedByValidDate()[0];
@@ -76,10 +78,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectGeneration getGeneration(int index) {
         return generations.get(index);
     }
 
+    @Override
     public List<IIpsObjectGeneration> getGenerations() {
         return new ArrayList<IIpsObjectGeneration>(generations);
     }
@@ -87,10 +91,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectGeneration[] getGenerationsOrderedByValidDate() {
         IIpsObjectGeneration[] gens = generations.toArray(new IIpsObjectGeneration[generations.size()]);
         Arrays.sort(gens, new Comparator<IIpsObjectGeneration>() {
 
+            @Override
             public int compare(IIpsObjectGeneration gen1, IIpsObjectGeneration gen2) {
                 if (gen1.getValidFrom() == null) {
                     return gen2.getValidFrom() == null ? 0 : -1;
@@ -105,6 +111,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date) {
         if (date == null) {
             return null;
@@ -134,6 +141,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
         if (date == null) {
             return null;
@@ -149,6 +157,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectGeneration newGeneration() {
         IpsObjectGeneration generation = newGenerationInternal(getNextPartId());
         objectHasChanged();
@@ -158,6 +167,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectGeneration newGeneration(GregorianCalendar validFrom) {
         IIpsObjectGeneration oldGen = findGenerationEffectiveOn(validFrom);
         return newGeneration(oldGen, validFrom);
@@ -176,6 +186,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return generation;
     }
 
+    @Override
     public int getNumOfGenerations() {
         return generations.size();
     }
@@ -276,6 +287,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public GregorianCalendar getValidTo() {
         return validTo;
     }
@@ -283,6 +295,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValidTo(GregorianCalendar validTo) {
         GregorianCalendar oldId = this.validTo;
         this.validTo = validTo;

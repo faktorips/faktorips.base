@@ -44,6 +44,7 @@ public interface ITestParameter extends IIpsObjectPart {
     /**
      * Returns the parameters's name, e.g. 'effectiveDate'. {@inheritDoc}
      */
+    @Override
     public String getName();
 
     /**

@@ -67,6 +67,7 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
         setNeedsProgressMonitor(true);

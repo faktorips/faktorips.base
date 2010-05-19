@@ -36,6 +36,7 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractAnnotati
         super(builderSet);
     }
 
+    @Override
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendln(ANNOTATION_TRANSIENT);
@@ -44,10 +45,12 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractAnnotati
         return fragment;
     }
 
+    @Override
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD;
     }
 
+    @Override
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
         if (ipsElement instanceof IPolicyCmptTypeAttribute) {
             IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)ipsElement;

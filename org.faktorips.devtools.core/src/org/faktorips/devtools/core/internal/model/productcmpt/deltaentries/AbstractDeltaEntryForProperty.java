@@ -29,6 +29,7 @@ public abstract class AbstractDeltaEntryForProperty extends AbstractDeltaEntry i
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
         return getPropertyName();
     }

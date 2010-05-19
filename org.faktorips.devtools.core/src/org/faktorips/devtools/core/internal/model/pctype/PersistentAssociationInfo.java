@@ -58,43 +58,53 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         targetColumnName = tableColumnNamingStrategy.getTableColumnName(getPolicyComponentTypeAssociation().getName());
     }
 
+    @Override
     public FetchType getFetchType() {
         return fetchType;
     }
 
+    @Override
     public String getJoinTableName() {
         return joinTableName;
     }
 
+    @Override
     public String getSourceColumnName() {
         return sourceColumnName;
     }
 
+    @Override
     public String getTargetColumnName() {
         return targetColumnName;
     }
 
+    @Override
     public String getJoinColumnName() {
         return joinColumnName;
     }
 
+    @Override
     public boolean isTransient() {
         return transientAssociation;
     }
 
+    @Override
     public boolean isOwnerOfManyToManyAssociation() {
         return ownerOfManyToManyAssociation;
     }
 
+    @Override
     public boolean isBidirectional() {
         return getPolicyComponentTypeAssociation().hasInverseAssociation();
     }
 
+    @Override
     public boolean isCascading() {
         return getPolicyComponentTypeAssociation().isAssoziation()
                 || getPolicyComponentTypeAssociation().isComposition();
     }
 
+    @Override
     public boolean isJoinTableRequired() throws CoreException {
         return isJoinTableRequired(getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject()));
@@ -115,15 +125,18 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         return isManyToManyAssociation;
     }
 
+    @Override
     public boolean isOrphanDeleting() {
         return isUnidirectional() && getPolicyComponentTypeAssociation().isComposition()
                 && getPolicyComponentTypeAssociation().is1ToMany();
     }
 
+    @Override
     public boolean isUnidirectional() {
         return !getPolicyComponentTypeAssociation().hasInverseAssociation();
     }
 
+    @Override
     public void setFetchType(FetchType fetchType) {
         ArgumentCheck.notNull(fetchType);
         FetchType oldValue = this.fetchType;
@@ -132,6 +145,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, fetchType);
     }
 
+    @Override
     public void setJoinTableName(String newJoinTableName) {
         ArgumentCheck.notNull(newJoinTableName);
         String oldValue = joinTableName;
@@ -140,6 +154,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, joinTableName);
     }
 
+    @Override
     public void setSourceColumnName(String newSourceColumnName) {
         ArgumentCheck.notNull(newSourceColumnName);
         String oldValue = sourceColumnName;
@@ -148,6 +163,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, sourceColumnName);
     }
 
+    @Override
     public void setTargetColumnName(String newTargetColumnName) {
         ArgumentCheck.notNull(newTargetColumnName);
         String oldValue = targetColumnName;
@@ -156,6 +172,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, targetColumnName);
     }
 
+    @Override
     public void setJoinColumnName(String newJoinColumnName) {
         ArgumentCheck.notNull(newJoinColumnName);
         String oldValue = joinColumnName;
@@ -164,12 +181,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, joinColumnName);
     }
 
+    @Override
     public void setTransient(boolean transientAssociation) {
         boolean oldValue = this.transientAssociation;
         this.transientAssociation = transientAssociation;
         valueChanged(oldValue, transientAssociation);
     }
 
+    @Override
     public void setOwnerOfManyToManyAssociation(boolean ownerOfManyToManyAssociation) {
         // clear other columns to hold a consistent state
         if (!ownerOfManyToManyAssociation) {
@@ -191,6 +210,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         return inverseAssociation == null && getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier();
     }
 
+    @Override
     public boolean isForeignKeyColumnDefinedOnTargetSide() throws CoreException {
         return isForeignKeyColumnDefinedOnTargetSide(getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject()));
@@ -328,6 +348,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         throw new RuntimeException("'Unsupported relationship type: " + relType.toString());
     }
 
+    @Override
     public RelationshipType evalUnidirectionalRelationShipType() {
         if (getPolicyComponentTypeAssociation().is1ToMany()) {
             return RelationshipType.ONE_TO_MANY;
@@ -337,6 +358,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         return RelationshipType.UNKNOWN;
     }
 
+    @Override
     public RelationshipType evalBidirectionalRelationShipType(IPolicyCmptTypeAssociation inverseAssociation) {
         if (inverseAssociation == null) {
             return RelationshipType.UNKNOWN;
@@ -356,10 +378,12 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         return RelationshipType.UNKNOWN;
     }
 
+    @Override
     public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation() {
         return (IPolicyCmptTypeAssociation)policyComponentTypeAssociation;
     }
 
+    @Override
     public void initDefaults() {
         if (getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier()) {
             fetchType = FetchType.LAZY;

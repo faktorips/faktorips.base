@@ -77,6 +77,7 @@ public abstract class AbstractTableImportOperation implements IWorkspaceRunnable
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract void run(IProgressMonitor monitor) throws CoreException;
 
 }

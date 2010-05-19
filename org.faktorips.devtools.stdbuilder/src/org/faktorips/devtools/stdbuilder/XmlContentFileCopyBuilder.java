@@ -40,6 +40,7 @@ public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#build(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
      */
+    @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = (IFile)ipsSrcFile.getEnclosingResource();
         InputStream is = file.getContents(true);

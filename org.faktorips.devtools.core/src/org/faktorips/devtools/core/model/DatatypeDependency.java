@@ -53,6 +53,7 @@ public class DatatypeDependency implements IDependency, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public QualifiedNameType getSource() {
         return source;
     }
@@ -67,6 +68,7 @@ public class DatatypeDependency implements IDependency, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getTarget() {
         return target;
     }
@@ -74,6 +76,7 @@ public class DatatypeDependency implements IDependency, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DependencyType getType() {
         return type;
     }

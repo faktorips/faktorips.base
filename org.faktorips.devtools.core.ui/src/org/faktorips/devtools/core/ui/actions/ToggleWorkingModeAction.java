@@ -47,6 +47,7 @@ public class ToggleWorkingModeAction extends Action implements IPropertyChangeLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
         if (!propertyChangedByThisAction && event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             update();

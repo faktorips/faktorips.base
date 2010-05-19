@@ -36,6 +36,7 @@ public class OpenIpsObjectContext implements ISelectIpsObjectContext {
         return !onlyProductDefinitionTypes || srcFile.getIpsObjectType().isProductDefinitionType();
     }
 
+    @Override
     public List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
@@ -52,6 +53,7 @@ public class OpenIpsObjectContext implements ISelectIpsObjectContext {
         return result;
     }
 
+    @Override
     public ViewerFilter getContextFilter() {
         return new ViewerFilter() {
 

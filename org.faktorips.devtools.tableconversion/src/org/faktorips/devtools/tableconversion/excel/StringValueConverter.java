@@ -30,6 +30,7 @@ public class StringValueConverter extends AbstractValueConverter {
      * 
      * {@inheritDoc}
      */
+    @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof Double) {
             return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
@@ -40,6 +41,7 @@ public class StringValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         return ipsValue;
     }
@@ -47,6 +49,7 @@ public class StringValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Datatype getSupportedDatatype() {
         return Datatype.STRING;
     }

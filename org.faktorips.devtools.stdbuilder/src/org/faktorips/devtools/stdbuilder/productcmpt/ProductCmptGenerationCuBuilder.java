@@ -96,6 +96,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         productCmptGenImplBuilder = builder;
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }

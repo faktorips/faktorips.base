@@ -95,6 +95,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
             setMessage(NLS.bind(Messages.MovePage_message, getIpsElementName(), getIpsElement().getName()));
         }
 
+        @Override
         public void createControl(Composite parent) {
             Composite controlComposite = getUiToolkit().createGridComposite(parent, 1, false, false);
             setControl(controlComposite);
@@ -122,6 +123,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
             setInitialTreeViewerSelection();
 
             treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     IStructuredSelection selection = (IStructuredSelection)event.getSelection();
                     if (selection.getFirstElement() != null) {
@@ -197,6 +199,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
         /** Content provider for the selection tree used by this page. */
         private static class MoveContentProvider implements ITreeContentProvider {
 
+            @Override
             public Object[] getChildren(Object parentElement) {
                 try {
                     if (parentElement instanceof IIpsProject) {
@@ -211,6 +214,7 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
                 return new Object[0];
             }
 
+            @Override
             public Object getParent(Object element) {
                 if (element instanceof IIpsPackageFragment) {
                     return ((IIpsPackageFragment)element).getParent();
@@ -220,10 +224,12 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
                 return null;
             }
 
+            @Override
             public boolean hasChildren(Object element) {
                 return getChildren(element).length > 0;
             }
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 if (inputElement instanceof IIpsProject[]) {
                     return (IIpsProject[])inputElement;
@@ -231,10 +237,12 @@ public final class MoveRefactoringWizard extends IpsRefactoringWizard {
                 return new Object[0];
             }
 
+            @Override
             public void dispose() {
                 // Nothing to do.
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // Nothing to do.
             }

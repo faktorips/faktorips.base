@@ -183,6 +183,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         if (structure == null) {
             Label errormsg = new Label(parent, SWT.WRAP);
@@ -275,6 +276,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         initLinkElements();
 
         getShell().getDisplay().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 workingDate.setFocus();
 
@@ -342,8 +344,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 new TextButtonField(targetPackageControl) };
         for (TextButtonField textButtonField : textButtonFields) {
             textButtonField.addChangeListener(new ValueChangeListener() {
+                @Override
                 public void valueChanged(FieldValueChangedEvent e) {
                     getShell().getDisplay().asyncExec(new Runnable() {
+                        @Override
                         public void run() {
                             // run asyn otherwise there may be problem with the focus change
                             // running in the same thread
@@ -399,10 +403,12 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             }
         }
 
+        @Override
         public void focusGained(FocusEvent e) {
             // ignored;
         }
 
+        @Override
         public void focusLost(FocusEvent e) {
             boolean refreshDone = false;
             for (int i = 0; i < textControls.length; i++) {
@@ -412,6 +418,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     refreshDone = true;
                     final int idx = i;
                     getShell().getDisplay().asyncExec(new Runnable() {
+                        @Override
                         public void run() {
                             // run async otherwise there may be problem with the focus change
                             // running in the same thread
@@ -992,6 +999,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void checkStateChanged(CheckStateChangedEvent event) {
         Object element = event.getElement();
         if (element instanceof IProductCmptTypeAssociationReference) {
@@ -1046,6 +1054,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         try {
             isRefreshing = true;
             getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     if (monitor == null) {
                         monitor = new NullProgressMonitor();

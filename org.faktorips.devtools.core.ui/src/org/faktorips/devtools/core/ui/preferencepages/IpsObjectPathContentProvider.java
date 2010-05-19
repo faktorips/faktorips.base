@@ -47,6 +47,7 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
 
         Object[] result = null;
@@ -94,6 +95,7 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         if (element instanceof IIpsObjectPathEntry) {
             return ((IIpsObjectPathEntry)element).getIpsObjectPath();
@@ -104,6 +106,7 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         if (element instanceof IIpsObjectPathEntry) {
             return true;
@@ -114,6 +117,7 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
 
         Object[] returnedElements = null;
@@ -143,12 +147,14 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() { /* nothing to do */
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { /* nothing to do */
     }
 

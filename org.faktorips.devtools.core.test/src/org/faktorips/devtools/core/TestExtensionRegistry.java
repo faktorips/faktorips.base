@@ -47,6 +47,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public boolean addContribution(InputStream is,
             IContributor contributor,
             boolean persist,
@@ -59,6 +60,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public void addRegistryChangeListener(IRegistryChangeListener listener) {
         throw new RuntimeException("Not implemented");
     }
@@ -66,6 +68,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public void addRegistryChangeListener(IRegistryChangeListener listener, String namespace) {
         throw new RuntimeException("Not implemented");
     }
@@ -73,6 +76,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IConfigurationElement[] getConfigurationElementsFor(String extensionPointId) {
         throw new RuntimeException("Not implemented");
     }
@@ -80,6 +84,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IConfigurationElement[] getConfigurationElementsFor(String namespace, String extensionPointName) {
         throw new RuntimeException("Not implemented");
     }
@@ -87,6 +92,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IConfigurationElement[] getConfigurationElementsFor(String namespace,
             String extensionPointName,
             String extensionId) {
@@ -96,6 +102,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IExtension getExtension(String extensionId) {
         throw new RuntimeException("Not implemented");
     }
@@ -103,6 +110,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IExtension getExtension(String extensionPointId, String extensionId) {
         throw new RuntimeException("Not implemented");
     }
@@ -110,6 +118,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IExtension getExtension(String namespace, String extensionPointName, String extensionId) {
         throw new RuntimeException("Not implemented");
     }
@@ -117,6 +126,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IExtensionPoint getExtensionPoint(String extensionPointId) {
         if (extensionPointId == null) {
             return null;
@@ -136,6 +146,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IExtensionPoint getExtensionPoint(String namespace, String extensionPointName) {
         for (IExtensionPoint extensionPoint : extensionPoints) {
             if (extensionPoint.getNamespaceIdentifier().equals(namespace)
@@ -150,6 +161,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IExtensionPoint[] getExtensionPoints() {
         return extensionPoints;
     }
@@ -157,6 +169,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IExtensionPoint[] getExtensionPoints(String namespace) {
         throw new RuntimeException("Not implemented");
     }
@@ -164,6 +177,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IExtension[] getExtensions(String namespace) {
         throw new RuntimeException("Not implemented");
     }
@@ -171,6 +185,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public String[] getNamespaces() {
         throw new RuntimeException("Not implemented");
     }
@@ -178,6 +193,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public boolean removeExtension(IExtension extension, Object token) throws IllegalArgumentException {
         throw new RuntimeException("Not implemented");
     }
@@ -185,6 +201,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public boolean removeExtensionPoint(IExtensionPoint extensionPoint, Object token) throws IllegalArgumentException {
         throw new RuntimeException("Not implemented");
     }
@@ -192,6 +209,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public void removeRegistryChangeListener(IRegistryChangeListener listener) {
         throw new RuntimeException("Not implemented");
     }
@@ -199,31 +217,37 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     /**
      * Throws RuntimeException
      */
+    @Override
     public void stop(Object token) throws IllegalArgumentException {
         throw new RuntimeException("Not implemented");
     }
 
     // @since Eclipse 3.4 (Ganymede)
+    @Override
     public void addListener(IRegistryEventListener arg0) {
         throw new RuntimeException("Not implemented");
     }
 
     // @since Eclipse 3.4 (Ganymede)
+    @Override
     public void addListener(IRegistryEventListener arg0, String arg1) {
         throw new RuntimeException("Not implemented");
     }
 
     // @since Eclipse 3.4 (Ganymede)
+    @Override
     public IExtensionPoint[] getExtensionPoints(IContributor arg0) {
         throw new RuntimeException("Not implemented");
     }
 
     // @since Eclipse 3.4 (Ganymede)
+    @Override
     public IExtension[] getExtensions(IContributor arg0) {
         throw new RuntimeException("Not implemented");
     }
 
     // @since Eclipse 3.4 (Ganymede)
+    @Override
     public void removeListener(IRegistryEventListener arg0) {
         throw new RuntimeException("Not implemented");
     }

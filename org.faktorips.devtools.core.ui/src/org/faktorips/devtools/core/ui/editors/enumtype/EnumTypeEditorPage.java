@@ -79,6 +79,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
 
         enumType = editor.getEnumType();
         changeListener = new ContentsChangeListener() {
+            @Override
             public void contentsChanged(ContentChangeEvent event) {
                 if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
                     updateToolbarActionEnabledStates();

@@ -138,6 +138,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
                 new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
         msgText = uiToolkit.createMultilineText(msgComposite);
         msgText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 updateCharCount();
             }
@@ -179,7 +180,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
         Checkbox specifiedInSrc = uiToolkit.createCheckbox(workArea, Messages.RuleEditDialog_labelSpecifiedInSrc);
         specifiedInSrcField = new CheckboxField(specifiedInSrc);
 
-        new ValidatedAttributesControl((IValidationRule)super.getIpsPart(), workArea);
+        new ValidatedAttributesControl(super.getIpsPart(), workArea);
         return workArea;
     }
 

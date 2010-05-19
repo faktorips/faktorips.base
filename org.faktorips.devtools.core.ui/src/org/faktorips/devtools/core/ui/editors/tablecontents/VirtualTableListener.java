@@ -41,6 +41,7 @@ public class VirtualTableListener implements Listener {
      * Sets the data of as uninitialized tableitem. This method is called when a new tableitem
      * becomes visible in the gui. {@inheritDoc}
      */
+    @Override
     public void handleEvent(Event event) {
         TableItem item = (TableItem)event.item;
         // event.index (since eclipse3.2) not used in favour of backwardscompatability

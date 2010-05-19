@@ -49,6 +49,7 @@ public class TestLogger implements ILog {
     /**
      * Throws RuntimeException
      */
+    @Override
     public void addLogListener(ILogListener listener) {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -56,6 +57,7 @@ public class TestLogger implements ILog {
     /**
      * Throws RuntimeException
      */
+    @Override
     public Bundle getBundle() {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -63,6 +65,7 @@ public class TestLogger implements ILog {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void log(IStatus status) {
         logEntries.add(status);
     }
@@ -70,6 +73,7 @@ public class TestLogger implements ILog {
     /**
      * Throws RuntimeException
      */
+    @Override
     public void removeLogListener(ILogListener listener) {
         throw new RuntimeException("Not implemented yet.");
     }

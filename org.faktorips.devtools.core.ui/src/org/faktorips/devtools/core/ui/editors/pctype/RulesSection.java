@@ -50,7 +50,7 @@ public class RulesSection extends SimpleIpsPartsSection {
      */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new RulesComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);
+        return new RulesComposite(getIpsObject(), parent, toolkit);
     }
 
     /**
@@ -117,14 +117,17 @@ public class RulesSection extends SimpleIpsPartsSection {
         }
 
         private class ContentProvider implements IStructuredContentProvider {
+            @Override
             public Object[] getElements(Object inputElement) {
                 return getPcType().getRules();
             }
 
+            @Override
             public void dispose() {
                 // nothing todo
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing todo
             }

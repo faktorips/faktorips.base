@@ -43,6 +43,7 @@ public class NewTestAttributeWizardPage extends WizardPage {
         this.wizard = wizard;
     }
 
+    @Override
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
@@ -83,6 +84,7 @@ public class NewTestAttributeWizardPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetSelected(SelectionEvent e) {
             wizard.kindOfTestAttrHasChanged();
         }
@@ -90,6 +92,7 @@ public class NewTestAttributeWizardPage extends WizardPage {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }

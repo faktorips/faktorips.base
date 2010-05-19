@@ -33,6 +33,7 @@ public class PreviewTextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control getControl() {
         return control;
     }
@@ -56,6 +57,7 @@ public class PreviewTextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue) {
         // nothing to do - preview only!
     }
@@ -63,6 +65,7 @@ public class PreviewTextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText() {
         return control.getText();
     }
@@ -70,6 +73,7 @@ public class PreviewTextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setText(String newText) {
         // nothing to do - preview only!
     }
@@ -77,6 +81,7 @@ public class PreviewTextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void insertText(String text) {
         // nothing to do - preview only!
     }
@@ -84,6 +89,7 @@ public class PreviewTextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectAll() {
         // nothing to do - preview only!
     }

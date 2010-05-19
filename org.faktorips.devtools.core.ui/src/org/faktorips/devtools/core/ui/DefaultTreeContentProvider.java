@@ -31,6 +31,7 @@ public abstract class DefaultTreeContentProvider implements ITreeContentProvider
      * 
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (!(parentElement instanceof IIpsElement)) {
             return new Object[0];
@@ -48,6 +49,7 @@ public abstract class DefaultTreeContentProvider implements ITreeContentProvider
      * 
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
      */
+    @Override
     public Object getParent(Object element) {
         return ((IIpsElement)element).getParent();
     }
@@ -57,6 +59,7 @@ public abstract class DefaultTreeContentProvider implements ITreeContentProvider
      * 
      * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
      */
+    @Override
     public boolean hasChildren(Object element) {
         try {
             return ((IIpsElement)element).hasChildren();
@@ -71,6 +74,7 @@ public abstract class DefaultTreeContentProvider implements ITreeContentProvider
      * 
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
+    @Override
     public void dispose() {
     }
 

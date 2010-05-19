@@ -88,6 +88,7 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
         setDescriptionItems(descriptionItems);
     }
 
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         /*
          * Return if the changed IIpsSrcFile was not the IIpsSrcFile of the EnumType referenced by

@@ -69,6 +69,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setIpsProject(IIpsProject project) {
         if (project == null) {
             throw new NullPointerException();
@@ -79,6 +80,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
@@ -142,6 +144,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getProductCmptName(String constantPart, String versionId) {
         return constantPart + separator + versionId;
     }
@@ -149,6 +152,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getKindId(String productCmptName) {
         int index = productCmptName.indexOf(separator);
         if (index == -1) {
@@ -161,6 +165,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersionId(String productCmptName) {
         int index = productCmptName.indexOf(separator);
         if (index == -1) {
@@ -173,6 +178,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getNextName(IProductCmpt productCmpt) {
         String part = getKindId(productCmpt.getName());
         return part + separator + getNextVersionId(productCmpt);
@@ -181,6 +187,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validate(String name) {
         MessageList list = new MessageList();
         if (separator.length() > 0) {
@@ -200,6 +207,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validateKindId(String kindId) {
         MessageList list = new MessageList();
         if (StringUtils.isEmpty(kindId)) {
@@ -221,6 +229,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getJavaClassIdentifier(String name) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < name.length(); i++) {
@@ -246,6 +255,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void initFromXml(Element el) {
         Element subEl = XmlUtil.getFirstElement(el);
         separator = subEl.getAttribute("versionIdSeparator"); //$NON-NLS-1$
@@ -278,6 +288,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
      * Appends the data from this abstract strategy to the given element. Should be used by
      * subclasses to add the date.
      */
+    @Override
     public final Element toXml(Document doc) {
         Element el = doc.createElement(XML_TAG_NAME);
         el.setAttribute("id", getExtensionId()); //$NON-NLS-1$
@@ -309,6 +320,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean sameRuntimeId(String runtimeId1, String runtimeId2) {
         return runtimeId1.equals(runtimeId2);
     }
@@ -330,6 +342,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validateRuntimeId(String runtimeId) {
         MessageList result = new MessageList();
         if (StringUtils.isEmpty(runtimeId)) {

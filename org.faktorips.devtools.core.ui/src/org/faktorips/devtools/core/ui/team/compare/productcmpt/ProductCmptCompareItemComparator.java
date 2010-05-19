@@ -41,6 +41,7 @@ public class ProductCmptCompareItemComparator implements Comparator<AbstractComp
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compare(AbstractCompareItem pci1, AbstractCompareItem pci2) {
         IIpsElement element1 = pci1.getIpsElement();
         IIpsElement element2 = pci2.getIpsElement();

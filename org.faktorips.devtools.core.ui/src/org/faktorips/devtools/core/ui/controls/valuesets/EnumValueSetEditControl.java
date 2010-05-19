@@ -94,6 +94,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     /**
      * {@inheritDoc}
      */
+    @Override
     public ValueSetType getValueSetType() {
         return ValueSetType.ENUM;
     }
@@ -101,6 +102,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
         if (valueSet == null) {
             return false;
@@ -114,6 +116,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValueSet getValueSet() {
         return getEnumValueSet();
     }
@@ -121,6 +124,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValueSet(IValueSet newSet, ValueDatatype valueDatatype) {
         setEnumValueSet((IEnumValueSet)newSet);
     }
@@ -236,6 +240,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     }
 
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex != 0) {
                 return null;
@@ -250,6 +255,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             }
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if (columnIndex == 0) {
                 return ""; //$NON-NLS-1$
@@ -260,6 +266,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     private class ContentProvider implements IStructuredContentProvider {
 
+        @Override
         public Object[] getElements(Object inputElement) {
             int len = valueSet.getValues().length;
             IndexValueWrapper[] wrappers = new IndexValueWrapper[len];
@@ -269,9 +276,11 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             return wrappers;
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
 
@@ -279,15 +288,18 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     private class CellModifier implements ICellModifier {
 
+        @Override
         public boolean canModify(Object element, String property) {
             return isDataChangeable();
         }
 
+        @Override
         public Object getValue(Object element, String property) {
             IndexValueWrapper wrapper = (IndexValueWrapper)element;
             return wrapper.getValueName();
         }
 
+        @Override
         public void modify(Object element, String property, Object value) {
             if (element == null) {
                 return;

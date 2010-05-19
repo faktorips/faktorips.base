@@ -47,6 +47,7 @@ public abstract class MessageHoverService {
         viewerControl.addMouseTrackListener(mouseTrackListener);
         viewerControl.addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 dispose();
             }
@@ -94,9 +95,11 @@ public abstract class MessageHoverService {
     protected abstract Rectangle getBoundsAt(Point point);
 
     private class HoverServiceMouseTrackListener implements MouseTrackListener {
+        @Override
         public void mouseEnter(MouseEvent e) {
         }
 
+        @Override
         public void mouseExit(MouseEvent e) {
             if (hover != null) {
                 hover.setVisible(false);
@@ -105,6 +108,7 @@ public abstract class MessageHoverService {
             }
         }
 
+        @Override
         public void mouseHover(MouseEvent e) {
             Point point = new Point(e.x, e.y);
             Object element = getElementAt(point);
@@ -218,6 +222,7 @@ public abstract class MessageHoverService {
             fHoverShell.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
             fHoverShell.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
             fHoverShell.addPaintListener(new PaintListener() {
+                @Override
                 public void paintControl(PaintEvent pe) {
                     pe.gc.drawText(fText, LABEL_MARGIN, LABEL_MARGIN);
 

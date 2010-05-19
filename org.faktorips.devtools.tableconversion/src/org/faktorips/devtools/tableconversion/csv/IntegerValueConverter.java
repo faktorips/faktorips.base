@@ -19,6 +19,7 @@ import org.faktorips.util.message.MessageList;
 
 public class IntegerValueConverter extends NumberValueConverter {
 
+    @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
@@ -29,6 +30,7 @@ public class IntegerValueConverter extends NumberValueConverter {
     /**
      * The only supported type for externalDataValue is String.
      */
+    @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
             String external = (String)externalDataValue;
@@ -49,6 +51,7 @@ public class IntegerValueConverter extends NumberValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Datatype getSupportedDatatype() {
         return Datatype.INTEGER;
     }

@@ -32,6 +32,7 @@ public class OpenNewEnumContentWizardAction extends OpenNewWizardAction {
         return new NewEnumContentWizard();
     }
 
+    @Override
     public void dispose() {
 
     }

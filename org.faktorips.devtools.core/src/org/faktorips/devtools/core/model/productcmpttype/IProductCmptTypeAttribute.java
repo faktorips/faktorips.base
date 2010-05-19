@@ -46,6 +46,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * 
      * @throws CoreException if an error occurs.
      */
+    @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
 
     /**

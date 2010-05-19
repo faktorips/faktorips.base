@@ -68,7 +68,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertNotNull(productCmpt);
 
         IProductCmptTreeStructure structure = productCmpt.getStructure(ipsProject);
-        IProductCmptStructureReference[] toCopy = (IProductCmptStructureReference[])structure.toArray(true);
+        IProductCmptStructureReference[] toCopy = structure.toArray(true);
 
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
@@ -184,7 +184,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     public void testCopyWithNoGeneration() throws Exception {
         product = newProductCmpt(ipsProject, "EmptyProduct");
         IProductCmptTreeStructure structure = product.getStructure(ipsProject);
-        IProductCmptStructureReference[] toCopy = (IProductCmptStructureReference[])structure.toArray(true);
+        IProductCmptStructureReference[] toCopy = structure.toArray(true);
 
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 

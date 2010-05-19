@@ -78,10 +78,12 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         super(builderSet);
     }
 
+    @Override
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION;
     }
 
+    @Override
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)ipsElement;
@@ -356,6 +358,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         return false;
     }
 
+    @Override
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
         if (!(ipsElement instanceof IPolicyCmptTypeAssociation)) {
             return false;

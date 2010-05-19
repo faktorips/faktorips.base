@@ -298,6 +298,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void valueChanged(FieldValueChangedEvent e) {
         if (e.field == sourceFolderField) {
             sourceFolderChanged();

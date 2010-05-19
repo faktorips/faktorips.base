@@ -53,6 +53,7 @@ public interface IRow extends IIpsObjectPart {
      * 
      * @see org.faktorips.devtools.core.model.IIpsElement#getName()
      */
+    @Override
     public String getName();
 
     /**

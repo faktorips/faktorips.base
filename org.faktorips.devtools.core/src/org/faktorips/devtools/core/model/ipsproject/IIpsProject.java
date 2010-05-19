@@ -134,6 +134,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the corresponding platform project.
      */
+    @Override
     public IProject getProject();
 
     /**

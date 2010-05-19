@@ -150,6 +150,7 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getValidationResultSeverity() throws CoreException {
         return 0;
     }
@@ -157,6 +158,7 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValid() throws CoreException {
         return false;
     }
@@ -164,6 +166,7 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         MessageList messageList = new MessageList();
         validate(messageList, ipsProject);
@@ -232,6 +235,7 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITestParameter getTestParameter() {
         return getTestPolicyCmptTypeParam();
     }

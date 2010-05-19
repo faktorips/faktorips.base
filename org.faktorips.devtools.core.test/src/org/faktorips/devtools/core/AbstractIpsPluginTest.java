@@ -124,6 +124,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar());
 
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("AbstractIpsPlugin.setUp(): Start deleting projects.");
@@ -213,6 +214,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      */
     protected IIpsProject newIpsProject(final String name) throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 IProject project = newPlatformProject(name);
                 addJavaCapabilities(project);
@@ -232,6 +234,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      */
     protected IProject newPlatformProject(final String name) throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 internalNewPlatformProject(name);
             }
@@ -419,6 +422,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         final String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
                 if (!pack.exists()) {
@@ -1052,6 +1056,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void contentsChanged(ContentChangeEvent event) {
             lastEvent = event;
         }

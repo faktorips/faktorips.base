@@ -106,6 +106,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
 
         Collections.sort(foundTypes, new Comparator<Datatype>() {
 
+            @Override
             public int compare(Datatype o1, Datatype o2) {
                 Datatype d1 = o1;
                 Datatype d2 = o2;

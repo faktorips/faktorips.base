@@ -115,6 +115,7 @@ public abstract class BaseIpsObject extends IpsObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         for (IpsObjectPartCollection<?> container : partCollections) {
             IIpsObjectPart newPart = container.newPart(partType);

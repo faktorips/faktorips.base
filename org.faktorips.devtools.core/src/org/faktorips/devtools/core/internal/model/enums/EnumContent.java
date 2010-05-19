@@ -70,10 +70,12 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
                 EnumAttributeReference.class, IEnumAttributeReference.class, IEnumAttributeReference.XML_TAG);
     }
 
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.ENUM_CONTENT;
     }
 
+    @Override
     public IEnumType findEnumType(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -84,6 +86,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return null;
     }
 
+    @Override
     public void setEnumType(String enumType) throws CoreException {
         ArgumentCheck.notNull(enumType);
 
@@ -146,6 +149,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         element.setAttribute(PROPERTY_ENUM_TYPE, enumType);
     }
 
+    @Override
     public String getEnumType() {
         return enumType;
     }
@@ -261,6 +265,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
     }
 
+    @Override
     public List<IEnumAttributeReference> getEnumAttributeReferences() {
         List<IEnumAttributeReference> referencesList = new ArrayList<IEnumAttributeReference>();
         IIpsObjectPart[] parts = enumAttributeReferences.getParts();
@@ -270,6 +275,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return referencesList;
     }
 
+    @Override
     public IEnumAttributeReference getEnumAttributeReference(String name) {
         ArgumentCheck.notNull(name);
         for (IEnumAttributeReference reference : getEnumAttributeReferences()) {
@@ -280,10 +286,12 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return null;
     }
 
+    @Override
     public int getEnumAttributeReferencesCount() {
         return enumAttributeReferences.size();
     }
 
+    @Override
     public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, getEnumType());
     }
@@ -293,15 +301,18 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * <p>
      * Returns <tt>false</tt>.
      */
+    @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
         // TODO AW: What shall we do here?
         return false;
     }
 
+    @Override
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         // TODO AW: What shall we do here?
     }
 
+    @Override
     public String getMetaClass() {
         return getEnumType();
     }
@@ -312,10 +323,12 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * Returns <tt>true</tt> if the referenced base <tt>IEnumType</tt> can be found and if this
      * <tt>IEnumContent</tt> is consistent with this base <tt>IEnumType</tt>.
      */
+    @Override
     public boolean isCapableOfContainingValues() throws CoreException {
         return (findEnumType(getIpsProject()) == null) ? false : !(isFixToModelRequired());
     }
 
+    @Override
     public boolean isFixToModelRequired() throws CoreException {
         MessageList validationList = new MessageList();
         validateThis(validationList, getIpsProject());

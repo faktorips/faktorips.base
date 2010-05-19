@@ -85,6 +85,7 @@ public abstract class TableFormatConfigurationCompositeFactory implements ValueC
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         Iterator<ValueChangeListener> iterator = listeners.iterator();
         while (iterator.hasNext()) {

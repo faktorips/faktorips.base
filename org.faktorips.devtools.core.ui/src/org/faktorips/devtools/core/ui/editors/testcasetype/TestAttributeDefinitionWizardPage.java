@@ -102,6 +102,7 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
         Composite c = uiToolkit.createLabelEditColumnComposite(parent);

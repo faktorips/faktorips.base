@@ -276,6 +276,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         // workspace! The workspace is an IDE concept!
         final MultiStatus status = new MultiStatus(IpsPlugin.PLUGIN_ID, 1, Messages.ProblemsSavingWorkspace, null);
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
+            @Override
             public void run(IProgressMonitor monitor) {
                 try {
                     status.merge(ResourcesPlugin.getWorkspace().save(true, monitor));

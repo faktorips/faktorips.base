@@ -70,6 +70,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         super(parent, name);
     }
 
+    @Override
     public IResource getCorrespondingResource() {
         String path = name.replace('.', IPath.SEPARATOR);
         IFolder folder = (IFolder)getParent().getCorrespondingResource();
@@ -80,11 +81,13 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * {@inheritDoc} IpsPackageFragments are always returned, whether they are output locations of
      * the javaproject corresponding to this packagefragments IpsProject or not.
      */
+    @Override
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
         List<IIpsPackageFragment> list = getChildIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
+    @Override
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
         IpsModel model = (IpsModel)getIpsModel();
         IIpsPackageFragmentSortDefinition sortDef = model.getSortDefinition(this);
@@ -121,6 +124,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     /**
      * @return Handle to a sort order file. The folder/file doesn't need to exist!
      */
+    @Override
     public IFile getSortOrderFile() {
         IFolder folder = null;
 
@@ -133,6 +137,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return folder.getFile(new Path(IIpsPackageFragment.SORT_ORDER_FILE_NAME));
     }
 
+    @Override
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
 
         IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
@@ -166,6 +171,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return list;
     }
 
+    @Override
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsPackageFragment.setSortDefinition: pack=" + this); //$NON-NLS-1$
@@ -202,6 +208,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
+    @Override
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();
         List<IResource> childResources = new ArrayList<IResource>();
@@ -235,6 +242,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return false;
     }
 
+    @Override
     public IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] members = folder.members();
@@ -257,6 +265,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return shrinked;
     }
 
+    @Override
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
             throws CoreException {
 
@@ -295,6 +304,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return ipsSrcFile;
     }
 
+    @Override
     public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
             throws CoreException {
         try {
@@ -305,6 +315,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
+    @Override
     public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
             throws CoreException {
         String filename = type.getFileName(ipsObjectName);
@@ -322,6 +333,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
+    @Override
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
             GregorianCalendar date,
@@ -533,6 +545,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
+    @Override
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
         if (getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg()) {
@@ -542,6 +555,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return getRoot().createPackageFragment(isDefaultPackage() ? name : (getName() + "." + name), true, null); //$NON-NLS-1$
     }
 
+    @Override
     public boolean hasChildIpsPackageFragments() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] content = folder.members();

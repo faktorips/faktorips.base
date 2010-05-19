@@ -50,6 +50,7 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITableContentUsage getTableContentUsage() {
         return tableContentUsage;
     }
@@ -57,6 +58,7 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObject getWrappedIpsObject() {
         try {
             if (tableContentUsage == null) {

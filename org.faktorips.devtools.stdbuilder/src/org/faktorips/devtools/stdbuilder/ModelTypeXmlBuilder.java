@@ -60,6 +60,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         super(type, builderSet, kind);
     }
 
+    @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         StandardBuilderSet stdBuilderSet = (StandardBuilderSet)getBuilderSet();
         IType type = (IType)ipsSrcFile.getIpsObject();

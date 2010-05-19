@@ -124,6 +124,7 @@ public class EnumImportExportAction extends IpsAction {
             return false;
         }
         Runnable run = new Runnable() {
+            @Override
             public void run() {
                 try {
                     enumIpsObject.getIpsSrcFile().save(true, null);
@@ -147,16 +148,20 @@ public class EnumImportExportAction extends IpsAction {
             this.valueContainer = valueContainer;
         }
 
+        @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public ISelection getSelection() {
             return new StructuredSelection(valueContainer);
         }
 
+        @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public void setSelection(ISelection selection) {
         }
     }

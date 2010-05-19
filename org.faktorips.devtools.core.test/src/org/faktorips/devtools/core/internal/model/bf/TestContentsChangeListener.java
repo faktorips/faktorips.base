@@ -33,6 +33,7 @@ class TestContentsChangeListener implements ContentsChangeListener {
         return eventTypes;
     }
 
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         ipsParts.add(event.getPart());
         eventTypes.add(event.getEventType());

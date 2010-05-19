@@ -92,6 +92,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         valueChanged(oldName, name);
     }
 
+    @Override
     public void setDatatype(String datatype) {
         ArgumentCheck.notNull(datatype);
 
@@ -306,10 +307,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
+    @Override
     public boolean isInherited() {
         return inherited;
     }
 
+    @Override
     public void setInherited(boolean isInherited) {
         boolean oldIsInherited = inherited;
         inherited = isInherited;
@@ -323,14 +326,17 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
+    @Override
     public IEnumType getEnumType() {
         return (IEnumType)getParent();
     }
 
+    @Override
     public String getDatatype() {
         return datatype;
     }
 
+    @Override
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -344,6 +350,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         return ipsProject.findValueDatatype(datatype);
     }
 
+    @Override
     public IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
         if (!(inherited)) {
@@ -367,10 +374,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         return inheritedAttributeCopies;
     }
 
+    @Override
     public boolean isUnique() {
         return unique;
     }
 
+    @Override
     public void setUnique(boolean uniqueIdentifier) {
         boolean oldIsUniqueIdentifier = unique;
         unique = uniqueIdentifier;
@@ -404,6 +413,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         valueChanged(oldIsUniqueIdentifier, uniqueIdentifier);
     }
 
+    @Override
     public Boolean findIsUnique(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -418,26 +428,31 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
+    @Override
     public boolean isIdentifier() {
         return identifier;
     }
 
+    @Override
     public boolean isUsedAsNameInFaktorIpsUi() {
         return usedAsNameInFaktorIpsUi;
     }
 
+    @Override
     public void setIdentifier(boolean usedAsIdInFaktorIpsUi) {
         boolean oldUsedAsIdInFaktorIpsUi = identifier;
         identifier = usedAsIdInFaktorIpsUi;
         valueChanged(oldUsedAsIdInFaktorIpsUi, usedAsIdInFaktorIpsUi);
     }
 
+    @Override
     public void setUsedAsNameInFaktorIpsUi(boolean usedAsNameInFaktorIpsUi) {
         boolean oldUsedAsNameInFaktorIpsUi = this.usedAsNameInFaktorIpsUi;
         this.usedAsNameInFaktorIpsUi = usedAsNameInFaktorIpsUi;
         valueChanged(oldUsedAsNameInFaktorIpsUi, usedAsNameInFaktorIpsUi);
     }
 
+    @Override
     public Boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -452,6 +467,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
+    @Override
     public Boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -466,6 +482,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
+    @Override
     public boolean isLiteralNameDefaultValueProvider() {
         IEnumLiteralNameAttribute literalNameAttribute = getEnumType().getEnumLiteralNameAttribute();
         return (literalNameAttribute == null) ? false : literalNameAttribute.getDefaultValueProviderAttribute().equals(
@@ -509,24 +526,29 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     private class IdentifierIndicationProvider implements IndicationProvider {
 
+        @Override
         public Message message() {
             String text = Messages.EnumAttribute_DuplicateUsedAsIdInFaktorIpsUi;
             return new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_ID_IN_FAKTOR_IPS_UI, text, Message.ERROR,
                     EnumAttribute.this, PROPERTY_IDENTIFIER);
         }
 
+        @Override
         public boolean modelValue(IEnumAttribute enumAttribute) {
             return enumAttribute.isIdentifier();
         }
 
+        @Override
         public boolean uiValue() {
             return identifier;
         }
 
+        @Override
         public String getPropertyName() {
             return PROPERTY_IDENTIFIER;
         }
 
+        @Override
         public String getPropertyDisplayName() {
             return Messages.EnumAttribute_PropertyDisplayName_Identifier;
         }
@@ -535,24 +557,29 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     private class DisplayNameIndicationProvider implements IndicationProvider {
 
+        @Override
         public Message message() {
             String text = Messages.EnumAttribute_DuplicateUsedAsNameInFaktorIpsUi;
             return new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_NAME_IN_FAKTOR_IPS_UI, text, Message.ERROR,
                     EnumAttribute.this, PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
         }
 
+        @Override
         public boolean modelValue(IEnumAttribute enumAttribute) {
             return enumAttribute.isUsedAsNameInFaktorIpsUi();
         }
 
+        @Override
         public boolean uiValue() {
             return usedAsNameInFaktorIpsUi;
         }
 
+        @Override
         public String getPropertyName() {
             return PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI;
         }
 
+        @Override
         public String getPropertyDisplayName() {
             return Messages.EnumAttribute_PropertyDisplayNameDisplayName;
         }

@@ -143,6 +143,7 @@ public class TwoColumnComposite extends Composite implements ModifyListener, Sel
      * 
      * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
      */
+    @Override
     public void modifyText(ModifyEvent e) {
         if (modifyListener != null) {
             modifyListener.modifyText(e);
@@ -154,6 +155,7 @@ public class TwoColumnComposite extends Composite implements ModifyListener, Sel
      * 
      * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
      */
+    @Override
     public void widgetSelected(SelectionEvent e) {
         if (selectionListener != null) {
             selectionListener.widgetSelected(e);
@@ -165,6 +167,7 @@ public class TwoColumnComposite extends Composite implements ModifyListener, Sel
      * 
      * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
      */
+    @Override
     public void widgetDefaultSelected(SelectionEvent e) {
         if (selectionListener != null) {
             selectionListener.widgetDefaultSelected(e);

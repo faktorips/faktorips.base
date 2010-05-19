@@ -74,7 +74,7 @@ public abstract class AbstractDatatype implements Datatype {
      * Compares the two type's alphabetically by their name.
      */
     public int compareTo(Datatype o) {
-        Datatype type = (Datatype)o;
+        Datatype type = o;
         return getQualifiedName().compareTo(type.getQualifiedName());
     }
 

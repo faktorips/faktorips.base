@@ -78,6 +78,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isMultipleContentsAllowed() {
         return type == TableStructureType.MULTIPLE_CONTENTS;
     }
@@ -85,6 +86,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setTableStructureType(TableStructureType type) {
         if (type == null) {
             return;
@@ -98,6 +100,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public TableStructureType getTableStructureType() {
         return type;
     }
@@ -105,6 +108,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IColumn[] getColumns() {
         IColumn[] c = new IColumn[columns.size()];
         columns.toArray(c);
@@ -114,6 +118,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IColumn getColumn(String name) {
         for (IColumn column : columns) {
             if (column.getName().equals(name)) {
@@ -126,6 +131,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IColumn getColumn(int index) {
         return columns.get(index);
     }
@@ -133,6 +139,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNumOfColumns() {
         return columns.size();
     }
@@ -140,6 +147,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IColumn newColumn() {
         IColumn newColumn = newColumnInternal(getNextPartId());
         objectHasChanged();
@@ -149,6 +157,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] moveColumns(int[] indexes, boolean up) {
         ListElementMover<IColumn> mover = new ListElementMover<IColumn>(columns);
         int[] result = mover.move(indexes, up);
@@ -169,6 +178,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getColumnIndex(IColumn column) {
         for (int i = 0; i < columns.size(); i++) {
             if (columns.get(i) == column) {
@@ -181,6 +191,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IColumnRange[] getRanges() {
         IColumnRange[] c = new IColumnRange[ranges.size()];
         ranges.toArray(c);
@@ -190,6 +201,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IColumnRange getRange(String name) {
         for (IColumnRange range : ranges) {
             if (range.getName().equals(name)) {
@@ -202,6 +214,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNumOfRanges() {
         return ranges.size();
     }
@@ -209,6 +222,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IColumnRange newRange() {
         IColumnRange newRange = newColumnRangeInternal(getNextPartId());
         objectHasChanged();
@@ -218,6 +232,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] moveRanges(int[] indexes, boolean up) {
         ListElementMover<IColumnRange> mover = new ListElementMover<IColumnRange>(ranges);
         int[] result = mover.move(indexes, up);
@@ -238,6 +253,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IUniqueKey[] getUniqueKeys() {
         IUniqueKey[] keys = new IUniqueKey[uniqueKeys.size()];
         uniqueKeys.toArray(keys);
@@ -247,6 +263,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IUniqueKey getUniqueKey(String name) {
         for (IUniqueKey key : uniqueKeys) {
             if (key.getName().equals(name)) {
@@ -259,6 +276,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNumOfUniqueKeys() {
         return uniqueKeys.size();
     }
@@ -266,6 +284,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IUniqueKey newUniqueKey() {
         IUniqueKey newUniqueKey = newUniqueKeyInternal(getNextPartId());
         objectHasChanged();
@@ -275,6 +294,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] moveUniqueKeys(int[] indexes, boolean up) {
         ListElementMover<IUniqueKey> mover = new ListElementMover<IUniqueKey>(uniqueKeys);
         int[] result = mover.move(indexes, up);
@@ -295,6 +315,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IForeignKey[] getForeignKeys() {
         IForeignKey[] keys = new IForeignKey[foreignKeys.size()];
         foreignKeys.toArray(keys);
@@ -304,6 +325,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IForeignKey getForeignKey(String name) {
         for (IForeignKey key : foreignKeys) {
             if (key.getName().equals(name)) {
@@ -316,6 +338,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNumOfForeignKeys() {
         return foreignKeys.size();
     }
@@ -323,6 +346,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IForeignKey newForeignKey() {
         IForeignKey newForeignKey = newForeignKeyInternal(getNextPartId());
         objectHasChanged();
@@ -332,6 +356,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] moveForeignKeys(int[] indexes, boolean up) {
         ListElementMover<IForeignKey> mover = new ListElementMover<IForeignKey>(foreignKeys);
         int[] result = mover.move(indexes, up);
@@ -352,6 +377,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TABLE_STRUCTURE;
     }
@@ -359,6 +385,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasRange(String name) {
         return getRange(name) != null;
     }
@@ -366,6 +393,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasColumn(String name) {
         return getColumn(name) != null;
     }
@@ -373,6 +401,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITableAccessFunction[] getAccessFunctions() {
         if (getUniqueKeys().length == 0) {
             return new ITableAccessFunction[0];
@@ -413,6 +442,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IColumn[] getColumnsNotInKey(IKey key) {
         ArgumentCheck.notNull(key);
         List<IColumn> columnsNotInKey = new ArrayList<IColumn>(columns);
@@ -529,6 +559,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         if (partType.equals(IColumn.class)) {
             return newColumnInternal(getNextPartId());
@@ -545,6 +576,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("deprecation")
     public boolean isModelEnumType() {
         // Ok to use the deprecated constant here as the method itself is deprecated.
@@ -561,6 +593,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         }
     }
 
+    @Override
     public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();

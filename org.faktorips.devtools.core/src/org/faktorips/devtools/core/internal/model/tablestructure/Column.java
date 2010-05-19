@@ -50,14 +50,17 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
         objectHasChanged();
     }
 
+    @Override
     public String getAccessParameterName() {
         return name;
     }
 
+    @Override
     public String getDatatype() {
         return datatype;
     }
 
+    @Override
     public void setDatatype(String newDatatype) {
         datatype = newDatatype;
         objectHasChanged();
@@ -103,10 +106,12 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
         element.setAttribute("datatype", datatype); //$NON-NLS-1$
     }
 
+    @Override
     public IColumn[] getColumns() {
         return new IColumn[] { this };
     }
 
+    @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findValueDatatype(datatype);
     }

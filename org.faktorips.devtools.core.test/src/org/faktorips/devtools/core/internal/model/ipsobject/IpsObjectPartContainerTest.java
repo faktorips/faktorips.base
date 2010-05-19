@@ -227,6 +227,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         final StringBuffer buf = new StringBuffer();
         ILogListener listener = new ILogListener() {
 
+            @Override
             public void logging(IStatus status, String plugin) {
                 buf.append(status.getMessage());
             }

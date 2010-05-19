@@ -183,6 +183,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
      * Creates this parts' context menu in the given MenuManager dynamically. The context menu and
      * its elements depend on the current selection and the <tt>ModelExplorerConfiguration</tt>.
      */
+    @Override
     public void menuAboutToShow(IMenuManager manager) {
         if (!(treeViewer.getSelection() instanceof IStructuredSelection)) {
             return;

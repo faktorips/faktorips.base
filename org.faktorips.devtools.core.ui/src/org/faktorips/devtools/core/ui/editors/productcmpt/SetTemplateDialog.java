@@ -61,6 +61,7 @@ public class SetTemplateDialog extends EditDialog {
         template = new ProductCmptType2RefControl(productCmpt.getIpsProject(), workArea, uiToolkit, true);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 if (StringUtils.isEmpty(template.getText())) {
                     getButton(OK).setEnabled(false);

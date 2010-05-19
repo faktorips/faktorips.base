@@ -28,6 +28,7 @@ public class IpsApplication implements IPlatformRunnable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object run(Object args) throws Exception {
         Display display = PlatformUI.createDisplay();
         Integer retValue = new Integer(PlatformUI.createAndRunWorkbench(display, new IpsWorkbenchAdvisor()));

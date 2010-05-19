@@ -102,6 +102,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * created. This range is colored dependant on the token and the font is set to bold.
      * {@inheritDoc}
      */
+    @Override
     public void lineGetStyle(LineStyleEvent event) {
         String lineText = event.lineText;
         int lineOffset = event.lineOffset;

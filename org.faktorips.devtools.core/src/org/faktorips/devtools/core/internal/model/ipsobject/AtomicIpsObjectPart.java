@@ -44,6 +44,7 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IIpsObjectPart newPart(Class<?> partType) {
         // Here we IllegalArgumentException (and not an UnsupportedOperationException) as this is
         // specified in the interface.

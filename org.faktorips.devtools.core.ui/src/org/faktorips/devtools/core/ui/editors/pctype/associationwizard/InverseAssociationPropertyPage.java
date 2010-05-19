@@ -84,6 +84,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         setPageComplete(true);
     }
 
+    @Override
     public void createControl(Composite parent) {
         pageComposite = wizard.createPageComposite(parent);
 
@@ -104,6 +105,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
                 Messages.InverseAssociationPropertyPage_labelExistingAssociation);
         existingRelCombo = toolkit.createCombo(top);
         existingRelCombo.addListener(SWT.Modify, new Listener() {
+            @Override
             public void handleEvent(Event ev) {
                 existingAssociationSelectionChanged();
             }
@@ -305,6 +307,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getProperties() {
         return visibleProperties;
     }
@@ -315,6 +318,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
      * @return <code>false</code> if no inverse association should be created or no existing
      *         association exists otherwise <code>true</code>.
      */
+    @Override
     public boolean isPageVisible() {
         if (wizard.isNoneInverseAssociation()) {
             return false;
@@ -347,6 +351,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefaultFocus() {
         updateDefaultTargetRoleSingular();
         if (!targetRoleSingularText.isDisposed()) {

@@ -105,6 +105,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
      * @see IHoverInformationPresenter#updatePresentation(Display display, String, TextPresentation,
      * int, int)
      */
+    @Override
     public String updatePresentation(Display display,
             String hoverInfo,
             TextPresentation presentation,
@@ -119,6 +120,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
      * 
      * @since 3.2
      */
+    @Override
     public String updatePresentation(Drawable drawable,
             String hoverInfo,
             TextPresentation presentation,

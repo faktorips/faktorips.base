@@ -132,12 +132,15 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         selectedElementLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         selectedElementLink.addMouseListener(new MouseListener() {
 
+            @Override
             public void mouseDoubleClick(MouseEvent e) {
             }
 
+            @Override
             public void mouseDown(MouseEvent e) {
             }
 
+            @Override
             public void mouseUp(MouseEvent e) {
                 if (contentProvider.getActualElement() != null) {
                     IpsUIPlugin.getDefault().openEditor(contentProvider.getActualElement());
@@ -151,6 +154,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         tableViewer.setLabelProvider(decoratedLabelProvider);
         tableViewer.setContentProvider(contentProvider);
         tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 OpenEditorAction action = new OpenEditorAction(tableViewer);
                 action.openEditor();
@@ -285,9 +289,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         // nothing to do.
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         display.syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 updateView();
             }
@@ -360,10 +366,12 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     private class InstanceDropListener extends IpsElementDropListener {
 
+        @Override
         public void dragEnter(DropTargetEvent event) {
             dropAccept(event);
         }
 
+        @Override
         public void drop(DropTargetEvent event) {
             Object[] transferred = super.getTransferedElements(event.currentDataType);
             if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
@@ -375,6 +383,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             }
         }
 
+        @Override
         public void dropAccept(DropTargetEvent event) {
             event.detail = DND.DROP_NONE;
             Object[] transferred = super.getTransferedElements(event.currentDataType);
@@ -485,10 +494,12 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         protected void removePart(IIpsObjectPart part) {
         }
 
+        @Override
         public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
             return new IIpsSrcFile[] { metaObject.getIpsSrcFile() };
         }
 
+        @Override
         public IpsObjectType getIpsObjectType() {
             return null;
         }
@@ -498,6 +509,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             return new IDependency[0];
         }
 
+        @Override
         public IIpsObjectPart newPart(Class<?> partType) {
             return null;
         }

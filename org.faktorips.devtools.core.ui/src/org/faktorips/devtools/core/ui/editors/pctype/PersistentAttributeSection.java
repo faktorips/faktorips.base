@@ -139,6 +139,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         }
 
         private class PersistentAttributeContentProvider implements IStructuredContentProvider {
+            @Override
             public Object[] getElements(Object inputElement) {
                 IPolicyCmptTypeAttribute[] pcAttributes = ((IPolicyCmptType)getIpsObject())
                         .getPolicyCmptTypeAttributes();
@@ -156,16 +157,19 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 return persistableAttributes.toArray();
             }
 
+            @Override
             public void dispose() {
                 // nothing to do
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing to do
             }
         }
 
         private class PersistentAttributeLabelProvider extends LabelProvider implements ITableLabelProvider {
+            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 IPersistentAttributeInfo persistenceAttributeInfo = ((IPolicyCmptTypeAttribute)element)
                         .getPersistenceAttributeInfo();
@@ -204,6 +208,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 return null;
             }
 
+            @Override
             public String getColumnText(Object element, int columnIndex) {
                 IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)element;
                 ValueDatatype valueDatatype = null;

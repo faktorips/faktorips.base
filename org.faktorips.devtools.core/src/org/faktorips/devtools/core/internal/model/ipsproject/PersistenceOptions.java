@@ -77,46 +77,56 @@ public class PersistenceOptions implements IPersistenceOptions {
         }
     }
 
+    @Override
     public int getMaxColumnNameLenght() {
         return maxColumnNameLength;
     }
 
+    @Override
     public int getMaxTableNameLength() {
         return maxTableNameLength;
     }
 
+    @Override
     public ITableColumnNamingStrategy getTableColumnNamingStrategy() {
         return tableColumnNamingStrategy;
     }
 
+    @Override
     public ITableNamingStrategy getTableNamingStrategy() {
         return tableNamingStrategy;
     }
 
+    @Override
     public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy) {
         ArgumentCheck.notNull(newStrategy);
         tableColumnNamingStrategy = newStrategy;
     }
 
+    @Override
     public void setTableNamingStrategy(ITableNamingStrategy newStrategy) {
         ArgumentCheck.notNull(newStrategy);
         tableNamingStrategy = newStrategy;
     }
 
+    @Override
     public void setMaxColumnNameLength(int length) {
         ArgumentCheck.isTrue(length > 0);
         maxColumnNameLength = length;
     }
 
+    @Override
     public void setMaxTableNameLength(int length) {
         ArgumentCheck.isTrue(length > 0);
         maxTableNameLength = length;
     }
 
+    @Override
     public boolean isAllowLazyFetchForSingleValuedAssociations() {
         return allowLazyFetchForSingleValuedAssociations;
     }
 
+    @Override
     public void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations) {
         this.allowLazyFetchForSingleValuedAssociations = allowLazyFetchForSingleValuedAssociations;
     }

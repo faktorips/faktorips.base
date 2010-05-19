@@ -42,10 +42,12 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
         return getDatatype() + ":" + getName(); //$NON-NLS-1$
     }
 
+    @Override
     public String getDatatype() {
         return datatype;
     }
 
+    @Override
     public void setDatatype(String datatype) {
         ArgumentCheck.notNull(datatype, this);
         String old = this.datatype;
@@ -53,6 +55,7 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
         valueChanged(old, datatype);
     }
 
+    @Override
     public Datatype findDatatype() throws CoreException {
         return getIpsProject().findDatatype(datatype);
     }

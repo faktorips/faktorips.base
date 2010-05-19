@@ -88,6 +88,7 @@ public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChan
         assertNotNull(msgList.getMessageByCode(IIpsObject.MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD));
     }
 
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;
     }

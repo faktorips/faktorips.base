@@ -36,6 +36,7 @@ public class ReferenceDeleteAction extends Action {
         this.viewer = viewer;
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
                     IStructuredSelection selection = (IStructuredSelection)event.getSelection();

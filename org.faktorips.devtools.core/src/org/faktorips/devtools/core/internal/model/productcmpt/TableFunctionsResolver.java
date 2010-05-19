@@ -42,6 +42,7 @@ public class TableFunctionsResolver implements FunctionResolver {
         this.project = project;
     }
 
+    @Override
     public FlFunction[] getFunctions() {
         List<FlFunction> functions = new ArrayList<FlFunction>();
         try {

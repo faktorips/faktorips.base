@@ -384,6 +384,7 @@ public class SrcFolderComposite extends Composite {
                     String tocPath = srcFolderEntry.getBasePackageRelativeTocPath();
                     IInputValidator inputValidator = new IInputValidator() {
 
+                        @Override
                         public String isValid(String newText) {
                             if (newText == null || newText.length() < 1) {
                                 return Messages.SrcFolderComposite_filename_invalid_validator;
@@ -446,6 +447,7 @@ public class SrcFolderComposite extends Composite {
 
                         IInputValidator validator = new IInputValidator() {
 
+                            @Override
                             public String isValid(String folderName) {
                                 if (folderName == null || folderName.length() == 0) {
                                     return Messages.SrcFolderComposite_enterFolderName_validator;
@@ -498,6 +500,7 @@ public class SrcFolderComposite extends Composite {
             treeViewer.setInput(ipsObjectPath);
         } else {
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     treeViewer.setInput(ipsObjectPath);
                 }
@@ -571,6 +574,7 @@ public class SrcFolderComposite extends Composite {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             updateWidgetEnabledStates();
         }
@@ -578,6 +582,7 @@ public class SrcFolderComposite extends Composite {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (e.getSource() == addSrcFolderButton) {
                 addSrcFolders();
@@ -594,12 +599,14 @@ public class SrcFolderComposite extends Composite {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void valueChanged(FieldValueChangedEvent e) {
 
             if (e.field == mergableSrcFolderField) {

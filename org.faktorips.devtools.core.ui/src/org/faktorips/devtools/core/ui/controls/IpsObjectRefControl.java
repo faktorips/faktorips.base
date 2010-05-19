@@ -78,6 +78,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(getShell(), dialogTitle, context);
         dialog.setMessage(dialogMessage);
         BusyIndicator.showWhile(getDisplay(), new Runnable() {
+            @Override
             public void run() {
                 try {
                     context.setElements(getIpsSrcFiles());

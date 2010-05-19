@@ -40,6 +40,7 @@ public abstract class IpsElementDropListener implements DropTargetListener {
      * <p>
      * Empty default implementation.
      */
+    @Override
     public void dragLeave(DropTargetEvent event) {
         // Nothing done as default.
     }
@@ -49,6 +50,7 @@ public abstract class IpsElementDropListener implements DropTargetListener {
      * <p>
      * Empty default implementation.
      */
+    @Override
     public void dragOperationChanged(DropTargetEvent event) {
         // Nothing done as default.
     }
@@ -58,6 +60,7 @@ public abstract class IpsElementDropListener implements DropTargetListener {
      * <p>
      * Empty default implementation.
      */
+    @Override
     public void dragOver(DropTargetEvent event) {
         // Nothing done as default.
     }

@@ -137,7 +137,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public Message getMessage(int index) {
-        return (Message)messages.get(index);
+        return messages.get(index);
     }
 
     /**

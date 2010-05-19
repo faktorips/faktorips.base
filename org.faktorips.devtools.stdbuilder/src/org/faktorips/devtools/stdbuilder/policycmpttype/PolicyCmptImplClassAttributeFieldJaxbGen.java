@@ -29,6 +29,7 @@ public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractAnnotation
         super(builderSet);
     }
 
+    @Override
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)ipsElement;
@@ -49,10 +50,12 @@ public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractAnnotation
         return builder.getFragment();
     }
 
+    @Override
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD;
     }
 
+    @Override
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
         return true;
     }

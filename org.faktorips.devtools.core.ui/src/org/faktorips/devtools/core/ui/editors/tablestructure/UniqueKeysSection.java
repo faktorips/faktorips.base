@@ -98,14 +98,17 @@ public class UniqueKeysSection extends SimpleIpsPartsSection {
         }
 
         private class ContentProvider implements IStructuredContentProvider {
+            @Override
             public Object[] getElements(Object inputElement) {
                 return getTableStructure().getUniqueKeys();
             }
 
+            @Override
             public void dispose() {
                 // nothing todo
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing todo
             }

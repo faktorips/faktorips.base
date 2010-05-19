@@ -174,6 +174,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return "TocFileBuilder"; //$NON-NLS-1$
     }
@@ -181,6 +182,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         IpsObjectType type = ipsSrcFile.getIpsObjectType();
         return IpsObjectType.PRODUCT_CMPT.equals(type) || IpsObjectType.TABLE_CONTENTS.equals(type)
@@ -342,6 +344,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IIpsObject object = null;
         try {
@@ -577,6 +580,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         TableOfContent toc = getToc(ipsSrcFile.getIpsPackageFragment().getRoot());
         toc.removeEntry(ipsSrcFile.getQualifiedNameType());

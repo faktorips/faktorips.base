@@ -151,6 +151,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      * 
      * {@inheritDoc}
      */
+    @Override
     public int compareTo(KeyValueRange keyValueRange) {
         return compareTo(getKeyValue(), keyValueRange.getKeyValue());
     }

@@ -79,6 +79,7 @@ public abstract class DeferredStructuredContentProvider extends Observable imple
      */
     protected abstract Object[] collectElements(Object inputElement, IProgressMonitor monitor);
 
+    @Override
     public final Object[] getElements(Object inputElement) {
         if (collector.getState() != Job.NONE) {
             return getWaitingElements();
@@ -91,6 +92,7 @@ public abstract class DeferredStructuredContentProvider extends Observable imple
         }
     }
 
+    @Override
     public final void inputChanged(final Viewer viewer, Object oldInput, final Object newInput) {
         if (newInput == null || viewer == null || viewer.getControl().isDisposed()) {
             elements = new Object[0];
@@ -150,6 +152,7 @@ public abstract class DeferredStructuredContentProvider extends Observable imple
         public void done(IJobChangeEvent event) {
             if (viewerToRefresh != null && !viewerToRefresh.getControl().isDisposed()) {
                 viewerToRefresh.getControl().getDisplay().asyncExec(new Runnable() {
+                    @Override
                     public void run() {
                         viewerToRefresh.refresh();
                         setChanged();
@@ -160,6 +163,7 @@ public abstract class DeferredStructuredContentProvider extends Observable imple
         }
     }
 
+    @Override
     public void dispose() {
         elements = null;
         deleteObservers();

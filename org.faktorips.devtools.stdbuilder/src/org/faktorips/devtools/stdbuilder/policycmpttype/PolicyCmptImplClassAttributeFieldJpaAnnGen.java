@@ -51,6 +51,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         super(builderSet);
     }
 
+    @Override
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
 
@@ -156,10 +157,12 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         }
     }
 
+    @Override
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD;
     }
 
+    @Override
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
         if (!(ipsElement instanceof IPolicyCmptTypeAttribute)) {
             return false;

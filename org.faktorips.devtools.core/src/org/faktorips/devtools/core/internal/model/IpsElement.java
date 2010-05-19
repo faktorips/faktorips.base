@@ -107,6 +107,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return super.getAdapter(adapterType);
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -115,10 +116,12 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         this.name = name;
     }
 
+    @Override
     public final IIpsElement getParent() {
         return parent;
     }
 
+    @Override
     public boolean exists() {
         if (!getParent().exists()) {
             return false;
@@ -133,6 +136,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return getCorrespondingResource().exists();
     }
 
+    @Override
     public IResource getEnclosingResource() {
         IResource resource = getCorrespondingResource();
         if (resource != null) {
@@ -141,10 +145,12 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return getParent().getEnclosingResource();
     }
 
+    @Override
     public IIpsModel getIpsModel() {
         return IpsPlugin.getDefault().getIpsModel();
     }
 
+    @Override
     public IIpsProject getIpsProject() {
         if (getParent() == null) {
             return null;
@@ -152,10 +158,12 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return getParent().getIpsProject();
     }
 
+    @Override
     public IIpsElement[] getChildren() throws CoreException {
         return NO_CHILDREN;
     }
 
+    @Override
     public boolean hasChildren() throws CoreException {
         return getChildren().length > 0;
     }
@@ -184,6 +192,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
         return getParent().toString() + "/" + getName(); //$NON-NLS-1$
     }
 
+    @Override
     public boolean isContainedInArchive() {
         return getParent().isContainedInArchive();
     }
@@ -193,6 +202,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
      * <p>
      * The default implementation always returns <tt>null</tt>.
      */
+    @Override
     public ProcessorBasedRefactoring getRenameRefactoring() {
         return null;
     }
@@ -202,10 +212,12 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
      * <p>
      * The default implementation always returns <tt>null</tt>.
      */
+    @Override
     public ProcessorBasedRefactoring getMoveRefactoring() {
         return null;
     }
 
+    @Override
     public ProcessorBasedRefactoring getPullUpRefactoring() {
         return null;
     }

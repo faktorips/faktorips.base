@@ -23,6 +23,7 @@ public class TableContentsContentProvider implements IStructuredContentProvider 
     public TableContentsContentProvider() {
     }
 
+    @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof ITableContents) {
             ITableContents table = (ITableContents)inputElement;
@@ -34,12 +35,14 @@ public class TableContentsContentProvider implements IStructuredContentProvider 
     /**
      * Empty implementation. {@inheritDoc}
      */
+    @Override
     public void dispose() {
     }
 
     /**
      * Empty implementation. {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
     }
 

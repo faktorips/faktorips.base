@@ -55,24 +55,29 @@ public class ForeignKey extends Key implements IForeignKey {
         return buffer.toString();
     }
 
+    @Override
     public String getReferencedTableStructure() {
         return refTableStructure;
     }
 
+    @Override
     public void setReferencedTableStructure(String tableStructure) {
         String oldValue = refTableStructure;
         refTableStructure = tableStructure;
         valueChanged(oldValue, refTableStructure);
     }
 
+    @Override
     public ITableStructure findReferencedTableStructure(IIpsProject ipsProject) throws CoreException {
         return (ITableStructure)ipsProject.findIpsObject(IpsObjectType.TABLE_STRUCTURE, refTableStructure);
     }
 
+    @Override
     public String getReferencedUniqueKey() {
         return refUniqueKey;
     }
 
+    @Override
     public void setReferencedUniqueKey(String uniqueKey) {
         String oldValue = refUniqueKey;
         refUniqueKey = uniqueKey;

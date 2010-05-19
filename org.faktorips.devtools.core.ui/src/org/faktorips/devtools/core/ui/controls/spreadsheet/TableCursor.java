@@ -47,6 +47,7 @@ public class TableCursor extends Canvas {
         tableControl = control;
         table = control.getTable();
         Listener listener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 switch (event.type) {
                     case SWT.Dispose:
@@ -70,6 +71,7 @@ public class TableCursor extends Canvas {
         addListener(SWT.Traverse, listener);
 
         tableListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 switch (event.type) {
                     case SWT.MouseDown:
@@ -85,6 +87,7 @@ public class TableCursor extends Canvas {
         table.addListener(SWT.MouseDown, tableListener);
 
         resizeListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 resize();
             }
@@ -167,6 +170,7 @@ public class TableCursor extends Canvas {
     void dispose(Event event) {
         Display display = getDisplay();
         display.asyncExec(new Runnable() {
+            @Override
             public void run() {
                 if (table.isDisposed()) {
                     return;

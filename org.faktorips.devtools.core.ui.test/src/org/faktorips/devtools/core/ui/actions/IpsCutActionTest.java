@@ -81,16 +81,20 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
 
     private class TestSelectionProvider implements ISelectionProvider {
 
+        @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public ISelection getSelection() {
             return new StructuredSelection(attribute);
         }
 
+        @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public void setSelection(ISelection selection) {
         }
     }

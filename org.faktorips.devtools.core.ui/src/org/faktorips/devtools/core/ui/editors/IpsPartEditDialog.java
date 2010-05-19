@@ -62,10 +62,12 @@ public abstract class IpsPartEditDialog extends EditDialog {
         super.createButtonsForButtonBar(parent);
         super.getButton(Window.CANCEL).addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 handleAbortion();
             }

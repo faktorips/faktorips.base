@@ -38,6 +38,7 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
         super();
     }
 
+    @Override
     public ITableStructure getTableStructure() {
         return (ITableStructure)getParent();
     }
@@ -52,32 +53,39 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
         return getTableStructure().getName() + '.' + getAccessedColumn();
     }
 
+    @Override
     public String getAccessedColumn() {
         return accessedColumn;
     }
 
+    @Override
     public void setAccessedColumn(String columnName) {
         accessedColumn = columnName;
     }
 
+    @Override
     public IColumn findAccessedColumn() {
         return getTableStructure().getColumn(accessedColumn);
     }
 
+    @Override
     public String getType() {
         return type;
     }
 
+    @Override
     public void setType(String newType) {
         type = newType;
     }
 
+    @Override
     public void setArgTypes(String[] types) {
         // make a defensive copy.
         argTypes = new String[types.length];
         System.arraycopy(types, 0, argTypes, 0, types.length);
     }
 
+    @Override
     public String[] getArgTypes() {
         String[] types = new String[argTypes.length];
         System.arraycopy(argTypes, 0, types, 0, argTypes.length);

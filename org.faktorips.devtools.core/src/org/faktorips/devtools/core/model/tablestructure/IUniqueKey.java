@@ -50,6 +50,7 @@ public interface IUniqueKey extends IKey {
      * 
      * @see org.faktorips.devtools.core.model.IIpsElement#getName()
      */
+    @Override
     public String getName();
 
     /**

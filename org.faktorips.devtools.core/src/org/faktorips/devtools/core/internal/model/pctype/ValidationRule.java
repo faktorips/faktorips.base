@@ -91,10 +91,12 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         valueChanged(oldName, newName);
     }
 
+    @Override
     public String[] getBusinessFunctions() {
         return functions.toArray(new String[functions.size()]);
     }
 
+    @Override
     public void setBusinessFunctions(String[] functionNames) {
         functions.clear();
         for (String functionName : functionNames) {
@@ -103,25 +105,30 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         objectHasChanged();
     }
 
+    @Override
     public int getNumOfBusinessFunctions() {
         return functions.size();
     }
 
+    @Override
     public void addBusinessFunction(String functionName) {
         ArgumentCheck.notNull(functionName);
         functions.add(functionName);
         objectHasChanged();
     }
 
+    @Override
     public void removeBusinessFunction(int index) {
         functions.remove(index);
         objectHasChanged();
     }
 
+    @Override
     public String getBusinessFunction(int index) {
         return functions.get(index);
     }
 
+    @Override
     public void setBusinessFunctions(int index, String functionName) {
         ArgumentCheck.notNull(functionName);
         String oldName = getBusinessFunction(index);
@@ -129,10 +136,12 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         valueChanged(oldName, functionName);
     }
 
+    @Override
     public boolean isAppliedForAllBusinessFunctions() {
         return appliedForAllBusinessFunction;
     }
 
+    @Override
     public void setAppliedForAllBusinessFunctions(boolean newValue) {
         boolean oldValue = appliedForAllBusinessFunction;
         appliedForAllBusinessFunction = newValue;
@@ -243,30 +252,36 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         }
     }
 
+    @Override
     public String getMessageText() {
         return msgText;
     }
 
+    @Override
     public void setMessageText(String newText) {
         String oldText = msgText;
         msgText = newText;
         valueChanged(oldText, msgText);
     }
 
+    @Override
     public String getMessageCode() {
         return msgCode;
     }
 
+    @Override
     public void setMessageCode(String newCode) {
         String oldCode = msgCode;
         msgCode = newCode;
         valueChanged(oldCode, msgCode);
     }
 
+    @Override
     public MessageSeverity getMessageSeverity() {
         return msgSeverity;
     }
 
+    @Override
     public void setMessageSeverity(MessageSeverity newSeverity) {
         MessageSeverity oldSeverity = msgSeverity;
         msgSeverity = newSeverity;
@@ -334,6 +349,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         }
     }
 
+    @Override
     public String addValidatedAttribute(String attributeName) {
         ArgumentCheck.notNull(this, attributeName);
         validatedAttributes.add(attributeName);
@@ -341,39 +357,47 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         return attributeName;
     }
 
+    @Override
     public String[] getValidatedAttributes() {
         return validatedAttributes.toArray(new String[validatedAttributes.size()]);
     }
 
+    @Override
     public void removeValidatedAttribute(int index) {
         validatedAttributes.remove(index);
         objectHasChanged();
     }
 
+    @Override
     public String getValidatedAttributeAt(int index) {
         return validatedAttributes.get(index);
     }
 
+    @Override
     public void setValidatedAttributeAt(int index, String attributeName) {
         String oldValue = getValidatedAttributeAt(index);
         validatedAttributes.set(index, attributeName);
         valueChanged(oldValue, attributeName);
     }
 
+    @Override
     public boolean isValidatedAttrSpecifiedInSrc() {
         return validatedAttrSpecifiedInSrc;
     }
 
+    @Override
     public void setValidatedAttrSpecifiedInSrc(boolean validatedAttrSpecifiedInSrc) {
         boolean oldValue = this.validatedAttrSpecifiedInSrc;
         this.validatedAttrSpecifiedInSrc = validatedAttrSpecifiedInSrc;
         valueChanged(oldValue, validatedAttrSpecifiedInSrc);
     }
 
+    @Override
     public boolean isCheckValueAgainstValueSetRule() {
         return checkValueAgainstValueSetRule;
     }
 
+    @Override
     public void setCheckValueAgainstValueSetRule(boolean isAttributeValueValidationRule) {
         boolean oldValue = isCheckValueAgainstValueSetRule();
         checkValueAgainstValueSetRule = isAttributeValueValidationRule;

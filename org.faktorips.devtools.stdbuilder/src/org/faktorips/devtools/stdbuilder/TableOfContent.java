@@ -111,6 +111,7 @@ public class TableOfContent {
     public Set<ITocEntryObject> getEntries() {
         Comparator<ITocEntryObject> c = new Comparator<ITocEntryObject>() {
 
+            @Override
             public int compare(ITocEntryObject o1, ITocEntryObject o2) {
                 return getQualifiedNameType(o1).compareTo(getQualifiedNameType(o2));
             }

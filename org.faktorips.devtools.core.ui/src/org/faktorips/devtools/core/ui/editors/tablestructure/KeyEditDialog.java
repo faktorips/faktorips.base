@@ -131,6 +131,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
             tableStructureRefField = new TextButtonField(refControl);
             tableStructureRefField.addChangeListener(new ValueChangeListener() {
 
+                @Override
                 public void valueChanged(FieldValueChangedEvent e) {
                     // following line is a hack to make sure the model is
                     // uptodate. The uicontroller gets informated after this
@@ -165,6 +166,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
             uniqueKeyRefField = new TextField(ukRefControl);
             uniqueKeyRefField.addChangeListener(new ValueChangeListener() {
 
+                @Override
                 public void valueChanged(FieldValueChangedEvent e) {
                     // see comment above
                     ((IForeignKey)key).setReferencedUniqueKey(uniqueKeyRefField.getText());
@@ -219,19 +221,23 @@ public class KeyEditDialog extends IpsPartEditDialog {
         };
         itemsViewer.setContentProvider(new IStructuredContentProvider() {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return key.getKeyItemNames();
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
 
         });
         itemsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonEnabledState();
             }
@@ -248,10 +254,12 @@ public class KeyEditDialog extends IpsPartEditDialog {
         addButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
         addButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 addSelectedItems();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -261,10 +269,12 @@ public class KeyEditDialog extends IpsPartEditDialog {
         removeButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
         removeButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 removeSelectedItems();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -276,10 +286,12 @@ public class KeyEditDialog extends IpsPartEditDialog {
         upButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowUp.gif", true)); //$NON-NLS-1$
         upButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 moveSelectedItems(true);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -289,10 +301,12 @@ public class KeyEditDialog extends IpsPartEditDialog {
         downButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown.gif", true)); //$NON-NLS-1$
         downButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 moveSelectedItems(false);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -319,6 +333,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
         candidatesViewer = new TableViewer(table);
         candidatesViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonEnabledState();
             }
@@ -327,13 +342,16 @@ public class KeyEditDialog extends IpsPartEditDialog {
         candidatesViewer.setLabelProvider(new DefaultLabelProvider());
         candidatesViewer.setContentProvider(new IStructuredContentProvider() {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return key.getItemCandidates();
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
 

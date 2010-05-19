@@ -538,6 +538,7 @@ public class IpsPasteAction extends IpsAction {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String isValid(String newText) {
             IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
             IResource test = null;

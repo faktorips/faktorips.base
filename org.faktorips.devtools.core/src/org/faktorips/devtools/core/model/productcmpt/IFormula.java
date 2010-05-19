@@ -63,6 +63,7 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
     /**
      * Returns the generation this formula belongs to.
      */
+    @Override
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**
@@ -70,6 +71,7 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
      * 
      * @see #getFormulaSignature()
      */
+    @Override
     public String getName();
 
     /**

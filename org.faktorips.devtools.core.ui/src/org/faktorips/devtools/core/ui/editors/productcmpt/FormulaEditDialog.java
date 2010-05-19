@@ -264,6 +264,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      */
     private void updateUiPreviewFormulaResult() throws CoreException {
         formula.getIpsProject().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 try {
                     String[] parameterIdentifiers = formula.getParameterIdentifiersUsedInFormula(formula

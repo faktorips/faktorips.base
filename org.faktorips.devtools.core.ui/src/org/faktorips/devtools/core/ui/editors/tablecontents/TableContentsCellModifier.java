@@ -40,6 +40,7 @@ public class TableContentsCellModifier implements ICellModifier {
     /**
      * Returns the page's data changeable property. {@inheritDoc}
      */
+    @Override
     public boolean canModify(Object element, String property) {
         return page.isDataChangeable();
     }
@@ -47,6 +48,7 @@ public class TableContentsCellModifier implements ICellModifier {
     /**
      * Returns the value of the property of the given element. May return null. {@inheritDoc}
      */
+    @Override
     public String getValue(Object element, String property) {
         int columnIndex = getColumnIndexForProperty(property);
         if (columnIndex >= 0) {
@@ -61,6 +63,7 @@ public class TableContentsCellModifier implements ICellModifier {
     /**
      * Refreshes the given element in the table after the modification. {@inheritDoc}
      */
+    @Override
     public void modify(Object element, String property, Object value) {
         int columnIndex = getColumnIndexForProperty(property);
         if (columnIndex >= 0) {

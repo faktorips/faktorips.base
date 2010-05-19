@@ -35,6 +35,7 @@ public class BooleanExtensionPropertyDefinition extends ExtensionPropertyDefinit
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValueFromXml(Element valueElement) {
         CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
         if (cdata == null) {
@@ -46,6 +47,7 @@ public class BooleanExtensionPropertyDefinition extends ExtensionPropertyDefinit
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValueFromString(String value) {
         return value;
     }

@@ -400,6 +400,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     public void testGetNonIpsResources() throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 IProject project = newPlatformProject("TestJavaProject");
                 javaProject = addJavaCapabilities(project);
@@ -441,6 +442,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         IWorkspaceRunnable action = new IWorkspaceRunnable() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 typeA.setDescription("blabla");
                 typeA.setSupertype(typeB.getQualifiedName());
@@ -490,18 +492,20 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         List<IIpsSrcFile> changedFiles = new ArrayList<IIpsSrcFile>();
         ContentChangeEvent lastEvent;
 
+        @Override
         public void contentsChanged(ContentChangeEvent event) {
             changedFiles.add(event.getIpsSrcFile());
             lastEvent = event;
         }
 
-    };
+    }
 
     private static class TestModStatusListener implements IModificationStatusChangeListener {
 
         List<IIpsSrcFile> modifiedFiles = new ArrayList<IIpsSrcFile>();
         ModificationStatusChangedEvent lastEvent;
 
+        @Override
         public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
             lastEvent = event;
             modifiedFiles.add(event.getIpsSrcFile());

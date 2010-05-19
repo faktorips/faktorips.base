@@ -46,8 +46,10 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         super(parent, id);
     }
 
+    @Override
     public abstract boolean isRoot();
 
+    @Override
     public abstract ITestParameter getRootParameter();
 
     @Override
@@ -68,6 +70,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
@@ -89,6 +92,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isInputOrCombinedParameter() {
         return type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.COMBINED);
     }
@@ -96,6 +100,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isExpextedResultOrCombinedParameter() {
         return type.equals(TestParameterType.EXPECTED_RESULT) || type.equals(TestParameterType.COMBINED);
     }
@@ -103,6 +108,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isCombinedParameter() {
         return type.equals(TestParameterType.COMBINED);
     }
@@ -110,6 +116,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     /**
      * {@inheritDoc}
      */
+    @Override
     public TestParameterType getTestParameterType() {
         return type;
     }
@@ -117,6 +124,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract void setTestParameterType(TestParameterType testParameterType);
 
     /**

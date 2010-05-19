@@ -50,6 +50,7 @@ public abstract class ViewerButtonComposite extends Composite {
         viewer = createViewer(this, toolkit);
         viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonEnabledStates();
             }

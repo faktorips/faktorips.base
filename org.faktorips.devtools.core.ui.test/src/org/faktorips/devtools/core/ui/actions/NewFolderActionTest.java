@@ -38,7 +38,7 @@ public class NewFolderActionTest extends AbstractIpsPluginTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        proj = (IpsProject)newIpsProject("TestProject");
+        proj = newIpsProject("TestProject");
 
         // Content of proj
         root = proj.getIpsPackageFragmentRoots()[0];

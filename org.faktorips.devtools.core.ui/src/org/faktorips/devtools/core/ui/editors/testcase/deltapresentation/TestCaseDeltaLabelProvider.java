@@ -53,6 +53,7 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeListener(ILabelProviderListener listener) {
         listeners.remove(listener);
     }
@@ -60,6 +61,7 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;
     }
@@ -67,6 +69,7 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         listeners = null;
         resourceManager.dispose();
@@ -75,6 +78,7 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addListener(ILabelProviderListener listener) {
         if (listeners.contains(listener)) {
             return;
@@ -85,6 +89,7 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText(Object element) {
         if (element instanceof TestCaseDeltaType) {
             return ((TestCaseDeltaType)element).getName();
@@ -103,6 +108,7 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Image getImage(Object element) {
         ImageDescriptor descriptor = ImageDescriptor.getMissingImageDescriptor();
         if (element instanceof TestCaseDeltaType) {

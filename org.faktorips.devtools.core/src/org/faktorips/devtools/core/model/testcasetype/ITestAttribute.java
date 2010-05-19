@@ -109,6 +109,7 @@ public interface ITestAttribute extends IIpsObjectPart {
     /**
      * Returns the attribute's name. {@inheritDoc}
      */
+    @Override
     public String getName();
 
     /**

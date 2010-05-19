@@ -74,6 +74,7 @@ public class MigrationPage extends WizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         overview = new Composite(parent, SWT.NONE);
         overview.setLayout(new GridLayout(1, true));

@@ -132,6 +132,7 @@ public interface IPolicyCmptType extends IType {
      * Returns the qualified name of the type's supertype. Returns an empty string if this type has
      * no supertype.
      */
+    @Override
     public String getSupertype();
 
     /**
@@ -139,6 +140,7 @@ public interface IPolicyCmptType extends IType {
      * method also returns <code>true</code> if the type refers to a supertype but the supertype
      * does not exist.
      */
+    @Override
     public boolean hasSupertype();
 
     /**
@@ -146,11 +148,13 @@ public interface IPolicyCmptType extends IType {
      * 
      * @throws IllegalArgumentException if newSupertype is null.
      */
+    @Override
     public void setSupertype(String newSupertype);
 
     /**
      * Sets the type's abstract property.
      */
+    @Override
     public void setAbstract(boolean newValue);
 
     /**
@@ -214,6 +218,7 @@ public interface IPolicyCmptType extends IType {
     /**
      * Returns the number of attributes.
      */
+    @Override
     public int getNumOfAttributes();
 
     /**
@@ -229,6 +234,7 @@ public interface IPolicyCmptType extends IType {
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify an attribute.
      */
+    @Override
     public int[] moveAttributes(int[] indexes, boolean up);
 
     /**
@@ -308,6 +314,7 @@ public interface IPolicyCmptType extends IType {
     /**
      * Returns the number of relations.
      */
+    @Override
     public int getNumOfAssociations();
 
     /**
@@ -323,6 +330,7 @@ public interface IPolicyCmptType extends IType {
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a relation.
      */
+    @Override
     public int[] moveAssociations(int[] indexes, boolean up);
 
     /**

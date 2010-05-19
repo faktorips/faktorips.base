@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 public class IpsObjectPartDeleteActionHandler extends AbstractHandler {
 
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
         if (selection instanceof IStructuredSelection) {

@@ -236,12 +236,14 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         };
 
         fTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonsEnabledState();
             }
         });
 
         table.addTraverseListener(new TraverseListener() {
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_RETURN && e.stateMask == SWT.NONE) {
                     editColumnOrNextPossible(0);
@@ -530,6 +532,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
                 fContentAssistant = assistant;
                 // workaround for bugs 53629, 58777:
                 text.addModifyListener(new ModifyListener() {
+                    @Override
                     public void modifyText(ModifyEvent e) {
                         if (fSaveNextModification) {
                             fSaveNextModification = false;
@@ -558,6 +561,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             final UnfocusableTextCellEditor editor = editors[i];
             // support tabbing between columns while editing:
             editor.getControl().addTraverseListener(new TraverseListener() {
+                @Override
                 public void keyTraversed(TraverseEvent e) {
                     switch (e.detail) {
                         case SWT.TRAVERSE_TAB_NEXT:
@@ -637,15 +641,18 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
                  * [refactoring] CellEditors validate on keystroke by updating model on
                  * editorValueChanged(..)
                  */
+                @Override
                 public void applyEditorValue() {
                     // default behavior is OK
                 }
 
+                @Override
                 public void cancelEditor() {
                     // must reset model to original value:
                     editor.fireModifyEvent(editor.getOriginalValue(), editorColumn);
                 }
 
+                @Override
                 public void editorValueChanged(boolean oldValidState, boolean newValidState) {
                     editor.fireModifyEvent(editor.getValue(), editorColumn);
                 }
@@ -672,20 +679,24 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
     }
 
     private class ParameterInfoContentProvider implements IStructuredContentProvider {
+        @Override
         public Object[] getElements(Object inputElement) {
             return paramContainer.getParameters();
         }
 
+        @Override
         public void dispose() {
             // do nothing
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // do nothing
         }
     }
 
     private class ParameterInfoLabelProvider extends LabelProvider implements ITableLabelProvider {
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex != MESSAGE_PROP) {
                 return null;
@@ -700,6 +711,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             }
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             IParameter info = (IParameter)element;
             if (columnIndex == MESSAGE_PROP) {
@@ -716,6 +728,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
     }
 
     private class ParametersCellModifier implements ICellModifier {
+        @Override
         public boolean canModify(Object element, String property) {
             if (!isDataChangeable()) {
                 return false;
@@ -728,6 +741,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             return false;
         }
 
+        @Override
         public Object getValue(Object element, String property) {
             IParameter param = (IParameter)element;
             if (property.equals(PROPERTIES[TYPE_PROP])) {
@@ -738,6 +752,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             return null;
         }
 
+        @Override
         public void modify(Object element, String property, Object value) {
             if (element instanceof TableItem) {
                 element = ((TableItem)element).getData();
@@ -762,6 +777,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
 
@@ -771,6 +787,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }

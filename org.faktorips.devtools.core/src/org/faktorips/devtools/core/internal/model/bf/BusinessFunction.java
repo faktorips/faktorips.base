@@ -57,16 +57,19 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 IControlFlow.XML_TAG);
     }
 
+    @Override
     public Dimension getParameterRectangleSize() {
         return parameterRectangleSize;
     }
 
+    @Override
     public void setParameterRectangleSize(Dimension parameterRectangleSize) {
         Dimension old = this.parameterRectangleSize;
         this.parameterRectangleSize = parameterRectangleSize;
         valueChanged(old, parameterRectangleSize);
     }
 
+    @Override
     public IBFElement getStart() {
         for (IIpsObjectPart part : simpleElements.getParts()) {
             IBFElement element = (IBFElement)part;
@@ -77,6 +80,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
+    @Override
     public IBFElement getEnd() {
         for (IIpsObjectPart part : simpleElements.getParts()) {
             IBFElement element = (IBFElement)part;
@@ -87,10 +91,12 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
+    @Override
     public Point getParameterRectangleLocation() {
         return parameterRectangleLocation;
     }
 
+    @Override
     public List<IParameterBFE> getParameterBFEs() {
         ArrayList<IParameterBFE> returnValue = new ArrayList<IParameterBFE>();
         for (IIpsObjectPart parameterBFE : parameters.getParts()) {
@@ -99,6 +105,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return returnValue;
     }
 
+    @Override
     public IParameterBFE getParameterBFE(String name) {
         for (IIpsObjectPart parameterBFE : parameters.getParts()) {
             if (parameterBFE.getName().equals(name)) {
@@ -108,6 +115,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
+    @Override
     public IBFElement getBFElement(String id) {
         if (id == null) {
             return null;
@@ -125,10 +133,12 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return element;
     }
 
+    @Override
     public IControlFlow newControlFlow() {
         return (IControlFlow)controlFlows.newPart();
     }
 
+    @Override
     public IControlFlow getControlFlow(String id) {
         IIpsObjectPart[] parts = controlFlows.getParts();
         for (IIpsObjectPart ipsObjectPart : parts) {
@@ -139,6 +149,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<IControlFlow> getControlFlows() {
         IIpsObjectPart[] controlFlowParts = controlFlows.getParts();
@@ -147,48 +158,57 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return controlFlowList;
     }
 
+    @Override
     public IBFElement newEnd(Point location) {
         BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.END);
         element.setSize(new Dimension(30, 30));
         return element;
     }
 
+    @Override
     public IBFElement newMerge(Point location) {
         return simpleElements.newBFElement(location, BFElementType.MERGE);
     }
 
+    @Override
     public IBFElement newStart(Point location) {
         BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.START);
         element.setSize(new Dimension(30, 30));
         return element;
     }
 
+    @Override
     public IActionBFE newOpaqueAction(Point location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_INLINE);
         return element;
     }
 
+    @Override
     public IActionBFE newMethodCallAction(Point location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_METHODCALL);
         return element;
     }
 
+    @Override
     public IActionBFE newBusinessFunctionCallAction(Point location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_BUSINESSFUNCTIONCALL);
         return element;
     }
 
+    @Override
     public IDecisionBFE newDecision(Point location) {
         DecisionBFE element = (DecisionBFE)decisions.newBFElement(location, BFElementType.DECISION);
         return element;
     }
 
     // TODO testing
+    @Override
     public IDecisionBFE newMethodCallDecision(Point location) {
         DecisionBFE element = (DecisionBFE)decisions.newBFElement(location, BFElementType.DECISION_METHODCALL);
         return element;
     }
 
+    @Override
     public IParameterBFE newParameter() {
         ParameterBFE element = (ParameterBFE)parameters.newBFElement(null, BFElementType.PARAMETER);
         return element;
@@ -203,6 +223,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
      * decisions.getParts(); nodeList.addAll((Collection)Arrays.asList(bFParts)); return nodeList; }
      */
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElements() {
         List<IBFElement> nodeList = new ArrayList<IBFElement>();
@@ -217,6 +238,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return nodeList;
     }
 
+    @Override
     public IpsObjectType getIpsObjectType() {
         return BusinessFunctionIpsObjectType.getInstance();
     }
@@ -492,6 +514,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElementsWithoutParameters() {
 
@@ -516,6 +539,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         public IBFElement newBFElement(final Point location, final BFElementType type) {
             IpsObjectPartInitializer<BFElement> initializer = new IpsObjectPartInitializer<BFElement>() {
 
+                @Override
                 public void initialize(BFElement part) {
                     part.location = location;
                     part.type = type;

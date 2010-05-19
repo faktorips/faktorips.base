@@ -33,10 +33,12 @@ public class CamelCaseToUpperUnderscoreColumnNamingStrategy extends CamelCaseToU
 
     public final static String EXTENSION_ID = "org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy";
 
+    @Override
     public String getTableColumnName(String baseName) {
         return getTableName(baseName);
     }
 
+    @Override
     public String getTableColumnName(String baseName, int maxLength) {
         return getTableName(baseName, maxLength);
     }

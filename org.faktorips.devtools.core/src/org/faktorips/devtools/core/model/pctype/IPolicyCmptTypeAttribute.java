@@ -132,6 +132,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     /**
      * Returns <code>true</code> if this attribute is derived, otherwise <code>false</code>.
      */
+    @Override
     public boolean isDerived();
 
     /**
@@ -181,6 +182,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * 
      * @throws CoreException if an error occurs.
      */
+    @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
 
     /**

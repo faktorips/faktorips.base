@@ -57,6 +57,7 @@ public class TestExtension implements IExtension {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IConfigurationElement[] getConfigurationElements() throws InvalidRegistryObjectException {
         return elements;
     }
@@ -64,6 +65,7 @@ public class TestExtension implements IExtension {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IContributor getContributor() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -71,6 +73,7 @@ public class TestExtension implements IExtension {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IPluginDescriptor getDeclaringPluginDescriptor() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -78,6 +81,7 @@ public class TestExtension implements IExtension {
     /**
      * Throws RuntimeException
      */
+    @Override
     public String getExtensionPointUniqueIdentifier() throws InvalidRegistryObjectException {
         return namespaceIdentifier + "." + simpleIdentifier;
     }
@@ -85,6 +89,7 @@ public class TestExtension implements IExtension {
     /**
      * Returns an empty label.
      */
+    @Override
     public String getLabel() throws InvalidRegistryObjectException {
         return "";
     }
@@ -92,6 +97,7 @@ public class TestExtension implements IExtension {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getNamespace() throws InvalidRegistryObjectException {
         return getNamespaceIdentifier();
     }
@@ -99,6 +105,7 @@ public class TestExtension implements IExtension {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getNamespaceIdentifier() throws InvalidRegistryObjectException {
         return namespaceIdentifier;
     }
@@ -106,6 +113,7 @@ public class TestExtension implements IExtension {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getSimpleIdentifier() throws InvalidRegistryObjectException {
         return simpleIdentifier;
     }
@@ -113,6 +121,7 @@ public class TestExtension implements IExtension {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getUniqueIdentifier() throws InvalidRegistryObjectException {
         StringBuffer buf = new StringBuffer();
         buf.append(namespaceIdentifier);
@@ -127,6 +136,7 @@ public class TestExtension implements IExtension {
     /**
      * Throws RuntimeException
      */
+    @Override
     public boolean isValid() {
         throw new RuntimeException("Not implemented yet.");
     }

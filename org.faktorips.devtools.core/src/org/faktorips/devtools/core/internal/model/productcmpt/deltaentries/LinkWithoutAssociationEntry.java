@@ -40,6 +40,7 @@ public class LinkWithoutAssociationEntry extends AbstractDeltaEntry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void fix() {
         link.delete();
     }
@@ -47,6 +48,7 @@ public class LinkWithoutAssociationEntry extends AbstractDeltaEntry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DeltaType getDeltaType() {
         return DeltaType.LINK_WITHOUT_ASSOCIATION;
     }
@@ -54,6 +56,7 @@ public class LinkWithoutAssociationEntry extends AbstractDeltaEntry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
         return getDeltaType() + ": " + link.getAssociation(); //$NON-NLS-1$
     }

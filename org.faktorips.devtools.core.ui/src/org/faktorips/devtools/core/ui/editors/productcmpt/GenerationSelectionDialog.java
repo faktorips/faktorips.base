@@ -202,6 +202,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         createChoiceControls(selectPane);
 
         getShell().getDisplay().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 validate();
             }
@@ -437,6 +438,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             this.data = data;
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             // get the current selected button, without using the event
             // because maybe the event doesn't match the visible selection
@@ -458,6 +460,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             throw new RuntimeException("Radiobutton has no selection.");
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
@@ -473,18 +476,22 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             this.button = button;
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             handleButtonStates();
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             handleButtonStates();
         }
 
+        @Override
         public void focusGained(FocusEvent e) {
             handleButtonStates();
         }
 
+        @Override
         public void focusLost(FocusEvent e) {
         }
 
@@ -508,14 +515,17 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             this.toSelect = toSelect;
         }
 
+        @Override
         public void mouseDoubleClick(MouseEvent e) {
             // nothing to do
         }
 
+        @Override
         public void mouseDown(MouseEvent e) {
             // nothing to do
         }
 
+        @Override
         public void mouseUp(MouseEvent e) {
             for (Button btn : allButtons.values()) {
                 btn.setSelection(false);

@@ -96,6 +96,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
     /**
      * The source object
      */
+    @Override
     public QualifiedNameType getSource() {
         return source;
     }
@@ -110,6 +111,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
     /**
      * The target object
      */
+    @Override
     public Object getTarget() {
         return target;
     }
@@ -117,6 +119,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DependencyType getType() {
         return dependencyType;
     }

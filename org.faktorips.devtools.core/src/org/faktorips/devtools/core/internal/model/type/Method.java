@@ -64,6 +64,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         super(parent, id);
     }
 
+    @Override
     public IType getType() {
         return (IType)getParent();
     }
@@ -75,48 +76,58 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         valueChanged(oldName, name);
     }
 
+    @Override
     public String getDatatype() {
         return datatype;
     }
 
+    @Override
     public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findDatatype(datatype);
     }
 
+    @Override
     public void setDatatype(String newDatatype) {
         String oldDatatype = datatype;
         datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype);
     }
 
+    @Override
     public boolean isAbstract() {
         return abstractFlag;
     }
 
+    @Override
     public void setAbstract(boolean newValue) {
         boolean oldValue = abstractFlag;
         abstractFlag = newValue;
         valueChanged(oldValue, newValue);
     }
 
+    @Override
     public Modifier getModifier() {
         return modifier;
     }
 
+    @Override
     public int getJavaModifier() {
         return modifier.getJavaModifier() | (abstractFlag ? java.lang.reflect.Modifier.ABSTRACT : 0);
     }
 
+    @Override
     public void setModifier(Modifier newModifier) {
         Modifier oldModifier = modifier;
         modifier = newModifier;
         valueChanged(oldModifier, newModifier);
     }
 
+    @Override
     public IParameter newParameter() {
         return parameters.newPart();
     }
 
+    @Override
     public IParameter newParameter(String datatype, String name) {
         IParameter param = newParameter();
         param.setDatatype(datatype);
@@ -124,14 +135,17 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return param;
     }
 
+    @Override
     public int getNumOfParameters() {
         return parameters.size();
     }
 
+    @Override
     public IParameter[] getParameters() {
         return parameters.toArray(new IParameter[parameters.size()]);
     }
 
+    @Override
     public String[] getParameterNames() {
         String[] names = new String[parameters.size()];
         for (int i = 0; i < names.length; i++) {
@@ -140,6 +154,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return names;
     }
 
+    @Override
     public int[] moveParameters(int[] indexes, boolean up) {
         return parameters.moveParts(indexes, up);
     }
@@ -148,6 +163,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return parameters.getPart(i);
     }
 
+    @Override
     public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws CoreException {
         if (!typeToSearchFrom.isSubtypeOf(getType(), ipsProject)) {
             return null;
@@ -157,12 +173,14 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return finder.overridingMethod;
     }
 
+    @Override
     public IMethod findOverriddenMethod(IIpsProject ipsProject) throws CoreException {
         OverridingMethodFinder finder = new OverridingMethodFinder(ipsProject);
         finder.start(getType());
         return finder.overridingMethod;
     }
 
+    @Override
     public boolean isSameSignature(IMethod other) {
         if (!getName().equals(other.getName())) {
             return false;
@@ -179,6 +197,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return true;
     }
 
+    @Override
     public boolean overrides(IMethod other) throws CoreException {
         if (!isSameSignature(other)) {
             return false;
@@ -189,6 +208,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return true;
     }
 
+    @Override
     public String getSignatureString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append(getName());

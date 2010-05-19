@@ -51,6 +51,7 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
 
     private class LabelPositioner implements FigureListener {
 
+        @Override
         public void figureMoved(IFigure source) {
             PolylineConnection conn = (PolylineConnection)getFigure();
             PointList points = conn.getPoints();
@@ -168,6 +169,7 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     /**
      * {@inheritDoc}
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getControlFlow()) && event.getEventType() == ContentChangeEvent.TYPE_PROPERTY_CHANGED) {
             refreshVisuals();

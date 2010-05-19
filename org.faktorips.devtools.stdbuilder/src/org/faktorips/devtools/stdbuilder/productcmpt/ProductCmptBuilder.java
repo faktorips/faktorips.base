@@ -58,6 +58,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return generationBuilder;
     }
 
+    @Override
     public String getName() {
         return "ProductCmptBuilder"; //$NON-NLS-1$
     }
@@ -74,6 +75,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         generationBuilder.afterBuildProcess(project, buildKind);
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
@@ -84,6 +86,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         buildStatus = status;
     }
 
+    @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         if (!mustFileBeBuild(productCmpt)) {
@@ -134,6 +137,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return true;
     }
 
+    @Override
     public void delete(IIpsSrcFile deletedFile) throws CoreException {
         // the problem here, is that the file is deleted and so we can't access the generations.
         // so we can get the exact file names, as the generation's valid from is part of the file

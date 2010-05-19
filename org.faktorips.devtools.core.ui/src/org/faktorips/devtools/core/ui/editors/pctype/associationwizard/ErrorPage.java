@@ -41,6 +41,7 @@ public class ErrorPage extends WizardPage implements IHiddenWizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         details = toolkit.createLabel(parent, ""); //$NON-NLS-1$
         setControl(details);
@@ -73,6 +74,7 @@ public class ErrorPage extends WizardPage implements IHiddenWizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPageVisible() {
         return false;
     }

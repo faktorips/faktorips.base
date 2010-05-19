@@ -32,6 +32,7 @@ public class CheckboxField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control getControl() {
         return checkbox;
     }
@@ -51,6 +52,7 @@ public class CheckboxField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue) {
         checkbox.setChecked(((Boolean)newValue).booleanValue());
     }
@@ -58,6 +60,7 @@ public class CheckboxField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText() {
         return checkbox.isChecked() ? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -65,6 +68,7 @@ public class CheckboxField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setText(String newText) {
         checkbox.setChecked(Boolean.valueOf(newText).booleanValue());
     }
@@ -72,6 +76,7 @@ public class CheckboxField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void insertText(String text) {
         // nothing to do
     }
@@ -79,6 +84,7 @@ public class CheckboxField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectAll() {
         // nothing to do
     }
@@ -90,10 +96,12 @@ public class CheckboxField extends DefaultEditField {
     protected void addListenerToControl() {
         checkbox.getButton().addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 notifyChangeListeners(new FieldValueChangedEvent(CheckboxField.this));
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
             }

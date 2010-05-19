@@ -81,6 +81,7 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
          * the attributes respectively IpsPart that are displayed in the other sections.
          */
         final ContentsChangeListener changeListener = new ContentsChangeListener() {
+            @Override
             public void contentsChanged(ContentChangeEvent event) {
                 if (getIpsObject() == null) {
                     return;
@@ -94,6 +95,7 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
         };
         getIpsObject().getIpsModel().addChangeListener(changeListener);
         getPartControl().addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 IIpsModel model = IpsPlugin.getDefault().getIpsModel();
                 if (model != null) {

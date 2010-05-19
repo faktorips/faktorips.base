@@ -70,6 +70,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         super.build(ipsSrcFile);
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE) && ipsSrcFile.exists()) {
             IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();

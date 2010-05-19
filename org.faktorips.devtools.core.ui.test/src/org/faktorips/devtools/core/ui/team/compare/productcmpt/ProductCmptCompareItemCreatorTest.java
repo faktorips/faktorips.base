@@ -49,7 +49,7 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject proj = (IpsProject)newIpsProject("TestProject");
+        IIpsProject proj = newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
         product = newProductCmpt(root, "TestProductCmpt");
         IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");

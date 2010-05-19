@@ -68,18 +68,22 @@ public class IpsPropertiesAction extends IpsAction {
             projectSelection = selection;
         }
 
+        @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
             // do nothing
         }
 
+        @Override
         public ISelection getSelection() {
             return projectSelection;
         }
 
+        @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
             // do nothing
         }
 
+        @Override
         public void setSelection(ISelection selection) {
             // do nothing
         }

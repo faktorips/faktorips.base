@@ -30,6 +30,7 @@ class PropertyAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(Object o, Class adapterType) {
         // can suppress the warning as the Eclipse interface defineds the method signature
@@ -52,6 +53,7 @@ class PropertyAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class[] getAdapterList() {
         // can suppress the warning as the Eclipse interface defineds the method signature

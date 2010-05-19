@@ -174,6 +174,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
             try {
                 IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                    @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
                         format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()), startingPage
                                 .getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(), messageList,

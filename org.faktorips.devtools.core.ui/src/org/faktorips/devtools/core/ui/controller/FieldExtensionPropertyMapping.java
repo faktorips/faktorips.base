@@ -31,6 +31,7 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EditField getField() {
         return field;
     }
@@ -38,6 +39,7 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getObject() {
         return object;
     }
@@ -45,6 +47,7 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPropertyName() {
         return propertyId;
     }
@@ -52,6 +55,7 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPropertyValue() {
         if (field.getControl().isDisposed()) {
             return;
@@ -68,6 +72,7 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setControlValue() {
         if (field.getControl().isDisposed()) {
             return;

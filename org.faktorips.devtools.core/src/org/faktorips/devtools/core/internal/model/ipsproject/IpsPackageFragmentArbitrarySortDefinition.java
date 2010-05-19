@@ -38,6 +38,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getSegmentNames() {
         return sortOrder.toArray(new String[sortOrder.size()]);
     }
@@ -45,6 +46,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setSegmentNames(String[] segments) {
 
         sortOrderLookup.clear();
@@ -64,6 +66,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compare(String segment1, String segment2) {
 
         if (sortOrderLookup.containsKey(segment1) && sortOrderLookup.containsKey(segment2)) {
@@ -88,6 +91,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toPersistenceContent() {
         String content = null;
 
@@ -102,6 +106,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initPersistenceContent(String content) throws CoreException {
 
         // do not use system line seperator here because the file could be transfered from another
@@ -139,6 +144,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsPackageFragmentSortDefinition copy() {
 
         IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();

@@ -66,10 +66,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         super(ValueSetType.ENUM, parent, partId);
     }
 
+    @Override
     public String[] getValues() {
         return values.toArray(new String[values.size()]);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<Integer> getPositions(String value) {
         List<Integer> positions = new ArrayList<Integer>();
@@ -83,6 +85,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return positions;
     }
 
+    @Override
     public boolean containsValue(String value,
             MessageList list,
             Object invalidObject,
@@ -131,6 +134,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return false;
     }
 
+    @Override
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
             throw new NullPointerException("MessageList required");
@@ -186,10 +190,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return contains;
     }
 
+    @Override
     public boolean containsValueSet(IValueSet subset) {
         return containsValueSet(subset, new MessageList(), null, null);
     }
 
+    @Override
     public void addValue(String val) {
         addValueWithoutTriggeringChangeEvent(val);
         objectHasChanged();
@@ -219,12 +225,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         indexList.add(newIndex);
     }
 
+    @Override
     public void removeValue(int index) {
         values.remove(index);
         refillValuesToIndexMap();
         objectHasChanged();
     }
 
+    @Override
     public void removeValue(String value) {
         removeWithoutTriggeringChangeEvents(value);
         objectHasChanged();
@@ -264,10 +272,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
     }
 
+    @Override
     public String getValue(int index) {
         return values.get(index);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void setValue(int index, String value) {
         String oldValue = values.get(index);
@@ -286,10 +296,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         valueChanged(oldValue, value);
     }
 
+    @Override
     public int size() {
         return values.size();
     }
 
+    @Override
     public String[] getValuesNotContained(IEnumValueSet otherSet) {
         List<String> result = new ArrayList<String>();
         if (otherSet == null) {
@@ -320,6 +332,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     }
 
+    @Override
     public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreException {
         MessageList list = new MessageList();
         validateValueWithoutDuplicateCheck(list, index, getValueDatatype());
@@ -406,6 +419,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return super.toString() + ":" + values.toString();
     }
 
+    @Override
     public String toShortString() {
         ValueDatatype type = getValueDatatype();
         if (type != null && type instanceof EnumDatatype && ((EnumDatatype)type).isSupportingNames()) {
@@ -447,6 +461,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         element.appendChild(tagElement);
     }
 
+    @Override
     public IValueSet copy(IIpsObjectPart parent, String id) {
         EnumValueSet copy = new EnumValueSet(parent, id);
         copy.values = new ArrayList<String>(values);
@@ -462,6 +477,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         objectHasChanged();
     }
 
+    @Override
     public void addValuesFromDatatype(EnumDatatype datatype) {
         String[] valueIds = datatype.getAllValueIds(true);
         for (String valueId : valueIds) {
@@ -469,10 +485,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
     }
 
+    @Override
     public boolean getContainsNull() {
         return values.contains(null);
     }
 
+    @Override
     public void setContainsNull(boolean containsNull) {
         boolean old = getContainsNull();
 

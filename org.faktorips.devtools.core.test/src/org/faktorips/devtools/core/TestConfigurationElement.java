@@ -62,27 +62,33 @@ public class TestConfigurationElement implements IConfigurationElement {
         this.executableExtensionMap = executableExtensionMap;
     }
 
+    @Override
     public Object createExecutableExtension(String propertyName) throws CoreException {
         return executableExtensionMap.get(propertyName);
     }
 
+    @Override
     public String getAttribute(String name) throws InvalidRegistryObjectException {
         return attributes.get(name);
     }
 
+    @Override
     public String getAttributeAsIs(String name) throws InvalidRegistryObjectException {
         return getAttribute(name);
     }
 
+    @Override
     public String[] getAttributeNames() throws InvalidRegistryObjectException {
         Set<String> nameSet = attributes.keySet();
         return attributes.keySet().toArray(new String[nameSet.size()]);
     }
 
+    @Override
     public IConfigurationElement[] getChildren() throws InvalidRegistryObjectException {
         return children;
     }
 
+    @Override
     public IConfigurationElement[] getChildren(String name) throws InvalidRegistryObjectException {
         ArrayList<IConfigurationElement> result = new ArrayList<IConfigurationElement>();
         for (IConfigurationElement element : children) {
@@ -93,38 +99,47 @@ public class TestConfigurationElement implements IConfigurationElement {
         return result.toArray(new IConfigurationElement[result.size()]);
     }
 
+    @Override
     public IContributor getContributor() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
 
+    @Override
     public IExtension getDeclaringExtension() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
 
+    @Override
     public String getName() throws InvalidRegistryObjectException {
         return name;
     }
 
+    @Override
     public String getNamespace() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
 
+    @Override
     public String getNamespaceIdentifier() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
 
+    @Override
     public Object getParent() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
 
+    @Override
     public String getValue() throws InvalidRegistryObjectException {
         return value;
     }
 
+    @Override
     public String getValueAsIs() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
 
+    @Override
     public boolean isValid() {
         throw new RuntimeException("Not implemented.");
     }

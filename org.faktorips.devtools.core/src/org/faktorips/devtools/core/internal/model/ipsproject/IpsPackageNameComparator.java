@@ -50,6 +50,7 @@ public class IpsPackageNameComparator implements Comparator<IIpsPackageFragment>
      * 
      * @note <i>Natural ordering</i> is <i>inconsistent with equals</i>.
      */
+    @Override
     public int compare(IIpsPackageFragment pack1, IIpsPackageFragment pack2) {
         String[] segments1 = QNameUtil.getSegments(pack1.getName());
         String[] segments2 = QNameUtil.getSegments(pack2.getName());

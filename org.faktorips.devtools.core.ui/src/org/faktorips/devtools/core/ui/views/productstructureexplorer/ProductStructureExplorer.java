@@ -176,10 +176,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     private class ProductCmptDropListener extends IpsElementDropListener {
 
+        @Override
         public void dragEnter(DropTargetEvent event) {
             dropAccept(event);
         }
 
+        @Override
         public void drop(DropTargetEvent event) {
             Object[] transferred = super.getTransferedElements(event.currentDataType);
             if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
@@ -191,6 +193,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             }
         }
 
+        @Override
         public void dropAccept(DropTargetEvent event) {
             Object[] transferred = super.getTransferedElements(event.currentDataType);
             // in linux transferred is always null while drag action
@@ -402,6 +405,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         GenerationDateContentProvider adjustmentContentProvider = new GenerationDateContentProvider();
         adjustmentContentProvider.addCollectorFinishedListener(new ICollectorFinishedListener() {
 
+            @Override
             public void update(Observable o, Object arg) {
                 generationDateViewer.setSelection(0);
             }
@@ -432,28 +436,33 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         prevButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 int selectedIndex = generationDateViewer.getCombo().getSelectionIndex();
                 generationDateViewer.setSelection(selectedIndex + 1);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
 
         nextButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 int selectedIndex = generationDateViewer.getCombo().getSelectionIndex();
                 generationDateViewer.setSelection(selectedIndex - 1);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
 
         generationDateViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 GenerationDate adjDate = generationDateViewer.getSelectedDate();
                 if (adjDate != null) {
@@ -517,6 +526,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 Object selectedRef = getSelectedObjectFromSelection(treeViewer.getSelection());
                 boolean copyEnabled = false;
@@ -653,6 +663,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         try {
             Runnable runnable = new Runnable() {
+                @Override
                 public void run() {
                     if (!treeViewer.getControl().isDisposed()) {
                         Object input = treeViewer.getInput();
@@ -683,6 +694,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     /**
      * {@inheritDoc}
      */
+    @Override
     public ShowInContext getShowInContext() {
         ShowInContext context = new ShowInContext(null, treeViewer.getSelection());
         return context;
@@ -722,6 +734,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     /**
      * {@inheritDoc}
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (file == null || !event.getIpsSrcFile().equals(file)) {
             // no contents set or event concerncs another source file - nothing to refresh.
@@ -739,6 +752,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private void postRefresh() {
         getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 refresh();
             }
@@ -748,6 +762,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     /**
      * {@inheritDoc}
      */
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         // TODO update AdjustmentDateContent, wenn neue Anpassungsstufe hinzugekommen ist
         if (file == null) {

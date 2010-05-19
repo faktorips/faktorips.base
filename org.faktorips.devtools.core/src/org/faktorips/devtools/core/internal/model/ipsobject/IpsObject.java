@@ -65,6 +65,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     }
 
+    @Override
     public boolean isFromParsableFile() {
         return fromParsableFile;
     }
@@ -78,18 +79,22 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         reinitPartCollections();
     }
 
+    @Override
     public IIpsObject getIpsObject() {
         return this;
     }
 
+    @Override
     public IIpsPackageFragment getIpsPackageFragment() {
         return getIpsSrcFile().getIpsPackageFragment();
     }
 
+    @Override
     public QualifiedNameType getQualifiedNameType() {
         return new QualifiedNameType(getQualifiedName(), getIpsObjectType());
     }
 
+    @Override
     public String getQualifiedName() {
         String folderName = getParent().getParent().getName();
         if (folderName.equals("")) { //$NON-NLS-1$
@@ -99,10 +104,12 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         return folderName + '.' + getName();
     }
 
+    @Override
     public String getUnqualifiedName() {
         return getName();
     }
 
+    @Override
     public IResource getCorrespondingResource() {
         return null;
     }
@@ -115,10 +122,12 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         return null;
     }
 
+    @Override
     public final boolean isDescriptionChangable() {
         return true;
     }
 
+    @Override
     public void setDescription(String newDescription) {
         description = newDescription;
         objectHasChanged();
@@ -133,6 +142,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         description = newDescription;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
@@ -144,18 +154,22 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         objectHasChanged(event);
     }
 
+    @Override
     public boolean isValid() throws CoreException {
         return getValidationResultSeverity() != Message.ERROR;
     }
 
+    @Override
     public int getValidationResultSeverity() throws CoreException {
         return validate(getIpsProject()).getSeverity();
     }
 
+    @Override
     public IDependency[] dependsOn() throws CoreException {
         return dependsOn(null);
     }
 
+    @Override
     public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException {
         if (dependency == null) {
             throw new NullPointerException("Can not get dependency details for null as dependency."); //$NON-NLS-1$

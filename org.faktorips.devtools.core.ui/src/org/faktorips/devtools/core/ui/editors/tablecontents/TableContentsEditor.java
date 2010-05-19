@@ -83,6 +83,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
          */
     }
 
+    @Override
     public IPage createModelDescriptionPage() throws CoreException {
         ITableContents tableContents = getTableContents();
         if (tableContents == null) {

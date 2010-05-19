@@ -49,6 +49,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         Composite main = toolkit.createComposite(parent);
         main.setLayout(new GridLayout(1, true));
@@ -79,6 +80,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return Messages.TestSelectionTab_title;
     }
@@ -86,6 +88,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initializeFrom(ILaunchConfiguration configuration) {
         try {
             String packageFragmentRoot = configuration.getAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
@@ -110,6 +113,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
         try {
             if (project != null) {
@@ -127,6 +131,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
         configuration.setAttribute(IpsTestRunner.ATTR_TESTCASES, ""); //$NON-NLS-1$
@@ -136,6 +141,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testConfigurationHasChanged() {
         updateLaunchConfigurationDialog();
     }
@@ -144,6 +150,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
      * Modify listener that simply updates the owning launch configuration dialog.
      */
     private ModifyListener basicModifyListener = new ModifyListener() {
+        @Override
         public void modifyText(ModifyEvent evt) {
             updateLaunchConfigurationDialog();
         }

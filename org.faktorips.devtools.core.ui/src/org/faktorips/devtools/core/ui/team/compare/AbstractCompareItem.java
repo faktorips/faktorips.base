@@ -232,6 +232,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * 
      * @see ProductCmptCompareItemCreator#getContents(Object, boolean)
      */
+    @Override
     public InputStream getContents() throws CoreException {
         return null;
     }
@@ -259,6 +260,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -266,6 +268,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren() {
         return children.toArray();
     }
@@ -301,6 +304,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     /**
      * {@inheritDoc}
      */
+    @Override
     public Image getImage() {
         if (ipsElement != null) {
             return IpsUIPlugin.getImageHandling().getImage(ipsElement);
@@ -341,6 +345,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * 
      * @see ProductCmptCompareItemCreator#getContents(Object, boolean)
      */
+    @Override
     public IDocument getDocument() {
         if (isRoot()) {
             return document;
@@ -352,6 +357,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     /**
      * Returns the text-range this compareitem inhabits. Creates a defensive copy.
      */
+    @Override
     public Position getRange() {
         return new Position(range.getOffset(), range.getLength());
     }

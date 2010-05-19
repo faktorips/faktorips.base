@@ -48,6 +48,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * Returns the artefact destination for the artefacts generated on behalf of the ips objects
      * within this ips package fragment root.
      */
+    @Override
     public IFolder getArtefactDestination(boolean derived) throws CoreException {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
         if (derived) {
@@ -82,6 +83,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * {@inheritDoc} IpsPackageFragments are always returned, whether they are output locations of
      * the javaproject corresponding to this roots IpsProject or not.
      */
+    @Override
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
         List<IIpsPackageFragment> list = getIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
@@ -91,6 +93,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * 
      * {@inheritDoc}
      */
+    @Override
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
         IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
         List<IIpsPackageFragment> sortedPacks = getIpsPackageFragmentsAsList();
@@ -116,6 +119,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
     /**
      * {@inheritDoc}
      */
+    @Override
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();
         List<IResource> childResources = new ArrayList<IResource>();
@@ -169,6 +173,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         }
     }
 
+    @Override
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
 
@@ -186,6 +191,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         return getIpsPackageFragment(name);
     }
 
+    @Override
     public IResource getCorrespondingResource() {
         IProject project = (IProject)getParent().getCorrespondingResource();
         return project.getFolder(getName());
@@ -246,6 +252,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         return entry.getBasePackageNameForDerivedJavaClasses();
     }
 
+    @Override
     public IIpsArchive getIpsArchive() {
         return null;
     }

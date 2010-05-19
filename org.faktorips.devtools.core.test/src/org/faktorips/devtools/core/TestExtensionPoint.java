@@ -51,6 +51,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IConfigurationElement[] getConfigurationElements() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -58,6 +59,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IContributor getContributor() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -65,6 +67,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IPluginDescriptor getDeclaringPluginDescriptor() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -72,6 +75,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * Throws RuntimeException
      */
+    @Override
     public IExtension getExtension(String extensionId) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -79,6 +83,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IExtension[] getExtensions() throws InvalidRegistryObjectException {
         return extensions;
     }
@@ -86,6 +91,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * Throws RuntimeException
      */
+    @Override
     public String getLabel() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -93,6 +99,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getNamespace() throws InvalidRegistryObjectException {
         return getNamespaceIdentifier();
     }
@@ -100,6 +107,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getNamespaceIdentifier() throws InvalidRegistryObjectException {
         return nameSpaceIdentifier;
     }
@@ -107,6 +115,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * Throws RuntimeException
      */
+    @Override
     public String getSchemaReference() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -114,6 +123,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getSimpleIdentifier() throws InvalidRegistryObjectException {
         return simpleIdentifier;
     }
@@ -121,6 +131,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * Throws RuntimeException
      */
+    @Override
     public String getUniqueIdentifier() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -128,6 +139,7 @@ public class TestExtensionPoint implements IExtensionPoint {
     /**
      * Throws RuntimeException
      */
+    @Override
     public boolean isValid() {
         throw new RuntimeException("Not implemented yet.");
     }

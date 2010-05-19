@@ -132,6 +132,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.PRODUCT_CMPT_TYPE;
     }
@@ -139,6 +140,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPolicyCmptType() {
         return policyCmptType;
     }
@@ -146,6 +148,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPolicyCmptType(String newType) {
         String oldType = policyCmptType;
         policyCmptType = newType;
@@ -155,6 +158,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isConfigurationForPolicyCmptType() {
         return configurationForPolicyCmptType;
     }
@@ -162,6 +166,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setConfigurationForPolicyCmptType(boolean newValue) {
         boolean oldValue = configurationForPolicyCmptType;
         configurationForPolicyCmptType = newValue;
@@ -174,6 +179,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
         if (!configurationForPolicyCmptType) {
             return null;
@@ -184,6 +190,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptType findSuperProductCmptType(IIpsProject project) throws CoreException {
         return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getSupertype());
     }
@@ -191,6 +198,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProdDefProperty[] findProdDefProperties(IIpsProject ipsProject) throws CoreException {
         ProdDefPropertyCollector collector = new ProdDefPropertyCollector(null, ipsProject);
         collector.start(this);
@@ -216,6 +224,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException {
         ProdDefPropertyType[] types = ProdDefPropertyType.values();
         for (ProdDefPropertyType type : types) {
@@ -230,6 +239,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject)
             throws CoreException {
         if (ProdDefPropertyType.VALUE == type) {
@@ -258,6 +268,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAttribute newProductCmptTypeAttribute() {
         return (IProductCmptTypeAttribute)newAttribute();
     }
@@ -265,6 +276,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAttribute newProductCmptTypeAttribute(String name) {
         IProductCmptTypeAttribute newAttribute = newProductCmptTypeAttribute();
         newAttribute.setName(name);
@@ -274,6 +286,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAttribute getProductCmptTypeAttribute(String name) {
         return (IProductCmptTypeAttribute)attributes.getPartByName(name);
     }
@@ -281,6 +294,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject)
             throws CoreException {
         return (IProductCmptTypeAttribute)findAttribute(name, ipsProject);
@@ -289,6 +303,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAttribute[] getProductCmptTypeAttributes() {
         return (IProductCmptTypeAttribute[])attributes.toArray(new IProductCmptTypeAttribute[attributes.size()]);
     }
@@ -321,6 +336,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAssociation newProductCmptTypeAssociation() {
         return (IProductCmptTypeAssociation)newAssociation();
     }
@@ -328,6 +344,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project) throws CoreException {
         TableStructureUsageFinder finder = new TableStructureUsageFinder(project, roleName);
         finder.start(this);
@@ -337,6 +354,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNumOfTableStructureUsages() {
         return tableStructureUsages.size();
     }
@@ -344,6 +362,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITableStructureUsage getTableStructureUsage(String roleName) {
         return tableStructureUsages.getPartByName(roleName);
     }
@@ -351,6 +370,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITableStructureUsage[] getTableStructureUsages() {
         return tableStructureUsages.toArray(new ITableStructureUsage[tableStructureUsages.size()]);
     }
@@ -358,6 +378,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] moveTableStructureUsage(int[] indexes, boolean up) {
         return tableStructureUsages.moveParts(indexes, up);
     }
@@ -365,6 +386,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITableStructureUsage newTableStructureUsage() {
         return tableStructureUsages.newPart();
     }
@@ -372,6 +394,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeMethod[] getProductCmptTypeMethods() {
         return (IProductCmptTypeMethod[])methods.toArray(new IProductCmptTypeMethod[methods.size()]);
     }
@@ -379,6 +402,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAssociation[] getProductCmptTypeAssociations() {
         return (IProductCmptTypeAssociation[])associations
                 .toArray(new IProductCmptTypeAssociation[associations.size()]);
@@ -387,6 +411,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeMethod[] getNonFormulaProductCmptTypeMethods() {
 
         ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
@@ -401,6 +426,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeMethod newProductCmptTypeMethod() {
         return (IProductCmptTypeMethod)methods.newPart();
     }
@@ -408,6 +434,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeMethod newFormulaSignature(String formulaName) {
         IProductCmptTypeMethod signature = newProductCmptTypeMethod();
         signature.setFormulaSignatureDefinition(true);
@@ -419,6 +446,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeMethod[] findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException {
         ArrayList<IProductCmptTypeMethod> overloadedMethods = new ArrayList<IProductCmptTypeMethod>();
         for (IMethod method2 : methods) {
@@ -436,6 +464,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeMethod getFormulaSignature(String formulaName) throws CoreException {
         if (StringUtils.isEmpty(formulaName)) {
             return null;
@@ -449,6 +478,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return null;
     }
 
+    @Override
     public IProductCmptTypeMethod[] getFormulaSignatures() {
 
         ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
@@ -464,6 +494,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException {
         FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName, true);
         finder.start(this);
@@ -629,10 +660,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
+    @Override
     public IIpsSrcFile[] searchProductComponents(boolean includeSubtypes) throws CoreException {
         return searchMetaObjectSrcFiles(includeSubtypes);
     }
 
+    @Override
     public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
@@ -642,14 +675,17 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
+    @Override
     public String getInstancesIcon() {
         return instancesIconPath;
     }
 
+    @Override
     public boolean isUseCustomInstanceIcon() {
         return StringUtils.isNotEmpty(instancesIconPath);
     }
 
+    @Override
     public void setInstancesIcon(String path) {
         String oldPath = instancesIconPath;
         instancesIconPath = path;

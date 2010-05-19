@@ -63,6 +63,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     /**
      * {@inheritDoc}
      */
+    @Override
     public Image decorateImage(Image baseImage, Object element) {
         if (baseImage != null) {
             try {
@@ -156,6 +157,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     /**
      * {@inheritDoc}
      */
+    @Override
     public String decorateText(String text, Object element) {
         return text;
     }
@@ -163,6 +165,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addListener(ILabelProviderListener listener) {
         if (listeners == null) {
             listeners = new ArrayList<ILabelProviderListener>();
@@ -174,6 +177,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         if (resourceManager != null) {
             resourceManager.dispose();
@@ -184,6 +188,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;
     }
@@ -191,6 +196,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeListener(ILabelProviderListener listener) {
         if (listener != null && listeners != null) {
             listeners.remove(listener);
@@ -200,6 +206,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     /**
      * {@inheritDoc}
      */
+    @Override
     public void decorate(Object element, IDecoration decoration) {
         try {
             decoration.addOverlay(IpsProblemOverlayIcon.getMarkerOverlay(findMaxProblemSeverity(element)));

@@ -60,6 +60,7 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
     /**
      * {@inheritDoc}
      */
+    @Override
     public void activeGenerationChanged(IIpsObjectGeneration generation) {
         try {
             setDescriptionData(generation);
@@ -129,6 +130,7 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
     /**
      * {@inheritDoc}
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         // TODO read new model description event != TYPE_PROPERTY_CHANGED
     }

@@ -170,6 +170,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetSelected(SelectionEvent e) {
             removeMessageCue();
             boolean enabled = e.getSource() == other;
@@ -217,6 +218,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
@@ -286,6 +288,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
@@ -293,6 +296,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
         if (!isDataChangeable()) {

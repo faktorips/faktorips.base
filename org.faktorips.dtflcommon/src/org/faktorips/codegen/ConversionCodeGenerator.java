@@ -99,7 +99,7 @@ public class ConversionCodeGenerator implements ConversionMatrix {
             return true;
         }
         for (SingleConversionCg singleConversionCg : conversions) {
-            SingleConversionCg cg = (SingleConversionCg)singleConversionCg;
+            SingleConversionCg cg = singleConversionCg;
             if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
                 return true;
             }
@@ -124,7 +124,7 @@ public class ConversionCodeGenerator implements ConversionMatrix {
             return fromValue;
         }
         for (SingleConversionCg singleConversionCg : conversions) {
-            SingleConversionCg cg = (SingleConversionCg)singleConversionCg;
+            SingleConversionCg cg = singleConversionCg;
             if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
                 return cg.getConversionCode(fromValue);
             }

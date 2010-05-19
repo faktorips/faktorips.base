@@ -63,6 +63,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     /**
      * {@inheritDoc}
      */
+    @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
         throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
@@ -70,6 +71,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     /**
      * {@inheritDoc}
      */
+    @Override
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
         throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
@@ -77,6 +79,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     /**
      * {@inheritDoc}
      */
+    @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
         return new char[0];
     }
@@ -84,10 +87,12 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     /**
      * {@inheritDoc}
      */
+    @Override
     public char[] getContextInformationAutoActivationCharacters() {
         return null;
     }
 
+    @Override
     public String getErrorMessage() {
         return errorMessage;
     }
@@ -102,6 +107,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     /**
      * {@inheritDoc}
      */
+    @Override
     public IContextInformationValidator getContextInformationValidator() {
         return null; // no context
     }
@@ -109,6 +115,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     /**
      * {@inheritDoc}
      */
+    @Override
     public IContextInformation[] computeContextInformation(IContentAssistSubjectControl contentAssistSubjectControl,
             int documentOffset) {
         return null;
@@ -117,6 +124,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     /**
      * {@inheritDoc}
      */
+    @Override
     public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl,
             int documentOffset) {
         if (contentAssistSubjectControl.getControl() instanceof Text) {

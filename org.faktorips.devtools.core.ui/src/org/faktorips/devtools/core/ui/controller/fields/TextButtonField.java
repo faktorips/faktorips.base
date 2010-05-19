@@ -38,6 +38,7 @@ public class TextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control getControl() {
         return control;
     }
@@ -65,6 +66,7 @@ public class TextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue) {
         setText((String)super.prepareObjectForSet(newValue));
     }
@@ -72,6 +74,7 @@ public class TextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText() {
         return control.getTextControl().getText();
     }
@@ -79,6 +82,7 @@ public class TextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setText(String newText) {
         immediatelyNotifyListener = true;
         try {
@@ -91,6 +95,7 @@ public class TextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void insertText(String text) {
         control.getTextControl().insert(text);
     }
@@ -98,6 +103,7 @@ public class TextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectAll() {
         control.getTextControl().selectAll();
     }
@@ -109,6 +115,7 @@ public class TextButtonField extends DefaultEditField {
     protected void addListenerToControl() {
         ModifyListener ml = new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 boolean immediatelyNotify = immediatelyNotifyListener | control.isImmediatelyNotifyListener();
                 notifyChangeListeners(new FieldValueChangedEvent(TextButtonField.this), immediatelyNotify);
@@ -143,6 +150,7 @@ public class TextButtonField extends DefaultEditField {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetDisposed(DisposeEvent e) {
             control.getTextControl().removeModifyListener(ml);
         }

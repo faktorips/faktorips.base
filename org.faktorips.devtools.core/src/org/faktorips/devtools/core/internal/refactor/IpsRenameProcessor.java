@@ -55,6 +55,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
      * as result of the validation. It checks that the name is not empty and that the name does not
      * equal the element's original name.
      */
+    @Override
     public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
         RefactoringStatus status = new RefactoringStatus();
         if (newName.length() < 1) {
@@ -86,15 +87,18 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
                 true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
     }
 
+    @Override
     public final void setNewName(String newName) {
         ArgumentCheck.notNull(newName);
         this.newName = newName;
     }
 
+    @Override
     public final String getOriginalName() {
         return originalName;
     }
 
+    @Override
     public final String getNewName() {
         return newName;
     }

@@ -139,6 +139,7 @@ public class ReferencedProjectsComposite extends Composite {
             tableViewer.refresh();
         } else {
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     tableViewer.refresh();
                 }
@@ -248,6 +249,7 @@ public class ReferencedProjectsComposite extends Composite {
     // widget action handling
     private class IpsProjectsAdapter implements ISelectionChangedListener, SelectionListener {
 
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             if (event.getSelection().isEmpty()) {
                 removeButton.setEnabled(false);
@@ -256,6 +258,7 @@ public class ReferencedProjectsComposite extends Composite {
             }
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
 
             if (e.getSource() == addButton) {
@@ -266,6 +269,7 @@ public class ReferencedProjectsComposite extends Composite {
             }
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
         }
     }
@@ -278,6 +282,7 @@ public class ReferencedProjectsComposite extends Composite {
             tableViewer.refresh();
         } else {
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     tableViewer.refresh();
                 }

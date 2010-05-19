@@ -49,6 +49,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPath getIpsObjectPath() {
         return path;
     }
@@ -56,6 +57,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsProject getIpsProject() {
         return path.getIpsProject();
     }
@@ -63,6 +65,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getIndex() {
         return path.getIndex(this);
     }
@@ -78,6 +81,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
         IIpsSrcFile file = findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
         if (file == null) {
@@ -86,6 +90,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         return file.getIpsObject();
     }
 
+    @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) throws CoreException {
         return findIpsSrcFile(qnt, null);
     }

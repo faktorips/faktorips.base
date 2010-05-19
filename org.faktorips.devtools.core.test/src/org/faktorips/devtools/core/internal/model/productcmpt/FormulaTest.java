@@ -163,7 +163,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     public void testGetEnumDatatypesAllowedInFormula() throws Exception {
-        newDefinedEnumDatatype((IpsProject)ipsProject, new Class[] { TestEnumType.class });
+        newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
         EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
         assertNotNull(testType);
 
@@ -221,7 +221,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     public void testGetEnumDatatypesAllowedInFormulaWithProductCmptTypeAttributes() throws Exception {
-        newDefinedEnumDatatype((IpsProject)ipsProject, new Class[] { TestEnumType.class });
+        newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
         EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
         assertNotNull(testType);
 

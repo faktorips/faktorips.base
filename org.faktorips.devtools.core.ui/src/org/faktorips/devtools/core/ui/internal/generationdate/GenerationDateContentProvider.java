@@ -82,6 +82,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             IProgressMonitor monitor) throws CoreException {
         TreeSet<GregorianCalendar> result = new TreeSet<GregorianCalendar>(new Comparator<GregorianCalendar>() {
 
+            @Override
             public int compare(GregorianCalendar o1, GregorianCalendar o2) {
                 // descending order
                 return o2.getTime().compareTo(o1.getTime());

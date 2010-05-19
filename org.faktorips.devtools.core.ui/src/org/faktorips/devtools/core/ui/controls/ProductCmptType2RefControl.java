@@ -67,7 +67,7 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
     public IProductCmptType findProductCmptType() throws CoreException {
         IIpsProject project = getIpsProject();
         if (project != null) {
-            return (IProductCmptType)project.findProductCmptType(getText());
+            return project.findProductCmptType(getText());
         }
         return null;
     }

@@ -226,6 +226,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setIpsProject(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
     }
@@ -233,6 +234,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
@@ -585,6 +587,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void terminate() throws CoreException {
         try {
             if (launch != null) {
@@ -847,6 +850,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * Adds the given ips test run listener to the collection of listeners
      */
+    @Override
     public void addIpsTestRunListener(IIpsTestRunListener newListener) {
         fIpsTestRunListeners.add(newListener);
     }
@@ -854,6 +858,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * Removes the given ips test run listener from the collection of listeners
      */
+    @Override
     public void removeIpsTestRunListener(IIpsTestRunListener listener) {
         if (fIpsTestRunListeners != null) {
             fIpsTestRunListeners.remove(listener);
@@ -863,6 +868,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * Returns all registered ips test run listener.
      */
+    @Override
     public List<IIpsTestRunListener> getIpsTestRunListener() {
         return fIpsTestRunListeners;
     }
@@ -939,6 +945,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void startTestRunnerJob(String classpathRepository, String testsuite) throws CoreException {
         startTestRunnerJob(classpathRepository, testsuite, null, null);
     }
@@ -946,6 +953,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * Starts the test runner.
      */
+    @Override
     public synchronized void startTestRunnerJob(String classpathRepository,
             String testsuite,
             String mode,
@@ -1033,6 +1041,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isRunningTestRunner() {
         trace("Check if a new test runner can start."); //$NON-NLS-1$
         if (isInsideTimeIntervall(launchStartTime)) {

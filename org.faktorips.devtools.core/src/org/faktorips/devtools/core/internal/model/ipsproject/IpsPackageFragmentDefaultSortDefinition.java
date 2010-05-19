@@ -27,6 +27,7 @@ public class IpsPackageFragmentDefaultSortDefinition implements IIpsPackageFragm
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compare(String segment1, String segment2) {
         return segment1.compareTo(segment2);
     }
@@ -34,6 +35,7 @@ public class IpsPackageFragmentDefaultSortDefinition implements IIpsPackageFragm
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsPackageFragmentSortDefinition copy() {
         return new IpsPackageFragmentDefaultSortDefinition();
     }
@@ -41,6 +43,7 @@ public class IpsPackageFragmentDefaultSortDefinition implements IIpsPackageFragm
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initPersistenceContent(String content) throws CoreException {
         // nothing to do
     }
@@ -48,6 +51,7 @@ public class IpsPackageFragmentDefaultSortDefinition implements IIpsPackageFragm
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toPersistenceContent() {
         return ""; //$NON-NLS-1$
     }

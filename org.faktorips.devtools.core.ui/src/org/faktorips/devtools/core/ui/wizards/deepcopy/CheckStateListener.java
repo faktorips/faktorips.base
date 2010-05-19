@@ -54,6 +54,7 @@ public class CheckStateListener implements ICheckStateListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void checkStateChanged(CheckStateChangedEvent event) {
         updateCheckState((CheckboxTreeViewer)event.getSource(), event.getElement(), event.getChecked());
     }

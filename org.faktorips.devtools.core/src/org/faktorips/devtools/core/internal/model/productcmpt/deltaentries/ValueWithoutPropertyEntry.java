@@ -34,6 +34,7 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ProdDefPropertyType getPropertyType() {
         return value.getPropertyType();
     }
@@ -41,6 +42,7 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPropertyName() {
         return value.getPropertyName();
     }
@@ -48,6 +50,7 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DeltaType getDeltaType() {
         return DeltaType.VALUE_WITHOUT_PROPERTY;
     }
@@ -55,6 +58,7 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void fix() {
         value.delete();
     }

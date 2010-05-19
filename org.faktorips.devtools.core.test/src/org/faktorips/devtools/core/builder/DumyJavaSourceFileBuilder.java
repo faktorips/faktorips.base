@@ -38,6 +38,7 @@ class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
         return "";
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return isBuilderFor;
     }

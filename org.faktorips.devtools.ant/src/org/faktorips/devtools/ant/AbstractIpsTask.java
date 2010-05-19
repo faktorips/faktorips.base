@@ -39,6 +39,7 @@ public abstract class AbstractIpsTask extends Task {
      * 
      * {@inheritDoc}
      */
+    @Override
     public final void execute() throws BuildException {
 
         System.out.println(getTaskName() + ": execution started");

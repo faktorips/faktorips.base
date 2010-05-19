@@ -58,6 +58,7 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
      * <tt>RefactoringStatus</tt> as result of the validation. It checks that it does not equal the
      * <tt>IIpsObject</tt>'s original <tt>IIpsPackageFragment</tt>.
      */
+    @Override
     public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
         RefactoringStatus status = new RefactoringStatus();
         if (targetIpsPackageFragment.equals(originalIpsPackageFragment)) {
@@ -91,15 +92,18 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
                 sharedParticipants);
     }
 
+    @Override
     public final void setTargetIpsPackageFragment(IIpsPackageFragment targetIpsPackageFragment) {
         ArgumentCheck.notNull(targetIpsPackageFragment);
         this.targetIpsPackageFragment = targetIpsPackageFragment;
     }
 
+    @Override
     public final IIpsPackageFragment getTargetIpsPackageFragment() {
         return targetIpsPackageFragment;
     }
 
+    @Override
     public final IIpsPackageFragment getOriginalIpsPackageFragment() {
         return originalIpsPackageFragment;
     }

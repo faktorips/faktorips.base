@@ -29,6 +29,7 @@ public class SearchResultLabelProvider implements ILabelProvider {
     /**
      * Overridden
      */
+    @Override
     public void addListener(ILabelProviderListener listener) {
         listeners.add(listener);
     }
@@ -36,6 +37,7 @@ public class SearchResultLabelProvider implements ILabelProvider {
     /**
      * Overridden
      */
+    @Override
     public void dispose() {
         listeners = null;
     }
@@ -43,6 +45,7 @@ public class SearchResultLabelProvider implements ILabelProvider {
     /**
      * Overridden
      */
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
@@ -50,6 +53,7 @@ public class SearchResultLabelProvider implements ILabelProvider {
     /**
      * Overridden
      */
+    @Override
     public void removeListener(ILabelProviderListener listener) {
         listeners.remove(listener);
     }
@@ -57,6 +61,7 @@ public class SearchResultLabelProvider implements ILabelProvider {
     /**
      * Overridden
      */
+    @Override
     public Image getImage(Object element) {
         if (element instanceof Object[]) {
             return IpsUIPlugin.getImageHandling().getImage((IIpsElement)((Object[])element)[0]);
@@ -68,6 +73,7 @@ public class SearchResultLabelProvider implements ILabelProvider {
     /**
      * Overridden
      */
+    @Override
     public String getText(Object element) {
         if (element instanceof Object[]) {
             return ((IIpsElement)((Object[])element)[0]).getName();

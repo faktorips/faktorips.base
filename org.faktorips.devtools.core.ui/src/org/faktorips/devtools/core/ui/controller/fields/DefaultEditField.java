@@ -39,6 +39,7 @@ public abstract class DefaultEditField implements EditField {
      * 
      * {@inheritDoc}
      */
+    @Override
     public final Object getValue() {
         try {
             return parseContent();
@@ -57,6 +58,7 @@ public abstract class DefaultEditField implements EditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTextContentParsable() {
         try {
             parseContent();
@@ -69,6 +71,7 @@ public abstract class DefaultEditField implements EditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMessages(MessageList list) {
         MessageCueController.setMessageCue(getControl(), list);
     }
@@ -76,6 +79,7 @@ public abstract class DefaultEditField implements EditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean addChangeListener(ValueChangeListener listener) {
         if (changeListeners == null) {
             changeListeners = new ArrayList<ValueChangeListener>(1);
@@ -90,6 +94,7 @@ public abstract class DefaultEditField implements EditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean removeChangeListener(ValueChangeListener listener) {
         if (changeListeners == null) {
             return false;
@@ -106,6 +111,7 @@ public abstract class DefaultEditField implements EditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue, boolean triggerValueChanged) {
         notifyChangeListeners = triggerValueChanged;
         try {

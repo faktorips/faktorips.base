@@ -29,6 +29,7 @@ public class PolicyCmptImplClassJpaAnnGenFactory implements AnnotationGeneratorF
         this.standardBuilderSet = standardBuilderSet;
     }
 
+    @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException {
         switch (type) {
             case POLICY_CMPT_IMPL_CLASS:
@@ -48,6 +49,7 @@ public class PolicyCmptImplClassJpaAnnGenFactory implements AnnotationGeneratorF
         }
     }
 
+    @Override
     public boolean isRequiredFor(IIpsProject ipsProject) {
         return ipsProject.isPersistenceSupportEnabled();
     }

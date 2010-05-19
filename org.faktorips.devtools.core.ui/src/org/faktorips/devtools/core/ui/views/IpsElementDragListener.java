@@ -43,14 +43,17 @@ public class IpsElementDragListener implements DragSourceListener {
         this.dragSource = dragSource;
     }
 
+    @Override
     public void dragStart(DragSourceEvent event) {
         event.doit = getFilenames((IStructuredSelection)dragSource.getSelection()).length > 0;
     }
 
+    @Override
     public void dragSetData(DragSourceEvent event) {
         event.data = getFilenames((IStructuredSelection)dragSource.getSelection());
     }
 
+    @Override
     public void dragFinished(DragSourceEvent event) {
         // Nothing to do.
     }

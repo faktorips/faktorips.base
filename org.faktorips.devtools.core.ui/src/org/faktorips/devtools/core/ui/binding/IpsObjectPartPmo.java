@@ -55,6 +55,7 @@ public class IpsObjectPartPmo extends PresentationModelObject implements Content
     /**
      * {@inheritDoc}
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(part)) {
             partHasChanged();

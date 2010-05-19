@@ -289,6 +289,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
             setChecked(on);
 
             BusyIndicator.showWhile(form.getDisplay(), new Runnable() {
+                @Override
                 public void run() {
                     if (on) {
                         sortLexical();
@@ -311,6 +312,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
         /**
          * {@inheritDoc}
          */
+        @Override
         public int compare(DescriptionItem item1, DescriptionItem item2) {
             Assert.isNotNull(item1, "DescriptionItem1"); //$NON-NLS-1$
             Assert.isNotNull(item2, "DescriptionItem2"); //$NON-NLS-1$

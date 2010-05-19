@@ -267,6 +267,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetSelected(SelectionEvent e) {
             int[] selected = targetTable.getSelectionIndices();
             int[] newSelection = new int[selected.length];
@@ -316,6 +317,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
@@ -350,6 +352,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetSelected(SelectionEvent e) {
             String[] toMove;
             if (moveAll) {
@@ -381,6 +384,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         /**
          * {@inheritDoc}
          */
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
@@ -389,13 +393,16 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
     private class ContentProvider implements IStructuredContentProvider {
 
+        @Override
         public Object[] getElements(Object inputElement) {
             return (String[])inputElement;
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
 
@@ -403,6 +410,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex != IMG_COLUMN) {
                 return null;
@@ -415,6 +423,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
             return null;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if (columnIndex == IMG_COLUMN) {
                 return ""; //$NON-NLS-1$
@@ -445,6 +454,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
@@ -452,6 +462,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
 

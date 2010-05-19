@@ -51,10 +51,12 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         super(parent, id);
     }
 
+    @Override
     public List<Bendpoint> getBendpoints() {
         return Collections.unmodifiableList(bendpoints);
     }
 
+    @Override
     public void setBendpoint(int index, Bendpoint bendpoint) {
         if (bendpoint == null || bendpoints.contains(bendpoint)) {
             return;
@@ -63,6 +65,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         objectHasChanged();
     }
 
+    @Override
     public void addBendpoint(int index, Bendpoint bendpoint) {
         if (bendpoint == null || bendpoints.contains(bendpoint)) {
             return;
@@ -71,31 +74,37 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         objectHasChanged();
     }
 
+    @Override
     public void removeBendpoint(int index) {
         if (bendpoints.remove(index) != null) {
             objectHasChanged();
         }
     }
 
+    @Override
     public String getConditionValue() {
         return conditionValue;
     }
 
     // TODO test
+    @Override
     public void setConditionValue(String value) {
         String old = conditionValue;
         conditionValue = value;
         valueChanged(old, conditionValue);
     }
 
+    @Override
     public IBusinessFunction getBusinessFunction() {
         return (IBusinessFunction)getParent();
     }
 
+    @Override
     public IBFElement getTarget() {
         return getBusinessFunction().getBFElement(targetId);
     }
 
+    @Override
     public void setTarget(IBFElement target) {
         if (targetId == null && target == null) {
             return;
@@ -113,10 +122,12 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         }
     }
 
+    @Override
     public IBFElement getSource() {
         return getBusinessFunction().getBFElement(sourceId);
     }
 
+    @Override
     public void setSource(IBFElement source) {
         if (sourceId == null && source == null) {
             return;
@@ -199,6 +210,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     protected void removePart(IIpsObjectPart part) {
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public IIpsObjectPart newPart(Class partType) {
         return null;

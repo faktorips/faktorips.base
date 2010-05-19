@@ -34,6 +34,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compareToCurrentVersion(String otherVersion) {
         return 0;
     }
@@ -41,6 +42,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCurrentVersion() {
         return IpsPlugin.getInstalledFaktorIpsVersion();
     }
@@ -48,6 +50,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getFeatureId() {
         return "org.faktorips.feature"; //$NON-NLS-1$
     }
@@ -55,6 +58,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getId() {
         return "EmptyIpsFeatureVersionManager"; //$NON-NLS-1$
     }
@@ -62,6 +66,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
             throws CoreException {
         return emptyOps;
@@ -70,6 +75,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPredecessorId() {
         return ""; //$NON-NLS-1$
     }
@@ -77,6 +83,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isCurrentVersionCompatibleWith(String otherVersion) {
         return true;
     }
@@ -84,6 +91,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setFeatureId(String featureId) {
         throw new UnsupportedOperationException();
     }
@@ -91,6 +99,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setId(String id) {
         throw new UnsupportedOperationException();
     }
@@ -98,6 +107,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPredecessorId(String predecessorId) {
         throw new UnsupportedOperationException();
     }

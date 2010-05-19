@@ -48,6 +48,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
                 + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
         IpsPlugin.getDefault().getIpsPreferences().addChangeListener(new IPropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent event) {
                 if (event.getProperty().equals(IpsPreferences.WORKING_DATE)) {
                     setContentDescription(Messages.TimedIpsObjectEditor_actualWorkingDate

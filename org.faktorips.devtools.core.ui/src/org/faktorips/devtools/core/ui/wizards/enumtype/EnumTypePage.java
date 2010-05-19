@@ -112,6 +112,7 @@ public class EnumTypePage extends IpsObjectPage {
         isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
         isAbstractField.addChangeListener(this);
         isAbstractField.addChangeListener(new ValueChangeListener() {
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 enableEnumContentControls();
             }
@@ -135,6 +136,7 @@ public class EnumTypePage extends IpsObjectPage {
         idAttributeNameField = uiToolkit.createText(createFieldsContainer);
         idAttributeNameField.setText("id"); //$NON-NLS-1$
         createIdAttributeField.addChangeListener(new ValueChangeListener() {
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 idAttributeNameField.setEnabled(createIdAttributeField.getCheckbox().isChecked());
             }
@@ -147,6 +149,7 @@ public class EnumTypePage extends IpsObjectPage {
         nameAttributeNameField = uiToolkit.createText(createFieldsContainer);
         nameAttributeNameField.setText("name"); //$NON-NLS-1$
         createNameAttributeField.addChangeListener(new ValueChangeListener() {
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 nameAttributeNameField.setEnabled(createNameAttributeField.getCheckbox().isChecked());
             }
@@ -154,6 +157,7 @@ public class EnumTypePage extends IpsObjectPage {
 
         // Disable id and name generation fields if a supertype is specified.
         supertypeField.addChangeListener(new ValueChangeListener() {
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 boolean enabled = supertypeField.getText().equals(""); //$NON-NLS-1$
                 createIdAttributeField.getCheckbox().setEnabled(enabled);
@@ -201,6 +205,7 @@ public class EnumTypePage extends IpsObjectPage {
         valuesDeferredToContentField.setValue(false);
         valuesDeferredToContentField.addChangeListener(this);
         valuesDeferredToContentField.addChangeListener(new ValueChangeListener() {
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 enableEnumContentControls();
             }

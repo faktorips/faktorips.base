@@ -93,6 +93,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         }
     }
 
+    @Override
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
@@ -113,8 +114,10 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
         CheckboxField field = new CheckboxField(checkbox);
         field.addChangeListener(new ValueChangeListener() {
+            @Override
             public void valueChanged(final FieldValueChangedEvent e) {
                 Runnable runnable = new Runnable() {
+                    @Override
                     public void run() {
                         try {
                             showSubtypes = ((CheckboxField)e.field).getCheckbox().isChecked();
@@ -205,10 +208,12 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         list.setFilter((fFilter == null ? "" : fFilter)); //$NON-NLS-1$     
 
         list.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 getContainer().updateButtons();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -230,6 +235,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         text.setText((fFilter == null ? "" : fFilter)); //$NON-NLS-1$
 
         Listener listener = new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 fFilteredList.setFilter(fFilterText.getText());
             }
@@ -237,12 +243,14 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         text.addListener(SWT.Modify, listener);
 
         text.addKeyListener(new KeyListener() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.ARROW_DOWN) {
                     fFilteredList.setFocus();
                 }
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
             }
         });

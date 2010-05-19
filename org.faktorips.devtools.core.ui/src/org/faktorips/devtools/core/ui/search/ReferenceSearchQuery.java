@@ -44,6 +44,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
         this.result = new ReferenceSearchResult(this);
     }
 
+    @Override
     public IStatus run(IProgressMonitor monitor) throws OperationCanceledException {
         monitor.beginTask(this.getLabel(), 2);
         result.removeAll();
@@ -98,6 +99,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
      */
     protected abstract Object[] getDataForResult(IIpsElement object) throws CoreException;
 
+    @Override
     public String getLabel() {
         return Messages.ReferenceSearchQuery_labelPrefix + this.referenced.getName();
     }
@@ -106,14 +108,17 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
         return this.referenced.getName();
     }
 
+    @Override
     public boolean canRerun() {
         return true;
     }
 
+    @Override
     public boolean canRunInBackground() {
         return true;
     }
 
+    @Override
     public ISearchResult getSearchResult() {
         return this.result;
     }

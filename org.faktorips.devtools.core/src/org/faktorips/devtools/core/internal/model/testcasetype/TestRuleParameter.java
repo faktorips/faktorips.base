@@ -68,10 +68,12 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
         return this;
     }
 
+    @Override
     public String getDatatype() {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
     }
 
+    @Override
     public void setDatatype(String datatype) {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
     }

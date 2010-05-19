@@ -82,6 +82,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     /**
      * {@inheritDoc}
      */
+    @Override
     public IpsObjectUIController getController() {
         return controller;
     }
@@ -167,6 +168,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPageValid(int pageNo) {
         if (pageNo < pageDisplayedMax) {
             return true;
@@ -187,6 +189,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     /**
      * {@inheritDoc}
      */
+    @Override
     public void postAsyncRunnable(Runnable r) {
         if (!getShell().isDisposed()) {
             getShell().getDisplay().asyncExec(r);
@@ -196,6 +199,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMaxPageShown(int pageNumber) {
         pageDisplayedMax = pageNumber;
     }

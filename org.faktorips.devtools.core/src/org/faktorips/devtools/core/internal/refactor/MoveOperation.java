@@ -336,8 +336,10 @@ public class MoveOperation implements IRunnableWithProgress {
         return true;
     }
 
+    @Override
     public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         Runnable run = new Runnable() {
+            @Override
             public void run() {
                 IProgressMonitor currMonitor = monitor;
                 if (currMonitor == null) {

@@ -105,6 +105,7 @@ public class ProductCmptPage extends IpsObjectPage {
             }
         });
         runtimeId.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent event) {
                 try {
                     validatePage();
@@ -130,6 +131,7 @@ public class ProductCmptPage extends IpsObjectPage {
         updateEnableState();
 
         versionId.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 IProductCmptNamingStrategy ns = getNamingStrategy();
                 if (ns != null) {
@@ -141,6 +143,7 @@ public class ProductCmptPage extends IpsObjectPage {
         });
 
         constName.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 IProductCmptNamingStrategy ns = getNamingStrategy();
                 if (ns != null) {

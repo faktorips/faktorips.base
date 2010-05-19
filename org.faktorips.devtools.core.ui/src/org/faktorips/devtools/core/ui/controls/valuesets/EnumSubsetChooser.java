@@ -160,6 +160,7 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
         return targetValueSet;
     }
 
+    @Override
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
         if (valueSet == null) {
             return false;
@@ -170,10 +171,12 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
         return valueSet.isEnum() && (valueDatatype.isEnum());
     }
 
+    @Override
     public IValueSet getValueSet() {
         return targetValueSet;
     }
 
+    @Override
     public ValueSetType getValueSetType() {
         return ValueSetType.ENUM;
     }
@@ -181,6 +184,7 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValueSet(IValueSet newSet, ValueDatatype valueDatatype) {
         setEnumValueSet((IEnumValueSet)newSet, valueDatatype);
     }

@@ -60,6 +60,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         this.productCmptGenerationImplBuilder = productCmptGenerationImplBuilder;
     }
 
+    @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         Document document = IpsPlugin.getDefault().newDocumentBuilder().newDocument();

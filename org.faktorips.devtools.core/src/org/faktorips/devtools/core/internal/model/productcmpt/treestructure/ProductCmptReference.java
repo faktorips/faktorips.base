@@ -49,6 +49,7 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmpt getProductCmpt() {
         return cmpt;
     }
@@ -64,6 +65,7 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObject getWrappedIpsObject() {
         return cmpt;
     }
@@ -71,6 +73,7 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
     /**
      * @return Returns the link.
      */
+    @Override
     public IProductCmptLink getLink() {
         return link;
     }

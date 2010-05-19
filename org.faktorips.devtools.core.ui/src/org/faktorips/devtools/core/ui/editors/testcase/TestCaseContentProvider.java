@@ -202,6 +202,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof ITestPolicyCmpt) {
             return getChildsForTestPolicyCmpt((ITestPolicyCmpt)parentElement);
@@ -218,6 +219,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         if (element instanceof ITestPolicyCmpt) {
             return ((ITestPolicyCmpt)element).getParent();
@@ -233,6 +235,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         Object[] children = getChildren(element);
         if (children == null) {
@@ -251,6 +254,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         List<ITestObject> elements = new ArrayList<ITestObject>();
         if (inputElement instanceof ITestCase) {
@@ -340,12 +344,14 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to do
     }
@@ -550,6 +556,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * Helper class to sort test policy component objects.
      */
     private static class TestPolicyCmptSorter implements Comparator<ITestPolicyCmpt> {
+        @Override
         public int compare(ITestPolicyCmpt testPolicyCmpt1, ITestPolicyCmpt testPolicyCmpt2) {
             return testPolicyCmpt1.getProductCmpt().compareTo(testPolicyCmpt2.getProductCmpt());
         }
@@ -559,6 +566,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * Helper class to sort test value objects.
      */
     private static class TestValueSorter implements Comparator<ITestValue> {
+        @Override
         public int compare(ITestValue testValue1, ITestValue testValue2) {
             return testValue1.getTestValueParameter().compareTo(testValue2.getTestValueParameter());
         }

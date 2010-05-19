@@ -84,6 +84,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
             overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_BEGINNING));
             overrideButton.addSelectionListener(new SelectionListener() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     try {
                         overrideClicked();
@@ -92,6 +93,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
                     }
                 }
 
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
                     // nothing to do
                 }
@@ -149,14 +151,17 @@ public class MethodsSection extends SimpleIpsPartsSection {
 
         private class MethodContentProvider implements IStructuredContentProvider {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return getType().getMethods();
             }
 
+            @Override
             public void dispose() {
                 // Nothing to do.
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // Nothing to do.
             }

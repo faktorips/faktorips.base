@@ -46,7 +46,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        IIpsProject proj = (IpsProject)newIpsProject("TestProject");
+        IIpsProject proj = newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
         table = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
         table.newColumn("1");

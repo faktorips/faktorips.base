@@ -64,6 +64,7 @@ public class DefaultEnumType implements EnumType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EnumValue[] getValues() {
         DefaultEnumValue[] copy = new DefaultEnumValue[values.length];
         System.arraycopy(values, 0, copy, 0, values.length);
@@ -73,6 +74,7 @@ public class DefaultEnumType implements EnumType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getValueIds() {
         String[] ids = new String[values.length];
         for (int i = 0; i < values.length; i++) {
@@ -84,6 +86,7 @@ public class DefaultEnumType implements EnumType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean containsValue(String id) {
         for (DefaultEnumValue value : values) {
             if (value.getId() == null) {
@@ -102,6 +105,7 @@ public class DefaultEnumType implements EnumType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EnumValue getEnumValue(String id) throws IllegalArgumentException {
         for (DefaultEnumValue value : values) {
             if (value.getId() == null) {
@@ -121,6 +125,7 @@ public class DefaultEnumType implements EnumType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNumOfValues() {
         return values.length;
     }
@@ -128,6 +133,7 @@ public class DefaultEnumType implements EnumType {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EnumValue getEnumValue(int index) throws IndexOutOfBoundsException {
         return values[index];
     }

@@ -27,6 +27,7 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
         super(file);
     }
 
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.BUSINESS_FUNCTION;
     }
@@ -65,6 +66,7 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
         throw new RuntimeException("newPart() not supported."); //$NON-NLS-1$
     }
 
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }

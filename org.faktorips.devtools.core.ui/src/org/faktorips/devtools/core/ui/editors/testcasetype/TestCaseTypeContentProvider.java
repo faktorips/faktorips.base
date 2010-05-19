@@ -35,6 +35,7 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof TestCaseTypeTreeRootElement) {
             ITestCaseType testCaseType = ((TestCaseTypeTreeRootElement)parentElement).getTestCaseType();
@@ -49,6 +50,7 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         // only the objects above have parents, in other case no parent necessary
         return null;
@@ -57,6 +59,7 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         Object[] children = getChildren(element);
         if (children == null) {
@@ -68,6 +71,7 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         return new Object[] { rootElement };
     }
@@ -75,12 +79,14 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to do
     }

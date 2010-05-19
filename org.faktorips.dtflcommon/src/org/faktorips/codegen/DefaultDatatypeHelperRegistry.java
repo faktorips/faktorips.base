@@ -36,7 +36,7 @@ public class DefaultDatatypeHelperRegistry implements DatatypeHelperRegistry {
      * {@inheritDoc}
      */
     public DatatypeHelper getHelper(Datatype datatype) {
-        return (DatatypeHelper)helpers.get(datatype);
+        return helpers.get(datatype);
     }
 
     /**

@@ -77,10 +77,12 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         return externalDataValue.toString();
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
 
@@ -89,6 +91,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         }
     }
 
+    @Override
     public void setDefaultExtension(String extension) {
         defaultExtension = extension;
 
@@ -97,15 +100,18 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         }
     }
 
+    @Override
     public String getDefaultExtension() {
         return defaultExtension;
     }
 
+    @Override
     public void addValueConverter(IValueConverter converter) {
         converters.add(converter);
         converter.setTableFormat(this);
     }
 
+    @Override
     public String getIpsValue(Object externalValue, Datatype datatype, MessageList messageList) {
         MessageList msgList = new MessageList();
         String ipsValue = getConverter(datatype).getIpsValue(externalValue, msgList);
@@ -116,6 +122,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         return ipsValue;
     }
 
+    @Override
     public Object getExternalValue(String ipsValue, Datatype datatype, MessageList messageList) {
         return getConverter(datatype).getExternalDataValue(ipsValue, messageList);
     }
@@ -130,10 +137,12 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         return defaultValueConverter;
     }
 
+    @Override
     public String getProperty(String propertyName) {
         return properties.get(propertyName);
     }
 
+    @Override
     public void setProperty(String propertyName, String propertyValue) {
         if (propertyName != null) {
             properties.put(propertyName, propertyValue);
@@ -166,10 +175,12 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
      */
     private class DefaultValueConverter extends AbstractValueConverter {
 
+        @Override
         public Datatype getSupportedDatatype() {
             return null;
         }
 
+        @Override
         public String getIpsValue(Object externalDataValue, MessageList messageList) {
             if (externalDataValue instanceof Double) {
                 return doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
@@ -177,6 +188,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
             return externalDataValue.toString();
         }
 
+        @Override
         public Object getExternalDataValue(String ipsValue, MessageList messageList) {
             return ipsValue;
         }

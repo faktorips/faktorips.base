@@ -320,6 +320,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             this.selectionProvider = selectionProvider;
         }
 
+        @Override
         public void dragStart(DragSourceEvent event) {
             // we provide the event data yet so we can decide if we will
             // accept a drop at drag-over time.
@@ -329,6 +330,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             event.data = "local";
         }
 
+        @Override
         public void dragSetData(DragSourceEvent event) {
             setToMove(getSelectedLinks());
             event.data = "local";
@@ -351,6 +353,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             return null;
         }
 
+        @Override
         public void dragFinished(DragSourceEvent event) {
             setToMove(null);
         }

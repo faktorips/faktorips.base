@@ -77,18 +77,22 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         super(pcType, id);
     }
 
+    @Override
     public PersistentType getPersistentType() {
         return persistentType;
     }
 
+    @Override
     public boolean isEnabled() {
         return persistentType == PersistentType.ENTITY || persistentType == PersistentType.MAPPED_SUPERCLASS;
     }
 
+    @Override
     public boolean isDefinesDiscriminatorColumn() {
         return definesDiscriminatorColumn;
     }
 
+    @Override
     public void setPersistentType(PersistentType persistentType) {
         if (persistentType != PersistentType.ENTITY) {
             setTableName("");
@@ -100,6 +104,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         valueChanged(oldValue, persistentType);
     }
 
+    @Override
     public void setDefinesDiscriminatorColumn(boolean definesDiscriminatorColumn) {
         if (!definesDiscriminatorColumn) {
             setDiscriminatorColumnName("");
@@ -109,6 +114,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         valueChanged(oldValue, definesDiscriminatorColumn);
     }
 
+    @Override
     public void setUseTableDefinedInSupertype(boolean useTableDefinedInSupertype) {
         if (useTableDefinedInSupertype) {
             setTableName("");
@@ -118,30 +124,37 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         valueChanged(oldValue, useTableDefinedInSupertype);
     }
 
+    @Override
     public boolean isUseTableDefinedInSupertype() {
         return useTableDefinedInSupertype;
     }
 
+    @Override
     public String getDiscriminatorColumnName() {
         return discriminatorColumnName;
     }
 
+    @Override
     public DiscriminatorDatatype getDiscriminatorDatatype() {
         return discriminatorDatatype;
     }
 
+    @Override
     public String getDiscriminatorValue() {
         return discriminatorValue;
     }
 
+    @Override
     public InheritanceStrategy getInheritanceStrategy() {
         return inheritanceStrategy;
     }
 
+    @Override
     public String getTableName() {
         return tableName;
     }
 
+    @Override
     public void setDiscriminatorColumnName(String newDiscriminatorColumnName) {
         ArgumentCheck.notNull(newDiscriminatorColumnName);
         String oldValue = discriminatorColumnName;
@@ -150,6 +163,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         valueChanged(oldValue, newDiscriminatorColumnName);
     }
 
+    @Override
     public void setDiscriminatorDatatype(DiscriminatorDatatype newDescriminatorDatatype) {
         ArgumentCheck.notNull(newDescriminatorDatatype);
         DiscriminatorDatatype oldValue = discriminatorDatatype;
@@ -158,6 +172,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         valueChanged(oldValue, newDescriminatorDatatype);
     }
 
+    @Override
     public void setDiscriminatorValue(String newDescriminatorValue) {
         ArgumentCheck.notNull(newDescriminatorValue);
         String oldValue = discriminatorValue;
@@ -166,6 +181,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         valueChanged(oldValue, newDescriminatorValue);
     }
 
+    @Override
     public void setInheritanceStrategy(InheritanceStrategy newStrategy) {
         ArgumentCheck.notNull(newStrategy);
         InheritanceStrategy oldValue = inheritanceStrategy;
@@ -174,6 +190,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         valueChanged(oldValue, newStrategy);
     }
 
+    @Override
     public void setTableName(String newTableName) {
         ArgumentCheck.notNull(newTableName);
         String oldValue = tableName;
@@ -292,6 +309,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
+    @Override
     public IPolicyCmptType findRootEntity() throws CoreException {
         RooEntityFinder rooEntityFinder = new RooEntityFinder();
         rooEntityFinder.start(getPolicyCmptType());
@@ -490,6 +508,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
+    @Override
     public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getIpsObject();
     }

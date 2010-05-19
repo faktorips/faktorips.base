@@ -161,6 +161,7 @@ public class ObjectPathOrderComposite extends Composite {
     // widget action handling
     private class IpsPathOrderAdapter implements ISelectionChangedListener, SelectionListener {
 
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             if (event.getSelection().isEmpty()) {
                 setButtonEnabledStates(false);
@@ -169,6 +170,7 @@ public class ObjectPathOrderComposite extends Composite {
             }
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
 
             if (e.getSource() == moveUpButton) {
@@ -185,6 +187,7 @@ public class ObjectPathOrderComposite extends Composite {
             tableViewer.refresh(false);
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
         }
     }
@@ -242,6 +245,7 @@ public class ObjectPathOrderComposite extends Composite {
             tableViewer.refresh();
         } else {
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     tableViewer.refresh();
                 }

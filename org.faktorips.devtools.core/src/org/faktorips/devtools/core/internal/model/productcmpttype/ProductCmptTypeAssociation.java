@@ -45,22 +45,27 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         type = AssociationType.AGGREGATION;
     }
 
+    @Override
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
     }
 
+    @Override
     public boolean isQualified() {
         return false;
     }
 
+    @Override
     public IProductCmptType findTargetProductCmptType(IIpsProject ipsProject) throws CoreException {
         return (IProductCmptType)ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getTarget());
     }
 
+    @Override
     public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
         return findMatchingPolicyCmptTypeAssociation(ipsProject) != null;
     }
 
+    @Override
     public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject)
             throws CoreException {
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);

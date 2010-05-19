@@ -39,6 +39,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getAncestorLabel(Object input) {
         return config.getAncestorLabel(input);
     }
@@ -47,6 +48,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
      * Returns the image of the <code>IIpsElement</code> that is referenced by the ancestor-
      * <code>ProductCmptCompareItem</code>. {@inheritDoc}
      */
+    @Override
     public Image getAncestorImage(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getAncestor();
@@ -62,6 +64,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
      * <code>TextMergeViewer</code> can use <code>ProductCmptCompareItem</code>s as
      * <code>IDocumentRange</code>s. {@inheritDoc}
      */
+    @Override
     public Object getAncestorContent(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getAncestor();
@@ -75,6 +78,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
     /**
      * Returns false. {@inheritDoc}
      */
+    @Override
     public boolean showAncestor(Object input) {
         return false;
     }
@@ -82,6 +86,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLeftLabel(Object input) {
         return config.getLeftLabel(input);
     }
@@ -90,6 +95,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
      * Returns the image of the <code>IIpsElement</code> that is referenced by the left
      * <code>ProductCmptCompareItem</code>. {@inheritDoc}
      */
+    @Override
     public Image getLeftImage(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getLeft();
@@ -104,6 +110,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
      * Returns the left <code>ProductCmptCompareItem</code> itself. The <code>TextMergeViewer</code>
      * can use <code>ProductCmptCompareItem</code>s as <code>IDocumentRange</code>s. {@inheritDoc}
      */
+    @Override
     public Object getLeftContent(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getLeft();
@@ -117,6 +124,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
     /**
      * Returns false. {@inheritDoc}
      */
+    @Override
     public boolean isLeftEditable(Object input) {
         return false;
     }
@@ -124,12 +132,14 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
     /**
      * Empty implementation. Nothing to save. {@inheritDoc}
      */
+    @Override
     public void saveLeftContent(Object input, byte[] bytes) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getRightLabel(Object input) {
         return config.getRightLabel(input);
     }
@@ -138,6 +148,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
      * Returns the image of the <code>IIpsElement</code> that is referenced by the right
      * <code>ProductCmptCompareItem</code>. {@inheritDoc}
      */
+    @Override
     public Image getRightImage(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getRight();
@@ -153,6 +164,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
      * <code>TextMergeViewer</code> can use <code>ProductCmptCompareItem</code>s as
      * <code>IDocumentRange</code>s. {@inheritDoc}
      */
+    @Override
     public Object getRightContent(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getRight();
@@ -166,6 +178,7 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
     /**
      * Returns false. {@inheritDoc}
      */
+    @Override
     public boolean isRightEditable(Object input) {
         return false;
     }
@@ -173,18 +186,21 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
     /**
      * Empty implementation. Nothing to save. {@inheritDoc}
      */
+    @Override
     public void saveRightContent(Object input, byte[] bytes) {
     }
 
     /**
      * Empty implementation. {@inheritDoc}
      */
+    @Override
     public void dispose() {
     }
 
     /**
      * Empty implementation. {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
     }
 

@@ -141,6 +141,7 @@ public class CallMethodPropertySection extends AbstractPropertySection implement
     protected void updateFromModel(ContentChangeEvent event) {
     }
 
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (!event.getIpsSrcFile().equals(getBFElement().getIpsSrcFile())) {
             return;

@@ -28,6 +28,7 @@ public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotation
         super(builderSet);
     }
 
+    @Override
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)ipsElement;
@@ -72,10 +73,12 @@ public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotation
         return builder.getFragment();
     }
 
+    @Override
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION;
     }
 
+    @Override
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
         return true;
     }

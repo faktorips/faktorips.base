@@ -40,6 +40,7 @@ public abstract class StandardXmlFileBuilder extends AbstractXmlFileBuilder impl
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean buildsPublishedArtefacts() {
         return buildsPublishedArtefacts;
     }

@@ -47,6 +47,7 @@ public interface IAttributeValue extends IIpsObjectPart, IPropertyValue {
     /**
      * Returns the product component generation this value belongs to.
      */
+    @Override
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**

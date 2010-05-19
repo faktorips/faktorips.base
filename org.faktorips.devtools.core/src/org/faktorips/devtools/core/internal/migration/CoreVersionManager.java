@@ -53,6 +53,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setFeatureId(String featureId) {
         // this version manager supports the core faktor-ips feature. No need to maintain its id
     }
@@ -60,6 +61,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getFeatureId() {
         return "org.faktorips.feature"; //$NON-NLS-1$
     }
@@ -67,6 +69,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCurrentVersion() {
         return version;
     }
@@ -74,6 +77,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isCurrentVersionCompatibleWith(String otherVersion) {
         if (compareToCurrentVersion(otherVersion) > 0) {
             return false;
@@ -101,6 +105,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compareToCurrentVersion(String otherVersion) {
         Version outer = Version.parseVersion(otherVersion);
         Version inner = Version.parseVersion(getCurrentVersion());
@@ -110,6 +115,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
             throws CoreException {
         String version = projectToMigrate.getReadOnlyProperties().getMinRequiredVersionNumber(getFeatureId());
@@ -156,6 +162,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setId(String id) {
         this.id = id;
     }
@@ -163,6 +170,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -170,6 +178,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPredecessorId(String predecessorId) {
         this.predecessorId = predecessorId;
     }
@@ -177,6 +186,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPredecessorId() {
         return predecessorId;
     }

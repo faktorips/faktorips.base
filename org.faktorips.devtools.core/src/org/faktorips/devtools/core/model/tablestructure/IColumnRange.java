@@ -64,6 +64,7 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
      * 
      * @see org.faktorips.devtools.core.model.IIpsElement#getName()
      */
+    @Override
     public String getName();
 
     /**
@@ -109,6 +110,7 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
     /**
      * Returns the datatype identifier of the columns of this range.
      */
+    @Override
     public String getDatatype();
 
     /**

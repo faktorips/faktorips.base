@@ -72,7 +72,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
             }
         }
 
-        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+        return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
     /**

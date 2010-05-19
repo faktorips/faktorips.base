@@ -32,6 +32,7 @@ public class IpsObjectGenerationWorkbenchAdapter extends IpsObjectPartWorkbenchA
     public IpsObjectGenerationWorkbenchAdapter() {
         IpsPlugin.getDefault().getIpsPreferences().addChangeListener(new IPropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent event) {
                 cachedImageDescriptor = null;
             }

@@ -104,6 +104,7 @@ public class RulesSection extends SimpleIpsPartsSection {
             // if the selection changes in the viewer, we have to update the description
             super.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     ISelection selection = getViewer().getSelection();
                     if (!(selection instanceof IStructuredSelection)) {
@@ -146,6 +147,7 @@ public class RulesSection extends SimpleIpsPartsSection {
 
         private class ContentProvider implements IStructuredContentProvider {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 try {
                     IPolicyCmptType type = page.getProductCmpt().findPolicyCmptType(
@@ -161,10 +163,12 @@ public class RulesSection extends SimpleIpsPartsSection {
                 }
             }
 
+            @Override
             public void dispose() {
                 // nothing todo
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing todo
             }

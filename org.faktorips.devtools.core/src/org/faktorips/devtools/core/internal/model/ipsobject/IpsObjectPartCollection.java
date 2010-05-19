@@ -117,6 +117,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         return parts.get(index);
     }
 
+    @Override
     public Iterator<T> iterator() {
         return parts.iterator();
     }

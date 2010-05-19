@@ -205,8 +205,8 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
                 "builderSetId", logger, null);
 
         assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector", propertyDef.getDefaultValue(null));
-        assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector", propertyDef.parseValue(propertyDef
-                .getDefaultValue(null)));
+        assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector",
+                propertyDef.parseValue(propertyDef.getDefaultValue(null)));
 
         assertEquals("None", propertyDef.getDisableValue(null));
         assertEquals("None", propertyDef.parseValue(propertyDef.getDisableValue(null)));
@@ -299,6 +299,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
     private IIpsProject createTestIpsProject(final String complianceLevel) {
 
         InvocationHandler javaProjectHandler = new InvocationHandler() {
+            @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 if (method.getName().equals("getOption") && args.length > 0
                         && ((String)args[0]).equals(JavaCore.COMPILER_COMPLIANCE)) {
@@ -311,6 +312,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
                 new Class[] { IJavaProject.class }, javaProjectHandler);
 
         InvocationHandler ipsProjectHandler = new InvocationHandler() {
+            @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 if (method.getName().equals("getJavaProject")) {
                     return javaProject;

@@ -54,6 +54,7 @@ public abstract class ControlComposite extends Composite {
 
     private class BroadcastListener implements Listener {
 
+        @Override
         public void handleEvent(Event event) {
             notifyListeners(event.type, event);
         }

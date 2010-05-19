@@ -36,6 +36,7 @@ public class ProductCmptKind implements IProductCmptKind {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -43,6 +44,7 @@ public class ProductCmptKind implements IProductCmptKind {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getRuntimeId() {
         return runtimeId;
     }

@@ -90,6 +90,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
         private void addDeleteListener() {
             super.addDeleteListener(new IDeleteListener() {
+                @Override
                 public boolean aboutToDelete(IIpsObjectPart part) {
                     IValidationRule rule = findValidationRule(part);
                     if (rule == null) {
@@ -122,6 +123,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
                     return null;
                 }
 
+                @Override
                 public void deleted(IIpsObjectPart part) {
                     // Nothing to do.
                 }
@@ -138,6 +140,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
             MenuManager manager = new MenuManager();
             manager.setRemoveAllWhenShown(true);
             manager.addMenuListener(new IMenuListener() {
+                @Override
                 public void menuAboutToShow(IMenuManager manager) {
                     manager.add(new Separator());
                     MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
@@ -171,10 +174,12 @@ public class AttributesSection extends SimpleIpsPartsSection {
             overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_BEGINNING));
             overrideButton.addSelectionListener(new SelectionListener() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     overrideClicked();
                 }
 
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
             });
@@ -224,14 +229,17 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
         private class AttributeContentProvider implements IStructuredContentProvider {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return getPolicyCmptType().getPolicyCmptTypeAttributes();
             }
 
+            @Override
             public void dispose() {
                 // Nothing to do.
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // Nothing to do.
             }

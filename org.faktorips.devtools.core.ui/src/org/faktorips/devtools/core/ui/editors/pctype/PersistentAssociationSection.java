@@ -134,6 +134,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         }
 
         private class PersistentAssociationContentProvider implements IStructuredContentProvider {
+            @Override
             public Object[] getElements(Object inputElement) {
                 List<IPolicyCmptTypeAssociation> content = new ArrayList<IPolicyCmptTypeAssociation>();
                 IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = ((IPolicyCmptType)getIpsObject())
@@ -146,10 +147,12 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 return content.toArray();
             }
 
+            @Override
             public void dispose() {
                 // nothing to do
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing to do
             }
@@ -157,6 +160,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
         private class PersistentAssociationLabelProvider extends LabelProvider implements ITableLabelProvider {
 
+            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 IPersistentAssociationInfo persistenceAssociationInfo = ((IPolicyCmptTypeAssociation)element)
                         .getPersistenceAssociatonInfo();
@@ -196,6 +200,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 return null;
             }
 
+            @Override
             public String getColumnText(Object element, int columnIndex) {
                 IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)element;
                 IPersistentAssociationInfo jpaAssociationInfo = association.getPersistenceAssociatonInfo();

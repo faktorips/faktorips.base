@@ -35,10 +35,12 @@ public class DependencyDetail implements IDependencyDetail {
         this.propertyName = propertyName;
     }
 
+    @Override
     public IIpsObjectPartContainer getPart() {
         return part;
     }
 
+    @Override
     public String getPropertyName() {
         return propertyName;
     }

@@ -59,6 +59,7 @@ public class DescriptionControl extends Composite implements ModifyListener {
      * 
      * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
      */
+    @Override
     public void modifyText(ModifyEvent e) {
         describedObject.setDescription(descriptionText.getText());
     }

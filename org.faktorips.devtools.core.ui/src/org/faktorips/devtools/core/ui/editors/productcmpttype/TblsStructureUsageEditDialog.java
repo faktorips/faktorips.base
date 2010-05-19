@@ -93,9 +93,11 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
 
         nameField.getControl().setFocus();
         nameField.addChangeListener(new ValueChangeListener() {
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 if (!getShell().isDisposed()) {
                     getShell().getDisplay().asyncExec(new Runnable() {
+                        @Override
                         public void run() {
                             if (getShell().isDisposed()) {
                                 return;
@@ -137,6 +139,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
         viewer.setInput(tblStructureUsage);
 
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonsEnabledState();
             }
@@ -167,6 +170,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
         btnDown.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         btnAdd.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     addClicked();
@@ -175,10 +179,12 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         btnRemove.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     removedClicked();
@@ -187,10 +193,12 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         btnUp.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveClicked(true);
@@ -199,10 +207,12 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         btnDown.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveClicked(false);
@@ -211,6 +221,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });

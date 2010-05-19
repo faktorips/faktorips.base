@@ -168,6 +168,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
         return null;
     }
 
+    @Override
     public final void createControl(Composite parent) {
         Control control = createControlInternal(parent);
         try {

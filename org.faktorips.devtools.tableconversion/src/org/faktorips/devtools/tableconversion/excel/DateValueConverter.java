@@ -38,6 +38,7 @@ public class DateValueConverter extends AbstractValueConverter {
      * 
      * {@inheritDoc}
      */
+    @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         Date date = null;
         boolean error = true;
@@ -71,13 +72,14 @@ public class DateValueConverter extends AbstractValueConverter {
      * 
      * {@inheritDoc}
      */
+    @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
         }
 
         try {
-            return (Date)datatype.getValue(ipsValue);
+            return datatype.getValue(ipsValue);
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
                     .getQualifiedName(), GregorianCalendar.class.getName()));
@@ -88,6 +90,7 @@ public class DateValueConverter extends AbstractValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Datatype getSupportedDatatype() {
         return datatype;
     }

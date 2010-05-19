@@ -32,6 +32,7 @@ public class OpenNewProductCmptWizardAction extends OpenNewWizardAction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         // nothing to do
     }

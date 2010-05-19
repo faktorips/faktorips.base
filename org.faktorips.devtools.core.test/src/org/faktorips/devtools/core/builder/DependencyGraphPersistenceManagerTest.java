@@ -47,36 +47,45 @@ public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest
 
     private static class TestSaveContext implements ISaveContext {
 
+        @Override
         public IPath[] getFiles() {
             return null;
         }
 
+        @Override
         public int getKind() {
             return ISaveContext.FULL_SAVE;
         }
 
+        @Override
         public int getPreviousSaveNumber() {
             return 0;
         }
 
+        @Override
         public IProject getProject() {
             return null;
         }
 
+        @Override
         public int getSaveNumber() {
             return 0;
         }
 
+        @Override
         public IPath lookup(IPath file) {
             return null;
         }
 
+        @Override
         public void map(IPath file, IPath location) {
         }
 
+        @Override
         public void needDelta() {
         }
 
+        @Override
         public void needSaveNumber() {
         }
 

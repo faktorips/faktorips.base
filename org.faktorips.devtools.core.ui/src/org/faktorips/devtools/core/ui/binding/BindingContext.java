@@ -462,6 +462,7 @@ public class BindingContext {
 
     class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
 
+        @Override
         public void valueChanged(FieldValueChangedEvent e) {
             // defensive copy to avoid concurrent modification
             List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
@@ -479,15 +480,18 @@ public class BindingContext {
             }
         }
 
+        @Override
         public void focusGained(FocusEvent e) {
             // nothing to do
         }
 
+        @Override
         public void focusLost(FocusEvent e) {
             // broadcast outstanding change events
             IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastLastEvent();
         }
 
+        @Override
         public void contentsChanged(ContentChangeEvent event) {
             // defensive copy to avoid concurrent modification
             List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
@@ -513,6 +517,7 @@ public class BindingContext {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             // defensive copy to avoid concurrent modification
             List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);

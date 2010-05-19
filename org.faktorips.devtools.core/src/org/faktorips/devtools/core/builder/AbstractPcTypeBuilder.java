@@ -60,6 +60,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
         return getPcType().findProductCmptType(getIpsProject());
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE);
     }

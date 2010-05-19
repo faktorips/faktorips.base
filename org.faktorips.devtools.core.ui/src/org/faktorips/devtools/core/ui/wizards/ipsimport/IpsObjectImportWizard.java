@@ -52,6 +52,7 @@ public abstract class IpsObjectImportWizard extends Wizard implements IImportWiz
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
     }

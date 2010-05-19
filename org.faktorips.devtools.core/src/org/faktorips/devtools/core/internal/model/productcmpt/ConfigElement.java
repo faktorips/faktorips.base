@@ -67,34 +67,42 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
+    @Override
     public IProductCmpt getProductCmpt() {
         return (IProductCmpt)getParent().getParent();
     }
 
+    @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }
 
+    @Override
     public String getPropertyName() {
         return pcTypeAttribute;
     }
 
+    @Override
     public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findPcTypeAttribute(ipsProject);
     }
 
+    @Override
     public ProdDefPropertyType getPropertyType() {
         return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
 
+    @Override
     public String getPropertyValue() {
         return value;
     }
 
+    @Override
     public String getPolicyCmptTypeAttribute() {
         return pcTypeAttribute;
     }
 
+    @Override
     public void setPolicyCmptTypeAttribute(String newName) {
         String oldName = pcTypeAttribute;
         pcTypeAttribute = newName;
@@ -102,16 +110,19 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         valueChanged(oldName, pcTypeAttribute);
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public void setValue(String newValue) {
         String oldValue = value;
         value = newValue;
         valueChanged(oldValue, value);
     }
 
+    @Override
     public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType(ipsProject);
         if (pcType == null) {
@@ -120,6 +131,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return pcType.findPolicyCmptTypeAttribute(pcTypeAttribute, ipsProject);
     }
 
+    @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAttribute a = findPcTypeAttribute(ipsProject);
         if (a != null) {
@@ -276,6 +288,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValueSet getValueSet() {
         return valueSet;
     }
@@ -283,6 +296,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
         if (attribute == null) {
@@ -301,6 +315,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValueSetType(ValueSetType type) {
         IValueSet oldset = valueSet;
         valueSet = type.newValueSet(this, getNextPartId());
@@ -310,6 +325,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValueSet changeValueSetType(ValueSetType newType) {
         setValueSetType(newType);
         return valueSet;
@@ -318,6 +334,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValueSetCopy(IValueSet source) {
         IValueSet oldset = valueSet;
         valueSet = source.copy(this, getNextPartId());
@@ -389,6 +406,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public IIpsObjectPart newPart(Class partType) {
         throw new IllegalArgumentException("Unknown part type" + partType);
@@ -429,6 +447,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return null;
     }
 
+    @Override
     public boolean isValueSetUpdateable() {
         return true;
     }

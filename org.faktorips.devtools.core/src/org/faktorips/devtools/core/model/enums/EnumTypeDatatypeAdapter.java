@@ -56,6 +56,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isEnum() {
         return true;
     }
@@ -76,6 +77,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * @throws RuntimeException If the process of determining the <tt>IEnumAttributeValue</tt>s
      *             throws a <tt>CoreException</tt>.
      */
+    @Override
     public String[] getAllValueIds(boolean includeNull) {
         if (enumContent == null) {
             if (!(enumType.isContainingValues()) && includeNull) {
@@ -94,6 +96,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * the display name attribute adapted enumeration type. If so the display name is returned,
      * otherwise <tt>null</tt>.
      */
+    @Override
     public String getValueName(String id) {
         if (id == null) {
             return null;
@@ -124,6 +127,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>true</tt>.
      */
+    @Override
     public boolean isSupportingNames() {
         return true;
     }
@@ -137,6 +141,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return result;
     }
 
+    @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         List<String> result = findAllIdentifierAttributeValues(true);
         if (result.contains(valueA) && result.contains(valueB)) {
@@ -147,6 +152,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
                 + " is not part of this enumeration type. Therefor the equality cannot be determined.");
     }
 
+    @Override
     public MessageList checkReadyToUse() {
         return new MessageList();
         /*
@@ -157,6 +163,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
          */
     }
 
+    @Override
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
@@ -166,6 +173,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>null</tt>.
      */
+    @Override
     public String getDefaultValue() {
         return null;
     }
@@ -175,6 +183,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>null</tt>.
      */
+    @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
@@ -184,6 +193,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>true</tt>.
      */
+    @Override
     public boolean isImmutable() {
         return !isMutable();
     }
@@ -193,6 +203,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>false</tt>.
      */
+    @Override
     public boolean isMutable() {
         return false;
     }
@@ -202,6 +213,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>true</tt> if the provided value is <tt>null</tt>
      */
+    @Override
     public boolean isNull(String value) {
         return value == null;
     }
@@ -210,6 +222,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * Returns <tt>true</tt> if the provided value is in the list of enumeration attribute values of
      * the literal name attribute of the adapted enumeration type.
      */
+    @Override
     public boolean isParsable(String value) {
         List<String> result = findAllIdentifierAttributeValues(true);
         return result.contains(value);
@@ -220,18 +233,22 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>false</tt>.
      */
+    @Override
     public boolean supportsCompare() {
         return false;
     }
 
+    @Override
     public String getJavaClassName() {
         return getEnumValueContainer().getIpsProject().getDatatypeHelper(this).getJavaClassName();
     }
 
+    @Override
     public String getName() {
         return enumType.getName();
     }
 
+    @Override
     public String getQualifiedName() {
         return enumType.getQualifiedName();
     }
@@ -241,6 +258,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>false</tt>.
      */
+    @Override
     public boolean hasNullObject() {
         return false;
     }
@@ -250,6 +268,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>true</tt> if the adapted enumeration type is abstract.
      */
+    @Override
     public boolean isAbstract() {
         return enumType.isAbstract();
     }
@@ -259,6 +278,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>false</tt>.
      */
+    @Override
     public boolean isPrimitive() {
         return false;
     }
@@ -268,6 +288,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>true</tt>.
      */
+    @Override
     public boolean isValueDatatype() {
         return true;
     }
@@ -277,10 +298,12 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * <p>
      * Returns <tt>false</tt>.
      */
+    @Override
     public boolean isVoid() {
         return false;
     }
 
+    @Override
     public int compareTo(Datatype o) {
         EnumDatatype other = (EnumDatatype)o;
         return getQualifiedName().compareTo(other.getQualifiedName());

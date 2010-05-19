@@ -475,6 +475,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPage createModelDescriptionPage() throws CoreException {
         return new ProductCmptModelDescriptionPage(this);
     }

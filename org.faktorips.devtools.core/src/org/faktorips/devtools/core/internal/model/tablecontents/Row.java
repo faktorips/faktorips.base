@@ -51,6 +51,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         initValues();
     }
 
+    @Override
     public ITableContents getTableContents() {
         return (ITableContents)getParent().getParent();
     }
@@ -85,6 +86,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         return "" + rowNumber;
     }
 
+    @Override
     public int getRowNumber() {
         return rowNumber;
     }
@@ -99,10 +101,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         this.rowNumber = rowNumber;
     }
 
+    @Override
     public String getValue(int column) {
         return values.get(column);
     }
 
+    @Override
     public void setValue(int column, String newValue) {
         setValueInternal(column, newValue);
         getTableContentsGeneration().updateUniqueKeyCacheFor(this);

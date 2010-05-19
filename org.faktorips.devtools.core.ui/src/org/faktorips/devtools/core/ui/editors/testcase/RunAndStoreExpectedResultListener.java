@@ -39,6 +39,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
      * 
      * {@inheritDoc}
      */
+    @Override
     public void testFailureOccured(String testFailureOccured, String[] failureDetails) {
         synchronized (failureDetailsList) {
             failureDetailsList.add(failureDetails);
@@ -48,6 +49,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testFinished(String qualifiedTestName) {
         // inform the test case editor about the end of the test run
         testCaseSection.testFailureOccuredToStoreExpResult(qualifiedTestName, failureDetailsList);
@@ -57,6 +59,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testRunStarted(int testCount, String classpathRepository, String testPackage) {
         // nothing to do
     }
@@ -64,6 +67,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testStarted(String qualifiedTestName) {
         // nothing to do
     }
@@ -71,6 +75,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testTableEntry(String qualifiedName, String fullPath) {
         // nothing to do
     }
@@ -78,6 +83,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testTableEntries(String[] qualifiedName, String[] fullPath) {
         // nothing to do
     }
@@ -85,6 +91,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testErrorOccured(String qualifiedTestName, String[] errorDetails) {
         testCaseSection.testErrorOccured(qualifiedTestName, errorDetails);
     }
@@ -92,6 +99,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testRunEnded(String elapsedTime) {
         // nothing to do
     }
@@ -99,6 +107,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canNavigateToFailure() {
         return false;
     }

@@ -61,6 +61,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         HashSet<IResource> changedElements = new HashSet<IResource>();
 
@@ -103,6 +104,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean visit(IResourceDelta delta) throws CoreException {
             IResource res = delta.getResource();
             if (res instanceof IProject && delta.getKind() == IResourceDelta.CHANGED) {

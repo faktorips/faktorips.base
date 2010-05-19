@@ -80,6 +80,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
         this.canShowPolicyComponentType = canShowPolicyComponentType;
         this.canShowPolicyComponentType.addValueChangeListener(new IValueChangeListener() {
+            @Override
             public void handleValueChange(ValueChangeEvent event) {
                 propagateEvent();
             }
@@ -97,6 +98,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
     /**
      * {@inheritDoc}
      */
+    @Override
     public Image getImage(Object element) {
         if (element instanceof TestPolicyCmpt) {
             TestPolicyCmpt component = (TestPolicyCmpt)element;
@@ -189,6 +191,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText(Object element) {
         if (element instanceof ITestPolicyCmpt) {
             ITestPolicyCmpt tstPolicyCmpt = (ITestPolicyCmpt)element;

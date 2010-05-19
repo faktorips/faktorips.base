@@ -84,6 +84,7 @@ public final class RenameRefactoringWizard extends IpsRefactoringWizard {
             setMessage(NLS.bind(Messages.RenamePage_message, getIpsElementName(), getIpsElement().getName()));
         }
 
+        @Override
         public void createControl(Composite parent) {
             Composite controlComposite = getUiToolkit().createGridComposite(parent, 1, false, false);
             setControl(controlComposite);
@@ -93,6 +94,7 @@ public final class RenameRefactoringWizard extends IpsRefactoringWizard {
             newNameTextField = getUiToolkit().createText(newNameComposite);
             newNameTextField.setText(getIpsElement().getName());
             newNameTextField.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent event) {
                     userInputChanged();
                 }

@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 
 public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, IWorkbenchAdapter2 {
 
+    @Override
     public Object[] getChildren(Object o) {
         if (o instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)o;
@@ -38,6 +39,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
         }
     }
 
+    @Override
     public final ImageDescriptor getImageDescriptor(Object object) {
         if (object instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)object;
@@ -51,6 +53,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
 
     public abstract ImageDescriptor getDefaultImageDescriptor();
 
+    @Override
     public final String getLabel(Object o) {
         if (o instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)o;
@@ -64,6 +67,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
         return ipsElement.getName();
     }
 
+    @Override
     public Object getParent(Object o) {
         if (o instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)o;
@@ -73,14 +77,17 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
         }
     }
 
+    @Override
     public RGB getBackground(Object element) {
         return null;
     }
 
+    @Override
     public FontData getFont(Object element) {
         return null;
     }
 
+    @Override
     public RGB getForeground(Object element) {
         return null;
     }

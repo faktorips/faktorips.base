@@ -30,14 +30,17 @@ public class PolicyCmptImplClassAttributeGetterJpaAnnGen extends AbstractAnnotat
         super(builderSet);
     }
 
+    @Override
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         return newJavaCodeFragment();
     }
 
+    @Override
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER;
     }
 
+    @Override
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
         // currently there are no annotation created by this generator class
         return false;

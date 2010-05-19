@@ -56,26 +56,32 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         this.builders = builders;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public void setId(String id) {
         this.id = id;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
 
+    @Override
     public void setLabel(String label) {
         this.label = label;
     }
 
+    @Override
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
 
+    @Override
     public void setIpsProject(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
     }
@@ -85,6 +91,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         return id;
     }
 
+    @Override
     public boolean containsAggregateRootBuilder() {
         return false;
     }
@@ -92,6 +99,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     /**
      * Default implementation returns <code>false</code>. {@inheritDoc}
      */
+    @Override
     public boolean isInverseRelationLinkRequiredFor2WayCompositions() {
         return false;
     }
@@ -99,24 +107,29 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     /**
      * Default implementation returns <code>false</code>. {@inheritDoc}
      */
+    @Override
     public boolean isRoleNamePluralRequiredForTo1Relations() {
         return false;
     }
 
+    @Override
     public IIpsArtefactBuilder[] getArtefactBuilders() {
         return builders;
     }
 
+    @Override
     public IIpsArtefactBuilderSetConfig getConfig() {
         return config;
     }
 
+    @Override
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
         ArgumentCheck.notNull(config);
         this.config = config;
         builders = createBuilders();
     }
 
+    @Override
     public Locale getLanguageUsedInGeneratedSourceCode() {
         String localeString = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_GENERATOR_LOCALE);
         if (localeString == null) {
@@ -148,14 +161,17 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
      */
     protected abstract IIpsArtefactBuilder[] createBuilders() throws CoreException;
 
+    @Override
     public void afterBuildProcess(int buildKind) throws CoreException {
         // could be implemented in subclass
     }
 
+    @Override
     public void beforeBuildProcess(int buildKind) throws CoreException {
         // could be implemented in subclass
     }
 
+    @Override
     public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass) {
         List<T> result = new ArrayList<T>();
         if (builders == null) {
@@ -170,10 +186,12 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         return result;
     }
 
+    @Override
     public boolean isTableBasedEnumValidationRequired() {
         return true;
     }
 
+    @Override
     public boolean isPersistentProviderSupportConverter() {
         return false;
     }

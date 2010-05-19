@@ -29,6 +29,7 @@ public class TestContentsChangeListener implements ContentsChangeListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         this.lastEvent = event;
         count++;

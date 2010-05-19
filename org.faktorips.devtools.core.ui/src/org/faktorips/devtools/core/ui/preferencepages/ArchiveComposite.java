@@ -163,6 +163,7 @@ public class ArchiveComposite extends Composite {
             tableViewer.refresh();
         } else {
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     tableViewer.refresh();
                 }
@@ -187,6 +188,7 @@ public class ArchiveComposite extends Composite {
         dialog.addFilter(new IpsarViewerFilter(alreadyRefArchives, true));
 
         ISelectionStatusValidator validator = new ISelectionStatusValidator() {
+            @Override
             public IStatus validate(Object[] selection) {
                 for (int i = 0; i < selection.length; i++) {
                     if (selection[i] == null || !(selection[i] instanceof IFile)) {
@@ -260,6 +262,7 @@ public class ArchiveComposite extends Composite {
 
     private class IpsArchiveAdapter implements SelectionListener, ISelectionChangedListener {
 
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             if (event.getSelection().isEmpty()) {
                 removeIpsArchivesButton.setEnabled(false);
@@ -268,6 +271,7 @@ public class ArchiveComposite extends Composite {
             }
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (e.getSource() == addIpsArchivesButton) {
                 addIpsArchives();
@@ -280,6 +284,7 @@ public class ArchiveComposite extends Composite {
             }
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
         }
     }
@@ -292,6 +297,7 @@ public class ArchiveComposite extends Composite {
             tableViewer.refresh();
         } else {
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     tableViewer.refresh();
                 }

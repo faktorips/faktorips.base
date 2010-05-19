@@ -51,6 +51,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -58,6 +59,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObject getIpsObject() {
         IpsObjectPartContainer container = getContainer();
         if (container == null) {
@@ -74,6 +76,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public void delete() {
         if (isDeleted()) {
             throw new RuntimeException("Object has already been deleted!"); //$NON-NLS-1$
@@ -91,6 +94,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDeleted() {
         return deleted;
     }
@@ -98,6 +102,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -105,6 +110,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDescriptionChangable() {
         return descriptionChangable;
     }
@@ -112,6 +118,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDescription(String newDescription) {
         ArgumentCheck.notNull(description, this);
         ArgumentCheck.isTrue(isDescriptionChangable(), "The description attribute of this object is marked " + //$NON-NLS-1$
@@ -136,6 +143,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public IResource getCorrespondingResource() {
         return null;
     }
@@ -143,6 +151,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValid() throws CoreException {
         return getValidationResultSeverity() != Message.ERROR;
     }
@@ -150,6 +159,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getValidationResultSeverity() throws CoreException {
         return validate(getIpsProject()).getSeverity();
     }

@@ -104,6 +104,7 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
     /**
      * Returns the product component generation this config element belongs to.
      */
+    @Override
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**
@@ -131,6 +132,7 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
     /**
      * Returns the set of allowed values.
      */
+    @Override
     public IValueSet getValueSet();
 
     /**
@@ -148,6 +150,7 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
      * @see IPolicyCmptTypeAttribute#getValueSet()
      * @see IValueSet#isUnrestricted()
      */
+    @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
 
     /**
@@ -158,6 +161,7 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
      * @throws OperationNotSupportedException if this element ist of type PRODUCT_ATTRIBUTE because
      *             config elements of this type does not support own value sets.
      */
+    @Override
     public void setValueSetType(ValueSetType type);
 
     /**
@@ -180,6 +184,7 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
      * 
      * @throws CoreException if an error occurs while searching
      */
+    @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
 
     /**

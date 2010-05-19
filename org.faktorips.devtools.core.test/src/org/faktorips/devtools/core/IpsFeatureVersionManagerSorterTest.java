@@ -90,12 +90,14 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void setId(String id) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getId() {
             return id;
         }
@@ -103,12 +105,14 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void setPredecessorId(String predecessorId) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getPredecessorId() {
             return prevId;
         }
@@ -116,12 +120,14 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void setFeatureId(String featureId) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getFeatureId() {
             return null;
         }
@@ -129,6 +135,7 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getCurrentVersion() {
             return null;
         }
@@ -136,6 +143,7 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean isCurrentVersionCompatibleWith(String otherVersion) {
             return false;
         }
@@ -143,6 +151,7 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public int compareToCurrentVersion(String otherVersion) {
             return 0;
         }
@@ -150,6 +159,7 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
                 throws CoreException {
             return null;

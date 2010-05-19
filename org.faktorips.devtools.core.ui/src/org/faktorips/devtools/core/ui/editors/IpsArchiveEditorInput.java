@@ -47,6 +47,7 @@ public class IpsArchiveEditorInput extends PlatformObject implements IEditorInpu
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean exists() {
         return true;
     }
@@ -54,6 +55,7 @@ public class IpsArchiveEditorInput extends PlatformObject implements IEditorInpu
     /**
      * {@inheritDoc}
      */
+    @Override
     public ImageDescriptor getImageDescriptor() {
         IEditorRegistry registry = PlatformUI.getWorkbench().getEditorRegistry();
         return registry.getImageDescriptor(StringUtil.getFileExtension(srcFile.getName()));
@@ -62,6 +64,7 @@ public class IpsArchiveEditorInput extends PlatformObject implements IEditorInpu
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return srcFile.getName();
     }
@@ -69,6 +72,7 @@ public class IpsArchiveEditorInput extends PlatformObject implements IEditorInpu
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPersistableElement getPersistable() {
         return null;
     }
@@ -76,6 +80,7 @@ public class IpsArchiveEditorInput extends PlatformObject implements IEditorInpu
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getToolTipText() {
         return srcFile.getQualifiedNameType().getName();
     }

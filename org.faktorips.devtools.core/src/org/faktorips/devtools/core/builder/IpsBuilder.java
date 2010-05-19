@@ -799,6 +799,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             return false;
         }
 
+        @Override
         public boolean visit(IResourceDelta delta) throws CoreException {
             IResource resource = delta.getResource();
             if (resource == null || resource.getType() == IResource.PROJECT) {
@@ -855,6 +856,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             this.ipsProject = ipsProject;
         }
 
+        @Override
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
             if (TRACE_BUILDER_TRACE) {
                 System.out.println("BeforeBuildProcessCommand, BuilderName: "
@@ -882,6 +884,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             this.ipsProject = ipsProject;
         }
 
+        @Override
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
             if (TRACE_BUILDER_TRACE) {
                 System.out.println("AfterBuildProcessCommand, BuilderName: "
@@ -906,6 +909,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             this.ipsSrcFile = ipsSrcFile;
         }
 
+        @Override
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
             if (builder.isBuilderFor(ipsSrcFile)) {
                 long begin = 0;
@@ -941,6 +945,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             this.toDelete = toDelete;
         }
 
+        @Override
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
             if (builder.isBuilderFor(toDelete)) {
                 builder.delete(toDelete);

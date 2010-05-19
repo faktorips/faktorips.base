@@ -170,9 +170,11 @@ public class CustomIconSection extends IpsSection {
             this.type = type;
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(),
                     new WorkbenchLabelProvider(), new WorkbenchContentProvider());
@@ -328,6 +330,7 @@ public class CustomIconSection extends IpsSection {
      */
     private class FileValidator implements ISelectionStatusValidator {
 
+        @Override
         public IStatus validate(Object[] selection) {
             if (selection.length > 0 && selection[0] instanceof IFile) {
                 return new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, IStatus.OK, "", //$NON-NLS-1$

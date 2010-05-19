@@ -87,10 +87,12 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
         cell.setImage(getImage(item));
     }
 
+    @Override
     public Image getImage(Object element) {
         return defaultLabelProvider.getImage(element);
     }
 
+    @Override
     public String getText(Object element) {
         return defaultLabelProvider.getText(element);
     }

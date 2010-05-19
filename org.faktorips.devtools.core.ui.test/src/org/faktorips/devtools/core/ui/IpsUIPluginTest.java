@@ -46,6 +46,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
         // PropertyEditFieldFactory setup code
         editFieldFactory = new IExtensionPropertyEditFieldFactory() {
+            @Override
             public EditField newEditField(IIpsObjectPartContainer ipsObjectPart,
                     Composite extensionArea,
                     UIToolkit toolkit) {

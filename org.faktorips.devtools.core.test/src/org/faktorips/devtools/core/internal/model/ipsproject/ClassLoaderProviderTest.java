@@ -64,6 +64,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         Listener l0 = new Listener();
         IClasspathContentsChangeListener l1 = new IClasspathContentsChangeListener() {
 
+            @Override
             public void classpathContentsChanges(IJavaProject project) {
                 provider.removeClasspathChangeListener(this);
             }
@@ -155,6 +156,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     private void deleteClassFile() throws Exception {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 IFolder outFolder = (IFolder)javaProject.getProject().getWorkspace().getRoot().findMember(
                         javaProject.getOutputLocation());
@@ -186,6 +188,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     private void deleteJarFile() throws Exception {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 IFile jarFile = javaProject.getProject().getFile("Test.jar");
                 jarFile.delete(true, false, null);
@@ -202,6 +205,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void classpathContentsChanges(IJavaProject project) {
             this.project = project;
         }

@@ -164,6 +164,7 @@ public class NewFolderAction extends IpsAction {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String isValid(String newText) {
             if (newText.indexOf(BLANK) != -1) {
                 return Messages.NewFolderAction_FoldernameMustNotContainBlanks;

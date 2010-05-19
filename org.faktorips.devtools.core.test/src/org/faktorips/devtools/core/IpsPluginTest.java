@@ -77,6 +77,7 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
 
         PropertyChangeEvent lastEvent;
 
+        @Override
         public void propertyChange(PropertyChangeEvent event) {
             lastEvent = event;
         }

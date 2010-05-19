@@ -93,6 +93,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
 
@@ -147,6 +148,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
             runtimeId.setText(product.getRuntimeId());
             runtimeId.setEnabled(IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
             runtimeId.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent e) {
                     updateFullName();
                 }
@@ -157,11 +159,13 @@ public class RenamePage extends WizardPage implements ModifyListener {
             newName.setEnabled(false);
 
             versionId.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent e) {
                     updateFullName();
                 }
             });
             constNamePart.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent e) {
                     updateFullName();
                 }
@@ -379,6 +383,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void modifyText(ModifyEvent e) {
         setPageComplete();
     }

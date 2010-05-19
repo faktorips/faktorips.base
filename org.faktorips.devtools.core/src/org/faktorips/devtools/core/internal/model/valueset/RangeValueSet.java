@@ -75,6 +75,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * 
      * @throws NullPointerException if lowerBound is <code>null</code>.
      */
+    @Override
     public void setLowerBound(String lowerBound) {
         String oldBound = this.lowerBound;
         this.lowerBound = lowerBound;
@@ -87,6 +88,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * 
      * @throws NullPointerException if step is <code>null</code>.
      */
+    @Override
     public void setStep(String step) {
         String oldStep = this.step;
         this.step = step;
@@ -98,6 +100,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * 
      * @throws NullPointerException if upperBound is <code>null</code>.
      */
+    @Override
     public void setUpperBound(String upperBound) {
         String oldBound = this.upperBound;
         this.upperBound = upperBound;
@@ -107,6 +110,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * Returns the lower bound of the range
      */
+    @Override
     public String getLowerBound() {
         return lowerBound;
     }
@@ -114,6 +118,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * Returns the upper bound of the range
      */
+    @Override
     public String getUpperBound() {
         return upperBound;
     }
@@ -121,10 +126,12 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * Returns the step of the range
      */
+    @Override
     public String getStep() {
         return step;
     }
 
+    @Override
     public boolean containsValue(String value,
             MessageList list,
             Object invalidObject,
@@ -199,6 +206,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return true;
     }
 
+    @Override
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
             throw new NullPointerException("MessageList required"); //$NON-NLS-1$
@@ -382,6 +390,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return datatype.isParsable(value) && !datatype.isNull(value);
     }
 
+    @Override
     public boolean containsValueSet(IValueSet subset) {
         MessageList dummy = new MessageList();
         return containsValueSet(subset, dummy, null, null);
@@ -477,6 +486,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return super.toString() + ":" + toShortString(); //$NON-NLS-1$
     }
 
+    @Override
     public String toShortString() {
         StringBuffer sb = new StringBuffer();
         sb.append('[');
@@ -531,6 +541,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         element.appendChild(tagElement);
     }
 
+    @Override
     public IValueSet copy(IIpsObjectPart parent, String id) {
         RangeValueSet retValue = new RangeValueSet(parent, id);
 
@@ -552,10 +563,12 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         objectHasChanged();
     }
 
+    @Override
     public boolean getContainsNull() {
         return containsNull;
     }
 
+    @Override
     public void setContainsNull(boolean containsNull) {
         boolean old = this.containsNull;
         this.containsNull = containsNull;

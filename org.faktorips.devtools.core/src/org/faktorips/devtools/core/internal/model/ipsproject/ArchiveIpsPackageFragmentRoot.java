@@ -47,6 +47,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         this.archive = archive;
     }
 
+    @Override
     public IIpsArchive getIpsArchive() throws CoreException {
         return ((IpsArchiveEntry)getIpsObjectPathEntry()).getIpsArchive();
     }
@@ -68,6 +69,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFolder getArtefactDestination(boolean derived) throws CoreException {
         throw newExceptionMethodNotAvailableForArchvies();
     }
@@ -75,6 +77,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
         List<IIpsPackageFragment> list = getIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
@@ -83,6 +86,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
         // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
         List<IIpsPackageFragment> sortedPacks = getIpsPackageFragmentsAsList();
@@ -109,16 +113,19 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return new ArchiveIpsPackageFragment(this, name);
     }
 
+    @Override
     public IResource[] getNonIpsResources() throws CoreException {
         return new IResource[0];
     }
 
+    @Override
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
 
         throw newExceptionMethodNotAvailableForArchvies();
     }
 
+    @Override
     public IResource getCorrespondingResource() {
         return archive.getCorrespondingResource();
     }

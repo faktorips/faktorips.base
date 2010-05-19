@@ -92,6 +92,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
         return paletteRoot;
     }
 
+    @Override
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
     }
@@ -112,6 +113,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
      * {@inheritDoc}
      */
     // TODO duplicate code in IpsObjectEditor
+    @Override
     public void problemsChanged(IResource[] changedResources) {
         IResource correspondingResource = ipsSrcFile.getCorrespondingResource();
         if (correspondingResource != null) {
@@ -135,6 +137,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
         Shell shell = getEditorSite().getShell();
         if (shell != null && !shell.isDisposed()) {
             shell.getDisplay().syncExec(new Runnable() {
+                @Override
                 public void run() {
                     try {
                         if (isActive()) {
@@ -162,6 +165,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     @Override
     public void doSave(final IProgressMonitor monitor) {
         SafeRunner.run(new SafeRunnable() {
+            @Override
             public void run() throws Exception {
                 ipsSrcFile.save(true, monitor);
                 getCommandStack().markSaveLocation();
@@ -251,12 +255,14 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     /**
      * Fires a dirty event if the model has changed.
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (ipsSrcFile.equals(event.getIpsSrcFile())) {
             firePropertyChange(IEditorPart.PROP_DIRTY);
         }
     }
 
+    @Override
     public String getContributorId() {
         return getSite().getId();
     }
@@ -368,6 +374,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
             partService = null;
         }
 
+        @Override
         public void partActivated(IWorkbenchPart part) {
             if (part != BusinessFunctionEditor.this) {
                 return;
@@ -375,9 +382,11 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
             handleEditorActivation();
         }
 
+        @Override
         public void partBroughtToTop(IWorkbenchPart part) {
         }
 
+        @Override
         public void partClosed(IWorkbenchPart part) {
             if (part != BusinessFunctionEditor.this) {
                 return;
@@ -386,6 +395,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
             removeListeners();
         }
 
+        @Override
         public void partDeactivated(IWorkbenchPart part) {
         }
 
@@ -393,21 +403,26 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
             IpsPlugin.getDefault().getIpsModel().removeChangeListener(BusinessFunctionEditor.this);
         }
 
+        @Override
         public void partOpened(IWorkbenchPart part) {
         }
 
+        @Override
         public void windowActivated(IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()) {
                 checkForChangesMadeOutsideEclipse();
             }
         }
 
+        @Override
         public void windowDeactivated(IWorkbenchWindow window) {
         }
 
+        @Override
         public void windowClosed(IWorkbenchWindow window) {
         }
 
+        @Override
         public void windowOpened(IWorkbenchWindow window) {
         }
     }

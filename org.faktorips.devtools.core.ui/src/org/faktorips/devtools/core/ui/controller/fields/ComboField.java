@@ -36,6 +36,7 @@ public class ComboField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control getControl() {
         return combo;
     }
@@ -55,6 +56,7 @@ public class ComboField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue) {
         setText((String)prepareObjectForSet(newValue));
     }
@@ -62,6 +64,7 @@ public class ComboField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText() {
         int i = combo.getSelectionIndex();
         if (i == -1) {
@@ -74,6 +77,7 @@ public class ComboField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setText(String newText) {
         immediatelyNotifyListener = true;
         try {
@@ -86,6 +90,7 @@ public class ComboField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void insertText(String text) {
         combo.setText(text);
     }
@@ -93,6 +98,7 @@ public class ComboField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectAll() {
         // nothing to do
     }
@@ -104,6 +110,7 @@ public class ComboField extends DefaultEditField {
     protected void addListenerToControl() {
         // add selection listener to get notifications if the user changes the selection
         combo.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // changes in combo fields will always be notified immediately,
                 // it is not necessary to delay the notification, when the user selects a new item
@@ -111,12 +118,14 @@ public class ComboField extends DefaultEditField {
                 notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
             }
         });
         // add modify listener to get changes when using combo#setText method
         combo.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener);
             }

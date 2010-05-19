@@ -61,6 +61,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (!showRelationType && parentElement instanceof IProductCmptReference) {
             // returns the product cmpt references without the type
@@ -120,6 +121,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         if (structure == null) {
             return null;
@@ -139,6 +141,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
     }
@@ -146,6 +149,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         structure = null;
     }
@@ -153,6 +157,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         if (structure == inputElement) {
             return new Object[] { root };
@@ -164,6 +169,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput == null || !(newInput instanceof IProductCmptTreeStructure)) {
             structure = null;

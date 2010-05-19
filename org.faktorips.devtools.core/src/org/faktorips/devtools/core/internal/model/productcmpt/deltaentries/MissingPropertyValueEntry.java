@@ -34,6 +34,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ProdDefPropertyType getPropertyType() {
         return property.getProdDefPropertyType();
     }
@@ -41,6 +42,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPropertyName() {
         return property.getPropertyName();
     }
@@ -48,6 +50,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DeltaType getDeltaType() {
         return DeltaType.MISSING_PROPERTY_VALUE;
     }
@@ -55,6 +58,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void fix() {
         generation.newPropertyValue(property);
     }

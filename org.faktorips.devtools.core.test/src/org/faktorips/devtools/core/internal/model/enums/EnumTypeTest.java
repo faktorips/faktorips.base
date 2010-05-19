@@ -1077,6 +1077,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
             counter = 0;
         }
 
+        @Override
         public void contentsChanged(ContentChangeEvent event) {
             counter++;
         }

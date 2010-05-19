@@ -190,12 +190,14 @@ public class ParametersEditControl extends Composite {
         };
 
         fTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonsEnabledState();
             }
         });
 
         table.addTraverseListener(new TraverseListener() {
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_RETURN && e.stateMask == SWT.NONE) {
                     editColumnOrNextPossible(0);
@@ -398,6 +400,7 @@ public class ParametersEditControl extends Composite {
             final CellEditor editor = editors[i];
             // support tabbing between columns while editing:
             editor.getControl().addTraverseListener(new TraverseListener() {
+                @Override
                 public void keyTraversed(TraverseEvent e) {
                     switch (e.detail) {
                         case SWT.TRAVERSE_TAB_NEXT:
@@ -466,14 +469,17 @@ public class ParametersEditControl extends Composite {
                  * [refactoring] CellEditors validate on keystroke by updating model on
                  * editorValueChanged(..)
                  */
+                @Override
                 public void applyEditorValue() {
                     // default behavior is OK
                 }
 
+                @Override
                 public void cancelEditor() {
                     editor.performUndo();
                 }
 
+                @Override
                 public void editorValueChanged(boolean oldValidState, boolean newValidState) {
                     fTableViewer.getCellModifier().modify(
                             ((IStructuredSelection)fTableViewer.getSelection()).getFirstElement(),
@@ -501,14 +507,17 @@ public class ParametersEditControl extends Composite {
     }
 
     private class ParameterInfoContentProvider implements IStructuredContentProvider {
+        @Override
         public Object[] getElements(Object inputElement) {
             return paramContainer.getParameterBFEs().toArray();
         }
 
+        @Override
         public void dispose() {
             // do nothing
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // do nothing
         }
@@ -516,6 +525,7 @@ public class ParametersEditControl extends Composite {
 
     private class ParameterInfoLabelProvider extends LabelProvider implements ITableLabelProvider {
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex != MESSAGE_PROP) {
                 return null;
@@ -530,6 +540,7 @@ public class ParametersEditControl extends Composite {
             }
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             IParameterBFE info = (IParameterBFE)element;
             if (columnIndex == MESSAGE_PROP) {
@@ -546,6 +557,7 @@ public class ParametersEditControl extends Composite {
     }
 
     private class ParametersCellModifier implements ICellModifier {
+        @Override
         public boolean canModify(Object element, String property) {
             if (PROPERTIES[TYPE_PROP].equals(property) || PROPERTIES[NEWNAME_PROP].equals(property)) {
                 return true;
@@ -553,6 +565,7 @@ public class ParametersEditControl extends Composite {
             return false;
         }
 
+        @Override
         public Object getValue(Object element, String property) {
             IParameterBFE param = (IParameterBFE)element;
             if (property.equals(PROPERTIES[TYPE_PROP])) {
@@ -563,6 +576,7 @@ public class ParametersEditControl extends Composite {
             return null;
         }
 
+        @Override
         public void modify(Object element, String property, Object value) {
             if (element instanceof TableItem) {
                 element = ((TableItem)element).getData();

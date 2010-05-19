@@ -75,6 +75,7 @@ public class ProjectImportTask extends AbstractIpsTask {
     /**
      * Executes the Ant-Task {@inheritDoc}
      */
+    @Override
     public void executeInternal() throws Exception {
 
         // Check Dir-Attribute

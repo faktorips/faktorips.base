@@ -29,6 +29,7 @@ public class IpsTestTabGroup extends AbstractLaunchConfigurationTabGroup {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
         ILaunchConfigurationTab[] tabs = null;
         tabs = new ILaunchConfigurationTab[] { new TestSelectionTab(), new JavaArgumentsTab(), new EnvironmentTab(),

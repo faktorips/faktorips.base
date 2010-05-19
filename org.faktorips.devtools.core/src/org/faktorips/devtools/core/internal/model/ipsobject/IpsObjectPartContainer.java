@@ -106,6 +106,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsSrcFile getIpsSrcFile() {
         IIpsObject obj = getIpsObject();
         if (obj == null) {
@@ -135,6 +136,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getExtPropertyValue(String propertyId) {
         checkExtProperty(propertyId);
         return extPropertyValues.get(propertyId);
@@ -143,6 +145,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isExtPropertyDefinitionAvailable(String propertyId) {
         initExtPropertiesIfNotDoneSoFar();
         return extPropertyValues.containsKey(propertyId);
@@ -151,6 +154,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setExtPropertyValue(String propertyId, Object value) {
         checkExtProperty(propertyId);
         IExtensionPropertyDefinition property = getIpsModel().getExtensionPropertyDefinition(getClass(), propertyId,
@@ -295,6 +299,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    @Override
     public Element toXml(Document doc) {
         Element newElement = createElement(doc);
         propertiesToXml(newElement);
@@ -358,6 +363,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initFromXml(Element element) {
         initFromXml(element, null);
     }
@@ -561,6 +567,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         if (isHistoricPartContainer()) {
             return new MessageList();
@@ -683,6 +690,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    @Override
     public Memento newMemento() {
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
         return new XmlMemento(this, toXml(doc));
@@ -691,6 +699,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setState(Memento memento) {
         if (!memento.getOriginator().equals(this)) {
             throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$

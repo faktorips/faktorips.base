@@ -104,6 +104,7 @@ public class CompletionUtil {
         configure(contentAssistant, PreferenceConstants.getPreferenceStore());
         contentAssistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
         contentAssistant.setInformationControlCreator(new IInformationControlCreator() {
+            @Override
             public IInformationControl createInformationControl(Shell parent) {
                 return new DefaultInformationControl(parent, SWT.NONE, new HTMLTextPresenter(true));
             }

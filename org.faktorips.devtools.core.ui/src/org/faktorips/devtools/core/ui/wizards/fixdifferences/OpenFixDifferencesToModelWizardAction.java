@@ -65,6 +65,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbenchWindow window) {
         this.window = window;
     }
@@ -227,6 +228,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         window = targetPart.getSite().getWorkbenchWindow();
     }

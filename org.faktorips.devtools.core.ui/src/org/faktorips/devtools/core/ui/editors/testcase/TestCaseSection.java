@@ -314,6 +314,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             this.testPolicyCmptParent = testPolicyCmptParent;
         }
 
+        @Override
         public void run() {
             try {
                 policyCmptTypesSrcFiles = TestCaseSection.this.getPolicyCmptTypesSrcFiles(testTypeParam,
@@ -355,6 +356,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Image getImage(Object element) {
             return getImageFromAssociationType((TestCaseTypeAssociation)element);
         }
@@ -379,6 +381,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getText(Object element) {
             TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
             return dummyAssociation.getName();
@@ -388,6 +391,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          * {@inheritDoc}
          */
 
+        @Override
         public void addListener(ILabelProviderListener listener) {
         }
 
@@ -395,6 +399,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          * {@inheritDoc}
          */
 
+        @Override
         public void dispose() {
         }
 
@@ -402,6 +407,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          * {@inheritDoc}
          */
 
+        @Override
         public boolean isLabelProperty(Object element, String property) {
             return false;
         }
@@ -409,6 +415,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void removeListener(ILabelProviderListener listener) {
         }
     }
@@ -451,16 +458,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             this.failureDetailsList = failureDetailsList;
         }
 
+        @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public ISelection getSelection() {
             return null;
         }
 
+        @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public void setSelection(ISelection selection) {
         }
 
@@ -468,6 +479,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return failureDetailsList;
         }
 
+        @Override
         public void menuAboutToShow(IMenuManager manager) {
             final EditFieldMenu contextMenuManager = (EditFieldMenu)manager;
 
@@ -514,6 +526,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dragEnter(DropTargetEvent event) {
             if (event.detail == 0) {
                 event.detail = DND.DROP_LINK;
@@ -526,6 +539,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dragLeave(DropTargetEvent event) {
             // nothing to do
         }
@@ -533,6 +547,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dragOperationChanged(DropTargetEvent event) {
             // nothing to do
         }
@@ -540,6 +555,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dragOver(DropTargetEvent event) {
             if (toMove == null || !isValidTarget(getInsertAt(event))) {
                 event.detail = DND.DROP_NONE;
@@ -579,6 +595,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void drop(DropTargetEvent event) {
             Object insertAt = getInsertAt(event);
             if (!isValidTarget(insertAt)) {
@@ -611,6 +628,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             final boolean up = (steps >= 0);
             final int stepsToMove = Math.abs(steps);
             IWorkspaceRunnable moveRunnable = new IWorkspaceRunnable() {
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     int currPos = posSource;
                     for (int i = 0; i < stepsToMove; i++) {
@@ -625,6 +643,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dropAccept(DropTargetEvent event) {
             if (!isDataChangeable()) {
                 event.detail = DND.DROP_NONE;
@@ -642,6 +661,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             this.selectionProvider = selectionProvider;
         }
 
+        @Override
         public void dragStart(DragSourceEvent event) {
             Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
             event.doit = (selected instanceof ITestPolicyCmpt) && isDataChangeable();
@@ -657,6 +677,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         }
 
+        @Override
         public void dragSetData(DragSourceEvent event) {
             Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
             if (selected instanceof ITestPolicyCmpt) {
@@ -665,6 +686,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         }
 
+        @Override
         public void dragFinished(DragSourceEvent event) {
             toMove = null;
         }
@@ -1487,6 +1509,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     private void hookTreeListeners() {
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
                     IStructuredSelection selection = (IStructuredSelection)event.getSelection();
@@ -1506,6 +1529,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         };
 
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 if (!(event.getSelection() instanceof IStructuredSelection)) {
                     return;
@@ -1532,6 +1556,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         });
         treeViewer.getTree().addKeyListener(new KeyListener() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.DEL) {
                     try {
@@ -1542,6 +1567,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
             }
         });
@@ -1687,6 +1713,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     private void hookButtonListeners() {
         addButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     addClicked();
@@ -1695,10 +1722,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         removeButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     removeClicked();
@@ -1707,6 +1736,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -1836,6 +1866,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         final String[] finalSelectedTargetsQualifiedNames = selectedTargetsQualifiedNames;
         final boolean finalChooseProductCmpts = chooseProductCmpts;
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 // add a new child based on the selected association
 
@@ -1889,6 +1920,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         };
 
         Runnable runnableWithBusyIndicator = new Runnable() {
+            @Override
             public void run() {
                 try {
                     IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
@@ -1903,6 +1935,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void addRootTestPolicyCmptObject(final TestCaseTypeAssociation associationType,
             final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) throws CoreException {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 ITestPolicyCmpt testPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(testPolicyCmptTypeParam);
                 if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
@@ -1916,6 +1949,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         };
 
         Runnable runnableWithBusyIndicator = new Runnable() {
+            @Override
             public void run() {
                 try {
                     IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
@@ -1987,6 +2021,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         try {
             final ISelection selection = treeViewer.getSelection();
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     if (selection instanceof IStructuredSelection) {
                         Object nextItemToSelect = null;
@@ -2091,6 +2126,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private void renamePolicyCmpt(final ITestPolicyCmpt testPolicyCmpt) {
         IInputValidator validator = new IInputValidator() {
+            @Override
             public String isValid(String nameCandidate) {
                 if (testPolicyCmpt.getName().equals(nameCandidate)) {
                     return Messages.TestCaseSection_Rename_Problem_ChooseDifferentName;
@@ -2338,6 +2374,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         try {
             // redraw the detail area in async way to reduce the time of refreshing
             Runnable runnable = new Runnable() {
+                @Override
                 public void run() {
                     refreshTree();
                     testCaseDetailArea.clearDetailArea();
@@ -2659,6 +2696,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testErrorOccured(String qualifiedTestName, String[] errorDetails) {
         if (StringUtils.isNotEmpty(qualifiedTestName) && !canListenToTestRun(qualifiedTestName)) {
             return;
@@ -2669,6 +2707,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testFailureOccured(final String qualifiedTestName, final String[] failureDetails) {
         if (!canListenToTestRun(qualifiedTestName)) {
             return;
@@ -2685,6 +2724,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         // display failure in several gui controls
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -2730,6 +2770,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     public void postSetStatusBarMessage(final String message) {
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 IStatusLineManager statusLineManager = site.getActionBars().getStatusLineManager();
                 if (statusLineManager != null) {
@@ -2767,6 +2808,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             final List<FailureDetails> failureDetails,
             final boolean isSectionTitleMenu) {
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed() || control == null || !isDataChangeable()) {
                     return;
@@ -2800,6 +2842,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testFinished(String qualifiedTestName) {
         if (!canListenToTestRun(qualifiedTestName)) {
             return;
@@ -2826,6 +2869,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return;
         }
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -2838,6 +2882,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testStarted(String qualifiedTestName) {
         testStarted(qualifiedTestName, true);
     }
@@ -2855,6 +2900,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         // remove the contextmenu in the section title
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -2876,6 +2922,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testRunEnded(String elapsedTime) {
         if (isTestRunError) {
             // set the status only if an error occurred, otherwise the status is set by the
@@ -2887,6 +2934,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testRunStarted(int testCount, String repositoryPackage, String testPackage) {
         // nothing to do
     }
@@ -2894,6 +2942,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testTableEntry(String qualifiedName, String fullPath) {
         // nothing to do
     }
@@ -2901,6 +2950,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void testTableEntries(String[] qualifiedName, String[] fullPath) {
         // nothing to do
     }
@@ -2922,6 +2972,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     void postSetTestRunStatus(final boolean isError, final boolean isFailure, final int failureCount) {
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -2971,9 +3022,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     private void hookeSectionTitleHyperlink() {
         getFormTitleLabel().addMouseListener(new MouseListener() {
+            @Override
             public void mouseDoubleClick(MouseEvent e) {
             }
 
+            @Override
             public void mouseDown(MouseEvent event) {
                 if ((event.stateMask & SWT.CTRL) > 0) {
                     if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
@@ -2993,6 +3046,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
 
+            @Override
             public void mouseUp(MouseEvent e) {
             }
         });
@@ -3000,6 +3054,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     void postSetFailureBackgroundAndToolTip(final EditField editField, final String expectedResult) {
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -3015,6 +3070,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             final String message,
             final boolean setFocus) {
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -3032,6 +3088,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     void postShowAllStructureAndAllTypes() {
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -3049,6 +3106,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     void postResetTestRunStatus() {
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -3156,6 +3214,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -3192,6 +3251,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -3208,6 +3268,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canNavigateToFailure() {
         return true;
     }

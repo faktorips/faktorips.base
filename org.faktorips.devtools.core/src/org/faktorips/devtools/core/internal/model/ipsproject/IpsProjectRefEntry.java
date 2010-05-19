@@ -68,6 +68,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsProject getReferencedIpsProject() {
         return referencedIpsProject;
     }
@@ -75,6 +76,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getType() {
         return TYPE_PROJECT_REFERENCE;
     }
@@ -82,6 +84,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getIpsPackageFragmentRootName() {
         return null;
     }
@@ -89,6 +92,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
         return null;
     }
@@ -173,6 +177,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
         IIpsProject project = getReferencedIpsProject();
@@ -201,6 +206,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     /**
      * Interprets the given path as project-relative path. {@inheritDoc}
      */
+    @Override
     public InputStream getRessourceAsStream(String path) throws CoreException {
         return getReferencedIpsProject().getResourceAsStream(path);
     }

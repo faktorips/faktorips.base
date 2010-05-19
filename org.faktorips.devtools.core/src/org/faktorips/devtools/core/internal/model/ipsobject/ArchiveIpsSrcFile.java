@@ -37,47 +37,58 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile
         super(pack, name);
     }
 
+    @Override
     public boolean isDirty() {
         return false;
     }
 
+    @Override
     public void markAsClean() {
         // never dirty => nothing to do
     }
 
+    @Override
     public void markAsDirty() {
         throw new RuntimeException("Can't mark an file in an archive as dirty!"); //$NON-NLS-1$
     }
 
+    @Override
     public void discardChanges() {
         // never dirty => nothing to do
     }
 
+    @Override
     public IIpsSrcFileMemento newMemento() throws CoreException {
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
         return new IIpsSrcFileMemento(this, getIpsObject().toXml(doc), false);
     }
 
+    @Override
     public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
         // never dirty => nothing to do
     }
 
+    @Override
     public void save(boolean force, IProgressMonitor monitor) throws CoreException {
         // not possible => nothing to do
     }
 
+    @Override
     public boolean isHistoric() {
         return false;
     }
 
+    @Override
     public boolean isMutable() {
         return false;
     }
 
+    @Override
     public IFile getCorrespondingFile() {
         return null;
     }
 
+    @Override
     public InputStream getContentFromEnclosingResource() throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getIpsPackageFragment().getRoot();
         IIpsArchive archive = root.getIpsArchive();
@@ -87,11 +98,13 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile
         return archive.getContent(getQualifiedNameType());
     }
 
+    @Override
     public String getBasePackageNameForMergableArtefacts() throws CoreException {
         IIpsArchive archive = getIpsPackageFragment().getRoot().getIpsArchive();
         return archive.getBasePackageNameForMergableArtefacts(getQualifiedNameType());
     }
 
+    @Override
     public String getBasePackageNameForDerivedArtefacts() throws CoreException {
         IIpsArchive archive = getIpsPackageFragment().getRoot().getIpsArchive();
         return archive.getBasePackageNameForDerivedArtefacts(getQualifiedNameType());

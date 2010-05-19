@@ -326,6 +326,7 @@ public class IpsSrcFileContent {
         }
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 try {
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {

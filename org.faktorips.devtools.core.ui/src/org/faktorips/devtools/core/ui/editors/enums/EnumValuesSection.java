@@ -249,10 +249,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         // Key listener for deleting rows with the DEL key.
         enumValuesTable.addKeyListener(new KeyListener() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 // Nothing to do when key pressed.
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
                 if (e.keyCode == SWT.DEL) {
                     deleteEnumValueAction.run();
@@ -315,6 +317,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /** Increases the height of the table rows slightly. */
     private void increaseHeightOfTableRows() {
         Listener paintListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.type == SWT.MeasureItem) {
                     if (enumValuesTable.getColumnCount() == 0) {
@@ -373,6 +376,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private void registerAsChangeListenerToEnumValueContainer() {
         enumValueContainer.getIpsModel().addChangeListener(this);
         addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 enumValueContainer.getIpsModel().removeChangeListener(EnumValuesSection.this);
             }
@@ -428,12 +432,14 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
 
         getCellEditorForLiteralNameColumn().getControl().addFocusListener(new FocusListener() {
+            @Override
             public void focusGained(FocusEvent e) {
                 if (lockAndSynchronizeLiteralNames) {
                     getCellEditorForLiteralNameColumn().deactivate();
                 }
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 // Nothing to do on focus lost event.
             }
@@ -618,6 +624,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private void addFocusListenerToDefaultProviderCellEditor(final CellEditor defaultProviderCellEditor) {
         defaultProviderCellEditor.addListener(new ICellEditorListener() {
 
+            @Override
             public void applyEditorValue() {
                 /*
                  * Return if the default provider control is not a text control and therefore not
@@ -670,10 +677,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         || existingLiteral.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
             }
 
+            @Override
             public void cancelEditor() {
                 // Nothing to do on this event.
             }
 
+            @Override
             public void editorValueChanged(boolean oldValidState, boolean newValidState) {
                 // Nothing to do on this event.
             }
@@ -751,6 +760,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * enumValuesTableViewer</tt>
      * when <tt>IEnumValue</tt>s have been added, moved or removed.
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         // TODO AW: REFACTOR - this method is pretty awkward.
         IEnumType enumType;
@@ -837,14 +847,17 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /** The content provider for the table viewer. */
     private class EnumValuesContentProvider implements IStructuredContentProvider {
 
+        @Override
         public Object[] getElements(Object inputElement) {
             return enumValueContainer.getEnumValues().toArray();
         }
 
+        @Override
         public void dispose() {
             // Nothing to dispose.
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // Nothing to do on input change event.
         }
@@ -854,6 +867,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /** The label provider for the table viewer. */
     private class EnumValuesLabelProvider implements ITableLabelProvider {
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (hasErrorsAt((IEnumValue)element, columnIndex)) {
                 return IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
@@ -879,6 +893,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             // There needs to be at least one column to be able to obtain label information.
             if (columnNames.size() == 0) {
@@ -913,18 +928,22 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
         }
 
+        @Override
         public void addListener(ILabelProviderListener listener) {
 
         }
 
+        @Override
         public void dispose() {
 
         }
 
+        @Override
         public boolean isLabelProperty(Object element, String property) {
             return false;
         }
 
+        @Override
         public void removeListener(ILabelProviderListener listener) {
 
         }
@@ -934,10 +953,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /** The cell modifier for the table viewer. */
     private class EnumCellModifier implements ICellModifier {
 
+        @Override
         public boolean canModify(Object element, String property) {
             return true;
         }
 
+        @Override
         public Object getValue(Object element, String property) {
             if (element instanceof IEnumValue) {
                 IEnumValue enumValue = (IEnumValue)element;
@@ -949,6 +970,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             return null;
         }
 
+        @Override
         public void modify(Object element, String property, Object value) {
             IEnumValue enumValue;
             if (element instanceof IEnumValue) {
@@ -980,6 +1002,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      */
     private class RowDeletor implements ISelectionChangedListener {
 
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             removeRedundantRows();
         }

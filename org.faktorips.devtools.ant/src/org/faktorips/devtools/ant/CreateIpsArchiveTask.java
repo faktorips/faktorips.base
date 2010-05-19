@@ -48,6 +48,7 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
      * 
      * {@inheritDoc}
      */
+    @Override
     public void executeInternal() throws Exception {
 
         if (ipsProjectName == null) {

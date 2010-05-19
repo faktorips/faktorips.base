@@ -61,6 +61,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
      * Creates and returns an IPS artifact builder set configuration instance from the provided dom
      * element.
      */
+    @Override
     public final void initFromXml(Element el) {
         properties = new LinkedHashMap<String, String>();
         propertiesDescription = new LinkedHashMap<String, String>();
@@ -81,10 +82,12 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         }
     }
 
+    @Override
     public String getPropertyDescription(String propertyName) {
         return propertiesDescription.get(propertyName);
     }
 
+    @Override
     public String getPropertyValue(String propertyName) {
         return properties.get(propertyName);
     }
@@ -95,6 +98,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
      * @param propertyName the name of the property
      * @param value the value of the property
      */
+    @Override
     public void setPropertyValue(String propertyName, String value, String description) {
         ArgumentCheck.notNull(propertyName);
         ArgumentCheck.notNull(value);
@@ -104,6 +108,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         }
     }
 
+    @Override
     public final Element toXml(Document doc) {
         Element root = doc.createElement(XML_ELEMENT);
         Set<String> keys = properties.keySet();
@@ -122,10 +127,12 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         return root;
     }
 
+    @Override
     public String[] getPropertyNames() {
         return properties.keySet().toArray(new String[properties.size()]);
     }
 
+    @Override
     public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo) {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         for (String name : this.properties.keySet()) {
@@ -153,6 +160,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         return new IpsArtefactBuilderSetConfig(properties);
     }
 
+    @Override
     public MessageList validate(IIpsProject ipsProject, IpsArtefactBuilderSetInfo builderSetInfo) {
         return builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, this);
     }

@@ -45,6 +45,7 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
         return ipsProject;
     }
 
+    @Override
     public FlFunction[] getFunctions() {
         List<FlFunction> functions = new ArrayList<FlFunction>();
         try {

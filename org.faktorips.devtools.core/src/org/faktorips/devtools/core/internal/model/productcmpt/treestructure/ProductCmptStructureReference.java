@@ -48,6 +48,7 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTreeStructure getStructure() {
         return structure;
     }
@@ -55,6 +56,7 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptStructureReference getParent() {
         return parent;
     }
@@ -106,6 +108,7 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
      */
     protected abstract IIpsObjectPartContainer getWrapped();
 
+    @Override
     public IIpsSrcFile getWrappedIpsSrcFile() {
         return getWrappedIpsObject().getIpsSrcFile();
     }

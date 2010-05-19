@@ -37,6 +37,7 @@ public class StructuredViewerField extends AbstractViewerField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText() {
         return ((IStructuredSelection)strucuredViewer.getSelection()).getFirstElement().toString();
     }
@@ -53,6 +54,7 @@ public class StructuredViewerField extends AbstractViewerField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object newValue) {
         ISelection selection = new StructuredSelection(prepareObjectForSet(newValue));
         strucuredViewer.setSelection(selection, true);
@@ -61,6 +63,7 @@ public class StructuredViewerField extends AbstractViewerField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setText(String newText) {
         strucuredViewer.setSelection(new StructuredSelection(newText));
     }

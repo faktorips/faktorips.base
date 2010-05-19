@@ -51,6 +51,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void launch(final ILaunchConfiguration configuration,
             final String mode,
             final ILaunch launch,

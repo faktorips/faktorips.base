@@ -30,6 +30,7 @@ public class RecursiveCopyTest extends TestCase {
             + "/org.faktorips.devtools.ant.util.CopyTest2/");
     private File tmpDir2 = new File(tmpDir.getAbsolutePath() + "/2/");
 
+    @Override
     public void setUp() throws IOException {
         tmpDir.mkdir();
         tmpFile = File.createTempFile(this.getName() + "file", "");
@@ -115,6 +116,7 @@ public class RecursiveCopyTest extends TestCase {
 
     }
 
+    @Override
     public void tearDown() {
         // just to be sure
         tmpFile.delete();

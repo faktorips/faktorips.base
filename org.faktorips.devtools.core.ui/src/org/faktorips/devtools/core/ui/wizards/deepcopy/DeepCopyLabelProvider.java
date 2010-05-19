@@ -32,6 +32,7 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addListener(ILabelProviderListener listener) {
         listeners.add(listener);
     }
@@ -39,6 +40,7 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         listeners = null;
     }
@@ -46,6 +48,7 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;
     }
@@ -53,6 +56,7 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeListener(ILabelProviderListener listener) {
         listeners.remove(listener);
     }
@@ -60,6 +64,7 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Image getImage(Object element) {
         if (element instanceof IProductCmptReference) {
             return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt());
@@ -76,6 +81,7 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText(Object element) {
         if (element instanceof IProductCmptReference) {
             IProductCmptReference productCmptReference = (IProductCmptReference)element;

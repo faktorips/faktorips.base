@@ -81,24 +81,29 @@ public class TestValue extends TestObject implements ITestValue {
         return true;
     }
 
+    @Override
     public String getTestValueParameter() {
         return testValueParameter;
     }
 
+    @Override
     public void setTestValueParameter(String testValueParameter) {
         String oldTValueParameter = this.testValueParameter;
         this.testValueParameter = testValueParameter;
         valueChanged(oldTValueParameter, testValueParameter);
     }
 
+    @Override
     public String getTestParameterName() {
         return testValueParameter;
     }
 
+    @Override
     public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
         return findTestValueParameter(ipsProject);
     }
 
+    @Override
     public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testValueParameter)) {
             return null;
@@ -115,16 +120,19 @@ public class TestValue extends TestObject implements ITestValue {
         return null;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public void setValue(String newValue) {
         String oldValue = value;
         value = newValue;
         valueChanged(oldValue, newValue);
     }
 
+    @Override
     public void setDefaultValue() throws CoreException {
         ITestValueParameter parameter = findTestValueParameter(getIpsProject());
         if (parameter == null) {

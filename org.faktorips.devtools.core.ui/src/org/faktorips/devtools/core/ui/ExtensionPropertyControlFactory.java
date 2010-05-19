@@ -175,6 +175,7 @@ public class ExtensionPropertyControlFactory {
             this.extProperty = extProperty;
         }
 
+        @Override
         public int compareTo(ExtPropControlData o) {
             return extProperty.compareTo(o.extProperty);
         }

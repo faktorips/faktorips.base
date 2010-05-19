@@ -25,6 +25,7 @@ public class DefaultExtensionPropertyEditFieldFactory implements IExtensionPrope
      * Adds a <code>Text</code> control to the extension area and returns a <code>TextField</code>
      * based on it.
      */
+    @Override
     public EditField newEditField(IIpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit) {
         Text text = toolkit.createText(extensionArea);
         return new TextField(text);

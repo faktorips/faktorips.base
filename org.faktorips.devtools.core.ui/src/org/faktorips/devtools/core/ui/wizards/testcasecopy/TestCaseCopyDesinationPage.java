@@ -123,6 +123,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         setMessage(Messages.TestCaseCopyDesinationPage_InfoMessage);
     }
 
+    @Override
     public void createControl(Composite parent) {
         Composite main = toolkit.createComposite(parent);
         main.setLayout(new GridLayout(1, false));
@@ -276,6 +277,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
         // create content provider
         tableViewer.setContentProvider(new IStructuredContentProvider() {
+            @Override
             public Object[] getElements(Object inputElement) {
                 if (inputElement instanceof ITestObject[]) {
                     return (ITestObject[])inputElement;
@@ -284,15 +286,18 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                 }
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
         });
 
         // create label provider
         tableViewer.setLabelProvider(new ITableLabelProvider() {
+            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 if (columnIndex == 0) {
                     return defaultLabelProvider.getImage(element);
@@ -302,6 +307,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                 return null;
             }
 
+            @Override
             public String getColumnText(Object element, int columnIndex) {
                 if (columnIndex == 0) {
                     return defaultLabelProvider.getText(element);
@@ -311,16 +317,20 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                 return null;
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
         });
@@ -337,6 +347,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         }
         tableViewer.setCellEditors(new CellEditor[] { null, delegateCellEditor });
         tableViewer.setCellModifier(new ICellModifier() {
+            @Override
             public boolean canModify(Object element, String property) {
                 if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
                     return true;
@@ -344,6 +355,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                 return false;
             }
 
+            @Override
             public Object getValue(Object element, String property) {
                 if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
                     return defaultLabelProvider.getText(rootParameterProductCmpt.get(element));
@@ -351,6 +363,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                 return null;
             }
 
+            @Override
             public void modify(Object element, String property, Object value) {
                 ITestPolicyCmpt rootTestPolicyCmpt = null;
                 if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
@@ -384,6 +397,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
         // add selection listener to inform about replaced version
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
                     ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)((IStructuredSelection)event.getSelection())
@@ -602,6 +616,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         return !checkboxFieldCopyExpectedTestValues.getCheckbox().isChecked();
     }
 
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == targetPackageRootField) {
             targetInput.setIpsPackageFragment(null);

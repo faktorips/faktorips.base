@@ -87,6 +87,7 @@ public class PackageNameEditDialog extends StatusDialog {
         final TextField specificPackageNameTextField = new TextField(text);
         specificPackageNameTextField.addChangeListener(new ValueChangeListener() {
 
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 selectedPackageName = e.field.getText();
 
@@ -116,9 +117,11 @@ public class PackageNameEditDialog extends StatusDialog {
 
         buttonDefaultPackageNameSelected.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 text.setEnabled(false);
                 selectedPackageName = getDefaultPackageName();
@@ -127,9 +130,11 @@ public class PackageNameEditDialog extends StatusDialog {
 
         buttonCustomPackageNameSelected.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 text.setEnabled(true);
             }

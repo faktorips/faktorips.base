@@ -38,6 +38,7 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ProdDefPropertyType getPropertyType() {
         return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
@@ -45,6 +46,7 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void fix() {
         element.setValueSetCopy(attribute.getValueSet());
     }
@@ -52,6 +54,7 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPropertyName() {
         return element.getName();
     }
@@ -59,6 +62,7 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DeltaType getDeltaType() {
         return DeltaType.VALUE_SET_MISMATCH;
     }

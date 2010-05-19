@@ -35,6 +35,7 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
     /**
      * {@inheritDoc}
      */
+    @Override
     public EditField getField() {
         return field;
     }
@@ -42,6 +43,7 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getObject() {
         return object;
     }
@@ -49,6 +51,7 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPropertyName() {
         return property.getName();
     }
@@ -56,6 +59,7 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPropertyValue() {
         if (field.getControl().isDisposed()) {
             return;
@@ -77,6 +81,7 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setControlValue() {
         try {
             if (field.getControl().isDisposed()) {

@@ -146,6 +146,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             MenuManager manager = new MenuManager();
             manager.setRemoveAllWhenShown(true);
             manager.addMenuListener(new IMenuListener() {
+                @Override
                 public void menuAboutToShow(IMenuManager manager) {
                     MenuManager refactorSubmenu = new MenuManager(Messages.EnumAttributesSection_submenuRefactor);
                     refactorSubmenu.add(renameAction);
@@ -160,14 +161,17 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         protected IStructuredContentProvider createContentProvider() {
             return new IStructuredContentProvider() {
 
+                @Override
                 public Object[] getElements(Object inputElement) {
                     return enumType.getEnumAttributesIncludeSupertypeCopies(true).toArray();
                 }
 
+                @Override
                 public void dispose() {
 
                 }
 
+                @Override
                 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
                 }
@@ -236,6 +240,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             inheritButton
                     .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
             inheritButton.addSelectionListener(new SelectionListener() {
+                @Override
                 public void widgetSelected(SelectionEvent event) {
                     try {
                         inheritClicked();
@@ -244,6 +249,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
                     }
                 }
 
+                @Override
                 public void widgetDefaultSelected(SelectionEvent event) {
 
                 }
@@ -269,6 +275,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          * Disables the "Delete" - Button if the selected <tt>IIpsObjectPart</tt> is an
          * <tt>IEnumLiteralNameAttribute</tt> while the <tt>IEnumType</tt> is needing to use it.
          */
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             try {
                 setCanDelete(true);

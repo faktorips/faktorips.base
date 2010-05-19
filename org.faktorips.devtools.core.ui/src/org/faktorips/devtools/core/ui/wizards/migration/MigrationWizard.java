@@ -84,12 +84,14 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
     }
 
     class MigrateProjects implements IRunnableWithProgress {
         private MessageList messageList;
 
+        @Override
         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
             IIpsProject[] projects = projectSelectionPage.getProjects();
             monitor.beginTask("Migration", projects.length * 10000); //$NON-NLS-1$

@@ -144,6 +144,7 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         return sourceConnectionAnchor;
     }
@@ -151,6 +152,7 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         return sourceConnectionAnchor;
     }
@@ -158,6 +160,7 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         return targetConnectionAnchor;
     }
@@ -165,6 +168,7 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      * {@inheritDoc}
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         return targetConnectionAnchor;
     }
@@ -203,6 +207,7 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
      * Implementation of the {@link ContentsChangeListener} interface. It updates the visuals and
      * connections when a <code>ContentChangeEvent.TYPE_PROPERTY_CHANGED</code> occurs.
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getBFElement()) && event.getEventType() == ContentChangeEvent.TYPE_PROPERTY_CHANGED) {
             refreshVisuals();

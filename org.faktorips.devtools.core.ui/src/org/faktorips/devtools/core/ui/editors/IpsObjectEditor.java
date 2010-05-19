@@ -150,6 +150,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * 
      * @return Returns the ips src file to be edited by this editor.
      */
+    @Override
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
     }
@@ -226,6 +227,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
          */
         if (!ipsSrcFile.exists()) {
             Runnable closeRunnable = new Runnable() {
+                @Override
                 public void run() {
                     IpsObjectEditor.this.close(false);
                     IpsUIPlugin.getDefault().openEditor(ipsSrcFile.getCorrespondingFile());
@@ -529,6 +531,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
     }
 
+    @Override
     public void contentsChanged(final ContentChangeEvent event) {
         if (!event.getIpsSrcFile().equals(ipsSrcFile)) {
             return;
@@ -537,6 +540,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
         display.syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 if (TRACE) {
                     logMethodStarted("contentsChanged(): Received content changed event for the file being edited." + event.getEventType()); //$NON-NLS-1$
@@ -558,6 +562,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * {@inheritDoc}
      */
+    @Override
     public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
         if (!ipsSrcFile.equals(event.getIpsSrcFile())) {
             return;
@@ -604,6 +609,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * We have to close the editor if the underlying resource is removed.
      */
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         IResource enclResource = ipsSrcFile.getEnclosingResource();
         if (enclResource == null || event.getDelta() == null
@@ -768,6 +774,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                     log("checkForInconsistenciesToModel - differences found, start fixing differenced."); //$NON-NLS-1$
                 }
                 IWorkspaceRunnable fix = new IWorkspaceRunnable() {
+                    @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
                         toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
                     }
@@ -850,6 +857,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
         if (TRACE) {
             logMethodStarted("propertyChange(): Received property changed event " + event); //$NON-NLS-1$
@@ -959,6 +967,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             partService = null;
         }
 
+        @Override
         public void partActivated(IWorkbenchPart part) {
             if (part != IpsObjectEditor.this) {
                 return;
@@ -967,10 +976,12 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             handleEditorActivation();
         }
 
+        @Override
         public void partBroughtToTop(IWorkbenchPart part) {
 
         }
 
+        @Override
         public void partClosed(IWorkbenchPart part) {
             if (part != IpsObjectEditor.this) {
                 return;
@@ -985,6 +996,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
         }
 
+        @Override
         public void partDeactivated(IWorkbenchPart part) {
 
         }
@@ -995,24 +1007,29 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(IpsObjectEditor.this);
         }
 
+        @Override
         public void partOpened(IWorkbenchPart part) {
 
         }
 
+        @Override
         public void windowActivated(IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()) {
                 checkForChangesMadeOutsideEclipse();
             }
         }
 
+        @Override
         public void windowDeactivated(IWorkbenchWindow window) {
 
         }
 
+        @Override
         public void windowClosed(IWorkbenchWindow window) {
 
         }
 
+        @Override
         public void windowOpened(IWorkbenchWindow window) {
 
         }
@@ -1040,6 +1057,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         /**
          * {@inheritDoc}
          */
+        @Override
         public void problemsChanged(IResource[] changedResources) {
             if (ipsObjectEditor.getIpsSrcFile() == null) {
                 return; // can happen during editor init
@@ -1073,6 +1091,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             Shell shell = ipsObjectEditor.getEditorSite().getShell();
             if (shell != null && !shell.isDisposed()) {
                 shell.getDisplay().syncExec(new Runnable() {
+                    @Override
                     public void run() {
                         if (isActive()) {
                             refresh();

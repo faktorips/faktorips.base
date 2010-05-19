@@ -55,10 +55,12 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
         }
     }
 
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
 
+    @Override
     public void setDataChangeable(boolean changeable) {
         if (dataChangeable = changeable) {
             return;

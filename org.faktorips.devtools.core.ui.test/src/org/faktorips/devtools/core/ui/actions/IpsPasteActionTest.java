@@ -284,9 +284,11 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
             this.selected = selected;
         }
 
+        @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public ISelection getSelection() {
             if (selected instanceof IIpsElement[]) {
                 return new StructuredSelection(Arrays.asList((IIpsElement[])selected));
@@ -294,9 +296,11 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
             return new StructuredSelection(selected);
         }
 
+        @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public void setSelection(ISelection selection) {
         }
     }

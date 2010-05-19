@@ -49,6 +49,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
     public boolean performFinish() {
         final IFixDifferencesToModelSupport[] elementsToFix = elementSelectionPage.getElementsToFix();
         final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) {
                 monitor.beginTask(Messages.FixDifferencesToModelWizard_beginTask, elementsToFix.length);
                 try {
@@ -67,6 +68,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
 
         try {
             getContainer().run(true, true, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     try {
                         IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(op, monitor);
@@ -82,6 +84,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
         return true;
     }
 
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         // initialization is handled in the calling action, which transforms the selection to the
         // needed set.

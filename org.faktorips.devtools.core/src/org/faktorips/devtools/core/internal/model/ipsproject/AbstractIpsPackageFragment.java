@@ -42,6 +42,7 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
         super();
     }
 
+    @Override
     public IIpsPackageFragmentRoot getRoot() {
         return (IIpsPackageFragmentRoot)getParent();
     }
@@ -51,6 +52,7 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
         return getIpsSrcFiles();
     }
 
+    @Override
     public IIpsPackageFragment getParentIpsPackageFragment() {
         int lastIndex = getName().lastIndexOf("."); //$NON-NLS-1$
         if (lastIndex < 0) {
@@ -65,14 +67,17 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
         }
     }
 
+    @Override
     public IPath getRelativePath() {
         return new Path(getName().replace('.', '/'));
     }
 
+    @Override
     public boolean isDefaultPackage() {
         return name.equals(""); //$NON-NLS-1$
     }
 
+    @Override
     public IIpsSrcFile getIpsSrcFile(String name) {
         IpsObjectType type = IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
         if (type != null) {
@@ -81,10 +86,12 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
         return null;
     }
 
+    @Override
     public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type) {
         return new IpsSrcFile(this, filenameWithoutExtension + '.' + type.getFileExtension());
     }
 
+    @Override
     public String getLastSegmentName() {
         int index = name.lastIndexOf('.');
         if (index == -1) {

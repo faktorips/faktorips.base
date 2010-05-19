@@ -49,6 +49,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -56,6 +57,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName(Locale locale) {
         return locStringSet.getString("name", locale); //$NON-NLS-1$
     }
@@ -63,6 +65,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGenerationConceptNameAbbreviation(Locale locale) {
         return locStringSet.getString("generationConceptAbbreviation", locale); //$NON-NLS-1$
     }
@@ -70,6 +73,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersionConceptNameSingular(Locale locale) {
         return locStringSet.getString("versionConceptNameSingular", locale); //$NON-NLS-1$
     }
@@ -77,6 +81,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersionConceptNamePlural(Locale locale) {
         return locStringSet.getString("versionConceptNamePlural", locale); //$NON-NLS-1$
     }
@@ -84,6 +89,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersionConceptNameAbbreviation(Locale locale) {
         return locStringSet.getString("versionConceptAbbreviation", locale); //$NON-NLS-1$
     }
@@ -91,6 +97,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getEffectiveDateConceptName(Locale locale) {
         return locStringSet.getString("effectiveDateConceptName", locale); //$NON-NLS-1$
     }
@@ -106,6 +113,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getEffectiveDateConceptName() {
         return getEffectiveDateConceptName(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
@@ -113,6 +121,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGenerationConceptNameAbbreviation() {
         return getGenerationConceptNameAbbreviation(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
@@ -120,6 +129,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGenerationConceptNameSingular(Locale locale) {
         return getGenerationConceptNameSingular(locale, false);
     }
@@ -127,6 +137,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGenerationConceptNamePlural(Locale locale) {
         return getGenerationConceptNamePlural(locale, false);
     }
@@ -134,6 +145,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGenerationConceptNamePlural() {
         return getGenerationConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale(), false);
     }
@@ -141,6 +153,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGenerationConceptNameSingular() {
         return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale(), false);
     }
@@ -148,6 +161,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGenerationConceptNamePlural(boolean usageInsideSentence) {
         return getGenerationConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale(), usageInsideSentence);
     }
@@ -155,6 +169,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGenerationConceptNameSingular(boolean usageInsideSentence) {
         return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale(), usageInsideSentence);
     }
@@ -172,6 +187,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return getName(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
@@ -179,6 +195,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersionConceptNameAbbreviation() {
         return getVersionConceptNameAbbreviation(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
@@ -186,6 +203,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersionConceptNamePlural() {
         return getVersionConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
@@ -193,6 +211,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersionConceptNameSingular() {
         return getVersionConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }

@@ -67,6 +67,7 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getValidationResultSeverity() throws CoreException {
         return 0;
     }
@@ -74,6 +75,7 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValid() throws CoreException {
         return false;
     }
@@ -81,6 +83,7 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         MessageList messageList = new MessageList();
         validate(messageList, ipsProject);
@@ -112,6 +115,7 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITestParameter getTestParameter() {
         return getTestRuleParameter();
     }

@@ -40,15 +40,18 @@ public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionD
     /** The preselected <tt>IIpsElement</tt>. */
     private IIpsElement preselectedIpsElement;
 
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         workbenchWindow = targetPart.getSite().getWorkbenchWindow();
     }
 
+    @Override
     public void run(IAction action) {
         CreateMissingEnumContentsWizard wizard = new CreateMissingEnumContentsWizard(preselectedIpsElement);
         wizard.open(workbenchWindow.getShell());
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection.isEmpty()) {
             return;

@@ -83,14 +83,17 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         tableContentsGeneration.initUniqueKeyValidator(tableStructure, new UniqueKeyValidator());
     }
 
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TABLE_CONTENTS;
     }
 
+    @Override
     public String getTableStructure() {
         return structure;
     }
 
+    @Override
     public void setTableStructure(String qName) {
         String oldStructure = structure;
         setTableStructureInternal(qName);
@@ -101,10 +104,12 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         structure = qName;
     }
 
+    @Override
     public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreException {
         return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structure);
     }
 
+    @Override
     public int getNumOfColumns() {
         return numOfColumns;
     }
@@ -118,11 +123,13 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         this.numOfColumns = numOfColumns;
     }
 
+    @Override
     public int newColumn(String defaultValue) {
         newColumnAt(numOfColumns, defaultValue);
         return numOfColumns;
     }
 
+    @Override
     public void newColumnAt(int index, String defaultValue) {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
@@ -132,6 +139,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         objectHasChanged();
     }
 
+    @Override
     public void deleteColumn(int columnIndex) {
         if (columnIndex < 0 || columnIndex >= numOfColumns) {
             throw new IllegalArgumentException("Illegal column index " + columnIndex); //$NON-NLS-1$
@@ -159,6 +167,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
@@ -177,6 +186,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         numOfColumns = Integer.parseInt(element.getAttribute(PROPERTY_NUMOFCOLUMNS));
     }
 
+    @Override
     public void initFromInputStream(InputStream is) throws CoreException {
         try {
             reinitPartCollections();
@@ -218,10 +228,12 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return datatypes;
     }
 
+    @Override
     public void addExtensionProperty(String propertyId, String extPropertyValue) {
         addExtensionPropertyValue(propertyId, extPropertyValue);
     }
 
+    @Override
     public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getTableStructure());
     }
@@ -229,6 +241,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     /**
      * This Method always returns false because differences to model is not supported at the moment
      */
+    @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
         // TODO throw new NotImplementedException();
         return false;
@@ -237,10 +250,12 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     /**
      * This method does nothing because there is nothing to do at the moment
      */
+    @Override
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
 
     }
 
+    @Override
     public String getMetaClass() {
         return getTableStructure();
     }

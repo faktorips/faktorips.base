@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 
 public class TableContentsCompareViewerCreator implements IViewerCreator {
 
+    @Override
     public Viewer createViewer(Composite parent, CompareConfiguration config) {
         return new TableContentsCompareViewer(parent, config);
     }

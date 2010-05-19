@@ -198,6 +198,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean aboutToDelete(IIpsObjectPart part) {
             if (page.getProductCmpt().getGenerationsOrderedByValidDate().length == 2) {
                 super.deleteButton.setEnabled(false);
@@ -208,6 +209,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void deleted(IIpsObjectPart part) {
             page.getProductCmptEditor().setActiveGeneration(getSelectedGeneration(), true);
         }
@@ -232,14 +234,17 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         }
 
         private class ContentProvider implements IStructuredContentProvider {
+            @Override
             public Object[] getElements(Object inputElement) {
                 return getTimedIpsObject().getGenerationsOrderedByValidDate();
             }
 
+            @Override
             public void dispose() {
                 // nothing todo
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing todo
             }

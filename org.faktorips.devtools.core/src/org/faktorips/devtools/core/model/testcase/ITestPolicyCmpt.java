@@ -242,6 +242,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * Returns <code>true</code> if this object is a root or <code>false</code> if this object is a
      * child objejct.
      */
+    @Override
     public boolean isRoot();
 
     /**

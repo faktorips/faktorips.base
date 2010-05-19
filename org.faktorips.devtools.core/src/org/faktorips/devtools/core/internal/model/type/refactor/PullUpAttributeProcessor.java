@@ -65,6 +65,7 @@ public class PullUpAttributeProcessor extends IpsRefactoringProcessor {
         return participants;
     }
 
+    @Override
     public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
         return new RefactoringStatus();
     }

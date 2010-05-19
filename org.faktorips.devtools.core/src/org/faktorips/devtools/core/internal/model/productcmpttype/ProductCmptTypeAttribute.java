@@ -55,10 +55,12 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         return doc.createElement(TAG_NAME);
     }
 
+    @Override
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
     }
 
+    @Override
     public boolean isOverwrite() {
         return false;
     }
@@ -72,18 +74,22 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         }
     }
 
+    @Override
     public String getPropertyName() {
         return name;
     }
 
+    @Override
     public ProdDefPropertyType getProdDefPropertyType() {
         return ProdDefPropertyType.VALUE;
     }
 
+    @Override
     public boolean isDerived() {
         return false;
     }
 
+    @Override
     public String getPropertyDatatype() {
         return getDatatype();
     }
@@ -97,18 +103,22 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         }
     }
 
+    @Override
     public IValueSet getValueSet() {
         return valueSet;
     }
 
+    @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         return ipsProject.getValueSetTypes(findDatatype(ipsProject));
     }
 
+    @Override
     public boolean isValueSetUpdateable() {
         return true;
     }
 
+    @Override
     public void setValueSetType(ValueSetType newType) {
         ArgumentCheck.notNull(newType);
         if (newType == valueSet.getValueSetType()) {
@@ -118,17 +128,20 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         objectHasChanged();
     }
 
+    @Override
     public IValueSet changeValueSetType(ValueSetType newType) {
         setValueSetType(newType);
         return valueSet;
     }
 
+    @Override
     public void setValueSetCopy(IValueSet source) {
         IValueSet oldset = valueSet;
         valueSet = source.copy(this, getNextPartId());
         valueChanged(oldset, valueSet);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public IIpsObjectPart newPart(Class partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$

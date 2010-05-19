@@ -63,6 +63,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getExtensionId() {
         return EXTENSION_ID;
     }
@@ -70,6 +71,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean supportsVersionId() {
         return true;
     }
@@ -119,6 +121,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     /**
      * {@inheritDoc}
      */
+    @Override
     public MessageList validateVersionId(String versionId) {
         MessageList list = new MessageList();
         if (versionId.length() < dateFormatPattern.length()) {
@@ -150,6 +153,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getNextVersionId(IProductCmpt pc) {
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         return dateFormat.format(date.getTime());
@@ -178,6 +182,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
         String id = project.getRuntimeIdPrefix() + productCmptName;
         String uniqueId = id;

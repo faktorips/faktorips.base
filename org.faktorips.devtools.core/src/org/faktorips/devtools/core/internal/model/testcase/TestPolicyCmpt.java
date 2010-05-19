@@ -127,20 +127,24 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
+    @Override
     public String getTestPolicyCmptTypeParameter() {
         return testPolicyCmptType;
     }
 
+    @Override
     public void setTestPolicyCmptTypeParameter(String testPolicyCmptTypeParameter) {
         String oldPolicyCmptType = testPolicyCmptType;
         testPolicyCmptType = testPolicyCmptTypeParameter;
         valueChanged(oldPolicyCmptType, testPolicyCmptTypeParameter);
     }
 
+    @Override
     public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
         return findTestPolicyCmptTypeParameter(ipsProject);
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testPolicyCmptType)) {
             return null;
@@ -148,6 +152,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this, ipsProject);
     }
 
+    @Override
     public String getTestParameterName() {
         return testPolicyCmptType;
     }
@@ -158,16 +163,19 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * Use {@link #setProductCmptAndNameAfterIfApplicable(String)} if standard naming (or manual
      * naming) should be retained.
      */
+    @Override
     public void setProductCmpt(String newProductCmpt) {
         String oldTestProductCmpt = productCmpt;
         productCmpt = newProductCmpt;
         valueChanged(oldTestProductCmpt, newProductCmpt);
     }
 
+    @Override
     public String getProductCmpt() {
         return productCmpt;
     }
 
+    @Override
     public void setProductCmptAndNameAfterIfApplicable(String prodCmptQName) {
         String oldProdCmptName = getNullSafeUnqualifiedName(getProductCmpt());
         String pctParameterName = getNullSafeUnqualifiedName(getTestPolicyCmptTypeParameter());
@@ -195,6 +203,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return qName == null ? "" : StringUtil.unqualifiedName(qName); //$NON-NLS-1$
     }
 
+    @Override
     public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(productCmpt)) {
             return null;
@@ -203,6 +212,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return pc;
     }
 
+    @Override
     public boolean isProductRelevant() {
         return !StringUtils.isEmpty(productCmpt);
     }
@@ -222,6 +232,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /**
      * Returns the top level test case.
      */
+    @Override
     public ITestCase getTestCase() {
         return ((ITestCase)getRoot().getParent());
     }
@@ -249,6 +260,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         element.setAttribute(PROPERTY_PRODUCTCMPT, productCmpt);
     }
 
+    @Override
     public ITestAttributeValue newTestAttributeValue() {
         TestAttributeValue a = newTestAttributeValueInternal(getNextPartId());
         objectHasChanged();
@@ -264,6 +276,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return a;
     }
 
+    @Override
     public ITestAttributeValue getTestAttributeValue(String name) {
         for (ITestAttributeValue a : testAttributeValues) {
             if (a.getTestAttribute().equals(name)) {
@@ -273,6 +286,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return null;
     }
 
+    @Override
     public ITestAttributeValue[] getTestAttributeValues() {
         ITestAttributeValue[] a = new ITestAttributeValue[testAttributeValues.size()];
         testAttributeValues.toArray(a);
@@ -286,6 +300,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         testAttributeValues.remove(attribute);
     }
 
+    @Override
     public ITestPolicyCmptLink getTestPolicyCmptLink(String testPolicyCmptType) {
         ArgumentCheck.notNull(testPolicyCmptType);
         for (ITestPolicyCmptLink r : testPolicyCmptLinks) {
@@ -296,12 +311,14 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return null;
     }
 
+    @Override
     public ITestPolicyCmptLink[] getTestPolicyCmptLinks() {
         ITestPolicyCmptLink[] r = new ITestPolicyCmptLink[testPolicyCmptLinks.size()];
         testPolicyCmptLinks.toArray(r);
         return r;
     }
 
+    @Override
     public ITestPolicyCmptLink[] getTestPolicyCmptLinks(String typeParameterName) {
         List<ITestPolicyCmptLink> links = new ArrayList<ITestPolicyCmptLink>();
         for (ITestPolicyCmptLink element : testPolicyCmptLinks) {
@@ -312,6 +329,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return links.toArray(new ITestPolicyCmptLink[0]);
     }
 
+    @Override
     public ITestPolicyCmptLink newTestPolicyCmptLink() {
         ITestPolicyCmptLink r = newTestPcTypeLinkInternal(getNextPartId());
         objectHasChanged();
@@ -348,6 +366,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return testPolicyCmpt;
     }
 
+    @Override
     public ITestPolicyCmpt getParentTestPolicyCmpt() {
         if (isRoot()) {
             return null;
@@ -356,6 +375,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return (ITestPolicyCmpt)testPcTypeLink.getParent();
     }
 
+    @Override
     public void removeLink(ITestPolicyCmptLink link) {
         int idx = 0;
         int foundIdx = -1;
@@ -372,6 +392,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
     }
 
+    @Override
     public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
             String policyCmptType,
@@ -438,6 +459,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return newTestPcTypeLink;
     }
 
+    @Override
     public void updateDefaultTestAttributeValues() throws CoreException {
         // add the attributes which are defined in the test case type parameter
         IProductCmptGeneration generation = findProductCmpsCurrentGeneration(getIpsProject());
@@ -464,6 +486,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
     }
 
+    @Override
     public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
         Assert.isNotNull(testPolicyCmpt);
         int idx = 0;
@@ -476,6 +499,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         throw new CoreException(new IpsStatus(Messages.TestPolicyCmpt_Error_MoveNotPossibleBelongsToNoLink));
     }
 
+    @Override
     public int[] moveTestPolicyCmptLink(int[] indexes, boolean up) {
         ListElementMover<ITestPolicyCmptLink> mover = new ListElementMover<ITestPolicyCmptLink>(testPolicyCmptLinks);
         int[] newIdxs = mover.move(indexes, up);
@@ -848,6 +872,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
     }
 
+    @Override
     public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) throws CoreException {
         if (!hasProductCmpt()) {
             // no product cmpt is set, therefore no attribute could be searched,
@@ -867,6 +892,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return pct.findPolicyCmptTypeAttribute(attribute, ipsProject);
     }
 
+    @Override
     public IPolicyCmptType findPolicyCmptType() {
         IIpsProject ipsProject = getTestCase().getIpsProject();
         try {
@@ -881,14 +907,17 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return null;
     }
 
+    @Override
     public boolean hasProductCmpt() {
         return !StringUtils.isEmpty(getProductCmpt());
     }
 
+    @Override
     public String getPolicyCmptType() {
         return policyCmptType;
     }
 
+    @Override
     public void setPolicyCmptType(String policyCmptType) {
         String oldPolicyCmptType = this.policyCmptType;
         this.policyCmptType = policyCmptType;

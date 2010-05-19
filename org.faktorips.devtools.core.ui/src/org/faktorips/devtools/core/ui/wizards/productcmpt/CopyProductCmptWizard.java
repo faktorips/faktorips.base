@@ -51,6 +51,7 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
     }
@@ -116,6 +117,7 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
     /**
      * {@inheritDoc}
      */
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.PRODUCT_CMPT;
     }

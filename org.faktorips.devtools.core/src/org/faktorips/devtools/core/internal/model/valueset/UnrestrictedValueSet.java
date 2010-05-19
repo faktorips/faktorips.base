@@ -48,6 +48,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
+    @Override
     public String toShortString() {
         return "[" + org.faktorips.devtools.core.model.valueset.Messages.ValueSetType__allValues + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -57,6 +58,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         return super.toString() + ":" + "UnrestrictedValueSet"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
     public boolean containsValue(String value,
             MessageList list,
             Object invalidObject,
@@ -89,6 +91,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         return true;
     }
 
+    @Override
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
             throw new NullPointerException("MessageList required"); //$NON-NLS-1$
@@ -112,6 +115,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         return false;
     }
 
+    @Override
     public boolean containsValueSet(IValueSet subset) {
         return containsValueSet(subset, new MessageList(), null, null);
     }
@@ -130,6 +134,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         element.appendChild(tagElement);
     }
 
+    @Override
     public IValueSet copy(IIpsObjectPart parent, String id) {
         return new UnrestrictedValueSet(parent, id);
     }
@@ -139,6 +144,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         // Nothing to do.
     }
 
+    @Override
     public boolean getContainsNull() {
         ValueDatatype type = getValueDatatype();
         return type == null || !type.isPrimitive();
@@ -151,6 +157,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
      * 
      * {@inheritDoc}
      */
+    @Override
     public void setContainsNull(boolean containsNull) {
         if (getValueDatatype().isPrimitive() && containsNull) {
             throw new UnsupportedOperationException(

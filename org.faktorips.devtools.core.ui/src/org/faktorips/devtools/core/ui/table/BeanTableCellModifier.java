@@ -155,6 +155,7 @@ public class BeanTableCellModifier implements ICellModifier {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canModify(Object element, String property) {
         return parentControl.isDataChangeable();
     }
@@ -162,6 +163,7 @@ public class BeanTableCellModifier implements ICellModifier {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getValue(Object element, String property) {
         try {
             PropertyDescriptor pd = getPropertyDescriptor(element, property);
@@ -177,6 +179,7 @@ public class BeanTableCellModifier implements ICellModifier {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void modify(Object element, String property, Object value) {
         try {
             ArgumentCheck.isInstanceOf(element, TableItem.class);

@@ -99,6 +99,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     /**
      * {@inheritDoc}
      */
+    @Override
     public void modifyText(ModifyEvent e) {
         // We need to validate here and "by hand" because this validation is not neccessary
         // to be done during normal validation of a generation.

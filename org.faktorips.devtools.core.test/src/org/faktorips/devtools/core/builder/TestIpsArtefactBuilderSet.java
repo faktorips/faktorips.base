@@ -110,20 +110,24 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
         return getId();
     }
 
+    @Override
     public boolean isSupportTableAccess() {
         return false;
     }
 
+    @Override
     public CompilationResult getTableAccessCode(ITableContents tableContents,
             ITableAccessFunction fct,
             CompilationResult[] argResults) throws CoreException {
         return null;
     }
 
+    @Override
     public boolean isSupportFlIdentifierResolver() {
         return false;
     }
 
+    @Override
     public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
         return null;
@@ -132,6 +136,7 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
         return null;
@@ -140,6 +145,7 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
         return null;
     }
@@ -147,6 +153,7 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
         return null;
     }
@@ -161,6 +168,7 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
         return null;
     }
@@ -168,6 +176,7 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
         return null;
     }
@@ -175,10 +184,12 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersion() {
         return null;
     }
 
+    @Override
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
         return null;
     }

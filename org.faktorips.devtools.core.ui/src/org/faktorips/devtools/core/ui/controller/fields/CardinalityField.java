@@ -43,6 +43,7 @@ public class CardinalityField extends AbstractCardinalityField {
     protected void addListenerToControl() {
         text.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 notifyChangeListeners(new FieldValueChangedEvent(CardinalityField.this));
             }
@@ -53,6 +54,7 @@ public class CardinalityField extends AbstractCardinalityField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Control getControl() {
         return text;
     }
@@ -60,6 +62,7 @@ public class CardinalityField extends AbstractCardinalityField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getText() {
         return text.getText();
     }
@@ -75,6 +78,7 @@ public class CardinalityField extends AbstractCardinalityField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void insertText(String text) {
         this.text.insert(text);
     }
@@ -82,6 +86,7 @@ public class CardinalityField extends AbstractCardinalityField {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectAll() {
         text.selectAll();
     }

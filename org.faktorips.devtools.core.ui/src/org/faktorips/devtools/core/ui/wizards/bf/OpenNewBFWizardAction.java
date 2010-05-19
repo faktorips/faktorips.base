@@ -30,6 +30,7 @@ public class OpenNewBFWizardAction extends OpenNewWizardAction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         // nothing to do
     }

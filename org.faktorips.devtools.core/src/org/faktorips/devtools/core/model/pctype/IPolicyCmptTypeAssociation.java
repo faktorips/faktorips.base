@@ -157,6 +157,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Returns the qualified name of the target policy component class.
      */
+    @Override
     public String getTarget();
 
     /**
@@ -172,11 +173,13 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Sets the qualified name of the target policy component class.
      */
+    @Override
     public void setTarget(String newTarget);
 
     /**
      * Returns the role of the target in this relation.
      */
+    @Override
     public String getTargetRoleSingular();
 
     /**
@@ -184,21 +187,25 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * policy and not policies. The distinction is more relevant in other languages than English,
      * where you can't derive the plural from the singular form.
      */
+    @Override
     public void setTargetRoleSingular(String newRole);
 
     /**
      * Returns a default role name (singular form) for the target based on the target's name.
      */
+    @Override
     public String getDefaultTargetRoleSingular();
 
     /**
      * Returns the role of the target in this relation. The role is specified in plural form.
      */
+    @Override
     public String getTargetRolePlural();
 
     /**
      * Sets the new role in plural form of the target in this relation.
      */
+    @Override
     public void setTargetRolePlural(String newRole);
 
     /**
@@ -206,11 +213,13 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * cardinality and the artefact builderset's information if it needs the plural form for to 1
      * relations.
      */
+    @Override
     public boolean isTargetRolePluralRequired();
 
     /**
      * Returns a default role name (plural form) for the target based on the target's name.
      */
+    @Override
     public String getDefaultTargetRolePlural();
 
     /**

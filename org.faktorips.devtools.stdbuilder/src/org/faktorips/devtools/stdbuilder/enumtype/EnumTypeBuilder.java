@@ -77,6 +77,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         setMergeEnabled(true);
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE)) {
             return true;

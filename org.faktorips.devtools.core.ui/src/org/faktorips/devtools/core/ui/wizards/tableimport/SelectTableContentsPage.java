@@ -47,6 +47,7 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
         super(selection, Messages.SelectTableContentsPage_title);
     }
 
+    @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;

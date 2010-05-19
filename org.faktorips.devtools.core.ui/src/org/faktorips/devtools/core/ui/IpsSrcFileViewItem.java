@@ -48,10 +48,12 @@ public abstract class IpsSrcFileViewItem extends PlatformObject implements IIpsS
      * 
      * @return the internal <code>IpsSrcFile</code>
      */
+    @Override
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
     }
 
+    @Override
     public IIpsSrcFile getWrappedIpsSrcFile() {
         return getIpsSrcFile();
     }

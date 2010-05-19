@@ -197,9 +197,11 @@ public class FailurePane implements IMenuListener {
         });
 
         table.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (table.getSelectionCount() > 0) {
                     boolean navigate = false;
@@ -378,6 +380,7 @@ public class FailurePane implements IMenuListener {
         }
         table.addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 resourceManager.dispose();
             }
@@ -398,6 +401,7 @@ public class FailurePane implements IMenuListener {
         return table.getSelectionIndex();
     }
 
+    @Override
     public void menuAboutToShow(IMenuManager manager) {
         if (table.getSelectionCount() > 0) {
             manager.add(new IpsTestCopyAction(getFailureDetailsAsString(), clipboard));

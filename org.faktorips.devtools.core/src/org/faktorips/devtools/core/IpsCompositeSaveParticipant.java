@@ -41,6 +41,7 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
         return saveParticipants.remove(participant);
     }
 
+    @Override
     public void doneSaving(ISaveContext context) {
         for (ISaveParticipant participant : saveParticipants) {
             try {
@@ -51,6 +52,7 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
         }
     }
 
+    @Override
     public void prepareToSave(ISaveContext context) throws CoreException {
         for (ISaveParticipant participant : saveParticipants) {
             try {
@@ -62,6 +64,7 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
 
     }
 
+    @Override
     public void rollback(ISaveContext context) {
         for (ISaveParticipant participant : saveParticipants) {
             try {
@@ -72,6 +75,7 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
         }
     }
 
+    @Override
     public void saving(ISaveContext context) throws CoreException {
         for (ISaveParticipant participant : saveParticipants) {
             try {

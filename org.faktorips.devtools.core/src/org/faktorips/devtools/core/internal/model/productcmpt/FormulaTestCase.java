@@ -62,6 +62,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFormula getFormula() {
         return (IFormula)getParent();
     }
@@ -85,6 +86,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
@@ -217,6 +219,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object execute(IIpsProject ipsProject) throws Exception {
         ExprEvaluator processor = getExprEvaluatorInternal(ipsProject.getClassLoaderForJavaProject(), ipsProject);
         return processor.evaluate(getFormula().getExpression());
@@ -250,6 +253,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFormulaTestInputValue getFormulaTestInputValue(String identifier) {
         for (IFormulaTestInputValue v : formulaTestInputValues) {
             if (v.getIdentifier().equals(identifier)) {
@@ -262,6 +266,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFormulaTestInputValue[] getFormulaTestInputValues() {
         return formulaTestInputValues.toArray(new IFormulaTestInputValue[0]);
     }
@@ -269,6 +274,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFormulaTestInputValue newFormulaTestInputValue() {
         IFormulaTestInputValue v = newFormulaTestInputValueInternal(getNextPartId());
         objectHasChanged();
@@ -287,6 +293,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getExpectedResult() {
         return expectedResult;
     }
@@ -294,6 +301,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setExpectedResult(String expectedResult) {
         String oldExpectedResult = this.expectedResult;
         this.expectedResult = expectedResult;
@@ -303,6 +311,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifiers, IIpsProject ipsProject) {
         boolean changed = false;
 
@@ -355,6 +364,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
             this.ipsProject = ipsProject;
         }
 
+        @Override
         public void run(IProgressMonitor monitor) throws CoreException {
             for (int i = 0; i < newIdentifiers.length; i++) {
                 IFormulaTestInputValue inputValue = getFormulaTestInputValue(newIdentifiers[i]);
@@ -400,6 +410,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isFormulaTestCaseEmpty() {
         if (formulaTestInputValues.size() == 0) {
             return true;
@@ -415,6 +426,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String generateUniqueNameForFormulaTestCase(String nameProposal) {
         String uniqueName = nameProposal;
 

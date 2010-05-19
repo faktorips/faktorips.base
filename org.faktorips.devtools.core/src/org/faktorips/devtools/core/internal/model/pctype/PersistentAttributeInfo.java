@@ -67,46 +67,57 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         policyComponentTypeAttribute = ipsObject;
     }
 
+    @Override
     public boolean isTransient() {
         return transientAttribute;
     }
 
+    @Override
     public String getTableColumnName() {
         return tableColumnName;
     }
 
+    @Override
     public boolean getTableColumnNullable() {
         return tableColumnNullable;
     }
 
+    @Override
     public int getTableColumnPrecision() {
         return tableColumnPrecision;
     }
 
+    @Override
     public int getTableColumnScale() {
         return tableColumnScale;
     }
 
+    @Override
     public int getTableColumnSize() {
         return tableColumnSize;
     }
 
+    @Override
     public boolean getTableColumnUnique() {
         return tableColumnUnique;
     }
 
+    @Override
     public String getConverterQualifiedClassName() {
         return converterQualifiedClassName;
     }
 
+    @Override
     public String getSqlColumnDefinition() {
         return sqlColumnDefinition;
     }
 
+    @Override
     public void setTableColumnConverter(IPersistableTypeConverter newConverter) {
         throw new NotImplementedException();
     }
 
+    @Override
     public void setTableColumnName(String newTableColumnName) {
         ArgumentCheck.notNull(newTableColumnName);
         String oldValue = tableColumnName;
@@ -115,6 +126,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, tableColumnName);
     }
 
+    @Override
     public void setTableColumnNullable(boolean nullable) {
         boolean oldValue = tableColumnNullable;
         tableColumnNullable = nullable;
@@ -122,6 +134,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, nullable);
     }
 
+    @Override
     public void setTableColumnPrecision(int precision) {
         int oldValue = tableColumnPrecision;
         tableColumnPrecision = precision;
@@ -129,6 +142,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, precision);
     }
 
+    @Override
     public void setTableColumnScale(int scale) {
         int oldValue = tableColumnScale;
         tableColumnScale = scale;
@@ -136,6 +150,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, scale);
     }
 
+    @Override
     public void setTableColumnSize(int newTableColumnSize) {
         int oldValue = tableColumnSize;
         tableColumnSize = newTableColumnSize;
@@ -143,6 +158,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, newTableColumnSize);
     }
 
+    @Override
     public void setTableColumnUnique(boolean unique) {
         boolean oldValue = tableColumnUnique;
         tableColumnUnique = unique;
@@ -150,12 +166,14 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, unique);
     }
 
+    @Override
     public void setTransient(boolean transientAttribute) {
         boolean oldValue = this.transientAttribute;
         this.transientAttribute = transientAttribute;
         valueChanged(oldValue, transientAttribute);
     }
 
+    @Override
     public void setConverterQualifiedClassName(String converterQualifiedClassName) {
         ArgumentCheck.notNull(converterQualifiedClassName);
         String oldValue = this.converterQualifiedClassName;
@@ -163,6 +181,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, converterQualifiedClassName);
     }
 
+    @Override
     public void setSqlColumnDefinition(String sqlColumnDefinition) {
         ArgumentCheck.notNull(sqlColumnDefinition);
         String oldValue = this.sqlColumnDefinition;
@@ -170,19 +189,23 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         valueChanged(oldValue, sqlColumnDefinition);
     }
 
+    @Override
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute() {
         return (IPolicyCmptTypeAttribute)policyComponentTypeAttribute;
     }
 
+    @Override
     public boolean isPersistentAttribute() {
         AttributeType attrType = getPolicyComponentTypeAttribute().getAttributeType();
         return (attrType == AttributeType.CHANGEABLE || attrType == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     }
 
+    @Override
     public DateTimeMapping getTemporalMapping() {
         return temporalMapping;
     }
 
+    @Override
     public void setTemporalMapping(DateTimeMapping temporalType) {
         DateTimeMapping oldValue = temporalMapping;
         temporalMapping = temporalType;

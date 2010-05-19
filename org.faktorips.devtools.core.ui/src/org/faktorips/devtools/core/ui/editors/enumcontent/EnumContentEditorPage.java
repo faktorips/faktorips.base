@@ -137,6 +137,7 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
         }
     }
 
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         IEnumType enumType;
         try {

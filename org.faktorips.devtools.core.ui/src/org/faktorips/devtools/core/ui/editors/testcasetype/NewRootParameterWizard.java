@@ -99,6 +99,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     /**
      * {@inheritDoc}
      */
+    @Override
     public IpsObjectUIController getController() {
         return controller;
     }
@@ -170,7 +171,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      * Connects the new test parameter to the model controller
      */
     private void connectNewParameterToModel() {
-        controller = new IpsObjectUIController((IIpsObjectPart)newTestParameter);
+        controller = new IpsObjectUIController(newTestParameter);
         rootParamSelectWizardPage.connectToModel(controller, newTestParameter);
         if (isTestPolicyCmptTypeParam) {
             rootParamDetailWizardPage.connectToModel(controller, newTestParameter);
@@ -212,6 +213,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPageValid(int pageNo) {
         // special check for the last page, valid if no new test policy cmpt type param is chosen,
         // because in this case the page is not necessary
@@ -235,6 +237,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     /**
      * {@inheritDoc}
      */
+    @Override
     public void postAsyncRunnable(Runnable r) {
         if (!getShell().isDisposed()) {
             getShell().getDisplay().asyncExec(r);
@@ -244,6 +247,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMaxPageShown(int pageNumber) {
         pageDisplayedMax = pageNumber;
     }

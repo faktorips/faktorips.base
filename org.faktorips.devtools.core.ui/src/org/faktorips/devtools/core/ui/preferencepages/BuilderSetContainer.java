@@ -463,18 +463,21 @@ public class BuilderSetContainer {
     // Widget action handling
     private final class BuilderSetAdapter implements ValueChangeListener, SelectionListener {
 
+        @Override
         public void valueChanged(FieldValueChangedEvent event) {
             String builderSetLabel = (String)event.field.getValue();
             String newBuilderSetId = getBuilderSetIdByLabel(builderSetLabel);
             changeBuilderSet(builderSetId, newBuilderSetId);
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (ipsProject != null && e.widget == columns[PROPERTY_NAME_COLUMN_INDEX].getColumn()) {
                 sortByPropertyName();
             }
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) { /* ignore */
         }
     }
@@ -534,12 +537,15 @@ public class BuilderSetContainer {
      * @author Roman Grutza
      */
     private static class BuilderSetContentProvider implements IStructuredContentProvider {
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
 
+        @Override
         public Object[] getElements(Object inputElement) {
             IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel()
                     .getIpsArtefactBuilderSetInfo(inputElement.toString());

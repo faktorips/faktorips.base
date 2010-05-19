@@ -47,6 +47,7 @@ public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenW
         setPageComplete(true);
     }
 
+    @Override
     public void createControl(Composite parent) {
         Composite pageComposite = wizard.createPageComposite(parent);
 
@@ -73,6 +74,7 @@ public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenW
      * Listener for the radio buttons.
      */
     private class ProductComponentTypeAssociationSelectionListener implements SelectionListener {
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (prevSelection != e.getSource()) {
                 prevSelection = (Button)e.getSource();
@@ -85,6 +87,7 @@ public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenW
             }
         }
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
@@ -93,6 +96,7 @@ public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenW
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPageVisible() {
         return wizard.isProductCmptTypeAvailable();
     }

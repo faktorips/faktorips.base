@@ -64,6 +64,7 @@ public class ModelLabelProvider implements ILabelProvider {
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
+    @Override
     public Image getImage(Object element) {
         if (element instanceof IIpsProject) {
             /*
@@ -113,6 +114,7 @@ public class ModelLabelProvider implements ILabelProvider {
         return null;
     }
 
+    @Override
     public String getText(Object element) {
         if (element instanceof IIpsElement) {
 
@@ -151,18 +153,22 @@ public class ModelLabelProvider implements ILabelProvider {
         }
     }
 
+    @Override
     public void addListener(ILabelProviderListener listener) {
 
     }
 
+    @Override
     public void dispose() {
         resourceManager.dispose();
     }
 
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;
     }
 
+    @Override
     public void removeListener(ILabelProviderListener listener) {
 
     }

@@ -45,6 +45,7 @@ public class ErrorPage extends WizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
 

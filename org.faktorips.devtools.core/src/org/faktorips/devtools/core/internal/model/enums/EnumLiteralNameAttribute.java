@@ -56,6 +56,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         defaultValueProviderAttribute = "";
     }
 
+    @Override
     public void setDefaultValueProviderAttribute(String defaultValueProviderAttributeName) {
         ArgumentCheck.notNull(defaultValueProviderAttributeName);
 
@@ -64,6 +65,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         valueChanged(oldValue, defaultValueProviderAttributeName);
     }
 
+    @Override
     public String getDefaultValueProviderAttribute() {
         return defaultValueProviderAttribute;
     }

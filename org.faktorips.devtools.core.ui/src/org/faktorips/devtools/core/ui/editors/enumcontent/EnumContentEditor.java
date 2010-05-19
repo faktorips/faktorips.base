@@ -46,6 +46,7 @@ public class EnumContentEditor extends IpsObjectEditor implements IModelDescript
         return (IEnumContent)getIpsObject();
     }
 
+    @Override
     public IPage createModelDescriptionPage() throws CoreException {
         return new EnumContentModelDescriptionPage(this);
     }

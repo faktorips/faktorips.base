@@ -191,6 +191,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     /**
      * {@inheritDoc}
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         IWizardPage currentPage = getContainer().getCurrentPage();
         IProductCmptType productCmptType = findProductCmptType();
@@ -365,6 +366,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         if (page instanceof IDefaultFocusPage) {
             if (isSuppressedEventFor(page, false)) {
                 getShell().getDisplay().asyncExec(new Runnable() {
+                    @Override
                     public void run() {
                         ((IDefaultFocusPage)page).setDefaultFocus();
                     }

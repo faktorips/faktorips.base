@@ -111,6 +111,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         setPageComplete(false);
     }
 
+    @Override
     public void createControl(Composite parent) {
         validateInput = false;
         setTitle(Messages.ImportPreviewPage_pageTitle);
@@ -241,6 +242,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (validateInput) { // don't validate during control creating!
             validatePage();

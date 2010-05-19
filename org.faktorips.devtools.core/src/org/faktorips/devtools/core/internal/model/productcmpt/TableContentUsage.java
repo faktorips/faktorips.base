@@ -61,22 +61,27 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         super();
     }
 
+    @Override
     public String getPropertyName() {
         return structureUsage;
     }
 
+    @Override
     public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findTableStructureUsage(ipsProject);
     }
 
+    @Override
     public ProdDefPropertyType getPropertyType() {
         return ProdDefPropertyType.TABLE_CONTENT_USAGE;
     }
 
+    @Override
     public String getPropertyValue() {
         return tableContentName;
     }
 
+    @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return (ProductCmptGeneration)getParent();
     }
@@ -90,15 +95,18 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         return doc.createElement(TAG_NAME);
     }
 
+    @Override
     public void setStructureUsage(String structureUsage) {
         this.structureUsage = structureUsage;
         objectHasChanged();
     }
 
+    @Override
     public String getStructureUsage() {
         return structureUsage;
     }
 
+    @Override
     public void setTableContentName(String tableContentName) {
         this.tableContentName = tableContentName;
         objectHasChanged();
@@ -109,10 +117,12 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         return getTableContentName();
     }
 
+    @Override
     public String getTableContentName() {
         return tableContentName;
     }
 
+    @Override
     public ITableContents findTableContents(IIpsProject ipsProject) throws CoreException {
         return (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentName);
     }
@@ -166,6 +176,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         ValueToXmlHelper.addValueToElement(tableContentName, element, "TableContentName"); //$NON-NLS-1$
     }
 
+    @Override
     public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws CoreException {
         IProductCmptType type = getProductCmptType(ipsProject);
         if (type == null) {

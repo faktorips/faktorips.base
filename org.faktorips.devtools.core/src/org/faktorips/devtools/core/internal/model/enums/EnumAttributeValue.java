@@ -108,6 +108,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
     }
 
+    @Override
     public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
@@ -139,10 +140,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         return enumAttribute instanceof IEnumLiteralNameAttribute;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public void setValue(String value) {
         String oldValue = this.value;
         this.value = value;
@@ -284,10 +287,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                 .getIndexOfEnumAttribute(enumAttribute));
     }
 
+    @Override
     public IEnumValue getEnumValue() {
         return (IEnumValue)getParent();
     }
 
+    @Override
     public void setValueAsLiteralName(String value) {
         if (value == null) {
             setValue(null);

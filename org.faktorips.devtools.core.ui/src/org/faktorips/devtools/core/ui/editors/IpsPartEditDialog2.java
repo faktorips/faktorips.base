@@ -96,10 +96,12 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         super.createButtonsForButtonBar(parent);
         super.getButton(Window.CANCEL).addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 handleAbortion();
             }
@@ -189,6 +191,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
     }
 
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(getIpsPart().getIpsSrcFile())) {
             updateTitleInTitleArea();

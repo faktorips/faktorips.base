@@ -53,6 +53,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         // nothing to do
     }
 
+    @Override
     public void dragEnter(DropTargetEvent event) {
         event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
     }
@@ -86,6 +87,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
     }
 
+    @Override
     public void drop(DropTargetEvent event) {
         if (!FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
             return;
@@ -116,6 +118,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                         ProgressMonitorDialog dialog = new ProgressMonitorDialog(event.display.getActiveShell());
                         dialog.run(true, false, new IRunnableWithProgress() {
 
+                            @Override
                             public void run(IProgressMonitor monitor) throws InvocationTargetException,
                                     InterruptedException {
                                 try {
@@ -175,6 +178,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                 "Refactoring Status", false); //$NON-NLS-1$
         final int[] result = new int[1];
         Runnable r = new Runnable() {
+            @Override
             public void run() {
                 result[0] = dialog.open();
             }
@@ -196,6 +200,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         return dropTarget;
     }
 
+    @Override
     public void dropAccept(DropTargetEvent event) {
         // Nothing to do.
     }

@@ -303,6 +303,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             sourceFolderText = kit.createText(textComposite);
             sourceFolderText.setText(sourceFolderName);
             sourceFolderText.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent event) {
                     sourceFolderModified();
                 }
@@ -313,6 +314,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             basePackageText = kit.createText(textComposite);
             basePackageText.setText(basePackageName);
             basePackageText.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent event) {
                     basePackageModified();
                 }
@@ -479,6 +481,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             setTitleImage(dlgTitleImage);
             setMessage(Messages.AddIpsNatureAction_dialogMessage);
             parent.addDisposeListener(new DisposeListener() {
+                @Override
                 public void widgetDisposed(DisposeEvent e) {
                     dlgTitleImage.dispose();
                 }

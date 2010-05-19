@@ -46,6 +46,7 @@ public interface IIpsObject extends IIpsObjectPartContainer {
     /**
      * Returns the IPS source file this object is stored in.
      */
+    @Override
     public IIpsSrcFile getIpsSrcFile();
 
     /**

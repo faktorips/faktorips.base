@@ -39,6 +39,7 @@ public class DefaultEnumValue implements EnumValue {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EnumType getType() {
         return type;
     }
@@ -46,6 +47,7 @@ public class DefaultEnumValue implements EnumValue {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -53,6 +55,7 @@ public class DefaultEnumValue implements EnumValue {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -79,6 +82,7 @@ public class DefaultEnumValue implements EnumValue {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compareTo(Object o) {
         EnumValue other = (EnumValue)o;
         return id.compareTo(other.getId());

@@ -269,6 +269,7 @@ public class ClassLoaderProvider {
 
     private class ChangeListener implements IResourceChangeListener {
 
+        @Override
         public void resourceChanged(IResourceChangeEvent event) {
             if (event.getType() == IResourceChangeEvent.PRE_BUILD
                     && event.getBuildKind() == IncrementalProjectBuilder.CLEAN_BUILD) {

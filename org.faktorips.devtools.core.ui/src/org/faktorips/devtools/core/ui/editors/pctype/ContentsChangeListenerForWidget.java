@@ -61,6 +61,7 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
      * 
      * {@inheritDoc}
      */
+    @Override
     public final void contentsChanged(ContentChangeEvent event) {
         if (widget == null) {
             throw new RuntimeException("The widget hasn't been set!"); //$NON-NLS-1$
@@ -75,6 +76,7 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
     public void disposedInternal(DisposeEvent e) {
     }
 
+    @Override
     public final void widgetDisposed(DisposeEvent e) {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         disposedInternal(e);

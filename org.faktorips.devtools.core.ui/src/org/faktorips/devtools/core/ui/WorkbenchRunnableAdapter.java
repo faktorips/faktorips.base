@@ -65,6 +65,7 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         try {
             JavaCore.run(workspaceRunnable, rule, monitor);

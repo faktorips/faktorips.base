@@ -104,14 +104,17 @@ public abstract class CellTrackingEditingSupport extends EditingSupport {
 
     private class CellEditorListener implements ICellEditorListener {
 
+        @Override
         public void editorValueChanged(boolean oldValidState, boolean newValidState) {
             // nothing to do
         }
 
+        @Override
         public void cancelEditor() {
             resetCellEditor();
         }
 
+        @Override
         public void applyEditorValue() {
             resetCellEditor();
         }

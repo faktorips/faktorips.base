@@ -125,18 +125,22 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
         this.query = query;
     }
 
+    @Override
     public String getLabel() {
         return "" + super.getMatchCount() + Messages.ReferenceSearchResult_label + this.query.getReferencedName(); //$NON-NLS-1$
     }
 
+    @Override
     public String getTooltip() {
         return null;
     }
 
+    @Override
     public ImageDescriptor getImageDescriptor() {
         return null;
     }
 
+    @Override
     public ISearchQuery getQuery() {
         return this.query;
     }

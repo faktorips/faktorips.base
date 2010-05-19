@@ -45,6 +45,7 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAssociation getAssociation() {
         return association;
     }
@@ -60,6 +61,7 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsObject getWrappedIpsObject() {
         if (association == null) {
             return null;

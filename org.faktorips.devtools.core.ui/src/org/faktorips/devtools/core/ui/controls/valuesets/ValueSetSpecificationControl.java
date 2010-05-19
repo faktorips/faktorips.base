@@ -287,6 +287,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         updateConcreteValueSetCheckbox();
         concreteValueSetField.addChangeListener(new ValueChangeListener() {
 
+            @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 boolean checked = ((Boolean)e.field.getValue());
                 getValueSet().setAbstract(!checked);
@@ -349,6 +350,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         /**
          * {@inheritDoc}
          */
+        @Override
         public void valueChanged(FieldValueChangedEvent e) {
             String selectedText = e.field.getText();
             ValueSetType newValueSetType = ValueSetType.getValueSetTypeByName(selectedText);
@@ -397,6 +399,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
         toolkit.setDataChangeable(valueSetTypesCombo, changeable);
@@ -416,6 +419,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }

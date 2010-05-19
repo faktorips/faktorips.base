@@ -49,16 +49,20 @@ public class TableImportExportAction extends IpsAction {
             this.tableContents = tableContents;
         }
 
+        @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public ISelection getSelection() {
             return new StructuredSelection(tableContents);
         }
 
+        @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
         }
 
+        @Override
         public void setSelection(ISelection selection) {
         }
     }
@@ -143,6 +147,7 @@ public class TableImportExportAction extends IpsAction {
             return false;
         }
         Runnable run = new Runnable() {
+            @Override
             public void run() {
                 try {
                     tableContents.getIpsSrcFile().save(true, null);

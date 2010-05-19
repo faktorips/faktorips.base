@@ -157,10 +157,12 @@ public class PaletteBuilder {
             this.type = type;
         }
 
+        @Override
         public Object getNewObject() {
             return type;
         }
 
+        @Override
         public Object getObjectType() {
             return type;
         }

@@ -94,38 +94,46 @@ public abstract class Type extends BaseIpsObject implements IType {
         return attributes.iterator();
     }
 
+    @Override
     public boolean isAbstract() {
         return abstractFlag;
     }
 
+    @Override
     public void setAbstract(boolean newValue) {
         boolean oldValue = abstractFlag;
         abstractFlag = newValue;
         valueChanged(oldValue, newValue);
     }
 
+    @Override
     public String getSupertype() {
         return supertype;
     }
 
+    @Override
     public IType findSupertype(IIpsProject ipsProject) throws CoreException {
         return (IType)ipsProject.findIpsObject(getIpsObjectType(), supertype);
     }
 
+    @Override
     public boolean hasSupertype() {
         return StringUtils.isNotEmpty(supertype);
     }
 
+    @Override
     public boolean hasExistingSupertype(IIpsProject ipsProject) throws CoreException {
         return findSupertype(ipsProject) != null;
     }
 
+    @Override
     public void setSupertype(String newSupertype) {
         String oldSupertype = supertype;
         supertype = newSupertype;
         valueChanged(oldSupertype, newSupertype);
     }
 
+    @Override
     public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) throws CoreException {
         if (supertypeCandidate == null) {
             return false;
@@ -142,6 +150,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         return visitor.isSubtype();
     }
 
+    @Override
     public boolean isSubtypeOrSameType(IType candidate, IIpsProject project) throws CoreException {
         if (equals(candidate)) {
             return true;
@@ -149,56 +158,67 @@ public abstract class Type extends BaseIpsObject implements IType {
         return isSubtypeOf(candidate, project);
     }
 
+    @Override
     public IAttribute[] getAttributes() {
         return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
     }
 
+    @Override
     public IAttribute getAttribute(String name) {
         return attributes.getPartByName(name);
     }
 
+    @Override
     public List<IMethod> findAllMethods(IIpsProject ipsProject) throws CoreException {
         AllMethodsFinder finder = new AllMethodsFinder(ipsProject);
         finder.start(this);
         return finder.getMethodes();
     }
 
+    @Override
     public IAttribute[] findAllAttributes(IIpsProject ipsProject) throws CoreException {
         AllAttributeFinder finder = new AllAttributeFinder(ipsProject);
         finder.start(this);
         return finder.getAttributes();
     }
 
+    @Override
     public IAssociation[] findAllAssociations(IIpsProject ipsProject) throws CoreException {
         AllAssociationFinder finder = new AllAssociationFinder(ipsProject);
         finder.start(this);
         return finder.getAssociations();
     }
 
+    @Override
     public IAttribute findAttribute(String name, IIpsProject project) throws CoreException {
         AttributeFinder finder = new AttributeFinder(project, name);
         finder.start(this);
         return finder.attribute;
     }
 
+    @Override
     public IAttribute newAttribute() {
         return attributes.newPart();
     }
 
+    @Override
     public int getNumOfAttributes() {
         return attributes.size();
     }
 
+    @Override
     public int[] moveAttributes(int[] indexes, boolean up) {
         return attributes.moveParts(indexes, up);
     }
 
+    @Override
     public IAssociation findAssociation(String name, IIpsProject project) throws CoreException {
         AssociationFinder finder = new AssociationFinder(project, name);
         finder.start(this);
         return finder.association;
     }
 
+    @Override
     public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
             throws CoreException {
         AssociationFinderPlural finder = new AssociationFinderPlural(ipsProject, roleNamePlural);
@@ -206,6 +226,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         return finder.association;
     }
 
+    @Override
     public IAssociation[] findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
             IIpsProject project,
@@ -230,10 +251,12 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
+    @Override
     public IAssociation getAssociation(String name) {
         return associations.getPartByName(name);
     }
 
+    @Override
     public IAssociation getAssociationByRoleNamePlural(String roleNamePlural) {
         if (roleNamePlural == null) {
             return null;
@@ -248,6 +271,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         return null;
     }
 
+    @Override
     public IAssociation[] getAssociationsForTarget(String target) {
         List<IAssociation> result = new ArrayList<IAssociation>();
         for (IAssociation association : associations) {
@@ -258,36 +282,44 @@ public abstract class Type extends BaseIpsObject implements IType {
         return result.toArray(new IAssociation[result.size()]);
     }
 
+    @Override
     public IAssociation[] getAssociations() {
         return (IAssociation[])associations.toArray(new IAssociation[associations.size()]);
     }
 
+    @Override
     public List<IAssociation> findAllNotDerivedAssociations() throws CoreException {
         NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(getIpsProject());
         collector.start(this);
         return collector.associations;
     }
 
+    @Override
     public int getNumOfAssociations() {
         return associations.size();
     }
 
+    @Override
     public int[] moveAssociations(int[] indexes, boolean up) {
         return associations.moveParts(indexes, up);
     }
 
+    @Override
     public IAssociation newAssociation() {
         return associations.newPart();
     }
 
+    @Override
     public IMethod newMethod() {
         return methods.newPart();
     }
 
+    @Override
     public IMethod[] getMethods() {
         return (IMethod[])methods.toArray(new IMethod[methods.size()]);
     }
 
+    @Override
     public IMethod getMethod(String methodName, String[] datatypes) {
         if (datatypes == null) {
             datatypes = new String[0];
@@ -314,12 +346,14 @@ public abstract class Type extends BaseIpsObject implements IType {
         return null;
     }
 
+    @Override
     public IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) throws CoreException {
         MethodFinderByNameAndParamtypes finder = new MethodFinderByNameAndParamtypes(ipsProject, name, datatypes);
         finder.start(this);
         return finder.method;
     }
 
+    @Override
     public IMethod getMethod(String signature) {
         for (IMethod method : methods) {
             if (method.getSignatureString().equals(signature)) {
@@ -329,20 +363,24 @@ public abstract class Type extends BaseIpsObject implements IType {
         return null;
     }
 
+    @Override
     public IMethod findMethod(String signature, IIpsProject ipsProject) throws CoreException {
         MethodFinderBySignature finder = new MethodFinderBySignature(ipsProject, signature);
         finder.start(this);
         return finder.method;
     }
 
+    @Override
     public int getNumOfMethods() {
         return methods.size();
     }
 
+    @Override
     public int[] moveMethods(int[] indexes, boolean up) {
         return methods.moveParts(indexes, up);
     }
 
+    @Override
     public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
             throws CoreException {
         MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject,
@@ -351,6 +389,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         return finder.getCandidates();
     }
 
+    @Override
     public IMethod[] overrideMethods(IMethod[] methods) {
         IMethod[] newMethods = new IMethod[methods.length];
         for (int i = 0; i < methods.length; i++) {
@@ -370,10 +409,12 @@ public abstract class Type extends BaseIpsObject implements IType {
         return newMethods;
     }
 
+    @Override
     public boolean hasSameMethod(IMethod method) {
         return getMatchingMethod(method) != null;
     }
 
+    @Override
     public IMethod getMatchingMethod(IMethod method) {
         for (IMethod thisMethod : methods) {
             if (thisMethod.isSameSignature(method)) {
@@ -470,30 +511,37 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
+    @Override
     public boolean isVoid() {
         return false;
     }
 
+    @Override
     public boolean isPrimitive() {
         return false;
     }
 
+    @Override
     public boolean isValueDatatype() {
         return false;
     }
 
+    @Override
     public boolean isEnum() {
         return false;
     }
 
+    @Override
     public int compareTo(Datatype o) {
         return 0;
     }
 
+    @Override
     public String getJavaClassName() {
         throw new RuntimeException("getJavaClassName is not supported by " + getClass()); //$NON-NLS-1$
     }
 
+    @Override
     public boolean hasNullObject() {
         return false;
     }

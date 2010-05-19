@@ -43,6 +43,7 @@ public class TableRowBuilder extends JavaSourceFileBuilder {
         return generator.generate(getIpsSrcFile());
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
             return true;

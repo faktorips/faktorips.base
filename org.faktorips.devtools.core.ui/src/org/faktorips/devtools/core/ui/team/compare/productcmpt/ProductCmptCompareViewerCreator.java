@@ -24,6 +24,7 @@ public class ProductCmptCompareViewerCreator implements IViewerCreator {
         super();
     }
 
+    @Override
     public Viewer createViewer(Composite parent, CompareConfiguration config) {
         return new ProductCmptCompareViewer(parent, config);
     }

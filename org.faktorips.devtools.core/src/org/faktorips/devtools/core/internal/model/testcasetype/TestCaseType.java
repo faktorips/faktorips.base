@@ -104,10 +104,12 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TEST_CASE_TYPE;
     }
 
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
@@ -155,14 +157,17 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
     }
 
+    @Override
     public ITestValueParameter[] getTestValueParameters() {
         return getTestParameters(null, TestValueParameter.class, null).toArray(new ITestValueParameter[0]);
     }
 
+    @Override
     public ITestRuleParameter[] getTestRuleParameters() {
         return getTestParameters(null, TestRuleParameter.class, null).toArray(new ITestRuleParameter[0]);
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParameters() {
         return getTestParameters(null, TestPolicyCmptTypeParameter.class, null).toArray(
                 new ITestPolicyCmptTypeParameter[0]);
@@ -172,20 +177,24 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     // Getters for input parameters
     //
 
+    @Override
     public ITestParameter[] getInputTestParameters() {
         return getTestParameters(TestParameterType.INPUT, null, null).toArray(new ITestParameter[0]);
     }
 
+    @Override
     public ITestValueParameter[] getInputTestValueParameters() {
         return getTestParameters(TestParameterType.INPUT, TestValueParameter.class, null).toArray(
                 new ITestValueParameter[0]);
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter[] getInputTestPolicyCmptTypeParameters() {
         return getTestParameters(TestParameterType.INPUT, TestPolicyCmptTypeParameter.class, null).toArray(
                 new ITestPolicyCmptTypeParameter[0]);
     }
 
+    @Override
     public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws CoreException {
         ITestValueParameter[] parameters = getTestParameters(TestParameterType.INPUT, TestValueParameter.class,
                 inputTestValueParameter).toArray(new ITestValueParameter[0]);
@@ -202,6 +211,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
                 inputTestValueParameter)));
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter)
             throws CoreException {
         ITestPolicyCmptTypeParameter[] parameters = getTestParameters(TestParameterType.INPUT,
@@ -221,6 +231,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
                 inputTestPolicyCmptTypeParameter)));
     }
 
+    @Override
     public ITestParameter getTestParameterByName(String testParameterName) throws CoreException {
         List<TestParameter> foundTestParameter = getTestParameters(null, null, testParameterName);
         if (foundTestParameter.size() == 0) {
@@ -230,6 +241,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return foundTestParameter.get(0);
     }
 
+    @Override
     public ITestParameter[] getTestParameters() {
         List<TestParameter> foundTestParameter = getTestParameters(null, null, null);
         if (foundTestParameter.size() == 0) {
@@ -243,20 +255,24 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     // Getters for expected result parameters
     //
 
+    @Override
     public ITestParameter[] getExpectedResultTestParameters() {
         return getTestParameters(TestParameterType.EXPECTED_RESULT, null, null).toArray(new ITestParameter[0]);
     }
 
+    @Override
     public ITestValueParameter[] getExpectedResultTestValueParameters() {
         return getTestParameters(TestParameterType.EXPECTED_RESULT, TestValueParameter.class, null).toArray(
                 new ITestValueParameter[0]);
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter[] getExpectedResultTestPolicyCmptTypeParameters() {
         return getTestParameters(TestParameterType.EXPECTED_RESULT, TestPolicyCmptTypeParameter.class, null).toArray(
                 new ITestPolicyCmptTypeParameter[0]);
     }
 
+    @Override
     public ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter)
             throws CoreException {
         ITestValueParameter[] parameters = getTestParameters(TestParameterType.EXPECTED_RESULT,
@@ -273,6 +289,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
                 TestParameterType.INPUT, expResultTestValueParameter)));
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(String expResultTestPolicyCmptTypeParameter)
             throws CoreException {
         ITestPolicyCmptTypeParameter[] parameters = getTestParameters(TestParameterType.EXPECTED_RESULT,
@@ -296,6 +313,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     // Create methods for input test parameters
     //
 
+    @Override
     public ITestValueParameter newInputTestValueParameter() {
         TestValueParameter param = newTestValueParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.INPUT);
@@ -312,6 +330,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
      * <li>COMBINED: the test parameter specifies both, input and expected result objects
      * </ul>
      */
+    @Override
     public ITestPolicyCmptTypeParameter newInputTestPolicyCmptTypeParameter() {
         TestPolicyCmptTypeParameter param = newTestPolicyCmptTypeParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.INPUT);
@@ -323,6 +342,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     // Creates methods for expected result parameters
     //
 
+    @Override
     public ITestValueParameter newExpectedResultValueParameter() {
         TestValueParameter param = newTestValueParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.EXPECTED_RESULT);
@@ -330,6 +350,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return param;
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter newExpectedResultPolicyCmptTypeParameter() {
         TestPolicyCmptTypeParameter param = newTestPolicyCmptTypeParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.EXPECTED_RESULT);
@@ -337,6 +358,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return param;
     }
 
+    @Override
     public TestRuleParameter newExpectedResultRuleParameter() {
         TestRuleParameter param = newTestRuleParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.EXPECTED_RESULT);
@@ -348,6 +370,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     // Create methods for combined test parameters
     //
 
+    @Override
     public ITestValueParameter newCombinedValueParameter() {
         TestValueParameter param = newTestValueParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.COMBINED);
@@ -355,6 +378,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return param;
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter newCombinedPolicyCmptTypeParameter() {
         TestPolicyCmptTypeParameter param = newTestPolicyCmptTypeParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.COMBINED);
@@ -428,6 +452,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return p;
     }
 
+    @Override
     public String generateUniqueNameForTestAttribute(ITestAttribute testAttribute, String name) {
         ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
         String uniqueName = name;
@@ -442,6 +467,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return uniqueName;
     }
 
+    @Override
     public int[] moveTestParameters(int[] indexes, boolean up) {
         ListElementMover<ITestParameter> mover = new ListElementMover<ITestParameter>(testParameters);
         int[] newIdxs = mover.move(indexes, up);
@@ -449,12 +475,14 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return newIdxs;
     }
 
+    @Override
     public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
         List<IValidationRule> validationRules = new ArrayList<IValidationRule>();
         getValidationRules(getTestPolicyCmptTypeParameters(), validationRules, ipsProject);
         return validationRules.toArray(new IValidationRule[0]);
     }
 
+    @Override
     public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException {
         IValidationRule[] validationRules = getTestRuleCandidates(ipsProject);
         for (IValidationRule validationRule : validationRules) {
@@ -504,6 +532,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
     }
 
+    @Override
     public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();

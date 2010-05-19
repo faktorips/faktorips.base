@@ -54,16 +54,19 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
         valueChanged(oldName, name);
     }
 
+    @Override
     public void setDatatype(String type) {
         String oldType = datatype;
         datatype = type;
         valueChanged(oldType, datatype);
     }
 
+    @Override
     public String getDatatype() {
         return datatype;
     }
 
+    @Override
     public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findDatatype(datatype);
     }

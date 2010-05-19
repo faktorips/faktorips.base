@@ -106,6 +106,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getXmlContentFile(ipsSrcFile);
         if (file.exists()) {
@@ -119,6 +120,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#isBuilderFor(IIpsObject)
      */
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return ipsObjectType.equals(ipsSrcFile.getIpsObjectType());
     }
@@ -126,6 +128,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return "XmlContentFileCopyBuilder"; //$NON-NLS-1$
     }

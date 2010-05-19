@@ -26,6 +26,7 @@ import org.faktorips.util.message.MessageList;
 
 class TestTableFormat extends AbstractExternalTableFormat {
 
+    @Override
     public boolean executeEnumExport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
@@ -34,6 +35,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
         return false;
     }
 
+    @Override
     public void executeEnumImport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
@@ -42,6 +44,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
             boolean importIntoExisting) {
     }
 
+    @Override
     public boolean executeTableExport(ITableContents contents,
             IPath filename,
             String nullRepresentationString,
@@ -50,6 +53,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
         return false;
     }
 
+    @Override
     public void executeTableImport(ITableStructure structure,
             IPath filename,
             ITableContentsGeneration targetGeneration,
@@ -59,6 +63,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
             boolean importIntoExisting) {
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List getImportEnumPreview(IEnumType structure,
             IPath filename,
@@ -68,6 +73,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
         return null;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List getImportTablePreview(ITableStructure structure,
             IPath filename,
@@ -77,6 +83,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
         return null;
     }
 
+    @Override
     public boolean isValidImportSource(String source) {
         return false;
     }

@@ -79,6 +79,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
             MenuManager manager = new MenuManager();
             manager.setRemoveAllWhenShown(true);
             manager.addMenuListener(new IMenuListener() {
+                @Override
                 public void menuAboutToShow(IMenuManager manager) {
                     MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
                     refactorSubmenu.add(renameAction);
@@ -125,14 +126,17 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
         private class AttributeContentProvider implements IStructuredContentProvider {
 
+            @Override
             public Object[] getElements(Object inputElement) {
                 return getProductCmptType().getProductCmptTypeAttributes();
             }
 
+            @Override
             public void dispose() {
                 // Nothing to do.
             }
 
+            @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // Nothing to do.
             }

@@ -80,6 +80,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         setPageComplete(true);
     }
 
+    @Override
     public void createControl(Composite parent) {
         pageComposite = wizard.createPageComposite(parent);
 
@@ -272,6 +273,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
      * 
      * @return <code>true</code> if the product component type is available.
      */
+    @Override
     public boolean isPageVisible() {
         return wizard.isProductCmptTypeAvailable() && wizard.isConfigureProductCmptType();
     }
@@ -279,6 +281,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getProperties() {
         return visibleProperties;
     }
@@ -305,6 +308,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefaultFocus() {
         updateDefaultTargetRoleSingular();
         targetRoleSingularTextProdCmptType.setFocus();

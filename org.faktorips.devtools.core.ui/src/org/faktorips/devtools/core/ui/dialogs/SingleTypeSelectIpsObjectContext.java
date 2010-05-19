@@ -37,10 +37,12 @@ public class SingleTypeSelectIpsObjectContext implements ISelectIpsObjectContext
         this.filter = filter;
     }
 
+    @Override
     public ViewerFilter getContextFilter() {
         return filter;
     }
 
+    @Override
     public List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
         progressMonitor.beginTask("Selecting files...", 4);
         progressMonitor.worked(1);

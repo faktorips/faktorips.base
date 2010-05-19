@@ -133,6 +133,7 @@ public class TestCaseDetailArea {
             this.testPolicyCmptTypeLink = testPolicyCmptTypeLink;
         }
 
+        @Override
         public void mouseDown(MouseEvent e) {
             if (testPolicyCmptType != null) {
                 testCaseSection.selectInTreeByObject(testPolicyCmptType, false);
@@ -146,10 +147,12 @@ public class TestCaseDetailArea {
             }
         }
 
+        @Override
         public void mouseDoubleClick(MouseEvent e) {
             // nothing to do
         }
 
+        @Override
         public void mouseUp(MouseEvent e) {
             // nothing to do
         }
@@ -449,11 +452,13 @@ public class TestCaseDetailArea {
                 }
             });
             linkHyperlink.addFocusListener(new FocusListener() {
+                @Override
                 public void focusGained(FocusEvent e) {
 
                     testCaseSection.selectInTreeByObject(currLink, false);
                 }
 
+                @Override
                 public void focusLost(FocusEvent e) {
                 }
             });

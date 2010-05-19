@@ -173,6 +173,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
             counter = 0;
         }
 
+        @Override
         public void contentsChanged(ContentChangeEvent event) {
             counter++;
         }

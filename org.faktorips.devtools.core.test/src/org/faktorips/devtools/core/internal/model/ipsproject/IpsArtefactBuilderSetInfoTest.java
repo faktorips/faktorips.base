@@ -134,6 +134,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
     private IIpsModel createTestIpsModel() {
 
         InvocationHandler ipsModelHandler = new InvocationHandler() {
+            @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 if (method.getName().equals("getIpsBuilderSetPropertyDef")) {
                     if (args.length < 1) {
@@ -167,6 +168,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
     private IIpsProject createTestIpsProject(final String complianceLevel) {
 
         InvocationHandler javaProjectHandler = new InvocationHandler() {
+            @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 if (method.getName().equals("getOption") && args.length > 0
                         && ((String)args[0]).equals(JavaCore.COMPILER_COMPLIANCE)) {
@@ -179,6 +181,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
                 new Class[] { IJavaProject.class }, javaProjectHandler);
 
         InvocationHandler ipsProjectHandler = new InvocationHandler() {
+            @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 if (method.getName().equals("getJavaProject")) {
                     return javaProject;

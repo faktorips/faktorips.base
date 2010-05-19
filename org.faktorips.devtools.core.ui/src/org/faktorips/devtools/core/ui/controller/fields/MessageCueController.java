@@ -80,6 +80,7 @@ public class MessageCueController {
         shell = initShell;
         shell.addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 Object data = shell.getData(MESSAGE_CUE_CONTROLLER);
                 if (data == MessageCueController.this) {
@@ -172,6 +173,7 @@ public class MessageCueController {
             // listener that moves the hover, when the control is moved or resized
             // and hides the hover on deactication.
             shellListener = new Listener() {
+                @Override
                 public void handleEvent(Event event) {
                     switch (event.type) {
                         case SWT.Resize:
@@ -261,6 +263,7 @@ public class MessageCueController {
          * 
          * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
          */
+        @Override
         public void widgetDisposed(DisposeEvent e) {
             uninstall();
         }
@@ -426,6 +429,7 @@ public class MessageCueController {
             super(controller);
         }
 
+        @Override
         public void paintControl(PaintEvent e) {
             fieldController.paintMessageCueImage(e);
         }
@@ -493,6 +497,7 @@ public class MessageCueController {
             fHoverShell.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
             fHoverShell.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
             fHoverShell.addPaintListener(new PaintListener() {
+                @Override
                 public void paintControl(PaintEvent pe) {
                     pe.gc.drawText(fText, LABEL_MARGIN, LABEL_MARGIN);
                     if (!fgCarbon) {

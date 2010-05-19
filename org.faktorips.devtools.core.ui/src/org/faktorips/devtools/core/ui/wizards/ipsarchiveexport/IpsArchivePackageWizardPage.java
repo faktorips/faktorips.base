@@ -119,6 +119,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void createControl(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
@@ -208,6 +209,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
             treeViewer.setCheckedElements(selectedObjects.toArray());
         }
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 setMessage(null);
             }
@@ -298,6 +300,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         canFinish();
     }
@@ -305,10 +308,12 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void modifyText(ModifyEvent e) {
         canFinish();
     }
 
+    @Override
     public void checkStateChanged(CheckStateChangedEvent event) {
         canFinish();
     }
@@ -463,6 +468,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void handleEvent(Event event) {
     }
 }

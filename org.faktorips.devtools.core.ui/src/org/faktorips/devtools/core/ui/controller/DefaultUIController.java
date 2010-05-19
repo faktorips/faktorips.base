@@ -101,6 +101,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
         mapping.getField().getControl().addFocusListener(this);
     }
 
+    @Override
     public void updateModel() {
         List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive
                                                                                          // copy to
@@ -118,6 +119,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
         }
     }
 
+    @Override
     public void updateUI() {
         List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive
                                                                                          // copy to
@@ -138,6 +140,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive
                                                                                          // copy to
@@ -177,6 +180,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
     /**
      * {@inheritDoc}
      */
+    @Override
     public void focusGained(FocusEvent e) {
         // nothing to do
     }
@@ -184,6 +188,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
     /**
      * {@inheritDoc}
      */
+    @Override
     public void focusLost(FocusEvent e) {
         // broadcast outstanding change events
         IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastLastEvent();

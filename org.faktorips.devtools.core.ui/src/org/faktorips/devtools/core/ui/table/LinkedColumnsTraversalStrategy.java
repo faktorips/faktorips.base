@@ -51,6 +51,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         super(editingSupport);
     }
 
+    @Override
     public void keyTraversed(TraverseEvent e) {
         if (e.detail == SWT.TRAVERSE_ESCAPE) {
             getCurrentCellEditor().deactivate();
@@ -67,6 +68,7 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         }
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
         // FS#1585: if this cell editor is a ComboCellEditor then the arrow down and up
         // feature to create or delete rows are not supported, because otherwise the
@@ -240,14 +242,17 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
         }
     }
 
+    @Override
     public void focusLost(FocusEvent e) {
         fireApplyEditorValue();
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
         // nothing to do
     }
 
+    @Override
     public void focusGained(FocusEvent e) {
         // nothing to do
     }

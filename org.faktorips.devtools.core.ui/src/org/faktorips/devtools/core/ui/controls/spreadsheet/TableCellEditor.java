@@ -52,6 +52,7 @@ class TableCellEditor {
         // and add a listener to the control that manages focus lost and
         // dispose.
         Listener listener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 switch (event.type) {
                     case SWT.FocusIn:
@@ -79,6 +80,7 @@ class TableCellEditor {
 
         // add a traverse listener, that handles tab, return and escape events.
         traverseListener = new TraverseListener() {
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 processKeyEvent(e);
             }

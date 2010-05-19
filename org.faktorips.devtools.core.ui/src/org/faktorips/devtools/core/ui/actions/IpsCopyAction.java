@@ -111,6 +111,7 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
     /**
      * Disabled this action if no copyable IpsElement is selected. {@inheritDoc}
      */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
         if (event.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection selection = (IStructuredSelection)event.getSelection();

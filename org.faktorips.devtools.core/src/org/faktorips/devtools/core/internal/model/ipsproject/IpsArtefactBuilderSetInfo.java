@@ -69,6 +69,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      * <code>builderSetId</code> at the artefact builder set extension point. Otherwise an
      * <code>EmptyBuilderSet</code> will be returned.
      */
+    @Override
     public IIpsArtefactBuilderSet create(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
@@ -93,6 +94,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsArtefactBuilderSetConfigModel createDefaultConfiguration(IIpsProject ipsProject) {
         IpsArtefactBuilderSetConfigModel configModel = new IpsArtefactBuilderSetConfigModel();
         for (IIpsBuilderSetPropertyDef propertyDef : propertyDefinitions.values()) {
@@ -121,6 +123,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      * Returns the id by which the <code>IIpsArtefactBuilderSet</code> is registered with the
      * system.
      */
+    @Override
     public String getBuilderSetId() {
         return builderSetId;
     }
@@ -128,6 +131,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     /**
      * Returns the label for the corresponding <code>IIpsArtefactBuilderSet</code>.
      */
+    @Override
     public String getBuilderSetLabel() {
         return builderSetLabel;
     }
@@ -136,6 +140,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      * Returns the property definition object for the specified name or <code>null</code> if it
      * doesn't exist.
      */
+    @Override
     public IIpsBuilderSetPropertyDef getPropertyDefinition(String name) {
         return propertyDefinitions.get(name);
     }
@@ -143,6 +148,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     /**
      * Returns the properties defined for this IpsArtefactBuilderSet.
      */
+    @Override
     public IIpsBuilderSetPropertyDef[] getPropertyDefinitions() {
         return propertyDefinitions.values().toArray(new IIpsBuilderSetPropertyDef[propertyDefinitions.size()]);
     }
@@ -151,6 +157,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      * Validates the provided IIpsArtefactBuilderSetConfig against this definition. Especially the
      * properties of the configuration are checked for their existence and the correct value.
      */
+    @Override
     public MessageList validateIpsArtefactBuilderSetConfig(IIpsProject ipsProject,
             IIpsArtefactBuilderSetConfigModel builderSetConfig) {
         MessageList msgList = new MessageList();
@@ -171,6 +178,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      * {@link Message} object is returned.
      */
     // TODO translate messages
+    @Override
     public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject, String propertyName, String propertyValue) {
         IIpsBuilderSetPropertyDef propertyDef = propertyDefinitions.get(propertyName);
         if (propertyDef == null) {

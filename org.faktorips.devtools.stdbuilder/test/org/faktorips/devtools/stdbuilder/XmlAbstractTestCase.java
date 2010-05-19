@@ -83,12 +83,15 @@ public abstract class XmlAbstractTestCase extends TestCase {
         factory.setNamespaceAware(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         builder.setErrorHandler(new ErrorHandler() {
+            @Override
             public void error(SAXParseException e) throws SAXException {
                 throw e;
             }
+            @Override
             public void fatalError(SAXParseException e) throws SAXException {
                 throw e;
             }
+            @Override
             public void warning(SAXParseException e) throws SAXException {
                 throw e;
             }

@@ -30,6 +30,7 @@ public class ExcelFunctionsFunctionResolverFactory implements IFunctionResolverF
      * Returns a function resolver factory that contains a set of functions similar to a subset of
      * functions found in excel.
      */
+    @Override
     public FunctionResolver newFunctionResolver(Locale locale) {
         return new ExcelFunctionsResolver(locale);
     }

@@ -52,6 +52,7 @@ public class SelectTargetPackagePage extends WizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout();
@@ -67,6 +68,7 @@ public class SelectTargetPackagePage extends WizardPage {
         tableViewer.getTable().setLayoutData(data);
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
                     IStructuredSelection structSelection = (IStructuredSelection)event.getSelection();
@@ -91,13 +93,16 @@ public class SelectTargetPackagePage extends WizardPage {
      * Content provider to show all package fragments the wizard provides.
      */
     class IpsPackageFrmgmtContentProvider implements IStructuredContentProvider {
+        @Override
         public Object[] getElements(Object input) {
             return wizard.getPackageFragments();
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
     }

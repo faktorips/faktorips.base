@@ -106,6 +106,7 @@ public class SpreadsheetControl extends Composite {
         // add a resize listener to the composite that resizes the
         // table control.
         Listener resizeListener = new Listener() {
+            @Override
             public void handleEvent(Event e) {
                 switch (e.type) {
                     case SWT.Resize:
@@ -177,10 +178,12 @@ public class SpreadsheetControl extends Composite {
         item.setData("deleteRow"); //$NON-NLS-1$
 
         item.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 SpreadsheetControl.this.deleteRow();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
@@ -193,10 +196,12 @@ public class SpreadsheetControl extends Composite {
         item.setData("clearCell"); //$NON-NLS-1$
 
         item.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 SpreadsheetControl.this.clearCell();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
@@ -621,6 +626,7 @@ public class SpreadsheetControl extends Composite {
 
     private class LabelProvider implements ITableLabelProvider {
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (isSizingColumn(columnIndex)) {
                 return getRowHeightImage();
@@ -629,6 +635,7 @@ public class SpreadsheetControl extends Composite {
             }
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if (isSizingColumn(columnIndex)) {
                 return ""; //$NON-NLS-1$
@@ -641,16 +648,20 @@ public class SpreadsheetControl extends Composite {
             return text;
         }
 
+        @Override
         public void addListener(ILabelProviderListener listener) {
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public boolean isLabelProperty(Object element, String property) {
             return true;
         }
 
+        @Override
         public void removeListener(ILabelProviderListener listener) {
         }
 
@@ -661,6 +672,7 @@ public class SpreadsheetControl extends Composite {
      * purpose is to provide handling of the tab key.
      */
     private class TableTraverseListener implements TraverseListener {
+        @Override
         public void keyTraversed(TraverseEvent e) {
             switch (e.detail) {
                 case SWT.TRAVERSE_TAB_NEXT:
@@ -706,10 +718,12 @@ public class SpreadsheetControl extends Composite {
      * Selection listener to process sort requests.
      */
     private class SortListener implements SelectionListener {
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (e.widget instanceof TableColumn) {
                 TableColumn col = (TableColumn)e.widget;
@@ -730,6 +744,7 @@ public class SpreadsheetControl extends Composite {
         /**
          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
          */
+        @Override
         public void handleEvent(Event event) {
             switch (event.type) {
                 case SWT.Show:

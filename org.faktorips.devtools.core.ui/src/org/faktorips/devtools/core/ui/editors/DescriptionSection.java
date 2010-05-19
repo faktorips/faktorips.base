@@ -72,6 +72,7 @@ public class DescriptionSection extends IpsSection {
         descriptionText.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
         descriptionText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 if (isRefreshing()) {
                     return;

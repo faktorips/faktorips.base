@@ -73,6 +73,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmpt getProductCmpt() {
         return (IProductCmpt)getParent().getParent();
     }
@@ -80,6 +81,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }
@@ -92,6 +94,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getAssociation() {
         return association;
     }
@@ -99,6 +102,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException {
         IProductCmptType productCmptType = getProductCmpt().findProductCmptType(ipsProject);
         if (productCmptType == null) {
@@ -107,6 +111,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return (IProductCmptTypeAssociation)productCmptType.findAssociation(association, ipsProject);
     }
 
+    @Override
     public void setAssociation(String association) {
         String oldAsso = this.association;
         this.association = association;
@@ -116,6 +121,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getTarget() {
         return target;
     }
@@ -123,6 +129,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmpt findTarget(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findProductCmpt(target);
     }
@@ -130,6 +137,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setTarget(String newTarget) {
         String oldTarget = target;
         target = newTarget;
@@ -139,6 +147,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getMinCardinality() {
         return minCardinality;
     }
@@ -146,6 +155,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMinCardinality(int newValue) {
         int oldValue = minCardinality;
         minCardinality = newValue;
@@ -156,6 +166,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getMaxCardinality() {
         return maxCardinality;
     }
@@ -163,6 +174,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMaxCardinality(int newValue) {
         int oldValue = maxCardinality;
         maxCardinality = newValue;
@@ -270,6 +282,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         }
     }
 
+    @Override
     public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
         if (isDeleted()) {
             return false;
@@ -282,10 +295,12 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     }
 
+    @Override
     public boolean isMandatory() {
         return getMinCardinality() == 1 && getMaxCardinality() == 1;
     }
 
+    @Override
     public boolean isOptional() {
         return getMinCardinality() == 0 && getMaxCardinality() == 1;
     }

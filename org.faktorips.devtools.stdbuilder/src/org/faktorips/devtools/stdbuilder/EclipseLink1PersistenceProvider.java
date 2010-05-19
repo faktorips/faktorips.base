@@ -33,24 +33,29 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
     private static final String ANNOTATION_CONVERTER = "@Converter"; //$NON-NLS-1$
     private static final String ANNOTATION_CONVERT = "@Convert"; //$NON-NLS-1$
 
+    @Override
     public boolean isSupportingConverters() {
         return true;
     }
 
+    @Override
     public boolean isSupportingOrphanRemoval() {
         return true;
     }
 
+    @Override
     public void addAnnotationOrphanRemoval(JavaCodeFragment javaCodeFragment) {
         javaCodeFragment.addImport(IMPORT_PRIVATE_OWNED);
         javaCodeFragment.appendln(ANNOTATION_PRIVATE_OWNED);
     }
 
+    @Override
     public String getRelationshipAnnotationAttributeOrphanRemoval() {
         // no attribute needed
         return null;
     }
 
+    @Override
     public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,
             IPersistentAttributeInfo persistentAttributeInfo) {
         javaCodeFragment.addImport(IMPORT_CONVERTER);

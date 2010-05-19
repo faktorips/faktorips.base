@@ -38,6 +38,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
      * Returns an error-icon if the given element has an error at the given columnIndex. Returns
      * <code>null</code> otherwise. {@inheritDoc}
      */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         if (element instanceof IRow) {
             if (hasRowErrorsAt((IRow)element, columnIndex)) {
@@ -76,6 +77,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
      * <p>
      * Returns <code>null</code> if the given element is not an <code>IRow</code>. {@inheritDoc}
      */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         if (element instanceof IRow) {
             IRow row = (IRow)element;
@@ -92,18 +94,21 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
     /**
      * Empty implementation. {@inheritDoc}
      */
+    @Override
     public void addListener(ILabelProviderListener listener) {
     }
 
     /**
      * Empty implementation. {@inheritDoc}
      */
+    @Override
     public void dispose() {
     }
 
     /**
      * Empty implementation. {@inheritDoc}
      */
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
@@ -111,6 +116,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
     /**
      * Empty implementation. {@inheritDoc}
      */
+    @Override
     public void removeListener(ILabelProviderListener listener) {
     }
 

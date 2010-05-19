@@ -138,6 +138,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      * Label provider for the formula test input value.
      */
     private class FormulaTestInputValueTblLabelProvider extends LabelProvider implements ITableLabelProvider {
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (!(element instanceof IFormulaTestInputValue)) {
                 return null;
@@ -157,6 +158,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             return null;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if (element instanceof IFormulaTestInputValue) {
                 if (columnIndex == IDX_IDENTIFIER) {
@@ -189,6 +191,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     private class StoreFormulaRunnable implements IWorkspaceRunnable {
         private String name;
 
+        @Override
         public void run(IProgressMonitor monitor) throws CoreException {
             IFormula formula = formulaTestCase.getFormula();
             IFormulaTestCase newFormulaTestCase = formula.newFormulaTestCase();
@@ -311,10 +314,12 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         btnCalculate = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Calculate);
         btnCalculate.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnCalculate.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 calculateFormulaIfValid(ipsProject);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -328,6 +333,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                     Messages.FormulaTestInputValuesControl_ButtonLabel_Store);
             btnNewFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
             btnNewFormulaTestCase.addSelectionListener(new SelectionListener() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     try {
                         storeFormulaTestInputValuesAsNewFormulaTestCase();
@@ -336,6 +342,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                     }
                 }
 
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
             });
@@ -344,10 +351,12 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         btnClearInputValues = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Clear);
         btnClearInputValues.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
         btnClearInputValues.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 clearFormulaTestInputValues();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
@@ -440,6 +449,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         // because @since 3.2 in edit mode the cell becomes a border and the bottom pixel of the
         // text is hidden
         Listener paintListener = new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 switch (event.type) {
                     case SWT.MeasureItem: {
@@ -554,6 +564,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             }
 
             Runnable calculate = new Runnable() {
+                @Override
                 public void run() {
                     if (isDisposed()) {
                         return;
@@ -684,6 +695,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(ColumnIdentifier columnIdentifier, Object value) {
         // the value in the table has changed
         clearResult();
@@ -701,6 +713,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
@@ -708,6 +721,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataChangeable(boolean changeable) {
         if (isPreviewOfFormulaTest()) {
             // in preview mode the control is always changeable

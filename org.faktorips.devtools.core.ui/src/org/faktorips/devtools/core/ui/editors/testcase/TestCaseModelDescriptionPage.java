@@ -122,6 +122,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
     /**
      * {@inheritDoc}
      */
+    @Override
     public void visibleTestObjectsChanges(List<ITestObject> visibleTestObjects) throws CoreException {
         updateDescriptionItems(visibleTestObjects);
     }

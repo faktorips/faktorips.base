@@ -84,7 +84,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
 
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
-        generation.initFromXml((Element)doc.getDocumentElement());
+        generation.initFromXml(doc.getDocumentElement());
         assertEquals(new GregorianCalendar(2005, 0, 1), generation.getValidFrom());
     }
 

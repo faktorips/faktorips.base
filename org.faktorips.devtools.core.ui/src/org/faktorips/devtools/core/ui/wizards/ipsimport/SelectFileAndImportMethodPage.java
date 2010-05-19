@@ -97,6 +97,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == filenameField) {
             filenameChanged();
@@ -219,6 +220,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
@@ -407,6 +409,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void handleEvent(Event event) {
 
     }

@@ -359,6 +359,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         return recentEvent;
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         this.event = event;
     }

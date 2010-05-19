@@ -43,6 +43,7 @@ public class TreeViewerDoubleclickListener implements IDoubleClickListener {
         this.tree = tree;
     }
 
+    @Override
     public void doubleClick(DoubleClickEvent event) {
         openEditorsForSelection();
 

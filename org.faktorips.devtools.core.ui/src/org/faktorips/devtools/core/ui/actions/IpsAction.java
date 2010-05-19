@@ -78,6 +78,7 @@ public abstract class IpsAction extends Action {
         this.selectionProvider = selectionProvider;
         if (selectionProvider != null) {
             adjustEnableStateListener = new ISelectionChangedListener() {
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     updateEnabledProperty();
                 }
@@ -395,6 +396,7 @@ public abstract class IpsAction extends Action {
         this.ctrl = ctrl;
         ctrl.addDataChangeableStateChangeListener(new IDataChangeableStateChangeListener() {
 
+            @Override
             public void dataChangeableStateHasChanged(IDataChangeableReadAccess object) {
                 updateEnabledProperty();
             }

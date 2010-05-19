@@ -36,6 +36,7 @@ public class OpenNewIpsPackageWizardAction extends OpenNewWizardAction {
      * 
      * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
      */
+    @Override
     public void dispose() {
         // nothing to do
     }

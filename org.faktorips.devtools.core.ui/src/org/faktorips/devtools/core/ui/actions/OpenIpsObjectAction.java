@@ -88,18 +88,22 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
 
     // ---- IWorkbenchWindowActionDelegate ------------------------------------------------
 
+    @Override
     public void run(IAction action) {
         run();
     }
 
+    @Override
     public void dispose() {
         // do nothing.
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
         // do nothing.
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         // do nothing. Action doesn't depend on selection.
     }

@@ -41,6 +41,7 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
 
     protected abstract IIpsObject[] getSupertypes(IIpsObject ipsObject) throws CoreException;
 
+    @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof IIpsObject) {
             IIpsObject ipsObject = (IIpsObject)parentElement;
@@ -55,6 +56,7 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
         return new Object[0];
     }
 
+    @Override
     public Object getParent(Object element) {
         if (element instanceof IIpsObject) {
             return null;
@@ -65,10 +67,12 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
         throw new RuntimeException("Unknown element " + element);
     }
 
+    @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
     }
 
+    @Override
     public Object[] getElements(Object inputElement) {
         return isNoAvailableParts() ? new Object[0] : supertypes;
     }
@@ -82,10 +86,12 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
         return true;
     }
 
+    @Override
     public void dispose() {
         // Nothing to do.
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // Nothing to do.
     }

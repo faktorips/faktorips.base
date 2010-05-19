@@ -210,6 +210,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     /**
      * {@inheritDoc}
      */
+    @Override
     public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
         lastModStatusEvent = event;
     }
@@ -217,6 +218,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     /**
      * {@inheritDoc}
      */
+    @Override
     public void contentsChanged(ContentChangeEvent event) {
         lastContentChangedEvent = event;
     }

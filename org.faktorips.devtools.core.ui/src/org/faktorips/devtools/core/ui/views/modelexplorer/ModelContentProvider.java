@@ -79,6 +79,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         return filter(getUnfilteredChildren(parentElement));
     }
@@ -419,6 +420,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         if (element instanceof IIpsElement) {
             IIpsElement parent;
@@ -460,6 +462,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * For IIpsElements this method returns true if the element contains at least one child, that is
      * of a type allowed by the ModelExplorerConfiguration.
      */
+    @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length >= 1;
     }
@@ -469,6 +472,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * as other types of projects. An empty array is returned if no such projects are found, or if
      * the given inputElement is not an <code>IIpsModel</code>. {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof IIpsModel) {
             try {
@@ -503,10 +507,12 @@ public class ModelContentProvider implements ITreeContentProvider {
         return closedProjects.toArray(new IProject[closedProjects.size()]);
     }
 
+    @Override
     public void dispose() {
 
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
     }

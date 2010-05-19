@@ -440,6 +440,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         super.dispose();
     }
 
+    @Override
     public boolean show(ShowInContext context) {
         ISelection selection = context.getSelection();
         if (selection instanceof IStructuredSelection) {
@@ -531,6 +532,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             partService = null;
         }
 
+        @Override
         public void partActivated(IWorkbenchPart part) {
             if (wasActivatedByModelExplorer()) {
                 return;
@@ -540,6 +542,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
+        @Override
         public void windowActivated(IWorkbenchWindow window) {
             if (wasActivatedByModelExplorer()) {
                 return;
@@ -560,30 +563,37 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             // return false;
         }
 
+        @Override
         public void partBroughtToTop(IWorkbenchPart part) {
 
         }
 
+        @Override
         public void partClosed(IWorkbenchPart part) {
 
         }
 
+        @Override
         public void partDeactivated(IWorkbenchPart part) {
 
         }
 
+        @Override
         public void partOpened(IWorkbenchPart part) {
 
         }
 
+        @Override
         public void windowDeactivated(IWorkbenchWindow window) {
 
         }
 
+        @Override
         public void windowClosed(IWorkbenchWindow window) {
 
         }
 
+        @Override
         public void windowOpened(IWorkbenchWindow window) {
 
         }

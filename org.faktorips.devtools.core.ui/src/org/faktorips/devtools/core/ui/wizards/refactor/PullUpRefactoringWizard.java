@@ -41,6 +41,7 @@ public class PullUpRefactoringWizard extends IpsRefactoringWizard {
             super(ipsElement, "PullUpPage");
         }
 
+        @Override
         public void createControl(Composite parent) {
             Composite controlComposite = getUiToolkit().createGridComposite(parent, 1, false, false);
             setControl(controlComposite);

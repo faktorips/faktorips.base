@@ -124,6 +124,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean containsCycle() {
         return containsCycle;
     }
@@ -144,6 +145,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPolicyCmptType getType() {
         return pcType;
     }
@@ -151,6 +153,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPolicyCmptType getSupertype(IPolicyCmptType type) {
         Node node = nodes.get(type);
         if (node == null) {
@@ -163,6 +166,7 @@ public class TypeHierarchy implements ITypeHierarchy {
      * Returns the type's supertypes by travelling up the hierarchy. The first element in the array
      * (if any) is the given type's direkt supertype.
      */
+    @Override
     public IPolicyCmptType[] getAllSupertypes(IPolicyCmptType type) {
         List<IPolicyCmptType> result = new ArrayList<IPolicyCmptType>();
         getAllSupertypes(type, result);
@@ -172,6 +176,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPolicyCmptType[] getAllSupertypesInclSelf(IPolicyCmptType type) {
         List<IPolicyCmptType> result = new ArrayList<IPolicyCmptType>();
         result.add(type);
@@ -190,6 +195,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isSupertypeOf(IPolicyCmptType candidate, IPolicyCmptType subtype) {
         IPolicyCmptType currSupertype = getSupertype(subtype);
         if (currSupertype == null) {
@@ -204,6 +210,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isSubtypeOf(IPolicyCmptType candidate, IPolicyCmptType supertype) {
         IPolicyCmptType[] subtypes = getSubtypes(supertype);
         for (IPolicyCmptType subtype : subtypes) {
@@ -217,6 +224,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         return false;
     }
 
+    @Override
     public IPolicyCmptType[] getSubtypes(IPolicyCmptType type) {
         Node node = nodes.get(type);
         if (node == null) {
@@ -225,6 +233,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         return node.subtypes;
     }
 
+    @Override
     public IPolicyCmptType[] getAllSubtypes(IPolicyCmptType type) {
         Node node = nodes.get(type);
         if (node == null) {
@@ -264,6 +273,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPolicyCmptTypeAttribute[] getAllAttributes(IPolicyCmptType type) {
         List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
@@ -279,6 +289,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPolicyCmptTypeAttribute[] getAllAttributesRespectingOverride(IPolicyCmptType type) {
         List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
@@ -302,6 +313,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IMethod[] getAllMethods(IPolicyCmptType type) {
         List<IMethod> methods = new ArrayList<IMethod>();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
@@ -317,6 +329,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValidationRule[] getAllRules(IPolicyCmptType type) {
         List<IValidationRule> rules = new ArrayList<IValidationRule>();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
@@ -332,6 +345,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPolicyCmptTypeAttribute findAttribute(IPolicyCmptType type, String attributeName) {
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         for (IPolicyCmptType type2 : types) {

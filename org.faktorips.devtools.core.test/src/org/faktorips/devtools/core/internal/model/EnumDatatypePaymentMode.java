@@ -25,6 +25,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getAllValueIds(boolean includeNull) {
         return new String[] { ANNUAL, MONTHLY };
     }
@@ -32,6 +33,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
@@ -39,6 +41,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isParsable(String value) {
         return false;
     }
@@ -46,6 +49,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return null;
     }
@@ -53,6 +57,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDefaultValue() {
         return null;
     }
@@ -60,6 +65,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getQualifiedName() {
         return null;
     }
@@ -67,6 +73,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPrimitive() {
         return false;
     }
@@ -74,6 +81,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isAbstract() {
         return false;
     }
@@ -81,6 +89,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValueDatatype() {
         return false;
     }
@@ -88,6 +97,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getJavaClassName() {
         return null;
     }
@@ -95,6 +105,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isSupportingNames() {
         return false;
     }
@@ -102,6 +113,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getValueName(String id) {
         throw new RuntimeException("Not supported");
     }
@@ -109,6 +121,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isNull(String value) {
         return false;
     }
@@ -116,6 +129,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean supportsCompare() {
         return false;
     }
@@ -123,6 +137,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         return 0;
     }
@@ -130,6 +145,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         return false;
     }
@@ -137,6 +153,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isImmutable() {
         return true;
     }
@@ -144,6 +161,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isMutable() {
         return false;
     }

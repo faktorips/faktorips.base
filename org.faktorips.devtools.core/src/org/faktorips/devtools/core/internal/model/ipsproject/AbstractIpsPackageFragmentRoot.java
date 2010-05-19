@@ -35,6 +35,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         super(parent, name);
     }
 
+    @Override
     public boolean isBasedOnSourceFolder() {
         try {
             return getIpsObjectPathEntry().getType() == IIpsObjectPathEntry.TYPE_SRC_FOLDER;
@@ -44,6 +45,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         }
     }
 
+    @Override
     public boolean isBasedOnIpsArchive() {
         try {
             return getIpsObjectPathEntry().getType() == IIpsObjectPathEntry.TYPE_ARCHIVE;
@@ -58,14 +60,17 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         return (IIpsProject)parent;
     }
 
+    @Override
     public IIpsPackageFragment getDefaultIpsPackageFragment() {
         return getIpsPackageFragment(""); //$NON-NLS-1$
     }
 
+    @Override
     public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
         return ((IpsProject)getIpsProject()).getIpsObjectPathInternal().getEntry(getName());
     }
 
+    @Override
     public IIpsPackageFragment getIpsPackageFragment(String name) {
         if (isValidIpsPackageFragmentName(name)) {
             return newIpsPackageFragment(name);
@@ -89,6 +94,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
 
     protected abstract IIpsPackageFragment newIpsPackageFragment(String name);
 
+    @Override
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
         IIpsSrcFile file = findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
         if (file == null) {
@@ -97,6 +103,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         return file.getIpsObject();
     }
 
+    @Override
     public final IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) throws CoreException {
         IIpsObjectPathEntry entry = getIpsObjectPathEntry();
         if (entry == null) {

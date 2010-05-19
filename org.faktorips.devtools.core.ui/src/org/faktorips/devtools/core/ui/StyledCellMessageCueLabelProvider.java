@@ -54,6 +54,7 @@ public class StyledCellMessageCueLabelProvider extends StyledCellLabelProvider {
         internalBaseLabelProvider = new InternalBaseLabelProvider(baseProvider);
         messageLabelProvider = new MessageCueLabelProvider(internalBaseLabelProvider, ipsProject);
         baseProvider.addListener(new ILabelProviderListener() {
+            @Override
             public void labelProviderChanged(LabelProviderChangedEvent event) {
                 propagateEvent();
             }

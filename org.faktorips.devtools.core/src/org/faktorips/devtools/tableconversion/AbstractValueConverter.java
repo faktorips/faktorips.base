@@ -25,6 +25,7 @@ public abstract class AbstractValueConverter implements IValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITableFormat getTableFormat() {
         return tableFormat;
     }
@@ -32,6 +33,7 @@ public abstract class AbstractValueConverter implements IValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setTableFormat(ITableFormat newFormat) {
         if (newFormat == null) {
             throw new NullPointerException();

@@ -265,6 +265,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      */
     private void registerDoubleClickListener() {
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 openLink();
             }
@@ -358,6 +359,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     private class SelectionChangedListener implements ISelectionChangedListener {
         IpsObjectUIController uiController;
 
+        @Override
         public void selectionChanged(SelectionChangedEvent event) {
             Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
             if (selected instanceof IProductCmptLink) {
@@ -614,6 +616,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         /**
          * Empty implementation
          */
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             // empty implementation
         }
@@ -673,6 +676,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
          * Calculates the path starting from the tree root to the currently selected item. The path
          * is kept in the lastSelectionPath member variable.
          */
+        @Override
         public void widgetSelected(SelectionEvent e) {
 
             if (e.item != null) {
@@ -686,6 +690,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     /**
      * {@inheritDoc}
      */
+    @Override
     public ISelectionProvider getSelectionProvider() {
         return treeViewer;
     }
@@ -693,6 +698,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isActivated() {
         if (treeViewer == null) {
             return false;

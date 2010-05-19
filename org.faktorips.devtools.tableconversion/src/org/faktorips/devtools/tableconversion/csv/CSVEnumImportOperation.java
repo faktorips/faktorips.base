@@ -83,6 +83,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
         }
     }
 
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         try {
             monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN);

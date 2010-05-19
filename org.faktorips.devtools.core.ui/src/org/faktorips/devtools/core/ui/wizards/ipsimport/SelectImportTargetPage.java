@@ -204,6 +204,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
         importTargetControl.setIpsProject(null);
     }
 
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == projectField) {
             projectChanged();

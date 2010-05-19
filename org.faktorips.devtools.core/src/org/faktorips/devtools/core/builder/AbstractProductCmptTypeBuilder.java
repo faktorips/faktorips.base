@@ -48,6 +48,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
         super(builderSet, kindId, localizedStringsSet);
     }
 
+    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }

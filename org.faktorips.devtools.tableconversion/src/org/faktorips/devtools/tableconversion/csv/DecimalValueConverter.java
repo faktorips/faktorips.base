@@ -24,6 +24,7 @@ import org.faktorips.values.Decimal;
 
 public class DecimalValueConverter extends NumberValueConverter {
 
+    @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
@@ -47,6 +48,7 @@ public class DecimalValueConverter extends NumberValueConverter {
     /**
      * The only supported type for externalDataValue is String.
      */
+    @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
             try {
@@ -77,6 +79,7 @@ public class DecimalValueConverter extends NumberValueConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Datatype getSupportedDatatype() {
         return Datatype.DECIMAL;
     }

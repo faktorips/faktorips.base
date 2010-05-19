@@ -131,10 +131,12 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
+    @Override
     public String getDatatype() {
         return getPolicyCmptType();
     }
 
+    @Override
     public void setDatatype(String datatype) {
         setPolicyCmptType(datatype);
     }
@@ -149,16 +151,19 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         valueChanged(oldType, testParameterType);
     }
 
+    @Override
     public String getPolicyCmptType() {
         return policyCmptType;
     }
 
+    @Override
     public void setPolicyCmptType(String policyCmptType) {
         String oldPolicyCmptType = this.policyCmptType;
         this.policyCmptType = policyCmptType;
         valueChanged(oldPolicyCmptType, policyCmptType);
     }
 
+    @Override
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(policyCmptType)) {
             return null;
@@ -166,16 +171,19 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return ipsProject.findPolicyCmptType(policyCmptType);
     }
 
+    @Override
     public String getAssociation() {
         return association;
     }
 
+    @Override
     public void setAssociation(String association) {
         String oldAssociation = this.association;
         this.association = association;
         valueChanged(oldAssociation, association);
     }
 
+    @Override
     public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(association)) {
             return null;
@@ -242,6 +250,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         element.setAttribute(PROPERTY_MAX_INSTANCES, "" + maxInstances); //$NON-NLS-1$
     }
 
+    @Override
     public ITestAttribute newInputTestAttribute() {
         TestAttribute a = newTestAttributeInternal(getNextPartId());
         a.setTestAttributeType(TestParameterType.INPUT);
@@ -249,6 +258,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return a;
     }
 
+    @Override
     public ITestAttribute newExpectedResultTestAttribute() {
         TestAttribute a = newTestAttributeInternal(getNextPartId());
         a.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
@@ -263,12 +273,14 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return a;
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter newTestPolicyCmptTypeParamChild() {
         ITestPolicyCmptTypeParameter p = newTestPolicyCmptTypeParamChildInternal(getNextPartId());
         objectHasChanged();
         return p;
     }
 
+    @Override
     public ITestAttribute getTestAttribute(String attributeName) {
         for (ITestAttribute a : testAttributes) {
             if (a.getName().equals(attributeName)) {
@@ -278,12 +290,14 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return null;
     }
 
+    @Override
     public ITestAttribute[] getTestAttributes() {
         ITestAttribute[] a = new ITestAttribute[testAttributes.size()];
         testAttributes.toArray(a);
         return a;
     }
 
+    @Override
     public ITestAttribute[] getTestAttributes(String attributeName) {
         List<ITestAttribute> testAttributes = new ArrayList<ITestAttribute>();
 
@@ -309,6 +323,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return null;
     }
 
+    @Override
     public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParamChilds() {
         TestPolicyCmptTypeParameter[] p = new TestPolicyCmptTypeParameter[testPolicyCmptTypeChilds.size()];
         testPolicyCmptTypeChilds.toArray(p);
@@ -318,6 +333,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParamChild(String name) {
         for (ITestPolicyCmptTypeParameter p : testPolicyCmptTypeChilds) {
             if (p.getName().equals(name)) {
@@ -339,6 +355,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     /**
      * {@inheritDoc}
      */
+    @Override
     public ITestPolicyCmptTypeParameter getParentTestPolicyCmptTypeParam() {
         return (ITestPolicyCmptTypeParameter)getParent();
     }
@@ -346,6 +363,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeTestPolicyCmptTypeParamChild(TestPolicyCmptTypeParameter testPolicyCmptTypeParamChildName) {
         testPolicyCmptTypeChilds.remove(testPolicyCmptTypeParamChildName);
     }
@@ -362,30 +380,36 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return current;
     }
 
+    @Override
     public boolean isRequiresProductCmpt() {
         return requiresProductCmpt;
     }
 
+    @Override
     public void setRequiresProductCmpt(boolean newNeedsProductCmpt) {
         boolean oldRequiresProductCmpt = requiresProductCmpt;
         requiresProductCmpt = newNeedsProductCmpt;
         valueChanged(oldRequiresProductCmpt, newNeedsProductCmpt);
     }
 
+    @Override
     public int getMinInstances() {
         return minInstances;
     }
 
+    @Override
     public void setMinInstances(int minInstances) {
         int oldMinInstances = this.minInstances;
         this.minInstances = minInstances;
         valueChanged(oldMinInstances, minInstances);
     }
 
+    @Override
     public int getMaxInstances() {
         return maxInstances;
     }
 
+    @Override
     public void setMaxInstances(int maxInstances) {
         int oldMaxInstances = this.maxInstances;
         this.maxInstances = maxInstances;
@@ -400,6 +424,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] moveTestAttributes(int[] indexes, boolean up) {
         ListElementMover<ITestAttribute> mover = new ListElementMover<ITestAttribute>(testAttributes);
         int[] newIdxs = mover.move(indexes, up);
@@ -410,6 +435,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] moveTestPolicyCmptTypeChild(int[] indexes, boolean up) {
         ListElementMover<ITestPolicyCmptTypeParameter> mover = new ListElementMover<ITestPolicyCmptTypeParameter>(
                 testPolicyCmptTypeChilds);
@@ -421,6 +447,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt)
             throws CoreException {
 

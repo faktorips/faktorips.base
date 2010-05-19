@@ -152,6 +152,7 @@ public abstract class RefactoringParticipantHelper {
     /** Executes the given <tt>Refactoring</tt>. */
     private void performRefactoring(final Refactoring refactoring, final IProgressMonitor pm) {
         Display.getDefault().syncExec(new Runnable() {
+            @Override
             public void run() {
                 IWorkspaceRunnable operation = new PerformRefactoringOperation(refactoring,
                         CheckConditionsOperation.FINAL_CONDITIONS);

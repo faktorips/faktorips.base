@@ -71,16 +71,19 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         valueChanged(oldName, name);
     }
 
+    @Override
     public String getAttribute() {
         return attribute;
     }
 
+    @Override
     public void setAttribute(String newAttribute) {
         String oldAttribute = attribute;
         attribute = newAttribute;
         valueChanged(oldAttribute, newAttribute);
     }
 
+    @Override
     public void setAttribute(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         String oldAttribute = attribute;
         String oldPolicyCmptTypeNameOfAttribute = policyCmptType;
@@ -107,16 +110,19 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         }
     }
 
+    @Override
     public String getDatatype() {
         return datatype;
     }
 
+    @Override
     public void setDatatype(String newDatatype) {
         String oldDatatype = datatype;
         datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype);
     }
 
+    @Override
     public ValueDatatype findDatatype(IIpsProject project) throws CoreException {
         if (StringUtils.isEmpty(attribute)) {
             return project.findValueDatatype(datatype);
@@ -129,16 +135,19 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         }
     }
 
+    @Override
     public String getPolicyCmptType() {
         return policyCmptType;
     }
 
+    @Override
     public void setPolicyCmptType(String policyCmptType) {
         String oldPolicyCmptType = this.policyCmptType;
         this.policyCmptType = policyCmptType;
         valueChanged(oldPolicyCmptType, policyCmptType);
     }
 
+    @Override
     public String getCorrespondingPolicyCmptType() throws CoreException {
         IPolicyCmptTypeAttribute attribute = findAttribute(getIpsProject());
         if (attribute != null) {
@@ -149,10 +158,12 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         return policyCmptType;
     }
 
+    @Override
     public TestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter() {
         return (TestPolicyCmptTypeParameter)getParent();
     }
 
+    @Override
     public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(attribute)) {
             return null;
@@ -201,18 +212,22 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         element.setAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE, type.getId());
     }
 
+    @Override
     public boolean isExpextedResultAttribute() {
         return type.equals(TestParameterType.EXPECTED_RESULT);
     }
 
+    @Override
     public boolean isInputAttribute() {
         return type.equals(TestParameterType.INPUT);
     }
 
+    @Override
     public TestParameterType getTestAttributeType() {
         return type;
     }
 
+    @Override
     public void setTestAttributeType(TestParameterType type) {
         // assert that the given type is an input or an expected result type,
         // because attributes could have the type combined (input and expected result together)
@@ -222,6 +237,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         valueChanged(oldType, type);
     }
 
+    @Override
     public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject)
             throws CoreException {
         boolean reqProductCmpt = ((ITestPolicyCmptTypeParameter)getParent()).isRequiresProductCmpt();
@@ -235,6 +251,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         return !(policyCmptType.findPolicyCmptTypeAttribute(getAttribute(), ipsProject) == null);
     }
 
+    @Override
     public boolean isBasedOnModelAttribute() {
         return !StringUtils.isEmpty(attribute) && StringUtils.isEmpty(datatype);
     }

@@ -129,10 +129,12 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         tree.setLabelProvider(new DeltaLabelProvider());
 
         generationsList.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 updateDeltaView();
             }

@@ -62,18 +62,22 @@ public abstract class MethodCallBFE extends BFElement implements IMethodCallBFE 
         element.setAttribute("target", target); //$NON-NLS-1$
     }
 
+    @Override
     public String getExecutableMethodName() {
         return executableMethodName;
     }
 
+    @Override
     public String getTarget() {
         return target;
     }
 
+    @Override
     public IParameterBFE getParameter() {
         return getBusinessFunction().getParameterBFE(getTarget());
     }
 
+    @Override
     public IMethod findMethod(IIpsProject ipsProject) throws CoreException {
         IParameterBFE param = getParameter();
         if (param != null) {
@@ -86,12 +90,14 @@ public abstract class MethodCallBFE extends BFElement implements IMethodCallBFE 
         return null;
     }
 
+    @Override
     public void setExecutableMethodName(String name) {
         String old = executableMethodName;
         executableMethodName = name;
         valueChanged(old, name);
     }
 
+    @Override
     public void setTarget(String target) {
         String old = this.target;
         this.target = target;

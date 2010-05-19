@@ -61,6 +61,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
 
     private static final String ATTRIBUTE_INHERITANCE_TYPE = "InheritanceType";
 
+    @Override
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS;
     }
@@ -68,6 +69,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     /**
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         IPolicyCmptType pcType = (IPolicyCmptType)ipsElement;
@@ -172,6 +174,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         fragment.addImport(IMPORT_DISCRIMINATOR_TYPE);
     }
 
+    @Override
     public boolean isGenerateAnnotationFor(IIpsElement ipsElement) {
         if (!(ipsElement instanceof IPolicyCmptType)) {
             return false;

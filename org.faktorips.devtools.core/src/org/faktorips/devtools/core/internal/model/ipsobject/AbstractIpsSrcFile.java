@@ -46,10 +46,12 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         super(parent, name);
     }
 
+    @Override
     public IIpsPackageFragment getIpsPackageFragment() {
         return (IIpsPackageFragment)getParent();
     }
 
+    @Override
     public final boolean isReadOnly() {
         return !isMutable();
     }
@@ -68,10 +70,12 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         }
     }
 
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
     }
 
+    @Override
     public String getIpsObjectName() {
         String name = getName();
         int index = name.lastIndexOf('.');
@@ -79,10 +83,12 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         return name.substring(0, index);
     }
 
+    @Override
     public IResource getCorrespondingResource() {
         return getCorrespondingFile();
     }
 
+    @Override
     public QualifiedNameType getQualifiedNameType() {
         /*
          * As QualifiedNameType is an immutable value object, we don't have any threading problems
@@ -111,6 +117,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         return new IIpsElement[0];
     }
 
+    @Override
     public IIpsObject getIpsObject() throws CoreException {
         if (!exists()) {
             throw new CoreException(new IpsStatus("Can't get ips object because file does not exist." + this)); //$NON-NLS-1$
@@ -123,6 +130,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         return content.getIpsObject();
     }
 
+    @Override
     public String getPropertyValue(String name) throws CoreException {
         if (!exists()) {
             throw new CoreException(new IpsStatus("Can't get property value because file does not exist." + this)); //$NON-NLS-1$
@@ -138,6 +146,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         return ((IpsModel)getIpsModel()).getIpsSrcFileContent(this, loadCompleteContent);
     }
 
+    @Override
     public boolean isContentParsable() throws CoreException {
         IpsSrcFileContent content = getContent();
         if (content == null) {

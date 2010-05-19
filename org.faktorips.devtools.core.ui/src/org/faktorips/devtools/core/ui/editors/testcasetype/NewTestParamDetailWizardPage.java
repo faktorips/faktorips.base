@@ -60,6 +60,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createControl(Composite parent) {
         Composite c = uiToolkit.createLabelEditColumnComposite(parent);
 
@@ -116,8 +117,10 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(FieldValueChangedEvent e) {
         wizard.postAsyncRunnable(new Runnable() {
+            @Override
             public void run() {
                 updateSetPageComplete();
             }

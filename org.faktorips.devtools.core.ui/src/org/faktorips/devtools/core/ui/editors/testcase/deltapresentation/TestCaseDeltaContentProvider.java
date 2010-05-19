@@ -67,6 +67,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput instanceof ITestCaseTestCaseTypeDelta) {
             in = (ITestCaseTestCaseTypeDelta)newInput;
@@ -86,6 +87,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
     }
 
@@ -94,6 +96,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
      * 
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(Object inputElement) {
         if (!(inputElement instanceof ITestCaseTestCaseTypeDelta)) {
             return new Object[0];
@@ -141,6 +144,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(Object element) {
         Object[] children = getChildren(element);
         if (children == null) {
@@ -152,6 +156,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(Object element) {
         return null;
     }
@@ -159,6 +164,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
         ArrayList<Object> result = new ArrayList<Object>();
 

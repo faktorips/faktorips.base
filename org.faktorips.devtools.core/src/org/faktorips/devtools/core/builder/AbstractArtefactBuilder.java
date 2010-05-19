@@ -40,6 +40,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
         this.builderSet = builderSet;
     }
 
+    @Override
     public IIpsArtefactBuilderSet getBuilderSet() {
         return builderSet;
     }
@@ -48,18 +49,22 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
         return builderSet.getIpsProject();
     }
 
+    @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         // default implementation does nothing
     }
 
+    @Override
     public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         // default implementation does nothing
     }
 
+    @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         // default implementation does nothing
     }
 
+    @Override
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
         // default implementation does nothing
     }
@@ -67,6 +72,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
     /**
      * Returns false.
      */
+    @Override
     public boolean buildsDerivedArtefacts() {
         return false;
     }

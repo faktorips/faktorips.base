@@ -74,6 +74,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.PRODUCT_CMPT;
     }
@@ -81,6 +82,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptGeneration getProductCmptGeneration(int index) {
         return (IProductCmptGeneration)getGeneration(index);
     }
@@ -88,6 +90,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptKind findProductCmptKind() throws CoreException {
         IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStrategy();
         try {
@@ -101,6 +104,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersionId() throws CoreException {
         try {
             return getIpsProject().getProductCmptNamingStrategy().getVersionId(getName());
@@ -112,6 +116,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
         IProductCmptType productCmptType = findProductCmptType(ipsProject);
         if (productCmptType == null) {
@@ -123,6 +128,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getProductCmptType() {
         return productCmptType;
     }
@@ -130,6 +136,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setProductCmptType(String newType) {
         String oldType = productCmptType;
         productCmptType = newType;
@@ -139,6 +146,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findProductCmptType(productCmptType);
     }
@@ -147,6 +155,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * 
      * {@inheritDoc}
      */
+    @Override
     public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException {
         int max = getNumOfGenerations();
         for (int i = 0; i < max; i++) {
@@ -203,6 +212,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean containsFormula() {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
@@ -216,6 +226,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean containsFormulaTest() {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
@@ -275,6 +286,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
     }
 
+    @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
@@ -282,6 +294,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTreeStructure getStructure(IIpsProject ipsProject) throws CycleInProductStructureException {
         return new ProductCmptTreeStructure(this, ipsProject);
     }
@@ -289,6 +302,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProductCmptTreeStructure getStructure(GregorianCalendar date, IIpsProject ipsProject)
             throws CycleInProductStructureException {
         return new ProductCmptTreeStructure(this, date, ipsProject);
@@ -297,6 +311,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getRuntimeId() {
         return runtimeId;
     }
@@ -304,6 +319,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setRuntimeId(String runtimeId) {
         String oldId = this.runtimeId;
         this.runtimeId = runtimeId;
@@ -313,6 +329,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
@@ -329,6 +346,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         int max = getNumOfGenerations();
         for (int i = 0; i < max; i++) {
@@ -341,6 +359,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isReferencingProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
         int numOfGenerations = getNumOfGenerations();
         for (int i = 0; i < numOfGenerations; i++) {
@@ -358,6 +377,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
         return isReferencingProductCmpt(ipsProjectToSearch, productCmptCandidate);
     }
@@ -372,6 +392,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE, getProductCmptType());
     }
@@ -384,6 +405,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getMetaClass() {
         return getProductCmptType();
     }
