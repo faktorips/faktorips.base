@@ -131,6 +131,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
         public ISelection selection;
 
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
+            //            
         }
 
         public ISelection getSelection() {
@@ -138,6 +139,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
         }
 
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+            //            
         }
 
         public void setSelection(ISelection selection) {
