@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -45,13 +45,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class FullBuildTask extends AbstractIpsTask {
 
-
     private List eclipseProjects = new ArrayList();
 
     public FullBuildTask() {
         super("FullBuildTask");
     }
-    
+
     public void addEclipseProject(EclipseProject eclipsProject) {
         eclipseProjects.add(eclipsProject);
     }
@@ -59,7 +58,6 @@ public class FullBuildTask extends AbstractIpsTask {
     /**
      * Excecutes the Ant-Task {@inheritDoc}
      */
-    @Override
     public void executeInternal() throws Exception {
 
         // Fetch Workspace
@@ -68,20 +66,19 @@ public class FullBuildTask extends AbstractIpsTask {
         // Create ProgressMonitor
         IProgressMonitor monitor = new NullProgressMonitor();
 
-        
         IProject projects[] = null;
         if (eclipseProjects.isEmpty()) {
             // Iterate over Projects in Workspace to find Warning and Errormarkers
             projects = workspace.getRoot().getProjects();
-            if(projects.length > 0){
+            if (projects.length > 0) {
                 System.out.println("The following IPS-Projects are about to be built: ");
             }
             for (int i = 0; i < projects.length; i++) {
                 IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projects[i].getName());
-                if(ipsProject.exists()){
-                    System.out.println("IPS-Project: " + ipsProject.getName() + ", IPS-Builder Set: " + 
-                            ipsProject.getIpsArtefactBuilderSet().getId() + ", Version: " + 
-                            ipsProject.getIpsArtefactBuilderSet().getVersion());
+                if (ipsProject.exists()) {
+                    System.out.println("IPS-Project: " + ipsProject.getName() + ", IPS-Builder Set: "
+                            + ipsProject.getIpsArtefactBuilderSet().getId() + ", Version: "
+                            + ipsProject.getIpsArtefactBuilderSet().getVersion());
                 }
             }
             workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
@@ -104,8 +101,9 @@ public class FullBuildTask extends AbstractIpsTask {
                     existingProjects.add(project);
                     System.out.print("start building project: " + project.getName());
                     IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
-                    if(ipsProject.exists()){
-                        System.out.println(", Faktor-IPS builder set: " + ipsProject.getIpsArtefactBuilderSet().getId() + ", version: " + ipsProject.getIpsArtefactBuilderSet().getVersion());
+                    if (ipsProject.exists()) {
+                        System.out.println(", Faktor-IPS builder set: " + ipsProject.getIpsArtefactBuilderSet().getId()
+                                + ", version: " + ipsProject.getIpsArtefactBuilderSet().getVersion());
                     } else {
                         System.out.println();
                     }

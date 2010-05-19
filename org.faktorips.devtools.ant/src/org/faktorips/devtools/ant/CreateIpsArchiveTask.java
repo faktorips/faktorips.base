@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -25,8 +25,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * This is an ant task that can only be used with the eclipse ant runner with an eclipse installation that
- * contains the faktor ips plugin. It create an IPS-Archive file for the specified parameters.   
+ * This is an ant task that can only be used with the eclipse ant runner with an eclipse
+ * installation that contains the faktor ips plugin. It create an IPS-Archive file for the specified
+ * parameters.
  * 
  * @author Peter Erzberger
  */
@@ -38,17 +39,16 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
     private String ipsProjectName;
     private List fragmentRootRepresentations = new ArrayList();
 
-    
     public CreateIpsArchiveTask() {
         super("CreateIpsArchiveTask");
     }
-    
+
     /**
-     * Starts the CreateIpsArchiveOperation configured with the parameters provided to this ant task.
+     * Starts the CreateIpsArchiveOperation configured with the parameters provided to this ant
+     * task.
      * 
      * {@inheritDoc}
      */
-    @Override
     public void executeInternal() throws Exception {
 
         if (ipsProjectName == null) {
@@ -71,8 +71,8 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
                 IpsPackageFragmentRoot fragmentRoot = (IpsPackageFragmentRoot)it.next();
                 IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoot(fragmentRoot.getName());
                 if (root == null) {
-                    throw new BuildException("The IpsPackageFragmentRoot: " + root.getName()
-                            + " of the IpsProject: " + ipsProjectName + " could not be found.");
+                    throw new BuildException("The IpsPackageFragmentRoot: " + root.getName() + " of the IpsProject: "
+                            + ipsProjectName + " could not be found.");
                 }
                 ipsPackageFragmentRoots.add(root);
             }
@@ -101,7 +101,7 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
 
     /**
      * Adds a representation for an ips package fragment root. This repesentation contains the name
-     * of an ips package fragment root of the ips project specified by the ips project name property 
+     * of an ips package fragment root of the ips project specified by the ips project name property
      * of this task.
      */
     public void addFragmentRoot(IpsPackageFragmentRoot fragmentRoot) {
@@ -149,11 +149,10 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
     public void setIpsProjectName(String ipsProjectName) {
         this.ipsProjectName = ipsProjectName;
     }
-    
-    
+
     /**
-     * This inner class is used as a data structure by means of which mutliple ips package fragment roots
-     * of the ips project can be specified. 
+     * This inner class is used as a data structure by means of which mutliple ips package fragment
+     * roots of the ips project can be specified.
      * 
      * @author Peter Erzberger
      */

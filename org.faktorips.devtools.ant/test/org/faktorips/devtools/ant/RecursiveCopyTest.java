@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,8 +17,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.faktorips.devtools.ant.RecursiveCopy;
-
 import junit.framework.TestCase;
 
 public class RecursiveCopyTest extends TestCase {
@@ -30,7 +28,6 @@ public class RecursiveCopyTest extends TestCase {
             + "/org.faktorips.devtools.ant.util.CopyTest2/");
     private File tmpDir2 = new File(tmpDir.getAbsolutePath() + "/2/");
 
-    @Override
     public void setUp() throws IOException {
         tmpDir.mkdir();
         tmpFile = File.createTempFile(this.getName() + "file", "");
@@ -58,8 +55,7 @@ public class RecursiveCopyTest extends TestCase {
                 fail("recursive dircopy failed");
             }
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             fail(e.getMessage());
         }
 
@@ -74,11 +70,9 @@ public class RecursiveCopyTest extends TestCase {
             FileOutputStream stream = new FileOutputStream(tmpFile);
             try {
                 stream.write(data);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw e;
-            }
-            finally {
+            } finally {
                 stream.close();
             }
 
@@ -86,16 +80,14 @@ public class RecursiveCopyTest extends TestCase {
             try {
                 c.copyFile(tmpFile.getAbsolutePath(), tmpDir.getAbsolutePath());
                 fail("copy from file to dir was sucessfull. should throw an Exception");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // expected
             }
 
             // copy file to file => should work
             try {
                 c.copyFile(tmpFile.getAbsolutePath(), tmpDir.getAbsolutePath() + tmpFile.getName());
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 fail(e.getMessage());
             }
 
@@ -103,20 +95,17 @@ public class RecursiveCopyTest extends TestCase {
 
             if (!expectedCopy.exists()) {
                 fail("copied file doesn't exist");
-            }
-            else if (tmpFile.length() != expectedCopy.length()) {
+            } else if (tmpFile.length() != expectedCopy.length()) {
                 fail("filesize of copied file is incorrect. original:" + tmpFile.length() + " copy:"
                         + expectedCopy.length());
             }
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             fail(e.getMessage());
         }
 
     }
 
-    @Override
     public void tearDown() {
         // just to be sure
         tmpFile.delete();

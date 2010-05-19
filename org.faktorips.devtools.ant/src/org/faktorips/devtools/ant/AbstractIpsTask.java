@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,20 +26,18 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManage
  */
 public abstract class AbstractIpsTask extends Task {
 
-
     /**
      * Creates a new task with the specified name.
      */
-    public AbstractIpsTask(String taskName){
+    public AbstractIpsTask(String taskName) {
         setTaskName(taskName);
     }
-    
+
     /**
-     * Excecutes the Ant-Task 
+     * Excecutes the Ant-Task
      * 
      * {@inheritDoc}
      */
-    @Override
     public final void execute() throws BuildException {
 
         System.out.println(getTaskName() + ": execution started");
@@ -52,7 +50,7 @@ public abstract class AbstractIpsTask extends Task {
             versionSecionBuf.append(", Version: "); //$NON-NLS-1$
             versionSecionBuf.append(managers[i].getCurrentVersion());
             versionSecionBuf.append("]"); //$NON-NLS-1$
-            if(i < managers.length - 1){
+            if (i < managers.length - 1) {
                 versionSecionBuf.append(", ");
             }
         }
@@ -73,9 +71,9 @@ public abstract class AbstractIpsTask extends Task {
 
     /**
      * The execution logic of the task needs to be implemented within this method
-     *  
+     * 
      * @throws Exception checked exceptions can just be delegated within this methods
      */
     protected abstract void executeInternal() throws Exception;
-    
+
 }
