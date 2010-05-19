@@ -852,6 +852,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return null;
     }
 
+    @Override
+    public void delete() {
+        if (getProductCmpt().getGenerations().size() > 1) {
+            super.delete();
+        }
+    }
+
     class AssociationsValidator extends ProductCmptTypeHierarchyVisitor {
 
         private final MessageList list;

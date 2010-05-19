@@ -633,6 +633,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();
+        if (!cont.isAccessible()) {
+            return new IResource[0];
+        }
         List<IResource> childResources = new ArrayList<IResource>();
         IResource[] children = cont.members();
         for (int i = 0; i < children.length; i++) {
