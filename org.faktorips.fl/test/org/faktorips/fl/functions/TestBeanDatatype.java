@@ -30,7 +30,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
 
     private String name;
     private String javaClassName;
-    private HashMap properties = new HashMap();
+    private HashMap<String, PropertyDatatype> properties = new HashMap<String, PropertyDatatype>();
 
     public TestBeanDatatype(String javaClassName) {
         ArgumentCheck.notNull(javaClassName);
@@ -46,7 +46,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
      * {@inheritDoc}
      */
     public PropertyDatatype getProperty(String name) {
-        return (PropertyDatatype)properties.get(name);
+        return properties.get(name);
     }
 
     /**

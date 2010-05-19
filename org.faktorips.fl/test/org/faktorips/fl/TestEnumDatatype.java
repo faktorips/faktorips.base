@@ -72,9 +72,6 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return value.equals("MONTH") || value.equals(("YEAR"));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object getValue(String value) {
         if ("MONTH".equals(value)) {
             return TestEnum.MONTH;
@@ -85,16 +82,10 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String valueToString(Object value) {
         return value.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNull(Object value) {
         return value == null;
     }

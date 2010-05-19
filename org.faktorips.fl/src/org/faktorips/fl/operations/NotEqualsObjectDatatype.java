@@ -23,14 +23,16 @@ import org.faktorips.fl.ExprCompiler;
  */
 public class NotEqualsObjectDatatype extends EqualsObjectDatatype {
 
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "NOTEQUALS-OPERATION"; //$NON-NLS-1$
+    protected static String getErrorMessageCode() {
+        return ExprCompiler.PREFIX + "NOTEQUALS-OPERATION"; //$NON-NLS-1$
+    }
 
     public NotEqualsObjectDatatype(Datatype type) {
-        super("!=", type, type); //$NON-NLS-1$
+        super("!=", type, type);
     }
 
     public NotEqualsObjectDatatype(Datatype lhsDatatype, Datatype rhsDatatype) {
-        super("!=", lhsDatatype, rhsDatatype); //$NON-NLS-1$
+        super("!=", lhsDatatype, rhsDatatype);
     }
 
     /**

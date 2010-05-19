@@ -51,12 +51,13 @@ public class CompilationResultImpl implements CompilationResult {
     private JavaCodeFragment codeFragment;
     private MessageList messages;
     private Datatype datatype;
-    private Set identifiersUsed;
+    private Set<String> identifiersUsed;
 
     /**
      * Creates a CompilationResult with the given parameters.
      */
-    public CompilationResultImpl(JavaCodeFragment sourcecode, Datatype datatype, MessageList messages, Set identifiers) {
+    public CompilationResultImpl(JavaCodeFragment sourcecode, Datatype datatype, MessageList messages,
+            Set<String> identifiers) {
         codeFragment = sourcecode;
         this.datatype = datatype;
         this.messages = messages;
@@ -106,12 +107,12 @@ public class CompilationResultImpl implements CompilationResult {
     public void add(CompilationResult result) {
         codeFragment.append(result.getCodeFragment());
         messages.add(result.getMessages());
-        Set otherIdenifiers = ((CompilationResultImpl)result).identifiersUsed;
+        Set<String> otherIdenifiers = ((CompilationResultImpl)result).identifiersUsed;
         if (otherIdenifiers == null) {
             return;
         }
         if (identifiersUsed == null) {
-            identifiersUsed = new LinkedHashSet(2);
+            identifiersUsed = new LinkedHashSet<String>(2);
         }
         identifiersUsed.addAll(otherIdenifiers);
     }
@@ -190,7 +191,7 @@ public class CompilationResultImpl implements CompilationResult {
         if (identifiersUsed == null) {
             return new String[0];
         }
-        return (String[])identifiersUsed.toArray(new String[identifiersUsed.size()]);
+        return identifiersUsed.toArray(new String[identifiersUsed.size()]);
     }
 
     /**
@@ -199,19 +200,19 @@ public class CompilationResultImpl implements CompilationResult {
      */
     public void addIdentifierUsed(String identifier) {
         if (identifiersUsed == null) {
-            identifiersUsed = new LinkedHashSet(2);
+            identifiersUsed = new LinkedHashSet<String>(2);
         }
         identifiersUsed.add(identifier);
     }
 
-    public Set getIdentifiersUsedAsSet() {
+    public Set<String> getIdentifiersUsedAsSet() {
         return identifiersUsed;
     }
 
-    public void addIdentifiersUsed(Set identifiers) {
+    public void addIdentifiersUsed(Set<String> identifiers) {
         if (identifiersUsed == null) {
             if (identifiers != null) {
-                identifiersUsed = new LinkedHashSet(identifiers);
+                identifiersUsed = new LinkedHashSet<String>(identifiers);
             }
             return;
         }
@@ -257,13 +258,52 @@ public class CompilationResultImpl implements CompilationResult {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof CompilationResult)) {
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((codeFragment == null) ? 0 : codeFragment.hashCode());
+        result = prime * result + ((datatype == null) ? 0 : datatype.hashCode());
+        result = prime * result + ((messages == null) ? 0 : messages.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        CompilationResult other = (CompilationResult)o;
-        return datatype.equals(other.getDatatype()) && codeFragment.equals(other.getCodeFragment())
-                && messages.equals(other.getMessages());
+        if (!(obj instanceof CompilationResultImpl)) {
+            return false;
+        }
+        CompilationResultImpl other = (CompilationResultImpl)obj;
+        if (codeFragment == null) {
+            if (other.codeFragment != null) {
+                return false;
+            }
+        } else if (!codeFragment.equals(other.codeFragment)) {
+            return false;
+        }
+        if (datatype == null) {
+            if (other.datatype != null) {
+                return false;
+            }
+        } else if (!datatype.equals(other.datatype)) {
+            return false;
+        }
+        if (messages == null) {
+            if (other.messages != null) {
+                return false;
+            }
+        } else if (!messages.equals(other.messages)) {
+            return false;
+        }
+        return true;
     }
 
     /**

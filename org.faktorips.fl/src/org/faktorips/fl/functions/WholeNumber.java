@@ -35,7 +35,7 @@ public class WholeNumber extends AbstractFlFunction {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.FlFunction#compile(org.faktorips.codegen.JavaCodeFragment[])
+     * @see org.faktorips.fl.FlFunction#compile(CompilationResult[])
      */
     public CompilationResult compile(CompilationResult[] argResults) {
         ArgumentCheck.length(argResults, 1);

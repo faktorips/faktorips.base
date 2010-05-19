@@ -236,7 +236,7 @@ class ParseTreeVisitor implements FlParserVisitor {
 
         if (!result.failed()) {
             // add the identifier only if there are no errors in the compilation result
-            Set allIdentifiersInCurrentResult = result.getIdentifiersUsedAsSet();
+            Set<String> allIdentifiersInCurrentResult = result.getIdentifiersUsedAsSet();
             if (allIdentifiersInCurrentResult != null && allIdentifiersInCurrentResult.contains(identifier)) {
                 // add the current identifier only if the compilation result knows the given
                 // identifier candidate as identifier
@@ -323,7 +323,7 @@ class ParseTreeVisitor implements FlParserVisitor {
     /**
      * Overridden method.
      * 
-     * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTMethodCallNode,
+     * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTFunctionCallNode,
      *      java.lang.Object)
      */
     public Object visit(ASTFunctionCallNode node, Object data) {
@@ -352,8 +352,8 @@ class ParseTreeVisitor implements FlParserVisitor {
 
         FlFunction function = null; // function that matches using implicit conversions
         boolean functionFoundByName = false;
-        for (Iterator it = compiler.getFunctionResolvers(); it.hasNext();) {
-            FunctionResolver resolver = (FunctionResolver)it.next();
+        for (Iterator<FunctionResolver> it = compiler.getFunctionResolvers(); it.hasNext();) {
+            FunctionResolver resolver = it.next();
             FlFunction[] functions = resolver.getFunctions();
             for (FlFunction function2 : functions) {
                 if (function2.match(fctName, argTypes)) {

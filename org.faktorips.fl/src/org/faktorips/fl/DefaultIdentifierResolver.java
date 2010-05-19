@@ -29,12 +29,13 @@ import org.faktorips.util.message.Message;
 public class DefaultIdentifierResolver implements IdentifierResolver {
 
     // map with (String) identifiers as keys and FragmentDatatypeWrapper instances as values.
-    private Map identifiers = new HashMap();
+    private Map<String, FragmentDatatypeWrapper> identifiers = new HashMap<String, FragmentDatatypeWrapper>();
 
     /**
      * Creates a new resolver.
      */
     public DefaultIdentifierResolver() {
+        // nothing to do
     }
 
     /**
@@ -49,7 +50,7 @@ public class DefaultIdentifierResolver implements IdentifierResolver {
      * {@inheritDoc}
      */
     public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
-        FragmentDatatypeWrapper wrapper = (FragmentDatatypeWrapper)identifiers.get(identifier);
+        FragmentDatatypeWrapper wrapper = identifiers.get(identifier);
         if (wrapper != null) {
             CompilationResultImpl compilationResult = new CompilationResultImpl(new JavaCodeFragment(wrapper.fragment),
                     wrapper.datatype);

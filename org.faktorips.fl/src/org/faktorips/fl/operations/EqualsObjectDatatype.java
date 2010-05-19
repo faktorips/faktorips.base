@@ -28,7 +28,9 @@ import org.faktorips.values.ObjectUtil;
  */
 public class EqualsObjectDatatype extends AbstractBinaryOperation {
 
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
+    protected static String getErrorMessageCode() {
+        return ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
+    }
 
     protected EqualsObjectDatatype(String operator, Datatype lhsDatatype, Datatype rhsDatatype) {
         super(operator, lhsDatatype, rhsDatatype);
@@ -63,8 +65,8 @@ public class EqualsObjectDatatype extends AbstractBinaryOperation {
                         rhs.getIdentifiersUsedAsSet());
                 rhs = newResult;
             } else {
-                String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[] { datatype1, datatype2 });
-                Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
+                String text = Messages.INSTANCE.getString(getErrorMessageCode(), new Object[] { datatype1, datatype2 });
+                Message msg = Message.newError(getErrorMessageCode(), text);
                 return new CompilationResultImpl(msg);
             }
         }

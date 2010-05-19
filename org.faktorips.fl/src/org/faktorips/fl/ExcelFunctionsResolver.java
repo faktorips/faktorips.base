@@ -47,7 +47,7 @@ public class ExcelFunctionsResolver extends DefaultFunctionResolver {
      * Creates a new resolver that contains a set of functions that are similiar by name and
      * argument list as those provided by Microsoft's Excel.
      * 
-     * @param fctNameLocale The locale that determines the language of the function names.
+     * @param locale The locale that determines the language of the function names.
      */
     public ExcelFunctionsResolver(Locale locale) {
         super();

@@ -74,7 +74,7 @@ public abstract class CompilerAbstractTest extends TestCase {
             Object[] parameterValues,
             Datatype expectedDatatype) throws Exception {
 
-        final Map parameterMap = new HashMap();
+        final Map<String, Datatype> parameterMap = new HashMap<String, Datatype>();
         for (int i = 0; i < parameterNames.length; i++) {
             parameterMap.put(parameterNames[i], parameterTypes[i]);
         }

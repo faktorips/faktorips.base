@@ -24,12 +24,13 @@ import org.faktorips.util.ArgumentCheck;
 public class DefaultFunctionResolver implements FunctionResolver {
 
     // list of supported FlFunction
-    private List functions = new ArrayList();
+    private List<FlFunction> functions = new ArrayList<FlFunction>();
 
     /**
      * Creates a new resolver.
      */
     public DefaultFunctionResolver() {
+        // nothing to do
     }
 
     /**
@@ -59,7 +60,7 @@ public class DefaultFunctionResolver implements FunctionResolver {
      * @see org.faktorips.fl.FunctionResolver#getFunctions()
      */
     public FlFunction[] getFunctions() {
-        return (FlFunction[])functions.toArray(new FlFunction[functions.size()]);
+        return functions.toArray(new FlFunction[functions.size()]);
     }
 
 }

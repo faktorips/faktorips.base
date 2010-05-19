@@ -45,7 +45,7 @@ public abstract class AbstractVarArgFunction extends AbstractFlFunction {
     public CompilationResult compile(CompilationResult[] argResults) {
 
         ConversionCodeGenerator ccg = compiler.getConversionCodeGenerator();
-        ArrayList convertedResults = new ArrayList(argResults.length);
+        ArrayList<CompilationResultImpl> convertedResults = new ArrayList<CompilationResultImpl>(argResults.length);
 
         for (int i = 0; i < argResults.length; i++) {
 
@@ -72,11 +72,11 @@ public abstract class AbstractVarArgFunction extends AbstractFlFunction {
 
         JavaCodeFragment fragment = new JavaCodeFragment();
         CompilationResultImpl returnValue = new CompilationResultImpl(fragment, getType());
-        compileInternal(returnValue, (CompilationResult[])convertedResults
+        compileInternal(returnValue, convertedResults
                 .toArray(new CompilationResult[convertedResults.size()]), fragment);
 
         for (int i = 0; i < convertedResults.size(); i++) {
-            CompilationResultImpl compilationResult = (CompilationResultImpl)convertedResults.get(i);
+            CompilationResultImpl compilationResult = convertedResults.get(i);
             returnValue.addMessages(compilationResult.getMessages());
         }
 

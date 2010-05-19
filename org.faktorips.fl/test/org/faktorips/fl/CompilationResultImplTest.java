@@ -53,7 +53,7 @@ public class CompilationResultImplTest extends TestCase {
         result.addIdentifiersUsed(null);
         assertEquals(0, result.getResolvedIdentifiers().length);
 
-        HashSet set = new HashSet();
+        HashSet<String> set = new HashSet<String>();
         set.add("a");
         set.add("b");
         result.addIdentifiersUsed(set);

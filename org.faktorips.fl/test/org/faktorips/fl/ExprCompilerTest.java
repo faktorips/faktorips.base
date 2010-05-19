@@ -173,7 +173,7 @@ public class ExprCompilerTest extends CompilerAbstractTest {
     }
 
     public void testFunctionResolvingWithImplicitConversion() {
-
+        //
     }
 
     public void testUndefinedOperator() throws Exception {
