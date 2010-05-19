@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -67,11 +68,10 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
             return currentActivation;
         }
         currentActivation = null;
-        for (int i = 0; i < activiations.size(); i++) {
-            ISelectionProviderActivation activation = activiations.get(i);
+        for (Iterator<ISelectionProviderActivation> iterator = activiations.iterator(); iterator.hasNext();) {
+            ISelectionProviderActivation activation = iterator.next();
             if (activation.isDisposed()) {
-                activiations.remove(i);
-                i--;
+                iterator.remove();
                 continue;
             }
             if (activation.isActivated()) {
@@ -79,6 +79,7 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
                 break;
             }
         }
+
         return currentActivation;
     }
 
