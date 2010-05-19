@@ -32,11 +32,14 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.CloseResourceAction;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -109,7 +112,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     private ActionGroup openActionGroup;
 
-    private ModelExplorerDeleteAction deleteAction;
+    private IAction deleteAction;
 
     private IpsPropertiesAction propertiesAction;
 
@@ -117,7 +120,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     private IWorkbenchAction paste;
 
-    private IWorkbenchAction delete;
+    private CommandContributionItem delete;
 
     private IWorkbenchAction refresh;
 
@@ -138,11 +141,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     /**
      * Creates a <tt>ModelExplorerContextMenuBuilder</tt>.
      * 
-     * @param modelExplorer
-     * @param modelExplorerConfig
-     * @param viewSite
-     * @param workbenchPartSite
-     * @param treeViewer
      */
     public ModelExplorerContextMenuBuilder(ModelExplorer modelExplorer, ModelExplorerConfiguration modelExplorerConfig,
             IViewSite viewSite, IWorkbenchPartSite workbenchPartSite, TreeViewer treeViewer) {
@@ -157,7 +155,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         propertiesAction = new IpsPropertiesAction(viewSite, treeViewer);
         copy = ActionFactory.COPY.create(viewSite.getWorkbenchWindow());
         paste = ActionFactory.PASTE.create(viewSite.getWorkbenchWindow());
-        delete = ActionFactory.DELETE.create(viewSite.getWorkbenchWindow());
+        delete = new CommandContributionItem(new CommandContributionItemParameter(PlatformUI.getWorkbench(), null,
+                "org.eclipse.ui.edit.delete", CommandContributionItem.STYLE_PUSH)); //$NON-NLS-1$
         refresh = ActionFactory.REFRESH.create(viewSite.getWorkbenchWindow());
         rename = ActionFactory.RENAME.create(viewSite.getWorkbenchWindow());
         move = ActionFactory.MOVE.create(viewSite.getWorkbenchWindow());
@@ -198,7 +197,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         selected = mapIpsSrcFile2IpsObject(selected);
         createNewMenu(manager, selected);
 
-        manager.add(new Separator("copy"));
+        manager.add(new Separator("copy")); //$NON-NLS-1$
         // Add copy actions depending on selected ips object type
         if (selected instanceof IProductCmpt || selected instanceof IProductCmptGeneration) {
             manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
@@ -207,16 +206,16 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             manager.add(new IpsTestCaseCopyAction(viewSite.getShell(), treeViewer));
         }
 
-        manager.add(new Separator("open"));
+        manager.add(new Separator("open")); //$NON-NLS-1$
         createOpenMenu(manager, selected, (IStructuredSelection)treeViewer.getSelection());
-        manager.add(new Separator("reorg"));
+        manager.add(new Separator("reorg")); //$NON-NLS-1$
         createReorgActions(manager, selected);
-        manager.add(new Separator("info"));
+        manager.add(new Separator("info")); //$NON-NLS-1$
         createObjectInfoActions(manager, selected);
-        manager.add(new Separator("misc"));
+        manager.add(new Separator("misc")); //$NON-NLS-1$
         createRefreshAction(manager, selected);
         createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
-        manager.add(new Separator("manage"));
+        manager.add(new Separator("manage")); //$NON-NLS-1$
 
         createImportExportTableContentsActions(manager, selected);
         createImportExportEnumActions(manager, selected);
@@ -228,13 +227,13 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
         // Menus with sub menus.
         createRefactorMenu(manager, selected);
-        manager.add(new Separator("global"));
+        manager.add(new Separator("global")); //$NON-NLS-1$
 
-        manager.add(new GroupMarker("faktorIpsGroup"));
-        manager.add(new Separator("additions"));
+        manager.add(new GroupMarker("faktorIpsGroup")); //$NON-NLS-1$
+        manager.add(new Separator("additions")); //$NON-NLS-1$
         createAdditionalActions(manager, structuredSelection);
 
-        manager.add(new Separator("properties"));
+        manager.add(new Separator("properties")); //$NON-NLS-1$
         createPropertiesActions(manager, selected);
     }
 
@@ -326,18 +325,18 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
         copy.setEnabled(true);
         paste.setEnabled(true);
-        delete.setEnabled(true);
+        deleteAction.setEnabled(true);
 
         if (selected instanceof IIpsObjectPart) {
             copy.setEnabled(false);
             paste.setEnabled(false);
-            delete.setEnabled(false);
+            deleteAction.setEnabled(false);
             return;
         }
 
         if (isRootArchive(selected)) {
             paste.setEnabled(false);
-            delete.setEnabled(false);
+            deleteAction.setEnabled(false);
         }
     }
 
@@ -542,6 +541,9 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         }
     }
 
+    /**
+     * @param structuredSelection actual selection
+     */
     protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
         manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));//$NON-NLS-1$

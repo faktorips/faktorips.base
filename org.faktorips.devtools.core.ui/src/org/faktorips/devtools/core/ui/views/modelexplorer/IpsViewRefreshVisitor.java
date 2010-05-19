@@ -68,7 +68,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
             return false;
         }
         IProject project = resource.getProject();
-        if (project == null) {
+        if (project == null || !project.isAccessible()) {
             // At least the workspace root does return null as project!
             return false;
         }

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.actions;
+package org.faktorips.devtools.core.ui.commands;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IIpsSrcFileEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
-public class IpsObjectPartDeleteActionHandler extends AbstractHandler {
+public class IpsObjectPartDeleteHandler extends AbstractHandler {
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -57,13 +57,13 @@ public class IpsObjectPartDeleteActionHandler extends AbstractHandler {
                     }
                 }
             } finally {
-                new Job("Save touched Ips-Src-Files") {
+                new Job("Save touched Ips-Src-Files") { //$NON-NLS-1$
 
                     @Override
                     protected IStatus run(IProgressMonitor monitor) {
                         MultiStatus result = new MultiStatus(IpsUIPlugin.PLUGIN_ID, IStatus.OK,
-                                "Save touched Ips-Src-Files", null);
-                        new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, "Save touched Ips-Src-Files");
+                                "Save touched Ips-Src-Files", null); //$NON-NLS-1$
+                        new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, "Save touched Ips-Src-Files"); //$NON-NLS-1$
                         for (IIpsSrcFile srcFileToSave : srcFilesToSave) {
                             try {
                                 srcFileToSave.save(true, monitor);

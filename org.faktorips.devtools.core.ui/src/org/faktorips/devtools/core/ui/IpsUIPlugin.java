@@ -243,8 +243,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Return true if this IpsSrcFile file is editable. This includes checking the ipsSrcFile
      * mutable state and the state of the workbench
      * 
-     * @param ipsSrcFile
-     * @return
      */
     public static boolean isEditable(IIpsSrcFile ipsSrcFile) {
         if (ipsSrcFile == null) {

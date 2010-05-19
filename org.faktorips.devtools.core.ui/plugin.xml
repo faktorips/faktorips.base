@@ -1216,7 +1216,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.faktorips.devtools.core.ui.actions.IpsObjectPartDeleteActionHandler"
+            class="org.faktorips.devtools.core.ui.commands.IpsObjectPartDeleteHandler"
             commandId="org.eclipse.ui.edit.delete">
          <activeWhen>
             <with
@@ -1231,25 +1231,34 @@
             </with>
          </activeWhen>
          <class
-               class="org.faktorips.devtools.core.ui.actions.IpsObjectPartDeleteActionHandler">
+               class="org.faktorips.devtools.core.ui.commands.IpsObjectPartDeleteHandler">
          </class>
          <enabledWhen>
-            <not>
-               <count
-                     value="0">
-               </count>
-            </not>
+            <with
+                     variable="selection">
+               <iterate
+                  ifEmpty="false"
+                  operator="and">
+                  <instanceof
+                        value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                  </instanceof>
+                  <test
+                        property="org.faktorips.devtools.core.ui.isDeletable">
+                  </test>
+               </iterate>
+            </with>
          </enabledWhen>
       </handler>
    </extension>
+
    <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="popup">
-         <command
-               commandId="org.eclipse.ui.edit.delete"
-               style="push">
-         </command>
-      </menuContribution>
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+     	 namespace="org.faktorips.devtools.core.ui"
+       id="org.faktorips.devtools.core.ui.commands.IpsObjectPartDeleteHandlerTester"
+       properties="isDeletable"
+       type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart"
+       class="org.faktorips.devtools.core.ui.commands.IpsObjectPartDeleteHandlerTester">
+     </propertyTester>
    </extension>
 </plugin>
