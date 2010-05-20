@@ -43,10 +43,10 @@ public class Modifier extends DefaultEnumValue {
         return (Modifier)enumType.getEnumValue(id);
     }
 
-    // flags constant according to org.eclipse.jdt.core.Flags
+    /** Flags constant according to org.eclipse.jdt.core.Flags */
     private int jdtFlags;
 
-    // Modifier according to java.lang.reflect.Modifier
+    /** Modifier according to java.lang.reflect.Modifier */
     private int javaModifier;
 
     /**

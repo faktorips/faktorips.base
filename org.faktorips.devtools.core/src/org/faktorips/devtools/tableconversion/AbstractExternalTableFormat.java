@@ -59,17 +59,18 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
     public Map<String, String> properties = new HashMap<String, String>();
 
     /**
-     * Returns the given Double as string. If the Double has no decimal places then the Double will
-     * be returned as intg string. Example: "1.0" will be returned as "1" but "1.2" will be returned
-     * as "1.2"
+     * Returns the given double as string. If the double has no decimal places then the double will
+     * be returned as integer string. Example: "1.0" will be returned as "1" but "1.2" will be
+     * returned as "1.2".
      */
     public static String doubleToStringWithoutDecimalPlaces(Double externalDataValue) {
-        // Workaround: if the external data is double without decimal places (n.0),
-        // e.g. if the external data represents the numeric id of an enum value set,
-        // then it is important to import the value as int value ("1.0" will be "1"),
-        // otherwise the id couldn't be mapped correctly to the enum identifier.
-        // The extenal data interprets a "1" always as "1.0",
-        // even if the column or cell is formatted as text
+        /*
+         * Workaround: If the external data is double without decimal places (n.0), e.g. if the
+         * external data represents the numeric id of an enumeration value set, then it is important
+         * to import the value as integer value ("1.0" will be "1"), otherwise the id couldn't be
+         * mapped correctly to the enumeration identifier. The external data interprets a "1" always
+         * as "1.0", even if the column or cell is formatted as text.
+         */
         int intValue = externalDataValue.intValue();
         if (Double.valueOf("" + intValue).equals(externalDataValue)) { //$NON-NLS-1$
             return "" + intValue; //$NON-NLS-1$
@@ -127,7 +128,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         return getConverter(datatype).getExternalDataValue(ipsValue, messageList);
     }
 
-    // TODO rg: cache converters in a map instead of for-loop
+    // TODO RG: Cache converters in a map instead of for-loop.
     private IValueConverter getConverter(Datatype datatype) {
         for (IValueConverter converter : converters) {
             if (converter.getSupportedDatatype().equals(datatype)) {
@@ -170,8 +171,6 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
 
     /**
      * Implementation of IValueConverter to be used if no other converter was found.
-     * 
-     * @author Thorsten Guenther
      */
     private class DefaultValueConverter extends AbstractValueConverter {
 

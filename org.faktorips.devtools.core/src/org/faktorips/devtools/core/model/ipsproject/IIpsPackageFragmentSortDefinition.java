@@ -41,7 +41,6 @@ import org.eclipse.core.runtime.CoreException;
  * </pre>
  * 
  * </blockquote>
- * <p>
  * 
  * @author Markus Blum
  */
@@ -68,8 +67,6 @@ public interface IIpsPackageFragmentSortDefinition {
      * Load the sort order <code>content</code>.
      * 
      * @param content Sort order file as <code>String</code>.
-     * 
-     * @throws CoreException
      */
     public void initPersistenceContent(String content) throws CoreException;
 

@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.model.productcmpt.treestructure;
 import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
- * Thrown when a cycle is detcted in the product structure and so a structure tree can't be
+ * Thrown when a cycle is detected in the product structure and so a structure tree can't be
  * constructed.
  * 
  * @author Thorsten Guenther

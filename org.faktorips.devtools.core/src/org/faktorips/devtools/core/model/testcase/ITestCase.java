@@ -65,7 +65,7 @@ public interface ITestCase extends IIpsMetaObject {
     /**
      * Search and return the test case type object in the model.
      * 
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this component is part of.
      * 
      * @return The test case type or <code>null</code> if the test case type can't be found.
@@ -75,13 +75,13 @@ public interface ITestCase extends IIpsMetaObject {
     public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns all test objects or an empty array if the test case hasn't got any test objetcs.
+     * Returns all test objects or an empty array if the test case hasn't got any test objects.
      */
     public ITestObject[] getTestObjects();
 
     /**
      * Returns all policy component objects or an empty array if the test case hasn't got any policy
-     * component objetcs.
+     * component objects.
      */
     public ITestPolicyCmpt[] getTestPolicyCmpts();
 
@@ -141,19 +141,19 @@ public interface ITestCase extends IIpsMetaObject {
 
     /**
      * Returns all expected result test policy component objects or an empty array if the test case
-     * hasn't got any expected result test policy component objetcs.
+     * hasn't got any expected result test policy component objects.
      */
     public ITestPolicyCmpt[] getExpectedResultTestPolicyCmpts();
 
     /**
-     * Returns all test policy cmpts of this test case.<br>
-     * Returns an empty array if the test case has no test policy cmpts.
+     * Returns all test policy components of this test case.<br>
+     * Returns an empty array if the test case has no test policy components.
      */
     public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreException;
 
     /**
      * Returns all test objects of this test case.<br>
-     * Returns an empty array if the test case has no test objetcs cmpts.
+     * Returns an empty array if the test case has no test objects components.
      */
     public ITestObject[] getAllTestObjects() throws CoreException;
 
@@ -175,7 +175,7 @@ public interface ITestCase extends IIpsMetaObject {
     /**
      * Returns the test policy component or <code>null</code> if not found.
      * 
-     * @param testpolicyCmptPath the complete path to the policy component within the test case
+     * @param testPolicyCmptPath the complete path to the policy component within the test case
      *            including links and parent type names.
      * 
      * @throws CoreException in case of an error.
@@ -204,13 +204,14 @@ public interface ITestCase extends IIpsMetaObject {
     public void sortTestObjects() throws CoreException;
 
     /**
-     * Returns all validation rules from the test policy cmpts which are related by the test policy
-     * cmpt type parameters inside this test case. And additional all validation rules which are
-     * related by the policy cmpt's inside this test case, e.g. if the test case type specifies an
-     * abstract policy cmpt type (A) and the test case includes a concrete instance of this abstract
-     * policy cmpt type (B) then the validation rules af A and B will be returned.
+     * Returns all validation rules from the test policy components which are related by the test
+     * policy component type parameters inside this test case. And additional all validation rules
+     * which are related by the policy cmpt's inside this test case, e.g. if the test case type
+     * specifies an abstract policy component type (A) and the test case includes a concrete
+     * instance of this abstract policy component type (B) then the validation rules A and B will be
+     * returned.
      * 
-     * @param ipsProject The ips project which object path is used to search.
+     * @param ipsProject The IPS project which object path is used to search.
      * 
      * @throws CoreException if an error occurs
      */
@@ -218,15 +219,16 @@ public interface ITestCase extends IIpsMetaObject {
 
     /**
      * Searches and returns the validation rule with the given name which is inside the test case.
-     * The rule will be searched in all policy cmpt which are related by test test policy cmpt's.
+     * The rule will be searched in all policy component which are related by test test policy
+     * cmpt's.
      * 
-     * @see ITestCase#getTestRuleCandidates()
+     * @see #getTestRuleCandidates(IIpsProject)
      */
     public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the qualified names of all referenced product cmpts. Returns an empty arrax if no
-     * product cmpts are referenced.
+     * Returns the qualified names of all referenced product components. Returns an empty array if
+     * no product components are referenced.
      */
     public String[] getReferencedProductCmpts() throws CoreException;
 
@@ -237,4 +239,5 @@ public interface ITestCase extends IIpsMetaObject {
      * @throws CoreException if an error occurs
      */
     public void clearTestValues(TestParameterType testParameterType) throws CoreException;
+
 }

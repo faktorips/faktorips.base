@@ -14,25 +14,20 @@
 package org.faktorips.devtools.core.util;
 
 /**
- * A utility class for string.
+ * A utility class for strings.
  * 
  * @author Peter Erzberger
  */
 public class StringUtils {
 
-    private StringUtils() {
-    }
-
     /**
-     * Wraps the provide text according to the split length and tabSize.
+     * Wraps and returns the provide text according to the split length and tab size.
      * 
      * @param text the text that needs to be wrapped up
      * @param length the length after which a line break should occur
      * @param lineSeparator the line separator that is used for the wrapped text
-     * @return the wrapped up text
      */
     public final static String wrapText(String text, int length, String lineSeparator) {
-
         if (text == null || "".equals(text)) { //$NON-NLS-1$
             return text;
         }
@@ -65,7 +60,9 @@ public class StringUtils {
 
     /**
      * Returns the given name with a "copyOf_" and counter prefix that can be used to make the name
-     * unique. Example:
+     * unique.
+     * <p>
+     * Example:
      * <table border="true">
      * <tr>
      * <th>uniqueCopyOfCounter</th>
@@ -88,17 +85,21 @@ public class StringUtils {
         String uniqueCopyOfCounterText = uniqueCopyOfCounter == 0 ? "" : "(" + (uniqueCopyOfCounter + 1) + ")_"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String nameWithoutCopyOfPrefix;
         if (nameCandidate.startsWith(Messages.StringUtils_copyOfNamePrefix)) {
-            // remove copyOf from the name
+            // Remove copyOf from the name.
             nameWithoutCopyOfPrefix = org.apache.commons.lang.StringUtils.substringAfter(nameCandidate,
                     Messages.StringUtils_copyOfNamePrefix);
-            // remove copyOf counter prefix e.g. "(2)_" if exists
+            // Remove copyOf counter prefix e.g. "(2)_" if it exists.
             nameWithoutCopyOfPrefix = nameWithoutCopyOfPrefix.replaceAll("^\\([0-9]*\\)_", ""); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             nameWithoutCopyOfPrefix = nameCandidate;
         }
-        // add new copyOf and counter prefix
+        // Add new copyOf and counter prefix.
         nameCandidate = Messages.StringUtils_copyOfNamePrefix + uniqueCopyOfCounterText + nameWithoutCopyOfPrefix;
         return nameCandidate;
+    }
+
+    private StringUtils() {
+        // Utility class not to be instantiated.
     }
 
 }

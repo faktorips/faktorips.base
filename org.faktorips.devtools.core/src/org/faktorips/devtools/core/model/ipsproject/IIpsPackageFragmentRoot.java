@@ -25,10 +25,10 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 
 /**
  * A package fragment root contains a set of package fragments. It corresponds to an underlying
- * resource which is either a folder, JAR, or zip. In the case of a folder, all descendant folders
+ * resource which is either a folder, JAR, or ZIP. In the case of a folder, all descendant folders
  * represent package fragments. For a given child folder representing a package fragment, the
  * corresponding package name is composed of the folder names between the folder for this root and
- * the child folder representing the package, separated by '.'. In the case of a JAR or zip, the
+ * the child folder representing the package, separated by '.'. In the case of a JAR or ZIP, the
  * contents of the archive dictates the set of package fragments in an analogous manner.
  */
 public interface IIpsPackageFragmentRoot extends IIpsElement {
@@ -45,20 +45,20 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public boolean isBasedOnIpsArchive();
 
     /**
-     * Returns the entry in the ips object path that results in this package fragment root. E.g. an
-     * entry defining a source folder leads to an ips package fragment root.
+     * Returns the entry in the IPS object path that results in this package fragment root. E.g. an
+     * entry defining a source folder leads to an IPS package fragment root.
      * 
-     * @throws CoreException if an excpetion occurs while accessing the object path.
+     * @throws CoreException if an exception occurs while accessing the object path.
      */
     public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException;
 
     /**
-     * Returns the artefact destination for the artefacts generated on behalf of the ips objects
-     * within this ips package fragment root.
+     * Returns the artifact destination for the artifacts generated on behalf of the IPS objects
+     * within this IPS package fragment root.
      * 
-     * @param derived determines if the artefact destination for derived resources or the
+     * @param derived determines if the artifact destination for derived resources or the
      *            destination for mergable resources is to return. If set to true the destination
-     *            for the derived artefacts will be returned.
+     *            for the derived artifacts will be returned.
      */
     public IFolder getArtefactDestination(boolean derived) throws CoreException;
 
@@ -103,7 +103,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
 
     /**
      * Creates the IPS package fragment with the indicated name. Note that if the name contains one
-     * or more dots (.), one folder in the filesystem is created for each token between the dots.
+     * or more dots (.), one folder in the file system is created for each token between the dots.
      * 
      * @param name the given dot-separated package name
      * @param force a flag controlling how to deal with resources that are not in sync with the
@@ -136,4 +136,5 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * <code>null</code> is returned.
      */
     public IIpsArchive getIpsArchive() throws CoreException;
+
 }

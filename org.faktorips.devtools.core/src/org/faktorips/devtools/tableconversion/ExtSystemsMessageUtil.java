@@ -17,7 +17,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.util.message.Message;
 
 /**
- * Utility class to create common error or information messages durring the value conversation.
+ * Utility class to create common error or information messages during the value conversation.
  * 
  * @author Joerg Ortmann
  */
@@ -45,5 +45,7 @@ public class ExtSystemsMessageUtil {
     }
 
     private ExtSystemsMessageUtil() {
+        // Utility class not to be instantiated.
     }
+
 }

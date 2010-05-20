@@ -23,7 +23,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * A class that contains validations of the model class <b>Type</b> which are also used in the
+ * A class that contains validations for the model class {@link IType} which are also used in the
  * creation wizard where the model object doesn't exist at the point of validation.
  * 
  * @author Peter Erzberger
@@ -32,23 +32,27 @@ import org.faktorips.util.message.ObjectProperty;
 public class TypeValidations {
 
     /**
-     * Validates if there exists already a policy component type or product component type in the
-     * ips object path. The method checks when a product component type is validated if a policy
-     * component type with the same name exists within the ips objects path and vice versa.
+     * Validates if there exists already a policy component type or product component type with the
+     * same name in the IPS object path. The method checks when a product component type is
+     * validated if a policy component type with the same name exists within the IPS object path and
+     * vice versa.
+     * <p>
+     * Returns a message if the validation fails, otherwise <code>null</code>.
      * 
-     * @param otherIpsObjectType the IpsObjectType of the other type e.g. if a product component
-     *            type is validated the IpsObjectType has to be policy component type
-     * @param qualifiedName the qualified name of the type that is to validate
-     * @param ipsProject the ips project
-     * @param thisType the model object of the type that is to validate
-     * @return a message if the validation fails otherwise <code>null</code>
+     * @param otherIpsObjectType The {@link IpsObjectType} of the other type. If for example a
+     *            product component type is validated, this has to be
+     *            {@link IpsObjectType#POLICY_CMPT_TYPE}.
+     * @param qualifiedName The qualified name of the type that is to validate.
+     * @param ipsProject The IPS project.
+     * @param thisType The model object of the type that is to validate.
      * 
-     * @throws CoreException exceptions that a raised a delegated by this method
+     * @throws CoreException Any raised exceptions are delegated by this method.
      */
     public static Message validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType otherIpsObjectType,
             String qualifiedName,
             IIpsProject ipsProject,
             IType thisType) throws CoreException {
+
         IIpsSrcFile file = ipsProject.findIpsSrcFile(otherIpsObjectType, qualifiedName);
         if (file != null) {
             if (ipsProject.equals(file.getIpsProject())) {
@@ -65,6 +69,10 @@ public class TypeValidations {
 
         }
         return null;
+    }
+
+    private TypeValidations() {
+        // Utility class not to be instantiated.
     }
 
 }

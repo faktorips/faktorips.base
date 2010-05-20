@@ -23,15 +23,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * 
+ * Utility class needed by the Faktor-IPS refactoring support.
  * 
  * @author Alexander Weickmann
  */
 public final class RefactorUtil {
-
-    private RefactorUtil() {
-        // Utility classes shall not be instantiated.
-    }
 
     /**
      * Copies the given <tt>IIpsSrcFile</tt> into a new source file at the desired destination
@@ -83,6 +79,10 @@ public final class RefactorUtil {
 
         long timestamp = new Date().getTime();
         return copyIpsSrcFile(toBeCopied, targetIpsPackageFragment, copyName + timestamp, progressMonitor);
+    }
+
+    private RefactorUtil() {
+        // Utility class not to be instantiated.
     }
 
 }

@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface ITestValueParameter extends ITestParameter {
 
-    /** Property names */
     public final static String PROPERTY_VALUEDATATYPE = "valueDatatype"; //$NON-NLS-1$
 
     /**
@@ -33,7 +32,7 @@ public interface ITestValueParameter extends ITestParameter {
     public final static String MSGCODE_PREFIX = "TESTVALUEPARAMETER-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the value datatype not exists.
+     * Validation message code to indicate that the value data type not exists.
      */
     public final static String MSGCODE_VALUEDATATYPE_NOT_FOUND = MSGCODE_PREFIX + "ValueDatatypeNotFound"; //$NON-NLS-1$
 
@@ -43,21 +42,22 @@ public interface ITestValueParameter extends ITestParameter {
     public final static String MSGCODE_WRONG_TYPE = MSGCODE_PREFIX + "WrongType"; //$NON-NLS-1$
 
     /**
-     * Returns the datatype.
+     * Returns the data type.
      */
     public String getValueDatatype();
 
     /**
-     * Sets the datatype.
+     * Sets the data type.
      */
     public void setValueDatatype(String datatype);
 
     /**
-     * Returns the datatype or <code>null</code> if the object does not exists.
+     * Returns the data type or <code>null</code> if the object does not exists.
      * 
-     * @param ipsProject The ips project which object path is used to search.
+     * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching for the datatype.
+     * @throws CoreException If an error occurs while searching for the data type.
      */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
+
 }

@@ -16,9 +16,6 @@ package org.faktorips.devtools.core.model.tablestructure;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 
-/**
- *
- */
 public interface ITableStructure extends IIpsMetaClass {
 
     public final static String PROPERTY_TYPE = "tableStructureType"; //$NON-NLS-1$
@@ -44,9 +41,7 @@ public interface ITableStructure extends IIpsMetaClass {
 
     /**
      * Set the type for this table structure represented by the given id. If no type is found for
-     * the given id, the type is not modifed.
-     * 
-     * @param typeId The id for the new type.
+     * the given id, the type is not modified.
      */
     public void setTableStructureType(TableStructureType type);
 
@@ -56,11 +51,11 @@ public interface ITableStructure extends IIpsMetaClass {
     public TableStructureType getTableStructureType();
 
     /**
-     * Returns true if this table structure is an enum type which values are defined at model
+     * Returns true if this table structure is an enumeration type which values are defined at model
      * definition time.
      * 
-     * @deprecated Since version 2.3 enums can be modelled as enums, no need for the work around to
-     *             model them as tables any more.
+     * @deprecated Since version 2.3 enumerations can be modeled as enumerations, no need for the
+     *             work around to model them as tables any more.
      */
     @Deprecated
     public boolean isModelEnumType();
@@ -89,7 +84,7 @@ public interface ITableStructure extends IIpsMetaClass {
 
     /**
      * Returns the index of the given column in this tablestructure's list of columns. Returns null
-     * if the given column is not defined by this tablestructure.
+     * if the given column is not defined by this table structure.
      */
     public int getColumnIndex(IColumn column);
 

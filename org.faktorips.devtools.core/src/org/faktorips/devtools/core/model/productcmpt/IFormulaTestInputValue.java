@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.type.IParameter;
  * @author Joerg Ortmann
  */
 public interface IFormulaTestInputValue extends IIpsObjectPart {
-    /** Property names */
+
     public final static String PROPERTY_IDENTIFIER = "identifier"; //$NON-NLS-1$
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
@@ -40,18 +40,18 @@ public interface IFormulaTestInputValue extends IIpsObjectPart {
     public final static String MSGCODE_FORMULA_PARAMETER_NOT_FOUND = MSGCODE_PREFIX + "FormulaParameterNotFound"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the formula parameter has an unsupported datatype.
+     * Validation message code to indicate that the formula parameter has an unsupported data type.
      */
     public final static String MSGCODE_FORMULA_PARAMETER_HAS_UNSUPPORTED_DATATYPE = MSGCODE_PREFIX
             + "FormulaParameterHasUnsupportedDatatype"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of the related attribute wasn't found.
+     * Validation message code to indicate that the data type of the related attribute wasn't found.
      */
     public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeNotFound"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of the related attribute wasn't found.
+     * Validation message code to indicate that the data type of the related attribute wasn't found.
      */
     public final static String MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX
             + "DatatypeOfRelatedAttributeNotFound"; //$NON-NLS-1$
@@ -90,13 +90,14 @@ public interface IFormulaTestInputValue extends IIpsObjectPart {
     public String getValue();
 
     /**
-     * Search and returns the datatype of the corresponding formula parameter. If the formula
-     * parameter specifies a ValueDataType then this datatype will be returned and if the formula
-     * parameter specifies a type parameter then the datatype of the attribute which is identified
-     * by the identifier will be returned (e.g. if the identifier is "policy.premium" then the
-     * datatype of the attribute premium will be returned).
+     * Search and returns the data type of the corresponding formula parameter. If the formula
+     * parameter specifies a ValueDataType then this data type will be returned and if the formula
+     * parameter specifies a type parameter then the data type of the attribute which is identified
+     * by the identifier will be returned (e.g. if the identifier is "policy.premium" then the data
+     * type of the attribute premium will be returned).
      * 
-     * @throws CoreException If an error occurs during searching the corresponding datatype.
+     * @throws CoreException If an error occurs during searching the corresponding data type.
      */
     public ValueDatatype findDatatypeOfFormulaParameter(IIpsProject ipsProject) throws CoreException;
+
 }

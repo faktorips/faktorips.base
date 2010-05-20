@@ -14,7 +14,7 @@
 package org.faktorips.devtools.tableconversion;
 
 /**
- * Base converter class used in the Faktor-IPS import/export framework.
+ * Base converter class used in the Faktor-IPS import / export framework.
  * 
  * @author Roman Grutza
  */
@@ -22,25 +22,20 @@ public abstract class AbstractValueConverter implements IValueConverter {
 
     protected ITableFormat tableFormat;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableFormat getTableFormat() {
         return tableFormat;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setTableFormat(ITableFormat newFormat) {
         if (newFormat == null) {
             throw new NullPointerException();
         }
         if (tableFormat != null && !newFormat.equals(tableFormat)) {
-            throw new RuntimeException("Can't reassign converter to a different table format!");
+            throw new RuntimeException("Can't reassign converter to a different table format!"); //$NON-NLS-1$
         }
         tableFormat = newFormat;
     }
+
 }

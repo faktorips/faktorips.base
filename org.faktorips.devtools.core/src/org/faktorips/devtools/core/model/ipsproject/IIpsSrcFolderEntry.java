@@ -49,7 +49,7 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
     public final static String MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST = "OutputFolderDeriveddDoesntExist"; //$NON-NLS-1$
 
     /**
-     * Returns the folder containing the ips source files.
+     * Returns the folder containing the IPS source files.
      */
     public IFolder getSourceFolder();
 
@@ -57,13 +57,13 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * Returns the output folder for generated but mergable Java source files. The content of the
      * java files in this folder are supposed to be merged with the newly generated content during
      * every build cycle . If a specific output folder is set for this entry, the specific output
-     * folder is returned, otherwise the ouput folder defined in the object path is returned.
+     * folder is returned, otherwise the output folder defined in the object path is returned.
      */
     public IFolder getOutputFolderForMergableJavaFiles();
 
     /**
      * Returns the entry's own output folder for generated but mergable Java source files. This
-     * ouptput folder is used only for this entry.
+     * output folder is used only for this entry.
      */
     public IFolder getSpecificOutputFolderForMergableJavaFiles();
 
@@ -80,16 +80,15 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
     public String getBasePackageNameForMergableJavaClasses();
 
     /**
-     * Returns partial toc resource name. The fully qualified toc resource name is obtained by
+     * Returns partial TOC resource name. The fully qualified TOC resource name is obtained by
      * adding this partial name to the base package name for generated Java classes.
      * 
-     * @see #getTocPath()
      * @see #getBasePackageNameForMergableJavaClasses()
      */
     public String getBasePackageRelativeTocPath();
 
     /**
-     * Sets the partial toc resource name.
+     * Sets the partial TOC resource name.
      * 
      * @see #getBasePackageRelativeTocPath()
      */
@@ -107,20 +106,20 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
     public void setSpecificBasePackageNameForMergableJavaClasses(String name);
 
     /**
-     * Returns the output folder containting generated derived Java source files. If a specific
+     * Returns the output folder containing generated derived Java source files. If a specific
      * output folder is set for this entry, the specific output folder is returned, otherwise the
-     * ouput folder defined in the object path is returned.
+     * output folder defined in the object path is returned.
      */
     public IFolder getOutputFolderForDerivedJavaFiles();
 
     /**
      * Returns the entry's own output folder containing generated derived Java source files. This
-     * ouptput folder is used only for this entry.
+     * output folder is used only for this entry.
      */
     public IFolder getSpecificOutputFolderForDerivedJavaFiles();
 
     /**
-     * Sets the entry's output folder containg generated derived Java source files. This ouptput
+     * Sets the entry's output folder containing generated derived Java source files. This output
      * folder is used only for this entry.
      */
     public void setSpecificOutputFolderForDerivedJavaFiles(IFolder outputFolder);

@@ -33,21 +33,22 @@ public interface IParameter extends IIpsObjectPart {
     public void setName(String newName);
 
     /**
-     * Sets the parameter's value datatype.
+     * Sets the parameter's value data type.
      */
     public void setDatatype(String type);
 
     /**
-     * Returns the parameter's datatype.
+     * Returns the parameter's data type.
      */
     public String getDatatype();
 
     /**
-     * Returns the parameter's datatype or <code>null</code> if the datatype can't be found.
+     * Returns the parameter's data type or <code>null</code> if the data type can't be found.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException if an excpetion occurs while searching for the datatype.
+     * @throws CoreException If an exception occurs while searching for the data type.
      */
     public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
+
 }

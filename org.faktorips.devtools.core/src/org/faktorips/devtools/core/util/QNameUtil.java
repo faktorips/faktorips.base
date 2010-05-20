@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 /**
- * A collection of methods for qualified names and packages.
+ * A collection of utility methods regarding qualified names and packages.
  * 
  * @author Jan Ortmann
  */
@@ -28,7 +28,7 @@ public class QNameUtil {
      * Returns the package name for a given class name. Returns an empty String if the class name
      * does not contain a package name.
      * 
-     * @throws NullPointerException if the qName is null.
+     * @throws NullPointerException if <tt>qName</tt> is <tt>null</tt>.
      */
     public final static String getPackageName(String qName) {
         if (qName == null) {
@@ -43,7 +43,7 @@ public class QNameUtil {
 
     /**
      * Returns the unqualified name part of the given qualified name. Returns <code>null</code> if
-     * qName is <code>null</code>.
+     * <tt>qName</tt> is <code>null</code>.
      */
     public final static String getUnqualifiedName(String qName) {
         if (qName == null) {
@@ -60,8 +60,8 @@ public class QNameUtil {
     }
 
     /**
-     * Concatenates package prefix and the packOrUnqualifiedName. If the package prefix is
-     * <code>null</code> or the empty string the packOrUnqualifiedName is returned.
+     * Concatenates package prefix and the <tt>packOrUnqualifiedName</tt>. If the package prefix is
+     * <code>null</code> or the empty string the <tt>packOrUnqualifiedName</tt> is returned.
      */
     public final static String concat(String packagePrefix, String packOrUnqualifiedName) {
         if (StringUtils.isEmpty(packagePrefix)) {
@@ -74,10 +74,9 @@ public class QNameUtil {
     }
 
     /**
-     * Transform the qualified name to a String array. Each segment of the name is placed in
-     * hierarchy order, e.g. "de.faktorips.devtools
+     * Transforms the qualified name to a string array containing it's segments and returns it. Each
+     * segment of the name is placed in hierarchical order, e.g. "de.faktorips.devtools":
      * <p>
-     * <blockquote>
      * 
      * <pre>
      * segments[0] = de
@@ -85,11 +84,7 @@ public class QNameUtil {
      * segments[2] = devtools
      * </pre>
      * 
-     * </blockquote>
-     * <p>
-     * 
-     * @param qName Full qualified package name.
-     * @return Segments of the package name as an array.
+     * @param qName The fully qualified package name.
      */
     public final static String[] getSegments(String qName) {
         String[] segments;
@@ -115,33 +110,29 @@ public class QNameUtil {
     }
 
     /**
-     * Extract subpackage name from a qualified name. The new string starts at the first position of
-     * <code>qName</code> and ends at segment <code>numberOfSegments</code>.
-     * 
-     * Returns <code>qName</code> if <code>numberOfSegments</code> is less equals 0 or exceeds the
-     * number of segments of the qName. Returns an empty String if <code>qName</code> is empty.
-     * 
+     * Extracts the sub package name from a qualified name. The new string starts at the first
+     * position of <code>qName</code> and ends at segment <code>numberOfSegments</code>.
      * <p>
-     * <blockquote>
+     * Returns the <code>qName</code> if <code>numberOfSegments</code> is less equals 0 or exceeds
+     * the number of segments of <tt>qName</tt>. Returns an empty String if <code>qName</code> is
+     * empty.
+     * <p>
+     * Example: The following call returns "org.faktorips".
+     * <p>
      * 
      * <pre>
      * QNameUtil.getSubSegments(&quot;org.faktorips.devtools.model&quot;, 2);
      * </pre>
      * 
-     * </blockquote>
-     * <p>
-     * returns "org.faktorips"
-     * 
      * @param qName Qualified name of the package.
      * @param numberOfSegments Amount of segments from the beginning.
-     * @return Subpackage name.
      */
     public final static String getSubSegments(String qName, int numberOfSegments) {
         if (qName == null) {
             return null;
         }
-        int segmentCount = getSegmentCount(qName);
 
+        int segmentCount = getSegmentCount(qName);
         if (segmentCount == 0) {
             return qName;
         }
@@ -152,7 +143,6 @@ public class QNameUtil {
 
         String[] segments = getSegments(qName);
         StringBuffer buf = new StringBuffer();
-
         for (int i = 0; i < segmentCount; i++) {
             buf.append(segments[i]);
             if (i + 1 < segmentCount) {
@@ -164,7 +154,7 @@ public class QNameUtil {
     }
 
     /**
-     * Transforms the given qualified name to a path. Returns <code>null</code> if qName is
+     * Transforms the given qualified name to a path. Returns <code>null</code> if <tt>qName</tt> is
      * <code>null</code>.
      */
     public final static Path toPath(String qName) {
@@ -175,6 +165,7 @@ public class QNameUtil {
     }
 
     private QNameUtil() {
+        // Utility class not to be instantiated.
     }
 
 }

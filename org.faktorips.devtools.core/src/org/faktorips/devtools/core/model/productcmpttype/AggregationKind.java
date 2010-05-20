@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
 
 /**
- * The aggregation kind as specified in the UML superstructure document.
+ * The aggregation kind as specified in the UML super structure document.
  * 
  * @author Jan Ortmann
  */

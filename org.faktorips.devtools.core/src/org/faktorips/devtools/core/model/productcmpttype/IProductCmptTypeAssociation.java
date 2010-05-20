@@ -56,7 +56,7 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * Returns the target product component type or <code>null</code> if either this relation hasn't
      * got a target or the target does not exists.
      * 
-     * @param project The project which ips object path is used for the search. This is not
+     * @param project The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the target.
@@ -69,7 +69,7 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * {@link #findMatchingPolicyCmptTypeAssociation(IIpsProject)} returns the constrained
      * association, otherwise the finder method returns <code>null</code>.
      * 
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the matching association.
@@ -80,7 +80,7 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * Returns the corresponding policy component type association or <code>null</code> if no such
      * association is found.
      * 
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the matching association.

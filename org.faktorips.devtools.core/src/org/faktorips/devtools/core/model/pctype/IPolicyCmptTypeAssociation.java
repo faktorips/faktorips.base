@@ -164,7 +164,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Returns the target policy component type or <code>null</code> if either this relation hasn't
      * got a target or the target does not exists.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the target.
      */
@@ -210,7 +210,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
 
     /**
      * Returns if the target role plural is required (or not) based on the relation's max
-     * cardinality and the artefact builderset's information if it needs the plural form for to 1
+     * cardinality and the artifact builderset's information if it needs the plural form for to 1
      * relations.
      */
     @Override
@@ -228,7 +228,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * returns the matching association on the product side of the model. See the method's Javadoc
      * for a detailed description.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the target.
      */
@@ -243,7 +243,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * between product and coverage type. This association is the matching association for the
      * Policy-Coverage composition.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the target.
      */
@@ -272,7 +272,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * <code>null</code> as several master-to-detail relations can have the same detail-to-master
      * relation.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching.
      */
@@ -293,7 +293,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * <li>Te target policy component type exists and is configurable by a product component type.
      * </ul>
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the target.
      * 
@@ -319,7 +319,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * <p>
      * Returns am empty String if either this association can't be qualified.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the target.
      */
@@ -329,7 +329,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Returns the product component type that qualifies this association. Returns <code>null</code>
      * if either the association is not qualified or the qualifier can't be found.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the target.
      */
@@ -353,4 +353,5 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
     public IPersistentAssociationInfo getPersistenceAssociatonInfo();
+
 }

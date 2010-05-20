@@ -41,15 +41,10 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     private String position;
     private int order = DEFAULT_ORDER;
 
-    /**
-     * Empty constructor needed because of Eclipse's extension point mechanism.
-     */
     public ExtensionPropertyDefinition() {
+        // Empty constructor needed because of Eclipse's extension point mechanism.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Class<?> getExtendedType() {
         return extendedType;
@@ -60,9 +55,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         extendedType = type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyId() {
         return propertyId;
@@ -72,9 +64,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         propertyId = id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getDefaultValue() {
         return defaultValue;
@@ -100,9 +89,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         return position;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return name;
@@ -112,9 +98,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         this.name = name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getOrder() {
         return order;
@@ -127,9 +110,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         order = sortOrder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueToXml(Element valueElement, Object value) {
         CDATASection valueSection = valueElement.getOwnerDocument().createCDATASection(value.toString());
@@ -144,11 +124,9 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         return null;
     }
 
-    /**
-     * Default implementation doesn nothing.
-     */
     @Override
     public void afterSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
+        // Default implementation does nothing.
     }
 
     /**
@@ -159,9 +137,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compareTo(IExtensionPropertyDefinition other) {
         if (order == other.getOrder()) {

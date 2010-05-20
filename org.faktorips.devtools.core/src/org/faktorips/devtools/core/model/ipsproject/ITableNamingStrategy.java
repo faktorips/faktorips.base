@@ -18,18 +18,15 @@ import org.w3c.dom.Element;
 
 /**
  * The table naming strategy defines how a table name is constructed from a given String. Possible
- * uses include a conversion from from a CamelCase naming to an uppercased naming (e.g. TableName ->
- * TABLE_NAME).
+ * uses include a conversion from from a CamelCase naming to an upper cased naming (e.g. TableName
+ * -> TABLE_NAME).
  * 
  * @author Roman Grutza
  */
 public interface ITableNamingStrategy {
 
-    /**
-     * Name of xml tags representing a table naming strategy.
-     */
-    public static final String XML_TAG_NAME = "TableNamingStrategy";
-    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ITable";
+    public static final String XML_TAG_NAME = "TableNamingStrategy"; //$NON-NLS-1$
+    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ITable"; //$NON-NLS-1$
 
     /**
      * Applies this naming strategy to the given name and returns the possibly altered table name.
@@ -46,7 +43,7 @@ public interface ITableNamingStrategy {
     public String getTableName(String baseName, int maxLength);
 
     /**
-     * Sets the ips project this stratgey belongs to. Is called when the strategey is instantiated.
+     * Sets the IPS project this strategy belongs to. Is called when the strategy is instantiated.
      * Should never be called by clients.
      * 
      * @throws NullPointerException if project is <code>null</code>.
@@ -54,12 +51,12 @@ public interface ITableNamingStrategy {
     public void setIpsProject(IIpsProject project);
 
     /**
-     * Returns the ips project the strategy belongs to.
+     * Returns the IPS project the strategy belongs to.
      */
     public IIpsProject getIpsProject();
 
     /**
-     * Initializes the strategy with the data from the xml element. This method must be able to read
+     * Initializes the strategy with the data from the XML element. This method must be able to read
      * those elements created by the toXml() method. The element's node name is expected to be the
      * name defined in <code>XML_TAG_NAME</code>.
      * <p>
@@ -75,10 +72,10 @@ public interface ITableNamingStrategy {
     public void initFromXml(Element el);
 
     /**
-     * Creates an xml element representation of this strategy. The element's node name is defined in
+     * Creates an XML element representation of this strategy. The element's node name is defined in
      * <code>XML_TAG_NAME</code>.
      * 
-     * @param doc The xml document to create new elements.
+     * @param doc The XML document to create new elements.
      */
     public Element toXml(Document doc);
 
@@ -86,4 +83,5 @@ public interface ITableNamingStrategy {
      * Validates if the given table name conforms to this strategy.
      */
     public void validate(String name);
+
 }

@@ -19,8 +19,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 
 /**
- * Base interface for properties stored in product component generartions like formulas, table
- * content usages, product component attributes and config elements.
+ * Base interface for properties stored in product component generations like formulas, table
+ * content usages, product component attributes and configuration elements.
  * 
  * @author Jan Ortmann
  */
@@ -42,7 +42,7 @@ public interface IPropertyValue {
      * Returns the property this object provides a value for. Returns <code>null</code> if the
      * property can't be found.
      * 
-     * @param ispProject The ips project which search path is used.
+     * @param ipsProject The IPS project which search path is used.
      * 
      * @throws CoreException if an error occurs
      */
@@ -73,4 +73,5 @@ public interface IPropertyValue {
      * Removes the part from the parent.
      */
     public void delete();
+
 }

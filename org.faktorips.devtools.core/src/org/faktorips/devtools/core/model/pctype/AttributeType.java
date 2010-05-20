@@ -31,7 +31,7 @@ public class AttributeType extends DefaultEnumValue {
      * Defines an attribute as being computed. In contrast to a derived attribute a computed
      * attribute is computed by an explicit method call. E.g. a method calculatePremium() might
      * calculate several computed attributes like netPremium and grossPremium. The computed
-     * attributes keep their computed value until their are recalculated by another methodcall.
+     * attributes keep their computed value until their are recalculated by another method call.
      * <p>
      * If a computed attribute is also product relevant the computation formula can be defined by
      * the product developer. The IT developer defines the parameters that the product developer can

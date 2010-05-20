@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.model.ipsproject;
 /**
  * Persistence specific properties that can be configured for an IPS project (more specifically its
  * IpsProjectProperties).
- * <p/>
+ * <p>
  * These include maximum and minimum table name lengths (as well as column name lengths), and the
  * strategies used for deriving table/column names from arbitrary strings.
  * 
@@ -24,11 +24,11 @@ package org.faktorips.devtools.core.model.ipsproject;
  */
 public interface IPersistenceOptions {
 
-    public final static String XML_TAG_NAME = "PersistenceOptions";
+    public final static String XML_TAG_NAME = "PersistenceOptions"; //$NON-NLS-1$
 
-    public static final String MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME = "maxTableNameLength";
-    public static final String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength";
-    public static final String ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS = "allowLazyFetchForSingleValuedAssociations";
+    public static final String MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME = "maxTableNameLength"; //$NON-NLS-1$
+    public static final String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength"; //$NON-NLS-1$
+    public static final String ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS = "allowLazyFetchForSingleValuedAssociations"; //$NON-NLS-1$
 
     /**
      * Returns the maximum length allowed for a valid database table name.
@@ -79,4 +79,5 @@ public interface IPersistenceOptions {
      * Sets if the lazy fetching of single value associations (to-one) is allowed or not.
      */
     public void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations);
+
 }

@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 /**
  * A class that holds information of a policy component type association which is relevant for
  * persistence using the JPA (Java Persistence API).
- * <p/>
+ * <p>
  * This information is used as a hint to the code generator on how to realize the table column(s) on
  * the database side.
  * 
@@ -69,7 +69,7 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public final static String PROPERTY_TRANSIENT = "transient"; //$NON-NLS-1$
 
     /**
-     * The name of the fetch type (lazy/eager) property.
+     * The name of the fetch type (lazy / eager) property.
      */
     public final static String PROPERTY_FETCH_TYPE = "fetchType"; //$NON-NLS-1$
 
@@ -88,66 +88,66 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     /**
      * Validation message code for empty join table name.
      */
-    public static final String MSGCODE_JOIN_TABLE_NAME_EMPTY = MSGCODE_PREFIX + "JoinTableNameEmpty";
+    public static final String MSGCODE_JOIN_TABLE_NAME_EMPTY = MSGCODE_PREFIX + "JoinTableNameEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code for invalid join table name.
      */
-    public static final String MSGCODE_JOIN_TABLE_NAME_INVALID = MSGCODE_PREFIX + "JoinTableNameInvalid";
+    public static final String MSGCODE_JOIN_TABLE_NAME_INVALID = MSGCODE_PREFIX + "JoinTableNameInvalid"; //$NON-NLS-1$
 
     /**
      * Validation message code for empty source column name.
      */
-    public static final String MSGCODE_SOURCE_COLUMN_NAME_EMPTY = MSGCODE_PREFIX + "SourceColumnNameEmpty";
+    public static final String MSGCODE_SOURCE_COLUMN_NAME_EMPTY = MSGCODE_PREFIX + "SourceColumnNameEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code for empty target column name.
      */
-    public static final String MSGCODE_TARGET_COLUMN_NAME_EMPTY = MSGCODE_PREFIX + "TargteColumnNameEmpty";
+    public static final String MSGCODE_TARGET_COLUMN_NAME_EMPTY = MSGCODE_PREFIX + "TargteColumnNameEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code for invalid source column name.
      */
-    public static final String MSGCODE_SOURCE_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "SourceColumnNameInvalid";
+    public static final String MSGCODE_SOURCE_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "SourceColumnNameInvalid"; //$NON-NLS-1$
 
     /**
      * Validation message code for invalid target column name.
      */
-    public static final String MSGCODE_TARGET_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "TargetColumnNameInvalid";
+    public static final String MSGCODE_TARGET_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "TargetColumnNameInvalid"; //$NON-NLS-1$
 
     /**
      * Validation message code for empty or not empty join column name.
      */
-    public static final String MSGCODE_JOIN_COLUMN_NAME_EMPTY = MSGCODE_PREFIX + "JoinColumnNameEmpty";
+    public static final String MSGCODE_JOIN_COLUMN_NAME_EMPTY = MSGCODE_PREFIX + "JoinColumnNameEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code for not valid join column name.
      */
-    public static final String MSGCODE_JOIN_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "JoinColumnNameInvalid";
+    public static final String MSGCODE_JOIN_COLUMN_NAME_INVALID = MSGCODE_PREFIX + "JoinColumnNameInvalid"; //$NON-NLS-1$
 
     /**
      * Validation message code indicate that one side is not and one side is marked as transient.
      */
-    public static final String MSGCODE_TRANSIENT_MISMATCH = MSGCODE_PREFIX + "TransientMismatch";
+    public static final String MSGCODE_TRANSIENT_MISMATCH = MSGCODE_PREFIX + "TransientMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code indicates that the owning side of the relationship is missing or
      * marked on both sides.
      */
-    public static final String MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH = MSGCODE_PREFIX + "OwnerOfAssociationMismatch";
+    public static final String MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH = MSGCODE_PREFIX + "OwnerOfAssociationMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code indicates that the owning side must not be given.
      */
     public static final String MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN = MSGCODE_PREFIX
-            + "OwnerOfAssociationMustNotGiven";
+            + "OwnerOfAssociationMustNotGiven"; //$NON-NLS-1$
 
     /**
      * Validation message code indicates that the lazy fetching is not allowed for single valued
      * associations (to-one association).
      */
     public static final String MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED = MSGCODE_PREFIX
-            + "LazyFetchForSingleValuedAssociationsAllowed";
+            + "LazyFetchForSingleValuedAssociationsAllowed"; //$NON-NLS-1$
 
     /**
      * Returns the {@link IPolicyCmptTypeAssociation} this info object belongs to.
@@ -162,7 +162,7 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
 
     /**
      * Sets the join table name for this association.
-     * <p/>
+     * <p>
      * Note that the final column name in the database can differ from the given
      * <code>newJoinTableName</code> by means of an ITableColumnNamingStrategy which is set on a per
      * IpsProject basis.
@@ -181,7 +181,7 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
 
     /**
      * Sets the source column name for this association which is required for n-to-m relationships.
-     * 
+     * <p>
      * Note that the final column name in the database can differ from the given
      * <code>newSourceColumnName</code> by means of an ITableColumnNamingStrategy which is set on a
      * per IpsProject basis.
@@ -198,7 +198,7 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
 
     /**
      * Sets the target column name for this association which is required for n-to-m relationships.
-     * 
+     * <p>
      * Note that the final column name in the database can differ from the given
      * <code>newTargetColumnName</code> by means of an ITableColumnNamingStrategy which is set on a
      * per IpsProject basis.

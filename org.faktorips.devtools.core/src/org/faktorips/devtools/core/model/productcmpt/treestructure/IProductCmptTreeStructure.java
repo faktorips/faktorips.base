@@ -20,7 +20,7 @@ import java.util.GregorianCalendar;
  * product component used as root. Child nodes are created for the links to other components.
  * <p>
  * Because a specific product components can be referenced by more than one other product component,
- * it is not possible to establis a simple "one parent - many children"-relation based on the
+ * it is not possible to establish a simple "one parent - many children"-relation based on the
  * product component. This leads to the <code>IProductCmptStructureReference</code> and its
  * subclasses which are references to product components or product component type associations. One
  * reference wraps one product component, but it is possible that more than one reference wraps the

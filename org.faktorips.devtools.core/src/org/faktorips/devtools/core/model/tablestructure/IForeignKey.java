@@ -16,9 +16,6 @@ package org.faktorips.devtools.core.model.tablestructure;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-/**
- *
- */
 public interface IForeignKey extends IKey {
 
     public final static String PROPERTY_REF_TABLE_STRUCTURE = "referencedTableStructure"; //$NON-NLS-1$

@@ -107,7 +107,7 @@ public abstract class EnumContentValidations {
                 enumContent, IEnumContent.PROPERTY_ENUM_TYPE) } : new ObjectProperty[0];
 
         // EnumType missing?
-        if (enumTypeQualifiedName.equals("")) {
+        if (enumTypeQualifiedName.length() == 0) {
             text = Messages.EnumContent_EnumTypeMissing;
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, text,
                     Message.ERROR, objectProperties));
@@ -139,9 +139,8 @@ public abstract class EnumContentValidations {
         }
     }
 
-    /** Prohibits initialization. */
     private EnumContentValidations() {
-
+        // Prohibit initialization.
     }
 
 }

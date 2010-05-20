@@ -20,9 +20,6 @@ import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
-/**
- *
- */
 public interface ITableContents extends IIpsMetaObject, ITimedIpsObject, XmlSaxSupport {
 
     public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
@@ -119,4 +116,5 @@ public interface ITableContents extends IIpsMetaObject, ITimedIpsObject, XmlSaxS
      *             index.
      */
     public void deleteColumn(int columnIndex);
+
 }

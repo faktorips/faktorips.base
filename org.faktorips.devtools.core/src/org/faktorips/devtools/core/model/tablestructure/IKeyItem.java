@@ -30,9 +30,9 @@ public interface IKeyItem {
     public String getAccessParameterName();
 
     /**
-     * Returns the item's datatype. For columns this is the column's datatype and for ranges this is
-     * the datatype of the column if it's a one column range and the first column's datatype if it
-     * is a two column range.
+     * Returns the item's data type. For columns this is the column's data type and for ranges this
+     * is the data type of the column if it's a one column range and the first column's data type if
+     * it is a two column range.
      */
     public String getDatatype();
 
@@ -40,4 +40,5 @@ public interface IKeyItem {
      * Returns the columns this item comprises.
      */
     public IColumn[] getColumns();
+
 }

@@ -29,48 +29,56 @@ public enum BFElementType {
             return businessFunction.newOpaqueAction(location);
         }
     },
+
     ACTION_METHODCALL("methodCallAction", Messages.BFElementType_methodCallAction) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newMethodCallAction(location);
         }
     },
+
     ACTION_BUSINESSFUNCTIONCALL("businessFunctionCallAction", Messages.BFElementType_bfCallAction) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newBusinessFunctionCallAction(location);
         }
     },
+
     DECISION("decision", Messages.BFElementType_decision) { //$NON-NLS-1$  
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newDecision(location);
         }
     },
+
     DECISION_METHODCALL("methodCallDecision", Messages.BFElementType_methodCallDecision) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newMethodCallDecision(location);
         }
     },
+
     MERGE("merge", Messages.BFElementType_merge) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newMerge(location);
         }
     },
+
     END("end", Messages.BFElementType_end) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newEnd(location);
         }
     },
+
     START("start", Messages.BFElementType_start) { //$NON-NLS-1$ 
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newStart(location);
         }
     },
+
     PARAMETER("parameter", Messages.BFElementType_parameter) { //$NON-NLS-1$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
@@ -95,8 +103,6 @@ public enum BFElementType {
 
     /**
      * Returns the unique id of the business function element type.
-     * 
-     * @return
      */
     public String getId() {
         return id;
@@ -146,4 +152,5 @@ public enum BFElementType {
         }
         throw new IllegalArgumentException("Unexpected type id: " + id); //$NON-NLS-1$
     }
+
 }

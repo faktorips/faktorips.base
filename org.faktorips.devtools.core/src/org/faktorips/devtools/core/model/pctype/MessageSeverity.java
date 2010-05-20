@@ -21,9 +21,6 @@ import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.runtime.Message;
 import org.faktorips.util.ArgumentCheck;
 
-/**
- * 
- */
 public class MessageSeverity extends DefaultEnumValue {
 
     public final static MessageSeverity ERROR;
@@ -59,7 +56,7 @@ public class MessageSeverity extends DefaultEnumValue {
     }
 
     /**
-     * Returns a message severity of the jface
+     * Returns a message severity of the JFace
      * <code>org.eclipse.jface.dialogs.IMessageProvider</code> for a MessageSeverity.
      */
     public final static int getJFaceMessageType(MessageSeverity severity) {
@@ -76,7 +73,7 @@ public class MessageSeverity extends DefaultEnumValue {
         return IMessageProvider.NONE;
     }
 
-    // the Java sourcecode fragment that identifies the message severity
+    /** The Java sourcecode fragment that identifies the message severity. */
     private JavaCodeFragment codeFragment;
 
     /**

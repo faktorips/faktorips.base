@@ -35,13 +35,13 @@ import org.faktorips.util.ArgumentCheck;
 public class IpsObjectType {
 
     /**
-     * Type for enum content.
+     * Type for enumeration content.
      */
     public final static IpsObjectType ENUM_CONTENT = new IpsObjectType(
             "EnumContent", "EnumContent", Messages.IpsObjectType_nameEnumContent, Messages.IpsObjectType_nameEnumContentPlural, "ipsenumcontent", false, true, EnumContent.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
-     * Type for enum type.
+     * Type for enumeration type.
      */
     public final static IpsObjectType ENUM_TYPE = new IpsObjectType(
             "EnumType", "EnumType", Messages.IpsObjectType_nameEnumType, Messages.IpsObjectType_nameEnumTypePlural, "ipsenumtype", false, false, EnumType.class); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ 
@@ -95,19 +95,19 @@ public class IpsObjectType {
             "TestCase", "TestCase", Messages.IpsObjectType_nameTestCase, Messages.IpsObjectType_nameTestCasePlural, "ipstestcase", false, true, TestCase.class); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 
     /**
-     * Ips source file type for ips objects in none ips source folder.
+     * IPS source file type for IPS objects in none IPS source folder.
      */
     public final static IpsObjectType IPS_SOURCE_FILE = new IpsObjectType(
             "Unknown", "Unknown", "Ips Source file", "Ips Source files", "*", false, true, null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ 
 
     /**
-     * Returns the ips object type that has the given file extension. Returns <code>null</code>, if
+     * Returns the IPS object type that has the given file extension. Returns <code>null</code>, if
      * no type with the given file extension exists or <code>null</code> has been given as file
      * extension..
      * 
-     * @param fileExtension The file extension of the searched ips object type.
+     * @param fileExtension The file extension of the searched IPS object type.
      * 
-     * @return The ips object type that corresponds to the given file extension or <code>null</code>
+     * @return The IPS object type that corresponds to the given file extension or <code>null</code>
      *         if no type with the given file extension can be found.
      */
     public final static IpsObjectType getTypeForExtension(String fileExtension) {
@@ -121,12 +121,12 @@ public class IpsObjectType {
     }
 
     /**
-     * Returns the ips object type that has the given name. Returns <code>null</code>, if no type
+     * Returns the IPS object type that has the given name. Returns <code>null</code>, if no type
      * with the given name exists.
      * 
-     * @param name The name of the searched ips object type.
+     * @param name The name of the searched IPS object type.
      * 
-     * @return The ips object type that corresponds to the given name or <code>null</code> if no
+     * @return The IPS object type that corresponds to the given name or <code>null</code> if no
      *         type with the given name can be found.
      * 
      * @throws NullPointerException If name is <code>null</code>.
@@ -142,36 +142,36 @@ public class IpsObjectType {
         return null;
     }
 
-    // The human readable type's name
+    /** The human readable type's name */
     private final String displayName;
 
-    // The human readable type's plural name
+    /** The human readable type's plural name */
     private final String displayNamePlural;
 
-    // The identifying name of this type
+    /** The identifying name of this type */
     private final String id;
 
-    // Name of xml elements that represent objects of this type
+    /** Name of xml elements that represent objects of this type */
     private final String xmlElementName;
 
-    // Extension of files that store objects of this type
+    /** Extension of files that store objects of this type */
     private final String fileExtension;
 
-    // Flag indicating whether this type defines a datatype
+    /** Flag indicating whether this type defines a data type */
     private final boolean datatype;
 
-    // Flag indicating whether this type is a product definition type
+    /** Flag indicating whether this type is a product definition type */
     private final boolean productDefinitionType;
 
-    // The class that is implementing the concrete IpsObjectType
+    /** The class that is implementing the concrete IpsObjectType */
     private final Class<? extends IpsObject> implementingClass;
 
     /**
-     * Creates a new ips object for the given file.
+     * Creates a new IPS object for the given file.
      * 
-     * @param file The ips source file to create the ips object for.
+     * @param file The IPS source file to create the IPS object for.
      * 
-     * @return The ips object that has been created for the given ips source file.
+     * @return The IPS object that has been created for the given IPS source file.
      */
     public IIpsObject newObject(IIpsSrcFile file) {
         if (this == POLICY_CMPT_TYPE) {
@@ -211,7 +211,7 @@ public class IpsObjectType {
     /**
      * Returns the type's name.
      * 
-     * @return The name of this ips object type.
+     * @return The name of this IPS object type.
      */
     public final String getId() {
         return id;
@@ -220,7 +220,7 @@ public class IpsObjectType {
     /**
      * Returns the display name of this type.
      * 
-     * @return The display name of this ips object type.
+     * @return The display name of this IPS object type.
      */
     public final String getDisplayName() {
         return displayName;
@@ -234,30 +234,30 @@ public class IpsObjectType {
     }
 
     /**
-     * Returns the name of xml elements that represent the state of PdObjects of that type. This
+     * Returns the name of XML elements that represent the state of PdObjects of that type. This
      * method never returns <code>null</code>.
      * 
-     * @return The xml element name of this ips object type.
+     * @return The XML element name of this IPS object type.
      */
     public final String getXmlElementName() {
         return xmlElementName;
     }
 
     /**
-     * Returns the extenions of files PdObjects of that type are stored in. This method never
+     * Returns the extensions of files PdObjects of that type are stored in. This method never
      * returns <code>null</code>.
      * 
-     * @return The file extension of this ips object type.
+     * @return The file extension of this IPS object type.
      */
     public final String getFileExtension() {
         return fileExtension;
     }
 
     /**
-     * Returns <code>true</code> if the ips objects of this type are also datatypes, otherwise
+     * Returns <code>true</code> if the IPS objects of this type are also data types, otherwise
      * <code>false</code>.
      * 
-     * @return Flag indicating whether this ips object type defines a datatype.
+     * @return Flag indicating whether this IPS object type defines a data type.
      */
     public boolean isDatatype() {
         return datatype;
@@ -275,22 +275,20 @@ public class IpsObjectType {
 
     /**
      * Returns <code>true</code> if instances of this type are product definition objects, otherwise
-     * <code>false</code>. Currently product components, enum values, table contents and test cases
-     * are product definition objects.
+     * <code>false</code>. Currently product components, enumeration values, table contents and test
+     * cases are product definition objects.
      * 
-     * @return Flag indicating whether this ips object type is a product definition type.
+     * @return Flag indicating whether this IPS object type is a product definition type.
      */
     public boolean isProductDefinitionType() {
         return productDefinitionType;
     }
 
     /**
-     * Returns the name of a file (including the extension) that stores a ips object with the given
+     * Returns the name of a file (including the extension) that stores a IPS object with the given
      * name.
      * 
-     * @param ipsObjectName
-     * 
-     * @return The given ips object name with the file extension of this ips object type appended.
+     * @return The given IPS object name with the file extension of this IPS object type appended.
      * 
      * @throws NullPointerException If ipsObjectName is <code>null</code>.
      */
@@ -299,27 +297,22 @@ public class IpsObjectType {
         return ipsObjectName + "." + fileExtension; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final String toString() {
         return xmlElementName;
     }
 
     /**
-     * Creates a new ips object type.
+     * Creates a new IPS object type.
      * 
-     * @param id The name of the new ips object type.
-     * @param xmlElementName The name for the xml element.
-     * @param displayName A human readable name for the new ips object type.
-     * @param displayNamePlural TODO
-     * @param fileExtension The file extension for the new ips object type.
-     * @param datatype Flag indicating whether this new ips object type represents a datatype.
-     * @param productDefinitionType Flag indicating whether this new ips object type is a product
+     * @param id The name of the new IPS object type.
+     * @param xmlElementName The name for the XML element.
+     * @param displayName A human readable name for the new IPS object type.
+     * @param fileExtension The file extension for the new IPS object type.
+     * @param datatype Flag indicating whether this new IPS object type represents a data type.
+     * @param productDefinitionType Flag indicating whether this new IPS object type is a product
      *            definition type.
-     * @param enabledImage Image file for enabled look.
-     * @param disabledImage Image file for disabled look.
+     * 
      * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
      *             <code>null</code>.
      */

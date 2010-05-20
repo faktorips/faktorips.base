@@ -20,31 +20,31 @@ import org.eclipse.debug.core.ILaunch;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * Specification of an ips test runner.
+ * Specification of an IPS test runner.
  * 
  * @author Joerg Ortmann
  */
 public interface IIpsTestRunner {
 
     /**
-     * Terminates the currently lauched test run process.
+     * Terminates the currently launched test run process.
      * 
      * @throws CoreException if an error occurs.
      */
     public void terminate() throws CoreException;
 
     /**
-     * Adds the given ips test run listener to the collection of listeners
+     * Adds the given IPS test run listener to the collection of listeners
      */
     public void addIpsTestRunListener(IIpsTestRunListener newListener);
 
     /**
-     * Removes the given ips test run listener from the collection of listeners
+     * Removes the given IPS test run listener from the collection of listeners
      */
     public void removeIpsTestRunListener(IIpsTestRunListener listener);
 
     /**
-     * Returns all registered ips test run listener.
+     * Returns all registered IPS test run listener.
      */
     public List<IIpsTestRunListener> getIpsTestRunListener();
 
@@ -54,7 +54,7 @@ public interface IIpsTestRunner {
     public void setIpsProject(IIpsProject ipsProject);
 
     /**
-     * Returns the ips project.
+     * Returns the IPS project.
      */
     public IIpsProject getIpsProject();
 
@@ -86,4 +86,5 @@ public interface IIpsTestRunner {
      * Returns <code>true</code> if a new test can be started.
      */
     public boolean isRunningTestRunner();
+
 }

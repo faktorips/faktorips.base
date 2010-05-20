@@ -100,10 +100,11 @@ public interface IFormulaTestCase extends IIpsObjectPart {
 
     /**
      * Evaluates and returns an unique name of a formula test case based on the given name proposal.<br>
-     * If there is already a name with the given name then the name concatinated with " (n)" will be
+     * If there is already a name with the given name then the name concatenated with " (n)" will be
      * returned, n will be incremented until the name is unique for all formula test cases in the
-     * parent config element.
+     * parent configuration element.
      */
-    // TODO v2 - sollte nach IFormula verschoben werden.
+    // TODO should be moved to IFormula
     public String generateUniqueNameForFormulaTestCase(String nameProposal);
+
 }

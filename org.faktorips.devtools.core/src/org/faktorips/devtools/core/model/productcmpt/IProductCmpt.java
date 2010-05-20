@@ -72,7 +72,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
 
     /**
      * Returns the product component's version id. The version id is extracted from the components
-     * name with the product component naming stratgey defined in the project.
+     * name with the product component naming strategy defined in the project.
      * 
      * @throws CoreException if an exception occurs while accessing the project properties to get
      *             the naming strategy or the version id can't be derived from the component's name.
@@ -105,7 +105,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
     /**
      * Searches the product component type this product component is based on.
      * 
-     * @param ipsProject The project which ips object path is used for the searched. This is not
+     * @param ipsProject The project which IPS object path is used for the searched. This is not
      *            necessarily the project this component is part of.
      * 
      * @return The product component type this product component is based on or <code>null</code> if
@@ -119,7 +119,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
      * Sorts properties in all generations according to the order defined in the model. If the
      * product component type isn't found, the component remains unchanged.
      * 
-     * @param ipsProject The ips project which search path is used to search the type.
+     * @param ipsProject The IPS project which search path is used to search the type.
      * 
      * @throws CoreException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
@@ -143,12 +143,12 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
      * it's links to other components. This method uses the latest adjustment instead of specific
      * date.
      * 
-     * @param ipsProject The project which ips object path is used for the searched. This is not
+     * @param ipsProject The project which IPS object path is used for the searched. This is not
      *            necessarily the project this component is part of.
      * 
      * @throws CycleInProductStructureException If a circle is detected.
      */
-    public IProductCmptTreeStructure getStructure(IIpsProject project) throws CycleInProductStructureException;
+    public IProductCmptTreeStructure getStructure(IIpsProject ipsProject) throws CycleInProductStructureException;
 
     /**
      * Returns the product component structure representing the structure defined by relations. The
@@ -157,12 +157,12 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
      * @param date The date the structure has to be valid for. That means that the relations between
      *            the product components represented by this structure are valid for the given date.
      * 
-     * @param ipsProject The project which ips object path is used for the searched. This is not
+     * @param ipsProject The project which IPS object path is used for the searched. This is not
      *            necessarily the project this component is part of.
      * 
      * @throws CycleInProductStructureException If a circle is detected.
      */
-    public IProductCmptTreeStructure getStructure(GregorianCalendar date, IIpsProject project)
+    public IProductCmptTreeStructure getStructure(GregorianCalendar date, IIpsProject ipsProject)
             throws CycleInProductStructureException;
 
     /**
@@ -194,4 +194,5 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
      */
     @Deprecated
     boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate);
+
 }

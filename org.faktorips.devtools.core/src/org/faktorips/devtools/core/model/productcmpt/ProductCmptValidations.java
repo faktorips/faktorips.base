@@ -38,7 +38,7 @@ public class ProductCmptValidations {
      *            exist, yet.
      * @param productCmptTypeName Qualified name of the product component type.
      * @param list The list error messages are added to.
-     * @param ipsProject The ips project used to search
+     * @param ipsProject The IPS project used to search.
      * 
      * @return The product component type if it exists and is not abstract.
      * 
@@ -68,4 +68,5 @@ public class ProductCmptValidations {
         }
         return type;
     }
+
 }

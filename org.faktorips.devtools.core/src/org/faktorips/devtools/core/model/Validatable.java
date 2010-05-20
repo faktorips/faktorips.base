@@ -53,17 +53,15 @@ public interface Validatable {
     /**
      * <p>
      * Validates the object and all of it's parts.
-     * </p>
      * <p>
      * Note that validations will be cached. The validation cache can be cleared trough the
      * IpsModel.
-     * </p>
      * 
      * @see org.faktorips.devtools.core.model.IIpsModel#clearValidationCache()
      * 
-     * @param ipsProject The context ips project. The validation might be called from a different
-     *            ips project than the actual instance of this validatable belongs to. In this case
-     *            it is necessary to use the ips project of the caller for finder-methods that are
+     * @param ipsProject The context IPS project. The validation might be called from a different
+     *            IPS project than the actual instance of this validatable belongs to. In this case
+     *            it is necessary to use the IPS project of the caller for finder-methods that are
      *            used within the implementation of this method.
      * 
      * @return A ValidationMessageList containing a list of messages describing errors, warnings and
@@ -72,4 +70,5 @@ public interface Validatable {
      * @throws CoreException If an exception occurs while validating the object.
      */
     public MessageList validate(IIpsProject ipsProject) throws CoreException;
+
 }

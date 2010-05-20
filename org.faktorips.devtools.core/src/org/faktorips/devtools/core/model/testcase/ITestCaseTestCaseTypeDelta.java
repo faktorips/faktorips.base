@@ -45,19 +45,15 @@ public interface ITestCaseTestCaseTypeDelta {
      */
     public boolean isDifferentTestParameterOrder();
 
-    //
-    // Missing test case type side objects
-    //
-
     /**
-     * Test Case Side: Returns the test policy components with missing test policy cmpt type
+     * Test Case Side: Returns the test policy components with missing test policy component type
      * parameter.
      */
     public ITestPolicyCmpt[] getTestPolicyCmptsWithMissingTypeParam();
 
     /**
-     * Test Case Side: Returns the test policy components link with missing test policy cmpt type
-     * parameter.
+     * Test Case Side: Returns the test policy components link with missing test policy component
+     * type parameter.
      */
     public ITestPolicyCmptLink[] getTestPolicyCmptLinkWithMissingTypeParam();
 
@@ -76,13 +72,9 @@ public interface ITestCaseTestCaseTypeDelta {
      */
     public ITestRule[] getTestRulesWithMissingTestValueParam();
 
-    //
-    // Missing test case type side objects
-    //
-
     /**
-     * Test Case Type Side: Returns the root test policy cmpt type parameter with missing test
-     * policy cmpt.
+     * Test Case Type Side: Returns the root test policy component type parameter with missing test
+     * policy component.
      */
     public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt();
 
@@ -97,20 +89,21 @@ public interface ITestCaseTestCaseTypeDelta {
     public ITestValueParameter[] getTestValueParametersWithMissingTestValue();
 
     /**
-     * Returns the test policy cmpts for the missing test attribute.<br>
+     * Returns the test policy components for the missing test attribute.<br>
      * Returns <code>null</code> if the given test attribute has no corresponding test policy cmpt.
      */
     public ITestPolicyCmpt[] getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute);
 
     /**
-     * Returns the test policy cmpts which have a different sort order compared to their
-     * corresponding test policy cmpt type parameter.
+     * Returns the test policy components which have a different sort order compared to their
+     * corresponding test policy component type parameter.
      */
     public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrder();
 
     /**
-     * Returns the test policy cmpts which have a different sort order of their test attribute
-     * values compared to their corresponding test policy cmpt type parameter.
+     * Returns the test policy components which have a different sort order of their test attribute
+     * values compared to their corresponding test policy component type parameter.
      */
     public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrderTestAttr();
+
 }

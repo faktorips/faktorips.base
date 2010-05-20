@@ -32,9 +32,6 @@ public class BooleanExtensionPropertyDefinition extends ExtensionPropertyDefinit
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValueFromXml(Element valueElement) {
         CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
@@ -44,17 +41,11 @@ public class BooleanExtensionPropertyDefinition extends ExtensionPropertyDefinit
         return Boolean.valueOf(cdata.getData());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValueFromString(String value) {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDefaultValue(String s) {
         defaultValue = Boolean.valueOf(s);

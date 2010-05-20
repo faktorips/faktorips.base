@@ -29,11 +29,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 public abstract class TypeHierarchyVisitor extends HierarchyVisitor<IType> {
 
     /**
-     * Constructs a new visitor.
+     * @param ipsProject The project which IPS object path is used to search.
      * 
-     * @param ipsProject The project which ips object path is used to search.
-     * 
-     * @throws NullPointerException if ipsProject is <code>null</code>.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <code>null</code>.
      */
     public TypeHierarchyVisitor(IIpsProject ipsProject) {
         super(ipsProject);

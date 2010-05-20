@@ -50,6 +50,7 @@ public class ProductCmptTypeValidations {
     public static Message validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(boolean isPolicyCmptTypeAbstract,
             boolean isProductCmptTypeAbstract,
             IProductCmptType thisProductCmptType) throws CoreException {
+
         if (isPolicyCmptTypeAbstract && !isProductCmptTypeAbstract) {
             return new Message(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT,
                     Messages.ProductCmptType_msgProductCmptTypeAbstractWhenPolicyCmptTypeAbstract, Message.ERROR,
@@ -62,6 +63,7 @@ public class ProductCmptTypeValidations {
     public static Message validateSupertypeMustBeInHierarchy(IIpsProject ipsProject,
             IProductCmptType superType,
             IPolicyCmptType superPcType) throws CoreException {
+
         IProductCmptType productCmptTypeOfPolicyCmptSupertype = null;
         if (superPcType != null) {
             productCmptTypeOfPolicyCmptSupertype = superPcType.findProductCmptType(ipsProject);
@@ -73,7 +75,7 @@ public class ProductCmptTypeValidations {
         String msg = NLS.bind("The super type of the product component type must be {0} or a subtype of it",
                 productCmptTypeOfPolicyCmptSupertype.getQualifiedName());
         if (superType == null) {
-            return Message.newError("", msg);
+            return Message.newError("", msg); //$NON-NLS-1$
         }
         if (superType != null) {
             final Boolean[] holder = new Boolean[] { Boolean.FALSE };
@@ -90,7 +92,7 @@ public class ProductCmptTypeValidations {
                     }
                 }.start(superType);
                 if (Boolean.FALSE.equals(holder[0])) {
-                    return Message.newError("", msg);
+                    return Message.newError("", msg); //$NON-NLS-1$
                 }
             }
         }
@@ -100,20 +102,21 @@ public class ProductCmptTypeValidations {
     public static Message validatePolicyCmptSuperTypeNeedsToBeX(IIpsProject ipsProject,
             String productCmptSuperType,
             String policyCmptSupertype) throws CoreException {
+
         if (!StringUtils.isEmpty(productCmptSuperType)) {
             IProductCmptType superType = ipsProject.findProductCmptType(productCmptSuperType);
             if (superType != null && superType.isConfigurationForPolicyCmptType()) {
                 String msg = NLS.bind("The supertype of the configured policy component type must be {0}", superType
                         .getPolicyCmptType());
                 if (StringUtils.isEmpty(policyCmptSupertype)) {
-                    return Message.newError("", msg);
+                    return Message.newError("", msg); //$NON-NLS-1$
                 }
                 IPolicyCmptType policyCmptType = ipsProject.findPolicyCmptType(policyCmptSupertype);
                 if (policyCmptType == null) {
-                    return Message.newError("", msg);
+                    return Message.newError("", msg); //$NON-NLS-1$
                 }
                 if (!superType.getPolicyCmptType().equals(policyCmptType.getQualifiedName())) {
-                    return Message.newError("", msg);
+                    return Message.newError("", msg); //$NON-NLS-1$
                 }
             }
         }

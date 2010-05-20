@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.model;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
- * An event that signals the change of an ips source file's modification status from modifier to
+ * An event that signals the change of an IPS source file's modification status from modifier to
  * unmodified or vice versa.
  * 
  * @author Jan Ortmann
@@ -30,7 +30,7 @@ public class ModificationStatusChangedEvent {
     }
 
     /**
-     * Returns the file which modifcation status has changed.
+     * Returns the file which modification status has changed.
      */
     public IIpsSrcFile getIpsSrcFile() {
         return file;

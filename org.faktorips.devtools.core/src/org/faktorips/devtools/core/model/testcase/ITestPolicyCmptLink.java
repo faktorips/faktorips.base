@@ -35,7 +35,7 @@ public interface ITestPolicyCmptLink extends IIpsObjectPart {
     public final static String MSGCODE_PREFIX = "TESTPOLICYCMPTLINK-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the target of an assoziation is not in the test
+     * Validation message code to indicate that the target of an association is not in the test
      * case.
      */
     public final static String MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE = MSGCODE_PREFIX
@@ -85,7 +85,7 @@ public interface ITestPolicyCmptLink extends IIpsObjectPart {
     public void setTarget(String target);
 
     /**
-     * Returns the target or <code>null</code> if the targte does not exists.
+     * Returns the target or <code>null</code> if the target does not exists.
      * 
      * @throws CoreException if an error occurs while searching for the target.
      */
@@ -97,7 +97,7 @@ public interface ITestPolicyCmptLink extends IIpsObjectPart {
     public ITestPolicyCmpt newTargetTestPolicyCmptChild();
 
     /**
-     * Returns <code>true</code> if the link is an accociation.
+     * Returns <code>true</code> if the link is an association.
      */
     public boolean isAccoziation();
 
@@ -110,4 +110,5 @@ public interface ITestPolicyCmptLink extends IIpsObjectPart {
      * Returns the test case this link belongs to.
      */
     public ITestCase getTestCase();
+
 }

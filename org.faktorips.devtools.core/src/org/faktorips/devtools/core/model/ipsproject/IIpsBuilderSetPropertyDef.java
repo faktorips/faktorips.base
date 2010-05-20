@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.util.message.Message;
 
 /**
- * The properties that can be set for a IpsArtefactBuilderSet can be defined in the plugin
+ * The properties that can be set for a IpsArtefactBuilderSet can be defined in the plug-in
  * descriptor and are represented by implementations of this interface.
  * 
  * @author Peter Erzberger
@@ -39,7 +39,7 @@ public interface IIpsBuilderSetPropertyDef {
     public final static String MSGCODE_NON_PARSABLE_VALUE = MSGCODE_PREFIX + "NonParsableValue"; //$NON-NLS-1$
 
     /**
-     * The identifing name of this property definition.
+     * The identifying name of this property definition.
      */
     public String getName();
 
@@ -49,8 +49,8 @@ public interface IIpsBuilderSetPropertyDef {
     public String getLabel();
 
     /**
-     * Returns the type specified in the plugin descriptor. The possible types are defined in the
-     * schema. Currently supported are <i>boolean, enum, string, integer, extensionPoint</i>.
+     * Returns the type specified in the plug-in descriptor. The possible types are defined in the
+     * schema. Currently supported are <i>boolean, enumeration, string, integer, extensionPoint</i>.
      */
     public String getType();
 
@@ -60,14 +60,14 @@ public interface IIpsBuilderSetPropertyDef {
     public String getDescription();
 
     /**
-     * Returns the value that disables a functionalitiy based on the property descripted by this
-     * property definiton as string. To get the type based value the parseValue(String) method with
+     * Returns the value that disables a functionality based on the property described by this
+     * property definition as string. To get the type based value the parseValue(String) method with
      * return value of this method as parameter has to be called.
      */
     public String getDisableValue(IIpsProject ipsProject);
 
     /**
-     * The default value for a property descripted by this property definition as string. To get the
+     * The default value for a property described by this property definition as string. To get the
      * type based value the parseValue(String) method with return value of this method as parameter
      * has to be called.
      */
@@ -91,7 +91,7 @@ public interface IIpsBuilderSetPropertyDef {
     public Object parseValue(String value);
 
     /**
-     * Returns if the property defintion is available according to the ips project settings.
+     * Returns if the property definition is available according to the IPS project settings.
      */
     public boolean isAvailable(IIpsProject ipsProject);
 
@@ -104,13 +104,14 @@ public interface IIpsBuilderSetPropertyDef {
     public Message validateValue(String value);
 
     /**
-     * Initializes this property defintion.
+     * Initializes this property definition.
      * 
      * @param ipsModel can be used to get access to IPS resources
-     * @param properties the values for the properties defined in the plugin descriptor are provided
-     *            with this map as (String, String) or (String,List) (key, value) pairs
-     * @return a status object if errors occure during the initialization phase, <code>null</code>
-     *         if none occurs
+     * @param properties the values for the properties defined in the plug-in descriptor are
+     *            provided with this map as (String, String) or (String,List) (key, value) pairs
+     * @return a status object if errors occur during the initialization phase, <code>null</code> if
+     *         none occurs
      */
     public IStatus initialize(IIpsModel ipsModel, Map<String, Object> properties);
+
 }

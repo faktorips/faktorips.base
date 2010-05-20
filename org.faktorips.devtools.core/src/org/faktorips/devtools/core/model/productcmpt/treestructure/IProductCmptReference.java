@@ -24,14 +24,13 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 public interface IProductCmptReference extends IProductCmptStructureReference {
 
     /**
-     * @return The <code>IProductCmpt</code> this reference refers to.
+     * Returns the <code>IProductCmpt</code> this reference refers to.
      */
     public IProductCmpt getProductCmpt();
 
     /**
-     * Return the link this reference referes to. May be null.
-     * 
-     * @return
+     * Return the link this reference refers to. May be null.
      */
     public IProductCmptLink getLink();
+
 }

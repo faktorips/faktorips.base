@@ -22,20 +22,20 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
- * A handle for files containing sourcecode for ips objects.
+ * A handle for files containing sourcecode for IPS objects.
  */
 public interface IIpsSrcFile extends IIpsElement {
 
     /**
-     * Returns the package fragment the file belongs to. If this ips source file is contructed from
+     * Returns the package fragment the file belongs to. If this IPS source file is constructed from
      * an input stream (for example to show an old revision/history) this method returns null!
      */
     public IIpsPackageFragment getIpsPackageFragment();
 
     /**
-     * Returns the corresponding platform file. This method returns <code>null</code> if the ips
-     * source file is not stored in it's own dedicated plattform file. This is the case if the ips
-     * source file is contained in an ips archive or is constructed from an input stream (e.g. to
+     * Returns the corresponding platform file. This method returns <code>null</code> if the IPS
+     * source file is not stored in it's own dedicated platform file. This is the case if the IPS
+     * source file is contained in an IPS archive or is constructed from an input stream (e.g. to
      * display an old revision/history in an editor).
      */
     public IFile getCorrespondingFile();
@@ -75,8 +75,6 @@ public interface IIpsSrcFile extends IIpsElement {
 
     /**
      * Saves the file's content to the file system.
-     * 
-     * @throws CoreException
      */
     public void save(boolean force, IProgressMonitor monitor) throws CoreException;
 
@@ -104,8 +102,8 @@ public interface IIpsSrcFile extends IIpsElement {
     /**
      * Returns the given property of the source file.Returns <code>null</code> if the given property
      * wasn't found.<br>
-     * Performance hint: this method reads only the properties of the ips source file (attributes of
-     * the first xml node) and returns the value of the given property, the ips object is not
+     * Performance hint: this method reads only the properties of the IPS source file (attributes of
+     * the first XML node) and returns the value of the given property, the IPS object is not
      * completely read until {@link #getIpsObject()} method is called.
      * 
      * @throws CoreException if the file can't be read or it's contents can't be parsed.
@@ -118,7 +116,7 @@ public interface IIpsSrcFile extends IIpsElement {
     public IpsObjectType getIpsObjectType();
 
     /**
-     * Returns the qualified name type of the ips object contained within this IpsSrcFile.
+     * Returns the qualified name type of the IPS object contained within this IpsSrcFile.
      */
     public QualifiedNameType getQualifiedNameType();
 
@@ -128,25 +126,25 @@ public interface IIpsSrcFile extends IIpsElement {
     public String getIpsObjectName();
 
     /**
-     * Returns whether this file is mutable or not. An ips source file is immutable in the following
+     * Returns whether this file is mutable or not. An IPS source file is immutable in the following
      * cases:
      * <ul>
      * <li>The underlying file does not exists.</li>
      * <li>The underlying file is read-only.</li>
-     * <li>The ips source file is contained in an ips archive.</li>
-     * <li>The ips source file is created from an input stream to show an old revision/history.</li>
+     * <li>The IPS source file is contained in an IPS archive.</li>
+     * <li>The IPS source file is created from an input stream to show an old revision / history.</li>
      * </ul>
      */
     public boolean isMutable();
 
     /**
-     * Returns whether this file is read-only or not. An ips source file is read-only in the
+     * Returns whether this file is read-only or not. An IPS source file is read-only in the
      * following cases:
      * <ul>
      * <li>The underlying file does not exists.</li>
      * <li>The underlying file is read-only.</li>
-     * <li>The ips source file is contained in an ips archive.</li>
-     * <li>The ips source file is created from an input stream to show an old revision/history.</li>
+     * <li>The IPS source file is contained in an IPS archive.</li>
+     * <li>The IPS source file is created from an input stream to show an old revision / history.</li>
      * </ul>
      */
     public boolean isReadOnly();
@@ -159,14 +157,14 @@ public interface IIpsSrcFile extends IIpsElement {
     public InputStream getContentFromEnclosingResource() throws CoreException;
 
     /**
-     * Returns the name of the base package for the generated artefacts that are mergable. All
-     * generated, mergable Artefacts are contained in this package or one of the child packages.
+     * Returns the name of the base package for the generated artifacts that are mergable. All
+     * generated, mergable artifacts are contained in this package or one of the child packages.
      */
     public String getBasePackageNameForMergableArtefacts() throws CoreException;
 
     /**
-     * Returns the name of the base package for the generated artefacts that are 100%derived/not
-     * mergable. All generated, 100% derived Artefacts are contained in this package or one of the
+     * Returns the name of the base package for the generated artifacts that are 100%derived/not
+     * mergable. All generated, 100% derived artifacts are contained in this package or one of the
      * child packages.
      */
     public String getBasePackageNameForDerivedArtefacts() throws CoreException;

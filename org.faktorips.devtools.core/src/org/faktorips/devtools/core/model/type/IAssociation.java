@@ -68,8 +68,8 @@ public interface IAssociation extends IIpsObjectPart {
     public final static String MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET = MSGCODE_PREFIX + "TargetRolePluralMustBeSet"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that an association has the same rolename singular and
-     * plural
+     * Validation message code to indicate that an association has the same role name singular and
+     * plural.
      */
     public final static String MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR = MSGCODE_PREFIX
             + "TargetRoleSingularEqualsTargetRoleSingular"; //$NON-NLS-1$
@@ -88,8 +88,8 @@ public interface IAssociation extends IIpsObjectPart {
             + "MaxCardinalityForContainerRelationTooLow"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the max cardinality is less than min, but it must be
-     * greater or equal than min.
+     * Validation message code to indicate that the maximum cardinality is less than the minimum,
+     * but it must be greater or equal than the minimum.
      */
     public final static String MSGCODE_MAX_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxIsLessThanMin"; //$NON-NLS-1$
 
@@ -149,7 +149,7 @@ public interface IAssociation extends IIpsObjectPart {
     /**
      * Sets the association's type.
      * 
-     * @throws NullPointerException if newType is <code>null</code>.
+     * @throws NullPointerException If <tt>newType</tt> is <code>null</code>.
      */
     public void setAssociationType(AssociationType newType);
 
@@ -159,7 +159,7 @@ public interface IAssociation extends IIpsObjectPart {
     public AggregationKind getAggregationKind();
 
     /**
-     * Returns <code>true</code> if this is an assoziation (no composition, no aggregation)
+     * Returns <code>true</code> if this is an association (no composition, no aggregation)
      * otherwise <code>false</code>.
      */
     public boolean isAssoziation();
@@ -176,12 +176,12 @@ public interface IAssociation extends IIpsObjectPart {
 
     /**
      * Returns the target type or <code>null</code> if either this association hasn't got a target
-     * or the target does not exists.
+     * or the target does not exist.
      * 
-     * @param project The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching for the target.
+     * @throws CoreException If an error occurs while searching for the target.
      */
     public IType findTarget(IIpsProject ipsProject) throws CoreException;
 
@@ -223,8 +223,8 @@ public interface IAssociation extends IIpsObjectPart {
     public void setTargetRolePlural(String newRole);
 
     /**
-     * Returns if the target role plural is required (or not) based on the associations's max
-     * cardinality and the artefact builderset's information if it needs the plural form for to 1
+     * Returns if the target role plural is required (or not) based on the associations's maximum
+     * cardinality and the artifact builderset's information if it needs the plural form for to-1
      * relations.
      * 
      * @see IIpsArtefactBuilderSet#isRoleNamePluralRequiredForTo1Relations()
@@ -245,7 +245,7 @@ public interface IAssociation extends IIpsObjectPart {
      * Returns the maximum number of links allowed in this association. If this is a qualified
      * association, the max cardinality specifies the number of links per qualifier(!).
      * <p>
-     * If the number is not limited, CARDINALITY_MANY is returned.
+     * If the number is not limited, <tt>CARDINALITY_MANY</tt> is returned.
      */
     public int getMaxCardinality();
 
@@ -288,7 +288,7 @@ public interface IAssociation extends IIpsObjectPart {
 
     /**
      * Sets the maximum number of target instances allowed in this association. An unlimited number
-     * is represented by CARDINALITY_MANY.
+     * is represented by <tt>CARDINALITY_MANY</tt>.
      */
     public void setMaxCardinality(int newValue);
 
@@ -338,10 +338,10 @@ public interface IAssociation extends IIpsObjectPart {
      * <code>null</code>. This method does not check if the given association is *really* a derived
      * union.
      * 
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching for the derived union.
+     * @throws CoreException If an error occurs while searching for the derived union.
      */
     public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject ipsProject) throws CoreException;
 
@@ -351,22 +351,23 @@ public interface IAssociation extends IIpsObjectPart {
      * if the association referred by this one as a derived union is <b>really</b> a derived union.
      * It just returns the association that is defined as being subsetted by this one.
      * 
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching.
+     * @throws CoreException If an error occurs while searching.
      */
-    public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException;
+    public IAssociation findSubsettedDerivedUnion(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Searches for derived union associations in the type's hierarchy (of the type this association
      * belongs to) which are candidates for a derived union for this associations. This is the case
      * if an association in the type's hierarchy is marked as a derived union and the target is the
      * same or a supertype of this association's target.
+     * <p>
+     * Returns an empty array if no such associations exist.
      * 
-     * Returns and empty array if no such associations exists.
-     * 
-     * @throws CoreException if an error occurs while searching.
+     * @throws CoreException If an error occurs while searching.
      */
     public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException;
+
 }

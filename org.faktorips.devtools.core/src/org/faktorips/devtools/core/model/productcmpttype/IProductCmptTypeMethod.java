@@ -30,8 +30,8 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
     public final static String PROPERTY_FORMULA_NAME = "formulaName"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of a formula signature definition is
-     * void or a none valuedatatype.
+     * Validation message code to indicate that the data type of a formula signature definition is
+     * void or a none value data type.
      */
     public final static String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = MSGCODE_PREFIX
             + "DatatypeMustBeAValueDatatypeForFormulaSignature"; //$NON-NLS-1$

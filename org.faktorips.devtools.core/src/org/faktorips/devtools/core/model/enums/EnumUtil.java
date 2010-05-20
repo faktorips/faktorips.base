@@ -29,13 +29,13 @@ public class EnumUtil {
     /**
      * Returns whether the given <tt>IEnumAttribute</tt> is unique. In contrast to the method
      * <tt>findIsUnique(IIpsProject)</tt> from <tt>IEnumAttribute</tt> this operation never returns
-     * <tt>null</tt>. If the <tt>IEnumAttribute</tt> is inherited and the supertype attribute cannot
-     * be found, <tt>false</tt> instead of <tt>null</tt> will be returned.
+     * <tt>null</tt>. If the <tt>IEnumAttribute</tt> is inherited and the super type attribute
+     * cannot be found, <tt>false</tt> instead of <tt>null</tt> will be returned.
      * 
      * @see org.faktorips.devtools.core.model.enums.IEnumAttribute#findIsUnique(IIpsProject)
      * 
      * @param enumAttribute The <tt>IEnumAttribute</tt> to obtain the information for.
-     * @param ipsProject The IPS project that is used to the search the supertype hierarchy.
+     * @param ipsProject The IPS project that is used to the search the super type hierarchy.
      * 
      * @throws CoreException If an error occurs while searching for the super enumeration if the
      *             given <tt>IEnumAttribute</tt> is inherited.
@@ -53,13 +53,13 @@ public class EnumUtil {
     /**
      * Returns whether the given <tt>IEnumAttribute</tt> is the (default) identifier. In contrast to
      * the method <tt>findIsIdentifier(IIpsProject)</tt> from <tt>IEnumAttribute</tt> this operation
-     * never returns <tt>null</tt>. If the <tt>IEnumAttribute</tt> is inherited and the supertype
+     * never returns <tt>null</tt>. If the <tt>IEnumAttribute</tt> is inherited and the super type
      * attribute cannot be found, <tt>false</tt> instead of <tt>null</tt> will be returned.
      * 
      * @see org.faktorips.devtools.core.model.enums.IEnumAttribute#findIsIdentifier(IIpsProject)
      * 
      * @param enumAttribute The <tt>IEnumAttribute</tt> to obtain the information for.
-     * @param ipsProject The IPS project that is used to the search the supertype hierarchy.
+     * @param ipsProject The IPS project that is used to the search the super type hierarchy.
      * 
      * @throws CoreException If an error occurs while searching for the super enumeration if the
      *             given <tt>IEnumAttribute</tt> is inherited.
@@ -78,13 +78,13 @@ public class EnumUtil {
      * Returns whether the given <tt>IEnumAttribute</tt> is used as name in the Faktor-IPS UI. In
      * contrast to the method <tt>findIsUsedAsNameInFaktorIpsUi(IIpsProject)</tt> from
      * <tt>IEnumAttribute</tt> this operation never returns <tt>null</tt>. If the
-     * <tt>IEnumAttribute</tt> is inherited and the supertype attribute cannot be found,
+     * <tt>IEnumAttribute</tt> is inherited and the super type attribute cannot be found,
      * <tt>false</tt> instead of <tt>null</tt> will be returned.
      * 
      * @see org.faktorips.devtools.core.model.enums.IEnumAttribute#findIsUsedAsNameInFaktorIpsUi(IIpsProject)
      * 
      * @param enumAttribute The <tt>IEnumAttribute</tt> to obtain the information for.
-     * @param ipsProject The IPS project that is used to the search the supertype hierarchy.
+     * @param ipsProject The IPS project that is used to the search the super type hierarchy.
      * 
      * @throws CoreException If an error occurs while searching for the super enumeration if the
      *             given <tt>IEnumAttribute</tt> is inherited.

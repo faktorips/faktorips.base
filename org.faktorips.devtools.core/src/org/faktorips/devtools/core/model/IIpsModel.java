@@ -48,11 +48,9 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Runs the given runnable/action as an atomic workspace operation like the <code>run</code>
-     * method in IWorkspace. All ips source file change events are queued until the action is
-     * finished and then broadcasted. If an ips source file is changed more than once, only one
+     * method in IWorkspace. All IPS source file change events are queued until the action is
+     * finished and then broadcasted. If an IPS source file is changed more than once, only one
      * change event is sent.
-     * 
-     * @throws CoreException
      * 
      * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable,
      *      org.eclipse.core.runtime.IProgressMonitor)
@@ -61,11 +59,9 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Runs the given runnable/action as an atomic workspace operation like the <code>run</code>
-     * method in IWorkspace. All ips source file change events are queued until the action is
-     * finished and then broadcastet. If an ips source file is change more than one, only one change
+     * method in IWorkspace. All IPS source file change events are queued until the action is
+     * finished and then broadcasted. If an IPS source file is change more than one, only one change
      * event is sent.
-     * 
-     * @throws CoreException
      * 
      * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable,
      *      org.eclipse.core.runtime.jobs.ISchedulingRule, int,
@@ -81,7 +77,7 @@ public interface IIpsModel extends IIpsElement {
      * empty) .ipsproject file.
      * 
      * @throws NullPointerException if javaProjecct is <code>null</code>.
-     * @throws CoreException if an error occurs while creating the ips project.
+     * @throws CoreException if an error occurs while creating the IPS project.
      */
     public IIpsProject createIpsProject(IJavaProject javaProject) throws CoreException;
 
@@ -123,8 +119,8 @@ public interface IIpsModel extends IIpsElement {
      * valid or exist inside a IPS project's source folder / IpsPackageFragmentRoot.
      * <p>
      * If the resource is contained in a project that exists and is also an IpsProject, the method
-     * returns ips element only for those resources that are contained in a source folder
-     * representing an ips package fragment root.
+     * returns IPS element only for those resources that are contained in a source folder
+     * representing an IPS package fragment root.
      * <p>
      * Examples:
      * <p>
@@ -156,12 +152,10 @@ public interface IIpsModel extends IIpsElement {
     /**
      * <p>
      * Adds a listener that is notified when something in the model was changed. The notifications
-     * are made in the ui-thread.
-     * </p>
+     * are made in the UI thread.
      * <p>
      * <strong>Important</strong>: Do not forget to <strong>remove the listener again</strong> if no
      * longer needed to prevent memory leaks.
-     * </p>
      * 
      * @see #removeChangeListener(ContentsChangeListener)
      */
@@ -175,11 +169,9 @@ public interface IIpsModel extends IIpsElement {
     /**
      * <p>
      * Adds the modification status change listener.
-     * </p>
      * <p>
      * <strong>Important</strong>: Do not forget to <strong>remove the listener again</strong> if no
      * longer needed to prevent memory leaks.
-     * </p>
      * 
      * @see #removeModificationStatusChangeListener(IModificationStatusChangeListener)
      */
@@ -193,8 +185,6 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns all package fragment roots containing source files or an empty array if none is
      * found.
-     * 
-     * @throws CoreException
      */
     public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreException;
 
@@ -202,11 +192,11 @@ public interface IIpsModel extends IIpsElement {
      * Returns the extension properties for the given type. Returns an empty array if no extension
      * property is defined.
      * 
-     * @param type The published interface of the ips object or part e.g.
+     * @param type The published interface of the IPS object or part e.g.
      *            <code>org.faktorips.plugin.model.pctype.IAttribute</code>
      * @param includeSupertypesAndInterfaces <code>true</code> if not only the extension properties
      *            defined for for the type itself should be returned, but also the ones registered
-     *            for it's supertype(s) and it's interfaces.
+     *            for it's super type(s) and it's interfaces.
      */
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces);
@@ -215,25 +205,25 @@ public interface IIpsModel extends IIpsElement {
      * Returns the extension property with the given id that belongs to the given type. Returns
      * <code>null</code> if no such extension property is defined.
      * 
-     * @param type The published interface of the ips object or part e.g.
+     * @param type The published interface of the IPS object or part e.g.
      *            <code>or.faktorips.plugin.model.pctype.Attribute</code>
      * @param propertyId the extension property id
-     * @param <code>true</code> if not only the extension properties defined for for the type itself
-     *        should be returned, but also the ones registered for it's supertype(s) and it's
-     *        interfaces.
+     * @param includeSupertypesAndInterfaces <code>true</code> if not only the extension properties
+     *            defined for for the type itself should be returned, but also the ones registered
+     *            for it's super type(s) and it's interfaces.
      */
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class<?> type,
             String propertyId,
             boolean includeSupertypesAndInterfaces);
 
     /**
-     * Returns the predefines value datatypes like String, Integer etc.
+     * Returns the predefines value data types like String, Integer etc.
      */
     public ValueDatatype[] getPredefinedValueDatatypes();
 
     /**
-     * Returns <code>true</code> if the datatype is predefined (via the datatypeDefinition extension
-     * point), otherwise <code>false</code>. Returns <code>false</code> if datatypeId is
+     * Returns <code>true</code> if the data type is predefined (via the datatypeDefinition
+     * extension point), otherwise <code>false</code>. Returns <code>false</code> if datatypeId is
      * <code>null</code>.
      */
     public boolean isPredefinedValueDatatype(String datatypeId);
@@ -293,7 +283,7 @@ public interface IIpsModel extends IIpsElement {
      * @param cmpt The product component test cases have to refer to.
      * @return All test cases referring the product component with the given name or an empty list,
      *         of none is found.
-     * @throws CoreException if any excetions accurs during search.
+     * @throws CoreException if any exceptions occurs during search.
      */
     public List<ITestCase> searchReferencingTestCases(IProductCmpt cmpt) throws CoreException;
 

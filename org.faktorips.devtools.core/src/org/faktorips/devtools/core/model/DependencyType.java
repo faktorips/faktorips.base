@@ -25,38 +25,19 @@ public class DependencyType implements Serializable {
 
     private static final long serialVersionUID = 615796376725042939L;
 
-    /**
-     *  
-     */
     public final static DependencyType INSTANCEOF = new DependencyType("instance of dependency"); //$NON-NLS-1$
 
-    /**
-     * 
-     */
     public final static DependencyType SUBTYPE = new DependencyType("subtype dependency"); //$NON-NLS-1$
 
-    /**
-     * 
-     */
     public final static DependencyType REFERENCE_COMPOSITION_MASTER_DETAIL = new DependencyType(
             "master to detail composition dependency"); //$NON-NLS-1$
 
-    /**
-     * 
-     */
     public final static DependencyType REFERENCE = new DependencyType("reference dependency"); //$NON-NLS-1$
 
-    /**
-     * 
-     */
     public final static DependencyType DATATYPE = new DependencyType("datatype dependency"); //$NON-NLS-1$
 
     private String name;
 
-    /**
-     * @param id
-     * @param name
-     */
     private DependencyType(String name) {
         super();
         this.name = name;
@@ -87,8 +68,8 @@ public class DependencyType implements Serializable {
     }
 
     /**
-     * This is necessary to ensure that when deserialized there exisits only one instance of a
-     * dependency type within the vm.
+     * This is necessary to ensure that when de-serialized there exists only one instance of a
+     * dependency type within the virtual machine.
      */
     private Object readResolve() throws ObjectStreamException {
         return getDependencyType(name);

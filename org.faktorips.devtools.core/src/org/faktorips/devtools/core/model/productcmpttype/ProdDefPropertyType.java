@@ -25,13 +25,13 @@ public enum ProdDefPropertyType {
     /**
      * The product definition property is an attribute of a product component type.
      */
-    VALUE("attribute", Messages.ProdDefPropertyType_productAttribute),
+    VALUE("attribute", Messages.ProdDefPropertyType_productAttribute), //$NON-NLS-1$
 
-    TABLE_CONTENT_USAGE("tableContentUsage", Messages.ProdDefPropertyType_tableUsage),
+    TABLE_CONTENT_USAGE("tableContentUsage", Messages.ProdDefPropertyType_tableUsage), //$NON-NLS-1$
 
-    FORMULA("formula", Messages.ProdDefPropertyType_fomula),
+    FORMULA("formula", Messages.ProdDefPropertyType_fomula), //$NON-NLS-1$
 
-    DEFAULT_VALUE_AND_VALUESET("config", Messages.ProdDefPropertyType_defaultValueAndValueSet);
+    DEFAULT_VALUE_AND_VALUESET("config", Messages.ProdDefPropertyType_defaultValueAndValueSet); //$NON-NLS-1$
 
     private final String name;
     private final String id;
@@ -42,14 +42,14 @@ public enum ProdDefPropertyType {
     }
 
     /**
-     * @return Returns the name.
+     * Returns the name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return Returns the id.
+     * Returns the id.
      */
     public String getId() {
         return id;

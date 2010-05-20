@@ -18,7 +18,7 @@ import org.faktorips.datatype.Datatype;
 
 /**
  * A business function can have parameters that are represented by this interface. A parameter has a
- * datatype which can be a value datatype or a policy or product component type. Parameters can be
+ * data type which can be a value data type or a policy or product component type. Parameters can be
  * modified by the business function.
  * 
  * @author Peter Erzberger
@@ -34,17 +34,17 @@ public interface IParameterBFE extends IBFElement {
     public static final String MSGCODE_DATATYPE_DOES_NOT_EXISIT = MSGCODE_PREFIX + "datatypeDoesNotExists"; //$NON-NLS-1$
 
     /**
-     * Returns the parameters datatype.
+     * Returns the parameters data type.
      */
     public String getDatatype();
 
     /**
-     * Sets the parameters datatype.
+     * Sets the parameters data type.
      */
     public void setDatatype(String datatype);
 
     /**
-     * Returns the datatype object or <code>null</code> if none is found.
+     * Returns the data type object or <code>null</code> if none is found.
      * 
      * @throws CoreException is throw if an exception occurs during the course of searching
      */

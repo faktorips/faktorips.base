@@ -19,12 +19,12 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.enums.refactor.messages"; //$NON-NLS-1$
 
-    private Messages() {
-        // Message bundles cannot be initialized.
-    }
-
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String RenameEnumAttributeProcessor_processorName;

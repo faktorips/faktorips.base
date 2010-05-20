@@ -35,7 +35,7 @@ public interface IValueSetOwner extends IIpsElement {
     /**
      * Returns the list of allowed value set types.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws CoreException If an error occurs.
      */
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
 
@@ -46,22 +46,21 @@ public interface IValueSetOwner extends IIpsElement {
 
     /**
      * Changes the type of the value set to the new type. The old value set is removed and a new
-     * value set of the given new type is created.
+     * value set of the given new type is created. Returns the new value set.
      * 
      * @param newType The new value set type.
-     * @return The new value set.
      */
     public IValueSet changeValueSetType(ValueSetType newType);
 
     /**
-     * Returns <code>true</code> if the value set owned by this owner is updateabled.
+     * Returns <code>true</code> if it is possible to update the value set owned by this owner.
      */
     public boolean isValueSetUpdateable();
 
     /**
-     * Returns the value datatype all values in the value set must be "instances" of.
+     * Returns the value data type all values in the value set must be "instances" of.
      * 
-     * @param ipsProject The project which ips object path is used to search the datatype. This is
+     * @param ipsProject The project which IPS object path is used to search the data type. This is
      *            not necessarily the project this value set owner is part of.
      */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;

@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 /**
  * A class that holds information of a policy component type attribute which is relevant for
  * persistence using the JPA (Java Persistence API).
- * <p/>
+ * <p>
  * This information is used as a hint to the code generator on how to realize the table column(s) on
  * the database side.
  * 
@@ -40,44 +40,44 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
     /**
      * The name of the column name property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_NAME = "tableColumnName";
+    public final static String PROPERTY_TABLE_COLUMN_NAME = "tableColumnName"; //$NON-NLS-1$
 
     /**
      * The name of the column size property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_SIZE = "tableColumnSize";
+    public final static String PROPERTY_TABLE_COLUMN_SIZE = "tableColumnSize"; //$NON-NLS-1$
 
     /**
      * The name of the "is unique column" property (in the sense that any two tuples cannot have the
      * same value in this column).
      */
-    public final static String PROPERTY_TABLE_COLUMN_UNIQE = "tableColumnUnique";
+    public final static String PROPERTY_TABLE_COLUMN_UNIQE = "tableColumnUnique"; //$NON-NLS-1$
 
     /**
      * The name of the "column is nullable" property, allowing NULL values in the database.
      */
-    public final static String PROPERTY_TABLE_COLUMN_NULLABLE = "tableColumnNullable";
+    public final static String PROPERTY_TABLE_COLUMN_NULLABLE = "tableColumnNullable"; //$NON-NLS-1$
 
     /**
      * The name of the column scale property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_SCALE = "tableColumnScale";
+    public final static String PROPERTY_TABLE_COLUMN_SCALE = "tableColumnScale"; //$NON-NLS-1$
 
     /**
      * The name of the column precision property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_PRECISION = "tableColumnPrecision";
+    public final static String PROPERTY_TABLE_COLUMN_PRECISION = "tableColumnPrecision"; //$NON-NLS-1$
 
     /**
      * The name of the column converter property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_CONVERTER = "tableColumnConverter";
+    public final static String PROPERTY_TABLE_COLUMN_CONVERTER = "tableColumnConverter"; //$NON-NLS-1$
 
     /**
      * The name of the property which maps this attribute to an temporal type (date, time,
      * timestamp) if applicable.
      */
-    public final static String PROPERTY_TEMPORAL_MAPPING = "temporalMapping";
+    public final static String PROPERTY_TEMPORAL_MAPPING = "temporalMapping"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates that the attribute is transient.
@@ -167,7 +167,7 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
     public boolean getTableColumnNullable();
 
     /**
-     * Sets the nulllable property for the table corresponding to this column.
+     * Sets the nullable property for the table corresponding to this column.
      */
     public void setTableColumnNullable(boolean nullable);
 
@@ -234,7 +234,7 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      * information (time, date or both) that should be taken into account when dealing with this
      * attribute.
      * 
-     * @see {@link #isTemporalAttribute} <br/> {@link DateTimeMapping}
+     * @see DateTimeMapping
      * 
      * @return the temporal mapping if any, <code>null</code> if this attribute is not of temporal
      *         type.
@@ -269,13 +269,13 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
         public String toJpaTemporalType() {
             switch (this) {
                 case DATE_ONLY:
-                    return "DATE";
+                    return "DATE"; //$NON-NLS-1$
                 case TIME_ONLY:
-                    return "TIME";
+                    return "TIME"; //$NON-NLS-1$
                 case DATE_AND_TIME:
-                    return "TIMESTAMP";
+                    return "TIMESTAMP"; //$NON-NLS-1$
                 default:
-                    throw new RuntimeException("Error converting IPS Temporal Datatype to JPA Temporal Type.");
+                    throw new RuntimeException("Error converting IPS Temporal Datatype to JPA Temporal Type."); //$NON-NLS-1$
             }
         }
     }

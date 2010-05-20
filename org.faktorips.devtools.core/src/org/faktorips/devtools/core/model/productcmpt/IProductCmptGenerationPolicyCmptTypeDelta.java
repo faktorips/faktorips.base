@@ -53,8 +53,8 @@ public interface IProductCmptGenerationPolicyCmptTypeDelta {
     public IConfigElement[] getTypeMismatchElements();
 
     /**
-     * Returns the config elements with value set type that differ form the value set's type found
-     * in the corresponding policy component attribute.
+     * Returns the configuration elements with value set type that differ form the value set's type
+     * found in the corresponding policy component attribute.
      */
     public IConfigElement[] getElementsWithValueSetMismatch();
 
@@ -81,4 +81,5 @@ public interface IProductCmptGenerationPolicyCmptTypeDelta {
      *         structure usages in the policy component type was found.
      */
     public ITableContentUsage[] getTableContentUsagesWithMissingStructureUsages();
+
 }

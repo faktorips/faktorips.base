@@ -30,18 +30,19 @@ package org.faktorips.devtools.core.model.testcase;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * Class to evalulate and navigate a hierarchy path for test case or test case types.
+ * Class to evaluate and navigate a hierarchy path for test case or test case types.
  * 
  * @author Joerg Ortmann
  */
 public class TestCaseHierarchyPath {
-    // Separator between each hierarchy element
+
+    /** Separator between each hierarchy element. */
     public static final String SEPARATOR = "//"; //$NON-NLS-1$
 
-    // Separator between the path and the offset index
+    /** Separator between the path and the offset index. */
     public static final String OFFSET_SEPARATOR = "#"; //$NON-NLS-1$
 
-    // Contains the complete hierarchy path
+    /** Contains the complete hierarchy path. */
     private String hierarchyPath = ""; //$NON-NLS-1$
 
     /**
@@ -69,7 +70,7 @@ public class TestCaseHierarchyPath {
                 if (link.findTarget().equals(testPolicyCmpt)) {
                     break;
                 }
-                // check for same parameter and increment offset if necessary
+                // Check for same parameter and increment offset if necessary.
                 if (link.getTestPolicyCmptTypeParameter().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter())) {
                     offset++;
                 }
@@ -79,8 +80,10 @@ public class TestCaseHierarchyPath {
             testPolicyCmpt = parent;
         }
 
-        // get the offset of the test policy cmpt
-        // by searching test policy cmpt with the same test policy cmpt type param
+        /*
+         * Get the offset of the test policy component by searching test policy component with the
+         * same test policy component type parameter.
+         */
         ITestCase testCase = testPolicyCmpt.getTestCase();
         ITestPolicyCmpt[] tpcs = testCase.getTestPolicyCmpts();
         int offset = 0;
@@ -88,7 +91,7 @@ public class TestCaseHierarchyPath {
             if (testPolicyCmpt.equals(tpc)) {
                 break;
             }
-            // check for same parameter and increment offset if necessary
+            // Check for same parameter and increment offset if necessary.
             if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpc)) {
                 offset++;
             }
@@ -128,8 +131,8 @@ public class TestCaseHierarchyPath {
     /**
      * Creates a test case hierarchy path for a given test policy component link.
      * 
-     * @param currTestPolicyCmpt The test policy component link for which the path will be created.
-     * @param evalForTestCase <code>true</code> if the hierarchy path will be evaluated for a test
+     * @param link The test policy component link for which the path will be created.
+     * @param evalforTestCase <code>true</code> if the hierarchy path will be evaluated for a test
      *            case <code>false</code> if the hierarchy path will be evaluated for a test case
      *            type.
      */
@@ -235,4 +238,5 @@ public class TestCaseHierarchyPath {
         hierarchyPath = currTestPolicyCmpt.getName() + (hierarchyPath.length() > 0 ? SEPARATOR + hierarchyPath : ""); //$NON-NLS-1$
         return hierarchyPath;
     }
+
 }

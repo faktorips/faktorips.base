@@ -14,9 +14,9 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 /**
- * A configuration object for ips artefact builder sets. Provides string values for string keys. An
- * ips artefact builder set instance can be configured by means of the ips project properties.
- * Therefor the IpsArtefactBuilderSet tag of an .ipsproject file can contain one
+ * A configuration object for IPS artifact builder sets. Provides string values for string keys. An
+ * IPS artifact builder set instance can be configured by means of the IPS project properties.
+ * Therefore the IpsArtefactBuilderSet tag of an .ipsproject file can contain one
  * IpsArtefactBuilderSetConfig tag. Here is an example for a configuration declaration:
  * 
  * @author Peter Erzberger

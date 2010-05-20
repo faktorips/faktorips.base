@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
  * @author Joerg Ortmann
  */
 public interface ITestObject extends IIpsObjectPart {
+
     /**
      * Returns the name of the corresponding test parameter.
      */

@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.pctype.AssociationType;
 public interface IType extends IIpsObject, Datatype {
 
     public final static String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
+
     public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /**
@@ -65,7 +66,7 @@ public interface IType extends IIpsObject, Datatype {
     public final static String MSGCODE_ABSTRACT_MISSING = MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that at least two properties (attriute, associations)
+     * Validation message code to indicate that at least two properties (attribute, associations)
      * share the same name.
      */
     public final static String MSGCODE_DUPLICATE_PROPERTY_NAME = MSGCODE_PREFIX + "DuplicatePropertyName"; //$NON-NLS-1$
@@ -90,9 +91,6 @@ public interface IType extends IIpsObject, Datatype {
     public final static String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS = MSGCODE_PREFIX
             + "OtherTypeWithSameNameInDependentProjectExists"; //$NON-NLS-1$
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAbstract();
 
@@ -126,20 +124,20 @@ public interface IType extends IIpsObject, Datatype {
 
     /**
      * Returns the type's supertype if the type is derived from a supertype and the supertype can be
-     * found on the project's ips object path. Returns <code>null</code> if either this type is not
-     * derived from a supertype or the supertype can't be found on the project's ips object path.
+     * found on the project's IPS object path. Returns <code>null</code> if either this type is not
+     * derived from a supertype or the supertype can't be found on the project's IPS object path.
      * 
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching for the supertype.
+     * @throws CoreException If an error occurs while searching for the supertype.
      */
     public IType findSupertype(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Sets the type's supertype.
      * 
-     * @throws IllegalArgumentException if newSupertype is null.
+     * @throws IllegalArgumentException If <tt>newSupertype</tt> is <tt>null</tt>.
      */
     public void setSupertype(String newSupertype);
 
@@ -148,11 +146,11 @@ public interface IType extends IIpsObject, Datatype {
      * <code>false</code> otherwise. Returns <code>false</code> if supertype candidate is
      * <code>null</code>.
      * 
-     * @param supertypeCandidate The type which is the possibly a supertype of this type
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param supertypeCandidate The type which is possibly a supertype of this type.
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching the type hierarchy.
+     * @throws CoreException If an error occurs while searching the type hierarchy.
      */
     public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) throws CoreException;
 
@@ -161,11 +159,12 @@ public interface IType extends IIpsObject, Datatype {
      * candidate is this same. Returns <code>false</code> otherwise. Returns <code>false</code> if
      * candidate is <code>null</code>.
      * 
-     * @param supertypeCandidate The type which is the possibly a supertype of this type
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param candidate The type which is possibly a supertype of this type or possible the same
+     *            type as this type.
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching the type hierarchy.
+     * @throws CoreException If an error occurs while searching the type hierarchy.
      */
     public boolean isSubtypeOrSameType(IType candidate, IIpsProject ipsProject) throws CoreException;
 
@@ -180,16 +179,14 @@ public interface IType extends IIpsObject, Datatype {
      * this attribute instance will be in the returned array all attributes in the supertype
      * hierarchy with the same name will be neglected.
      * 
-     * @param ipsProject TODO
-     * 
-     * @throws CoreException if an exception occurs while collecting the attributes
+     * @throws CoreException If an exception occurs while collecting the attributes.
      */
     public IAttribute[] findAllAttributes(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns this type's association and the attributes within the supertype hierarchy.
+     * Returns this type's associations within the supertype hierarchy.
      * 
-     * @throws CoreException if an exception occurs while collecting the associations
+     * @throws CoreException If an exception occurs while collecting the associations.
      */
     public IAssociation[] findAllAssociations(IIpsProject ipsProject) throws CoreException;
 
@@ -206,11 +203,11 @@ public interface IType extends IIpsObject, Datatype {
      * it. Returns <code>null</code> if no such attribute exists.
      * 
      * @param name The attribute's name.
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws NullPointerException if project is <code>null</code>.
-     * @throws CoreException if an error occurs while searching.
+     * @throws NullPointerException If <tt>project</tt> is <code>null</code>.
+     * @throws CoreException If an error occurs while searching.
      */
     public IAttribute findAttribute(String name, IIpsProject ipsProject) throws CoreException;
 
@@ -225,37 +222,42 @@ public interface IType extends IIpsObject, Datatype {
     public int getNumOfAttributes();
 
     /**
-     * Moves the attributes identified by the indexes up or down by one position. If one of the
-     * indexes is 0 (the first attribute), no attribute is moved up. If one of the indexes is the
-     * number of attributes - 1 (the last attribute) no attribute is moved down.
+     * Moves the attributes identified by the indices up or down by one position. If one of the
+     * indices is 0 (the first attribute), no attribute is moved up. If one of the indices is the
+     * number of attributes - 1 (the last attribute), no attribute is moved down.
+     * <p>
+     * Returns the new indices of the moved attributes.
      * 
-     * @param indexes The indexes identifying the attributes.
+     * @param indices The indices identifying the attributes.
      * @param up <code>true</code>, to move the attributes up, <false> to move them down.
      * 
-     * @return The new indexes of the moved attributes.
-     * 
-     * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify an attribute.
+     * @throws NullPointerException If <tt>indices</tt> is <tt>null</tt>.
+     * @throws IndexOutOfBoundsException If one of the <tt>indices</tt> does not identify an
+     *             attribute.
      */
-    public int[] moveAttributes(int[] indexes, boolean up);
+    public int[] moveAttributes(int[] indices, boolean up);
 
     /**
-     * Returns the association with the given name defined in <strong>this</strong> type. (This
-     * method does not search the supertype hierarchy.) If more than one association with the name
-     * exist, the first one is returned. Returns <code>null</code> if no association with the given
-     * name exists or name is <code>null</code>.
+     * Returns the association with the given name defined in <strong>this</strong> type. This
+     * method does not search the supertype hierarchy.
+     * <p>
+     * If more than one association with the given role name singular exists, the first one is
+     * returned. Returns <code>null</code> if no association with the given role name singular
+     * exists or <tt>roleNameSingular</tt> is <code>null</code>.
      * 
-     * @param name The association's role name singular
+     * @param roleNameSingular The association's role name singular.
      */
-    public IAssociation getAssociation(String name);
+    public IAssociation getAssociation(String roleNameSingular);
 
     /**
      * Returns the association with the given role name in plural form defined in
-     * <strong>this</strong> type. (This method does not search the supertype hierarchy.) If more
-     * than one association with the name exist, the first one is returned. Returns
-     * <code>null</code> if no association with the given name exists or name is <code>null</code>.
+     * <strong>this</strong> type. This method does not search the supertype hierarchy.
+     * <p>
+     * If more than one association with the role name plural exist, the first one is returned.
+     * Returns <code>null</code> if no association with the given role name plural exists or
+     * <tt>roleNamePlural</tt> is <code>null</code>.
      * 
-     * @param name The association's role name plural
+     * @param roleNamePlural The association's role name plural.
      */
     public IAssociation getAssociationByRoleNamePlural(String roleNamePlural);
 
@@ -264,10 +266,10 @@ public interface IType extends IIpsObject, Datatype {
      * returns it. Returns <code>null</code> if no such association exists.
      * 
      * @param name The association's name.
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching.
+     * @throws CoreException If an error occurs while searching.
      */
     public IAssociation findAssociation(String name, IIpsProject ipsProject) throws CoreException;
 
@@ -275,11 +277,11 @@ public interface IType extends IIpsObject, Datatype {
      * Searches an association with the given role name plural in the type and it's supertype
      * hierarchy and returns it. Returns <code>null</code> if no such association exists.
      * 
-     * @param name The association's role name in plural form.
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param roleNamePlural The association's role name in plural form.
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching.
+     * @throws CoreException If an error occurs while searching.
      */
     public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
             throws CoreException;
@@ -287,12 +289,12 @@ public interface IType extends IIpsObject, Datatype {
     /**
      * Returns all associations that have the indicated target and association type in the current
      * type and optional it's supertype hierarchy. Returns an empty array if no such association
-     * exists or target or association type is <code>null</code>.
+     * exists or target or <tt>associationType</tt> is <code>null</code>.
      * 
      * @param target The qualified name of the target type.
-     * @param associationType The association type
+     * @param associationType The association type.
      * @param includeSupertypes <code>true</code> if the supertype hierarchy should be included in
-     *            the search
+     *            the search, <tt>false</tt> otherwise.
      */
     public IAssociation[] findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
@@ -305,9 +307,7 @@ public interface IType extends IIpsObject, Datatype {
     public IAssociation[] getAssociations();
 
     /**
-     * Returns all not derived associations from this type and its super types
-     * 
-     * @throws CoreException
+     * Returns all not derived associations from this type and its super types.
      */
     public List<IAssociation> findAllNotDerivedAssociations() throws CoreException;
 
@@ -332,27 +332,28 @@ public interface IType extends IIpsObject, Datatype {
     public int getNumOfAssociations();
 
     /**
-     * Moves the associations identified by the indexes up or down by one position. If one of the
-     * indexes is 0 (the first association), no association is moved up. If one of the indexes is
-     * the number of associations - 1 (the last association) no association is moved down.
+     * Moves the associations identified by the given indices up or down by one position. If one of
+     * the indices is 0 (the first association), no association is moved up. If one of the indices
+     * is the number of associations - 1 (the last association) no association is moved down.
+     * <p>
+     * Returns an array containing the new indices of the moved associations.
      * 
-     * @param indexes The indexes identifying the associations.
+     * @param indices The indices identifying the associations.
      * @param up <code>true</code>, to move the associations up, <false> to move them down.
      * 
-     * @return The new indexes of the moved associations.
-     * 
-     * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify an association.
+     * @throws NullPointerException If <tt>indices</tt> is <tt>null</tt>.
+     * @throws IndexOutOfBoundsException If one of the <tt>indices</tt> does not identify an
+     *             association.
      */
-    public int[] moveAssociations(int[] indexes, boolean up);
+    public int[] moveAssociations(int[] indices, boolean up);
 
     /**
      * Returns all methods of this type including the methods of the types within the supertype
      * hierarchy.
      * 
-     * @param ipsProject the ips project that is used to determine the types within the supertype
+     * @param ipsProject The IPS project that is used to determine the types within the supertype
      *            hierarchy.
-     * @throws CoreException if an exception ocurres during the execution of this method
+     * @throws CoreException If an exception occurs during the execution of this method.
      */
     public List<IMethod> findAllMethods(IIpsProject ipsProject) throws CoreException;
 
@@ -366,8 +367,8 @@ public interface IType extends IIpsObject, Datatype {
      * method does not search the supertype hierarchy. Returns <code>null</code> if no such method
      * exists.
      * 
-     * @param name The method's name.
-     * @param datatypes The datatypes of the method's parameters.
+     * @param methodName The method's name.
+     * @param datatypes The data types of the method's parameters.
      */
     public IMethod getMethod(String methodName, String[] datatypes);
 
@@ -375,7 +376,7 @@ public interface IType extends IIpsObject, Datatype {
      * Returns the first method with the given signature. This method does not search the supertype
      * hierarchy. Returns <code>null</code> if no such method exists.
      * 
-     * @param signature The method's signature, e.g. calcPremium(base.Vertrag, Integer)
+     * @param signature The method's signature, e.g. <tt>calcPremium(base.Vertrag, Integer)</tt>
      */
     public IMethod getMethod(String signature);
 
@@ -383,13 +384,13 @@ public interface IType extends IIpsObject, Datatype {
      * Searches a method with the given signature in the type and its supertype hierarchy and
      * returns it. Returns <code>null</code> if no such method exists.
      * 
-     * @param name The method's signature as string, e.g. computePremium(base.Contract,
-     *            base.Coverage)
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param signature The method's signature as string, e.g. <tt>computePremium(base.Contract,
+     *            base.Coverage)</tt>
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws NullPointerException if project is <code>null</code>.
-     * @throws CoreException if an error occurs while searching.
+     * @throws NullPointerException If project is <code>null</code>.
+     * @throws CoreException If an error occurs while searching.
      */
     public IMethod findMethod(String signature, IIpsProject ipsProject) throws CoreException;
 
@@ -398,12 +399,12 @@ public interface IType extends IIpsObject, Datatype {
      * hierarchy and returns it. Returns <code>null</code> if no such method exists.
      * 
      * @param name The method's name.
-     * @param datatypes The datatypes of the method's parameters.
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param datatypes The data types of the method's parameters.
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws NullPointerException if project is <code>null</code>.
-     * @throws CoreException if an error occurs while searching.
+     * @throws NullPointerException If project is <code>null</code>.
+     * @throws CoreException If an error occurs while searching.
      */
     public IMethod findMethod(String name, String datatypes[], IIpsProject ipsProject) throws CoreException;
 
@@ -418,47 +419,48 @@ public interface IType extends IIpsObject, Datatype {
     public int getNumOfMethods();
 
     /**
-     * Moves the methods identified by the indexes up or down by one position. If one of the indexes
-     * is 0 (the first method), no method is moved up. If one of the indexes is the number of
+     * Moves the methods identified by the indices up or down by one position. If one of the indices
+     * is 0 (the first method), no method is moved up. If one of the indices is the number of
      * methods - 1 (the last method) no method is moved down.
+     * <p>
+     * Returns an array containing the new indices of the moved methods.
      * 
-     * @param indexes The indexes identifying the methods.
+     * @param indices The indices identifying the methods.
      * @param up <code>true</code>, to move the methods up, <false> to move them down.
      * 
-     * @return The new indexes of the moved methods.
-     * 
-     * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify a method.
+     * @throws NullPointerException If <tt>indices</tt> is <tt>null</tt>.
+     * @throws IndexOutOfBoundsException If one of the indices does not identify a method.
      */
-    public int[] moveMethods(int[] indexes, boolean up);
+    public int[] moveMethods(int[] indices, boolean up);
 
     /**
      * Returns a list of methods defined in any of the type's supertypes that can be overridden (and
      * isn't overridden yet).
      * 
-     * @param onlyAbstractMethods if true only abstract methods are returned.
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param onlyNotImplementedAbstractMethods If true only not implemented, abstract methods are
+     *            returned.
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
     public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
             throws CoreException;
 
     /**
-     * Creates new methods in this type that overrides the given methods. Note that it is not
-     * checked, if the methods really belong to one of the type's supertypes.
+     * Creates new methods in this type that override the given methods. Note that it is not checked
+     * whether the methods really belong to one of the type's supertypes.
      */
     public IMethod[] overrideMethods(IMethod[] methods);
 
     /**
-     * Returns true if this type has a same method as the indicated one. Two methods are considered
-     * to be same when they have the same name, the same number of parameters and the parameter's
-     * datatypes are equal.
+     * Returns true if this type has a method equal to the indicated one. Two methods are considered
+     * to be equal when they have the same name, the same number of parameters and the parameter's
+     * data types are equal.
      */
     public boolean hasSameMethod(IMethod method);
 
     /**
      * Returns the method that matches the indicated one regarding it's signature. Two methods match
-     * if they have the same name, the same number of parameters and the parameter's datatypes are
+     * if they have the same name, the same number of parameters and the parameter's data types are
      * equal. Returns <code>null</code> if the type does not contain a matching method or the
      * indicated method is <code>null</code>.
      */

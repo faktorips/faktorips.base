@@ -42,7 +42,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * 
      * For component type attributes the allowed values set types are the types returned by
      * {@link IIpsProject#getValueSetTypes(org.faktorips.datatype.ValueDatatype)} using the
-     * attribute's datatype.
+     * attribute's data type.
      * 
      * @throws CoreException if an error occurs.
      */

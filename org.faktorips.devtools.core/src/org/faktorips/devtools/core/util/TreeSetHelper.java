@@ -18,19 +18,16 @@ import java.util.TreeSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
- * A helper class to create tree sets with special comparators
+ * A helper class to create tree sets with special comparators.
  * 
  * @author dirmeier
- * 
  */
 public class TreeSetHelper {
 
     /**
-     * creates a tree set containing <code>IIpsSrcFile</code>s with alphabetic ordered names If two
-     * names are equal but different source files, both source files are stored in the tree set.
-     * 
-     * @return a tree set containing different <code>IIpsSrcFile</code>s with alphabetic ordered
-     *         names
+     * Creates and returns a tree set containing <code>IIpsSrcFile</code>s with alphabetic ordered
+     * names. If two names are equal but different source files, both source files are stored in the
+     * tree set.
      */
     public static TreeSet<IIpsSrcFile> newIpsSrcFileTreeSet() {
         return new TreeSet<IIpsSrcFile>(new Comparator<IIpsSrcFile>() {
@@ -47,6 +44,10 @@ public class TreeSetHelper {
                 }
             }
         });
+    }
+
+    private TreeSetHelper() {
+        // Utility class not to be instantiated.
     }
 
 }

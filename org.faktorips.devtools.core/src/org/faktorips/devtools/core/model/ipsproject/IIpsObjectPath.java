@@ -23,7 +23,7 @@ import org.faktorips.util.message.MessageList;
 
 /**
  * The IPS object path defines where IPS objects can be found. It is the same concept as the Java
- * classpath.
+ * class path.
  * 
  * @author Jan Ortmann
  */
@@ -47,12 +47,12 @@ public interface IIpsObjectPath {
     public final static String MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED = "DerivedOutputFolderNotSpecified"; //$NON-NLS-1$
 
     /**
-     * Returns the ips project this path belongs to.
+     * Returns the IPS project this path belongs to.
      */
     public IIpsProject getIpsProject();
 
     /**
-     * Returns the entry for the given ips package fragment root name or <code>null</code> if no
+     * Returns the entry for the given IPS package fragment root name or <code>null</code> if no
      * such entry exists.
      */
     public IIpsObjectPathEntry getEntry(String rootName);
@@ -63,17 +63,17 @@ public interface IIpsObjectPath {
     public IIpsObjectPathEntry[] getEntries();
 
     /**
-     * Returns the source folder entries of this ips project path.
+     * Returns the source folder entries of this IPS project path.
      */
     public IIpsSrcFolderEntry[] getSourceFolderEntries();
 
     /**
-     * Returns the project reference entries of this ips project path.
+     * Returns the project reference entries of this IPS project path.
      */
     public IIpsProjectRefEntry[] getProjectRefEntries();
 
     /**
-     * Returns the ips archive entries of this ips project path.
+     * Returns the IPS archive entries of this IPS project path.
      */
     public IIpsArchiveEntry[] getArchiveEntries();
 
@@ -83,7 +83,7 @@ public interface IIpsObjectPath {
     public void setEntries(IIpsObjectPathEntry[] newEntries);
 
     /**
-     * Returns the ips projects referenced by the object path.
+     * Returns the IPS projects referenced by the object path.
      */
     public IIpsProject[] getReferencedIpsProjects();
 
@@ -93,7 +93,7 @@ public interface IIpsObjectPath {
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder);
 
     /**
-     * Factory method that creates a new archiv entry and adds it to the list of entries.
+     * Factory method that creates a new archive entry and adds it to the list of entries.
      */
     public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException;
 
@@ -172,9 +172,9 @@ public interface IIpsObjectPath {
     public void setBasePackageNameForMergableJavaClasses(String name);
 
     /**
-     * Returns the output folder for generated artefacts that are marked as derived. More precise
+     * Returns the output folder for generated artifacts that are marked as derived. More precise
      * this folder will be marked as derived and hence all resources within are considered derived.
-     * Derived artefacts are not managed by the resource management system (e.g. CVS). During the
+     * Derived artifacts are not managed by the resource management system (e.g. CVS). During the
      * clean build phase all resources in this folder will be deleted.
      */
     public IFolder getOutputFolderForDerivedSources();
@@ -211,8 +211,8 @@ public interface IIpsObjectPath {
      * 
      * @param indices an array with indices of the entries to be moved. If it contains negative
      *            indices or indices greater than the number of entries the resulted operation is
-     *            undefined. @ param up entries will be moved up one position if true, down
-     *            otherwise
+     *            undefined.
+     * @param up entries will be moved up one position if true, down otherwise
      * 
      * @return the indices of the entries' positions after the move operation
      */
@@ -222,9 +222,7 @@ public interface IIpsObjectPath {
      * Retrieves the contents of a file in the {@link IpsObjectPath}. Returns <code>null</code> if
      * no resource is found at the given path. If the {@link IpsObjectPath} contains multiple
      * resources with the same path the first find will be returned.
-     * 
-     * @param path
-     * @return
      */
     public InputStream getResourceAsStream(String path);
+
 }

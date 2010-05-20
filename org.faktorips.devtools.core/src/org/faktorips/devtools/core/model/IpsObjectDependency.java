@@ -56,7 +56,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
 
     /**
      * Creates a new Dependency instance indicating an instance of dependency between the specified
-     * source and target objects. A Dependency instance indicates that the source is subtype of the
+     * source and target objects. A Dependency instance indicates that the source is sub type of the
      * target and hence the source depends on the target.
      */
     public final static IpsObjectDependency createSubtypeDependency(QualifiedNameType source, QualifiedNameType target) {
@@ -74,7 +74,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
 
     /**
      * Creates a new Dependency instance indicating special referencing dependency of the kind
-     * compostion master to detail between the specified source and target objects. A Dependency
+     * composition master to detail between the specified source and target objects. A Dependency
      * instance indicates that the source references the target and hence the source depends on the
      * target.
      */
@@ -116,17 +116,11 @@ public class IpsObjectDependency implements IDependency, Serializable {
         return target;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DependencyType getType() {
         return dependencyType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof IpsObjectDependency)) {
@@ -145,17 +139,11 @@ public class IpsObjectDependency implements IDependency, Serializable {
         hashCode = result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return hashCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "(" + source.toString() + " -> " + target.toString() + ", type: " + dependencyType + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$

@@ -65,7 +65,7 @@ public abstract class HierarchyVisitor<T> {
     }
 
     /**
-     * Starts the visit on the given type. Does nothing if basetype is <code>null</code>.
+     * Starts the visit on the given type. Does nothing if base type is <code>null</code>.
      */
     public final void start(T basetype) throws CoreException {
         cycleDetected = false;

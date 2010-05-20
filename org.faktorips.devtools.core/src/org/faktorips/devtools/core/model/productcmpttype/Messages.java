@@ -15,21 +15,21 @@ package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Jan Ortmann
- */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.productcmpttype.messages"; //$NON-NLS-1$
-    public static String ProdDefPropertyType_defaultValueAndValueSet;
-    public static String ProdDefPropertyType_fomula;
-    public static String ProdDefPropertyType_productAttribute;
-    public static String ProdDefPropertyType_tableUsage;
+
     static {
-        // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages() {
+        // Messages bundles shall not be initialized.
     }
+
+    public static String ProdDefPropertyType_defaultValueAndValueSet;
+    public static String ProdDefPropertyType_fomula;
+    public static String ProdDefPropertyType_productAttribute;
+    public static String ProdDefPropertyType_tableUsage;
+
 }

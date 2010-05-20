@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
  * 
- * This interface is implemented by every java class of the ips meta model representing a meta class
+ * This interface is implemented by every java class of the IPS meta model representing a meta class
  * that is able to be instantiated
  * 
  * e.g. IProductCmptType, IEnumType, ITableStructure and ITestCaseType.
@@ -35,11 +35,11 @@ public interface IIpsMetaClass extends IIpsObject {
      * or not. If the meta class does not support sub types, the parameter will be ignored. The
      * search finds meta classes in all projects referencing the ipsProject of this type
      * 
-     * @param includeSubtypes for meta classes that support subtype hierarchy: true to include
-     *            objects from meta class subtypes
+     * @param includeSubtypes for meta classes that support sub type hierarchy: true to include
+     *            objects from meta class sub types
+     * 
      * @return An array of <code>IIpsSrcFile</code>s containing all meta objects that are instances
      *         of this meta class
-     * @throws CoreException
      */
     public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException;
 

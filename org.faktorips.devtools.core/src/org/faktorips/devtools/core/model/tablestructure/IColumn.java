@@ -18,9 +18,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-/**
- * 
- */
 public interface IColumn extends IIpsObjectPart, IKeyItem {
 
     /**
@@ -50,14 +47,14 @@ public interface IColumn extends IIpsObjectPart, IKeyItem {
     public void setName(String newName);
 
     /**
-     * Sets the column's datatype.
+     * Sets the column's data type.
      * 
      * @throws IllegalArgumentException if newDatatype is <code>null</code>.
      */
     public void setDatatype(String newDatatype);
 
     /**
-     * Returns the valuedatatype of this column.
+     * Returns the value data type of this column.
      */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
 

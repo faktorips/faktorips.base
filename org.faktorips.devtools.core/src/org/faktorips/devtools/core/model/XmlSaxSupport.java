@@ -39,4 +39,5 @@ public interface XmlSaxSupport {
      * @param extPropertyValue The value of the extension property
      */
     public void addExtensionProperty(String propertyId, String extPropertyValue);
+
 }

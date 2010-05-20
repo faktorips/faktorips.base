@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.model.ipsobject;
 import org.w3c.dom.Element;
 
 /**
- * A memento for a source file that stores an old object state (as xml element) and the dirty state.
+ * A memento for a source file that stores an old object state (as XML element) and the dirty state.
  * <p>
  * This is an application of the memento pattern.
  */
@@ -43,4 +43,5 @@ public class IIpsSrcFileMemento {
     public boolean isDirty() {
         return dirty;
     }
+
 }

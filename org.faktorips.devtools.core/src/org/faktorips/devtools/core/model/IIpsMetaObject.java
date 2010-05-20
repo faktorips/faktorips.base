@@ -36,11 +36,11 @@ public interface IIpsMetaObject extends IFixDifferencesToModelSupport, IIpsObjec
     public String getMetaClass();
 
     /**
-     * This method finds the ips src file of the meta class, defining this meta object
+     * This method finds the IPS source file of the meta class, defining this meta object
      * 
      * @param ipsProject the ipsProject used to find the meta class
+     * 
      * @return Returns the <code>IIpsSrcFile</code> for the meta class of this meta object
-     * @throws CoreException
      */
     public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException;
 

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 
 /**
- * An ips archive is an archive for ips objects. It is physically stored in a file. The file's
+ * An IPS archive is an archive for IPS objects. It is physically stored in a file. The file's
  * format is jar.
  * 
  * @author Jan Ortmann
@@ -70,9 +70,8 @@ public interface IIpsArchive {
 
     /**
      * Returns the names (in ascending order) of the non-empty packages contained in the archive.
-     * 
      * <p>
-     * A package is not empty, if it contains at least one ips object.
+     * A package is not empty, if it contains at least one IPS object.
      */
     public String[] getNonEmptyPackages() throws CoreException;
 
@@ -83,25 +82,25 @@ public interface IIpsArchive {
     public boolean containsPackage(String name) throws CoreException;
 
     /**
-     * Returns the names (in ascending order) of the non-empty subpackages for the given parent
+     * Returns the names (in ascending order) of the non-empty sub packages for the given parent
      * package as list.
      */
     public String[] getNonEmptySubpackages(String pack) throws CoreException;
 
     /**
-     * Returns the set of qualified name types for the ips objects stored in the archive
+     * Returns the set of qualified name types for the IPS objects stored in the archive
      */
     public Set<QualifiedNameType> getQNameTypes() throws CoreException;
 
     /**
-     * Returns the set of qualified name types for the ips objects stored in the given package.
+     * Returns the set of qualified name types for the IPS objects stored in the given package.
      * Returns an empty set if the archive does not contain an object for the given package or
      * packName is <code>null</code>.
      */
     public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreException;
 
     /**
-     * Returns <code>true</code> if the archive contains the ips object indentified by the given
+     * Returns <code>true</code> if the archive contains the IPS object identified by the given
      * qualified name type, otherwise <code>false</code>.
      */
     public boolean contains(QualifiedNameType qnt) throws CoreException;
@@ -121,14 +120,14 @@ public interface IIpsArchive {
     public InputStream getSortDefinitionContent(String packName) throws CoreException;
 
     /**
-     * Returns the name of the base package for the mergable artefacts (XML-Files, Java source
-     * files). All mergable artefacts are contained in this package or one of the child packages.
+     * Returns the name of the base package for the mergable artifacts (XML-Files, Java source
+     * files). All mergable artifacts are contained in this package or one of the child packages.
      */
     public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException;
 
     /**
-     * Returns the name of the base package for the derived artefacts (XML-Files, Java source
-     * files). All derived artefacts are contained in this package or one of the child packages.
+     * Returns the name of the base package for the derived artifacts (XML-Files, Java source
+     * files). All derived artifacts are contained in this package or one of the child packages.
      */
     public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException;
 

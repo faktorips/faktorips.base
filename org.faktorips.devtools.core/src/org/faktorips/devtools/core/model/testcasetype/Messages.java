@@ -15,23 +15,21 @@ package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Thorsten Guenther
- */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.testcasetype.messages"; //$NON-NLS-1$
 
-    private Messages() {
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String TestParameterType_Input;
     public static String TestParameterType_ExpectedResult;
     public static String TestParameterType_Combined;
     public static String TestParameterType_Unknown;
+
 }

@@ -16,9 +16,10 @@ package org.faktorips.devtools.core.util;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * A helper class that moves a given subset of an array elements one position up or down.
+ * A helper class that moves a given subset of array elements one position up or down inside the
+ * array.
  */
-public class ArrayElementMover {
+public class ArrayElementMover extends ElementMover {
 
     private Object[] array;
 
@@ -27,20 +28,24 @@ public class ArrayElementMover {
         this.array = array;
     }
 
-    /**
-     * Moves the elements identifies by the given indices one position up in the array this mover is
-     * constructed for. Does not nothing if one of the indexes is 0.
-     * 
-     * @return the new indexes of the elements that are identified by the given indexes array.
-     */
-    public int[] moveUp(int[] indexes) {
-        if (contains(indexes, 0)) {
-            return indexes;
+    @Override
+    public int[] move(int[] indices, boolean up) {
+        if (up) {
+            return moveUp(indices);
+        } else {
+            return moveDown(indices);
         }
-        int[] newSelection = new int[indexes.length];
+    }
+
+    @Override
+    public int[] moveUp(int[] indices) {
+        if (contains(indices, 0)) {
+            return indices;
+        }
+        int[] newSelection = new int[indices.length];
         int j = 0;
         for (int i = 1; i < array.length; i++) {
-            if (contains(indexes, i)) {
+            if (contains(indices, i)) {
                 swapElements(i - 1, i);
                 newSelection[j] = i - 1;
                 j++;
@@ -49,21 +54,15 @@ public class ArrayElementMover {
         return newSelection;
     }
 
-    /**
-     * Moves the elements identifies by the given indices one position down in the array this mover
-     * is constructed for. Does not nothing if one of the indexes is the last index in the array
-     * (length-1).
-     * 
-     * @return the new indexes of the elements that are identified by the given indexes array.
-     */
-    public int[] moveDown(int[] indexes) {
-        if (contains(indexes, array.length - 1)) {
-            return indexes;
+    @Override
+    public int[] moveDown(int[] indices) {
+        if (contains(indices, array.length - 1)) {
+            return indices;
         }
-        int[] newSelection = new int[indexes.length];
+        int[] newSelection = new int[indices.length];
         int j = 0;
         for (int i = array.length - 2; i >= 0; i--) {
-            if (contains(indexes, i)) {
+            if (contains(indices, i)) {
                 swapElements(i, i + 1);
                 newSelection[j++] = i + 1;
             }
@@ -71,8 +70,9 @@ public class ArrayElementMover {
         return newSelection;
     }
 
-    /*
-     * Returns true if the indices array contains the index, otherwise false.
+    /**
+     * Returns <tt>true</tt> if the given indices array contains the given index, otherwise
+     * <tt>false</tt>.
      */
     private boolean contains(int[] indices, int index) {
         for (int indice : indices) {
@@ -83,10 +83,7 @@ public class ArrayElementMover {
         return false;
     }
 
-    /**
-     * Swaps the elements at the given indexes. Can be overridden in subclasses if additional logic
-     * is needed.
-     */
+    @Override
     protected void swapElements(int index1, int index2) {
         Object temp = array[index1];
         array[index1] = array[index2];

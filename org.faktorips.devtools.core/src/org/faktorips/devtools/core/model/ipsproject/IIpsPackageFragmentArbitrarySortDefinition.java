@@ -15,13 +15,13 @@ package org.faktorips.devtools.core.model.ipsproject;
 
 /**
  * Get and set the <code>IIpsPackageFragmentSortDefinition</code>. The sort definition is created
- * manually by the user and stored in the filesystem (@see
- * IpsPackageFragmentArbitrarySortDefinition.SORT_ORDER_FILE).
+ * manually by the user and stored in the file system.
  * <p>
- * The qualified packages name matches a directory hierarchy in the filesystem. Each package segment
- * name refers to a directory. The sort order file contains the folders in the parent directory.
+ * The qualified packages name matches a directory hierarchy in the file system. Each package
+ * segment name refers to a directory. The sort order file contains the folders in the parent
+ * directory.
  * <p>
- * < blockquote>
+ * <blockquote>
  * 
  * <pre>
  * example:
@@ -41,7 +41,6 @@ package org.faktorips.devtools.core.model.ipsproject;
  * </pre>
  * 
  * </blockquote>
- * <p>
  * 
  * @author Markus Blum
  */
@@ -61,4 +60,5 @@ public interface IIpsPackageFragmentArbitrarySortDefinition extends IIpsPackageF
      * @param segments List with segment names in sort order.
      */
     public void setSegmentNames(String[] segments);
+
 }

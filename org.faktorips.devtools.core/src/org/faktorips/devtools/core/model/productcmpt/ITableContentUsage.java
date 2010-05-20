@@ -53,40 +53,38 @@ public interface ITableContentUsage extends IIpsObjectPart, IPropertyValue {
     public final static String MSGCODE_INVALID_TABLE_CONTENT = MSGCODE_PREFIX + "InvalidTableContent"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the product cmpt type was not found.
+     * Validation message code to indicate that the product component type was not found.
      */
     public final static String MSGCODE_NO_TYPE = MSGCODE_PREFIX + "NoProductCmptType"; //$NON-NLS-1$
 
     /**
-     * Set the rolename of the table structure usage implemented by this content usage.
+     * Set the role name of the table structure usage implemented by this content usage.
      * 
-     * @param structureUsage The rolename of the table structure usage referred to by this content
-     *            usage.
+     * @param structureUsageRolename The role name of the table structure usage referred to by this
+     *            content usage.
      */
     public void setStructureUsage(String structureUsageRolename);
 
     /**
-     * @return The rolename of the table structure usage implemented by this content usage.
+     * Returns the role name of the table structure usage implemented by this content usage.
      */
     public String getStructureUsage();
 
     /**
-     * Set the name of the table conent used by this table content usage.
+     * Set the name of the table content used by this table content usage.
      * 
-     * @param tableContentName The fully quallified name of the used table content.
+     * @param tableContentName The fully qualified name of the used table content.
      */
     public void setTableContentName(String tableContentName);
 
     /**
-     * @return The fully quallified name of the used table content.
+     * @return The fully qualified name of the used table content.
      */
     public String getTableContentName();
 
     /**
      * Returns the table contents which is related or <code>null</code> if the table contents can't
      * be found.
-     * 
-     * @param ipsProject TODO
      * 
      * @throws CoreException if an error occurs while searching for the table contents.
      */
@@ -96,7 +94,7 @@ public interface ITableContentUsage extends IIpsObjectPart, IPropertyValue {
      * Returns the related table structure usage or <code>null</code> if the table contents can't be
      * found.
      * 
-     * @param project The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the table structure usage.

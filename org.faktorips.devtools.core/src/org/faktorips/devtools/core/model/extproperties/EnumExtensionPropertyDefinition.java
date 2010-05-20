@@ -33,32 +33,23 @@ public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyD
         this.enumType = enumType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDefaultValue(String s) {
         defaultValue = enumType.getEnumValue(s);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValueFromString(String value) {
         return enumType.getEnumValue(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValueFromXml(Element valueElement) {
         CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
         if (cdata == null) {
             return defaultValue;
         }
-        int qualifiedNameDelimiterPos = cdata.getData().lastIndexOf(".");
+        int qualifiedNameDelimiterPos = cdata.getData().lastIndexOf("."); //$NON-NLS-1$
         String id = ""; //$NON-NLS-1$
         if (qualifiedNameDelimiterPos < 0) {
             id = cdata.getData();

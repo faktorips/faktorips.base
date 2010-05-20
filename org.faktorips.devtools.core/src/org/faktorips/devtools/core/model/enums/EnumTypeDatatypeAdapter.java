@@ -147,9 +147,9 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         if (result.contains(valueA) && result.contains(valueB)) {
             return ObjectUtils.equals(valueA, valueB);
         }
-        throw new IllegalArgumentException("Either the value of parameter valueA=" + valueA
-                + " or the one of parameter valueB="
-                + " is not part of this enumeration type. Therefor the equality cannot be determined.");
+        throw new IllegalArgumentException("Either the value of parameter valueA=" + valueA //$NON-NLS-1$
+                + " or the one of parameter valueB=" //$NON-NLS-1$
+                + " is not part of this enumeration type. Therefore the equality cannot be determined."); //$NON-NLS-1$
     }
 
     @Override

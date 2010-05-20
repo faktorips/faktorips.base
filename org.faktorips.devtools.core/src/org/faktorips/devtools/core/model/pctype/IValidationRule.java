@@ -209,8 +209,6 @@ public interface IValidationRule extends IIpsObjectPart {
     /**
      * Sets the specifiedInSourceCode flag that indicates if the validated attributes are specified
      * in the source code instead of this rule.
-     * 
-     * @param specifiedInSourceCode
      */
     public void setValidatedAttrSpecifiedInSrc(boolean validatedAttrSpecifiedInSrc);
 

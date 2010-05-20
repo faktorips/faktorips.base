@@ -14,9 +14,9 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 /**
- * A delta entry desribes a single difference between a product component generation and the type it
- * is based on. For example the type might contain a new attribute but the product component has not
- * matching attribute value.
+ * A delta entry describes a single difference between a product component generation and the type
+ * it is based on. For example the type might contain a new attribute but the product component has
+ * not matching attribute value.
  * 
  * @author Jan Ortmann
  */
@@ -33,10 +33,11 @@ public interface IDeltaEntry {
     public String getDescription();
 
     /**
-     * Fixes the difference between the type and the produt component.
+     * Fixes the difference between the type and the product component.
      * <p>
      * For example if the type contains a new attribute but the product component generation. has
-     * not matching attribute value, this method creates the attribute vlaue.
+     * not matching attribute value, this method creates the attribute value.
      */
     public void fix();
+
 }

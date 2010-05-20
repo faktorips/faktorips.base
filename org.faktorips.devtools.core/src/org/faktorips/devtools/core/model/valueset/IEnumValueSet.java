@@ -21,7 +21,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**
- * EnumSet represents a value set of discrete values, each value has to be explicitly defined.
+ * An <tt>IEnumValueSet</tt> represents a value set of discrete values where each value has to be
+ * explicitly defined.
  * 
  * @author Thorsten Guenther
  */
@@ -58,7 +59,7 @@ public interface IEnumValueSet extends IValueSet {
     /**
      * Removes the value at the given index from the value set.
      * 
-     * @throws IndexOutOfBoundsException if the given index is out of bounds.
+     * @throws IndexOutOfBoundsException If the given index is out of bounds.
      */
     public void removeValue(int index);
 
@@ -70,14 +71,14 @@ public interface IEnumValueSet extends IValueSet {
     /**
      * Retrieves the value at the given index.
      * 
-     * @throws IndexOutOfBoundsException if the given index is out of bounds.
+     * @throws IndexOutOfBoundsException If the given index is out of bounds.
      */
     public String getValue(int index);
 
     /**
      * Sets the value at the given index.
      * 
-     * @throws IndexOutOfBoundsException if the given index is out of bounds.
+     * @throws IndexOutOfBoundsException If the given index is out of bounds.
      */
     public void setValue(int index, String value);
 
@@ -87,25 +88,25 @@ public interface IEnumValueSet extends IValueSet {
     public int size();
 
     /**
-     * Returns all values contained in the given other value set but not in this one.
+     * Returns an array with all values contained in the given other value set but not in this one.
      * 
      * @param otherSet The set to take the values from to find in this one.
-     * @return An string array representing the values not contained.
      */
     public String[] getValuesNotContained(IEnumValueSet otherSet);
 
     /**
-     * Adds all values from the given datatype to the value set.
+     * Adds all values from the given {@link EnumDatatype} to the value set.
      */
     public void addValuesFromDatatype(EnumDatatype datatype);
 
     /**
-     * Checks if the value at the specified position is a valid. Not that if this value is a
-     * duplicate, the method returns a a list with a message that has the message code
+     * Checks if the value at the specified position is a valid. Note that if this value is a
+     * duplicate, the method returns a list with a message that has the message code
      * {@link #MSGCODE_DUPLICATE_VALUE}. The messager's invalid object properties specify this value
      * set as the invalid object, the property {@link #PROPERTY_VALUES} as invalid property and the
      * index as the position holding the invalid value. So the other duplicates are NOT returned as
      * invalid!
      */
     public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreException;
+
 }

@@ -41,16 +41,15 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
      * Validation message code to indicate that the formula signature's can't be found.
      */
     public final static String MSGCODE_SIGNATURE_CANT_BE_FOUND = MSGCODE_PREFIX + "SignatureCantBeFound"; //$NON-NLS-1$
-    // TODO v2 - test
 
     /**
-     * Validation message code to indicate that the formula signature's datatype can't be found and
-     * so the formula's datatype can't be checked against it.
+     * Validation message code to indicate that the formula signature's data type can't be found and
+     * so the formula's data type can't be checked against it.
      */
     public final static String MSGCODE_UNKNOWN_DATATYPE_FORMULA = MSGCODE_PREFIX + "UnknownDatatypeFormula"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the formula's datatype is not compatible with the
+     * Validation message code to indicate that the formula's data type is not compatible with the
      * one defined by the signature.
      */
     public final static String MSGCODE_WRONG_FORMULA_DATATYPE = MSGCODE_PREFIX + "WrongFormulaDatatype"; //$NON-NLS-1$
@@ -90,8 +89,6 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
      * Returns the method signature this formula implements. Returns <code>null</code> if the method
      * signature is not found.
      * 
-     * @param ipsProject
-     * 
      * @throws CoreException if an error occurs while searching.
      */
     public IProductCmptTypeMethod findFormulaSignature(IIpsProject ipsProject) throws CoreException;
@@ -104,12 +101,10 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the value datatypes the results of this formula expression are instances of. This
-     * datatype is equal to the formula signatures datatype. If the formula signature's return type
-     * is not a value datatype (which is an error in the model and is reported via validation), this
-     * method returns <code>null</code>.
-     * 
-     * @throws CoreException
+     * Returns the value data types the results of this formula expression are instances of. This
+     * data type is equal to the formula signatures data type. If the formula signature's return
+     * type is not a value data type (which is an error in the model and is reported via
+     * validation), this method returns <code>null</code>.
      */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
 
@@ -134,18 +129,18 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
      * if the element does not contain a formula.
      * 
      * @param formulaTest if <code>true</code> the formula will be compiled for usage inside a
-     *            forumla test, in formula tests all type parameters will be replaced by their
-     *            value, which is defined inside the forumla test.
+     *            formula test, in formula tests all type parameters will be replaced by their
+     *            value, which is defined inside the formula test.
      */
     public ExtendedExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException;
 
     /**
-     * Returns the enum dataypes that can be use in this formula. Allowed enum types are those that
-     * are used as datatype in one of the parameters or in a table used by the product component
-     * generation this config element belongs to. If the datatype of the formula is itself an enum
-     * datatype, this one is also returned.
+     * Returns the enumeration data types that can be use in this formula. Allowed enumeration types
+     * are those that are used as data type in one of the parameters or in a table used by the
+     * product component generation this configuration element belongs to. If the data type of the
+     * formula is itself an enumeration data type, this one is also returned.
      * <p>
-     * Returns an empty array if this config element does not represent a formula.
+     * Returns an empty array if this configuration element does not represent a formula.
      * 
      * @throws CoreException if an error occurs while searching the enum datatypes.
      */

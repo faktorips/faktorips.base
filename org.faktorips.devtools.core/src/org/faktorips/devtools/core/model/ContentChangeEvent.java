@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An event that signals the change of an ips source file's content.
+ * An event that signals the change of an IPS source file's content.
  */
 public class ContentChangeEvent {
 
@@ -122,7 +122,6 @@ public class ContentChangeEvent {
         return part;
     }
 
-    // TODO JAVADOC!
     public IIpsObjectPart[] getMovedParts() {
         if (movedParts == null) {
             return new IIpsObjectPart[0];

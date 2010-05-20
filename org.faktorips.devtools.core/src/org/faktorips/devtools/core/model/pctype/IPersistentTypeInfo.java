@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 
 /**
  * A class that holds information of a policy component type which is relevant for persistence.
- * <p/>
+ * <p>
  * This information is used as a hint to the code generator on how to realize the table(s) on the
  * database side.
  * 
@@ -52,12 +52,12 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     public final static String PROPERTY_DISCRIMINATOR_VALUE = "discriminatorValue"; //$NON-NLS-1$
 
     /**
-     * The name of the discriminator datatype property.
+     * The name of the discriminator data type property.
      */
     public final static String PROPERTY_DISCRIMINATOR_DATATYPE = "discriminatorDatatype"; //$NON-NLS-1$
 
     /**
-     * The name of a property that indicates that the joines sublass inheritance strategy is not
+     * The name of a property that indicates that the joined subclass inheritance strategy is not
      * used.
      */
     public final static String PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS = "notJoinedSubclass"; //$NON-NLS-1$
@@ -69,7 +69,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     public final static String PROPERTY_PERSISTENT_TYPE = "persistentType"; //$NON-NLS-1$
 
     /**
-     * The name of a property that indicates that the discriminator column name and datatype is
+     * The name of a property that indicates that the discriminator column name and data type is
      * defined in this type.
      */
     public final static String PROPERTY_DEFINES_DISCRIMINATOR_COLUMN = "definesDiscriminatorColumn"; //$NON-NLS-1$
@@ -120,8 +120,8 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
             + "definitionOfDiscriminatorNotAllowed"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the table definition defined in the supertype is not
-     * allowed / possible.
+     * Validation message code to indicate that the table definition defined in the super type is
+     * not allowed / possible.
      */
     public final static String MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED = MSGCODE_PREFIX
             + "msgcodeUseTableDefinedInSupertypeNotAllowed"; //$NON-NLS-1$
@@ -129,8 +129,8 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     /**
      * Validation message code to indicate that persistence attribute info or persistence
      * association info has column names which is already defined. The conflicting attribute can be
-     * in the same type this attribute info belongs to or in a supertype if SINGLE_TABLE inheritance
-     * is used.
+     * in the same type this attribute info belongs to or in a super type if SINGLE_TABLE
+     * inheritance is used.
      */
     public final static String MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME = MSGCODE_PREFIX
             + "PersistenceAttrColumnNameDuplicate"; //$NON-NLS-1$
@@ -162,30 +162,30 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     /**
      * Returns <code>true</code> if this persistent type defines the discriminator column. Not that
      * the discriminator column can only be defined at the root entity. If the current persistent
-     * type defines the discriminator column then the column name and datatype must given in this
-     * type. The column name and datatype of the discriminator can't be different or overwritten in
+     * type defines the discriminator column then the column name and data type must given in this
+     * type. The column name and data type of the discriminator can't be different or overwritten in
      * one of the subclasses.
      */
     public boolean isDefinesDiscriminatorColumn();
 
     /**
-     * Set to <code>true</code> if this type defines the discriminator column name and datatype.
-     * Note that the discriminator column name and datatype can only be specified in the base
+     * Set to <code>true</code> if this type defines the discriminator column name and data type.
+     * Note that the discriminator column name and data type can only be specified in the base
      * entity.
      */
     public void setDefinesDiscriminatorColumn(boolean definesDiscriminatorColumn);
 
     /**
-     * Return <code>true</code> if the table defined in the supertype will be used. Or
+     * Return <code>true</code> if the table defined in the super type will be used. Or
      * <code>false</code> if this type defines the table name, in which the type will be persist.
-     * Note that if the directly associate supertype also used the table definition of its super
+     * Note that if the directly associate super type also used the table definition of its super
      * type then this super types table definition will be used and so on, thus the table definition
      * can be defined in one of the super types in the inheritance hierarchy.
      */
     public boolean isUseTableDefinedInSupertype();
 
     /**
-     * Set to <code>true</code> if the table definition of the supertype will be used.
+     * Set to <code>true</code> if the table definition of the super type will be used.
      */
     public void setUseTableDefinedInSupertype(boolean useTableDefinedInSupertype);
 
@@ -266,13 +266,13 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * an entity is determined by storing this value in a the discriminator column of the table.
      * 
      * @param newDiscriminatorValue The value of the discriminator which has to match the currently
-     *            set discriminator datatype. Must not be <code>null</code>.
+     *            set discriminator data type. Must not be <code>null</code>.
      */
     public void setDiscriminatorValue(String newDiscriminatorValue);
 
     /**
-     * Returns the discriminator datatype. Discriminator datatypes/values/columns are used only in
-     * conjunction with the SINGLE_TABLE inheritance strategy.
+     * Returns the discriminator data type. Discriminator data types / values / columns are used
+     * only in conjunction with the SINGLE_TABLE inheritance strategy.
      * 
      * @see DiscriminatorDatatype
      * @see InheritanceStrategy
@@ -280,10 +280,10 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
     public DiscriminatorDatatype getDiscriminatorDatatype();
 
     /**
-     * Sets the discriminator datatype. Discriminator datatypes/values/columns are used only in
-     * conjunction with the SINGLE_TABLE inheritance strategy.
+     * Sets the discriminator data type. Discriminator data types / values / columns are used only
+     * in conjunction with the SINGLE_TABLE inheritance strategy.
      * 
-     * @param newDiscriminatorDatatype A discriminator datatype, must not be <code>null</code>.
+     * @param newDiscriminatorDatatype A discriminator data type, must not be <code>null</code>.
      * 
      * @see DiscriminatorDatatype
      * @see InheritanceStrategy
@@ -299,7 +299,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
      * <li>The strategy TABLE_PER_CONCRETE_CLASS is not supported as it is an optional part of the
      * standard.</li>
      * <li>A new strategy named MIXED is introduced to map a subset of a class hierarchy to a
-     * dedicated table (meaning that there must also exist a superentity using the strategy
+     * dedicated table (meaning that there must also exist a super entity using the strategy
      * SINGLE_TABLE)</li>
      * </ul>
      * The use of the strategy MIXED enables support for a dedicated (secondary) table which can be
@@ -352,4 +352,5 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
         ENTITY,
         MAPPED_SUPERCLASS
     }
+
 }

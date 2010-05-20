@@ -154,7 +154,7 @@ public class EnumTypeValidations {
 
         // Name should not be empty if the EnumType defers it's values and is not abstract.
         if (valuesDeferredToContent && !enumTypeIsAbstract) {
-            if (enumContentName.equals("")) {
+            if (enumContentName.length() == 0) {
                 String text = Messages.EnumType_EnumContentNameEmpty;
                 Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY, text, Message.ERROR,
                         enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
@@ -164,9 +164,8 @@ public class EnumTypeValidations {
         }
     }
 
-    /** Prohibits initialization. */
     private EnumTypeValidations() {
-
+        // Prohibit initialization.
     }
 
     private static class SupertypeCollector extends EnumTypeHierachyVisitor {

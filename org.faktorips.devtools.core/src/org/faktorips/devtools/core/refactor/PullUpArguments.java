@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 
+// TODO AW: Pull Up refactoring still under construction.
 public class PullUpArguments extends RefactoringArguments {
 
     private final boolean updateReferences;

@@ -15,9 +15,6 @@ package org.faktorips.devtools.core.model.businessfct;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
-/**
- *
- */
 public interface BusinessFunction extends IIpsObject {
 
 }

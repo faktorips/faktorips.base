@@ -38,13 +38,13 @@ public interface ITestRule extends ITestObject {
     public final static String MSGCODE_PREFIX = "TESTRULE-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the validation rule is inside the policy cmpts which
-     * are related by the test policy cmpt type parameters inside the test case type.
+     * Validation message code to indicate that the validation rule is inside the policy components
+     * which are related by the test policy component type parameters inside the test case type.
      */
     public final static String MSGCODE_VALIDATION_RULE_NOT_EXISTS = MSGCODE_PREFIX + "ValidationRuleNotExists"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that validatio rule is duplicated in the test case.
+     * Validation message code to indicate that validation rule is duplicated in the test case.
      */
     public final static String MSGCODE_DUPLICATE_VALIDATION_RULE = MSGCODE_PREFIX + "DuplicateValidationRule"; //$NON-NLS-1$
 
@@ -85,7 +85,7 @@ public interface ITestRule extends ITestObject {
     /**
      * Returns the validation rule or <code>null</code> if the object does not exists.
      * 
-     * @param ipsProject The ips project which object path is used to search.
+     * @param ipsProject The IPS project which object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the validation rule.
      */
@@ -105,4 +105,5 @@ public interface ITestRule extends ITestObject {
      * @see ITestRule#getViolationType()
      */
     public void setViolationType(TestRuleViolationType violated);
+
 }

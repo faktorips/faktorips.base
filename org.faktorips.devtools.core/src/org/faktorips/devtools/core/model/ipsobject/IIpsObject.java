@@ -21,9 +21,6 @@ import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
-/**
- *
- */
 public interface IIpsObject extends IIpsObjectPartContainer {
 
     /**
@@ -56,12 +53,12 @@ public interface IIpsObject extends IIpsObjectPartContainer {
     public boolean isFromParsableFile();
 
     /**
-     * Returns the object's qualified name. The qualified name is the name of the ips package
+     * Returns the object's qualified name. The qualified name is the name of the IPS package
      * fragment's name followed by a dot followed by the object's unqualified name. So this is
      * basically the same concept as the qualified name of Java classes.
      * <p>
      * <b>Example:</b><br>
-     * The qualified name of an ips object called 'MotorCoverage' in the package fragment
+     * The qualified name of an IPS object called 'MotorCoverage' in the package fragment
      * 'mycompany.motor' has the qualified name 'mycompany.motor.MotorCoverage'.
      */
     public String getQualifiedName();
@@ -76,8 +73,8 @@ public interface IIpsObject extends IIpsObjectPartContainer {
     public String getUnqualifiedName();
 
     /**
-     * Returns the qualified name type for this ips object which is the combination of this ips
-     * objects qualified name and its ips object type.
+     * Returns the qualified name type for this IPS object which is the combination of this IPS
+     * objects qualified name and its IPS object type.
      */
     public QualifiedNameType getQualifiedNameType();
 
@@ -98,8 +95,6 @@ public interface IIpsObject extends IIpsObjectPartContainer {
      * can depend on another object that does not exist, e.g. because the other object has been
      * deleted. However, if the deleted object is created again, we must rebuild this dependent
      * object so that the problem marker will be removed.
-     * 
-     * @throws CoreException
      */
     public IDependency[] dependsOn() throws CoreException;
 
@@ -112,7 +107,6 @@ public interface IIpsObject extends IIpsObjectPartContainer {
      * @return The details to the given Dependency. If no details exist for this dependency, an
      *         empty list is returned.
      * 
-     * @throws CoreException
      * @throws NullPointerException If the given dependency is <code>null</code>.
      */
     public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException;

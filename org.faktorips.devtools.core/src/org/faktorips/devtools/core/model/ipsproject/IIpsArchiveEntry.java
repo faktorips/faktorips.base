@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * An object path entry for an ips archive.
+ * An object path entry for an IPS archive.
  * 
  * @author Jan Ortmann
  */
@@ -26,7 +26,7 @@ public interface IIpsArchiveEntry extends IIpsObjectPathEntry {
     public final static String FILE_EXTENSION = "ipsar"; //$NON-NLS-1$
 
     /**
-     * Returns the ips archive this entry refers to.
+     * Returns the IPS archive this entry refers to.
      */
     public IIpsArchive getIpsArchive();
 
@@ -44,7 +44,7 @@ public interface IIpsArchiveEntry extends IIpsObjectPathEntry {
     /**
      * Returns true if a representation of this entry is part of the provided delta or one of its
      * children.
-     * <p/>
+     * <p>
      * Note: For changes of files outside the workspace which are referenced from the project in any
      * kind no IResourceDelta will be created.
      */

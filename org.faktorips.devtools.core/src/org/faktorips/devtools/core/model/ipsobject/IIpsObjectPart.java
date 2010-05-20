@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
-/**
- *
- */
 public interface IIpsObjectPart extends IIpsObjectPartContainer {
 
     public final static String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$

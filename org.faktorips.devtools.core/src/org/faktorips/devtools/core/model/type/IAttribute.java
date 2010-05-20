@@ -25,9 +25,10 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
  */
 public interface IAttribute extends IIpsObjectPart {
 
-    // property names
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+
     public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
+
     public final static String PROPERTY_DEFAULT_VALUE = "defaultValue"; //$NON-NLS-1$
 
     /**
@@ -42,32 +43,32 @@ public interface IAttribute extends IIpsObjectPart {
     public final static String MSGCODE_INVALID_ATTRIBUTE_NAME = MSGCODE_PREFIX + "InvalidAttributeName"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of this attribute is not set.
+     * Validation message code to indicate that the data type of this attribute is not set.
      */
     public final static String MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE = MSGCODE_PREFIX
             + "DefaultNotParsableUnknownDatatype"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype of this attibute is not a valid
-     * datatype.
+     * Validation message code to indicate that the data type of this attribute is not a valid data
+     * type.
      */
     public final static String MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE = MSGCODE_PREFIX
             + "ValueNotParsableInvalidDatatype"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the default-value of this attribute can not be
-     * parsed by the datatype of this attribute.
+     * Validation message code to indicate that the default value of this attribute can not be
+     * parsed by the data type of this attribute.
      */
     public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueTypeMissmatch"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype provided for a parameter is not valid.
+     * Validation message code to indicate that the data type provided for a parameter is not valid.
      */
     public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeNotFound"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the default-value of this attribute is not contained
-     * in the valueset of this attribute.
+     * Validation message code to indicate that the default value of this attribute is not contained
+     * in the value set of this attribute.
      */
     public final static String MSGCODE_DEFAULT_NOT_IN_VALUESET = MSGCODE_PREFIX + "DefaultNotInValueSet"; //$NON-NLS-1$
 
@@ -82,23 +83,23 @@ public interface IAttribute extends IIpsObjectPart {
     public void setName(String newName);
 
     /**
-     * Returns the attribute's datatype. Note that only value datatypes are allowed as attribute
-     * datatype.
+     * Returns the attribute's data type. Note that only value data types are allowed as attribute
+     * data type.
      */
     public String getDatatype();
 
     /**
-     * Sets the attribute's datatype. Note that only value datatypes are allowed as attribute
-     * datatype.
+     * Sets the attribute's data type. Note that only value data types are allowed as attribute data
+     * type.
      */
     public void setDatatype(String newDatatype);
 
     /**
-     * Returns the attribute's value datatype. If this attribute is linked to a policy component
-     * type attribute, the policy component type's value datatype is returned. If the attribute is
-     * not linked, the attribute's *own* value datatype is returned.
+     * Returns the attribute's value data type. If this attribute is linked to a policy component
+     * type attribute, the policy component type's value data type is returned. If the attribute is
+     * not linked, the attribute's *own* value data type is returned.
      * 
-     * @param project The project which ips object path is used for the search. This is not
+     * @param project The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @see #getDatatype()

@@ -26,9 +26,6 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 
-/**
- * 
- */
 public interface IProductCmptGeneration extends IIpsObjectGeneration {
 
     /**
@@ -68,7 +65,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
 
     /**
      * Validation message code to indicate that the product component type for this generation
-     * contains an attribute that has no corresponding config element configured in this generation.
+     * contains an attribute that has no corresponding configuration element configured in this
+     * generation.
      */
     public final static String MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT = MSGCODE_PREFIX
             + "AttributeWithMissingConfigElement"; //$NON-NLS-1$
@@ -94,7 +92,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     /**
      * Searches the product component type this product component generation is based on.
      * 
-     * @param ipsProject The ips project which search path is used to search the type.
+     * @param ipsProject The IPS project which search path is used to search the type.
      * 
      * @return The product component type this product component generation is based on or
      *         <code>null</code> if the product component type can't be found.
@@ -201,8 +199,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IConfigElement[] getConfigElements();
 
     /**
-     * Returns the config element that corresponds to the attribute with the given name. Returns
-     * <code>null</code> if no such element exists.
+     * Returns the configuration element that corresponds to the attribute with the given name.
+     * Returns <code>null</code> if no such element exists.
      */
     public IConfigElement getConfigElement(String attributeName);
 
@@ -282,15 +280,15 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * Moves the link given with parameter <code>toMove</code> before or after the specified target
      * link. If the target belongs to another association, the association of the toMove link will
      * change, too.
-     * <p/>
+     * <p>
      * With the boolean parameter before you could specify to move the link before or after the
      * target link.
-     * <p/>
      * 
      * @param toMove the link you want to move
-     * @param the target link you want to move the <code>toMove</code>-Link
+     * @param target target link you want to move the <code>toMove</code>-Link
      * @param before true for moving <code>toMove</code> in front of target, false to move it behind
      *            target
+     * 
      * @return The method returns true if the link could be moved and returns false if toMove or
      *         target is null one of the links was not part of this generation yet.
      * 
@@ -313,8 +311,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public int getNumOfTableContentUsages();
 
     /**
-     * @param rolename The rolename for the required content usage.
-     * @return The table content usage for the table structure usage with the given rolename.
+     * @param rolename The role name for the required content usage.
+     * @return The table content usage for the table structure usage with the given role name.
      */
     public ITableContentUsage getTableContentUsage(String rolename);
 

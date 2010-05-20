@@ -17,19 +17,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Helper for sorting-related stuff belonging the IpsFeatureVersionManager
+ * Helper for sorting-related stuff belonging the {@link IIpsFeatureVersionManager}.
  * 
  * @author Thorsten Guenther
  */
 public class IpsFeatureVersionManagerSorter {
 
     /**
-     * Sorts all given managers for migration. That means, that the manager A, which is a precessor
-     * for another manager B is found at an index in the returned array which is less than the index
-     * of the manager B.
+     * Sorts all given managers for migration. That means, that the manager A, which is a
+     * predecessor for another manager B is found at an index in the returned array which is less
+     * than the index of the manager B.
+     * <p>
+     * Returns the sorted array.
      * 
      * @param managers The array of managers to sort.
-     * @return The sorted array.
      */
     public IIpsFeatureVersionManager[] sortForMigartionOrder(IIpsFeatureVersionManager[] managers) {
         HashMap<String, IIpsFeatureVersionManager> managersById = new HashMap<String, IIpsFeatureVersionManager>();
@@ -47,18 +48,19 @@ public class IpsFeatureVersionManagerSorter {
     }
 
     /**
-     * Walks down the chain of predecessor-managers and fills all visited managers into the
-     * result-list in reverse order. If you have a chain of C has predecessor B has predecessor A,
-     * after a call to this method with id of C will contain A, B, C in this order. Do duplicate
-     * entries will be made.
+     * Walks down the chain of predecessor-managers and fills all visited managers into the result
+     * list in reverse order. If you have a chain of C has predecessor B has predecessor A, after a
+     * call to this method with the id of C the result list will contain A, B, C in this order. No
+     * duplicate entries will be made.
      * 
-     * @param managersById Hashtable for lookup, has to be properly filled, will not be modified.
+     * @param managersById Hash map for lookup, has to be properly filled, will not be modified.
      * @param result The list of all visited managers (see above).
-     * @param id The id fo the manager to start at.
+     * @param id The id for the manager to start with.
      */
     private void buildPredecessorList(HashMap<String, IIpsFeatureVersionManager> managersById,
             ArrayList<IIpsFeatureVersionManager> result,
             String id) {
+
         IIpsFeatureVersionManager manager = managersById.get(id);
 
         if (manager == null) {

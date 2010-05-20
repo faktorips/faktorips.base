@@ -39,7 +39,6 @@ public interface IProdDefProperty extends Described {
      * <p>
      * If type is {@link ProdDefPropertyType#DEFAULT_VALUE_AND_VALUESET} the property can be casted
      * to {@link IPolicyCmptTypeAttribute}.
-     * 
      */
     public ProdDefPropertyType getProdDefPropertyType();
 
@@ -49,7 +48,7 @@ public interface IProdDefProperty extends Described {
     public String getPropertyName();
 
     /**
-     * Returns the name of the datatype.
+     * Returns the name of the data type.
      */
     public String getPropertyDatatype();
 

@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * A collection of utility methods for xml handling.
+ * A collection of utility methods for XML handling.
  * 
  * @author Jan Ortmann
  */
@@ -90,7 +90,7 @@ public class XmlUtil {
     }
 
     /**
-     * Parses the given xml String to a Date.
+     * Parses the given XML String to a Date.
      */
     public final static Date parseXmlDateStringToDate(String s) {
         if (s == null || s.equals("")) { //$NON-NLS-1$
@@ -100,7 +100,7 @@ public class XmlUtil {
     }
 
     /**
-     * Parses the given xml String to a Gregorian calendar.
+     * Parses the given XML String to a Gregorian calendar.
      */
     public final static GregorianCalendar parseXmlDateStringToGregorianCalendar(String s) {
         if (StringUtils.isEmpty(s)) {
@@ -130,16 +130,15 @@ public class XmlUtil {
      * Transforms the given node to a string and writes in to the given writer.
      * <p>
      * The encoding that is used to transforms the string into bytes is defined by the writer. E.g.
-     * a <code>OutputStreamWriter</code> is created with a Charset/encoding. With a
-     * </code>StringWriter</code> no encoding is neccessary.
+     * a <code>OutputStreamWriter</code> is created with a char set / encoding. With a
+     * </code>StringWriter</code> no encoding is necessary.
      * <p>
-     * However, to get the encoding option set in the xml header e.g. <code><?xml version="1.0"
-     * encoding="Cp1252"?></code>, it is neccessary to pass the encoding to this method. Note that
+     * However, to get the encoding option set in the XML header e.g. <code>&lt;?xml version="1.0"
+     * encoding="Cp1252"?&gt;</code>, it is necessary to pass the encoding to this method. Note that
      * this method does not check, if the writer's encoding and the given encoding are the same (as
      * the encoding is not available from the writer).
      */
     public final static void nodeToWriter(Node node, Writer writer, String encoding) throws TransformerException {
-        // explicit use of xalan, as we need it's indentation feature
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
             transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
@@ -149,7 +148,7 @@ public class XmlUtil {
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-        // both settings are necessary, to accomodate versions in Java 1.4 and 1.5
+        // both settings are necessary, to accommodate versions in Java 1.4 and 1.5
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
         DOMSource source = new DOMSource(node);
         StreamResult result = new StreamResult(writer);
@@ -158,6 +157,7 @@ public class XmlUtil {
 
     public final static Document getDocument(InputStream is) throws SAXException, IOException,
             ParserConfigurationException {
+
         return getDefaultDocumentBuilder().parse(is);
     }
 
@@ -226,12 +226,10 @@ public class XmlUtil {
      * See also the <a
      * href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
      * example</a>.
-     * </p>
-     * 
-     * @throws TransformerException
      */
     public static void writeXMLtoFile(File file, Document doc, String doctype, int indentWidth, String encoding)
             throws TransformerException {
+
         writeXMLtoResult(new StreamResult(file), doc, doctype, indentWidth, encoding);
     }
 
@@ -241,27 +239,23 @@ public class XmlUtil {
      * See also the <a
      * href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
      * example</a>.
-     * </p>
-     * 
-     * @throws TransformerException
      */
     public static void writeXMLtoStream(OutputStream os, Document doc, String doctype, int indentWidth, String encoding)
             throws TransformerException {
+
         writeXMLtoResult(new StreamResult(os), doc, doctype, indentWidth, encoding);
     }
 
     /**
-     * Writes a XML document to a dom result object.
+     * Writes a XML document to a DOM result object.
      * <p>
      * See also the <a
      * href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
      * example</a>.
-     * </p>
-     * 
-     * @throws TransformerException
      */
     private static void writeXMLtoResult(Result res, Document doc, String doctype, int indentWidth, String encoding)
             throws TransformerException {
+
         Source src = new DOMSource(doc);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
@@ -281,7 +275,7 @@ public class XmlUtil {
         }
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
         if (indentWidth > 0) {
-            // both settings are necessary, to accomodate versions in Java 1.4 and 1.5
+            // both settings are necessary, to accommodate versions in Java 1.4 and 1.5
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indentWidth); //$NON-NLS-1$ //$NON-NLS-2$
         }
         transformer.transform(src, res);
@@ -319,7 +313,8 @@ public class XmlUtil {
      * Element#getElementsByTagName(String tagName) this method returns only the direct children,
      * not all descendants.
      * 
-     * @param parent The parent node. qparam tagName the element tag name.
+     * @param parent The parent node.
+     * @param tagName the element tag name.
      * @param index The 0 based position of the child.
      * @return The element at the specified index
      * @throws IndexOutOfBoundsException if no element exists at the specified index.
@@ -347,8 +342,9 @@ public class XmlUtil {
      * Returns the child element at the given index. The index is the position of the element
      * considering all child nodes of type element.
      * 
-     * @param parent The parent node. qparam tagName the element tag name.
+     * @param parent The parent node.
      * @param index The 0 based position of the child.
+     * 
      * @throws IndexOutOfBoundsException if no element exists at the specified index.
      */
     public final static Element getElement(Node parent, int index) {
@@ -482,6 +478,7 @@ public class XmlUtil {
     }
 
     private XmlUtil() {
+        // Utility class not to be instantiated.
     }
 
 }

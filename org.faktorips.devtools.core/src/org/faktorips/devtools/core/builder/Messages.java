@@ -15,62 +15,41 @@ package org.faktorips.devtools.core.builder;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Thorsten Guenther
- */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.builder.messages"; //$NON-NLS-1$
 
-    private Messages() {
-    }
-
     static {
-        // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String AbstractParameterIdentifierResolver_msgExceptionWhileResolvingIdentifierAtThis;
-
     public static String AbstractParameterIdentifierResolver_msgResolverMustBeSet;
-
     public static String AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved;
-
     public static String AbstractParameterIdentifierResolver_msgErrorParameterDatatypeResolving;
-
     public static String AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving;
-
     public static String AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute;
-
     public static String AbstractParameterIdentifierResolver_msgErrorNoAttribute;
-
     public static String AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute;
-
     public static String AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute;
+    public static String AbstractParameterIdentifierResolver_msgAttributeMissing;
 
     public static String IpsBuilder_ipsSrcFileNotParsable;
-
     public static String IpsBuilder_msgExceptionWhileBuildingDependentProjects;
+    public static String IpsBuilder_msgBuildResults;
+    public static String IpsBuilder_msgInvalidProperties;
+    public static String IpsBuilder_validatingProject;
+    public static String IpsBuilder_preparingBuild;
+    public static String IpsBuilder_startFullBuild;
+    public static String IpsBuilder_startIncrementalBuild;
+    public static String IpsBuilder_finishBuild;
+    public static String IpsBuilder_deleting;
+    public static String IpsBuilder_building;
 
     public static String JetJavaSourceFileBuilder_name;
 
-    public static String IpsBuilder_msgBuildResults;
-
-    public static String IpsBuilder_msgInvalidProperties;
-
-    public static String IpsBuilder_validatingProject;
-
-    public static String IpsBuilder_preparingBuild;
-
-    public static String IpsBuilder_startFullBuild;
-
-    public static String IpsBuilder_startIncrementalBuild;
-
-    public static String IpsBuilder_finishBuild;
-
-    public static String IpsBuilder_deleting;
-
-    public static String IpsBuilder_building;
-
-    public static String AbstractParameterIdentifierResolver_msgAttributeMissing;
 }

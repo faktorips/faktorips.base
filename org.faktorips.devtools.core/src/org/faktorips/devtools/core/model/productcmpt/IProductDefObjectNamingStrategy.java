@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 public interface IProductDefObjectNamingStrategy {
 
     /**
-     * Name of xml tags representing a product component naming strategy.
+     * Name of XML tags representing a product component naming strategy.
      */
     public final static String XML_TAG_NAME = "ProductCmptNamingStrategy"; //$NON-NLS-1$
 
@@ -60,7 +60,7 @@ public interface IProductDefObjectNamingStrategy {
     public final static String MSGCODE_MISSING_VERSION_SEPARATOR = MSGCODE_PREFIX + "VersionSeparatorIsMissing"; //$NON-NLS-1$
 
     /**
-     * Sets the ips project this stratgey belongs to. Is called when the strategey is instantiated.
+     * Sets the IPS project this strategy belongs to. Is called when the strategy is instantiated.
      * Should never be called by clients.
      * 
      * @throws NullPointerException if project is <code>null</code>.
@@ -111,8 +111,6 @@ public interface IProductDefObjectNamingStrategy {
 
     /**
      * Returns the next version id.
-     * 
-     * @param versionId A version id that can be used to derive the next one.
      */
     public String getNextVersionId(IProductCmpt productCmpt);
 
@@ -163,7 +161,7 @@ public interface IProductDefObjectNamingStrategy {
     public String getJavaClassIdentifier(String name);
 
     /**
-     * Initializes the strategy with the data from the xml element. This method must be able to read
+     * Initializes the strategy with the data from the XML element. This method must be able to read
      * those elements created by the toXml() method. The element's node name is expected to be the
      * name defined in <code>XML_TAG_NAME</code>.
      * <p>
@@ -179,10 +177,11 @@ public interface IProductDefObjectNamingStrategy {
     public void initFromXml(Element el);
 
     /**
-     * Creates an xml element representation of this strategy. The element's node name is defined in
+     * Creates an XML element representation of this strategy. The element's node name is defined in
      * <code>XML_TAG_NAME</code>.
      * 
-     * @param doc The xml document to create new elements.
+     * @param doc The XML document to create new elements.
      */
     public Element toXml(Document doc);
+
 }

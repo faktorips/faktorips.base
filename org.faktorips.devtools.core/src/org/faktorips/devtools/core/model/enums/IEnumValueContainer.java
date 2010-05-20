@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * <tt>EnumValueContainer</tt> is the supertype for <tt>EnumType</tt> and <tt>EnumContent</tt>.
+ * <tt>EnumValueContainer</tt> is the super type for <tt>EnumType</tt> and <tt>EnumContent</tt>.
  * <p>
  * In Faktor-IPS the values of an enumeration can be defined directly in the <tt>IEnumType</tt>
  * itself or separate from it in an <tt>IEnumContent</tt>.

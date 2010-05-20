@@ -15,49 +15,34 @@ package org.faktorips.devtools.core;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Thorsten Guenther
- */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.messages"; //$NON-NLS-1$
 
-    private Messages() {
-    }
-
     static {
-        // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    public static String DatatypeFormatter_booleanFalse;
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
 
+    public static String DatatypeFormatter_booleanFalse;
     public static String DatatypeFormatter_booleanTrue;
 
     public static String EnumTypeDisplay_id;
-
     public static String EnumTypeDisplay_name;
-
     public static String EnumTypeDisplay_nameAndId;
 
     public static String IpsPlugin_infoDefaultTextEditorWasOpened;
-
     public static String IpsPlugin_titleErrorDialog;
-
     public static String IpsPlugin_msgUnexpectedError;
-
     public static String IpsPlugin_languagePackLanguage;
-
     public static String IpsPlugin_languagePackCountry;
-
     public static String IpsPlugin_languagePackVariant;
-
     public static String IpsPlugin_errorNoDatatypeControlFactoryFound;
-
     public static String IpsPlugin_dialogSaveDirtyEditorMessageMany;
-
     public static String IpsPlugin_dialogSaveDirtyEditorMessageSimple;
-
     public static String IpsPlugin_dialogSaveDirtyEditorTitle;
 
 }

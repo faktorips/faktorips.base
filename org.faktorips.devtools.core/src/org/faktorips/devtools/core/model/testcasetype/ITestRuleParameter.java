@@ -20,8 +20,6 @@ package org.faktorips.devtools.core.model.testcasetype;
  */
 public interface ITestRuleParameter extends ITestParameter {
 
-    /** Property names */
-
     /**
      * Prefix for all message codes of this class.
      */
@@ -32,4 +30,5 @@ public interface ITestRuleParameter extends ITestParameter {
      * type.
      */
     public final static String MSGCODE_NOT_EXPECTED_RESULT = MSGCODE_PREFIX + "NotExpectedResult"; //$NON-NLS-1$
+
 }

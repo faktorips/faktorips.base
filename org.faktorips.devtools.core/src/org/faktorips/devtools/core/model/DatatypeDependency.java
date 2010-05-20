@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Instances of this class indicate a dependency between an IpsObject and a Datatype. It is assumed
+ * Instances of this class indicate a dependency between an IpsObject and a data type. It is assumed
  * that the source is an IpsObject and therefore the qualified name type is used to identify it. The
  * target is assumed to be a datatype where only the qualified name is known.
  * 
@@ -50,32 +50,23 @@ public class DatatypeDependency implements IDependency, Serializable {
         calculateHashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public QualifiedNameType getSource() {
         return source;
     }
 
     /**
-     * Returns the target as string which is the actual datatype of the target property.
+     * Returns the target as string which is the actual data type of the target property.
      */
     public String getTargetAsQualifiedName() {
         return target;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getTarget() {
         return target;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DependencyType getType() {
         return type;
@@ -88,9 +79,6 @@ public class DatatypeDependency implements IDependency, Serializable {
         hashCode = result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof DatatypeDependency)) {
@@ -103,19 +91,14 @@ public class DatatypeDependency implements IDependency, Serializable {
                 && getType().equals(other.getType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return hashCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "(" + source.toString() + " -> " + target.toString() + ", type: " + type + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
+
 }

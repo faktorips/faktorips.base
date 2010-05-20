@@ -15,30 +15,29 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Thorsten Guenther
- */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.tablecontents.messages"; //$NON-NLS-1$
 
-    private Messages() {
-        // 
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String Row_FromValueGreaterThanToValue;
     public static String Row_MissingValueForUniqueKey;
     public static String Row_NameMustBeValidJavaIdentifier;
     public static String Row_ValueNotParsable;
+
     public static String TableContents_msgMissingTablestructure;
     public static String TableContents_msgColumncountMismatch;
     public static String TableContents_msgNameStructureAndContentsNotSameWhenEnum;
     public static String TableContentsGeneration_dublicateEnumId;
+
     public static String UniqueKeyValidator_msgUniqueKeyViolation;
     public static String UniqueKeyValidatorRange_msgToManyUniqueKeyViolations;
+
 }

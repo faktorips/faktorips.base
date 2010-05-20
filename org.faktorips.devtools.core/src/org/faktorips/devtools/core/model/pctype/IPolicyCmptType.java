@@ -35,7 +35,7 @@ public interface IPolicyCmptType extends IType {
     public final static String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     /**
-     * The name of the supertype property.
+     * The name of the super type property.
      */
     public final static String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
 
@@ -82,7 +82,7 @@ public interface IPolicyCmptType extends IType {
             + "ProductCmptTypeDoesNotConfigureThisType"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the product relevant flag is set but the supertype
+     * Validation message code to indicate that the product relevant flag is set but the super type
      * is not product relevant.
      */
     public final static String MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT = MSGCODE_PREFIX
@@ -115,9 +115,9 @@ public interface IPolicyCmptType extends IType {
     /**
      * Returns the product component type this type refers to. Returns <code>null</code> if either
      * this type does not refer to a product component type or the product component type can't be
-     * found on the project's ips object path.
+     * found on the project's IPS object path.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the type.
      */
@@ -129,22 +129,22 @@ public interface IPolicyCmptType extends IType {
     public void setProductCmptType(String qualifiedName);
 
     /**
-     * Returns the qualified name of the type's supertype. Returns an empty string if this type has
-     * no supertype.
+     * Returns the qualified name of the type's super type. Returns an empty string if this type has
+     * no super type.
      */
     @Override
     public String getSupertype();
 
     /**
-     * Returns <code>true</code> if this type has a supertype, otherwise <code>false</code>. This
-     * method also returns <code>true</code> if the type refers to a supertype but the supertype
+     * Returns <code>true</code> if this type has a super type, otherwise <code>false</code>. This
+     * method also returns <code>true</code> if the type refers to a super type but the super type
      * does not exist.
      */
     @Override
     public boolean hasSupertype();
 
     /**
-     * Sets the type's supertype.
+     * Sets the type's super type.
      * 
      * @throws IllegalArgumentException if newSupertype is null.
      */
@@ -194,15 +194,15 @@ public interface IPolicyCmptType extends IType {
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
-     * does not search the supertype hierarchy.) If more than one attribute with the name exist, the
-     * first attribute with the name is returned. Returns <code>null</code> if no attribute with the
-     * given name exists.
+     * does not search the super type hierarchy.) If more than one attribute with the name exist,
+     * the first attribute with the name is returned. Returns <code>null</code> if no attribute with
+     * the given name exists.
      */
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute(String name);
 
     /**
-     * Searches this type and it's supertypes for an attribute with the given name. If more than one
-     * attribute with the name exist, the first attribute with the name is returned. Returns
+     * Searches this type and it's super types for an attribute with the given name. If more than
+     * one attribute with the name exist, the first attribute with the name is returned. Returns
      * <code>null</code> if no attribute with the given name is found.
      * 
      * @throws CoreException if an error occurs while searching.
@@ -238,7 +238,7 @@ public interface IPolicyCmptType extends IType {
     public int[] moveAttributes(int[] indexes, boolean up);
 
     /**
-     * Returns an array of all attributes of all supertypes not yet overwritten by this policy
+     * Returns an array of all attributes of all super types not yet overwritten by this policy
      * component type.
      * 
      * @param ipsProject TODO
@@ -247,7 +247,7 @@ public interface IPolicyCmptType extends IType {
 
     /**
      * Creates new attributes in this type overriding the given attributes. Note that it is not
-     * checked, if the attributes really belong to one of the type's supertypes.
+     * checked, if the attributes really belong to one of the type's super types.
      * 
      * @return The created attributes.
      */
@@ -289,10 +289,10 @@ public interface IPolicyCmptType extends IType {
      * policy class itself but also of coverages, insured persons, etc. In this case the policy
      * class is the root of the complex policy aggregate.
      * <p>
-     * A policy component type is considered an aggregate root if it and it's supertypes havn't got
+     * A policy component type is considered an aggregate root if it and it's super types havn't got
      * a reverse composite relation.
      * 
-     * @throws CoreException if an error occurs while searching the supertype hierarchy.
+     * @throws CoreException if an error occurs while searching the super type hierarchy.
      */
     public boolean isAggregateRoot() throws CoreException;
 
@@ -334,18 +334,12 @@ public interface IPolicyCmptType extends IType {
     public int[] moveAssociations(int[] indexes, boolean up);
 
     /**
-     * Creates a new supertype hierarchy for the type and returns it.
-     * 
-     * @param ipsProject the IpsProject from which the search is started for the policy component
-     *            types
+     * Creates a new super type hierarchy for the type and returns it.
      */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException;
 
     /**
-     * Creates a new subtype hierarchy for the type and returns it.
-     * 
-     * @param ipsProject the IpsProject from which the search is started for the policy component
-     *            types
+     * Creates a new sub type hierarchy for the type and returns it.
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
 
@@ -377,4 +371,5 @@ public interface IPolicyCmptType extends IType {
      * @see PersistentTypeInfo#isEnabled()
      */
     public boolean isPersistentEnabled();
+
 }

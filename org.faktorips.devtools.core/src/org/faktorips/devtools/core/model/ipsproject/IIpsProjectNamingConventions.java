@@ -19,7 +19,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Naming conventions for the various ips elements. This is a separate class as it is sometimes
+ * Naming conventions for the various IPS elements. This is a separate class as it is sometimes
  * necessary to check if a name is valid before an object is created for example in wizards to a
  * create a new object. Therefore we can't use a method of the specified class. The naming
  * conventions are defined per project, so that they can be configured in the project.
@@ -51,11 +51,11 @@ public interface IIpsProjectNamingConventions {
 
     /**
      * Returns a message list containing errors if the given qualified name is missing or invalid
-     * for the given ips object type. The message list might also contain warnings if the name is
+     * for the given IPS object type. The message list might also contain warnings if the name is
      * discouraged.
      * 
-     * @param type The type of ips object.
-     * @param name The name of validate
+     * @param type The type of IPS object.
+     * @param name The name to validate.
      * 
      * @see #DISCOURAGED_NAME
      * @see #INVALID_NAME
@@ -68,11 +68,11 @@ public interface IIpsProjectNamingConventions {
 
     /**
      * Returns a message list containing errors if the given unqualified name is missing or invalid
-     * for the given ips object type. The message list might also contain warnings if the name is
+     * for the given IPS object type. The message list might also contain warnings if the name is
      * discouraged.
      * 
-     * @param type The type of ips object.
-     * @param name The name of validate
+     * @param type The type of IPS object.
+     * @param name The name to validate.
      * 
      * @see #DISCOURAGED_NAME
      * @see #INVALID_NAME
@@ -85,14 +85,14 @@ public interface IIpsProjectNamingConventions {
     public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException;
 
     /**
-     * Validates if the given name is valid for ips packages.
+     * Validates if the given name is valid for IPS packages.
      * 
      * @throws CoreException if an error occurs while validating the name.
      */
     public MessageList validateIpsPackageName(String name) throws CoreException;
 
     /**
-     * Validates if the given name is valid for ips package roots.
+     * Validates if the given name is valid for IPS package roots.
      * 
      * @throws CoreException if an error occurs while validating the name.
      */
@@ -107,10 +107,12 @@ public interface IIpsProjectNamingConventions {
      * @param validatedObject the object that is provided to the created return message.
      * @param ipsProject is needed to retrieve the project specific compiler settings that are used
      *            for validation
+     * 
      * @see #INVALID_NAME
+     * 
      * @return <code>null</code> if the name is valid and a standard message if not
      * 
-     * @throws CoreException if an error occurs while validating the name
+     * @throws CoreException if an error occurs while validating the name.
      */
     public Message validateIfValidJavaIdentifier(String name,
             String text,
@@ -120,9 +122,7 @@ public interface IIpsProjectNamingConventions {
     /**
      * Validates if the given name is valid java type name.
      * 
-     * @param name
      * @param qualifiedCheck true = qualified name; false = unqualified name
-     * @return MessageList
      */
     public MessageList validateJavaTypeName(String name, boolean qualifiedCheck);
 

@@ -19,12 +19,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * This class represents the configuration for an ips artefact builder set. It uses name, value
+ * This class represents the configuration for an IPS artifact builder set. It uses name, value
  * pairs as strings to describe its properties. A {@link IIpsArtefactBuilderSetConfig} instance
  * which is provided to a {@link IIpsArtefactBuilderSet} object in the initialization phase can be
  * created based on this object by means of the create(IIpsProject, IpsArtefactBuilderSetInfo)
  * method. Instances of this class are created based on the builder set configurations defined in
- * the ips project properties.Therefor the IpsArtefactBuilderSet tag of an .ipsproject file can
+ * the IPS project properties.Therefor the IpsArtefactBuilderSet tag of an .ipsproject file can
  * contain one IpsArtefactBuilderSetConfig tag. Here is an example for a configuration declaration:
  * 
  * <IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset">
@@ -78,8 +78,6 @@ public interface IIpsArtefactBuilderSetConfigModel {
 
     /**
      * @param config The configuration to be parsed.
-     * @return The element containing all configuration data which can be parsed back to a new
-     *         configuration using initFromXml().
      */
     public void initFromXml(Element config);
 

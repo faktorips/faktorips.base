@@ -51,7 +51,7 @@ public class AssociationType extends DefaultEnumValue {
 
     public final static AssociationType getRelationType(String id) {
         if (id.equals("agg")) { //$NON-NLS-1$
-            // renamed aggregation to composition (inkl the id!)
+            // Renamed aggregation to composition (including the id!)
             return COMPOSITION_MASTER_TO_DETAIL;
         }
         return (AssociationType)enumType.getEnumValue(id);
@@ -96,4 +96,5 @@ public class AssociationType extends DefaultEnumValue {
                 : isCompositionDetailToMaster() ? AssociationType.COMPOSITION_MASTER_TO_DETAIL
                         : isCompositionMasterToDetail() ? AssociationType.COMPOSITION_DETAIL_TO_MASTER : null;
     }
+
 }

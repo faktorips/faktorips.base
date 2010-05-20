@@ -140,11 +140,11 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
             throws CoreException;
 
     /**
-     * Returns the datatype helper for the provided {@link IEnumType}. <code>IEnumType</code>
+     * Returns the data type helper for the provided {@link IEnumType}. <code>IEnumType</code>
      * implements the {@link Datatype} interface and this method provides the datatype helper for
-     * it. The datatype helper of an <code>IEnumType</code> depends on the
+     * it. The data type helper of an <code>IEnumType</code> depends on the
      * {@link IIpsArtefactBuilderSet} since it determines the full qualified class name of the
-     * generated datatype class.
+     * generated data type class.
      */
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter);
 
@@ -158,7 +158,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * Returns the name of the resource containing the root's table of contents at runtime. E.g.
      * "org.faktorips.sample.internal.sample-toc.xml". This returned path can be used to create a
      * ClassloaderRuntimeRepository. Returns <code>null</code> if this builder does not generate
-     * tocs or this root is not a root based on a source folder. Returns <code>null</code> if the
+     * TOCs or this root is not a root based on a source folder. Returns <code>null</code> if the
      * root is <code>null</code>.
      * 
      * @see org.faktorips.runtime.ClassloaderRuntimeRepository#create(String)
@@ -166,8 +166,8 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException;
 
     /**
-     * Returns the package name of the generated toc file.<br>
-     * Returns <code>null</code> if the builder doesn't create a toc file.
+     * Returns the package name of the generated TOC file.<br>
+     * Returns <code>null</code> if the builder doesn't create a TOC file.
      * 
      * @deprecated use getRuntimeRepositoryTocResourceName(root)
      */
@@ -181,7 +181,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
     public Locale getLanguageUsedInGeneratedSourceCode();
 
     /**
-     * When the builder set is loaded by the faktor ips plugin the extension id is set by means of
+     * When the builder set is loaded by the Faktor-IPS plug-in the extension id is set by means of
      * this method. This method is called before initialization.
      * 
      * @param id the extension id
@@ -189,7 +189,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
     public void setId(String id);
 
     /**
-     * When the builder set is loaded by the faktor ips plugin the extension describtion label is
+     * When the builder set is loaded by the Faktor-IPS plug-in the extension description label is
      * set by means of this method. This method is called before initialization.
      * 
      * @param label the extension description label
@@ -197,12 +197,12 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
     public void setLabel(String label);
 
     /**
-     * Returns the extension id declared in the plugin descriptor.
+     * Returns the extension id declared in the plug-in descriptor.
      */
     public String getId();
 
     /**
-     * Returns the extension description label declared in the plugin descriptor.
+     * Returns the extension description label declared in the plug-in descriptor.
      */
     public String getLabel();
 
@@ -217,16 +217,16 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * constructor of the set implementation.
      * 
      * @param config the configuration for this builder set instance. The configuration for a
-     *            builder set instance is defined in the .ipsproject file of an ips project.
+     *            builder set instance is defined in the .ipsproject file of an IPS project.
      * 
-     * @throws NullPointerException if config is <code>null</code>.
+     * @throws NullPointerException if <tt>config</tt> is <code>null</code>.
      * 
      * @see IIpsArtefactBuilderSetConfig class description
      */
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException;
 
     /**
-     * Subclasses should reimplement this method if an aggregate root builder is contained
+     * Subclasses should re-implement this method if an aggregate root builder is contained
      * 
      * @return <code>true</code> if this builder set contains an builder which requires to be called
      *         for the aggregate root object if any child (regardless of the relations depth) has

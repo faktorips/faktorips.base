@@ -39,20 +39,21 @@ public interface IDecisionBFE extends IMethodCallBFE {
             + "datatypeOnlyNonePrimValuedatatype"; //$NON-NLS-1$
 
     /**
-     * Returns the datatype of the condition value.
+     * Returns the data type of the condition value.
      */
     public String getDatatype();
 
     /**
-     * Sets the datatype of the condition value.
+     * Sets the data type of the condition value.
      */
     public void setDatatype(String datatype);
 
     /**
-     * Returns the datatype object for the specified datatype. If none is found <code>null</code>
-     * will be returned. Only value datatypes are allowed.
+     * Returns the data type object for the specified data type. If none is found <code>null</code>
+     * will be returned. Only value data types are allowed.
      * 
      * @throws CoreException is throw if an exception occurs during the course of searching
      */
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException;
+
 }

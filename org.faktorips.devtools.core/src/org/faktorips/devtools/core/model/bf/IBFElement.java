@@ -67,8 +67,6 @@ public interface IBFElement extends IIpsObjectPart {
 
     /**
      * Returns the size of the graphical representation of this element.
-     * 
-     * @return
      */
     public Dimension getSize();
 
@@ -136,4 +134,5 @@ public interface IBFElement extends IIpsObjectPart {
      * Returns all control flows that are connected to this element.
      */
     public List<IControlFlow> getAllControlFlows();
+
 }

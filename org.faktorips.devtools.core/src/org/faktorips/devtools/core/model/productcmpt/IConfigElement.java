@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.List;
 
-import javax.naming.OperationNotSupportedException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -46,31 +44,31 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
     public final static String MSGCODE_PREFIX = "CONFIGELEMENT-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the attribute the config element is based can't be
-     * found.
+     * Validation message code to indicate that the attribute the configuration element is based
+     * can't be found.
      */
     public final static String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the attribute's datatype can't be found and so the
+     * Validation message code to indicate that the attribute's data type can't be found and so the
      * value can't be parsed.
      */
     public final static String MSGCODE_UNKNOWN_DATATYPE_VALUE = MSGCODE_PREFIX + "UnknownDatatypeValue"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype is invalid. (E.g. the definition of a
-     * dynamic datatype can be wrong.)
+     * Validation message code to indicate that the data type is invalid. (E.g. the definition of a
+     * dynamic data type can be wrong.)
      */
     public final static String MSGCODE_INVALID_DATATYPE = MSGCODE_PREFIX + "InvalidDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value can't be parsed, it is not an instance of
-     * the datatype
+     * the data type
      */
     public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the value is not contained in the valueset.
+     * Validation message code to indicate that the value is not contained in the value set.
      */
     public final static String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet"; //$NON-NLS-1$
 
@@ -84,9 +82,9 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
      * Validation message code to indicate that the config'elements value set is not of a type that
      * conforms to the specification in the model. E.g. if in the model (=the policy component
      * type's attribute) the value set type
-     * <code>UNRESTRICTED<code> is specified, then in the config element all types
-     * are allowd. If <code>RANGE</code> is specified in the model, then only <code>RANGE</code> is
-     * allowed in the config element.
+     * <code>UNRESTRICTED<code> is specified, then in the configuration element all types
+     * are allowed. If <code>RANGE</code> is specified in the model, then only <code>RANGE</code> is
+     * allowed in the configuration element.
      */
     public final static String MSGCODE_VALUESET_TYPE_MISMATCH = MSGCODE_PREFIX + "ValueSetTypeMismatch"; //$NON-NLS-1$
 
@@ -97,12 +95,12 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
     public final static String MSGCODE_VALUESET_IS_NOT_A_SUBSET = MSGCODE_PREFIX + "ValueSetIsNotASubset"; //$NON-NLS-1$
 
     /**
-     * Returns the product component this config element belongs to.
+     * Returns the product component this configuration element belongs to.
      */
     public IProductCmpt getProductCmpt();
 
     /**
-     * Returns the product component generation this config element belongs to.
+     * Returns the product component generation this configuration element belongs to.
      */
     @Override
     public IProductCmptGeneration getProductCmptGeneration();
@@ -140,9 +138,10 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
      * provide more detailed documentation.
      * <p>
      * Returns the value set types that are allowed for the element's value set. If the attribute's
-     * value set this config element configures is unrestricted, all value set types allowed by the
-     * project are returned. Otherwise the attribute's value set type is returned. If the attribute
-     * does not exist, this method returns the type of the current config element's value set.
+     * value set this configuration element configures is unrestricted, all value set types allowed
+     * by the project are returned. Otherwise the attribute's value set type is returned. If the
+     * attribute does not exist, this method returns the type of the current configuration element's
+     * value set.
      * 
      * @throw CoreException if an error occurs.
      * 
@@ -154,12 +153,9 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Sets the type of the value set defining the values valid for this config element. If the type
-     * of the currently existing value set is the same as the one to set, all old informations (e.g.
-     * bounds and step for a range value set) are removed.
-     * 
-     * @throws OperationNotSupportedException if this element ist of type PRODUCT_ATTRIBUTE because
-     *             config elements of this type does not support own value sets.
+     * Sets the type of the value set defining the values valid for this configuration element. If
+     * the type of the currently existing value set is the same as the one to set, all old
+     * informations (e.g. bounds and step for a range value set) are removed.
      */
     @Override
     public void setValueSetType(ValueSetType type);
@@ -168,7 +164,7 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
      * Finds the corresponding attribute in the product component type this product component is an
      * instance of.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @return the corresponding attribute or <code>null</code> if no such attribute exists.
      * 
@@ -177,18 +173,18 @@ public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSe
     public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the element's value datatype, or <code>null</code> if it can't be found. The config
-     * element's datatype is the attribute's datatype the element is based on.
+     * Returns the element's value data type, or <code>null</code> if it can't be found. The
+     * configuration element's data type is the attribute's data type the element is based on.
      * 
-     * @param ipsProject The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching
+     * @throws CoreException if an error occurs while searching.
      */
     @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Creates a copy of the given value set and applies this copy to this config element.
+     * Creates a copy of the given value set and applies this copy to this configuration element.
      */
     public void setValueSetCopy(IValueSet source);
 

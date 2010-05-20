@@ -53,28 +53,28 @@ public interface ITestParameter extends IIpsObjectPart {
     public void setName(String newName);
 
     /**
-     * Sets the datatype.
+     * Sets the data type.
      */
     public void setDatatype(String datatype);
 
     /**
-     * Returns the datatype.
+     * Returns the data type.
      */
     public String getDatatype();
 
     /**
      * Returns <code>true</code> if the test parameter is an input parameter, otherwise
      * <code>false</code>. Note if the parameter is a child parameter then the type (input, expected
-     * result, or combined) of the root test parameter will be checked. All childs inherit the type
-     * of the root parameter.
+     * result, or combined) of the root test parameter will be checked. All children inherit the
+     * type of the root parameter.
      */
     public boolean isInputOrCombinedParameter();
 
     /**
      * Returns <code>true</code> if the parameter is an expected result parameter, otherwise
      * <code>false</code>. Note if the parameter is a child parameter then the type (input, expected
-     * result, or combined) of the root test parameter will be checked. All childs inherit the type
-     * of the root parameter.
+     * result, or combined) of the root test parameter will be checked. All children inherit the
+     * type of the root parameter.
      */
     public boolean isExpextedResultOrCombinedParameter();
 
@@ -83,7 +83,7 @@ public interface ITestParameter extends IIpsObjectPart {
      * <code>false</code>. A combined test parameter is a parameter that specifies both input
      * objects and expected results objects. Note if the parameter is a child parameter then the
      * type (input, expected result, or combined) of the root test parameter will be checked. All
-     * childs inherit the type of the root parameter.
+     * children inherit the type of the root parameter.
      */
     public boolean isCombinedParameter();
 

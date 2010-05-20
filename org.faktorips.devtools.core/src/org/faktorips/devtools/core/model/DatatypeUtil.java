@@ -18,17 +18,15 @@ import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 
 /**
- * Collection of utility methods for datatypes.
+ * Collection of utility methods for data types.
  * 
  * @author Jan Ortmann
  */
 public class DatatypeUtil {
 
     /**
-     * Returns <code>true</code> if the given datatype is an enum type with a separate content
-     * containing the values. Returns <code>false</code> if datatype is <code>null</code>.
-     * 
-     * @param datatype The datatype.
+     * Returns <code>true</code> if the given data type is an enumeration type with a separate
+     * content containing the values. Returns <code>false</code> if data type is <code>null</code>.
      */
     public static final boolean isEnumTypeWithSeparateContent(Datatype datatype) {
         if (datatype == null) {
@@ -40,4 +38,5 @@ public class DatatypeUtil {
         IEnumType enumType = ((EnumTypeDatatypeAdapter)datatype).getEnumType();
         return !enumType.isContainingValues();
     }
+
 }

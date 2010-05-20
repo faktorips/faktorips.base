@@ -122,10 +122,7 @@ public interface IIpsObjectPathEntry {
      * interpreted as a relative path in respect to the path-entry's resource.
      * <p>
      * Callers of this method are responsible for closing the stream after use.
-     * 
-     * @param path
-     * @return
-     * @throws CoreException
      */
     public InputStream getRessourceAsStream(String path) throws CoreException;
+
 }

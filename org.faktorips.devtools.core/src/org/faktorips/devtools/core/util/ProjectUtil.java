@@ -42,43 +42,38 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 
 /**
- * Utilties for the creation and modification of projects.
+ * Utilities for the creation and modification of projects.
  * 
- * @author Thorsten Günther, Faktor Zehn AG
+ * @author Thorsten Günther
  */
 public class ProjectUtil {
 
     /**
-     * Adds the Faktor-IPS nature to the project.
+     * Adds the Faktor-IPS nature to the given project.
      * 
      * @param project A platform project.
      * 
-     * @throws NullPointerException if project is <code>null</code>.
-     * @throws CoreException
+     * @throws NullPointerException If project is <code>null</code>.
      */
     public final static void addIpsNature(IProject project) throws CoreException {
         Util.addNature(project, IIpsProject.NATURE_ID);
     }
 
     /**
-     * Returns <code>true</code> if the project has the Faktor-IPS Nature, otherwise
+     * Returns <code>true</code> if the given Java project has the Faktor-IPS Nature, otherwise
      * <code>false</code>.
      * 
      * @param project A platform project.
-     * 
-     * @throws CoreException
      */
     public final static boolean hasIpsNature(IJavaProject project) throws CoreException {
         return hasIpsNature(project.getProject());
     }
 
     /**
-     * Returns <code>true</code> if the project has the Faktor-IPS Nature, otherwise
+     * Returns <code>true</code> if the given project has the Faktor-IPS Nature, otherwise
      * <code>false</code>.
      * 
      * @param project A platform project.
-     * 
-     * @throws CoreException
      */
     public final static boolean hasIpsNature(IProject project) throws CoreException {
         return project.getDescription().hasNature(IIpsProject.NATURE_ID);
@@ -89,6 +84,7 @@ public class ProjectUtil {
      * 
      * @param ipsProject The project to disable the feature at.
      * @param featureName The name of the feature to disable.
+     * 
      * @throws CoreException if an error occurs while saving the properties to the file.
      */
     public static void disableBuilderFeature(IIpsProject ipsProject, String featureName) throws CoreException {
@@ -101,25 +97,23 @@ public class ProjectUtil {
     }
 
     /**
-     * Create an IPS-Project based on the given Java-Project. This project does not use the
-     * persistence feature.
+     * Creates and returns an IPS project based on the given Java project. This project does not use
+     * the persistence feature.
      * 
-     * @param javaProject The Java-Project to use as base for the IPS-Project
-     * @param runtimeIdPrefix The prefix for the runtime-IDs to be used in the new project.
-     * @param mergableFolder The source folder for mergable java files.
-     * @param derivedFolder The source folder for derived java files.
-     * @param srcFolder The source folder for IPS-Objects.
-     * @param isProductDefinitionProject <code>true</code> to create a project which is capable of
-     *            product definitions.
-     * @param isModelProject <code>true</code> to create a project which is capabel of model
-     *            objects.
-     * 
-     * @return The new IPS-Project.
-     * 
-     * @throws CoreException In case of any Errors.
      * @deprecated As of release 2.6, replaced by
      *             {@link #createIpsProject(IJavaProject, boolean, boolean, boolean, String, IFolder, IFolder, IFolder)}
-     *             .
+     * 
+     * @param javaProject The Java project to use as base for the IPS project
+     * @param runtimeIdPrefix The prefix for the runtime IDs to be used in the new project.
+     * @param mergableFolder The source folder for mergable Java files.
+     * @param derivedFolder The source folder for derived Java files.
+     * @param srcFolder The source folder for IPS objects.
+     * @param isProductDefinitionProject <code>true</code> to create a project which is capable of
+     *            product definitions.
+     * @param isModelProject <code>true</code> to create a project which is capable of model
+     *            objects.
+     * 
+     * @throws CoreException In case of any errors.
      */
     @Deprecated
     public static IIpsProject createIpsProject(IJavaProject javaProject,
@@ -129,26 +123,26 @@ public class ProjectUtil {
             IFolder mergableFolder,
             IFolder derivedFolder,
             IFolder srcFolder) throws CoreException {
+
         return createIpsProject(javaProject, isProductDefinitionProject, isModelProject, false, runtimeIdPrefix,
                 mergableFolder, derivedFolder, srcFolder);
     }
 
     /**
-     * Create an IPS-Project based on the given Java-Project.
+     * Creates and returns an IPS project based on the given Java project.
      * 
-     * @param javaProject The Java-Project to use as base for the IPS-Project
-     * @param runtimeIdPrefix The prefix for the runtime-IDs to be used in the new project.
-     * @param mergableFolder The source folder for mergable java files.
-     * @param derivedFolder The source folder for derived java files.
-     * @param srcFolder The source folder for IPS-Objects.
+     * @param javaProject The Java project to use as base for the IPS project.
+     * @param runtimeIdPrefix The prefix for the runtime IDs to be used in the new project.
+     * @param mergableFolder The source folder for mergable Java files.
+     * @param derivedFolder The source folder for derived Java files.
+     * @param srcFolder The source folder for IPS objects.
      * @param isProductDefinitionProject <code>true</code> to create a project which is capable of
      *            product definitions.
-     * @param isModelProject <code>true</code> to create a project which is capabel of model
+     * @param isModelProject <code>true</code> to create a project which is capable of model
      *            objects.
      * 
-     * @return The new IPS-Project.
+     * @throws CoreException In case of any errors.
      * 
-     * @throws CoreException In case of any Errors.
      * @since 2.6
      */
     public static IIpsProject createIpsProject(IJavaProject javaProject,
@@ -159,6 +153,7 @@ public class ProjectUtil {
             IFolder mergableFolder,
             IFolder derivedFolder,
             IFolder srcFolder) throws CoreException {
+
         IIpsProject ipsProject = createIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject,
                 isModelProject, isPersistentProject);
 
@@ -182,14 +177,14 @@ public class ProjectUtil {
     }
 
     /**
-     * Create a new java project based on the given data.
+     * Creates and returns a new Java project based on the given data.
      * 
      * @param project The platform project to be used as base for the java project.
-     * @param srcFolder The first source folder
-     * @param derivedFolder The second source folder
-     * @return The new java project
-     * @throws CoreException if the project nature can not be set
-     * @throws JavaModelException if the classpath could not be set
+     * @param srcFolder The first source folder.
+     * @param derivedFolder The second source folder.
+     * 
+     * @throws CoreException if the project nature can not be set.
+     * @throws JavaModelException if the class path could not be set.
      */
     public static IJavaProject createJavaProject(IProject project, IFolder srcFolder, IFolder derivedFolder)
             throws CoreException {
@@ -221,11 +216,9 @@ public class ProjectUtil {
     }
 
     /**
-     * Create a new project.
+     * Creates and returns a new project.
      * 
      * @param projectName The name for the new project.
-     * 
-     * @return The new project.
      * 
      * @throws CoreException if the creation of the project fails. See
      *             {@link IProject#create(org.eclipse.core.runtime.IProgressMonitor)} for details.
@@ -238,11 +231,10 @@ public class ProjectUtil {
     }
 
     /**
-     * Create a new folder root folder.
+     * Creates a new folder root folder and returns a handle to it.
      * 
      * @param project The project to create the folder in.
      * @param folderName The name of the folder.
-     * @return The handle to the new folder.
      * 
      * @throws CoreException If the creation of the folder fails. See
      *             {@link IFolder#create(boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
@@ -250,22 +242,20 @@ public class ProjectUtil {
      */
     public static IFolder createFolder(IProject project, String folderName) throws CoreException {
         IFolder folder = project.getFolder(folderName);
-
         if (!folder.exists()) {
             folder.create(true, true, new NullProgressMonitor());
         }
-
         return folder;
     }
 
     /**
-     * Create a new folder and add it as additional source folder entry to the IPS-project.
+     * Create a new folder and adds it as additional source folder entry to the IPS project.
      * 
      * @param ipsProject The project to create the folder in and to add the source folder entry to.
      * @param folderName The name of the new folder.
-     * @param outputFolderForMergableJavaFiles The Folder for mergable java files.
-     * @param outputFolderForDerivedJavaFiles The folder for derived java files.
-     * @return IFolder
+     * @param outputFolderForMergableJavaFiles The folder for mergable Java files.
+     * @param outputFolderForDerivedJavaFiles The folder for derived Java files.
+     * 
      * @throws CoreException if the creation of the folder fails or if the IPSObjectPath could not
      *             be set.
      */
@@ -273,6 +263,7 @@ public class ProjectUtil {
             String folderName,
             IFolder outputFolderForMergableJavaFiles,
             IFolder outputFolderForDerivedJavaFiles) throws CoreException {
+
         IFolder srcFolder = createFolder(ipsProject.getProject(), folderName);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
@@ -296,32 +287,35 @@ public class ProjectUtil {
     }
 
     /**
-     * Add a referrence between the two projects.
+     * Add a reference between the two projects.
      * 
      * @param referringProject The project referring the other.
-     * @param referencedProject The project refferde by the first one.
-     * @throws CoreException if the IpsObjectPath could not be set.
+     * @param referencedProject The project referred by the first one.
+     * 
+     * @throws CoreException If the IPS object path could not be set accordingly.
      */
     public static void addProjectReference(IIpsProject referringProject, IIpsProject referencedProject)
             throws CoreException {
+
         IIpsObjectPath ipsObjPath = referringProject.getIpsObjectPath();
         ipsObjPath.newIpsProjectRefEntry(referencedProject);
         referringProject.setIpsObjectPath(ipsObjPath);
     }
 
     /**
-     * Create an IpsProject based on the given JavaProject. This project does not use the
-     * persistence feature.
+     * Creates and returns an <tt>IIpsProject</tt> based on the given <tt>IJavaProject</tt>. This
+     * project does not use the persistence feature.
      * 
-     * @param javaProject The JavaProject which is to be extended with IPS-Capabilities
-     * @param runtimeIdPrefix The prefix for RuntimeIDs to be used in this project
-     * @param isProductDefinitionProject <code>true</code> if this is a product definition project.
-     * @param isModelProject <code>true</code> if this is a model project.
-     * @return The new IpsProject.
-     * 
-     * @throws CoreException In case of any Errors.
      * @deprecated As of release 2.6, replaced by
      *             {@link #createIpsProject(IJavaProject, String, boolean, boolean, boolean)}.
+     * 
+     * @param javaProject The <tt>IJavaProject</tt> which is to be extended with IPS capabilities.
+     * @param runtimeIdPrefix The prefix for runtime IDs to be used in this project.
+     * @param isProductDefinitionProject Must be <code>true</code> if this is a product definition
+     *            project.
+     * @param isModelProject Must be <code>true</code> if this is a model project.
+     * 
+     * @throws CoreException In case of any errors.
      */
     @Deprecated
     public static IIpsProject createIpsProject(IJavaProject javaProject,
@@ -332,15 +326,16 @@ public class ProjectUtil {
     }
 
     /**
-     * Create an IpsProject based on the given JavaProject.
+     * Creates and returns an <tt>IIpsProject</tt> based on the given <tt>IJavaProject</tt>.
      * 
-     * @param javaProject The JavaProject which is to be extended with IPS-Capabilities
-     * @param runtimeIdPrefix The prefix for RuntimeIDs to be used in this project
-     * @param isProductDefinitionProject <code>true</code> if this is a product definition project.
-     * @param isModelProject <code>true</code> if this is a model project.
-     * @return The new IpsProject.
+     * @param javaProject The <tt>IJavaProject</tt> which is to be extended with IPS capabilities.
+     * @param runtimeIdPrefix The prefix for runtime IDs to be used in this project.
+     * @param isProductDefinitionProject Must be <code>true</code> if this is a product definition
+     *            project.
+     * @param isModelProject Must be <code>true</code> if this is a model project.
      * 
      * @throws CoreException In case of any Errors.
+     * 
      * @since 2.6
      */
     public static IIpsProject createIpsProject(IJavaProject javaProject,
@@ -348,6 +343,7 @@ public class ProjectUtil {
             boolean isProductDefinitionProject,
             boolean isModelProject,
             boolean isPersistentProject) throws CoreException {
+
         addIpsRuntimeLibraries(javaProject);
         IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -375,6 +371,7 @@ public class ProjectUtil {
             props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
         }
         ipsProject.setProperties(props);
+
         return ipsProject;
     }
 
@@ -410,17 +407,16 @@ public class ProjectUtil {
     }
 
     private static boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
-
         String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\."); //$NON-NLS-1$
         return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
                 || Integer.parseInt(targetVersion[0]) > 1;
     }
 
     /**
-     * Creates a hidden file <code>.keepme</code> in the given folder.
+     * Creates a hidden file <code>.keepme</code> in the given folder. Returns <tt>true</tt> if done
+     * successfully, <tt>false</tt> otherwise.
      * 
      * @param folder parent folder
-     * @return boolean true if done else false
      */
     public static boolean createKeepMeFile(IFolder folder) {
         IFile outFile = folder.getFile(".keepme"); //$NON-NLS-1$
@@ -434,6 +430,10 @@ public class ProjectUtil {
             return false;
         }
         return true;
+    }
+
+    private ProjectUtil() {
+        // Utility class not to be instantiated.
     }
 
 }

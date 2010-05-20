@@ -33,7 +33,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
 
     public String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType"; //$NON-NLS-1$
-    public String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon";
+    public String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -47,7 +47,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     /**
      * Validation message code to indicate that the referenced policy component type is not marked
-     * as confifurable.
+     * as configurable.
      */
     public final static String MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE = MSGCODE_PREFIX
             + "PolicyCmptTypeNotMarkedAsConfigurable"; //$NON-NLS-1$
@@ -62,10 +62,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Validation code to indicate that a type has a different value for the
      * ConfigurationForPolicyCmptType property than it's supertype.
-     * 
+     * <p>
      * If a type's supertype configures a policy component type, the type must also configures one,
      * even if it the same. If the supertype doesn't configure a policy component type, also this
-     * one doesnt.
+     * one doesn't.
      */
     public final static String MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE = MSGCODE_PREFIX
             + "MustHaveSameValueForPolicyCmptType"; //$NON-NLS-1$
@@ -115,8 +115,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns <code>true</code> if this product component type configures a policy component type.
      * The configured policy component type can be requested via [{@link #getPolicyCmptType()} and
-     * {@link #findPolicyCmptType()}. Note that if this method returns <code>true</code> it does not
-     * mean that the policy component type actually exists.
+     * {@link #findPolicyCmptType(IIpsProject)}. Note that if this method returns <code>true</code>
+     * it does not mean that the policy component type actually exists.
      */
     public boolean isConfigurationForPolicyCmptType();
 
@@ -135,7 +135,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <code>null</code> if either this product component type does not refer to a policy component
      * type or the policy component type can't be found.
      * 
-     * @param project The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the type.
@@ -144,10 +144,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     /**
      * Returns the type's supertype if the type is based on a supertype and the supertype can be
-     * found on the project's ips object path. Returns <code>null</code> if either this type is not
-     * based on a supertype or the supertype can't be found on the project's ips object path.
+     * found on the project's IPS object path. Returns <code>null</code> if either this type is not
+     * based on a supertype or the supertype can't be found on the project's IPS object path.
      * 
-     * @param project The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the supertype.
@@ -172,7 +172,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * returns it. Returns <code>null</code> if no such attribute exists.
      * 
      * @param name The attribute's name.
-     * @param ipsProject The project which ips object path is used for the search. This is not
+     * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @throws NullPointerException if project is <code>null</code>.
@@ -221,7 +221,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <code>null</code> is returned.
      * 
      * @param roleName the role name of the ITableStructureUsage in question
-     * @param project The project which ips object path is used for the search. This is not
+     * @param project The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @return the ITableStructureUsage for the provided name or <code>null</code> if non is found
@@ -260,7 +260,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * formula name is set to the given formula name and the method name is set to the default
      * method name.
      * 
-     * @param The name of the formula signature.
+     * @param formulaName The name of the formula signature.
      * 
      * @see IProductCmptTypeMethod#getDefaultMethodName()
      */
@@ -299,10 +299,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * hierarchy. Returns <code>null</code> if no such method is found.
      * 
      * @param formulaName The formula name to search
-     * @param The ips project which ips object path is used to search.
+     * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching.
-     * @throws NullPointerException if ips project is <code>null</code>.
+     * @throws NullPointerException if IPS project is <code>null</code>.
      */
     public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException;
 
@@ -317,16 +317,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns the types product definition properties including properties defined in one of the
      * type's supertypes.
-     * 
-     * @throws CoreException
      */
     public IProdDefProperty[] findProdDefProperties(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the product definition property with the given name and type. If no such property is
      * found in the type itself, the supertype hierarchy is searched.
-     * 
-     * @throws CoreException
      */
     public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject)
             throws CoreException;
@@ -334,42 +330,30 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns the product definition property with the given name. If no such property is found in
      * the type itself, the supertype hierarchy is searched.
-     * 
-     * @throws CoreException
      */
     public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <code>true</code> if the user has configured a custom icon for enabled instances of
      * this type, <code>false</code> otherwise.
-     * 
-     * @return
      */
     public boolean isUseCustomInstanceIcon();
 
     /**
      * Returns the string-presentation of the path of an Icon file used for enabled instances of
      * this type. This method may return a valid path even though no custom Icon is configured.
-     * 
-     * @return
      */
     public String getInstancesIcon();
 
     /**
      * Configures this {@link ProductCmptType} to use the icon at the given path as icon for enabled
      * instances.
-     * 
-     * @param path
      */
     public void setInstancesIcon(String path);
 
     /**
-     * Delegating to @see #searchMetaObjectSrcFiles(boolean)
-     * 
-     * 
-     * @param includeSubtypes
-     * @return
-     * @throws CoreException
+     * @see #searchMetaObjectSrcFiles(boolean)
      */
     public IIpsSrcFile[] searchProductComponents(boolean includeSubtypes) throws CoreException;
+
 }

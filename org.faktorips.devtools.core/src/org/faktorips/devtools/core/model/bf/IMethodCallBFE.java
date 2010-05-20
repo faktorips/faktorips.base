@@ -21,13 +21,13 @@ import org.faktorips.devtools.core.model.type.IMethod;
 /**
  * This class represents an action within a business function. Actions a points of execution within
  * the control flow of a business function. There are three different types of actions.
- * <p/>
+ * <p>
  * An in line action represents a piece of code that can be executed. An in line actions is
  * generated to a method on the business function class.
- * <p/>
+ * <p>
  * A method call action calls a method on a parameter that is specified for the business function.
  * Currently only parameter less methods on policy or product component type can be called.
- * <p/>
+ * <p>
  * A business function call action executes a specified business function that is called from within
  * a business function.
  * 
@@ -86,9 +86,10 @@ public interface IMethodCallBFE extends IBFElement {
      * Tries to find the method defined by the executable method name and the target. The method is
      * assumed to have no parameters. If no method is found <code>null</code> will be returned.
      * 
-     * @param ipsProject the ips project that is utilized to start the search from.
+     * @param ipsProject the IPS project that is utilized to start the search from.
      * 
      * @throws CoreException if an exception occurs during the execution of this method
      */
     public IMethod findMethod(IIpsProject ipsProject) throws CoreException;
+
 }

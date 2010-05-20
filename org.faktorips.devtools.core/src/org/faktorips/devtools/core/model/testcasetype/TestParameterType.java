@@ -56,7 +56,7 @@ public class TestParameterType extends DefaultEnumValue {
     }
 
     /**
-     * Returns the enum type which contains all test parameter types.
+     * Returns the enumeration type which contains all test parameter types.
      */
     public final static EnumType getEnumType() {
         return enumType;

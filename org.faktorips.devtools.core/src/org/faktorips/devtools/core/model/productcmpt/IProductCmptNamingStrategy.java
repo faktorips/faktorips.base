@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 public interface IProductCmptNamingStrategy {
 
     /**
-     * Name of xml tags representing a product component naming strategy.
+     * Name of XML tags representing a product component naming strategy.
      */
     public final static String XML_TAG_NAME = "ProductCmptNamingStrategy"; //$NON-NLS-1$
 
@@ -71,7 +71,7 @@ public interface IProductCmptNamingStrategy {
     public final static String MSGCODE_INVALID_RUNTIME_ID_FORMAT = MSGCODE_PREFIX + "InvalidRuntimeIdFormat"; //$NON-NLS-1$
 
     /**
-     * Sets the ips project this stratgey belongs to. Is called when the strategey is instantiated.
+     * Sets the IPSproject this strategy belongs to. Is called when the strategy is instantiated.
      * Should never be called by clients.
      * 
      * @throws NullPointerException if project is <code>null</code>.
@@ -79,7 +79,7 @@ public interface IProductCmptNamingStrategy {
     public void setIpsProject(IIpsProject project);
 
     /**
-     * Returns the ips project the strategy belongs to.
+     * Returns the IPS project the strategy belongs to.
      */
     public IIpsProject getIpsProject();
 
@@ -122,8 +122,6 @@ public interface IProductCmptNamingStrategy {
 
     /**
      * Returns the next version id.
-     * 
-     * @param versionId A version id that can be used to derive the next one.
      */
     public String getNextVersionId(IProductCmpt productCmpt);
 
@@ -190,10 +188,10 @@ public interface IProductCmptNamingStrategy {
     public void initFromXml(Element el);
 
     /**
-     * Creates an xml element representation of this strategy. The element's node name is defined in
+     * Creates an XML element representation of this strategy. The element's node name is defined in
      * <code>XML_TAG_NAME</code>.
      * 
-     * @param doc The xml document to create new elements.
+     * @param doc The XML document to create new elements.
      */
     public Element toXml(Document doc);
 
@@ -211,10 +209,10 @@ public interface IProductCmptNamingStrategy {
     public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException;
 
     /**
-     * Compares the given runtime ids. This method was introduced because a simple call to
-     * <code>equals()</code> comparing the two runtime ids returned by a call to
-     * <code>getRuntimeId()</code> can not be used to decide whether the runtime ids of two product
-     * compontes are the same or not. This is because the strategy might also use the templates the
+     * Compares the given runtime IDs. This method was introduced because a simple call to
+     * <code>equals()</code> comparing the two runtime IDs returned by a call to
+     * <code>getRuntimeId()</code> can not be used to decide whether the runtime IDs of two product
+     * components are the same or not. This is because the strategy might also use the templates the
      * product component are based on to decide if the two have an identical id. E.g. a product 1
      * based on the template MotorProduct and a product 2 based on the template HomeProduct might
      * both have the same runtime id 42, but because they are based on different templates they are
@@ -222,7 +220,7 @@ public interface IProductCmptNamingStrategy {
      * 
      * @param runtimeId1 The first product component to check.
      * @param runtimeId2 The second product component to check.
-     * @return <code>true</code> if the runtime ids of both product components are the same,
+     * @return <code>true</code> if the runtime IDs of both product components are the same,
      *         <code>false</code> otherwise.
      */
     public boolean sameRuntimeId(String runtimeId1, String runtimeId2);
@@ -231,4 +229,5 @@ public interface IProductCmptNamingStrategy {
      * Validates the given runtime id.
      */
     public MessageList validateRuntimeId(String runtimeId);
+
 }

@@ -85,12 +85,12 @@ public interface IProductCmptLink extends IIpsObjectPart {
     public final static String MSGCODE_INVALID_TARGET = MSGCODE_PREFIX + "InvalidTarget"; //$NON-NLS-1$
 
     /**
-     * Returns the product component generation this config element belongs to.
+     * Returns the product component generation this configuration element belongs to.
      */
     public IProductCmpt getProductCmpt();
 
     /**
-     * Returns the product component generation this config element belongs to.
+     * Returns the product component generation this configuration element belongs to.
      */
     public IProductCmptGeneration getProductCmptGeneration();
 
@@ -101,8 +101,6 @@ public interface IProductCmptLink extends IIpsObjectPart {
 
     /**
      * Setting the association this link is an instance of
-     * 
-     * @param association
      */
     public void setAssociation(String association);
 
@@ -166,22 +164,16 @@ public interface IProductCmptLink extends IIpsObjectPart {
     public void setMaxCardinality(int newValue);
 
     /**
-     * Returns true if the association this link is an instance of does constrains a policy cmpt
-     * type association
+     * Returns true if the association this link is an instance of does constrains a policy
+     * component type association
      * 
-     * @see {@link IProductCmptTypeAssociation#constrainsPolicyCmptTypeAssociation(IIpsProject)}
-     * 
-     * @param ipsProject
-     * @return true if the association of this link constrains a policy cmpt type association
-     * @throws CoreException
+     * @see IProductCmptTypeAssociation#constrainsPolicyCmptTypeAssociation(IIpsProject)
      */
     public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns whether this Relation is mandatory. A Relation is mandatory if both minimum and
+     * Returns whether this relation is mandatory. A Relation is mandatory if both minimum and
      * maximum-cardinality are equal to 1.
-     * 
-     * @return <code>true</code> if this Relation is mandatory, else <code>false</code>.
      */
     public boolean isMandatory();
 
@@ -192,4 +184,5 @@ public interface IProductCmptLink extends IIpsObjectPart {
      * @return <code>true</code> if this Relation is optional, else <code>false</code>.
      */
     public boolean isOptional();
+
 }

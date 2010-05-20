@@ -18,47 +18,35 @@ import java.util.List;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * A helper class that moves a given subset of an list elements one position up or down.
+ * A helper class that moves a given subset of list elements one position up or down in the list.
  */
-public class ListElementMover<T> {
+public class ListElementMover<T> extends ElementMover {
 
-    private List<T> list;
+    private final List<T> list;
 
     public ListElementMover(List<T> list) {
         ArgumentCheck.notNull(list);
         this.list = list;
     }
 
-    /**
-     * Moves the elements identifies by the given indices one position up or down.
-     * 
-     * @param indexes The indices array identifying the elemtents to move.
-     * @param up True to move up, false to move down.
-     * 
-     * @return The new indexes of the moves elements.
-     */
-    public int[] move(int[] indexes, boolean up) {
+    @Override
+    public int[] move(int[] indices, boolean up) {
         if (up) {
-            return moveUp(indexes);
+            return moveUp(indices);
         } else {
-            return moveDown(indexes);
+            return moveDown(indices);
         }
     }
 
-    /**
-     * Moves the elements identifies by the given indices one position up in the list this mover is
-     * constructed for. Does not nothing if one of the indexes is 0.
-     * 
-     * @return the new indexes of the elements that are identified by the given indexes array.
-     */
-    public int[] moveUp(int[] indexes) {
-        if (contains(indexes, 0)) {
-            return indexes;
+    @Override
+    public int[] moveUp(int[] indices) {
+        if (contains(indices, 0)) {
+            return indices;
         }
-        int[] newSelection = new int[indexes.length];
+        int[] newSelection = new int[indices.length];
         int j = 0;
         for (int i = 1; i < list.size(); i++) {
-            if (contains(indexes, i)) {
+            if (contains(indices, i)) {
                 swapElements(i - 1, i);
                 newSelection[j] = i - 1;
                 j++;
@@ -67,21 +55,15 @@ public class ListElementMover<T> {
         return newSelection;
     }
 
-    /**
-     * Moves the elements identifies by the given indices one position down in the array this mover
-     * is constructed for. Does not nothing if one of the indexes is the last index in the array
-     * (length-1).
-     * 
-     * @return the new indexes of the elements that are identified by the given indexes array.
-     */
-    public int[] moveDown(int[] indexes) {
-        if (contains(indexes, list.size() - 1)) {
-            return indexes;
+    @Override
+    public int[] moveDown(int[] indices) {
+        if (contains(indices, list.size() - 1)) {
+            return indices;
         }
-        int[] newSelection = new int[indexes.length];
+        int[] newSelection = new int[indices.length];
         int j = 0;
         for (int i = list.size() - 2; i >= 0; i--) {
-            if (contains(indexes, i)) {
+            if (contains(indices, i)) {
                 swapElements(i, i + 1);
                 newSelection[j++] = i + 1;
             }
@@ -89,22 +71,20 @@ public class ListElementMover<T> {
         return newSelection;
     }
 
-    /*
-     * Returns true if the indices array contains the index, otherwise false.
+    /**
+     * Returns <tt>true</tt> if the given indices array contains the given index, otherwise
+     * <tt>false</tt>.
      */
     private boolean contains(int[] indices, int index) {
-        for (int indice : indices) {
-            if (indice == index) {
+        for (int currentIndex : indices) {
+            if (currentIndex == index) {
                 return true;
             }
         }
         return false;
     }
 
-    /**
-     * Swaps the elements at the given indexes. Can be overridden in subclasses if additional logic
-     * is needed.
-     */
+    @Override
     protected void swapElements(int index1, int index2) {
         T temp = list.get(index1);
         list.set(index1, list.get(index2));

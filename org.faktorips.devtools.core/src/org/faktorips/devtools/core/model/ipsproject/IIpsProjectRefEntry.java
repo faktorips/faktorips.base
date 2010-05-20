@@ -14,14 +14,14 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 /**
- * An object path entry that defines a reference to another ips project.
+ * An object path entry that defines a reference to another IPS project.
  * 
  * @author Jan Ortmann
  */
 public interface IIpsProjectRefEntry extends IIpsObjectPathEntry {
 
     /**
-     * Returns the ips project being referenced by this entry.
+     * Returns the IPS project being referenced by this entry.
      */
     public IIpsProject getReferencedIpsProject();
 

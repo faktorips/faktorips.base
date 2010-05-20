@@ -18,8 +18,8 @@ import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
 /**
- * A reference to unspecified objects (see subinterfaces / -classes for further details) for used in
- * a <code>IProductCmptStructure</code>.
+ * A reference to unspecified objects (see subi nterfaces / -classes for further details) for used
+ * in a <code>IProductCmptStructure</code>.
  * 
  * @author Thorsten Guenther
  */
@@ -32,7 +32,7 @@ public interface IProductCmptStructureReference extends IAdaptable, IIpsSrcFileW
 
     /**
      * @return The <code>IIpsObject</code> referenced by this object or <code>null</code> if the
-     *         referenced ips object doesn't exists.
+     *         referenced IPS object doesn't exists.
      */
     public IIpsObject getWrappedIpsObject();
 

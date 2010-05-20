@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Properties of the ips project. The ips project can't keep the properties itself, as it is a
+ * Properties of the IPS project. The IPS project can't keep the properties itself, as it is a
  * handle. The properties are persisted in the ".ipsproject" file.
  * 
  * @author Jan Ortmann
@@ -41,28 +41,28 @@ public interface IIpsProjectProperties {
     public final static String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the ips artefact builder set id is unknown.
+     * Validation message code to indicate that the IPS artifact builder set id is unknown.
      */
     public final static String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknwonBuilderSetId"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a used predefined datatype is unknown.
+     * Validation message code to indicate that a used predefined data type is unknown.
      */
     public final static String MSGCODE_UNKNOWN_PREDEFINED_DATATYPE = MSGCODE_PREFIX + "UnknownPredefinedDatatype"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the min required version number for a specific
+     * Validation message code to indicate that the minimum required version number for a specific
      * feature is missing.
      */
     public final static String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
 
     /**
-     * Returns the timestamp of the last persistent modification of this object.
+     * Returns the time stamp of the last persistent modification of this object.
      */
     public Long getLastPersistentModificationTimestamp();
 
     /**
-     * Sets the timestamp of the last persistent modification of this object.
+     * Sets the time stamp of the last persistent modification of this object.
      */
     public void setLastPersistentModificationTimestamp(Long timestamp);
 
@@ -72,12 +72,13 @@ public interface IIpsProjectProperties {
     public MessageList validate(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns id of the builderset used to generate sourcecode from the model / product definition.
+     * Returns id of the builder set used to generate sourcecode from the model / product
+     * definition.
      */
     public String getBuilderSetId();
 
     /**
-     * Sets the id of the builderset used to generate sourcecode from the model / product
+     * Sets the id of the builder set used to generate sourcecode from the model / product
      * definition.
      */
     public void setBuilderSetId(String id);
@@ -188,87 +189,87 @@ public interface IIpsProjectProperties {
     public String getChangesOverTimeNamingConventionIdForGeneratedCode();
 
     /**
-     * Returns predefined datatypes (by id) used by this project. Predefined datatypes are those
+     * Returns predefined data types (by id) used by this project. Predefined data types are those
      * that are defined by the extension <code>datatypeDefinition</code>.
      */
     public String[] getPredefinedDatatypesUsed();
 
     /**
-     * Sets the predefined datatypes (by id) used by this project. Predefined datatypes are those
+     * Sets the predefined data types (by id) used by this project. Predefined data types are those
      * that are defined by the extension <code>datatypeDefinition</code>.
      * 
-     * @throws NullPointerException if datatypes is <code>null</code>.
+     * @throws NullPointerException if data types is <code>null</code>.
      */
     public void setPredefinedDatatypesUsed(String[] datatypes);
 
     /**
-     * Sets the predefined datatypes used by this project. Predefined datatypes are those that are
+     * Sets the predefined data types used by this project. Predefined data types are those that are
      * defined by the extension <code>datatypeDefinition</code>.
      * <p>
-     * If one of the datatypes isn't a predefined one, the project properties become invalid.
+     * If one of the data types isn't a predefined one, the project properties become invalid.
      * 
-     * @throws NullPointerException if datatypes is <code>null</code>.
+     * @throws NullPointerException if data types is <code>null</code>.
      */
     public void setPredefinedDatatypesUsed(ValueDatatype[] datatypes);
 
     /**
-     * Returns the value datatypes that are defined in this project.
+     * Returns the value data types that are defined in this project.
      */
     public DynamicValueDatatype[] getDefinedValueDatatypes();
 
     /**
-     * Returns all (value and other) datatypes that are defined in this project.
+     * Returns all (value and other) data types that are defined in this project.
      */
     public List<Datatype> getDefinedDatatypes();
 
     /**
-     * Sets the value datatypes that are defined in this project.
+     * Sets the value data types that are defined in this project.
      */
     public void setDefinedDatatypes(DynamicValueDatatype[] datatypes);
 
     /**
-     * Sets the datatypes that are defined in this project.
+     * Sets the data types that are defined in this project.
      */
     public void setDefinedDatatypes(Datatype[] datatypes);
 
     /**
-     * Adds the defined value datatype. If the project properties contain another datatype with the
-     * same id, the new datatype replaces the old one.
+     * Adds the defined value data type. If the project properties contain another data type with
+     * the same id, the new data type replaces the old one.
      * 
-     * @throws NullPointerException if datatype is <code>null</code>.
+     * @throws NullPointerException if data type is <code>null</code>.
      */
     public void addDefinedDatatype(DynamicValueDatatype datatype);
 
     /**
-     * Adds the defined datatype. If the project properties contain another datatype with the same
-     * id, the new datatype replaces the old one.
+     * Adds the defined data type. If the project properties contain another data type with the same
+     * id, the new data type replaces the old one.
      * 
-     * @throws NullPointerException if datatype is <code>null</code>.
+     * @throws NullPointerException if data type is <code>null</code>.
      */
     public void addDefinedDatatype(Datatype datatype);
 
     /**
-     * Returns the prefix to be used for new runtime-ids for product components.
+     * Returns the prefix to be used for new runtime-IDs for product components.
      */
     public String getRuntimeIdPrefix();
 
     /**
-     * Sets the new prefix to be used for new runtime-ids for product components.
+     * Sets the new prefix to be used for new runtime-IDs for product components.
      * 
      * @throws NullPointerException if the given prefix is <code>null</code>.
      */
     public void setRuntimeIdPrefix(String runtimeIdPrefix);
 
     /**
-     * Returns <code>true</code> if the Java project belonging to the ips project, contains (value)
-     * classes that are used as defined dynamic datatype, otherwise <code>false</code>.
+     * Returns <code>true</code> if the Java project belonging to the IPS project, contains (value)
+     * classes that are used as defined dynamic data type, otherwise <code>false</code>.
      * <p>
      * Note that is preferable to develop and access these classes either in a separate Java project
-     * or to provide them in a Jarfile. The reason for this is that in this scenario the clean build
-     * won't work properly. When the IpsBuilder builds the project the dynamic datatype needs to
-     * load the class it is based upon. However as the Java builder hasn't compiled the Java
-     * sourcefile into a classfile the dynamic datatype won't find it's class, the datatype becomes
-     * invalid and hence we can't build the project.
+     * or to provide them in a JAR file. The reason for this is that in this scenario the clean
+     * build won't work properly. When the IpsBuilder builds the project the dynamic data type needs
+     * to load the class it is based upon. However as the Java builder hasn't compiled the Java
+     * source file into a class file the dynamic data type won't find it's class, the data type
+     * becomes invalid and hence we can't build the project.
      * 
      * @see DynamicValueDatatype
      * @see org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider
@@ -306,26 +307,23 @@ public interface IIpsProjectProperties {
      */
     public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled);
 
-    /**
-     * @see #isRulesWithoutReferencesAllowedEnabled()
-     */
     public void setRulesWithoutReferencesAllowedEnabled(boolean enabled);
 
     /**
-     * @return The ids of all required features.
+     * @return The IDs of all required features.
      */
     public String[] getRequiredIpsFeatureIds();
 
     /**
-     * @param featureId The id of the feature the min version has to be returned
+     * @param featureId The id of the feature the minimum version has to be returned
      * @return The version number for the given feature id or <code>null</code>, if no entry is
      *         found for the given feature id.
      */
     public String getMinRequiredVersionNumber(String featureId);
 
     /**
-     * Set the min version for the given feature id. If the feature id was not used before, a new
-     * entry with the given feature id is created.
+     * Sets the minimum version for the given feature id. If the feature id was not used before, a
+     * new entry with the given feature id is created.
      * 
      * @param featureId The id of the required feature.
      * @param version The minimum version number for this feature.
@@ -333,20 +331,21 @@ public interface IIpsProjectProperties {
     public void setMinRequiredVersionNumber(String featureId, String version);
 
     /**
-     * Returns the assigned user group allowed for a question in the ips project.
+     * Returns the assigned user group allowed for a question in the IPS project.
      */
     public EnumType getQuestionAssignedUserGroup();
 
     /**
-     * Returns the question status allowed in the ips project.
+     * Returns the question status allowed in the IPS project.
      */
     public EnumType getQuestionStatus();
 
     /**
-     * Returns the persistence options for this ips project, or <code>null</code> if the project
+     * Returns the persistence options for this IPS project, or <code>null</code> if the project
      * does not support persistence.
      * 
      * @see #isPersistenceSupportEnabled()
      */
     public IPersistenceOptions getPersistenceOptions();
+
 }

@@ -17,7 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * An interface that marks an object as being able to convert it's state to an Xml element and vice
+ * An interface that marks an object as being able to convert it's state to an XML element and vice
  * versa.
  * 
  * @author Jan Ortmann
@@ -25,18 +25,18 @@ import org.w3c.dom.Element;
 public interface XmlSupport {
 
     /**
-     * Transforms the object to an xml element.
+     * Transforms the object to an XML element.
      * 
-     * @param doc the xml document that can be used as a factory to create xml elment.
+     * @param doc the XML document that can be used as a factory to create XML element.
      * 
-     * @return the xml element representation
+     * @return the XML element representation
      */
     public Element toXml(Document doc);
 
     /**
-     * (Re)Initializes the object's state with the data found in the xml element.
+     * (Re)Initializes the object's state with the data found in the XML element.
      * 
-     * @param element the xml element containing the object's state
+     * @param element the XML element containing the object's state
      */
     public void initFromXml(Element element);
 

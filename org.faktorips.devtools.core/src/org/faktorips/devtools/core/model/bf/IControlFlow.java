@@ -21,10 +21,10 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 /**
  * Business function elements are connected via control flows which are represented by this
  * interface. A control flow has therefore a source and a target elements.
- * <p/>
+ * <p>
  * If the control flow starts from a decision element a condition value can be assigned to it. The
- * value must be parsable with respect to the datatype specified on the decision element.
- * <p/>
+ * value must be parsable with respect to the data type specified on the decision element.
+ * <p>
  * Control flows can also have graphical bend points which mark the position where the graphical
  * line that represents a control flow changes its direction unsteadily.
  * 
@@ -90,8 +90,8 @@ public interface IControlFlow extends IIpsObjectPart {
 
     /**
      * Returns the condition value of this control flow. The value is only relevant for control flow
-     * that start from a decision element. The value must then be parsable with respect to the
-     * datatype specified for the decision element.
+     * that start from a decision element. The value must then be parsable with respect to the data
+     * type specified for the decision element.
      */
     public String getConditionValue();
 

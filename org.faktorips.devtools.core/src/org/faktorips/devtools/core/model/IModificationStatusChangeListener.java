@@ -14,16 +14,17 @@
 package org.faktorips.devtools.core.model;
 
 /**
- * A listener for changes to modifcation status changes of ips source files.
+ * A listener for changes to modification status changes of IPS source files.
  * 
  * @author Jan Ortmann
  */
 public interface IModificationStatusChangeListener {
 
     /**
-     * Notifies the listener that the modification status of an ips source file has changed.
+     * Notifies the listener that the modification status of an IPS source file has changed.
      * 
      * @param event The event with the detailed information, is never <code>null</code>.
      */
     public void modificationStatusHasChanged(ModificationStatusChangedEvent event);
+
 }

@@ -193,21 +193,18 @@ public interface ITestCaseType extends IIpsMetaClass {
     public int[] moveTestParameters(int[] indexes, boolean up);
 
     /**
-     * Returns all validation rules from the test policy cmpts which are related by the test policy
-     * cmpt type parameters inside this test case type.
-     * 
-     * @param ipsProject TODO
+     * Returns all validation rules from the test policy components which are related by the test
+     * policy component type parameters inside this test case type.
      * 
      * @throws CoreException if an error occurs
      */
     public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Searchs and returns the validation rule with the given name which is inside the test case
-     * type. The rule will be searched in all policy cmpt types which are related by test test
-     * policy cmpt type parameters.
-     * 
-     * @param ipsProject TODO
+     * Searches and returns the validation rule with the given name which is inside the test case
+     * type. The rule will be searched in all policy component types which are related by test test
+     * policy component type parameters.
      */
     public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException;
+
 }

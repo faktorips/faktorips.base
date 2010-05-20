@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
  */
 public interface ITestAttribute extends IIpsObjectPart {
 
-    /** Property names */
     public final static String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
@@ -84,19 +83,19 @@ public interface ITestAttribute extends IIpsObjectPart {
     public final static String MSGCODE_ATTRIBUTE_NAME_IS_EMPTY = MSGCODE_PREFIX + "AttributeNameIsEmpty"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the datatype not exists.
+     * Validation message code to indicate that the data type not exist.
      */
     public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeNotFound"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the attribute and the datatype are given. This is an
-     * validation error, because the datatype will be searched using the attribute, thus if the
-     * attribute is given then the datatype should be empty and vice versa.
+     * Validation message code to indicate that the attribute and the data type are given. This is
+     * an validation error, because the data type will be searched using the attribute, thus when
+     * the attribute is given then the data type should be empty and vice versa.
      */
     public final static String MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN = MSGCODE_PREFIX + "DatatypeAndAttributeAreGiven"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the name of the test attribute is not a valid java
+     * Validation message code to indicate that the name of the test attribute is not a valid Java
      * field identifier.
      */
     public final static String MSGCODE_INVALID_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "InvalidTestAttributeName"; //$NON-NLS-1$
@@ -118,51 +117,53 @@ public interface ITestAttribute extends IIpsObjectPart {
     public String getAttribute();
 
     /**
-     * Sets the given attribute.<br>
-     * Note that this method is not recommended, because the additional storing of the poliy cmpt
-     * type must be done manualy. Is is recommended to use the method
-     * {@link #setAttribute(IPolicyCmptTypeAttribute)} instead, because here the policy cmpt type
-     * will be stored if necessary.
+     * Sets the given attribute.
+     * <p>
+     * Note that this method is not recommended, because the additional storing of the policy
+     * component type must be done manually. Is is recommended to use the method
+     * {@link #setAttribute(IPolicyCmptTypeAttribute)} instead, because here the policy component
+     * type will be stored if necessary.
      */
     public void setAttribute(String attribute);
 
     /**
      * Sets the given attribute. Furthermore if the given attribute belongs to a different type the
-     * parent test policy cmpt type parameter belongs to then store the policy cmpt type in the test
-     * attribute, thus finding this kind of subtype attributes can be performed without searching
-     * the whole subtype hierarchy of the policy cmpt type. If the policy cmpt type of the attribute
-     * and the policy cmpt type of the parent test policy cmpt type parameter are the same then the
-     * policy cmpt type property of this attribute will be left empty.
+     * parent test policy component type parameter belongs to then store the policy component type
+     * in the test attribute, thus finding this kind of subtype attributes can be performed without
+     * searching the whole subtype hierarchy of the policy component type. If the policy component
+     * type of the attribute and the policy component type of the parent test policy component type
+     * parameter are the same then the policy component type property of this attribute will be left
+     * empty.
      */
     public void setAttribute(IPolicyCmptTypeAttribute attribute);
 
     /**
-     * Returns the test attribute's datatype. Note that only value datatypes are allowed as
-     * attribute datatype.
+     * Returns the test attribute's data type. Note that only value data types are allowed as
+     * attribute data type.
      */
     public String getDatatype();
 
     /**
-     * Sets the test attribute's datatype. Note that only value datatypes are allowed as attribute
-     * datatype.
+     * Sets the test attribute's data type. Note that only value data types are allowed as attribute
+     * data type.
      */
     public void setDatatype(String newDatatype);
 
     /**
-     * Returns the policy cmpt type the attribute belongs to.
+     * Returns the policy component type the attribute belongs to.
      * 
-     * @throws CoreException If there was an error while searching the corresponding policy cmpt
-     *             type.
+     * @throws CoreException If there was an error while searching the corresponding policy
+     *             component type.
      */
     public String getCorrespondingPolicyCmptType() throws CoreException;
 
     /**
-     * Returns the policy cmpt type which is stored beside the attribute.<br>
-     * Note that if the policy cmpt type of the parent test policy cmpt type parameter is the same
-     * as the attributes policy cmpt type then this method returns an empty String. Because the
-     * policy cmpt type will only be stored in special case (see
-     * setAttribute(IPolicyCmptTypeAttribute)). To get always the corresponding policy cmpt type of
-     * the attribute use #getCorrespondingPolicyCmptType() instead.
+     * Returns the policy component type which is stored beside the attribute.<br>
+     * Note that if the policy component type of the parent test policy component type parameter is
+     * the same as the attributes policy component type then this method returns an empty String.
+     * Because the policy component type will only be stored in special case (see
+     * setAttribute(IPolicyCmptTypeAttribute)). To get always the corresponding policy component
+     * type of the attribute use #getCorrespondingPolicyCmptType() instead.
      * 
      * @see #setAttribute(IPolicyCmptTypeAttribute)
      * @see #getCorrespondingPolicyCmptType()
@@ -170,12 +171,12 @@ public interface ITestAttribute extends IIpsObjectPart {
     public String getPolicyCmptType();
 
     /**
-     * Sets the policy cmpt type the attribute belongs to.
+     * Sets the policy component type the attribute belongs to.
      */
     public void setPolicyCmptType(String policyCmptType);
 
     /**
-     * Returns the test policy cmpt type parameter this test attribute belongs to.
+     * Returns the test policy component type parameter this test attribute belongs to.
      */
     public TestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter();
 
@@ -189,9 +190,9 @@ public interface ITestAttribute extends IIpsObjectPart {
     public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the test attribute's value datatype.
+     * Returns the test attribute's value data type.
      * 
-     * @param project The project which ips object path is used for the search. This is not
+     * @param project The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
      * @see #getDatatype() #getAttribute()
@@ -219,29 +220,30 @@ public interface ITestAttribute extends IIpsObjectPart {
      * Sets the type of the test attribute. The following types could be set.
      * <p>
      * <ul>
-     * <li>INPUT: the test attribute specifies test attribute input objects
-     * <li>EXPECTED_RESULT: the test attribute specifies test attribute expected result objects
+     * <li>INPUT: The test attribute specifies test attribute input objects.
+     * <li>EXPECTED_RESULT: The test attribute specifies test attribute expected result objects.
      * </ul>
      */
     public void setTestAttributeType(TestParameterType type);
 
     /**
-     * Returns <code>true</code> if the attribute is relevant for the given product cmpt. Check if
-     * the attribute exists in the supertype hierarchy of the policy cmpt type of the given product
-     * cmpt. If the attribute exists in the supertype hierarchy then return <code>true</code>,
-     * otherwise <code>false</code>. Returns <code>true</code> if the attributes type is not product
-     * relevant, in this case the attribute is always relevant.
+     * Returns <code>true</code> if the attribute is relevant for the given product component.
+     * Checks if the attribute exists in the supertype hierarchy of the policy component type of the
+     * given product component. If the attribute exists in the supertype hierarchy then return
+     * <code>true</code>, otherwise <code>false</code>. Returns <code>true</code> if the attributes
+     * type is not product relevant, in this case the attribute is always relevant.
      * 
-     * @param ipsProject The ips project which object path is used to search.
+     * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreException if an error occurs
+     * @throws CoreException If an error occurs.
      */
     public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject)
             throws CoreException;
 
     /**
-     * Returns <code>true</code> if the test attribute based on a model attribute (policy cmpt type
-     * attribute). This kind of attributes are also known as test extension attributes.
+     * Returns <code>true</code> if the test attribute based on a model attribute (policy component
+     * type attribute). This kind of attributes are also known as test extension attributes.
      */
     public boolean isBasedOnModelAttribute();
+
 }

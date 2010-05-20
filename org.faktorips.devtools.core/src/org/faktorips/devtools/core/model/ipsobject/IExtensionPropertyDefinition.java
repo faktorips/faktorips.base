@@ -18,8 +18,8 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
- * Each ips object and each ips object part have a fixed set of standard properties, e.g. an
- * attribute has a name, a datatype a default value and so on. If you need other properties you can
+ * Each IPS object and each IPS object part have a fixed set of standard properties, e.g. an
+ * attribute has a name, a data type a default value and so on. If you need other properties you can
  * define so called extension properties for each object or part. Such an an extension property is
  * represented by this interface.
  * <p>
@@ -60,10 +60,10 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
 
     /**
      * Returns the unique property id. The id is the unique id of the extension that defines this
-     * property. E.g. if an extension property is defined in a plugin with id 'foo.bar' and the
+     * property. E.g. if an extension property is defined in a plug-in with id 'foo.bar' and the
      * extension id is 'attribute.prop0' the resulting property is 'foo.bar.attribute.prop0'; It is
      * is recommended that the unqualified name of the extended type is include in the property id.
-     * E.g. if the ips model type IAttribute is extended with a 'prop0' property, the recommended
+     * E.g. if the IPS model type IAttribute is extended with a 'prop0' property, the recommended
      * extension id is 'attribute.prop0'.
      */
     public String getPropertyId();
@@ -73,8 +73,8 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * purposes. The extension properties are displayed in an ascending order in the display area of
      * the according editor, view or dialog.
      * <p>
-     * It is recommended that all extension properties defined by a plugin use a small range e.g.
-     * 1000-1999 so that extension properties of the same plugin are grouped together. Don't use
+     * It is recommended that all extension properties defined by a plug-in use a small range e.g.
+     * 1000-1999 so that extension properties of the same plug-in are grouped together. Don't use
      * sequential numbers for your initial properties, so that you can insert others later.
      */
     public int getOrder();
@@ -85,18 +85,18 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
     public Object getDefaultValue();
 
     /**
-     * Stores the value in the xml element. Simple values should be appended as CDATA sections to
+     * Stores the value in the XML element. Simple values should be appended as CDATA sections to
      * the given element (textual representation of value "blabla" is
      * &ltvalue&gtblabla&lt/value&gt).
      * 
      * @param valueElement The value element (textual representation <value></value>).
-     * @param value The value to add to the xml. The passed value is <strong>never</strong>
+     * @param value The value to add to the XML. The passed value is <strong>never</strong>
      *            <code>null</code>. Null handling is done before this method is called.
      */
     public void valueToXml(Element valueElement, Object value);
 
     /**
-     * Returns the property's value from the given xml element. The method is only called if a value
+     * Returns the property's value from the given XML element. The method is only called if a value
      * other than <code>null</code> is stored in the element. Null handling is done before this
      * method is called!
      * 
@@ -109,39 +109,35 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * other than <code>null</code> is stored in the element. Null handling is done before this
      * method is called!
      * 
-     * @param valueElement The value element (textual representation <value></value>).
+     * @param value The value element (textual representation &lt;value&gt;&lt;/value&gt;).
      */
     public Object getValueFromString(String value);
 
     /**
      * This method is called before a value is set to an object's extension property.
      * 
-     * @param ipsObjectPart The ips object part which property is about to be set.
-     * @param Object value The value that will be set to the extension property via the
-     *            setExtProperty method.
+     * @param ipsObjectPart The IPS object part which property is about to be set.
+     * @param value The value that will be set to the extension property via the setExtProperty
+     *            method.
      * 
      * @return <code>true</code> if the value can be set, <code>false</code> if the value can't be
      *         set. Note that model objects should allow inconsistent state and report
      *         inconsistencies via the validate() method. So use wisely.
-     * 
-     * @see IpsObjectPartContainer.setExtProperty(Object)
      */
     public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value);
 
     /**
      * This method is called after a value was set to a object's extension property.
      * 
-     * @param ipsObjectPart The ips object part which property has been set.
-     * @param Object value The value that will be set to the property via the setExtProperty method.
-     * 
-     * @see IpsObjectPartContainer.setExtProperty(Object)
+     * @param ipsObjectPart The IPS object part which property has been set.
+     * @param value The value that will be set to the property via the setExtProperty method.
      */
     public void afterSetValue(IIpsObjectPartContainer ipsObjectPart, Object value);
 
     /**
-     * Validates the property value for the given ips object part.
+     * Validates the property value for the given IPS object part.
      * 
-     * @param ipsObjectPart The ips object part which property value it is.
+     * @param ipsObjectPart The IPS object part which property value it is.
      * @param value The property value in string format.
      * 
      * @return A list of messages describing invalid property state or warnings about the state.

@@ -15,61 +15,37 @@ package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Thorsten Guenther
- */
 public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.ipsobject.messages"; //$NON-NLS-1$
 
-    private Messages() {
-
-    }
-
     static {
-        // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String IpsObjectType_nameEnumContent;
-
     public static String IpsObjectType_nameEnumType;
-
     public static String IpsObjectType_nameBusinessFunction;
-
     public static String IpsObjectType_namePolicyClass;
-
     public static String IpsObjectType_nameProductClass;
-
     public static String IpsObjectType_nameTableStructure;
-
     public static String IpsObjectType_nameProductComponent;
-
     public static String IpsObjectType_nameTableContents;
-
     public static String IpsObjectType_nameTestCaseType;
-
     public static String IpsObjectType_nameTestCase;
-
     public static String IpsObjectType_nameEnumContentPlural;
-
     public static String IpsObjectType_nameEnumTypePlural;
-
     public static String IpsObjectType_nameBusinessFunctionPlural;
-
     public static String IpsObjectType_namePolicyClassPlural;
-
     public static String IpsObjectType_nameProductClassPlural;
-
     public static String IpsObjectType_nameTableStructurePlural;
-
     public static String IpsObjectType_nameProductComponentPlural;
-
     public static String IpsObjectType_nameTableContentsPlural;
-
     public static String IpsObjectType_nameTestCaseTypePlural;
-
     public static String IpsObjectType_nameTestCasePlural;
 
 }

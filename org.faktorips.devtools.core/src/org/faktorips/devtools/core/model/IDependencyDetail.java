@@ -35,9 +35,9 @@ public interface IDependencyDetail {
      * Returns the part container that is responsible for the existence of this dependency.
      * Examples:
      * <ul>
-     * <li>If a policy component type has a super type, the ips object representing the policy
+     * <li>If a policy component type has a super type, the IPS object representing the policy
      * component type is responsible for the dependency (the policy component type depends on its
-     * supertype). So this method returns the ips object representing the policy component type.
+     * super type). So this method returns the IPS object representing the policy component type.
      * <li/>
      * <li>If a policy component type has an association and the target of the association is
      * another policy component type, the association is responsible for the dependency between the
@@ -51,8 +51,8 @@ public interface IDependencyDetail {
     /**
      * The property name of the part causing this dependency.
      * <p>
-     * <strong>Caution:</strong> This method will return null if this object was deserialized and
-     * not gatherd from the {@link IIpsObject#dependsOn()} method.
+     * <strong>Caution:</strong> This method will return null if this object was de-serialized and
+     * not gathered from the {@link IIpsObject#dependsOn()} method.
      * 
      * @return The name of the property causing this dependency
      */

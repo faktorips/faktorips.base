@@ -28,8 +28,8 @@ public class DependencyDetail implements IDependencyDetail {
      * @param propertyName The name of the property causing this dependency.
      */
     public DependencyDetail(IIpsObjectPartContainer part, String propertyName) {
-        ArgumentCheck.notNull(part, "The part of a DependencyDetail must not be null");
-        ArgumentCheck.notNull(propertyName, "The propertyName of a DependencyDetail must not be null");
+        ArgumentCheck.notNull(part, "The part of a DependencyDetail must not be null"); //$NON-NLS-1$
+        ArgumentCheck.notNull(propertyName, "The propertyName of a DependencyDetail must not be null"); //$NON-NLS-1$
 
         this.part = part;
         this.propertyName = propertyName;

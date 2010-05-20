@@ -79,4 +79,5 @@ public interface IIpsTestRunListener {
      * field.
      */
     public boolean canNavigateToFailure();
+
 }

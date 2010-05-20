@@ -24,23 +24,24 @@ import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 
 /**
- * A utility class for persistence (validation of table names, ..).
+ * A utility class for persistence (validation of table names, ...).
  * 
  * @author Roman Grutza
  */
 public class PersistenceUtil {
 
-    private static final Pattern NAME_PATTERN = Pattern.compile("[_\\p{Alpha}]\\w*");
+    private static final Pattern NAME_PATTERN = Pattern.compile("[_\\p{Alpha}]\\w*"); //$NON-NLS-1$
 
     /**
      * Checks if given String is a valid table or column name.
-     * <p/>
+     * <p>
      * The name must start with an ASCII character followed by more optional ASCII-characters,
      * numbers or the underscore character.
+     * <p>
+     * Returns <code>false</code> if it empty or <code>null</code> or contains invalid characters,
+     * <code>true</code> otherwise.
      * 
-     * @param name The String to check
-     * @return <code>false</code> if it empty or <code>null</code> or contains invalid characters,
-     *         <code>true</code> otherwise
+     * @param name The string to check.
      */
     public static boolean isValidDatabaseIdentifier(String name) {
         if (StringUtils.isEmpty(name)) {
@@ -66,4 +67,9 @@ public class PersistenceUtil {
     public static boolean isSupportingLenght(ValueDatatype valueDatatype) {
         return valueDatatype instanceof StringDatatype;
     }
+
+    private PersistenceUtil() {
+        // Utility class not to be instantiated.
+    }
+
 }

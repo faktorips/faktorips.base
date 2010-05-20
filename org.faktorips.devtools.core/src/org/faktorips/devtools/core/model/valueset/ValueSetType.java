@@ -36,7 +36,7 @@ public class ValueSetType extends DefaultEnumValue {
 
     /**
      * Defines the value set type that does not restrict the values in the set. All values allowed
-     * by the datatype are allowed.
+     * by the data type are allowed.
      */
     public final static ValueSetType UNRESTRICTED;
 
@@ -51,10 +51,9 @@ public class ValueSetType extends DefaultEnumValue {
     public final static ValueSetType ENUM;
 
     /**
-     * Defines a value set type that has yet to be specified (on the product side) as either Enum or
-     * Range.
+     * Defines a value set type that has yet to be specified (on the product side) as either
+     * enumeration or range.
      */
-    // public final static ValueSetType UNSPECIFIED_VALUESET;
     private final static DefaultEnumType enumType;
 
     static {
@@ -90,9 +89,6 @@ public class ValueSetType extends DefaultEnumValue {
         return null;
     }
 
-    /**
-     * Returns all value set types.
-     */
     public final static ValueSetType[] getValueSetTypes() {
         EnumValue[] values = getEnumType().getValues();
         ValueSetType[] types = new ValueSetType[values.length];
@@ -100,9 +96,6 @@ public class ValueSetType extends DefaultEnumValue {
         return types;
     }
 
-    /**
-     * Returns all value set types.
-     */
     public final static List<ValueSetType> getValueSetTypesAsList() {
         EnumValue[] values = getEnumType().getValues();
         List<ValueSetType> types = new ArrayList<ValueSetType>();
@@ -131,11 +124,12 @@ public class ValueSetType extends DefaultEnumValue {
     }
 
     /**
-     * Creates a new ValueSet - the type of the ValueSet is derived from the given XML-Element.
+     * Creates a new <tt>IValueSet</tt> - the type of the value set is derived from the given XML
+     * element.
      * 
-     * @param valueSetNode The node describing the ValueSet.
+     * @param valueSetNode The node describing the value set.
      * @param parent The parent for the new value set.
-     * @param id The IpsObjectPart-ID for the new value set.
+     * @param id The IPS object part id for the new value set.
      */
     public static IValueSet newValueSet(Element valueSetNode, IIpsObjectPart parent, String id) {
         Element element = DescriptionHelper.getFirstNoneDescriptionElement(valueSetNode);

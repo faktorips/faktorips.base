@@ -15,34 +15,27 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Thorsten Guenther
- */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.productcmpt.messages"; //$NON-NLS-1$
 
-    private Messages() {
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String ConfigElementType_policyAttribute;
 
     public static String DeltaType_LinksNotFoundInTheModel;
-
     public static String DeltaType_missingValue;
-
     public static String DeltaType_propertiesNotFoundInTheModel;
-
     public static String DeltaType_propertiesWithTypeMismatch;
-
     public static String DeltaType_ValueSetMismatches;
 
     public static String ProductCmptValidations_typeDoesNotExist;
-
     public static String ProductCmptValidations_typeIsAbstract;
+
 }

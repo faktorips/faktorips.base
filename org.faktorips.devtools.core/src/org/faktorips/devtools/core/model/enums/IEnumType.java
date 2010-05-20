@@ -71,21 +71,21 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public final static String MSGCODE_PREFIX = "ENUMTYPE-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the supertype of this <tt>IEnumType</tt> does not
+     * Validation message code to indicate that the super type of this <tt>IEnumType</tt> does not
      * exist.
      */
     public final static String MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumTypeSupertypeDoesNotExist"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the supertype of this <tt>IEnumType</tt> is not
+     * Validation message code to indicate that the super type of this <tt>IEnumType</tt> is not
      * abstract.
      */
     public final static String MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT = MSGCODE_PREFIX
             + "EnumTypeSupertypeIsNotAbstract"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that not all attributes defined in the the supertype
+     * Validation message code to indicate that not all attributes defined in the the super type
      * hierarchy have been inherited.
      */
     public final static String MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
@@ -230,7 +230,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     /**
      * Searches and returns all enumeration types that subclass this enumeration type.
      * 
-     * @throws CoreException If an error occurs while searching for subclassing enumeration types.
+     * @throws CoreException If an error occurs while searching for sub classing enumeration types.
      */
     public Set<IEnumType> searchSubclassingEnumTypes() throws CoreException;
 
@@ -261,7 +261,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
      * .
      * <p>
-     * <tt>IEnumAttribute</tt>s that are inherited from the supertype hierarchy are
+     * <tt>IEnumAttribute</tt>s that are inherited from the super type hierarchy are
      * <strong>not</strong> included.
      * 
      * @see #getEnumAttributesIncludeSupertypeCopies(boolean)
@@ -274,11 +274,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /**
      * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
-     * <strong>plus</strong> all <tt>IEnumAttribute</tt>s that have been inherited from the
-     * supertype hierarchy (these are not the original <tt>IEnumAttribute</tt>s defined in the
-     * respective supertypes but copies created based upon the originals).
+     * <strong>plus</strong> all <tt>IEnumAttribute</tt>s that have been inherited from the super
+     * type hierarchy (these are not the original <tt>IEnumAttribute</tt>s defined in the respective
+     * super types but copies created based upon the originals).
      * <p>
-     * If the original <tt>IEnumAttribute</tt>s defined in the respective supertypes are needed use
+     * If the original <tt>IEnumAttribute</tt>s defined in the respective super types are needed use
      * <tt>findAllEnumAttributesIncludeSupertypeOriginals(boolean, IIpsProject)</tt>.
      * 
      * @see #getEnumAttributes(boolean)
@@ -291,7 +291,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /**
      * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
-     * <strong>plus</strong> all <tt>IEnumAttribute</tt>s that belong to supertypes of this
+     * <strong>plus</strong> all <tt>IEnumAttribute</tt>s that belong to super types of this
      * <tt>IEnumType</tt>.
      * <p>
      * Copies created due to inheritance are <strong>not</strong> included.
@@ -316,7 +316,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * Looks up the enumeration attribute for which the <tt>identifier</tt> property is
      * <tt>true</tt> and returns it. If none is found <tt>null</tt> will be returned.
      * 
-     * @param ipsProject The IPS project used for look up in the supertype hierarchy if necessary.
+     * @param ipsProject The IPS project used for look up in the super type hierarchy if necessary.
      * @throws CoreException If an exception occurs during the look up.
      */
     public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject) throws CoreException;
@@ -325,7 +325,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * Looks up the enumeration attribute for which the <tt>isUsedAsNameInFaktorIpsUi</tt> is
      * <tt>true</tt>. Returns <tt>null</tt> if none is found.
      * 
-     * @param ipsProject The IPS project used for look up in the supertype hierarchy if necessary.
+     * @param ipsProject The IPS project used for look up in the super type hierarchy if necessary.
      * 
      * @throws CoreException If an exception occurs during the look up.
      */
@@ -335,8 +335,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * Returns the index of the given <tt>IEnumAttribute</tt> or -1 if the given
      * <tt>IEnumAttribute</tt> does not exist in this <tt>IEnumType</tt>.
      * <p>
-     * Be careful: If the given <tt>IEnumAttribute</tt> is an original from the supertype hierarchy,
-     * for which this <tt>IEnumType</tt> only stores a copy, the element won't be found!
+     * Be careful: If the given <tt>IEnumAttribute</tt> is an original from the super type
+     * hierarchy, for which this <tt>IEnumType</tt> only stores a copy, the element won't be found!
      * 
      * @param enumAttribute The <tt>IEnumAttribute</tt> to obtain its index for.
      * 
@@ -384,7 +384,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /**
      * Returns the <tt>IEnumAttribute</tt> with the given name or <tt>null</tt> if there is no
-     * <tt>IEnumAttribute</tt> with the given name in this <tt>IEnumType</tt> or in the supertype
+     * <tt>IEnumAttribute</tt> with the given name in this <tt>IEnumType</tt> or in the super type
      * hierarchy.
      * <p>
      * Note that <tt>IEnumAttribute</tt>s <strong>defined in super enumeration types are
@@ -512,12 +512,13 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public boolean isAbstract();
 
     /**
-     * Searches all <tt>IEnumType</tt>s in the supertype hierarchy this <tt>IEnumType</tt> is a
+     * Searches all <tt>IEnumType</tt>s in the super type hierarchy this <tt>IEnumType</tt> is a
      * subtype of and returns them in a list (the <tt>IEnumType</tt> the operation is called upon is
      * not included in the list).
      * <p>
-     * It is possible that a cycle is detected in the supertype hierarchy. In this case the returned
-     * list will contain all super enumeration types up to the point where the cycle was found.
+     * It is possible that a cycle is detected in the super type hierarchy. In this case the
+     * returned list will contain all super enumeration types up to the point where the cycle was
+     * found.
      * <p>
      * Never returns <tt>null</tt>.
      * 
@@ -532,14 +533,14 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns a list containing all <tt>IEnumAttribute</tt>s from the supertype hierarchy that have
-     * not yet been inherited by this <tt>IEnumType</tt>.
+     * Returns a list containing all <tt>IEnumAttribute</tt>s from the super type hierarchy that
+     * have not yet been inherited by this <tt>IEnumType</tt>.
      * 
      * @param ipsProject The IPS project which IPS object path is used for the search of the super
      *            enumeration types. This is not necessarily the project this
      *            <tt>IEnumAttribute</tt> is part of.
      * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy for the not
+     * @throws CoreException If an error occurs while searching the super type hierarchy for the not
      *             inherited <tt>IEnumAttribute</tt>s.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
@@ -554,7 +555,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      *            in the returned list (<em>those of the super enumeration types not</em>).
      * @param ipsProject The IPS project which IPS object path is used for the search.
      * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy.
+     * @throws CoreException If an error occurs while searching the super type hierarchy.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
@@ -562,15 +563,15 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /**
      * Creates and returns new <tt>IEnumAttribute</tt>s in this <tt>IEnumType</tt> inheriting the
-     * given <tt>IEnumAttribute</tt>s from the supertype hierarchy.
+     * given <tt>IEnumAttribute</tt>s from the super type hierarchy.
      * <p>
      * If any of the given super enumeration attributes is already inherited by this
      * <tt>IEnumType</tt> it will be skipped.
      * 
-     * @param superEnumAttributes The <tt>IEnumAttribute</tt>s from the supertype hierarchy to
+     * @param superEnumAttributes The <tt>IEnumAttribute</tt>s from the super type hierarchy to
      *            inherit by this <tt>IEnumType</tt>.
      * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy.
+     * @throws CoreException If an error occurs while searching the super type hierarchy.
      * @throws IllegalArgumentException If any of the given <tt>IEnumAttribute</tt>s is not part of
      *             the supertype hierarchy of this <tt>IEnumType</tt>.
      */
@@ -580,7 +581,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * Returns whether an <tt>IEnumAttribute</tt> with the given name exists in this
      * <tt>IEnumType</tt>.
      * <p>
-     * The check does <strong>not</strong> include the copies from the supertype hierarchy.
+     * The check does <strong>not</strong> include the copies from the super type hierarchy.
      * 
      * @see #containsEnumAttributeIncludeSupertypeCopies(String)
      * 
@@ -593,7 +594,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * Returns whether an <tt>IEnumAttribute</tt> with the given name exists in this
      * <tt>IEnumType</tt>.
      * <p>
-     * The check <strong>does</strong> include the copies from the supertype hierarchy.
+     * The check <strong>does</strong> include the copies from the super type hierarchy.
      * 
      * @see #containsEnumAttribute(String)
      * 

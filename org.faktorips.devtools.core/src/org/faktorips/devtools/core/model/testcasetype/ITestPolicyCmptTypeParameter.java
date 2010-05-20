@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
  */
 public interface ITestPolicyCmptTypeParameter extends ITestParameter {
 
-    /** Property names */
     public final static String PROPERTY_POLICYCMPTTYPE = "policyCmptType"; //$NON-NLS-1$
     public final static String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$	
     public final static String PROPERTY_REQUIRES_PRODUCTCMT = "requiresProductCmpt"; //$NON-NLS-1$
@@ -46,14 +45,14 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public final static String MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS = MSGCODE_PREFIX + "PolicyCmptTypeNotExists"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the min instances is less or equal the max
+     * Validation message code to indicate that the minimum instances is less or equal the max
      * instances.
      */
     public final static String MSGCODE_MIN_INSTANCES_IS_GREATER_THAN_MAX = MSGCODE_PREFIX
             + "MinInstancesIsGreaterThanMax"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the max instances is greater or equal the min
+     * Validation message code to indicate that the max instances is greater or equal the minimum
      * instances.
      */
     public final static String MSGCODE_MAX_INSTANCES_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxInstancesIsLessThanMin"; //$NON-NLS-1$
@@ -76,29 +75,29 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
             + "TargetOfAssociationNotExists"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the policy cmpt type is not allowed for the
+     * Validation message code to indicate that the policy component type is not allowed for the
      * association.
      */
     public final static String MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_ASSOCIATION = MSGCODE_PREFIX
             + "WrongPolicyCmptTypeOfAssociation"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the policy cmpt type must have the required product
-     * cmpt flag if the parameter is root and abstract, otherwise the derived class couldn't be
-     * determined in the test case.
+     * Validation message code to indicate that the policy component type must have the required
+     * product component flag if the parameter is root and abstract, otherwise the derived class
+     * couldn't be determined in the test case.
      */
     public final static String MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT = MSGCODE_PREFIX
             + "MustRequireProdIfRootAndAbstract"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the policy cmpt type must be configurated by product
-     * if the requires product flag is set to <code>true</code>.
+     * Validation message code to indicate that the policy component type must be configured by
+     * product if the requires-product flag is set to <code>true</code>.
      */
     public final static String MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD = MSGCODE_PREFIX
             + "RequiresProdButPolicyCmptTypeIsNotConfByProd"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the target of an accociation is not in the test case
+     * Validation message code to indicate that the target of an association is not in the test case
      * type.
      */
     public final static String MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE = MSGCODE_PREFIX
@@ -187,8 +186,8 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public ITestPolicyCmptTypeParameter newTestPolicyCmptTypeParamChild();
 
     /**
-     * Returns the parent test policy cmpt type parameter or <code>null</code> if this parameter
-     * specifies a root parameter.
+     * Returns the parent test policy component type parameter or <code>null</code> if this
+     * parameter specifies a root parameter.
      */
     public ITestPolicyCmptTypeParameter getParentTestPolicyCmptTypeParam();
 
@@ -198,7 +197,7 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParamChilds();
 
     /**
-     * Returns the test policy component type param child with the given name. If more than one
+     * Returns the test policy component type parameter child with the given name. If more than one
      * parameter with the name exist, the first object is returned. Returns <code>null</code> if no
      * parameter with the given name exists.
      */
@@ -217,12 +216,12 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public void setRequiresProductCmpt(boolean requiresProductCmpt);
 
     /**
-     * Returns the minmum instances of the association.
+     * Returns the minimum instances of the association.
      */
     public int getMinInstances();
 
     /**
-     * Sets the minmum instances of the association.
+     * Sets the minimum instances of the association.
      */
     public void setMinInstances(int minInstances);
 
@@ -272,13 +271,13 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public int[] moveTestPolicyCmptTypeChild(int[] indexes, boolean up);
 
     /**
-     * Returns all allowed product cmpts source files which could be added as target of child test
-     * policy cmpt type parameters. Only product cmpts are allowed which are defined as targets
-     * within the given parentProductCmpt, in at least one generation. If the given product cmpt is
-     * <code>null</code> then all product cmpts, which matches the association this parameter is
-     * related to, are returned.
+     * Returns all allowed product components source files which could be added as target of child
+     * test policy component type parameters. Only product components are allowed which are defined
+     * as targets within the given parentProductCmpt, in at least one generation. If the given
+     * product component is <code>null</code> then all product components, which matches the
+     * association this parameter is related to, are returned.
      * <p>
-     * Returns an empty array if no product cmpts are found as valid product cmpt.
+     * Returns an empty array if no product components are found as valid product component.
      */
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt parentProductCmpt)
             throws CoreException;

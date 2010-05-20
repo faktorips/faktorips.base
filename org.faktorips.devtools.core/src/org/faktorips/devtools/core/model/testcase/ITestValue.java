@@ -51,7 +51,7 @@ public interface ITestValue extends ITestObject {
     /**
      * Returns the test value or <code>null</code> if the object does not exists.
      * 
-     * @param ipsProject The ips project which object path is used to search.
+     * @param ipsProject The IPS project which object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the test value.
      */
@@ -68,9 +68,10 @@ public interface ITestValue extends ITestObject {
     public void setValue(String newValue);
 
     /**
-     * Sets the default value of the test value. The default value of the datatype will be used.
+     * Sets the default value of the test value. The default value of the data type will be used.
      * 
      * @throws CoreException if the test value parameter wasn't found
      */
     public void setDefaultValue() throws CoreException;
+
 }

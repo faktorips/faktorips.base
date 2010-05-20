@@ -20,7 +20,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Abstract Operation to import ipstablecontents in an arbitrary format.
+ * Abstract operation to import <tt>ITableContents</tt> in an arbitrary format.
  * <p>
  * Implementors of a new table format should subclass this class and use the
  * <code>externalTableFormat</code> extension point to register the new table format.
@@ -30,13 +30,13 @@ import org.faktorips.util.message.MessageList;
 public abstract class AbstractTableImportOperation implements IWorkspaceRunnable {
 
     /**
-     * Qualified name of the file to import from
+     * The qualified name of the file to import from.
      */
     protected String sourceFile;
 
     /**
-     * Datatypes for the columns. The datatype at index 1 is the datatype defined in the structure
-     * for column at index 1.
+     * Data types for the columns. The data type at index 1 is the data type defined in the
+     * structure for column at index 1.
      */
     protected Datatype[] datatypes;
 
@@ -74,9 +74,6 @@ public abstract class AbstractTableImportOperation implements IWorkspaceRunnable
         this.importIntoExisting = importIntoExisting;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public abstract void run(IProgressMonitor monitor) throws CoreException;
 

@@ -15,9 +15,6 @@ package org.faktorips.devtools.core.model.tablecontents;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 
-/**
- *
- */
 public interface ITableContentsGeneration extends IIpsObjectGeneration {
 
     /**

@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.XmlSupport;
 import org.faktorips.util.memento.MementoSupport;
 
 /**
- * A container for ips object parts.
+ * A container for IPS object parts.
  * 
  * @author Thorsten Guenther
  */
@@ -28,13 +28,13 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
         MementoSupport, Described {
 
     /**
-     * Returns the ips object this part belongs to if the container is a part, or the ips object
-     * itself, if this container is the ips object.
+     * Returns the IPS object this part belongs to if the container is a part, or the IPS object
+     * itself, if this container is the IPS object.
      */
     public IIpsObject getIpsObject();
 
     /**
-     * Returns the ips source file this container belongs to.
+     * Returns the IPS source file this container belongs to.
      */
     public IIpsSrcFile getIpsSrcFile();
 
@@ -42,7 +42,8 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * Creates a new IIpsObjectPart of the given type. If the type is not supported, an
      * IllegalArgumentException is thrown.
      * 
-     * @param partType The published interface of the ips object part that should be created.
+     * @param partType The published interface of the IPS object part that should be created.
+     * 
      * @throws IllegalArgumentException if the given partType is not supported.
      */
     public IIpsObjectPart newPart(Class<?> partType);

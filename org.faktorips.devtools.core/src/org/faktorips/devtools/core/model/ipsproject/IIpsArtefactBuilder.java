@@ -17,12 +17,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
-// TODO Kommentar verbessern. Die Methoden beforeFullBuild und afterFullBuild gibt es nicht mehr
+// TODO Improve comment, the methods beforeFullBuild and afterFullBuild no longer exist ...
 /**
- * An implementation of this interface is supposed to create one artefact for an IpsObject. The
- * isBuilderFor() method indicates to the ips build framework which kind of IpsObjects this builder
+ * An implementation of this interface is supposed to create one artifact for an IpsObject. The
+ * isBuilderFor() method indicates to the IPS build framework which kind of IpsObjects this builder
  * is interested in. This interface describes a defined build cycle. For every IpsObject this
- * builder builds an artefact for, the following methods are called sequentially beforeBuild(),
+ * builder builds an artifact for, the following methods are called sequentially beforeBuild(),
  * build(), afterBuild(). If a full build is started the beforeFullBuild() method is called before
  * the first IpsSrcFile that hosts the IpsObject is provided to this builder and the
  * afterFullBuild() method is called after the last IpsSrcFile has been provided to this builder. A
@@ -71,7 +71,7 @@ public interface IIpsArtefactBuilder {
      * true for the provided IpsSrcFile. This method is supposed to be used to set the builder in a
      * defined state before the actual build process starts.
      * 
-     * @param ipsSrcFile the IpsSrcFile that is used by this artefact builder
+     * @param ipsSrcFile the IpsSrcFile that is used by this artifact builder
      * @param status exceptional states can be reported to this multi status object. This will not
      *            interrupt the current build cycle. The exception will be reported to the used by
      *            means of a dialog at the end of the build routine. In addition the exception will
@@ -90,7 +90,7 @@ public interface IIpsArtefactBuilder {
      * returned true for the provided IpsSrcFile. This method is supposed to be used for clean up
      * after the build has finished.
      * 
-     * @param ipsSrcFile the IpsSrcFile that is used by this artefact builder
+     * @param ipsSrcFile the IpsSrcFile that is used by this artifact builder
      * @throws CoreException implementations can throw or delegate rising CoreExceptions. The
      *             exception will be reported to the used by means of a dialog at the end of the
      *             build routine. In addition the exception will be logged to the eclipse log file.
@@ -101,7 +101,7 @@ public interface IIpsArtefactBuilder {
      * Is called during full or incremental build if the isBuilderFor method has returned true for
      * the provided IpsSrcFile.
      * 
-     * @param ipsSrcFile the IpsSrcFile that is used by this artefact builder
+     * @param ipsSrcFile the IpsSrcFile that is used by this artifact builder
      * @throws CoreException implementations can throw or delegate rising CoreExceptions. Throwing a
      *             CoreException or a RuntimeException will stop the current build cycle of this
      *             builder. Only the afterBuild(IpsSrcFile) method is called to be able to clean up
@@ -122,18 +122,19 @@ public interface IIpsArtefactBuilder {
      * Indicates if the builder generates files that are considered derived. This means that the
      * files will be regenerated during each build cycle and be deleted during a clean build cycle.
      * Code that is added to these files between builds will be removed. The location where the
-     * artefact is put is defined in the IpsObjectPath or alternatively in the IpsSrcFolderEntry of
+     * artifact is put is defined in the IpsObjectPath or alternatively in the IpsSrcFolderEntry of
      * an IpsObjectPath.
      */
     public boolean buildsDerivedArtefacts();
 
     /**
-     * Deletes the artefact that is created by this builder upon the provided IpsSrcFile.
+     * Deletes the artifact that is created by this builder upon the provided IpsSrcFile.
      * 
-     * @param ipsSrcFile the IpsSrcFile that is used by this artefact builder
+     * @param ipsSrcFile the IpsSrcFile that is used by this artifact builder
      * @throws CoreException implementations can throw or delegate rising CoreExceptions. The
      *             exception will be reported to the used by means of a dialog at the end of the
      *             build routine. In addition the exception will be logged to the eclipse log file.
      */
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException;
+
 }

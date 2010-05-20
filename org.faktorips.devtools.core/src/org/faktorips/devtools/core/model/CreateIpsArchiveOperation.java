@@ -48,7 +48,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * An operation to create an ips archive.
+ * An operation to create an IPS archive.
  * 
  * @author Jan Ortmann
  */
@@ -63,10 +63,8 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
     private Set<String> handledEntries = new HashSet<String>(1000);
 
     /**
-     * Creates a new operation to create an ips archive. From the given project the content from all
+     * Creates a new operation to create an IPS archive. From the given project the content from all
      * source folders are packed into the new archive.
-     * 
-     * @throws CoreException
      */
     public CreateIpsArchiveOperation(IIpsProject projectToArchive, File archive) throws CoreException {
         this.archive = archive;
@@ -89,9 +87,6 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         this.archive = archive;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
@@ -105,15 +100,15 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
             IFile workspaceFile = getWorkspaceFile();
             if (workspaceFile != null && workspaceFile.getLocalTimeStamp() == archive.lastModified()) {
                 try {
-                    // windows file system does not return milliseconde, only seconds
-                    // if the cached timestamp is equal to the file's timestamp on disk,
-                    // we wait for a bit more than one seconds before creating the file. After that
-                    // time we are sure that the file on disk gets a differnt time stamp when
-                    // writing the file. This hack has to be done, because we write using
-                    // java.io.OutputStream
-                    // (because we have to use the JarOutputStream to zip) and therefore have to
-                    // call refreshLocal() afterwards. RefreshLocal refreshes only if we have a
-                    // different time stamp.
+                    /*
+                     * windows file system does not return milliseconds, only seconds if the cached
+                     * time stamp is equal to the file's time stamp on disk, we wait for a bit more
+                     * than one seconds before creating the file. After that time we are sure that
+                     * the file on disk gets a different time stamp when writing the file. This hack
+                     * has to be done, because we write using java.io.OutputStream (because we have
+                     * to use the JarOutputStream to ZIP) and therefore have to call refreshLocal()
+                     * afterwards. RefreshLocal refreshes only if we have a different time stamp.
+                     */
                     Thread.sleep(1010);
                 } catch (InterruptedException e) {
                     throw new CoreException(new IpsStatus(e));
@@ -186,6 +181,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
             JarOutputStream os,
             Properties ipsObjectsProperties,
             IProgressMonitor monitor) throws CoreException {
+
         try {
             IIpsPackageFragment[] packs = root.getIpsPackageFragments();
             monitor.beginTask(null, packs.length);
@@ -208,6 +204,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
             JarOutputStream os,
             Properties ipsObjectsProperties,
             IProgressMonitor monitor) throws CoreException {
+
         try {
             IIpsElement[] elements = pack.getChildren();
             monitor.beginTask(null, elements.length);
@@ -223,9 +220,9 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         }
     }
 
-    /*
-     * Check if the archive contains the given entry specified by the name, e.g. objects which were
-     * copied from the src folder to the bin folder
+    /**
+     * Checks if the archive contains the given entry specified by the name, e.g. objects which were
+     * copied from the source folder to the bin folder
      */
     private boolean isDuplicateEntry(String entryName) {
         if (handledEntries.contains(entryName)) {
@@ -237,6 +234,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
 
     private void addToArchive(IIpsSrcFile file, JarOutputStream os, Properties ipsObjectsProperties)
             throws CoreException {
+
         InputStream content = file.getContentFromEnclosingResource();
         String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR
                 + file.getQualifiedNameType().toPath().toString();
@@ -316,6 +314,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
 
     private void addFiles(IFolder rootFolder, IFolder folder, JarOutputStream os, IProgressMonitor monitor)
             throws CoreException {
+
         IResource[] members = folder.members();
         for (IResource member : members) {
             if (member instanceof IFile) {
@@ -328,6 +327,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
 
     private void addFiles(IFolder rootFolder, IFile fileToAdd, JarOutputStream os, IProgressMonitor monitor)
             throws CoreException {
+
         String name = fileToAdd.getFullPath().removeFirstSegments(rootFolder.getFullPath().segmentCount()).toString();
         if (isDuplicateEntry(name)) {
             return;
@@ -376,4 +376,5 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
     public void setInclJavaSources(boolean inclJavaSources) {
         this.inclJavaSources = inclJavaSources;
     }
+
 }

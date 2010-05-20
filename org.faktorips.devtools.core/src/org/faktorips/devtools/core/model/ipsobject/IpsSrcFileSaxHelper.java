@@ -30,11 +30,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Helper class to parse ips source files via SAX.
+ * Helper class to parse IPS source files via SAX.
  * 
  * @author Joerg Ortmann
  */
 public abstract class IpsSrcFileSaxHelper {
+
     /*
      * Exception to indicate the end of parsing. Remark (SAX 2.0 documentation): this is the only
      * way to abort the parser because parse method is synchronous, it will not return until parsing
@@ -49,10 +50,11 @@ public abstract class IpsSrcFileSaxHelper {
         private static final long serialVersionUID = 1L;
     }
 
-    /*
+    /**
      * Handler to read the attributes of the first node and abort further parsing.
      */
     private static class AttributeReadHandler extends DefaultHandler {
+
         private String xmlRootElementName;
         private Map<String, String> attributeValue = new HashMap<String, String>(10);
 
@@ -61,9 +63,6 @@ public abstract class IpsSrcFileSaxHelper {
             this.xmlRootElementName = xmlRootElementName;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             if (xmlRootElementName.equals(qName)) {
@@ -81,10 +80,11 @@ public abstract class IpsSrcFileSaxHelper {
         public Map<String, String> getAttributeValue() {
             return attributeValue;
         }
+
     }
 
     /**
-     * Reads and returns all attributes of the first (root) node of the given soure file.
+     * Reads and returns all attributes of the first (root) node of the given source file.
      * 
      * @throws CoreException if an error occurs.
      */
@@ -114,4 +114,5 @@ public abstract class IpsSrcFileSaxHelper {
             }
         }
     }
+
 }

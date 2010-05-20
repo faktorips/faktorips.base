@@ -26,8 +26,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 
 /**
- * Collection of {@link IIpsSrcFile}s - able to answer some questions about single items only
- * usefull in relation with all other items of this collection.
+ * Collection of {@link IIpsSrcFile}s - able to answer some questions about single items only useful
+ * in relation with all other items of this collection.
  * 
  * @author Cornelius Dirmeier, Faktor Zehn AG
  * @author Thorsten Günther, Faktor Zehn AG
@@ -81,7 +81,7 @@ public class IpsSrcFileCollection {
 
     /**
      * Returns <code>true</code> if the user has searched for instances of a type and the ips object
-     * identified by this item is an instance of a subtype of this type. Returns <code>false</code>
+     * identified by this item is an instance of a sub type of this type. Returns <code>false</code>
      * otherwise.
      * 
      * @throws CoreException If the given {@link IIpsSrcFile} is not part of this collection.
@@ -93,16 +93,16 @@ public class IpsSrcFileCollection {
     private CollectionItem getItem(IIpsSrcFile srcFile) throws CoreException {
         CollectionItem item = collection.get(srcFile);
         if (item == null) {
-            throw new CoreException(new IpsStatus("The given source file " + srcFile
-                    + " is not part of this collection"));
+            throw new CoreException(new IpsStatus("The given source file " + srcFile //$NON-NLS-1$
+                    + " is not part of this collection")); //$NON-NLS-1$
         }
 
         return item;
     }
 
     /**
-     * Creates an item for each ips source file and marks the items as duplicate, if two (or more)
-     * ips source files have the same unqualified name.
+     * Creates an item for each IPS source file and marks the items as duplicate, if two (or more)
+     * IPS source files have the same unqualified name.
      */
     private void initItems(IIpsSrcFile[] files, IIpsMetaClass baseMetaClass) {
 

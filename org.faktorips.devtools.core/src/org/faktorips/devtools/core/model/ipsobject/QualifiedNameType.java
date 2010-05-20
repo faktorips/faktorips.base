@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Combines the qualified name and ips object type.
+ * Combines the qualified name and IPS object type.
  * 
  * @author Jan Ortmann
  */
@@ -45,7 +45,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
     /**
      * Returns the qualified name type for he given path.
      * 
-     * @param pathToFile a relative path to an ips src file, e.g. base/motor/MotorPolicy.ipspct
+     * @param pathToFile a relative path to an IPS source file, e.g. base/motor/MotorPolicy.ipspct
      * @return The qualified name type
      * 
      * @throws IllegalArgumentException if the path can't be parsed to a qualified name type
@@ -66,10 +66,6 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
         return new QualifiedNameType(qName, type);
     }
 
-    /**
-     * @param name
-     * @param type
-     */
     public QualifiedNameType(String name, IpsObjectType type) {
         ArgumentCheck.notNull(name, this);
         ArgumentCheck.notNull(type, this);
@@ -86,7 +82,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
     }
 
     /**
-     * Returns the ips object type.
+     * Returns the IPS object type.
      */
     public IpsObjectType getIpsObjectType() {
         return type;
@@ -130,7 +126,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
     }
 
     /**
-     * Returns the name for files in that an ips object with this qualified name type is stored.
+     * Returns the name for files in that an IPS object with this qualified name type is stored.
      * E.g.: for "mycompany.motor.MotorPolicy" of type PolicyCmptType the method returns
      * "MotorPolicy.ipspct"
      */
@@ -145,17 +141,11 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
         hashCode = result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return hashCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof QualifiedNameType) {
@@ -165,9 +155,6 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return type + ": " + qualifiedName; //$NON-NLS-1$
@@ -187,17 +174,17 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
         type = IpsPlugin.getDefault().getIpsModel().getIpsObjectType(typeName);
         if (type == null) {
             throw new IllegalStateException(
-                    "Unable to deserialize this qualified name type because the IpsObjectType could not be resolved: "
+                    "Unable to deserialize this qualified name type because the IpsObjectType could not be resolved: " //$NON-NLS-1$
                             + type);
         }
         calculateHashCode();
     }
 
     /**
-     * QualifiedNameTypes are compared by their package name, then by their unqualified name and
-     * then by their ips obejct type's name.
-     * 
      * {@inheritDoc}
+     * <p>
+     * QualifiedNameTypes are compared by their package name, then by their unqualified name and
+     * then by their IPS object type's name.
      */
     @Override
     public int compareTo(QualifiedNameType other) {

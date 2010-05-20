@@ -28,11 +28,8 @@ import org.faktorips.devtools.core.model.type.IType;
  */
 public abstract class PolicyCmptTypeHierarchyVisitor {
 
-    public PolicyCmptTypeHierarchyVisitor() {
-    }
-
     /**
-     * Starts the visit on the given type. Does nothing if basetype is <code>null</code>.
+     * Starts the visit on the given type. Does nothing if base type is <code>null</code>.
      */
     public final void start(IPolicyCmptType basetype) throws CoreException {
         if (basetype == null) {
@@ -60,4 +57,5 @@ public abstract class PolicyCmptTypeHierarchyVisitor {
      *         <code>false</code> if not.
      */
     protected abstract boolean visit(IPolicyCmptType currentType) throws CoreException;
+
 }

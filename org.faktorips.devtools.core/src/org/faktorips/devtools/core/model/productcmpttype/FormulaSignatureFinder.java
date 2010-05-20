@@ -48,9 +48,6 @@ public class FormulaSignatureFinder extends ProductCmptTypeHierarchyVisitor {
         return new ArrayList<IMethod>(methods);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean visit(IProductCmptType currentType) throws CoreException {
         IProductCmptTypeMethod formulaSignature = currentType.getFormulaSignature(formulaName);

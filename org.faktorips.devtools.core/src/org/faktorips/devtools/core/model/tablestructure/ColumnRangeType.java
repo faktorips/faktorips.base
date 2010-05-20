@@ -47,7 +47,7 @@ public class ColumnRangeType extends DefaultEnumValue {
     }
 
     /**
-     * Private constructor according to the type save enum pattern.
+     * Private constructor according to the type save enumeration pattern.
      */
     private ColumnRangeType(DefaultEnumType type, String id, String name) {
         super(type, id, name);

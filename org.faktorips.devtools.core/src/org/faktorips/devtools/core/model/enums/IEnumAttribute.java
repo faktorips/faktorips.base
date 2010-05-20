@@ -25,9 +25,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * <tt>IEnumType</tt>.
  * <p>
  * <tt>IEnumAttribute</tt>s are always of a specific data type and can be inherited from an
- * <tt>IEnumType</tt> in the supertype hierarchy. If an <tt>IEnumAttribute</tt> is inherited from
- * the supertype hierarchy it is treated as a copy of the original <tt>IEnumAttribute</tt> referring
- * to its properties.
+ * <tt>IEnumType</tt> in the super type hierarchy. If an <tt>IEnumAttribute</tt> is inherited from
+ * the super type hierarchy it is treated as a copy of the original <tt>IEnumAttribute</tt>
+ * referring to its properties.
  * <p>
  * An <tt>IEnumAttribute</tt> can be marked as unique, which implies that each value for this
  * <tt>IEnumAttribute</tt> must be unique.
@@ -80,7 +80,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
 
     /**
      * Validation message code to indicate that the name of this <tt>IEnumAttribute</tt> is already
-     * used in the supertype hierarchy.
+     * used in the super type hierarchy.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumAttributeDuplicateNameInSupertypeHierarchy"; //$NON-NLS-1$
@@ -135,14 +135,14 @@ public interface IEnumAttribute extends IIpsObjectPart {
 
     /**
      * Validation message code to indicate that this <tt>IEnumAttribute</tt> is inherited from the
-     * supertype hierarchy but there is no such <tt>IEnumAttribute</tt> in the supertype hierarchy.
+     * super type hierarchy but there is no such <tt>IEnumAttribute</tt> in the supertype hierarchy.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumAttributeNoSuchAttributeInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <tt>IEnumAttribute</tt> is inherited from the
-     * supertype hierarchy but the containing <tt>IEnumType</tt> has no super enumeration type.
+     * super type hierarchy but the containing <tt>IEnumType</tt> has no super enumeration type.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_SUPERTYPE = MSGCODE_PREFIX
             + "EnumAttributeInheritedButNoSupertype"; //$NON-NLS-1$
@@ -240,13 +240,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public void setDatatype(String dataType);
 
     /**
-     * Returns <code>true</code> if this <tt>IEnumAttribute</tt> is inherited from the supertype
+     * Returns <code>true</code> if this <tt>IEnumAttribute</tt> is inherited from the super type
      * hierarchy, <code>false</code> if not.
      */
     public boolean isInherited();
 
     /**
-     * Sets whether this <tt>IEnumAttribute</tt> is inherited from the supertype hierarchy.
+     * Sets whether this <tt>IEnumAttribute</tt> is inherited from the super type hierarchy.
      * <p>
      * If this property is set to <tt>true</tt> this <tt>IEnumAttribute</tt> is treated like a copy
      * of the original <tt>IEnumAttribute</tt> in the respective super <tt>IEnumType</tt>. This
@@ -257,7 +257,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * from now on.
      * 
      * @param isInherited Flag indicating whether this <tt>IEnumAttribute</tt> is inherited from the
-     *            supertype hierarchy.
+     *            super type hierarchy.
      */
     public void setInherited(boolean isInherited);
 
@@ -272,8 +272,8 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * Returns <tt>true</tt> if by means of this attribute a value of this enumeration type can be
      * identified uniquely.
      * <p>
-     * <strong>Important:</strong> This method does not search the supertype hierarchy for the
-     * <tt>unique</tt> property. The method <tt>findIsUnique()</tt> takes the supertype hierarchy
+     * <strong>Important:</strong> This method does not search the super type hierarchy for the
+     * <tt>unique</tt> property. The method <tt>findIsUnique()</tt> takes the super type hierarchy
      * into account.
      * 
      * @see #findIsUnique(IIpsProject)
@@ -284,13 +284,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * Returns <tt>true</tt> if this enumeration attribute is marked as unique, <tt>false</tt> if
      * not.
      * <p>
-     * If this attribute is inherited the property of the supertype attribute will be returned.
-     * Returns <tt>null</tt> if the supertype attribute cannot be found.
+     * If this attribute is inherited the property of the super type attribute will be returned.
+     * Returns <tt>null</tt> if the super type attribute cannot be found.
      * 
      * @see #isUnique()
      * 
      * @param ipsProject The IPS project that is used to the search the <tt>unique</tt> property in
-     *            the supertype hierarchy.
+     *            the super type hierarchy.
      * 
      * @throws CoreException If an error occurs while searching
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
@@ -319,7 +319,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * Returns a flag indicating whether this <tt>IEnumAttribute</tt> is marked to be used as name
      * of enumeration values in the Faktor-IPS UI.
      * <p>
-     * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
+     * <strong>Important:</strong> This operation does not search the super type hierarchy for the
      * <tt>usedAsNameInFaktorIpsUi</tt> property if this <tt>IEnumAttribute</tt> is inherited. Use
      * <tt>findIsUsedAsNameInFaktorIpsUi()</tt> in this case.
      * 
@@ -342,7 +342,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * <tt>IEnumType</tt>. Only one attribute within an <tt>IEnumType</tt> can be the identifying
      * attribute.
      * <p>
-     * <strong>Important:</strong> This method does not search the supertype hierarchy to look for
+     * <strong>Important:</strong> This method does not search the super type hierarchy to look for
      * the this property. Use <tt>findIsIdentifier()</tt> if necessary.
      * 
      * @see #findIsIdentifier(IIpsProject)

@@ -22,6 +22,7 @@ import org.faktorips.util.message.MessageList;
  * corresponding extension point.
  * 
  * @see IpsModel#getIpsArtefactBuilderSetInfos()
+ * 
  * @author Peter Erzberger
  */
 public interface IIpsArtefactBuilderSetInfo {
@@ -29,18 +30,18 @@ public interface IIpsArtefactBuilderSetInfo {
     /**
      * A message code that indicates that a property is not supported by this builder set. A
      * validation message with this message code is created when a IpsArtefactBuilderConfig is
-     * validated against the definiton of this builder set and its allowed properties.
+     * validated against the definition of this builder set and its allowed properties.
      */
-    public final static String MSG_CODE_PROPERTY_NOT_SUPPORTED = "propertyNotSupported";
+    public final static String MSG_CODE_PROPERTY_NOT_SUPPORTED = "propertyNotSupported"; //$NON-NLS-1$
 
     /**
      * A message code that indicates that a property is in accordance with the JDK that is selected
      * for the java project of this builder set. A validation message with this message code is
      * created when a
      * <code>org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig</code> is
-     * validated against the definiton of this builder set and its allowed properties.
+     * validated against the definition of this builder set and its allowed properties.
      */
-    public final static String MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE = "propertyNoJdkCompliance";
+    public final static String MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE = "propertyNoJdkCompliance"; //$NON-NLS-1$
 
     /**
      * Creates a {@link IIpsArtefactBuilderSet} instance based on this

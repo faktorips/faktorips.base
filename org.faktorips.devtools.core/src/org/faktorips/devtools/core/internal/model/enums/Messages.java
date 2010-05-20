@@ -19,6 +19,14 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.enums.messages"; //$NON-NLS-1$
 
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes;
 
     public static String EnumAttributeValue_ValueNotParsable;
@@ -44,7 +52,6 @@ public class Messages extends NLS {
     public static String EnumAttribute_DuplicateUsedAsNameInFaktorIpsUi;
     public static String EnumAttribute_DuplicateUsedAsIdInFaktorIpsUi;
     public static String EnumAttribute_EnumDatatypeDoesNotContainValuesButParentEnumTypeDoes;
-
     public static String EnumAttribute_PropertyDisplayName_Identifier;
     public static String EnumAttribute_PropertyDisplayName_LiteralName;
     public static String EnumAttribute_PropertyDisplayNameDisplayName;
@@ -65,9 +72,5 @@ public class Messages extends NLS {
     public static String EnumContent_ReferencedEnumAttributesCountInvalid;
     public static String EnumContent_ReferencedEnumAttributeNamesInvalid;
     public static String EnumContent_ReferencedEnumAttributesOrderingInvalid;
-
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
 
 }

@@ -16,12 +16,14 @@ package org.faktorips.devtools.core.model.valueset;
 import org.faktorips.datatype.ValueDatatype;
 
 /**
- * Represents a value set that does not restrict the values defined by a value datatype.
+ * Represents a value set that does not restrict the values defined by a value data type.
  * 
  * @see ValueDatatype
  * 
  * @author Thorsten Guenther
  */
 public interface IUnrestrictedValueSet extends IValueSet {
+
+    // No specific methods so far.
 
 }

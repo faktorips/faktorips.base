@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 /**
  * An IPS package fragment is a portion of the workspace corresponding to an entire package, or to a
  * portion thereof. The distinction between a package fragment and a package is that a package with
- * some name is the union of all package fragments in the ips object path which have the same name.
+ * some name is the union of all package fragments in the IPS object path which have the same name.
  */
 public interface IIpsPackageFragment extends IIpsElement {
 
@@ -40,7 +40,7 @@ public interface IIpsPackageFragment extends IIpsElement {
     public final static String NAME_OF_THE_DEFAULT_PACKAGE = ""; //$NON-NLS-1$
 
     /**
-     * The char used as separator for subpackages.
+     * The char used as separator for sub packages.
      */
     public final static char SEPARATOR = '.';
 
@@ -50,29 +50,25 @@ public interface IIpsPackageFragment extends IIpsElement {
     public static final String SORT_ORDER_FILE_NAME = ".sortorder"; //$NON-NLS-1$
 
     /**
-     * Returns all ips source files in the package. Returns an empty array if the package is empty.
+     * Returns all IPS source files in the package. Returns an empty array if the package is empty.
      * 
      * @throws CoreException if an error occurs while searching for the files.
      */
     public IIpsSrcFile[] getIpsSrcFiles() throws CoreException;
 
     /**
-     * Returns the packagefragment which contains this one or null if this one is the
+     * Returns the package fragment which contains this one or null if this one is the
      * default-package.
      */
     public IIpsPackageFragment getParentIpsPackageFragment();
 
     /**
-     * Returns all packagfragments which are contained in this one.
-     * 
-     * @throws CoreException
+     * Returns all package fragments which are contained in this one.
      */
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException;
 
     /**
      * Returns the child packages sorted by the sort definition.
-     * 
-     * @throws CoreException
      * 
      * @see #getSortDefinition()
      */
@@ -81,16 +77,12 @@ public interface IIpsPackageFragment extends IIpsElement {
     /**
      * Reads the sort definition of the IIpsPackageFragment and its siblings. Returns the default
      * sort definition if no sort definition exists.
-     * 
-     * @throws CoreException
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() throws CoreException;
 
     /**
      * Set a new sort definition for this IIpsPackageFragment and its siblings. Set the current sort
      * definition to default if <code>null</code> is passed.
-     * 
-     * @throws CoreException
      */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException;
 
@@ -122,7 +114,7 @@ public interface IIpsPackageFragment extends IIpsElement {
 
     /**
      * Returns a handle to the IPS source file for the given filenameWithoutExtension. The file
-     * extension is derived from the ips object type.
+     * extension is derived from the IPS object type.
      * 
      * @throws NullPointerException if type is <code>null</code>.
      */
@@ -143,7 +135,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      *             <li>This folder does not exist</li>
      *             <li>A <code>CoreException</code> occurred while creating an underlying resource
      *             <li>This root folder is read only
-     *             <li>The name is not a valid src file name
+     *             <li>The name is not a valid source file name
      *             </ul>
      */
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
@@ -163,7 +155,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      *             <li>This folder does not exist</li>
      *             <li>A <code>CoreException</code> occurred while creating an underlying resource
      *             <li>This root folder is read only
-     *             <li>The name is not a valid src file name
+     *             <li>The name is not a valid source file name
      *             </ul>
      */
     public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
@@ -175,7 +167,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * name (separated by a dot).
      * 
      * @param type the object's type
-     * @param name the file name
+     * @param ipsObjectName the file name
      * @param force a flag controlling how to deal with resources that are not in sync with the
      *            local file system
      * @param monitor the given progress monitor
@@ -255,8 +247,6 @@ public interface IIpsPackageFragment extends IIpsElement {
     /**
      * Returns <code>true</code> if this IIpsPackageFragement has at least one IIpsPackageFragement
      * as a child.
-     * 
-     * @throws CoreException
      */
     public boolean hasChildIpsPackageFragments() throws CoreException;
 

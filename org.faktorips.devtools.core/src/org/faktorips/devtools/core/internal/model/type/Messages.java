@@ -15,19 +15,16 @@ package org.faktorips.devtools.core.internal.model.type;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Thorsten Guenther
- */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.type.messages"; //$NON-NLS-1$
 
-    private Messages() {
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String Association_msg_MaxCardinalityMustBeAtLeast1;
@@ -50,9 +47,13 @@ public class Messages extends NLS {
     public static String Attribute_msg_DefaultNotInValueset;
 
     public static String DuplicatePropertyNameValidator_msg;
+
     public static String Method_duplicateParamName;
     public static String Method_duplicateSignature;
     public static String Method_incompatbileReturnType;
+    public static String Method_msg_NameEmpty;
+    public static String Method_msg_InvalidMethodname;
+    public static String Method_msg_abstractMethodError;
 
     public static String Type_msg_AbstractMissmatch;
     public static String Type_msg_cycleInTypeHierarchy;
@@ -61,13 +62,10 @@ public class Messages extends NLS {
     public static String Type_msg_MustImplementInverseDerivedUnion;
     public static String Type_msg_supertypeNotFound;
     public static String Type_msg_TypeHierarchyInconsistent;
-
-    public static String Method_msg_NameEmpty;
-    public static String Method_msg_InvalidMethodname;
-    public static String Method_msg_abstractMethodError;
-    public static String Parameter_msg_NameEmpty;
-    public static String Parameter_msg_InvalidParameterName;
     public static String Type_msgOtherTypeWithSameQNameInDependentProject;
     public static String Type_msgOtherTypeWithSameQNameInSameProject;
+
+    public static String Parameter_msg_NameEmpty;
+    public static String Parameter_msg_InvalidParameterName;
 
 }

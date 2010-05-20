@@ -15,9 +15,6 @@ package org.faktorips.devtools.core.model.tablestructure;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
-/**
- *
- */
 public interface IColumnRange extends IIpsObjectPart, IKeyItem {
 
     public final static String PROPERTY_RANGE_TYPE = "columnRangeType"; //$NON-NLS-1$
@@ -31,20 +28,20 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
     public final static String MSGCODE_PREFIX = "COLUMN_RANGE-"; //$NON-NLS-1$
 
     /**
-     * Validation message code that indicates that the from-column has an datatype not valid for
+     * Validation message code that indicates that the from-column has an data type not valid for
      * ranges.
      */
     public final static String MSGCODE_INVALID_DATATYPE_FOR_FROM = MSGCODE_PREFIX + "InvalidDatatypeForFromColumn"; //$NON-NLS-1$
 
     /**
-     * Validation message code that indicates that the to-column has an datatype not valid for
+     * Validation message code that indicates that the to-column has an data type not valid for
      * ranges.
      */
     public final static String MSGCODE_INVALID_DATATYPE_FOR_TO = MSGCODE_PREFIX + "InvalidDatatypeForToColumn"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that if the column range type is two column then the
-     * from and the to column must have the same datatype
+     * from and the to column must have the same data type
      */
     public final static String MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE = MSGCODE_PREFIX
             + "TwoColumnRangeFromToColumnWithDifferentDatatype"; //$NON-NLS-1$
@@ -59,10 +56,6 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
      * ('-'), followed by the second column's name.
      * <p>
      * Example: <code>ageFrom-ageTo</code>
-     * 
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getName()
      */
     @Override
     public String getName();
@@ -108,7 +101,7 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
     public ColumnRangeType getColumnRangeType();
 
     /**
-     * Returns the datatype identifier of the columns of this range.
+     * Returns the data type identifier of the columns of this range.
      */
     @Override
     public String getDatatype();
@@ -118,4 +111,5 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
      * a value assigned to this range.
      */
     public String getParameterName();
+
 }

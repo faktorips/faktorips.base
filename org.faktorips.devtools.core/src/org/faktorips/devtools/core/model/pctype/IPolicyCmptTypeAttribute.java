@@ -48,12 +48,12 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
 
     /**
      * Validation message code to indicate that the attribute is marked overwriting an attribute in
-     * the supertype hierarchy, but there is no such attribute.
+     * the super type hierarchy, but there is no such attribute.
      */
     public final static String MSGCODE_NOTHING_TO_OVERWRITE = MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the compuation method has a different datatype.
+     * Validation message code to indicate that the computation method has a different data type.
      */
     public final static String MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE = MSGCODE_PREFIX
             + "CompuationMethodHasWrongDatatype"; //$NON-NLS-1$
@@ -73,7 +73,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
             + "ComputationMethodDoesNotExist"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that an attribute overwrittes another but has a different
+     * Validation message code to indicate that an attribute overwrites another but has a different
      * attribute type (which is not allowed).
      */
     public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = MSGCODE_PREFIX
@@ -109,7 +109,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public IValidationRule createValueSetRule();
 
     /**
-     * Deletes the IValidationRule that is reponsible for checking the value angainst the value set
+     * Deletes the IValidationRule that is responsible for checking the value against the value set
      * of this attribute. If no such rule was created for this attribute this method does nothing.
      */
     public void deleteValueSetRule();
@@ -165,7 +165,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * If this is a derived attribute which value is derived by a method defined in the product
      * component type, this method is search and returned.
      * 
-     * @param ipsProject The project which ips object path is used to search.
+     * @param ipsProject The project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching.
      */
@@ -177,8 +177,8 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * 
      * For policy component type attributes the allowed values set types are the types returned by
      * {@link IIpsProject#getValueSetTypes(org.faktorips.datatype.ValueDatatype)} using the
-     * attribute's datatype. However if the datatype is defined by an {@link IEnumType} with values
-     * stored in a separate content, then only {@link ValueSetType#UNRESTRICTED} is allowed.
+     * attribute's data type. However if the data type is defined by an {@link IEnumType} with
+     * values stored in a separate content, then only {@link ValueSetType#UNRESTRICTED} is allowed.
      * 
      * @throws CoreException if an error occurs.
      */
@@ -186,22 +186,22 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Creates a copy of the given value set and aplies this copy to this attribute.
+     * Creates a copy of the given value set and applies this copy to this attribute.
      */
     public void setValueSetCopy(IValueSet source);
 
     /**
      * <code>true</code> to indicate that this attribute overwrites an attribute with the same name
-     * somewerhe up the supertype hierarchy or <code>false</code> to let this attribute be a new
+     * somewhere up the super type hierarchy or <code>false</code> to let this attribute be a new
      * one.
      */
     public void setOverwrite(boolean overwrites);
 
     /**
-     * Returns the first attribute found with the same name in the supertypes hierarchy or
+     * Returns the first attribute found with the same name in the super types hierarchy or
      * <code>null</code> if no such attribute exists.
      * 
-     * @param ipsProject The project which ips object path is used to search.
+     * @param ipsProject The project which IPS object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching.
      */
@@ -217,4 +217,5 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
     public IPersistentAttributeInfo getPersistenceAttributeInfo();
+
 }

@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * Specification of table structure usage object.<br>
- * Specifies a usage of several table structure for a product cmpt type.
+ * Specifies a usage of several table structure for a product component type.
  * 
  * @author Jan Ortmann
  */
@@ -49,7 +49,8 @@ public interface ITableStructureUsage extends IIpsObjectPart, IProdDefProperty {
             + "MustReferenceAtLeast1Structure"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the policy cmpt type is not configurable by product.
+     * Validation message code to indicate that the policy component type is not configurable by
+     * product.
      */
     public final static String MSGCODE_POLICYCMPTTYPE_IS_NOT_CONFIGURABLE_BY_PRODUCT = MSGCODE_PREFIX
             + "PolicycmpttypeIsNotConfigurableByProduct"; //$NON-NLS-1$
@@ -61,7 +62,7 @@ public interface ITableStructureUsage extends IIpsObjectPart, IProdDefProperty {
     public final static String MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE = MSGCODE_PREFIX + "RoleNameAlreadyInSupertype"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the table structure usage has the same rolename as
+     * Validation message code to indicate that the table structure usage has the same role name as
      * at least one other usage in the supertype hierarchy.
      */
     public final static String MSGCODE_SAME_ROLENAME = MSGCODE_PREFIX + "SameRoleName"; //$NON-NLS-1$
@@ -125,4 +126,5 @@ public interface ITableStructureUsage extends IIpsObjectPart, IProdDefProperty {
      * otherwise <code>false</code>.
      */
     public boolean isMandatoryTableContent();
+
 }

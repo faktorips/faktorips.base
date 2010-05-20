@@ -133,7 +133,7 @@ public interface IIpsLoggingFrameworkConnector {
 
     /**
      * Returns the primitive boolean expression that indicates if the logging of the provided
-     * logging level is to execute, typtically something like Logger.isDebugEnabled().
+     * logging level is to execute, typically something like <tt>Logger.isDebugEnabled()</tt>.
      * 
      * @param level the logging level that is to check by the generated expression
      * @param loggerInstanceExp the logger instance expression. The result of the call to one of the
@@ -145,4 +145,5 @@ public interface IIpsLoggingFrameworkConnector {
      * @throws IllegalArgumentException if the provided logging level is not defined
      */
     public String getLogConditionExp(int level, String loggerInstanceExp, List<String> usedClasses);
+
 }

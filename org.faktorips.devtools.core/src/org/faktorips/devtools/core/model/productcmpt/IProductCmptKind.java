@@ -38,7 +38,7 @@ public interface IProductCmptKind {
      * components of this kind.
      * <p>
      * We distinguish between the name and the runtime id, to allow for example a numeric id for use
-     * with operative systems. If this id is persisted in a datatbase some people prefer to use
+     * with operative systems. If this id is persisted in a database some people prefer to use
      * numeric values as they consume less disk space.
      */
     public String getRuntimeId();

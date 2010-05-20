@@ -50,18 +50,18 @@ public interface IParameterContainer extends IIpsObjectPart {
     public IParameter newParameter(String datatype, String name);
 
     /**
-     * Moves the parameters identified by the indexes up or down by one position. If one of the
-     * indexes is 0 (the first parameter), no parameter is moved up. If one of the indexes is the
-     * number of parameters - 1 (the last parameter) no parameter is moved down.
+     * Moves the parameters identified by the given indices up or down by one position. If one of
+     * the indices is 0 (the first parameter), no parameter is moved up. If one of the indices is
+     * the number of parameters - 1 (the last parameter) no parameter is moved down.
+     * <p>
+     * Returns the new indices of the moved parameters.
      * 
-     * @param indexes The indexes identifying the parameters.
+     * @param indices The indices identifying the parameters.
      * @param up <code>true</code>, to move the parameters up, <false> to move them down.
      * 
-     * @return The new indexes of the moved parameters.
-     * 
-     * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify a parameter.
+     * @throws NullPointerException If <tt>indices</tt> is <tt>null</tt>.
+     * @throws IndexOutOfBoundsException If one of the indices does not identify a parameter.
      */
-    public int[] moveParameters(int[] indexes, boolean up);
+    public int[] moveParameters(int[] indices, boolean up);
 
 }

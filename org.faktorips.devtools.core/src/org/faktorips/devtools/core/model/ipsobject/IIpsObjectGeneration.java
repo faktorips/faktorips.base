@@ -23,7 +23,7 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
     public final static String PROPERTY_VALID_FROM = "validFrom"; //$NON-NLS-1$
 
     /**
-     * The name of the xml-tag used if this object is saved to xml.
+     * The name of the XML tag used if this object is saved to XML.
      */
     public final static String TAG_NAME = "Generation"; //$NON-NLS-1$
 

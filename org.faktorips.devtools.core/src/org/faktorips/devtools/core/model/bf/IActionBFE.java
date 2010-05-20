@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * This class represents an action within a business function. Actions a points of execution within
  * the control flow of a business function. There are three different types of actions.
- * <p/>
+ * <p>
  * An in line action represents a piece of code that can be executed. An in line actions is
  * generated to a method on the business function class.
- * <p/>
+ * <p>
  * A method call action calls a method on a parameter that is specified for the business function.
  * Currently only parameter less methods on policy or product component type can be called.
- * <p/>
+ * <p>
  * A business function call action executes a specified business function that is called from within
  * a business function.
  * 

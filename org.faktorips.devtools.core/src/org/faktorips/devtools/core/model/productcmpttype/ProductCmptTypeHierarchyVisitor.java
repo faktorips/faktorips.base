@@ -40,9 +40,6 @@ public abstract class ProductCmptTypeHierarchyVisitor extends TypeHierarchyVisit
         return visitedTypes.toArray(new IProductCmptType[visitedTypes.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     final protected boolean visit(IType currentType) throws CoreException {
         return visit((IProductCmptType)currentType);
