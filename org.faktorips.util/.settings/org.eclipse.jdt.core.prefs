@@ -1,4 +1,4 @@
-#Fri Apr 09 11:51:53 CEST 2010
+#Thu May 20 11:40:33 CEST 2010
 eclipse.preferences.version=1
 org.eclipse.jdt.core.builder.cleanOutputFolder=clean
 org.eclipse.jdt.core.builder.duplicateResourceTask=warning
@@ -69,7 +69,7 @@ org.eclipse.jdt.core.compiler.problem.missingSerialVersion=error
 org.eclipse.jdt.core.compiler.problem.missingSynchronizedOnInheritedMethod=warning
 org.eclipse.jdt.core.compiler.problem.noEffectAssignment=warning
 org.eclipse.jdt.core.compiler.problem.noImplicitStringConversion=warning
-org.eclipse.jdt.core.compiler.problem.nonExternalizedStringLiteral=warning
+org.eclipse.jdt.core.compiler.problem.nonExternalizedStringLiteral=ignore
 org.eclipse.jdt.core.compiler.problem.nullReference=warning
 org.eclipse.jdt.core.compiler.problem.overridingPackageDefaultMethod=ignore
 org.eclipse.jdt.core.compiler.problem.parameterAssignment=ignore
