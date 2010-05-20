@@ -1,3 +1,13 @@
+memento
+throwable
+locale
+coverages
+callback
+registry
+dividable
+introspecting
+rollback
+subsetting
 subsetted
 serializable
 parsable
