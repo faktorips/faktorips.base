@@ -17,9 +17,6 @@ import junit.framework.TestCase;
 
 import org.apache.commons.lang.SystemUtils;
 
-/**
- *
- */
 public class MessageTest extends TestCase {
 
     public void testCopy() {

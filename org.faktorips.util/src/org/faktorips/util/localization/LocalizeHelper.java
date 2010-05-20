@@ -57,38 +57,31 @@ import org.apache.commons.lang.StringUtils;
  */
 @SuppressWarnings("unchecked")
 public class LocalizeHelper {
+
     File sourceRoot;
     File targetRoot;
     String targetLang;
     List modifiedFiles = new ArrayList();
 
-    /*
+    /**
      * Class which supports properties with predictable iteration order.
      */
     private class SortedProperties extends Properties {
+
         private static final long serialVersionUID = 1L;
 
         LinkedHashMap content = new LinkedHashMap();
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getProperty(String arg0) {
             return (String)content.get(arg0);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized Object setProperty(String arg0, String arg1) {
             return content.put(arg0, arg1);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized void load(InputStream is) throws IOException {
             BufferedReader br = new BufferedReader(new InputStreamReader(is, "8859_1"));
@@ -103,11 +96,8 @@ public class LocalizeHelper {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
-        public void store(OutputStream os, String comments) throws IOException {
+        public synchronized void store(OutputStream os, String comments) throws IOException {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "8859_1"));
             if (comments != null) {
                 writeln(bw, "#" + comments);
@@ -128,129 +118,81 @@ public class LocalizeHelper {
             bw.newLine();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Set keySet() {
             return content.keySet();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized void clear() {
             content.clear();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized boolean contains(Object arg0) {
             return content.containsValue(arg0);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized boolean containsKey(Object arg0) {
             return content.containsKey(arg0);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean containsValue(Object arg0) {
             return content.containsValue(arg0);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Set entrySet() {
             return content.entrySet();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized boolean equals(Object arg0) {
             return content.equals(arg0);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized Object get(Object arg0) {
             return content.get(arg0);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized int hashCode() {
             return content.hashCode();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized boolean isEmpty() {
             return content.isEmpty();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized Object put(Object arg0, Object arg1) {
             return content.put(arg0, arg1);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized void putAll(Map arg0) {
             content.putAll(arg0);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized Object remove(Object arg0) {
             return content.remove(arg0);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized int size() {
             return content.size();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public synchronized String toString() {
             return content.toString();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Collection values() {
             return content.values();
@@ -322,11 +264,7 @@ public class LocalizeHelper {
     }
 
     /**
-     * Creates a new LocalizeHelper woring on the given directories and with the given language.
-     * 
-     * @param sourceName
-     * @param targetName
-     * @param targetLang
+     * Creates a new LocalizeHelper working on the given directories and with the given language.
      */
     public LocalizeHelper(String sourceName, String targetName, String targetLang) {
         sourceRoot = new File(sourceName);
@@ -362,15 +300,15 @@ public class LocalizeHelper {
     }
 
     /**
-     * scan the given directory recursivley for files named messages[_langPostfix].properties. All
-     * files found are put into the map <code>propertyFiles</code>, using the slightly modiefied
-     * name of the file as key. The name is prepared for later compere by cutting of the language
-     * postfix and file extension. The first part of the filename of the given length is cut off the
-     * name, too.
+     * scan the given directory recursively for files named messages[_langPostfix].properties. All
+     * files found are put into the map <code>propertyFiles</code>, using the slightly modified name
+     * of the file as key. The name is prepared for later compare by cutting of the language postfix
+     * and file extension. The first part of the filename of the given length is cut off the name,
+     * too.
      * 
-     * @param dir The direcotry to scan. If not a directory, this method returns silently.
+     * @param dir The directory to scan. If not a directory, this method returns silently.
      * @param propertyFiles The map to store found files.
-     * @param ignorePathPrefixLength The leght of the prefix to be cut off the filename. This is
+     * @param ignorePathPrefixLength The length of the prefix to be cut off the filename. This is
      *            used to cut off the different base-pathnames of source- and target-files.
      * @param langPostfix The language postfix used. Can be the empty string, but not
      *            <code>null</code>.
@@ -394,7 +332,7 @@ public class LocalizeHelper {
     }
 
     /**
-     * Syncronizes all properties found in the target map with the properties found in the source
+     * Synchronizes all properties found in the target map with the properties found in the source
      * map.
      * <p>
      * This means to copy the entire file, if not contained in the target map or to insert all keys
@@ -484,8 +422,8 @@ public class LocalizeHelper {
         if (file.exists()) {
             return;
         }
-
         file.getParentFile().mkdirs();
         file.createNewFile();
     }
+
 }

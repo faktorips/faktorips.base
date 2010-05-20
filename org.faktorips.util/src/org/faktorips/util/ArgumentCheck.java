@@ -135,7 +135,6 @@ public class ArgumentCheck {
      * Checks if the indicated argument is an instance of the indicated class.
      * 
      * @param arg the argument to check.
-     * @param clazz
      * 
      * @throws IllegalArgumentException if arg is null.
      */
@@ -149,7 +148,6 @@ public class ArgumentCheck {
      * Checks if the indicated argument is an instance of the indicated class.
      * 
      * @param arg the argument to check.
-     * @param clazz
      * 
      * @throws IllegalArgumentException if arg is null.
      */
@@ -190,9 +188,6 @@ public class ArgumentCheck {
     /**
      * Checks if the given subclass is a subclass of the given superclass.
      * 
-     * @param subclass
-     * @param superclass
-     * 
      * @throws IllegalArgumentException if subclass is not a subclass of superclass.
      */
     public final static void isSubclassOf(Class<?> subclass, Class<?> superclass) {
@@ -204,7 +199,7 @@ public class ArgumentCheck {
     /**
      * Checks if the given xml node has the given name.
      * 
-     * @throws IllegalArgumentException if the node has not the exepcted name.
+     * @throws IllegalArgumentException if the node has not the expected name.
      * @throws NullPointerException if node is <code>null</code>.
      */
     public final static void nodeName(Node node, String name) {
@@ -213,10 +208,8 @@ public class ArgumentCheck {
         }
     }
 
-    /**
-     * Prohibit instantiation.
-     */
     private ArgumentCheck() {
+        // Prohibit instantiation.
     }
 
 }

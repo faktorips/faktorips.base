@@ -24,11 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A collection of util methods for Strings.
+ * A collection of utility methods for Strings.
  * 
  * @author Jan Ortmann
  */
 public class StringUtil {
+
     public static final String CAMEL_CASE_SEPERATORS = "[-_., ]";
 
     public final static String CHARSET_UTF8 = "UTF-8";
@@ -37,9 +38,7 @@ public class StringUtil {
 
     /**
      * Reads the available bytes from the input stream and returns them as a string using the given
-     * {@link java.nio.charset.Charset </code>charset<code>}. The method does not close the stream.
-     * 
-     * @throws IOException
+     * {@link java.nio.charset.Charset charset}. The method does not close the stream.
      */
     public final static String readFromInputStream(InputStream is, Charset charset) throws IOException {
         return readFromInputStream(is, charset.name());
@@ -47,10 +46,9 @@ public class StringUtil {
 
     /**
      * Reads the available bytes from the input stream and returns them as a string using the given
-     * {@link java.nio.charset.Charset </code>charset<code>}. <p> This method closes the input
-     * stream before returning!
-     * 
-     * @throws IOException
+     * {@link java.nio.charset.Charset charset}.
+     * <p>
+     * This method closes the input stream before returning!
      */
     public final static String readFromInputStream(InputStream is, String charsetName) throws IOException {
 
@@ -193,8 +191,8 @@ public class StringUtil {
      * Returns the input stream to read the given data.
      * 
      * @param data The data to read.
-     * @param charset The charset to be used to convert the string data to bytes.
-     * @throws UnsupportedEncodingException if the given charset is unsupported.
+     * @param charset The char set to be used to convert the string data to bytes.
+     * @throws UnsupportedEncodingException if the given char set is unsupported.
      */
     public static InputStream getInputStreamForString(String data, String charset) throws UnsupportedEncodingException {
         return new ByteArrayInputStream(data.getBytes(charset));
@@ -220,7 +218,7 @@ public class StringUtil {
     }
 
     /**
-     * Returns a String where an occurence of a character followed by an uppercase character is
+     * Returns a String where an occurrence of a character followed by an upper case character is
      * replaced by these characters divided by an underscore. Consecutive sequences of comma, dot,
      * hyphen and whitespace is also replaced by one single underscore.
      * <p/>
@@ -259,4 +257,5 @@ public class StringUtil {
 
         return result.toString();
     }
+
 }

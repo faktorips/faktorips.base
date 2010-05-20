@@ -54,7 +54,7 @@ public class MessageList implements Iterable<Message> {
      * Creates an empty message list.
      */
     public MessageList() {
-
+        // Provide default constructor.
     }
 
     /**
@@ -131,8 +131,6 @@ public class MessageList implements Iterable<Message> {
 
     /**
      * Returns the number of messages in this list that have the indicated severity.
-     * 
-     * @param severity
      */
     public int getNoOfMessages(int severity) {
         List<Message> msgList = new ArrayList<Message>(messages.size());
@@ -294,9 +292,7 @@ public class MessageList implements Iterable<Message> {
     }
 
     /**
-     * Returns all messages in the list separated by a line separator. Overridden method.
-     * 
-     * @see java.lang.Object#toString()
+     * Returns all messages in the list separated by a line separator.
      */
     @Override
     public String toString() {
@@ -307,28 +303,42 @@ public class MessageList implements Iterable<Message> {
         return s.toString();
     }
 
-    /**
-     * Returns true if o is a MessageList that contains the same messages in the same order.
-     * 
-     * Overridden method.
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
         if (!(o instanceof MessageList)) {
             return false;
         }
+
         MessageList other = (MessageList)o;
+
         if (this.getNoOfMessages() != other.getNoOfMessages()) {
             return false;
         }
+
         for (int i = 0; i < other.getNoOfMessages(); i++) {
-            if (!messages.get(i).equals(other.messages.get(i))) {
+            Message message = messages.get(i);
+            Message otherMessage = other.messages.get(i);
+            if (!((message == null) ? otherMessage == null : message.equals(otherMessage))) {
                 return false;
             }
         }
+
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + getNoOfMessages();
+        for (Message message : messages) {
+            int c = (message == null) ? 0 : message.hashCode();
+            result = 31 * result + c;
+        }
+        return result;
     }
 
     /**
@@ -338,9 +348,6 @@ public class MessageList implements Iterable<Message> {
         messages.clear();
     }
 
-    /**
-     * Returns an <tt>Iterator</tt>.
-     */
     public Iterator<Message> iterator() {
         return messages.iterator();
     }

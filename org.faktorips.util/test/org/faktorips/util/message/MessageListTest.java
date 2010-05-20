@@ -15,9 +15,6 @@ package org.faktorips.util.message;
 
 import junit.framework.TestCase;
 
-/**
- *
- */
 public class MessageListTest extends TestCase {
 
     public void testAddMessage() {
@@ -130,6 +127,7 @@ public class MessageListTest extends TestCase {
             list.getMessage(2);
             fail();
         } catch (IndexOutOfBoundsException e) {
+            // An exception is expected to be thrown.
         }
     }
 

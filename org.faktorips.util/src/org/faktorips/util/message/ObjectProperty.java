@@ -41,11 +41,6 @@ public class ObjectProperty {
         hashCode = property == null ? hashCode : hashCode + property.hashCode();
     }
 
-    /**
-     * 
-     * @param object
-     * @param property
-     */
     public ObjectProperty(Object object, String property) {
         this(object, property, -1);
     }

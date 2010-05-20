@@ -61,7 +61,6 @@ public class StreamUtilTest extends TestCase {
             counter++;
         }
         assertEquals(1, counter);
-
     }
 
 }

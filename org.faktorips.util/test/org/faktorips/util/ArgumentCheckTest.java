@@ -15,9 +15,6 @@ package org.faktorips.util;
 
 import junit.framework.TestCase;
 
-/**
- *
- */
 public class ArgumentCheckTest extends TestCase {
 
     public void testIsSubclassOf() {
@@ -26,6 +23,7 @@ public class ArgumentCheckTest extends TestCase {
             ArgumentCheck.isSubclassOf(String.class, TestCase.class);
             fail();
         } catch (IllegalArgumentException e) {
+            // an exception is excepted to be thrown
         }
     }
 
@@ -35,6 +33,7 @@ public class ArgumentCheckTest extends TestCase {
             ArgumentCheck.isInstanceOf(this, String.class);
             fail();
         } catch (IllegalArgumentException e) {
+            // an exception is excepted to be thrown
         }
     }
 

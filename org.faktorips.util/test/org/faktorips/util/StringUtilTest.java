@@ -22,11 +22,6 @@ import org.apache.commons.lang.SystemUtils;
  */
 public class StringUtilTest extends TestCase {
 
-    /**
-     * Constructor for StringUtilTest.
-     * 
-     * @param name
-     */
     public StringUtilTest(String name) {
         super(name);
     }
@@ -89,7 +84,6 @@ public class StringUtilTest extends TestCase {
 
         ext = StringUtil.getFileExtension("readme");
         assertNull(ext);
-
     }
 
     public void testToCamlCase() {
@@ -175,4 +169,5 @@ public class StringUtilTest extends TestCase {
         assertEquals("Hausrat_Vertrag2_IJ", StringUtil.camelCaseToUnderscore(testString, false));
         assertEquals("Hausrat_Vertrag2_I_J", StringUtil.camelCaseToUnderscore(testString, true));
     }
+
 }

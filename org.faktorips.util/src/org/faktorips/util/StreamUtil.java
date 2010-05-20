@@ -32,7 +32,7 @@ public class StreamUtil {
      * @param increments the additional size that is added to the capacity of the byte array when
      *            necessary
      * @return the new ByteArrayInputStream with the copied content
-     * @throws IOException exceptions that ocur during reading from and writing to a stream or
+     * @throws IOException exceptions that occur during reading from and writing to a stream or
      *             closing the provided stream are delegated
      */
     public final static ByteArrayInputStream copy(InputStream is, int increments) throws IOException {
@@ -72,5 +72,7 @@ public class StreamUtil {
     }
 
     private StreamUtil() {
+        // Utility class not to be instantiated.
     }
+
 }

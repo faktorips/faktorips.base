@@ -24,7 +24,7 @@ public class StringMemento implements Memento {
     /**
      * Creates a new memento.
      * 
-     * @param member the object this is a memento for.
+     * @param originator the object this is a memento for.
      * @param state the originator's state as string.
      */
     public StringMemento(Object originator, String state) {
@@ -32,11 +32,6 @@ public class StringMemento implements Memento {
         this.state = state;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.util.memento.Memento#getOriginator()
-     */
     public Object getOriginator() {
         return originator;
     }
