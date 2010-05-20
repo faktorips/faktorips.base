@@ -27,11 +27,11 @@ import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.w3c.dom.Element;
 
-public class ProductDataRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
+public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
 
     private final IProductDataProvider productDataProvider;
 
-    public ProductDataRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider) {
+    public ProductDataProviderRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider) {
         super(name, new ExpirableCacheFactory(productDataProvider), cl);
         this.productDataProvider = productDataProvider;
         reload();
@@ -44,17 +44,29 @@ public class ProductDataRuntimeRepository extends AbstractClassLoaderRuntimeRepo
 
     @Override
     protected Element getDocumentElement(IProductCmptTocEntry tocEntry) {
-        return productDataProvider.getProductCmptData(tocEntry);
+        try {
+            return productDataProvider.getProductCmptData(tocEntry);
+        } catch (DataModifiedException e) {
+            throw dataModifiedException(e);
+        }
     }
 
     @Override
     protected Element getDocumentElement(GenerationTocEntry tocEntry) {
-        return productDataProvider.getProductCmptGenerationData(tocEntry);
+        try {
+            return productDataProvider.getProductCmptGenerationData(tocEntry);
+        } catch (DataModifiedException e) {
+            throw dataModifiedException(e);
+        }
     }
 
     @Override
     protected Element getDocumentElement(ITestCaseTocEntry tocEntry) {
-        return productDataProvider.getTestcaseElement(tocEntry);
+        try {
+            return productDataProvider.getTestcaseElement(tocEntry);
+        } catch (DataModifiedException e) {
+            throw dataModifiedException(e);
+        }
     }
 
     @Override
@@ -69,12 +81,26 @@ public class ProductDataRuntimeRepository extends AbstractClassLoaderRuntimeRepo
 
     @Override
     protected InputStream getXmlAsStream(IEnumContentTocEntry tocEntry) {
-        return productDataProvider.getTableContentAsStream(tocEntry);
+        try {
+            return productDataProvider.getEnumContentAsStream(tocEntry);
+        } catch (DataModifiedException e) {
+            throw dataModifiedException(e);
+        }
     }
 
     @Override
     protected InputStream getXmlAsStream(ITableContentTocEntry tocEntry) {
-        return productDataProvider.getEnumContentAsStream(tocEntry);
+        try {
+            return productDataProvider.getTableContentAsStream(tocEntry);
+        } catch (DataModifiedException e) {
+            throw dataModifiedException(e);
+        }
+    }
+
+    private RuntimeException dataModifiedException(DataModifiedException e) {
+        // clear caches is not necessary because every cache is expiring for itself
+        toc = loadTableOfContents();
+        return new RuntimeException(e);
     }
 
     public boolean isModifiable() {

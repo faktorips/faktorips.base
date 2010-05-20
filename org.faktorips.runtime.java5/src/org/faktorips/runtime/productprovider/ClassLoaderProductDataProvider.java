@@ -68,11 +68,11 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
         return getDocumentElement(resourcePath);
     }
 
-    public InputStream getTableContentAsStream(IEnumContentTocEntry tocEntry) {
+    public InputStream getTableContentAsStream(ITableContentTocEntry tocEntry) {
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
-    public InputStream getEnumContentAsStream(ITableContentTocEntry tocEntry) {
+    public InputStream getEnumContentAsStream(IEnumContentTocEntry tocEntry) {
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 

@@ -28,14 +28,14 @@ public interface IProductDataProvider extends IModificationChecker {
 
     public IReadonlyTableOfContents loadToc();
 
-    public Element getProductCmptData(IProductCmptTocEntry tocEntry);
+    public Element getProductCmptData(IProductCmptTocEntry tocEntry) throws DataModifiedException;
 
-    public Element getProductCmptGenerationData(GenerationTocEntry tocEntry);
+    public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException;
 
-    public Element getTestcaseElement(ITestCaseTocEntry tocEntry);
+    public Element getTestcaseElement(ITestCaseTocEntry tocEntry) throws DataModifiedException;
 
-    public InputStream getTableContentAsStream(IEnumContentTocEntry tocEntry);
+    public InputStream getTableContentAsStream(ITableContentTocEntry tocEntry) throws DataModifiedException;
 
-    public InputStream getEnumContentAsStream(ITableContentTocEntry tocEntry);
+    public InputStream getEnumContentAsStream(IEnumContentTocEntry tocEntry) throws DataModifiedException;
 
 }
