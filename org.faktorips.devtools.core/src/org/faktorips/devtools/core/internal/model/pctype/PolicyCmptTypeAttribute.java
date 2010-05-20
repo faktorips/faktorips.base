@@ -375,4 +375,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return getDatatype();
     }
 
+    @Override
+    public boolean isJavaRefactoringSupported() {
+        return true;
+    }
+
 }

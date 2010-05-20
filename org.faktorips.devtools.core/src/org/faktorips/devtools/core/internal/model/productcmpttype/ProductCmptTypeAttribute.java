@@ -158,4 +158,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
+    @Override
+    public boolean isJavaRefactoringSupported() {
+        return true;
+    }
+
 }
