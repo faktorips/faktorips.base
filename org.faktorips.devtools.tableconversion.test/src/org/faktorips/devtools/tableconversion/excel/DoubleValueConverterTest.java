@@ -64,7 +64,6 @@ public class DoubleValueConverterTest extends TestCase {
         value = converter.getExternalDataValue(INVALID, ml);
         assertFalse(ml.isEmpty());
         assertEquals(INVALID, value);
-
     }
 
 }

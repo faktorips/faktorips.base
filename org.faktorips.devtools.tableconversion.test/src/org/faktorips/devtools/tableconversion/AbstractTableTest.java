@@ -34,8 +34,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Base class for all table/enum import and export test cases. Contains factory methods to create
- * valid and invalid table contents.
+ * Base class for all table / enumeration import and export test cases. Contains factory methods to
+ * create valid and invalid table contents.
  * 
  * @author Roman Grutza
  */
@@ -100,8 +100,6 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
     /**
      * Creates an invalid source for export.
-     * 
-     * @throws CoreException
      */
     protected ITableContents createInvalidTableContents(IIpsProject ipsProject) throws CoreException {
         ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "ExportSource");
@@ -208,17 +206,17 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         enumType.newEnumLiteralNameAttribute();
 
         // create attributes (structure)
-        IEnumAttribute enumAttribute = null;
         for (int i = 0; i < datatypes.length; i++) {
-            enumAttribute = enumType.newEnumAttribute();
+            IEnumAttribute enumAttribute = enumType.newEnumAttribute();
             enumAttribute.setName("id" + i);
             enumAttribute.setDatatype(datatypes[i]);
         }
-        enumAttribute.setUnique(true);
-        enumAttribute.setIdentifier(true); // satisfy validation rules
-        enumAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
+        IEnumAttribute idAttribute = enumType.getEnumAttributes(false).get(enumType.getEnumAttributesCount(false) - 1);
+        idAttribute.setUnique(true);
+        idAttribute.setIdentifier(true); // satisfy validation rules
+        idAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
 
-        // create values inside the enum type
+        // create values inside the enumeration type
         IEnumValue enumValueRow1 = enumType.newEnumValue();
         List<IEnumAttributeValue> enumAttributeValues = enumValueRow1.getEnumAttributeValues();
         enumAttributeValues.get(0).setValue("SIMPLE_TEXT");
@@ -261,7 +259,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Creates an invalid enum for export.
+     * Creates an invalid enumeration for export.
      */
     protected IEnumType createInvalidEnumTypeWithValues(IIpsProject ipsProject) throws CoreException {
         IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "EnumExportSource");
@@ -270,15 +268,15 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         enumType.newEnumLiteralNameAttribute();
 
         // create attributes (structure)
-        IEnumAttribute enumAttribute = null;
         for (int i = 0; i < datatypes.length; i++) {
-            enumAttribute = enumType.newEnumAttribute();
+            IEnumAttribute enumAttribute = enumType.newEnumAttribute();
             enumAttribute.setName("id" + i);
             enumAttribute.setDatatype(datatypes[i]);
         }
-        enumAttribute.setUnique(true); // unique id must be set if literal name set
-        enumAttribute.setIdentifier(true); // satisfy validation rules
-        enumAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
+        IEnumAttribute idAttribute = enumType.getEnumAttributes(false).get(enumType.getEnumAttributesCount(false) - 1);
+        idAttribute.setUnique(true); // unique id must be set if literal name set
+        idAttribute.setIdentifier(true); // satisfy validation rules
+        idAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
 
         IEnumValue row1 = enumType.newEnumValue();
 
@@ -298,8 +296,8 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Creates a valid enum in the given table format stored on the filesystem. The export operation
-     * is used to create this file.
+     * Creates a valid enumeration in the given table format stored on the file system. The export
+     * operation is used to create this file.
      * 
      * @param ipsProject The IPS project.
      * @param format The external table format used for export.
@@ -308,9 +306,11 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      */
     public void createValidExternalEnumType(IIpsProject ipsProject, ITableFormat format, boolean exportColumnHeaderRow)
             throws Exception {
+
         IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 
         format.executeEnumExport(enumType, new Path("enum" + format.getDefaultExtension()), "NULL",
                 exportColumnHeaderRow, new MessageList());
     }
+
 }
