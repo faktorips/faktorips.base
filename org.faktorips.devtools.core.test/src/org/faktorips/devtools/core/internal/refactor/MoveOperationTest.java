@@ -547,7 +547,20 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(ipsRoot.getIpsPackageFragment("target.source").exists());
         assertTrue(ipsRoot.getIpsPackageFragment("target.source.empty").exists());
         assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "target.source.TestProduct").exists());
+    }
 
+    public void testCreateSubpackageByRename() throws CoreException, InvocationTargetException, InterruptedException {
+        IIpsPackageFragment source = ipsRoot.createPackageFragment("source", true, null);
+        newProductCmpt(ipsRoot, "source.TestProduct");
+
+        MoveOperation move = new MoveOperation(new IIpsElement[] { source }, new String[] { "source.target" });
+        move.run(null);
+
+        assertTrue(source.exists());
+        assertTrue(ipsRoot.getIpsPackageFragment("source").exists());
+        assertTrue(ipsRoot.getIpsPackageFragment("source.target").exists());
+        assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "source.target.TestProduct").exists());
+        assertNull(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "source.TestProduct"));
     }
 
     public void testMoveInDifferentRoot() throws Exception {
