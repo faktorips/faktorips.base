@@ -13,27 +13,23 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.ui.wizards.refactor.PullUpRefactoringWizard;
 
-public class PullUpAction extends IpsRefactoringAction {
+public class PullUpAction {
 
-    public PullUpAction(Shell shell, ISelectionProvider selectionProvider) {
-        super(shell, selectionProvider);
-        setText("Pull Up...");
-    }
-
-    @Override
-    public void run(IStructuredSelection selection) {
-        Object selected = selection.getFirstElement();
-        Refactoring refactoring = ((IIpsElement)selected).getPullUpRefactoring();
-        RefactoringWizard pullUpWizard = new PullUpRefactoringWizard(refactoring, (IIpsElement)selected);
-        openWizard(pullUpWizard);
-    }
+    // extends IpsRefactoringAction {
+    //
+    // public PullUpAction(Shell shell, ISelectionProvider selectionProvider) {
+    // super(shell, selectionProvider);
+    // setText("Pull Up...");
+    // }
+    //
+    // @Override
+    // public void run(IStructuredSelection selection) {
+    // Object selected = selection.getFirstElement();
+    // Refactoring refactoring = ((IIpsElement)selected).getPullUpRefactoring();
+    // RefactoringWizard pullUpWizard = new PullUpRefactoringWizard(refactoring,
+    // (IIpsElement)selected);
+    // openWizard(pullUpWizard);
+    // }
 
 }

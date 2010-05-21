@@ -441,4 +441,5 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     public IPersistentAttributeInfo getPersistenceAttributeInfo() {
         return (IPersistentAttributeInfo)persistenceAttributeInfo;
     }
+
 }

@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -22,16 +20,12 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.RenameAction;
+import org.faktorips.devtools.core.ui.actions.RenameHandler;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -45,12 +39,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class AttributesSection extends SimpleIpsPartsSection {
 
-    private IpsObjectEditorPage page;
-
     public AttributesSection(IpsObjectEditorPage page, IProductCmptType type, Composite parent, UIToolkit toolkit) {
         super(type, parent, Messages.AttributesSection_title, toolkit);
         ArgumentCheck.notNull(page);
-        this.page = page;
         ((AttributesComposite)getPartsComposite()).createContextMenu();
     }
 
@@ -70,22 +61,12 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         private void createContextMenu() {
-            IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
-            final IWorkbenchAction renameAction = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
-            IActionBars actionBars = editorSite.getActionBars();
-            actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
-                    getPartsComposite()));
-
             MenuManager manager = new MenuManager();
-            manager.setRemoveAllWhenShown(true);
-            manager.addMenuListener(new IMenuListener() {
-                @Override
-                public void menuAboutToShow(IMenuManager manager) {
-                    MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
-                    refactorSubmenu.add(renameAction);
-                    manager.add(refactorSubmenu);
-                }
-            });
+            MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
+
+            refactorSubmenu.add(RenameHandler.getContributionItem());
+
+            manager.add(refactorSubmenu);
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
         }

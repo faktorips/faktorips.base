@@ -185,6 +185,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      */
     @Override
     public void createControl(Composite parent) {
+        getDeepCopyWizard().logTraceStart("SourcePage.createControl");
         if (structure == null) {
             Label errormsg = new Label(parent, SWT.WRAP);
             GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, true, false);
@@ -304,6 +305,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         });
 
         addListenerToAllControls();
+
+        getDeepCopyWizard().logTraceEnd("SourcePage.createControl");
     }
 
     private void setMessagePleaseEnterWorkingDate() {
@@ -363,10 +366,14 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     protected void refreshPageAferValueChange() {
+        getDeepCopyWizard().logTraceStart("refreshPageAferValueChange");
+
         getDeepCopyWizard().getDeepCopyPreview().resetCacheAfterValueChange();
         refreshTree();
         validate();
         updatePageComplete();
+
+        getDeepCopyWizard().logTraceEnd("refreshPageAferValueChange");
     }
 
     /**
@@ -464,7 +471,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         }
         gc.dispose();
 
-        int columnSizeStructure = wizardSize.x - columnSizeOperation - columnSizeNewName - 10;
+        int columnSizeStructure = Math.max(wizardSize.x - columnSizeOperation - columnSizeNewName - 10,
+                columnSizeNewName);
 
         layout.addColumnData(new ColumnPixelData(columnSizeStructure, true));
         layout.addColumnData(new ColumnPixelData(columnSizeOperation, true));
@@ -599,6 +607,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             }
 
             private void setSameOperationForAllChilds(IProductCmptReference element, boolean asLink) {
+                getDeepCopyWizard().logTraceStart("setSameOperationForAllChilds");
+
                 List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
                 childs.addAll(Arrays.asList(structure.getChildProductCmptReferences(element)));
                 childs.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference(element)));
@@ -616,6 +626,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     }
                 }
 
+                getDeepCopyWizard().logTraceEnd("setSameOperationForAllChilds");
             }
         });
 
@@ -785,17 +796,21 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     private void validate() {
+        getDeepCopyWizard().logTraceStart("validate");
+
         setMessage(null);
         setErrorMessage(null);
 
         if (!(tree != null && tree.getCheckedElements().length > 0)) {
             // no elements checked
             setErrorMessage(Messages.SourcePage_msgNothingSelected);
+            getDeepCopyWizard().logTraceEnd("validate");
             return;
         }
 
         validateWorkingDate();
         if (getErrorMessage() != null) {
+            getDeepCopyWizard().logTraceEnd("validate");
             return;
         }
 
@@ -803,21 +818,25 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             MessageList ml = namingStrategy.validateVersionId(versionId.getText());
             if (!ml.isEmpty()) {
                 setErrorMessage(ml.getMessage(0).getText());
+                getDeepCopyWizard().logTraceEnd("validate");
                 return;
             }
         }
 
         if (structure == null) {
             setErrorMessage(Messages.SourcePage_msgCircleRelationShort);
+            getDeepCopyWizard().logTraceEnd("validate");
             return;
         }
 
         IIpsPackageFragmentRoot ipsPckFragmentRoot = targetPackRootControl.getIpsPckFragmentRoot();
         if (ipsPckFragmentRoot != null && !ipsPckFragmentRoot.exists()) {
             setErrorMessage(NLS.bind(Messages.SourcePage_msgMissingSourceFolder, ipsPckFragmentRoot.getName()));
+            getDeepCopyWizard().logTraceEnd("validate");
             return;
         } else if (ipsPckFragmentRoot == null) {
             setErrorMessage(Messages.SourcePage_msgSelectSourceFolder);
+            getDeepCopyWizard().logTraceEnd("validate");
             return;
         }
 
@@ -826,26 +845,31 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     WARNING);
         } else if (getTargetPackage() == null) {
             setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
+            getDeepCopyWizard().logTraceEnd("validate");
             return;
         }
 
         if (getDeepCopyWizard().getDeepCopyPreview().getProductCmptStructRefToCopy().length == 0) {
             setMessage(Messages.ReferenceAndPreviewPage_msgSelectAtLeastOneProduct, WARNING);
+            getDeepCopyWizard().logTraceEnd("validate");
             return;
         }
 
         if (getDeepCopyWizard().getDeepCopyPreview().getErrorElements().size() != 0) {
             setErrorMessage(Messages.SourcePage_msgCopyNotPossible + " " //$NON-NLS-1$
                     + getDeepCopyWizard().getDeepCopyPreview().getFirstErrorText());
+            getDeepCopyWizard().logTraceEnd("validate");
             return;
         }
 
         validateSearchPattern();
         if (getErrorMessage() != null) {
+            getDeepCopyWizard().logTraceEnd("validate");
             return;
         }
 
         setPageComplete(true);
+        getDeepCopyWizard().logTraceEnd("validate");
     }
 
     private void validateSearchPattern() {

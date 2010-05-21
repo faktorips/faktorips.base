@@ -80,7 +80,7 @@ public class SoftReferenceCache<T> implements ICache<T> {
      * Go through the ReferenceQueue and remove garbage collected SoftValue objects.
      */
     private void processQueue() {
-        Reference<? extends T> ref = queue.poll();
+        Reference<? extends T> ref;
         while ((ref = queue.poll()) != null) {
             SoftValue<? extends T> sv = (SoftValue<? extends T>)ref;
             hash.remove(sv.key);

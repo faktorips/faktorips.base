@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -20,8 +21,6 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
@@ -37,24 +36,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Alexander Weickmann
  */
-public abstract class IpsRefactoringAction extends IpsAction implements IShellProvider {
-
-    /** A <tt>Shell</tt> that can be used by this action. */
-    private final Shell shell;
-
-    /**
-     * Creates the <tt>IpsRefactoringAction</tt>.
-     * 
-     * @param shell The shell to be used by this action.
-     * @param selectionProvider Provides the elements to be refactored.
-     * 
-     * @throws NullPointerException If <tt>shell</tt> is <tt>null</tt>.
-     */
-    protected IpsRefactoringAction(Shell shell, ISelectionProvider selectionProvider) {
-        super(selectionProvider);
-        ArgumentCheck.notNull(shell);
-        this.shell = shell;
-    }
+public abstract class IpsRefactoringHandler extends AbstractHandler {
 
     /**
      * Checks the initial conditions for the given <tt>Refactoring</tt>.
@@ -66,11 +48,11 @@ public abstract class IpsRefactoringAction extends IpsAction implements IShellPr
      * @throws CoreException If an error occurs during initial condition checking.
      * @throws NullPointerException If <tt>refactoring</tt> is <tt>null</tt>.
      */
-    protected final boolean checkInitialConditions(Refactoring refactoring) throws CoreException {
+    protected final boolean checkInitialConditions(Shell shell, Refactoring refactoring) throws CoreException {
         ArgumentCheck.notNull(refactoring);
         RefactoringStatus status = refactoring.checkInitialConditions(new NullProgressMonitor());
         if (!(status.isOK())) {
-            MessageDialog.openInformation(getShell(), refactoring.getName(),
+            MessageDialog.openInformation(shell, refactoring.getName(),
                     Messages.IpsRefactoringAction_refactoringCurrentlyNotApplicable + "\n\n      - "
                             + status.getEntryWithHighestSeverity().getMessage());
             return false;
@@ -88,23 +70,17 @@ public abstract class IpsRefactoringAction extends IpsAction implements IShellPr
      * 
      * @throws NullPointerException If <tt>refactoringWizard</tt> is <tt>null</tt>.
      */
-    protected final void openWizard(RefactoringWizard refactoringWizard) {
+    protected final void openWizard(Shell shell, RefactoringWizard refactoringWizard) {
         ArgumentCheck.notNull(refactoringWizard);
         IJobManager jobManager = Job.getJobManager();
         jobManager.beginRule(ResourcesPlugin.getWorkspace().getRoot(), null);
         try {
-            Dialog dialog = new RefactoringDialog(getShell(), refactoringWizard);
+            Dialog dialog = new RefactoringDialog(shell, refactoringWizard);
             dialog.create();
             dialog.open();
         } finally {
             jobManager.endRule(ResourcesPlugin.getWorkspace().getRoot());
         }
-    }
-
-    /** Returns the <tt>Shell</tt> used by this action. */
-    @Override
-    public final Shell getShell() {
-        return shell;
     }
 
 }

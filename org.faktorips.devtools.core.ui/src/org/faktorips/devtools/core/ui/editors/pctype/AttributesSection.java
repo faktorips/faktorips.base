@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -29,17 +27,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.RenameAction;
+import org.faktorips.devtools.core.ui.actions.RenameHandler;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
@@ -54,12 +48,9 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
     private AttributesComposite attributesComposite;
 
-    private IpsObjectEditorPage page;
-
     public AttributesSection(IpsObjectEditorPage page, IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
         super(pcType, parent, Messages.AttributesSection_title, toolkit);
         ArgumentCheck.notNull(page);
-        this.page = page;
         ((AttributesComposite)getPartsComposite()).createContextMenu();
     }
 
@@ -100,9 +91,9 @@ public class AttributesSection extends SimpleIpsPartsSection {
                     String msg = Messages.AttributesSection_deleteMessage;
                     boolean delete = MessageDialog
                             .openQuestion(getShell(), Messages.AttributesSection_deleteTitle, msg);
-                    if (delete && rule != null) {
+                    if (delete) {
                         rule.delete();
-                    } else if (!delete && rule != null) {
+                    } else if (!delete) {
                         rule.setCheckValueAgainstValueSetRule(false);
                     }
                     return true;
@@ -131,26 +122,16 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         private void createContextMenu() {
-            final IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
-            final IWorkbenchAction renameAction = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
-            IActionBars actionBars = editorSite.getActionBars();
-            actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
-                    getPartsComposite()));
-
             MenuManager manager = new MenuManager();
-            manager.setRemoveAllWhenShown(true);
-            manager.addMenuListener(new IMenuListener() {
-                @Override
-                public void menuAboutToShow(IMenuManager manager) {
-                    manager.add(new Separator());
-                    MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
-                    refactorSubmenu.add(renameAction);
-                    // TODO AW: Pull Up not yet working
-                    // refactorSubmenu.add(new PullUpAction(editorSite.getShell(),
-                    // getPartsComposite()));
-                    manager.add(refactorSubmenu);
-                }
-            });
+            MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
+
+            manager.add(refactorSubmenu);
+            manager.add(new Separator());
+
+            refactorSubmenu.add(RenameHandler.getContributionItem());
+            // TODO AW: Pull Up not yet working
+            // refactorSubmenu.add(new PullUpAction(editorSite.getShell(),
+            // getPartsComposite()));
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
         }

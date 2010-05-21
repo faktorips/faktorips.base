@@ -97,6 +97,8 @@ public class DeepCopyPreview {
      * component with this name) and refreshes the map of error messages.
      */
     public void checkForInvalidTargets() {
+        deepCopyWizard.logTraceStart("checkForInvalidTargets");
+
         errorElements.clear();
         filename2productMap.clear();
         product2filenameMap.clear();
@@ -119,6 +121,8 @@ public class DeepCopyPreview {
                     .getInvalidObjectProperties()[0].getObject();
             addMessage(object, currMessage.getText(), errorElements);
         }
+
+        deepCopyWizard.logTraceEnd("checkForInvalidTargets");
     }
 
     private void validateTarget(IProductCmptStructureReference modified,
@@ -189,7 +193,9 @@ public class DeepCopyPreview {
      * and table contents are returned.
      */
     IProductCmptStructureReference[] getProductCmptStructRefToCopy() {
+        deepCopyWizard.logTraceStart("getProductCmptStructRefToCopy");
         List<IProductCmptStructureReference> result = getProductCmptStructRefToCopyInternal();
+        deepCopyWizard.logTraceEnd("getProductCmptStructRefToCopy");
         return result.toArray(new IProductCmptStructureReference[result.size()]);
     }
 
@@ -213,6 +219,7 @@ public class DeepCopyPreview {
     }
 
     private Object[] getNonLinkElements() {
+        deepCopyWizard.logTraceStart("getNonLinkElements");
         if (nonLinkElementsCached != null) {
             return nonLinkElementsCached;
         }
@@ -226,6 +233,7 @@ public class DeepCopyPreview {
             result.add(currElement);
         }
         nonLinkElementsCached = result.toArray(new Object[result.size()]);
+        deepCopyWizard.logTraceEnd("getNonLinkElements");
         return nonLinkElementsCached;
     }
 
@@ -253,10 +261,11 @@ public class DeepCopyPreview {
      * name is the old name.
      */
     public String getNewName(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
-        return getNewName(targetPackage, correspondingIpsObject, 0);
+        String newName = getNewNameInternal(targetPackage, correspondingIpsObject, 0);
+        return newName;
     }
 
-    private String getNewName(IIpsPackageFragment targetPackage,
+    private String getNewNameInternal(IIpsPackageFragment targetPackage,
             IIpsObject correspondingIpsObject,
             int uniqueCopyOfCounter) {
         String oldName = correspondingIpsObject.getName();
@@ -299,7 +308,7 @@ public class DeepCopyPreview {
             IIpsSrcFile ipsSrcFile = targetPackage.getIpsSrcFile(correspondingIpsObject.getIpsObjectType().getFileName(
                     newName));
             if (ipsSrcFile.exists()) {
-                return getNewName(targetPackage, correspondingIpsObject, uniqueCopyOfCounter + 1);
+                return getNewNameInternal(targetPackage, correspondingIpsObject, uniqueCopyOfCounter + 1);
             }
         }
 
@@ -363,6 +372,8 @@ public class DeepCopyPreview {
      * @throws CoreException if any error exists (e.g. naming collisions).
      */
     public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles() throws CoreException {
+        deepCopyWizard.logTraceStart("getHandles");
+
         if (!isValid()) {
             StringBuffer message = new StringBuffer();
             Collection<String> errors = getErrorElements().values();
@@ -389,6 +400,8 @@ public class DeepCopyPreview {
 
             result.put(element, file);
         }
+
+        deepCopyWizard.logTraceEnd("getHandles");
         return result;
     }
 
@@ -417,6 +430,8 @@ public class DeepCopyPreview {
     }
 
     public IProductCmptStructureReference[] getProductsOrtTableContentsToRefer() {
+        deepCopyWizard.logTraceStart("getProductsOrtTableContentsToRefer");
+
         Set<Object> linkedElements = sourcePage.getLinkedElements();
         IProductCmptStructureReference[] result = new IProductCmptStructureReference[linkedElements.size()];
         int idx = 0;
@@ -424,6 +439,8 @@ public class DeepCopyPreview {
             result[idx++] = (IProductCmptStructureReference)object;
 
         }
+
+        deepCopyWizard.logTraceEnd("getProductsOrtTableContentsToRefer");
         return result;
     }
 

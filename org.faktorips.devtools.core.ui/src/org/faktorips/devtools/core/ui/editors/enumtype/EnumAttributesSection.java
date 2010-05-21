@@ -17,9 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -32,17 +31,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.RenameAction;
+import org.faktorips.devtools.core.ui.actions.RenameHandler;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -137,22 +132,13 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         }
 
         private void createContextMenu() {
-            IEditorSite editorSite = (IEditorSite)page.getEditor().getSite();
-            final IWorkbenchAction renameAction = ActionFactory.RENAME.create(editorSite.getWorkbenchWindow());
-            IActionBars actionBars = editorSite.getActionBars();
-            actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(editorSite.getShell(),
-                    getPartsComposite()));
-
             MenuManager manager = new MenuManager();
-            manager.setRemoveAllWhenShown(true);
-            manager.addMenuListener(new IMenuListener() {
-                @Override
-                public void menuAboutToShow(IMenuManager manager) {
-                    MenuManager refactorSubmenu = new MenuManager(Messages.EnumAttributesSection_submenuRefactor);
-                    refactorSubmenu.add(renameAction);
-                    manager.add(refactorSubmenu);
-                }
-            });
+            MenuManager refactorSubmenu = new MenuManager(Messages.EnumAttributesSection_submenuRefactor);
+
+            manager.add(refactorSubmenu);
+            manager.add(new Separator());
+
+            refactorSubmenu.add(RenameHandler.getContributionItem());
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
         }

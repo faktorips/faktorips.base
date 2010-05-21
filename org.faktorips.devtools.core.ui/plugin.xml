@@ -1249,6 +1249,52 @@
             </with>
          </enabledWhen>
       </handler>
+            <handler
+            class="org.faktorips.devtools.core.ui.actions.RenameHandler"
+            commandId="org.eclipse.ui.edit.rename">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <instanceof
+                        value="org.faktorips.devtools.core.model.IIpsElement">
+                  </instanceof></iterate>
+            </with>
+         </activeWhen>
+         <class
+               class="org.faktorips.devtools.core.ui.actions.RenameHandler">
+         </class>
+         <enabledWhen>
+            <count
+                  value="1">
+            </count>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.actions.MoveHandler"
+            commandId="org.eclipse.ui.edit.move">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <instanceof
+                        value="org.faktorips.devtools.core.model.IIpsElement">
+                  </instanceof></iterate>
+            </with>
+         </activeWhen>
+         <class
+               class="org.faktorips.devtools.core.ui.actions.MoveHandler">
+         </class>
+         <enabledWhen>
+            <count
+                  value="1">
+            </count>
+         </enabledWhen>
+      </handler>
    </extension>
 
    <extension
@@ -1261,4 +1307,22 @@
        class="org.faktorips.devtools.core.ui.commands.IpsObjectPartDeleteHandlerTester">
      </propertyTester>
    </extension>
+   
+      <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.faktorips.refactoring">
+         <command
+               commandId="org.eclipse.ui.edit.rename"
+               id="Rename"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.ui.edit.move"
+               id="Move"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   
 </plugin>
