@@ -465,9 +465,14 @@ public class MoveOperation implements IRunnableWithProgress {
         IIpsPackageFragmentRoot sourceRoot = parent.getRoot();
 
         // 2) Move them all.
+        boolean createSubPackage = false;
         for (String[] fileInfos : files) {
             IIpsPackageFragment targetPackage = currTargetRoot.getIpsPackageFragment(buildPackageName(
                     "", newName, fileInfos[0])); //$NON-NLS-1$
+            if (targetPackage.getParentIpsPackageFragment().equals(pack)) {
+                createSubPackage = true;
+            }
+            
             if (!targetPackage.exists()) {
                 currTargetRoot.createPackageFragment(targetPackage.getName(), true, monitor);
             }
@@ -508,8 +513,10 @@ public class MoveOperation implements IRunnableWithProgress {
             }
         }
 
-        // 3) Remove remaining folders.
-        pack.getEnclosingResource().delete(true, monitor);
+        // 3) Remove remaining folders(only if no sub package was to be created).
+        if (!(createSubPackage)) {
+            pack.getEnclosingResource().delete(true, monitor);
+        }
     }
 
     private void moveProductCmpt(IProductCmpt cmpt, String newName, String newRuntimeId, IProgressMonitor monitor) {
