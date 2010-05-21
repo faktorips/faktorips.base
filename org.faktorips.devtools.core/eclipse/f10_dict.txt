@@ -1,3 +1,5 @@
+artefacts
+artefact
 deprecated
 typesafe
 memento
