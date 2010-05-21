@@ -51,11 +51,6 @@ public class MessageFragment {
     private String[] parameterValues;
     private String msgTextExpression;
 
-    /**
-     * @param frag
-     * @param parameterNames
-     * @param parameterValues
-     */
     private MessageFragment(JavaCodeFragment frag, String[] parameterNames, String[] parameterValues, String msgTextExpr) {
         super();
         this.frag = frag;
@@ -94,7 +89,7 @@ public class MessageFragment {
     }
 
     /**
-     * Returns the qualified java names for the classes of the parametes.
+     * Returns the qualified java names for the classes of the parameters.
      */
     public String[] getParameterClasses() {
         String[] parameterClasses = new String[parameterNames.length];
@@ -154,7 +149,7 @@ public class MessageFragment {
      * @param messageText the original message text containing parameters marked by braces
      * @param parameterNameType the type of parameter name contained in the JavaCodeFragment for the
      *            parameters extracted in the original message. Two kinds of parameter names are
-     *            available expressed by the two avaiable constants.
+     *            available expressed by the two available constants.
      * @throws IllegalArgumentException if the value of the parameter parameterNameType is different
      *             from one of the constant values.
      * 
@@ -162,7 +157,6 @@ public class MessageFragment {
      * @see #VALUES_AS_PARAMETER_NAMES
      */
     public final static MessageFragment createMessageFragment(String messageText, int parameterNameType) {
-
         if (parameterNameType != DEFAULT_PARAMETER_NAMES && parameterNameType != VALUES_AS_PARAMETER_NAMES) {
             throw new IllegalArgumentException(
                     "The value of the parameter parameterNameType must be one of the constant values" + //$NON-NLS-1$
@@ -213,4 +207,5 @@ public class MessageFragment {
         return new MessageFragment(frag, paraNames.toArray(new String[paraNames.size()]), paraValues
                 .toArray(new String[paraValues.size()]), "text.toString()"); //$NON-NLS-1$
     }
+
 }

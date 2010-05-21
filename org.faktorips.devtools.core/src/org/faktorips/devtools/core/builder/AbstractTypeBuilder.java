@@ -33,10 +33,6 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Peter Erzberger
  */
-/*
- * TODO AW: This class wants to be a base class for all IPS-Type source builders but makes far too
- * many assumptions about subclasses (product component type and policy component type).
- */
 public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     public AbstractTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet localizedStringsSet) {
@@ -101,8 +97,6 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /**
      * Generates the source code for all methods defined in the policy component type.
-     * 
-     * @throws CoreException
      */
     protected final void generateCodeForMethodsDefinedInModel(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {

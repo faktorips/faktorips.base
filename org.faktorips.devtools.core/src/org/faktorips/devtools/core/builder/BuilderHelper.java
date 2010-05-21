@@ -65,7 +65,7 @@ public class BuilderHelper {
         while (true) {
             int start = message.indexOf('{');
             if (start > -1) {
-                int end = message.indexOf('}', start + 2); // param darf kein Leerstring sein
+                int end = message.indexOf('}', start + 2); // parameter may not be an empty string.
                 if (end > -1) {
                     transformedMessage += message.substring(0, start);
                     transformedMessage += "{"; //$NON-NLS-1$
@@ -87,7 +87,7 @@ public class BuilderHelper {
 
     /**
      * Returns true if the compliance level of the java project that is associated with the provided
-     * ips project is equal or greater that 1.5. Otherwise false is returned.
+     * IPS project is equal or greater that 1.5. Otherwise false is returned.
      */
     public final static boolean javaComplianceGreateEqual5(IIpsProject ipsProject) {
         Decimal complianceLevel = Decimal.valueOf(ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE,
@@ -101,4 +101,5 @@ public class BuilderHelper {
     private BuilderHelper() {
         super();
     }
+
 }

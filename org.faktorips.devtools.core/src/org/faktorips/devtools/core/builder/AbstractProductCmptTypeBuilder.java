@@ -92,13 +92,13 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
                 Datatype datatype = a.findDatatype(getIpsProject());
                 DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
                 if (helper == null) {
-                    throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));
+                    throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype)); //$NON-NLS-1$
                 }
                 generateCodeForPolicyCmptTypeAttribute(a, helper, typeSection.getMemberVarBuilder(), typeSection
                         .getMethodBuilder());
             } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building attribute " + attribute.getName()
-                        + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building attribute " + attribute.getName() //$NON-NLS-1$
+                        + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e)); //$NON-NLS-1$
             }
         }
     }
@@ -129,7 +129,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
      * @param fieldsBuilder The code fragment builder to build the member variables section.
      * @param methodsBuilder The code fragment builder to build the method section.
      */
-    protected abstract void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a,
+    protected abstract void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
@@ -169,8 +169,8 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
                     implementationAssociations.add(association2);
                 }
             } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building association "
-                        + association2.getName() + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building association " //$NON-NLS-1$
+                        + association2.getName() + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e)); //$NON-NLS-1$
             }
         }
         CodeGeneratorForDerivedUnionSubsets generator = new CodeGeneratorForDerivedUnionSubsets(getIpsProject(),
@@ -185,7 +185,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
      * 
      * @param association the association source code should be generated for
      * @param fieldsBuilder the code fragment builder to build the member variables section.
-     * @param fieldsBuilder the code fragment builder to build the method section.
+     * @param methodsBuilder the code fragment builder to build the method section.
      * 
      * @throws Exception implementations of this method don't have to take care about rising checked
      *             exceptions. An exception that had been thrown leads to an interruption of the
@@ -207,7 +207,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
      * 
      * @param containerAssociation the container association source code should be generated for.
      * @param fieldsBuilder the code fragment builder to build the member variables section.
-     * @param fieldsBuilder the code fragment builder to build the method section.
+     * @param methodsBuilder the code fragment builder to build the method section.
      */
     protected abstract void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation,
             JavaCodeFragmentBuilder fieldsBuilder,
@@ -216,7 +216,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
     /**
      * Generates code for a container association implementation. The method is called for every
      * valid container association in the product component type we currently build source code for
-     * and for each valid container association in one of it's supertypes.
+     * and for each valid container association in one of it's super types.
      * 
      * @param derivedUnionAssociation the container association source code should be generated for.
      * @param implementationAssociations the association implementing the container association.
@@ -252,8 +252,8 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
                                     methodsBuilder);
                         }
                     } catch (Exception e) {
-                        addToBuildStatus(new IpsStatus("Error building container association implementation. "
-                                + "DerivedUnionAssociation: " + association + "Implementing Type: "
+                        addToBuildStatus(new IpsStatus("Error building container association implementation. " //$NON-NLS-1$
+                                + "DerivedUnionAssociation: " + association + "Implementing Type: " //$NON-NLS-1$ //$NON-NLS-2$
                                 + getProductCmptType(), e));
                     }
                 }

@@ -157,7 +157,6 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
 
     /**
      * Template method to create the set's builders.
-     * 
      */
     protected abstract IIpsArtefactBuilder[] createBuilders() throws CoreException;
 
@@ -178,7 +177,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
             return result;
         }
         for (IIpsArtefactBuilder builder : builders) {
-            // TODO genau die Klasse oder auch subklassen?
+            // TODO Exactly this class or sub classes too?
             if (builderClass.isAssignableFrom(builder.getClass())) {
                 result.add(builderClass.cast(builder));
             }
@@ -195,4 +194,5 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     public boolean isPersistentProviderSupportConverter() {
         return false;
     }
+
 }

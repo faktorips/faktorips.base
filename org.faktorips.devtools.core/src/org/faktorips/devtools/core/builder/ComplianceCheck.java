@@ -33,7 +33,7 @@ public class ComplianceCheck {
         if (complianceLevel != null) {
             return Decimal.valueOf(complianceLevel).greaterThanOrEqual(Decimal.valueOf("1.5")); //$NON-NLS-1$
         }
-        return false; // assume old Java 1.4 project if compliance level is not set.
+        return false; // Assume old Java 1.4 project if compliance level is not set.
     }
 
     /**
@@ -65,4 +65,5 @@ public class ComplianceCheck {
         }
         return null;
     }
+
 }

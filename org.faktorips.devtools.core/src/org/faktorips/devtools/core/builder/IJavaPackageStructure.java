@@ -32,11 +32,11 @@ public interface IJavaPackageStructure {
      * 
      * @param kind identifies the kind of java class that exists within this package structure for
      *            the provided IpsObject
-     * @param ipsObject the IpsObject that identifies in conjunction with the kind parameter the
-     *            package of the java class that exists within this package structure
+     * @param ipsSrcFile the IPS source file that identifies in conjunction with the kind parameter
+     *            the package of the java class that exists within this package structure
      * 
      * @throws CoreException implementations can wrap rising checked exceptions into a CoreException
      */
-    // TODO AW: Parameter 2 was changed from IIpsObject to IIpsSrcFile, please document properly!
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException;
+
 }

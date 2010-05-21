@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * The dependency graph stores ips object dependencies. It is supposed to be used in a way that it
+ * The dependency graph stores IPS object dependencies. It is supposed to be used in a way that it
  * represents the object dependencies after the last build has been completed.
  * 
  * @author Jan Ortmann, Peter Erzberger
@@ -55,8 +55,8 @@ public class DependencyGraph implements Serializable {
     /**
      * Creates a new DependencyGraph object.
      * 
-     * @param ipsProject the ips project this dependency graph administers the dependenies of the
-     *            ips objects for
+     * @param ipsProject the IPS project this dependency graph administers the dependencies of the
+     *            IPS objects for.
      */
     public DependencyGraph(IIpsProject ipsProject) throws CoreException {
         super();
@@ -120,12 +120,12 @@ public class DependencyGraph implements Serializable {
     }
 
     /**
-     * Returns the qualified names of the ips objects that depend on the object identified by the
+     * Returns the qualified names of the IPS objects that depend on the object identified by the
      * given qualified name.
      * 
-     * @param id the identifier for an ips object or datatype for which the dependant objects should
-     *            be returned. Identifier for IpsObjects are QualifiedNameType instances for
-     *            Datatypes qualified name strings.
+     * @param id the identifier for an IPS object or data type for which the dependent objects
+     *            should be returned. Identifier for IpsObjects are QualifiedNameType instances for
+     *            data types qualified name strings.
      */
     public IDependency[] getDependants(QualifiedNameType id) {
         List<IDependency> qualfiedNameTypes = getDependantsAsList(id);
@@ -151,21 +151,19 @@ public class DependencyGraph implements Serializable {
     }
 
     /**
-     * Updates the graph with the new dependeny information for the given object. For an updated ips
-     * object the method works as follows:
+     * Updates the graph with the new dependency information for the given object. For an updated
+     * IPS object the method works as follows:
      * <ol>
      * <li>Delete all relations for the node identified by the given qName.</li>
-     * <li>Get the ips object identified by the qName.</li>
-     * <li>Determine the new dependencies by calling the the dependsOn() method on the ips object
+     * <li>Get the IPS object identified by the qName.</li>
+     * <li>Determine the new dependencies by calling the the dependsOn() method on the IPS object
      * identified by qName.</li>
      * <li>Create new relations between the node identified by the qName and the nodes identified by
      * the dependencies. If one of the nodes doesn't exist it will be created.</li>
      * </ol>
-     * For a new ips object step one is omitted. For deleted ips object only step one is executed.
+     * For a new IPS object step one is omitted. For deleted IPS object only step one is executed.
      * 
-     * 
-     * @param qName The fully qualified name type of the ips object.
-     * @throws CoreException
+     * @param qName The fully qualified name type of the IPS object.
      */
     public void update(QualifiedNameType qName) throws CoreException {
         if (qName == null) {
@@ -198,11 +196,9 @@ public class DependencyGraph implements Serializable {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "DependencyGraph for " + ipsProject.getName(); //$NON-NLS-1$
     }
+
 }

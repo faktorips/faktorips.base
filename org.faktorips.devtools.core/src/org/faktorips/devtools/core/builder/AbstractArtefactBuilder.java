@@ -85,17 +85,18 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
     /**
      * This method needs to be used in subclasses of this builder when a file is created during the
      * build cycle. This method creates a file only if the file handle points to a file that doesn't
-     * exist. Also the folder hierarchy up to the destination folder specified in the ipsproject
+     * exist. Also the folder hierarchy up to the destination folder specified in the IPS project
      * properties is created if it doesn't exist. The files and folders are marked as derived if
      * this builder builds derived artefacts. See the method <code>buildDerivedArtefacts()</code>.
      * 
      * @param file the file handle
+     * 
      * @return true if the file needs to be created, false if the file already exists
+     * 
      * @throws CoreException if an Exception occurs during the creation procedure
      * @throws RuntimeException if the provided file parameter is <code>null</code>
      */
     protected boolean createFileIfNotThere(IFile file) throws CoreException {
-
         ArgumentCheck.notNull(file, this);
         if (!file.exists()) {
             IContainer parent = file.getParent();
@@ -115,11 +116,13 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * This method needs to be used in subclasses of this builder when a folder is created during
      * the build cycle. This method creates a folder only if the folder handle points to a folder
      * that doesn't exist. Also the folder hierarchy up to the destination folder specified in the
-     * ipsproject properties is created if it doesn't exist. The folders are marked as derived if
+     * IPS project properties is created if it doesn't exist. The folders are marked as derived if
      * this builder builds derived artefacts. See the method <code>buildDerivedArtefacts()</code>.
      * 
      * @param folder the folder handle
+     * 
      * @return true if the folder needs to be created, false if the folder already exists
+     * 
      * @throws CoreException if an Exception occurs during the creation procedure
      * @throws RuntimeException if the provided folder parameter is <code>null</code>
      */

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.lang.reflect.Modifier;
+
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 
 /**
@@ -42,7 +44,7 @@ public final class TypeSection {
     /**
      * Returns the class modifier for the type represented by this TypeSection.
      * 
-     * @see <code>{@link java.reflect.Modifier}</code>
+     * @see Modifier
      */
     public int getClassModifier() {
         return classModifier;
@@ -51,7 +53,7 @@ public final class TypeSection {
     /**
      * Sets the class modifier for the type represented by this TypeSection.
      * 
-     * @see <code>{@link java.reflect.Modifier}</code>
+     * @see Modifier
      */
     public void setClassModifier(int classModifier) {
         this.classModifier = classModifier;
@@ -89,14 +91,14 @@ public final class TypeSection {
     }
 
     /**
-     * Returns if the type that is to generate is an enum or an interface.
+     * Returns if the type that is to generate is an enumeration or an interface.
      */
     public boolean isEnum() {
         return isEnum;
     }
 
     /**
-     * Sets if the type that is to generate is an enum or an interface.
+     * Sets if the type that is to generate is an enumeration or an interface.
      */
     public void setEnum(boolean isEnum) {
         this.isEnum = isEnum;
@@ -136,56 +138,56 @@ public final class TypeSection {
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
-     * constant definitions.
+     * Returns the {@link JavaCodeFragmentBuilder} that assembles the code for the constant
+     * definitions.
      */
     public JavaCodeFragmentBuilder getConstantBuilder() {
         return constantBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
-     * initialisation of the enum.
+     * Returns the {@link JavaCodeFragmentBuilder} that assembles the code for the initialization of
+     * the enumeration.
      */
     public JavaCodeFragmentBuilder getEnumDefinitionBuilder() {
         return enumDefinitionBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
-     * constructor definitions.
+     * Returns the {@link JavaCodeFragmentBuilder} that assembles the code for the constructor
+     * definitions.
      */
     public JavaCodeFragmentBuilder getConstructorBuilder() {
         return constructorBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
-     * member variable definitions.
+     * Returns the {@link JavaCodeFragmentBuilder} that assembles the code for the member variable
+     * definitions.
      */
     public JavaCodeFragmentBuilder getMemberVarBuilder() {
         return memberVariableBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
-     * method definitions.
+     * Returns the {@link JavaCodeFragmentBuilder} that assembles the code for the method
+     * definitions.
      */
     public JavaCodeFragmentBuilder getMethodBuilder() {
         return methodBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the java
-     * doc of the type of this TypeSection.
+     * Returns the {@link JavaCodeFragmentBuilder} that assembles the code for the java doc of the
+     * type of this TypeSection.
      */
     public JavaCodeFragmentBuilder getJavaDocForTypeBuilder() {
         return javadocForTypeBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the annotations for
-     * the type of this TypeSection.
+     * Returns the {@link JavaCodeFragmentBuilder} that assembles the annotations for the type of
+     * this TypeSection.
      */
     public JavaCodeFragmentBuilder getAnnotationsForTypeBuilder() {
         return annotationsForTypeBuilder;

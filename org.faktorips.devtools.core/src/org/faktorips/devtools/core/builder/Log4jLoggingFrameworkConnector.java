@@ -29,17 +29,11 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
 
     private String id;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getId() {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setId(String id) {
         this.id = id;
@@ -67,33 +61,21 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLogConditionExp(int level, String loggerInstanceExp, List<String> usedClasses) {
         return build(level, loggerInstanceExp, null, new LogConditionExpBuilder(usedClasses));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLogStmtForMessage(int level, String msgConstant, String loggerInstanceExp, List<String> usedClasses) {
         return build(level, loggerInstanceExp, msgConstant, new LogStmtForMessageBuilder());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLogStmtForMessageExp(int level, String msgExp, String loggerInstanceExp, List<String> usedClasses) {
         return build(level, loggerInstanceExp, msgExp, new LogStmtForMessageExpBuilder());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLogStmtForThrowable(int level,
             String msgExp,
@@ -103,17 +85,11 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
         return build(level, loggerInstanceExp, msgExp, new LogStmtForThrowableBuilder(throwableExp));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLoggerClassName() {
         return Logger.class.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLoggerInstanceStmt(String scopeExp, List<String> usedClasses) {
         usedClasses.add(Logger.class.getName());
@@ -131,6 +107,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
         public String buildWarning(String message);
 
         public String buildError(String message);
+
     }
 
     private static class LogConditionExpBuilder implements Builder {
@@ -167,6 +144,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
             usedClasses.add(Level.class.getName());
             return ".isEnabledFor(Level.WARN)"; //$NON-NLS-1$
         }
+
     }
 
     private static class LogStmtForMessageBuilder implements Builder {
@@ -195,6 +173,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
         public String buildWarning(String message) {
             return ".warn(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
+
     }
 
     private static class LogStmtForMessageExpBuilder implements Builder {
@@ -223,6 +202,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
         public String buildWarning(String message) {
             return ".warn(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
+
     }
 
     private static class LogStmtForThrowableBuilder implements Builder {
@@ -257,6 +237,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
         public String buildWarning(String message) {
             return ".warn(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
+
     }
 
 }

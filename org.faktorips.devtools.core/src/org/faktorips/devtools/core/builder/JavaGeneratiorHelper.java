@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 public final class JavaGeneratiorHelper {
 
     private JavaGeneratiorHelper() {
+        // Helper class not to be instantiated.
     }
 
     /**
@@ -43,6 +44,7 @@ public final class JavaGeneratiorHelper {
     public final static void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder,
             IIpsProject iIpsProject,
             boolean interfaceMethodImplementation) {
+
         if (ComplianceCheck.isComplianceLevel5(iIpsProject) && !interfaceMethodImplementation) {
             fragmentBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
             return;
@@ -54,28 +56,25 @@ public final class JavaGeneratiorHelper {
 
     /**
      * Appends the list of classNames as a list of generics to the given fragmentBuilder if
-     * comliance level is at least Java5. e.g. if your classNames is [Integer, String], the code
+     * compliance level is at least Java5. e.g. if your classNames is [Integer, String], the code
      * 
      * <pre>
      * <Integer, String>
      * </pre>
      * 
      * is added to the fragment builder.
-     * 
-     * @param fragmentBuilder
-     * @param ipsProject
-     * @param classNames
      */
     public final static void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder,
             IIpsProject ipsProject,
             String... classNames) {
+
         if (ComplianceCheck.isComplianceLevelAtLeast5(ipsProject)) {
             fragmentBuilder.appendGenerics(classNames);
         }
     }
 
     /**
-     * Appends the list of classes as a list of generics to the given fragmentBuilder if comliance
+     * Appends the list of classes as a list of generics to the given fragmentBuilder if compliance
      * level is at least Java5. e.g. if your classes are [Integer.class, String.class], the code
      * 
      * <pre>
@@ -83,10 +82,6 @@ public final class JavaGeneratiorHelper {
      * </pre>
      * 
      * is added to the fragment builder.
-     * 
-     * @param fragmentBuilder
-     * @param ipsProject
-     * @param classNames
      */
     public final static void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder,
             IIpsProject ipsProject,
@@ -97,7 +92,7 @@ public final class JavaGeneratiorHelper {
     }
 
     /**
-     * Returns the default java doc comment for overriden methods.
+     * Returns the default java doc comment for overridden methods.
      */
     public final static String getJavaDocCommentForOverriddenMethod() {
         return "{@inheritDoc}"; //$NON-NLS-1$

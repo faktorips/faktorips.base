@@ -38,9 +38,6 @@ import org.faktorips.util.message.Message;
  */
 public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetPropertyDef {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAvailable(IIpsProject ipsProject) {
         return true;
@@ -48,23 +45,14 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
 
     @Override
     public String getDefaultValue(IIpsProject ipsProject) {
-        return "None";
+        return "None"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Returns an empty string
-     * </p>
-     */
     @Override
     public String getDisableValue(IIpsProject ipsProject) {
-        return "None";
+        return "None"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getDiscreteValues() {
         String[] values = super.getDiscreteValues();
@@ -74,24 +62,18 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
         return newValues.toArray(new String[newValues.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseValue(String value) {
-        if (value == null || "None".equals(value)) {
+        if (value == null || "None".equals(value)) { //$NON-NLS-1$
             return null;
         }
         Object returnValue = IpsPlugin.getDefault().getIpsLoggingFrameworkConnector(value);
         if (returnValue == null) {
-            throw new IllegalArgumentException("Unparsable value: " + value);
+            throw new IllegalArgumentException("Unparsable value: " + value); //$NON-NLS-1$
         }
         return returnValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Message validateValue(String value) {
         if (StringUtils.isEmpty(value)) {

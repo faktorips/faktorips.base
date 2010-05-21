@@ -35,9 +35,7 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
     }
 
     /**
-     * Generates the source code for the ips object part this is a generator for.
-     * 
-     * @param generatesInterface TODO
+     * Generates the source code for the IPS object part this is a generator for.
      */
     public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection)
             throws CoreException {
@@ -49,15 +47,11 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
     }
 
     /**
-     * Subclasses have to implement generation of the methods here. Whether the generator is used
-     * for generating the implementation class or the interface can be queried via
-     * {@link #isGeneratingImplementationClass()} and {@link #isGeneratingInterface()}.
+     * Subclasses have to implement generation of the methods here.
      * 
      * @param builder The builder for the type's method section.
-     * @param generatesInterface TODO
-     * @throws CoreException if an error occurs while generating the member variables
-     * @see #isGeneratingImplementationClass()
-     * @see #isGeneratingInterface()
+     * 
+     * @throws CoreException if an error occurs while generating the member variables.
      */
     protected abstract void generateMethods(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
@@ -68,26 +62,22 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
      * called if the generator is generating an implementation class.
      * 
      * @param builder The builder for the type's member variables section.
-     * @param generatesInterface TODO
+     * 
      * @throws CoreException if an error occurs while generating the member variables
-     * @see #isGeneratingImplementationClass()
      */
     protected abstract void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException;
 
     /**
-     * Subclasses have to implement generation of the constants (final statics) here. Whether the
-     * generator is used for generating the implementation class or the interface can be queried via
-     * {@link #isGeneratingImplementationClass()} and {@link #isGeneratingInterface()}.
+     * Subclasses have to implement generation of the constants (final statics) here.
      * 
      * @param builder The builder for the type's constants section.
-     * @param generatesInterface TODO
+     * 
      * @throws CoreException if an error occurs while generating the member variables
-     * @see #isGeneratingImplementationClass()
-     * @see #isGeneratingInterface()
      */
     protected abstract void generateConstants(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException;
+
 }

@@ -50,9 +50,6 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
         throw new IllegalArgumentException("The specified logging level is not defined: " + level); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLogConditionExp(int level, String loggerExpression, List<String> usedClasses) {
         usedClasses.add(Level.class.getName());
@@ -78,9 +75,6 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
         throw new IllegalArgumentException("The specified logging level is not defined: " + level); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLogStmtForMessage(int level, String msgConstant, String loggerInstanceExp, List<String> usedClasses) {
         StringBuffer buf = new StringBuffer();
@@ -93,9 +87,6 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
         return buf.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLogStmtForMessageExp(int level, String msgExp, String loggerInstanceExp, List<String> usedClasses) {
         StringBuffer buf = new StringBuffer();
@@ -108,15 +99,13 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
         return buf.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLogStmtForThrowable(int level,
             String msgExp,
             String throwableExp,
             String loggerInstanceExp,
             List<String> usedClasses) {
+
         usedClasses.add(Level.class.getName());
         StringBuffer buf = new StringBuffer();
         buf.append(loggerInstanceExp);
@@ -130,17 +119,11 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
         return buf.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLoggerClassName() {
         return Logger.class.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLoggerInstanceStmt(String scopeExp, List<String> usedClasses) {
         usedClasses.add(Logger.class.getName());
@@ -151,20 +134,15 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
         return buf.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getId() {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setId(String id) {
         ArgumentCheck.notNull(id);
         this.id = id;
     }
+
 }

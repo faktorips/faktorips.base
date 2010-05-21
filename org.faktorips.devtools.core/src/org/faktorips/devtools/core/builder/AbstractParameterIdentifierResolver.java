@@ -88,12 +88,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return enumDatatypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
-
         if (ipsproject == null) {
             throw new IllegalStateException(Messages.AbstractParameterIdentifierResolver_msgResolverMustBeSet);
         }
@@ -117,8 +113,10 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             }
         }
 
-        // assuming that the identifier is an attribute of the product component type
-        // where the formula method is defined.
+        /*
+         * Assuming that the identifier is an attribute of the product component type where the
+         * formula method is defined.
+         */
         CompilationResult result = compileThis(identifier);
         if (result != null) {
             addCurrentIdentifer(result, identifier);
@@ -126,15 +124,17 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         }
         result = compileEnumDatatypeValueIdentifier(paramName, attributeName);
         if (result != null) {
-            // the identifier is an enum datatype, thus it must not be added to the result as know
-            // parameter identifier
+            /*
+             * The identifier is an enumeration data type, thus it must not be added to the result
+             * as know parameter identifier.
+             */
             return result;
         }
         return CompilationResultImpl.newResultUndefinedIdentifier(locale, identifier);
     }
 
-    /*
-     * Adds the given identifier candidate to the compilation result
+    /**
+     * Adds the given identifier candidate to the compilation result.
      */
     private void addCurrentIdentifer(CompilationResult result, String identifierCandidate) {
         if (result instanceof CompilationResultImpl) {
@@ -156,15 +156,14 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                                 attribute.getName(), productCmptType.getQualifiedName());
                         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
                     }
-                    // We use "this." to access the product component type instance variable because
-                    // the compiled
-                    // formula code is also interpreted. When it is interpreted, it does not run
-                    // inside a method
-                    // of the product component generation class and so we can't access the product
-                    // component genertaion
-                    // attributes via this. So when we interpret the code, we introduce a new
-                    // parameter (thiz) and replace
-                    // "this." with "thiz."
+                    /*
+                     * We use "this." to access the product component type instance variable because
+                     * the compiled formula code is also interpreted. When it is interpreted, it
+                     * does not run inside a method of the product component generation class and so
+                     * we can't access the product component generation attributes via this. So when
+                     * we interpret the code, we introduce a new parameter (thiz) and replace
+                     * "this." with "thiz."
+                     */
                     String code = "this." + getParameterAttributGetterName(attribute, productCmptType) + "()"; //$NON-NLS-1$ //$NON-NLS-2$
                     return new CompilationResultImpl(code, attrDatatype);
                 }
@@ -180,7 +179,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     }
 
     /**
-     * Returns the compilation result for the a parameter and attribute name
+     * Returns the compilation result for the a parameter and attribute name.
      */
     protected CompilationResult compile(IParameter param, String attributeName) {
         Datatype datatype;
@@ -214,16 +213,18 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
      * 
      * @param fragment the {@link JavaCodeFragment} to add the new instance expression for the
      *            provided {@link IEnumType}
-     * @param enumType the enum type
+     * @param enumType the enumeration type
      * @param exprCompiler the expression compiler
      * @param value the value
+     * 
      * @throws CoreException thrown in case of exception
      */
     protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
             EnumTypeDatatypeAdapter enumType,
             ExprCompiler exprCompiler,
             String value) throws CoreException {
-        // could be implemented in subclass
+
+        // Could be implemented in subclass.
     }
 
     private CompilationResult compileEnumDatatypeValueIdentifier(String enumTypeName, String valueName) {
@@ -257,7 +258,6 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     }
 
     private CompilationResult compileTypeAttributeIdentifier(IParameter param, IType type, String attributeName) {
-
         if (StringUtils.isEmpty(attributeName)) {
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
                     Messages.AbstractParameterIdentifierResolver_msgAttributeMissing));

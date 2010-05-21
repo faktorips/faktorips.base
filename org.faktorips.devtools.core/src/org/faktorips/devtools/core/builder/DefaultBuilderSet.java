@@ -36,8 +36,8 @@ import org.faktorips.fl.IdentifierResolver;
  * IJavaPackageStructure interface. The getPackage() method provides package names for the kind
  * constants defined in this DefaultBuilderSet. This implementation uses the base package name for
  * generated java classes as the root of the package structure. The base package name can be
- * configure for an ips project within the ipsproject.xml file. On top of the base package name it
- * adds the ips package fragment name of the IpsSrcFile in question. Internal packages are
+ * configure for an IPS project within the ipsproject.xml file. On top of the base package name it
+ * adds the IPS package fragment name of the IpsSrcFile in question. Internal packages are
  * distinguished from packages that contain published interfaces and classes. It depends on the kind
  * constant if an internal or published package name is returned.
  * 
@@ -45,10 +45,12 @@ import org.faktorips.fl.IdentifierResolver;
  */
 public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
-    // kind constants. These constants are not supposed to be used within JavaSourceFileBuilder
-    // implementations. Since the JavaSourceFileBuilder implementations might get used in other
-    // artefact builder sets using these constants would introduce a dependency to this builder set.
-    // however the constants are public for use in test cases
+    /*
+     * These constants are not supposed to be used within JavaSourceFileBuilder implementations.
+     * Since the JavaSourceFileBuilder implementations might get used in other artefact builder sets
+     * using these constants would introduce a dependency to this builder set. however the constants
+     * are public for use in test cases.
+     */
     public final static String KIND_PRODUCT_CMPT_TYPE_INTERFACE = "productcmptinterface"; //$NON-NLS-1$
     public final static String KIND_PRODUCT_CMPT_TYPE_IMPL = "productcmptimplementation"; //$NON-NLS-1$
     public final static String KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE = "productCmptGenerationInterface"; //$NON-NLS-1$
@@ -66,7 +68,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public final static String KIND_FORMULA_TEST_CASE = "formulatestcase"; //$NON-NLS-1$
     public final static String KIND_ENUM_TYPE = "enumtype"; //$NON-NLS-1$
     public final static String KIND_ENUM_CONTENT = "enumcontent"; //$NON-NLS-1$
-    public final static String KIND_BUSINESS_FUNCTION = "businessfunction"; // %NON-NLS-1$
+    public final static String KIND_BUSINESS_FUNCTION = "businessfunction"; //$NON-NLS-1$
 
     public final static String KIND_TABLE_TOCENTRY = "tabletocentry"; //$NON-NLS-1$
     public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry"; //$NON-NLS-1$
@@ -86,9 +88,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      * Returns the name of the (Java) package that contains the artefacts specified by the
      * parameters generated for the given ips source file.
      * 
-     * @param publishedArtefact <code>true</code> if the artefacts are published (ussable by
+     * @param publishedArtefact <code>true</code> if the artefacts are published (usable by
      *            clients), <code>false</code> if they are internal.
-     * @param mergableArtefact <code>true</code> if the generated artefacte is mergable (at the
+     * @param mergableArtefact <code>true</code> if the generated artefact is mergable (at the
      *            moment this applies to Java Source files only). <code>false</code) if the artefact
      *            is 100% generated and can't be modified by the user.
      */
@@ -107,7 +109,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
     /**
      * Returns the name of the (Java) package name that contains the published artefacts that are
-     * generated for the given ips source file that (the artefacts) are also mergable.
+     * generated for the given IPS source file that (the artefacts) are also mergable.
      */
     public String getPackageNameForMergablePublishedArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getPackageNameForGeneratedArtefacts(ipsSrcFile, true, true);
@@ -115,7 +117,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
     /**
      * Returns the name of the (Java) package name that contains the internal artefacts that are
-     * generated for the given ips source file that (the artefacts) are also mergable.
+     * generated for the given IPS source file that (the artefacts) are also mergable.
      */
     public String getPackageNameForMergableInternalArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getPackageNameForGeneratedArtefacts(ipsSrcFile, false, true);
@@ -164,7 +166,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
     @Override
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
-        // TODO v2 - das koenner wir effizienter implementieren
+        // TODO This could be more efficient.
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_TABLE_IMPL.equals(kind) || KIND_TABLE_ROW.equals(kind)) {
                 return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
@@ -289,7 +291,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Returns <code>null</code>. This method is supposed to be overridden by subclasses.
      */
     @Override
@@ -299,11 +301,12 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
     /**
      * {@inheritDoc}
-     * <p/>
+     * <p>
      * Returns an empty string. This method is supposed to be overridden by subclasses.
      */
     @Override
     public String getVersion() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
+
 }

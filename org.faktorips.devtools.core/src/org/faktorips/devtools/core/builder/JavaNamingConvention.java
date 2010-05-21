@@ -27,7 +27,7 @@ import org.faktorips.datatype.Datatype;
 public class JavaNamingConvention {
 
     /**
-     * Standard Java naming convention. Interfaces have the name of the conecpt and the
+     * Standard Java naming convention. Interfaces have the name of the concecpt and the
      * implementation has the suffix 'Impl'.
      */
     public final static JavaNamingConvention JAVA_STANDARD = new JavaNamingConvention(0);
@@ -146,4 +146,5 @@ public class JavaNamingConvention {
     public String getToDoMarker() {
         return "TODO"; //$NON-NLS-1$
     }
+
 }

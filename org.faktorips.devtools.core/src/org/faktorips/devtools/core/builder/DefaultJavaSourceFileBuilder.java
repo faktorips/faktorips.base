@@ -75,19 +75,12 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     private List<TypeSection> innerClassesSections;
     private boolean loggerInstanceGenerated = false;
 
-    /**
-     * @param builderSet
-     * @param kindId
-     * @param localizedStringsSet
-     */
     public DefaultJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, kindId, localizedStringsSet);
     }
 
     /**
-     * Overridden.
-     * 
      * Calls the generateCodeForJavatype() method and adds the package and import declarations to
      * the content.
      */
@@ -296,6 +289,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     protected final void generateLoggingStmtWithConditionForMessageExpression(int level,
             JavaCodeFragment frag,
             String messageExp) throws CoreException {
+
         if (!checkLoggingGenerationConditions()) {
             return;
         }
@@ -356,6 +350,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             String className,
             String methodName,
             String[] parameters) throws CoreException {
+
         if (!checkLoggingGenerationConditions()) {
             return;
         }
@@ -392,6 +387,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             String className,
             String methodName,
             String returnVariable) throws CoreException {
+
         if (!checkLoggingGenerationConditions()) {
             return;
         }
@@ -542,7 +538,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     /**
      * Returns the name (singular form) for the generation (changes over time) concept.
      * 
-     * @param element An ips element needed to access the ipsproject where the necessary
+     * @param element An IPS element needed to access the IPS project where the necessary
      *            configuration information is stored.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention

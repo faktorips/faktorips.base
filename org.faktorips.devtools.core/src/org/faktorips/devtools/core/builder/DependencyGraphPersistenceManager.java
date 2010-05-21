@@ -31,11 +31,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This manager is instantiated at start up of the faktor ips plugin and the plugin holds a single
+ * This manager is instantiated at start up of the Faktor-IPS plug-in and the plug-in holds a single
  * instance of it during its life cycle. It is responsible for saving the states of the dependency
- * graphs that have been accessed during startup and shut down phase of the faktor ips plugin. The
+ * graphs that have been accessed during startup and shut down phase of the Faktor-IPS plug-in. The
  * states will be saved at shut down of the eclipse application. The dependency graph states are
- * saved to files located at the eclipse save location of the org.faktorips.devtools.core plugin.
+ * saved to files located at the eclipse save location of the org.faktorips.devtools.core plug-in.
  * Once a state of a dependency graph has been saved this state can be retrieved by this persistence
  * manager.
  * 
@@ -83,33 +83,23 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
                 }
             }
         }
-
     }
 
-    /**
-     * Empty implementeration of the {@link ISaveParticipant} interface method
-     */
     @Override
     public void doneSaving(ISaveContext context) {
+        // Empty implementation.
     }
 
-    /**
-     * Empty implementeration of the {@link ISaveParticipant} interface method
-     */
     @Override
     public void prepareToSave(ISaveContext context) throws CoreException {
+        // Empty implementation.
     }
 
-    /**
-     * Empty implementeration of the {@link ISaveParticipant} interface method
-     */
     @Override
     public void rollback(ISaveContext context) {
+        // Empty implementation.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saving(ISaveContext context) throws CoreException {
         if (context.getKind() == ISaveContext.FULL_SAVE) {
@@ -153,4 +143,5 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             }
         }
     }
+
 }

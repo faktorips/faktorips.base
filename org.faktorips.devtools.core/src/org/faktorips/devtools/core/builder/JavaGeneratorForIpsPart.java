@@ -28,8 +28,8 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * Base class for Java source code generators for an ips object part container (ips object or ips
- * part).
+ * Base class for Java source code generators for an IPS object part container (IPS object or IPS
+ * object part).
  * 
  * @author Jan Ortmann
  */
@@ -65,20 +65,18 @@ public abstract class JavaGeneratorForIpsPart {
     public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder,
             IIpsProject iIpsProject,
             boolean interfaceMethodImplementation) {
+
         JavaGeneratiorHelper.appendOverrideAnnotation(fragmentBuilder, iIpsProject, interfaceMethodImplementation);
     }
 
     /**
-     * Returns the language in that variables, methods are named and and Java docs are written in.
+     * Returns the language in that variables, methods are named and Java documentations are written
+     * in.
      * 
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
     public abstract Locale getLanguageUsedInGeneratedSourceCode();
 
-    /**
-     * Like {@link #appendLocalizedJavaDoc(String, String, JavaCodeFragmentBuilder)} without a
-     * description that is expected to be provided by the model.
-     */
     protected void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder) {
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, builder, getLanguageUsedInGeneratedSourceCode());
     }
@@ -87,27 +85,26 @@ public abstract class JavaGeneratorForIpsPart {
      * Inserts the localized Javadoc including the annotations into the given
      * JavaCodeFragmentBuilder.
      * 
-     * @param key prefix the key prefix that identifies the requested javadoc and annotation. The
-     *            javadoc is looked up in the localized text by adding _JAVADOC to the prefic. The
-     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefic.
-     * @param replacement Object that replaces the placeholder {0} in the property file
+     * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The
+     *            Javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
+     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
+     * @param replacement Object that replaces the place holder {0} in the property file
      * @param modelDescription a description of the model object can be provided here so that it can
      *            be added to the description provided by the generator configuration
      * @param builder the builder the Javadoc is appended to.
-     * @return the requested text
      */
     protected void appendLocalizedJavaDoc(String keyPrefix,
             Object replacement,
             String modelDescription,
             JavaCodeFragmentBuilder builder) {
+
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, modelDescription, builder,
                 getLanguageUsedInGeneratedSourceCode());
     }
 
     /**
-     * Like
-     * {@link #appendLocalizedJavaDoc(String, Object, String, IIpsElement, JavaCodeFragmentBuilder)}
-     * without a description that is expected to be provided by the model.
+     * Like {@link #appendLocalizedJavaDoc(String, Object, String, JavaCodeFragmentBuilder)} without
+     * a description that is expected to be provided by the model.
      */
     protected void appendLocalizedJavaDoc(String keyPrefix, Object replacement, JavaCodeFragmentBuilder builder) {
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, builder,
@@ -122,29 +119,25 @@ public abstract class JavaGeneratorForIpsPart {
      * cycle a RuntimeException is thrown. In addition if no LocalizedStringSet has been set to this
      * builder a RuntimeException is thrown.
      * 
-     * @param key prefix the key prefix that identifies the requested javadoc and annotation. The
-     *            javadoc is looked up in the localized text by adding _JAVADOC to the prefic. The
-     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefic.
-     * @param replacements Objects that replaces the placeholdersw {0}, {1} etc. in the property
-     *            file
-     * @param element the ips element used to access the ips project where the language to use is
-     *            defined.
+     * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The
+     *            Javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
+     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
+     * @param replacements Objects that replaces the place holder {0}, {1} etc. in the property file
      * @param modelDescription a description of the model object can be provided here so that it can
      *            be added to the description provided by the generator configuration
      * @param builder the builder the Javadoc is appended to.
-     * @return the requested text
      */
     protected void appendLocalizedJavaDoc(String keyPrefix,
             Object[] replacements,
             String modelDescription,
             JavaCodeFragmentBuilder builder) {
+
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacements, builder,
                 getLanguageUsedInGeneratedSourceCode());
     }
 
     /**
-     * Like
-     * {@link #appendLocalizedJavaDoc(String, Object[], String, IIpsElement, JavaCodeFragmentBuilder)}
+     * Like {@link #appendLocalizedJavaDoc(String, Object[], String, JavaCodeFragmentBuilder)}
      * without a description that is expected to be provided by the model.
      */
     protected void appendLocalizedJavaDoc(String keyPrefix, Object[] replacements, JavaCodeFragmentBuilder builder) {
@@ -169,7 +162,6 @@ public abstract class JavaGeneratorForIpsPart {
      * @param key the key that identifies the requested text
      * @param replacement an indicated region within the text is replaced by the string
      *            representation of this value
-     * @return the requested text
      */
     protected String getLocalizedText(String key, Object replacement) {
         return localizedTextHelper.getLocalizedText(key, replacement, getLanguageUsedInGeneratedSourceCode());
@@ -181,7 +173,6 @@ public abstract class JavaGeneratorForIpsPart {
      * @param key the key that identifies the requested text
      * @param replacements indicated regions within the text are replaced by the string
      *            representations of these values.
-     * @return the requested text
      */
     protected String getLocalizedText(String key, Object[] replacements) {
         return localizedTextHelper.getLocalizedText(key, replacements, getLanguageUsedInGeneratedSourceCode());
@@ -198,11 +189,9 @@ public abstract class JavaGeneratorForIpsPart {
      * // TODO Implement the rule xyz.
      * </pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the language for
-     *            the generated code.
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
      *            prefix
-     * @param replacements Any objects to replace wildcards in the message text.
+     * @param replacement Any object to replace wild cards in the message text.
      */
     public String getLocalizedToDo(String keyPrefix, Object replacement) {
         return localizedTextHelper.getLocalizedToDo(keyPrefix, replacement, getLanguageUsedInGeneratedSourceCode());
@@ -269,23 +258,23 @@ public abstract class JavaGeneratorForIpsPart {
     protected final String getJavaParameterTypeSignature(Datatype datatype) {
         char typeIdentifier = 'Q';
         if (datatype.isVoid()) {
-            return "V";
+            return "V"; //$NON-NLS-1$
         } else if (datatype.isPrimitive()) {
             if (datatype.equals(Datatype.PRIMITIVE_INT)) {
-                return "I";
+                return "I"; //$NON-NLS-1$
             } else if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
-                return "Z";
+                return "Z"; //$NON-NLS-1$
             } else if (datatype.equals(Datatype.PRIMITIVE_LONG)) {
-                return "J";
+                return "J"; //$NON-NLS-1$
             }
         }
 
-        return typeIdentifier + datatype.getName() + ";";
+        return typeIdentifier + datatype.getName() + ";"; //$NON-NLS-1$
     }
 
     @Override
     public String toString() {
-        return "Generator for " + ipsPart.toString();
+        return "Generator for " + ipsPart.toString(); //$NON-NLS-1$
     }
 
 }
