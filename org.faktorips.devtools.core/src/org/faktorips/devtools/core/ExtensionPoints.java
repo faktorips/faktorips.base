@@ -73,11 +73,6 @@ public class ExtensionPoints {
      * logging. If the executable extension couldn't be created, the reason is logged, no exception
      * is thrown. The returned object is of the expected type.
      * 
-     * @param extension The extension to create an
-     * @param element
-     * @param propertyName
-     * @param expectedType
-     * 
      * @see IConfigurationElement#createExecutableExtension(String)
      */
     public final static <T> T createExecutableExtension(IExtension extension,

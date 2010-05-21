@@ -38,13 +38,8 @@ public class DatatypeFormatter {
     /**
      * Formats the given value according to the user preferences.
      * 
-     * @param datatype The datatype the value is a value of.
+     * @param datatype The data type the value is a value of.
      * @param value The value as string
-     * @return
-     * @throws CoreException
-     * 
-     * @see #ENUM_TYPE_DISPLAY
-     * @see #NULL_REPRESENTATION_STRING
      */
     public String formatValue(ValueDatatype datatype, String value) {
         if (value == null) {
@@ -70,16 +65,13 @@ public class DatatypeFormatter {
 
     /**
      * Formats the provided id according to the user preferences. If the id isn't an id that
-     * identifies a value of the provided enum type or content the id will be returned unformatted.
-     * Also if the enum type is not defined properly in the model the provided id value will be
-     * returned unformatted.
+     * identifies a value of the provided enumeration type or content the id will be returned
+     * unformatted. Also if the enumeration type is not defined properly in the model the provided
+     * id value will be returned unformatted.
      * 
-     * @param enumType the enum type that defines the enumeration in which the provided id
-     *            identifies a value
-     * @param enumContent can be <code>null</code> and is only necessary if the enum type is one
-     *            that doesn't contain values
-     * @param id the identifies a value of the provided enum type
-     * @return the formatted value
+     * @param datatypeAdapter the enumeration data type adapter that defines the enumeration in
+     *            which the provided ID identifies a value.
+     * @param id The ID identifying a value of the provided enumeration type
      */
     private String formatValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) {
         try {
@@ -108,7 +100,6 @@ public class DatatypeFormatter {
     }
 
     private String getIdDisplayValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException {
-
         IEnumValue enumValue = getEnumValue(datatypeAdapter, id);
         if (enumValue == null) {
             return null;
@@ -123,13 +114,12 @@ public class DatatypeFormatter {
     }
 
     private String getNameDisplayValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException {
-
-        // see if an enum value for the provided id exists if not null will be returned
+        // See if an enumeration value for the provided ID exists, if not, null will be returned.
         IEnumValue enumValue = getEnumValue(datatypeAdapter, id);
         if (enumValue == null) {
             return null;
         }
-        // see if a name representation for the id exists
+        // See if a name representation for the ID exists.
         IEnumType enumType = datatypeAdapter.getEnumType();
         IEnumAttribute enumAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(enumType.getIpsProject());
         if (enumAttribute == null) {
@@ -147,12 +137,7 @@ public class DatatypeFormatter {
     /**
      * Formats the given value according to the user preferences.
      * 
-     * @param datatype The datatype the value is a value of.
-     * @param value The value as string
-     * @return
-     * 
-     * @see #ENUM_TYPE_DISPLAY
-     * @see #NULL_REPRESENTATION_STRING
+     * @param datatype The data type the value is a value of.
      */
     private String formatValue(EnumDatatype datatype, String id) {
         if (!datatype.isSupportingNames()) {
@@ -195,4 +180,5 @@ public class DatatypeFormatter {
     public String getBooleanFalseDisplay() {
         return Messages.DatatypeFormatter_booleanFalse;
     }
+
 }

@@ -26,7 +26,7 @@ public interface ITestAnswerProvider {
     public boolean getBooleanAnswer();
 
     /**
-     * Returns the answer as int.
+     * Returns the answer as integer.
      */
     public int getIntAnswer();
 

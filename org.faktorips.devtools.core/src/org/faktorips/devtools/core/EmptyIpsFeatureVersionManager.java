@@ -29,84 +29,55 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     private AbstractIpsProjectMigrationOperation[] emptyOps = new AbstractIpsProjectMigrationOperation[0];
 
     private EmptyIpsFeatureVersionManager() {
+        // Singleton constructor.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compareToCurrentVersion(String otherVersion) {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getCurrentVersion() {
         return IpsPlugin.getInstalledFaktorIpsVersion();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getFeatureId() {
         return "org.faktorips.feature"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getId() {
         return "EmptyIpsFeatureVersionManager"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
             throws CoreException {
         return emptyOps;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPredecessorId() {
         return ""; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isCurrentVersionCompatibleWith(String otherVersion) {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFeatureId(String featureId) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setId(String id) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setPredecessorId(String predecessorId) {
         throw new UnsupportedOperationException();

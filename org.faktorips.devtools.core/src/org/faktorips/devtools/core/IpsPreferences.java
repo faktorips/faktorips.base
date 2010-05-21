@@ -109,18 +109,18 @@ public class IpsPreferences {
     public final static String FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE = IpsPlugin.PLUGIN_ID + ".fourSections"; //$NON-NLS-1$
 
     /**
-     * Constant identifying the ips test runner max heap size preference.
+     * Constant identifying the IPS test runner max heap size preference.
      */
     public final static String IPSTESTRUNNER_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ipsTestTunnerMaxHeapSize"; //$NON-NLS-1$
 
     /**
-     * Constant identifying the enum display type.
+     * Constant identifying the enumeration display type.
      */
     public final static String ENUM_TYPE_DISPLAY = IpsPlugin.PLUGIN_ID + ".enumTypeDisplay"; //$NON-NLS-1$
 
     /**
-     * Constant that identifies if the range edit fields (min, max and step) will be displayed in
-     * one row
+     * Constant that identifies if the range edit fields (minimum, maximum and step) will be
+     * displayed in one row.
      */
     public final static String RANGE_EDIT_FIELDS_IN_ONE_ROW = IpsPlugin.PLUGIN_ID + ".rangeEditFieldsInOneRow"; //$NON-NLS-1$
 
@@ -247,17 +247,17 @@ public class IpsPreferences {
     }
 
     /**
-     * Returns the max heap size in megabytes for the ips test runner. This parameter specify the
+     * Returns the max heap size in megabytes for the IPS test runner. This parameter specify the
      * maximum size of the memory allocation pool for the test runner. Will be used to set the Xmx
-     * Java virtual machines option for the ips test runner virtual machine.
+     * Java virtual machines option for the IPS test runner virtual machine.
      */
     public String getIpsTestRunnerMaxHeapSize() {
         return prefStore.getString(IPSTESTRUNNER_MAX_HEAP_SIZE);
     }
 
     /**
-     * Returns the enum type display. Specifies the text display of enum type edit fields. E.g.
-     * display id or name only, or display both.
+     * Returns the enumeration type display. Specifies the text display of enumeration type edit
+     * fields. E.g. display id or name only, or display both.
      * 
      * @see EnumTypeDisplay
      */
@@ -346,15 +346,15 @@ public class IpsPreferences {
     }
 
     /**
-     * Returns <code>true</code> if the range edit fields (min, max, and step) should be displayed
-     * in one row.
+     * Returns <code>true</code> if the range edit fields (minimum, maximum, and step) should be
+     * displayed in one row.
      */
     public boolean isRangeEditFieldsInOneRow() {
         return prefStore.getBoolean(RANGE_EDIT_FIELDS_IN_ONE_ROW);
     }
 
     /**
-     * Sets if the range edit fields (min, max, and step) should be displayed in one row
+     * Sets if the range edit fields (minimum, maximum, and step) should be displayed in one row
      * <code>true</code>.
      */
     public void setRangeEditFieldsInOneRow(boolean enabled) {
@@ -362,9 +362,10 @@ public class IpsPreferences {
     }
 
     /**
-     * Returns the formatter for Faktor-IPS datatypes.
+     * Returns the formatter for Faktor-IPS data types.
      */
     public DatatypeFormatter getDatatypeFormatter() {
         return datatypeFormatter;
     }
+
 }

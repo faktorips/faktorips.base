@@ -19,7 +19,7 @@ import org.faktorips.fl.FunctionResolver;
 
 /**
  * FunctionResolverFactories can be registered with the <i>flfunctionResolverFactory</i> extension
- * point. The function resolvers of the registered factories augment the set of availabe formula
+ * point. The function resolvers of the registered factories augment the set of available formula
  * language functions.
  * 
  * @author Peter Erzberger

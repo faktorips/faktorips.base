@@ -43,16 +43,10 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
     public final static String VARNAME_RUNTIME_JAVA5_BIN = "FAKTORIPS_RUNTIME_JAVA5"; //$NON-NLS-1$
     public final static String VARNAME_RUNTIME_JAVA5_SRC = "FAKTORIPS_RUNTIME_JAVA5_SRC"; //$NON-NLS-1$
 
-    /**
-     * Classpath variables for the faktorips jars needed at runtime.
-     */
     public final static String[] IPS_VARIABLES_BIN = new String[] { VARNAME_VALUETYPES_BIN, VARNAME_RUNTIME_BIN };
     public final static String[] IPS_VARIABLES_JAVA5_BIN = new String[] { VARNAME_VALUETYPES_JAVA5_BIN,
             VARNAME_RUNTIME_JAVA5_BIN };
 
-    /**
-     * Classpath variables for the source attachements.
-     */
     public final static String[] IPS_VARIABLES_SRC = new String[] { VARNAME_VALUETYPES_SRC, VARNAME_RUNTIME_SRC };
     public final static String[] IPS_VARIABLES_JAVA5_SRC = new String[] { VARNAME_VALUETYPES_JAVA5_SRC,
             VARNAME_RUNTIME_JAVA5_SRC };
@@ -80,9 +74,6 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
         return varMapping.get(varName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initialize(String variable) {
         Mapping m = getMapping(variable);
@@ -98,8 +89,10 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
 
         URL installLocation = bundle.getEntry(m.jarName);
         if (installLocation == null) {
-            // Jar not installed - maybe the plugin is running in a Runtime-Eclipse from source. In
-            // this case, keep the old value if there is one.
+            /*
+             * Jar not installed - maybe the plug-in is running in a Runtime-Eclipse from source. In
+             * this case, keep the old value if there is one.
+             */
             IPath previous = JavaCore.getClasspathVariable(variable);
             if (previous == null) {
                 return;
@@ -111,7 +104,7 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
             }
             return;
         }
-        // installLocation is something like bundleentry://140/faktorips-util.jar
+        // Install location is something like bundleentry://140/faktorips-util.jar
         URL local = null;
         try {
             local = FileLocator.toFileURL(installLocation);
@@ -143,23 +136,14 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
             this.jarName = jarName;
         }
 
-        /**
-         * @return Returns the jarName.
-         */
         public String getJarName() {
             return jarName;
         }
 
-        /**
-         * @return Returns the pluginId.
-         */
         public String getPluginId() {
             return pluginId;
         }
 
-        /**
-         * @return Returns the varName.
-         */
         public String getVarName() {
             return varName;
         }

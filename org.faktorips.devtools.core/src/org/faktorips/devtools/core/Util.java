@@ -35,8 +35,6 @@ public final class Util {
      * 
      * @param project A platform project.
      * @param natureId The id of a nature.
-     * 
-     * @throws CoreException
      */
     public final static void addNature(IProject project, String natureId) throws CoreException {
         IProjectDescription description = project.getDescription();
@@ -50,6 +48,7 @@ public final class Util {
 
     public final static IPackageFragmentRoot addFolderAsPackageFragmentRoot(IJavaProject project, IFolder folder)
             throws JavaModelException {
+
         IPackageFragmentRoot root = project.getPackageFragmentRoot(folder);
         IClasspathEntry[] oldEntries = project.getRawClasspath();
         IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
@@ -60,6 +59,7 @@ public final class Util {
     }
 
     private Util() {
+        // Utility class not to be instantiated.
     }
 
 }

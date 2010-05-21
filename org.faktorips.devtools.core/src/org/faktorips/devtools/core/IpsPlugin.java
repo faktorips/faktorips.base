@@ -51,7 +51,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
 /**
- * The main plugin class.
+ * The main plug-in class.
  * 
  * @author Jan Ortmann
  */
@@ -65,7 +65,7 @@ public class IpsPlugin extends AbstractUIPlugin {
             Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
 
     /**
-     * Returns the full extension id. This is the plugin's id plus the plugin relative extension id
+     * Returns the full extension id. This is the plugin's id plus the plug-in relative extension id
      * separated by a dot.
      * 
      * @throws NullPointerException if pluginRelativeEnxtensionId is <code>null</code>.
@@ -75,24 +75,26 @@ public class IpsPlugin extends AbstractUIPlugin {
         return PLUGIN_ID + '.' + pluginRelativeEnxtensionId;
     }
 
-    // The shared instance.
+    /** The shared instance. */
     private static IpsPlugin plugin;
 
-    // the document builder factory provides the DocumentBuilder for this plugin
+    /** The document builder factory that provides the document builder for this plug-in. */
     private DocumentBuilderFactory docBuilderFactory;
 
     private IpsPreferences preferences;
 
     private IpsModel model;
 
-    // Contains the ips test runner, which runs ips test and informs registered ips test run
-    // listener
+    /**
+     * Contains the IPS test runner, which runs IPS tests and informs registered IPS test run
+     * listener.
+     */
     private IIpsTestRunner ipsTestRunner;
 
-    // All available external table formats
+    /** All available external table formats. */
     private ITableFormat[] externalTableFormats;
 
-    // All available feature version managers
+    /** All available feature version managers. */
     private IIpsFeatureVersionManager[] featureVersionManagers;
 
     private IIpsLoggingFrameworkConnector[] loggingFrameworkConnectors;
@@ -100,11 +102,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     private IFunctionResolverFactory[] flFunctionResolvers;
 
     private boolean testMode = false;
+
     private ITestAnswerProvider testAnswerProvider;
 
-    /**
-     * @see
-     */
     private boolean suppressLoggingDuringTestExecution = false;
 
     private DependencyGraphPersistenceManager dependencyGraphPersistenceManager;
@@ -123,23 +123,20 @@ public class IpsPlugin extends AbstractUIPlugin {
         return plugin;
     }
 
-    /**
-     * The constructor.
-     */
     public IpsPlugin() {
         super();
         plugin = this;
     }
 
     /**
-     * Logs the core exception
+     * Logs the given core exception.
      */
     public final static void log(CoreException e) {
         log(e.getStatus());
     }
 
     /**
-     * This method is called upon plug-in activation
+     * This method is called upon plug-in activation.
      */
     @Override
     public void start(BundleContext context) throws Exception {
@@ -160,7 +157,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * This method is called when the plug-in is stopped
+     * This method is called when the plug-in is stopped.
      */
     @Override
     public void stop(BundleContext context) throws Exception {
@@ -170,8 +167,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Reinits the model (so all data in the cache is cleared). Should only be called in test cases
-     * to ensure a clean environment.
+     * Re-initializes the model (so all data in the cache is cleared). Should only be called in test
+     * cases to ensure a clean environment.
      */
     public void reinitModel() {
         model.stopListeningToResourceChanges();
@@ -197,7 +194,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Logs the exception
+     * Logs the exception.
      */
     public final static void log(Throwable t) {
         log(new IpsStatus(t));
@@ -234,8 +231,6 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     /**
      * Does not log the status but show an error dialog with the status message
-     * 
-     * @param status
      */
     public final static void showErrorDialog(final IStatus status) {
         Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
@@ -272,14 +267,14 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns preferences for this plugin.
+     * Returns preferences for this plug-in.
      */
     public IpsPreferences getIpsPreferences() {
         return preferences;
     }
 
     /**
-     * /** <strong>FOR INTNERNAL TEST USE ONLY.</strong>
+     * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
      * <p>
      * Activate or deactivate test mode.
      */
@@ -290,18 +285,18 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
      * 
-     * @supress <code>true</code> if logging should be disabled during test execution. The default
-     *          behaviour is not to supresse logging. However, in some test cases we use test data
-     *          with an invalid state which results in exceptions in the error log which is the
-     *          correct behaviour. However if looking at the error log after all tests have been
-     *          run, these "correct" exceptions make it difficult, to see the unexpected exceptions.
-     *          You see the exception, and think something has gone wrong. In this test cases it is
-     *          appropriate to turn off logging. In the setup of the
-     *          <cdoe>AbstractIpsPluginTest</code> logging is explicitly turned on, so there is no
-     *          need to reset this flag, after your test method.
+     * @param suppress <code>true</code> if logging should be disabled during test execution. The
+     *            default behavior is not to suppress logging. However, in some test cases we use
+     *            test data with an invalid state which results in exceptions in the error log which
+     *            is the correct behavior. However if looking at the error log after all tests have
+     *            been run, these "correct" exceptions make it difficult, to see the unexpected
+     *            exceptions. You see the exception, and think something has gone wrong. In this
+     *            test cases it is appropriate to turn off logging. In the setup of the
+     *            <code>AbstractIpsPluginTest</code> logging is explicitly turned on, so there is no
+     *            need to reset this flag, after your test method.
      * 
      * @see #log(CoreException)
-     * @see #log(IpsStatus)
+     * @see #log(IStatus)
      */
     public void setSuppressLoggingDuringTest(boolean suppress) {
         suppressLoggingDuringTestExecution = suppress;
@@ -339,8 +334,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Returns the locale used by the localization. The returned locale is not the locale the
      * localization <strong>should</strong> use, it is the locale the localization
-     * <strong>can</strong> use. That means if the default locale this plugin runs is for example
-     * de_DE, but no language pack for german is installed, the localization uses the english
+     * <strong>can</strong> use. That means if the default locale this plug-in runs is for example
+     * de_DE, but no language pack for German is installed, the localization uses the English
      * language, and this method will return the Locale for "en".
      */
     public Locale getUsedLanguagePackLocale() {
@@ -350,7 +345,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the ips test runner.
+     * Returns the IPS test runner.
      */
     public IIpsTestRunner getIpsTestRunner() {
         if (ipsTestRunner == null) {
@@ -361,7 +356,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * @return An array of all available external table formats.
+     * Returns an array of all available external table formats.
      */
     public ITableFormat[] getExternalTableFormats() {
         if (externalTableFormats == null) {
@@ -371,7 +366,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Initialize the array of all available table formats
+     * Initializes the array of all available table formats.
      */
     private void initExternalTableFormats() {
         IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
@@ -403,23 +398,20 @@ public class IpsPlugin extends AbstractUIPlugin {
         IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
                 "org.faktorips.devtools.core.externalValueConverter"); //$NON-NLS-1$
 
-        IConfigurationElement tableFormatElement = null;
         for (IConfigurationElement element : elements) {
-            String tableFormatId = formatElement.getAttribute("id");
+            String tableFormatId = formatElement.getAttribute("id"); //$NON-NLS-1$
             if (element.getAttribute("tableFormatId").equals(tableFormatId)) { //$NON-NLS-1$") 
-                // converter found for current table format id
-                tableFormatElement = element;
+                // Converter found for current table format id.
+                IConfigurationElement[] valueConverters = element.getChildren();
+                for (IConfigurationElement valueConverter : valueConverters) {
+                    try {
+                        IValueConverter converter = (IValueConverter)valueConverter.createExecutableExtension("class"); //$NON-NLS-1$
+                        format.addValueConverter(converter);
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
+                    }
+                }
                 break;
-            }
-        }
-
-        IConfigurationElement[] valueConverters = tableFormatElement.getChildren();
-        for (IConfigurationElement valueConverter : valueConverters) {
-            try {
-                IValueConverter converter = (IValueConverter)valueConverter.createExecutableExtension("class"); //$NON-NLS-1$
-                format.addValueConverter(converter);
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
             }
         }
     }
@@ -506,7 +498,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * @return All installed ips feature version managers.
+     * Returns all installed IPS feature version managers.
      */
     public IIpsFeatureVersionManager[] getIpsFeatureVersionManagers() {
         if (featureVersionManagers == null) {
@@ -534,9 +526,10 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * Returns the manager for the feature with the given id or <code>null</code> if no manager was
+     * found.
+     * 
      * @param featureId The id of the feature the manager has to be returned.
-     * @return The manager for the feature with the given id or <code>null</code> if no manager was
-     *         found.
      */
     public IIpsFeatureVersionManager getIpsFeatureVersionManager(String featureId) {
         IIpsFeatureVersionManager[] managers = getIpsFeatureVersionManagers();
@@ -550,21 +543,19 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     /**
      * THIS METHOD SHOULD ONLY BE CALLED FROM TEST CASES.
-     * 
+     * <p>
      * Sets the feature version managers. This method overwrites all feature managers registered via
      * extension points.
-     * 
-     * @param managers
      */
     public void setFeatureVersionManagers(IIpsFeatureVersionManager[] managers) {
         featureVersionManagers = managers;
     }
 
     /**
+     * Returns a migration operation migrating the content of the given IPS project to match the
+     * needs of the current version of Faktor-IPS.
+     * 
      * @param projectToMigrate The project the migration operation should be returned for.
-     * @return A migration operation migrating the content of the given IpsProject to match the
-     *         needs of the current version of FaktorIps.
-     * @throws CoreException
      */
     public AbstractIpsFeatureMigrationOperation getMigrationOperation(IIpsProject projectToMigrate)
             throws CoreException {

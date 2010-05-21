@@ -13,25 +13,11 @@
 
 package org.faktorips.devtools.core;
 
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- * 
- * Alle Rechte vorbehalten.
- * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) d?rfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung ? Version 0.1
- * (vor Gr?ndung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
- * 
- *******************************************************************************/
-
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
 
 /**
- * Enum class, to specify the display type of enum type controls.
+ * Enumeration to specify the display type of enumeration type controls.
  * <ul>
  * <li>ID - display id only
  * <li>NAME - display name only
@@ -68,4 +54,5 @@ public class EnumTypeDisplay extends DefaultEnumValue {
     public static DefaultEnumType getEnumType() {
         return enumType;
     }
+
 }
