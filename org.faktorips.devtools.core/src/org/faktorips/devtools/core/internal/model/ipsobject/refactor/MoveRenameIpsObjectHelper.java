@@ -159,9 +159,14 @@ public final class MoveRenameIpsObjectHelper {
             return;
         }
 
-        IpsObject copy = (IpsObject)copiedIpsSrcFile.getIpsObject();
+        MessageList validationMessageList = new MessageList();
+        try {
+            IpsObject copy = (IpsObject)copiedIpsSrcFile.getIpsObject();
+            validationMessageList = copy.validate(copy.getIpsProject());
+        } catch (CoreException e) {
+            status.addFatalError(e.getLocalizedMessage());
+        }
 
-        MessageList validationMessageList = copy.validate(copy.getIpsProject());
         refactoringProcessor.addValidationMessagesToStatus(validationMessageList, status);
 
         // Delete the copy again in every case because participants condition checking may fail.
