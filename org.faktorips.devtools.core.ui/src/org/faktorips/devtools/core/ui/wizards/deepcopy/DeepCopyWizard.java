@@ -74,7 +74,7 @@ public class DeepCopyWizard extends ResizableWizard {
     private GregorianCalendar prevWorkingDate;
     private IIpsProject ipsProject;
 
-    private final static int DEFAULT_WIDTH = 600;
+    private final static int DEFAULT_WIDTH = 800;
     private final static int DEFAULT_HEIGHT = 800;
 
     /**

@@ -465,7 +465,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         }
         gc.dispose();
 
-        int columnSizeStructure = wizardSize.x - columnSizeOperation - columnSizeNewName - 10;
+        int columnSizeStructure = Math.max(wizardSize.x - columnSizeOperation - columnSizeNewName - 10,
+                columnSizeNewName);
 
         layout.addColumnData(new ColumnPixelData(columnSizeStructure, true));
         layout.addColumnData(new ColumnPixelData(columnSizeOperation, true));
