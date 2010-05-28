@@ -7,11 +7,13 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -25,18 +27,20 @@ public class IpsObjectListPageElement extends AbstractListPageElement {
 	/**
 	 * @param baseIpsElement
 	 * @param objects
+	 * @param config 
 	 */
-	public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects) {
-		this(baseIpsElement, objects, ALL_FILTER);
+	public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, DocumentorConfiguration config) {
+		this(baseIpsElement, objects, ALL_FILTER, config);
 	}
 
 	/**
 	 * @param baseIpsElement
 	 * @param objects
 	 * @param filter
+	 * @param config 
 	 */
-	public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
-		super(baseIpsElement, objects, filter);
+	public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter, DocumentorConfiguration config) {
+		super(baseIpsElement, objects, filter, config);
 		setTitle(Messages.IpsObjectListPageElement_objects);
 	}
 
@@ -70,9 +74,12 @@ public class IpsObjectListPageElement extends AbstractListPageElement {
 		for (IIpsObject object : objects) {
 			if (!filter.accept(object))
 				continue;
-			PageElement link = new LinkPageElement(object, getLinkTarget(), object.getName(), true);
+			PageElement link = PageElementUtils.createLinkPageElement(getConfig(), object, getLinkTarget(), object.getName(), true);
 			items.add(link);
 		}
 		return items;
 	}
+
+	@Override
+	protected void createId() {}
 }

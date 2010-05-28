@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -23,14 +23,17 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 public class AssociationTablePageElement extends AbstractSpecificTablePageElement {
 	
 	protected IType type;
+	private DocumentorConfiguration config;
+	
 
 	/**
 	 * Creates an {@link AssociationTablePageElement} for the specified {@link IType}
 	 * @param type
 	 */
-	public AssociationTablePageElement(IType type) {
+	public AssociationTablePageElement(IType type, DocumentorConfiguration config) {
 		super();
 		this.type = type;
+		this.config = config;
 	}
 
 	/* (non-Javadoc)
@@ -72,7 +75,7 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
 		
 		try {
 			IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
-			elements[1] = new LinkPageElement(target, "content", target.getName(), true); //$NON-NLS-1$
+			elements[1] = PageElementUtils.createLinkPageElement(config, target, "content", target.getName(), true); //$NON-NLS-1$
 		} catch (CoreException e) {
 			elements[1] = new TextPageElement(""); //$NON-NLS-1$
 		}

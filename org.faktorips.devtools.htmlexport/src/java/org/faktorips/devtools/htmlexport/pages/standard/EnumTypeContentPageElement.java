@@ -15,7 +15,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -167,7 +166,7 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 			try {
 				IEnumType type = (IEnumType) srcFile.getIpsObject();
 				if (type.getSuperEnumType().equals(getDocumentedIpsObject().getQualifiedName())) {
-					subTypes.add(new LinkPageElement(type, "content", type.getQualifiedName(), true)); //$NON-NLS-1$
+					subTypes.add(PageElementUtils.createLinkPageElement(getConfig(), type, "content", type.getQualifiedName(), true)); //$NON-NLS-1$
 				}
 			} catch (CoreException e) {
 				e.printStackTrace();
@@ -198,8 +197,7 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 			return;
 		}
 
-		TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(new LinkPageElement(
-				superTypes.get(0), "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
+		TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(PageElementUtils.createLinkPageElement(getConfig(), superTypes.get(0), "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
 		TreeNodePageElement element = baseElement;
 
 		for (int i = 1; i < superTypes.size(); i++) {
@@ -207,8 +205,7 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 				element.addPageElements(new TextPageElement(getDocumentedIpsObject().getName()));
 				break;
 			}
-			TreeNodePageElement subElement = new TreeNodePageElement(new LinkPageElement(superTypes.get(i), "content", //$NON-NLS-1$
-					superTypes.get(i).getName(), true));
+			TreeNodePageElement subElement = new TreeNodePageElement(PageElementUtils.createLinkPageElement(getConfig(), superTypes.get(i), "content", superTypes.get(i).getName(), true));
 			element.addPageElements(subElement);
 			element = subElement;
 		}
@@ -262,7 +259,7 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
 				addPageElements(wrapper.addPageElements(TextPageElement.createParagraph(Messages.EnumTypeContentPageElement_no + IpsObjectType.ENUM_CONTENT.getDisplayName())));
 				return;
 			}
-			addPageElements(wrapper.addPageElements(new LinkPageElement(enumContent, "content", enumContent //$NON-NLS-1$
+			addPageElements(wrapper.addPageElements(PageElementUtils.createLinkPageElement(getConfig(), enumContent, "content", enumContent //$NON-NLS-1$
 					.getQualifiedName(), true)));
 
 		} catch (CoreException e) {

@@ -9,6 +9,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
@@ -24,6 +25,7 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
     protected String linkTarget;
     protected List<IIpsObject> objects;
     protected IpsElementFilter filter = ALL_FILTER;
+    private DocumentorConfiguration config;
 
     /**
      * {@link IpsElementFilter}, which accepts all {@link IIpsElement}s
@@ -50,19 +52,20 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
      * @param objects unfiltered and unsorted objects to list on the page
      * @param filter for objects  
      */
-    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
+    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter, DocumentorConfiguration config) {
         super();
         this.baseIpsElement = baseIpsElement;
         this.objects = objects;
         this.filter = filter;
+        this.config = config;
     }
 
     /**
      * 
      * @see AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) 
      */
-    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects) {
-        this(baseIpsElement, objects, ALL_FILTER);
+    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, DocumentorConfiguration config) {
+        this(baseIpsElement, objects, ALL_FILTER, config);
     }
 
     /**
@@ -99,6 +102,10 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
 	@Override
 	public String getPathToRoot() {
 		return PathUtilFactory.createPathUtil(baseIpsElement).getPathToRoot();
+	}
+
+	public DocumentorConfiguration getConfig() {
+		return config;
 	}
     
     

@@ -29,8 +29,17 @@ public class FileHandler {
 	 * @param content
 	 */
 	public static void writeFile(DocumentorConfiguration config, String relativPath, byte[] content) {
+		writeFile(config.getPath()+ File.separator + relativPath, content);
+	}
+
+	/**
+	 * writes the content into a file with the given filename.
+	 * @param filename
+	 * @param content
+	 */
+	public static void writeFile(String filename, byte[] content) {
 		try {
-			File file = new File((config.getPath() + File.separator + relativPath));
+			File file = new File((filename));
 			if (!file.getParentFile().exists()) {
 				file.getParentFile().mkdirs();
 			}

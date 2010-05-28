@@ -27,45 +27,9 @@ public class LinkPageElement extends AbstractCompositePageElement {
 	 * @param target
 	 * @param pageElements
 	 */
-	public LinkPageElement(IIpsElement to, String target, PageElement... pageElements) {
+	protected LinkPageElement(IIpsElement to, String target, PageElement... pageElements) {
 		this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)), target);
 		addPageElements(pageElements);
-	}
-
-	/**
-	 * creates a Link to the representation of the given {@link IIpsElement} using the given text to display the link. The image of the type of the given IIpsElement will be used too, if useImage is true
-	 * @param to
-	 * @param target
-	 * @param text
-	 * @param useImage
-	 */
-	public LinkPageElement(IIpsElement to, String target, String text, boolean useImage) {
-    	this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)), target);
-        
-    	if (!useImage) {
-            addPageElements(new TextPageElement(text));
-            return;
-        }        
-
-    	
-    	addPageElements(new ImagePageElement(to));	
-        addPageElements(new TextPageElement(" " + text)); //$NON-NLS-1$
-    }
-
-	/**
-	 * creates a Link to the representation of the given {@link IIpsElement} using the element's name to display the Link
-	 * @param to
-	 */
-	public LinkPageElement(IIpsElement to) {
-		this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)), null, new TextPageElement(to.getName()));
-	}
-
-	/**
-	 * @param to
-	 * @param pageElements
-	 */
-	public LinkPageElement(IIpsElement to, PageElement... pageElements) {
-		this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)), null, pageElements);
 	}
 
 	/**

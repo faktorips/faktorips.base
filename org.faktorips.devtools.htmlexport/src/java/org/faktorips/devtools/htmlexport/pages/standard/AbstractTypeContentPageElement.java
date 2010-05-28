@@ -11,9 +11,9 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
@@ -135,7 +135,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 					continue;
 				}
 				if (type.getSupertype().equals(getDocumentedIpsObject().getQualifiedName())) {
-					subTypes.add(new LinkPageElement(type, "content", type.getQualifiedName(), true)); //$NON-NLS-1$
+					subTypes.add(PageElementUtils.createLinkPageElement(getConfig(), type, "content", type.getQualifiedName(), true)); //$NON-NLS-1$
 				}
 			} catch (CoreException e) {
 				e.printStackTrace();
@@ -165,8 +165,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 			return;
 		}
 
-		TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(new LinkPageElement(
-				superTypes.get(0), "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
+		TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(PageElementUtils.createLinkPageElement(getConfig(), superTypes.get(0), "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
 		TreeNodePageElement element = baseElement;
 
 		for (int i = 1; i < superTypes.size(); i++) {
@@ -174,8 +173,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 				element.addPageElements(new TextPageElement(getDocumentedIpsObject().getName()));
 				break;
 			}
-			TreeNodePageElement subElement = new TreeNodePageElement(new LinkPageElement(superTypes.get(i), "content", //$NON-NLS-1$
-					superTypes.get(i).getName(), true));
+			TreeNodePageElement subElement = new TreeNodePageElement(PageElementUtils.createLinkPageElement(getConfig(), superTypes.get(i), "content", superTypes.get(i).getName(), true));
 			element.addPageElements(subElement);
 			element = subElement;
 		}
@@ -198,7 +196,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 				return;
 
 			addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
-					new TextPageElement(Messages.AbstractTypeContentPageElement_extends + " "), new LinkPageElement(to, "content", to.getName(), true) }));  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+					new TextPageElement(Messages.AbstractTypeContentPageElement_extends + " "), PageElementUtils.createLinkPageElement(getConfig(), to, "content", to.getName(), true) }));  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -212,7 +210,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 		wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_associations, TextType.HEADING_2));
 
 		wrapper
-				.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(getDocumentedIpsObject()),
+				.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(getDocumentedIpsObject(), getConfig()),
 						Messages.AbstractTypeContentPageElement_noAssociations));
 
 		addPageElements(wrapper);

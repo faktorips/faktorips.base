@@ -15,7 +15,6 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -111,7 +110,7 @@ public class TableContentsContentPageElement extends AbstractObjectContentPageEl
 		ITableStructure tableStructure = findTableStructure();
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
 				new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": "), //$NON-NLS-1$
-				new LinkPageElement(tableStructure, "content", tableStructure.getName(), true) })); //$NON-NLS-1$
+				PageElementUtils.createLinkPageElement(getConfig(), tableStructure, "content", tableStructure.getName(), true) })); //$NON-NLS-1$
 
 	}
 

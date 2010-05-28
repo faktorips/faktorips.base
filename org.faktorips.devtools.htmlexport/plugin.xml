@@ -4,9 +4,6 @@
 
       <extension point="org.eclipse.ui.popupMenus">
 		<objectContribution adaptable="true" id="createHtmlExport" objectClass="org.eclipse.jdt.core.IJavaProject">
-            <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
-			    <separator name="faktorIpsGroup"/>
-            </menu>
 			<action
 		    class="org.faktorips.devtools.htmlexport.actions.CreateHtmlExportAction"
 		    enablesFor="*"

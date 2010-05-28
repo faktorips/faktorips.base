@@ -22,7 +22,7 @@ public class DocumentorUtil {
     private static final String DEFAULT_PACKAGE_NAME = Messages.DocumentorUtil_defaultPackageName;
 
 	/**
-     * returns the name of tne given ipsPackageFragment. If the ipsPackageFragment is the default package then the DEFAULT_PACKAGE_NAME is returned
+     * returns the name of the given ipsPackageFragment. If the ipsPackageFragment is the default package then the DEFAULT_PACKAGE_NAME is returned
      * @param ipsPackageFragment
      * @return name of the ipsPckageFragment
      */

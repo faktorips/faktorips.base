@@ -77,7 +77,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writePackagesClassesPage(DocumentorConfiguration config, IIpsPackageFragment ipsPackageFragment, List<IIpsObject> objects) {
-        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(ipsPackageFragment, objects, new IpsObjectInIIpsPackageFilter(ipsPackageFragment));
+        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(ipsPackageFragment, objects, new IpsObjectInIIpsPackageFilter(ipsPackageFragment), config);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH + HtmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileType.getLinkedFileTypeByIpsElement(ipsPackageFragment)), getPageContent(
@@ -93,14 +93,14 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeAllClassesPage(DocumentorConfiguration config, List<IIpsObject> objects) {
-        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(config.getIpsProject(), objects);
+        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(config.getIpsProject(), objects, config);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH + "classes.html", getPageContent(config, allClassesPage)); //$NON-NLS-1$
     }
 
     private void writeOverviewPage(DocumentorConfiguration config, List<IIpsObject> objects) {
-        IpsPackagesListPageElement allPackagesPage = new IpsPackagesListPageElement(config.getIpsProject(), objects);
+        IpsPackagesListPageElement allPackagesPage = new IpsPackagesListPageElement(config.getIpsProject(), objects, config);
         allPackagesPage.setLinkTarget("classes"); //$NON-NLS-1$
         allPackagesPage.build();
         writeFileWithOutput(config, allPackagesPage, STANDARD_PATH + "overview.html"); //$NON-NLS-1$

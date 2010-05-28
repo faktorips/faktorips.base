@@ -19,7 +19,6 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -75,12 +74,12 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 			if (tableStructures.length == 0)
 				return new TextPageElement("No " + IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural()); //$NON-NLS-1$
 
-			List<LinkPageElement> links = new ArrayList<LinkPageElement>();
+			List<PageElement> links = new ArrayList<PageElement>();
 			for (String tableStructure : tableStructures) {
 				try {
 					IIpsObject ipsObject = tableStructureUsage.getIpsProject().findIpsObject(
 							IpsObjectType.TABLE_STRUCTURE, tableStructure);
-					links.add(new LinkPageElement(ipsObject, "content", tableStructure, true)); //$NON-NLS-1$
+					links.add(PageElementUtils.createLinkPageElement(getConfig(), ipsObject, "content", tableStructure, true)); //$NON-NLS-1$
 				} catch (CoreException e) {
 					new RuntimeException(e);
 				}
@@ -162,6 +161,8 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
+		
+		productCmpts.retainAll(getConfig().getLinkedObjects());
 
 		WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 		wrapper.addPageElements(new TextPageElement(IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural(),
@@ -174,9 +175,9 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 			return;
 		}
 
-		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(productCmpts, "content", //$NON-NLS-1$
-				new LinkedHashSet<Style>());
-		ListPageElement liste = new ListPageElement(createLinkPageElements);
+		List<PageElement> linkPageElements = PageElementUtils.createLinkPageElements(productCmpts, "content", //$NON-NLS-1$
+				new LinkedHashSet<Style>(), getConfig());
+		ListPageElement liste = new ListPageElement(linkPageElements);
 
 		wrapper.addPageElements(liste);
 		addPageElements(wrapper);
@@ -203,7 +204,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 			addPageElements(new WrapperPageElement(
 					WrapperType.BLOCK,
 					new PageElement[] {
-							new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), new LinkPageElement(to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
+							new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), PageElementUtils.createLinkPageElement(getConfig(), to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

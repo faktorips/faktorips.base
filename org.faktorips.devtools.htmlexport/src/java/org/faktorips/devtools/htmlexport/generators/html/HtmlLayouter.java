@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.helper.html;
+package org.faktorips.devtools.htmlexport.generators.html;
 
 import java.io.IOException;
 import java.util.Set;
@@ -10,6 +10,8 @@ import org.faktorips.devtools.htmlexport.generators.LayoutResource;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
+import org.faktorips.devtools.htmlexport.helper.html.HtmlTextType;
+import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
@@ -52,11 +54,17 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	 * @see org.faktorips.devtools.htmlexport.generators.ILayouter#layoutLinkPageElement(org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement)
 	 */
 	public void layoutLinkPageElement(LinkPageElement pageElement) {
-		String linkBase = pathToRoot + pageElement.getPathFromRoot() + ".html"; //$NON-NLS-1$
-
-		append(HtmlUtil.createLinkOpenTag(linkBase, pageElement.getTarget(), getClasses(pageElement)));
+		append(HtmlUtil.createLinkOpenTag(createLinkBase(pageElement), pageElement.getTarget(), getClasses(pageElement)));
 		visitSubElements(pageElement);
 		append(HtmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
+	}
+
+	/**
+	 * @param pageElement
+	 * @return
+	 */
+	String createLinkBase(LinkPageElement pageElement) {
+		return getPathToRoot() + pageElement.getPathFromRoot() + ".html";
 	}
 
 	/* (non-Javadoc)
@@ -116,7 +124,7 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	public void layoutRootPageElement(AbstractRootPageElement pageElement) {
 		initRootPage(pageElement);
 		
-		append(HtmlUtil.createHtmlHead(pageElement.getTitle(), pathToRoot + getStyleDefinitionPath()));
+		append(HtmlUtil.createHtmlHead(pageElement.getTitle(), getPathToRoot() + getStyleDefinitionPath()));
 		visitSubElements(pageElement);
 
 		append(HtmlUtil.createHtmlFoot());
@@ -126,8 +134,8 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	 * sets the pathToRoot and clears the content
 	 * @param pageElement
 	 */
-	private void initRootPage(AbstractRootPageElement pageElement) {
-		pathToRoot = pageElement.getPathToRoot();
+	void initRootPage(AbstractRootPageElement pageElement) {
+		setPathToRoot(pageElement.getPathToRoot());
 		clear();
 	}
 
@@ -182,7 +190,7 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	/**
 	 * initializes the basic resources e.g. the external css-stylesheet-definitions
 	 */
-	protected void initBaseResources() {
+	void initBaseResources() {
 		try {
 			LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), FileHandler.readFile(
 					"org.faktorips.devtools.htmlexport", HTML_BASE_CSS)); //$NON-NLS-1$
@@ -197,7 +205,7 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 	/*
 	 * return relative path from root to the external css-stylesheet-definitions
 	 */
-	private String getStyleDefinitionPath() {
+	String getStyleDefinitionPath() {
 		return resourcePath + '/' + HTML_BASE_CSS;
 	}
 
@@ -209,7 +217,17 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
 		String path = resourcePath + "/images/" + imagePageElement.getFileName() + ".png"; //$NON-NLS-1$ //$NON-NLS-2$
 		addLayoutResource(new LayoutResource(path, DocumentorUtil.convertImageDataToByteArray(imagePageElement.getImageData(), SWT.IMAGE_PNG)));
 		
-		append(HtmlUtil.createImage(pathToRoot + path, imagePageElement.getTitle()));
+		append(HtmlUtil.createImage(getPathToRoot() + path, imagePageElement.getTitle()));
 	}
+
+	String getPathToRoot() {
+		return pathToRoot;
+	}
+
+	void setPathToRoot(String pathToRoot) {
+		this.pathToRoot = pathToRoot;
+	}
+	
+	
 
 }

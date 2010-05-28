@@ -10,6 +10,7 @@ import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -61,7 +62,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", "_top", //$NON-NLS-1$ //$NON-NLS-2$
 				Messages.AbstractObjectContentPageElement_overviewProject + " " + getConfig().getIpsProject().getName()))); //$NON-NLS-1$
 
-		addPageElements(new LinkPageElement(getDocumentedIpsObject().getIpsPackageFragment(), "classes", DocumentorUtil //$NON-NLS-1$
+		addPageElements(PageElementUtils.createLinkPageElement(config, getDocumentedIpsObject().getIpsPackageFragment(), "classes", DocumentorUtil //$NON-NLS-1$
 				.getIpsPackageName(getDocumentedIpsObject().getIpsPackageFragment()), true));
 		addPageElements(new TextPageElement(getDocumentedIpsObject().getIpsObjectType().getDisplayName() + " " //$NON-NLS-1$
 				+ getDocumentedIpsObject().getName(), TextType.HEADING_1));
@@ -170,5 +171,10 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
 	 */
 	protected DocumentorConfiguration getConfig() {
 		return config;
+	}
+
+	@Override
+	protected void createId() {
+		setId(documentedIpsObject.getQualifiedName());
 	}
 }

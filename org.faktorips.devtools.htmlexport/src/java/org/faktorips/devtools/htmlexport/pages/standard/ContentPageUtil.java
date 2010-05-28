@@ -1,6 +1,5 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -41,8 +40,9 @@ public class ContentPageUtil {
 			return new TestCaseTypeContentPageElement((ITestCaseType) object, config);
 		if (object.getIpsObjectType() == IpsObjectType.TEST_CASE)
 			return new TestCaseContentPageElement((ITestCase) object, config);
-		throw new NotImplementedException("ToDo: " + object.getIpsObjectType().getDisplayName() + " " //$NON-NLS-1$ //$NON-NLS-2$
-				+ object.getIpsObjectType());
+		
+		// TODO Businessfunction
+		return new IpsObjectContentPageElement(object, config);
 	}
 
 }

@@ -14,4 +14,5 @@ public interface IpsElementFilter {
      * @return true, if the given IIpsElement fullfills the conditions of the filter 
      */
     public boolean accept(IIpsElement element);
+    
 }

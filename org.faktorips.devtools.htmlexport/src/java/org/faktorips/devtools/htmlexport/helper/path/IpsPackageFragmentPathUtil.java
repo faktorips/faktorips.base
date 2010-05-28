@@ -9,7 +9,7 @@ import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
  *
  */
 public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsPackageFragment> {
-    private static String PACKAGE_INDEX_FILE_NAME = "package_index.html"; //$NON-NLS-1$
+    private static String PACKAGE_INDEX_FILE_NAME = "package_index"; //$NON-NLS-1$
 
     public IpsPackageFragmentPathUtil(IIpsPackageFragment ipsElement) {
         super(ipsElement);

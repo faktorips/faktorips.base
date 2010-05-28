@@ -18,7 +18,6 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -74,7 +73,7 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 			try {
 				ITableStructure findReferencedTableStructure = foreignKey.findReferencedTableStructure(getConfig()
 						.getIpsProject());
-				link = new LinkPageElement(findReferencedTableStructure, "content", foreignKey //$NON-NLS-1$
+				link = PageElementUtils.createLinkPageElement(getConfig(), findReferencedTableStructure, "content", foreignKey //$NON-NLS-1$
 						.getReferencedTableStructure(), true);
 			} catch (CoreException e) {
 			} finally {
@@ -376,9 +375,9 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
 			return;
 		}
 
-		List<LinkPageElement> createLinkPageElements = PageElementUtils.createLinkPageElements(tableContents,
-				"content", new LinkedHashSet<Style>()); //$NON-NLS-1$
-		ListPageElement liste = new ListPageElement(createLinkPageElements);
+		List<PageElement> linkPageElements = PageElementUtils.createLinkPageElements(tableContents,
+				"content", new LinkedHashSet<Style>(), getConfig()); //$NON-NLS-1$
+		ListPageElement liste = new ListPageElement(linkPageElements);
 
 		wrapper.addPageElements(liste);
 		PageElement createTableContentList = wrapper;

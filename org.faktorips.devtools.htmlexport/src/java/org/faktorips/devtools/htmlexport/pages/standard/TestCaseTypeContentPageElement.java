@@ -19,8 +19,8 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -90,7 +90,7 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 				}
 				IPolicyCmptType policyCmptType = getConfig().getIpsProject().findPolicyCmptType(correspondingPolicyCmptType);
 
-				attributeData.add(new LinkPageElement(policyCmptType, "content", correspondingPolicyCmptType, true)); //$NON-NLS-1$
+				attributeData.add(PageElementUtils.createLinkPageElement(getConfig(), policyCmptType, "content", correspondingPolicyCmptType, true)); //$NON-NLS-1$
 				attributeData.add(new TextPageElement(policyCmptType.getAttribute(attribute.getAttribute())
 						.getDatatype()));
 			} catch (CoreException e) {
@@ -176,7 +176,7 @@ public class TestCaseTypeContentPageElement extends AbstractObjectContentPageEle
 			throw new RuntimeException(e);
 		}
 
-		LinkPageElement linkPageElement = new LinkPageElement(policyCmptType, "content", policyCmptType.getName(), true); //$NON-NLS-1$
+		PageElement linkPageElement = PageElementUtils.createLinkPageElement(getConfig(), policyCmptType, "content", policyCmptType.getName(), true); //$NON-NLS-1$
 		TreeNodePageElement testParameterPageElement = new TreeNodePageElement(new WrapperPageElement(
 				WrapperType.BLOCK).addPageElements(linkPageElement).addPageElements(
 				new TextPageElement((" - " + testParameter.getTestParameterType().getName())))); //$NON-NLS-1$

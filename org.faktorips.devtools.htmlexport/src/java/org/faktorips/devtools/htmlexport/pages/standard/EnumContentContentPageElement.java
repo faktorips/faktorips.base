@@ -6,7 +6,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -47,7 +47,7 @@ public class EnumContentContentPageElement extends AbstractObjectContentPageElem
 
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(
 				new TextPageElement(IpsObjectType.ENUM_TYPE.getDisplayName() + ": ")).addPageElements( //$NON-NLS-1$
-				new LinkPageElement(getEnumType(), "content", getEnumType().getQualifiedName(), true))); //$NON-NLS-1$
+				PageElementUtils.createLinkPageElement(getConfig(), getEnumType(), "content", getEnumType().getQualifiedName(), true))); //$NON-NLS-1$
 
 		addValuesTable();
 	}

@@ -12,7 +12,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -48,7 +47,7 @@ public class ProductCmptContentPageElement extends AbstractObjectContentPageElem
 
 		addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
 				new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
-				new LinkPageElement(productCmptType, "content", productCmptType.getName(), true) })); //$NON-NLS-1$
+				PageElementUtils.createLinkPageElement(getConfig(), productCmptType, "content", productCmptType.getName(), true) })); //$NON-NLS-1$
 	}
 
 	/**

@@ -11,11 +11,12 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 
@@ -40,9 +41,10 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
 	 * @param baseIpsElement
 	 * @param objects
 	 * @param filter
+	 * @param config 
 	 */
-	public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter) {
-		super(baseIpsElement, objects, filter);
+	public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter, DocumentorConfiguration config) {
+		super(baseIpsElement, objects, filter, config);
 		setTitle(Messages.IpsPackagesListPageElement_allPackages);
 	}
 
@@ -50,9 +52,10 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
 	 * @see AbstractListPageElement#AbstractListPageElement(IIpsElement, List)
 	 * @param baseIpsElement
 	 * @param objects
+	 * @param config 
 	 */
-	public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects) {
-		this(baseIpsElement, objects, ALL_FILTER);
+	public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, DocumentorConfiguration config) {
+		this(baseIpsElement, objects, ALL_FILTER, config);
 	}
 
 	/* (non-Javadoc)
@@ -88,8 +91,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
 				continue;
 
 			linkedPackagesNames.add(packageFragment.getName());
-			packageLinks.add(new LinkPageElement(packageFragment, getLinkTarget(), DocumentorUtil.getIpsPackageName(packageFragment),
-					true));
+			packageLinks.add(PageElementUtils.createLinkPageElement(getConfig(), packageFragment, getLinkTarget(), DocumentorUtil.getIpsPackageName(packageFragment), true));
 		}
 
 		return packageLinks;

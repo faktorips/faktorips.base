@@ -58,4 +58,5 @@ public abstract class AbstractPageElement implements PageElement {
      * @see org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#acceptLayouter(org.faktorips.devtools.htmlexport.generators.ILayouter)
      */
     public abstract void acceptLayouter(ILayouter layouter);
+
 }
