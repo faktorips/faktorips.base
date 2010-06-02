@@ -68,6 +68,14 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertNull(maleNameAttributeValue.findEnumAttribute(ipsProject));
     }
 
+    public void testIsEnumLiteralNameValue() {
+        assertFalse(maleNameAttributeValue.isEnumLiteralNameValue());
+        IEnumValue enumValue = paymentMode.getEnumValues().get(0);
+        IEnumAttributeValue literalNameValue = enumValue.getEnumAttributeValues().get(0);
+        assertTrue(literalNameValue.isEnumLiteralNameValue());
+        assertFalse(enumValue.getEnumAttributeValues().get(1).isEnumLiteralNameValue());
+    }
+
     public void testGetSetValue() {
         maleIdAttributeValue.setValue("otherValue");
         assertEquals("otherValue", maleIdAttributeValue.getValue());

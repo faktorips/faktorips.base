@@ -119,24 +119,38 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             return null;
         }
 
+        return getEnumAttribute(enumType);
+    }
+
+    /**
+     * Returns the <tt>IEnumAttribute</tt> this <tt>IEnumAttributeValue</tt> is a value for.
+     * 
+     * @param enumType The <tt>IEnumType</tt> this <tt>IEnumAttributeValue</tt> is referring to.
+     */
+    private IEnumAttribute getEnumAttribute(IEnumType enumType) {
+        IEnumValue enumValue = getEnumValue();
+        boolean includeLiteralName = enumValue.getEnumValueContainer() instanceof IEnumType;
+
         // Check number of EnumAttributeValues matching number of EnumAttributes.
         int attributeValueIndex = enumValue.getIndexOfEnumAttributeValue(this);
-        boolean includeLiteralNames = valueContainer instanceof IEnumType;
-        int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralNames);
+        int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName);
         if (!(enumAttributesCount == enumValue.getEnumAttributeValuesCount())
                 || enumAttributesCount < attributeValueIndex + 1) {
             return null;
         }
 
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralNames);
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
         return enumAttributes.get(attributeValueIndex);
     }
 
-    /**
-     * Returns whether this <tt>EnumAttributeValue</tt> refers to an
-     * <tt>EnumLiteralNameAttribute</tt>.
-     */
-    private boolean isLiteralNameEnumAttributeValue(IEnumAttribute enumAttribute) {
+    @Override
+    public boolean isEnumLiteralNameValue() {
+        IEnumValueContainer enumValueContainer = getEnumValue().getEnumValueContainer();
+        if (enumValueContainer instanceof IEnumContent) {
+            return false;
+        }
+        IEnumType enumType = (IEnumType)enumValueContainer;
+        IEnumAttribute enumAttribute = getEnumAttribute(enumType);
         return enumAttribute instanceof IEnumLiteralNameAttribute;
     }
 
@@ -216,7 +230,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             if (isUniqueIdentifierEnumAttributeValue(enumAttribute, enumType)) {
                 validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);
                 if (list.getNoOfMessages() == 0) {
-                    if (isLiteralNameEnumAttributeValue(enumAttribute)) {
+                    if (enumAttribute instanceof IEnumLiteralNameAttribute) {
                         validateLiteralNameEnumAttributeValue(list);
                     }
                 }

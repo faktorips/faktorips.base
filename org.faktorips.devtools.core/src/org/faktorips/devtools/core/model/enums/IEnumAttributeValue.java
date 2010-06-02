@@ -87,6 +87,12 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      */
     public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Returns whether this <tt>IEnumAttributeValue</tt> is the value for the
+     * <tt>IEnumLiteralNameAttribute</tt>.
+     */
+    public boolean isEnumLiteralNameValue();
+
     /** Returns the value as <tt>String</tt>. Can also be <tt>null</tt>. */
     public String getValue();
 
