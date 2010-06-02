@@ -49,7 +49,7 @@ public class DescriptionHelper {
     }
 
     /**
-     * Returns the description from the xml element. Returns an empty string if the element does not
+     * Returns the description from the XML element. Returns an empty string if the element does not
      * contain a description.
      */
     public final static String getDescription(Element element) {
@@ -80,6 +80,7 @@ public class DescriptionHelper {
     }
 
     private DescriptionHelper() {
+        // Helper class not to be instantiated.
     }
 
 }

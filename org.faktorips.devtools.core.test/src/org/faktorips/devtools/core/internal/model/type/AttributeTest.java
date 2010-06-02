@@ -132,10 +132,8 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
     /**
      * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#findDatatype()}
-     * .
-     * 
-     * @throws CoreException
+     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#findDatatype(IIpsProject)
+     * )} .
      */
     public void testFindValueDatatype() throws CoreException {
         attribute.setDatatype(Datatype.BOOLEAN.getName());

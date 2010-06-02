@@ -157,10 +157,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         boolean called = false;
         int buildKind = -1;
 
-        /**
-         * @param builderSet
-         * @throws CoreException
-         */
         public AssertThatFullBuildIsTriggeredBuilder() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
         }
@@ -171,31 +167,21 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             this.buildKind = buildKind;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getName() {
             return "AssertThatFullBuildIsTriggeredBuilder";
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
             return false;
@@ -205,20 +191,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     private static class TestRemoveIpsArtefactBuilder extends AbstractArtefactBuilder {
 
-        /**
-         * @param builderSet
-         * @throws CoreException
-         */
         public TestRemoveIpsArtefactBuilder() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
         }
 
         private boolean buildCalled = false;
+
         private boolean deleteCalled = false;
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getName() {
             return "TestRemoveIpsArtefactBuilder";
@@ -247,10 +227,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         private IIpsProject ipsProjectOfBeforeBuildProcess;
         private IIpsProject ipsProjectOfAfterBuildProcess;
 
-        /**
-         * @param builderSet
-         * @throws CoreException
-         */
         public TestDependencyIpsArtefactBuilder() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
         }
@@ -260,9 +236,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             ipsProjectOfBeforeBuildProcess = project;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
             ipsProjectOfAfterBuildProcess = project;
@@ -294,9 +267,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getName() {
             return "TestDependencyIpsArtefactBuilder";

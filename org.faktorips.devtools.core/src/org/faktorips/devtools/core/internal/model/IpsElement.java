@@ -21,7 +21,6 @@ import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceMappingContext;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
@@ -30,7 +29,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public abstract class IpsElement extends PlatformObject implements IIpsElement, IAdaptable {
+public abstract class IpsElement extends PlatformObject implements IIpsElement {
 
     protected String name;
     protected IIpsElement parent;
@@ -38,9 +37,10 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
     final static IIpsElement[] NO_CHILDREN = new IIpsElement[0];
 
     /**
-     * Resource mapping based on the mapping for the resource model
+     * Resource mapping based on the mapping for the resource model.
      */
     private class IpsElementResourceMapping extends ResourceMapping {
+
         private IIpsElement ipsElement;
 
         public IpsElementResourceMapping(IIpsElement ipsElement) {
@@ -77,6 +77,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
             }
             return null;
         }
+
     }
 
     public IpsElement(IIpsElement parent, String name) {
@@ -88,6 +89,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
      * Constructor for testing purposes.
      */
     public IpsElement() {
+        // Constructor for testing purposes.
     }
 
     @Override
@@ -127,10 +129,11 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement, 
             return false;
         }
         if (getCorrespondingResource() == null) {
-            // if no corresponding resource exists, the EnclosingResource.exists() is handled
-            // by calling getParent().exists() above. So if we have arrived here, we have
-            // to return true (the parent exists) to avoid a NullPointerException in the
-            // rest of the code.
+            /*
+             * If no corresponding resource exists, the EnclosingResource.exists() is handled by
+             * calling getParent().exists() above. So if we have arrived here, we have to return
+             * true (the parent exists) to avoid a NullPointerException in the rest of the code.
+             */
             return true;
         }
         return getCorrespondingResource().exists();

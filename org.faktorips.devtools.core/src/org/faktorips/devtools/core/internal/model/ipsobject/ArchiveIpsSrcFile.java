@@ -21,17 +21,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.w3c.dom.Document;
 
 /**
- * 
- * 
  * @author Jan Ortmann
  */
-public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
+public class ArchiveIpsSrcFile extends AbstractIpsSrcFile {
 
     public ArchiveIpsSrcFile(ArchiveIpsPackageFragment pack, String name) {
         super(pack, name);
@@ -111,7 +108,7 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile
     }
 
     public void renameCorrespondingResource(String newName) throws CoreException {
-        throw new UnsupportedOperationException("Renaming is not possible for archived IPS source files.");
+        throw new UnsupportedOperationException("Renaming is not possible for archived IPS source files."); //$NON-NLS-1$
     }
 
 }

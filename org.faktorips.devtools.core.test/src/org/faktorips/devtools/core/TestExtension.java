@@ -54,33 +54,21 @@ public class TestExtension implements IExtension {
         this.namespaceIdentifier = namespaceIdentifier != null ? namespaceIdentifier : "";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IConfigurationElement[] getConfigurationElements() throws InvalidRegistryObjectException {
         return elements;
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public IContributor getContributor() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public IPluginDescriptor getDeclaringPluginDescriptor() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public String getExtensionPointUniqueIdentifier() throws InvalidRegistryObjectException {
         return namespaceIdentifier + "." + simpleIdentifier;
@@ -94,33 +82,21 @@ public class TestExtension implements IExtension {
         return "";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getNamespace() throws InvalidRegistryObjectException {
         return getNamespaceIdentifier();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getNamespaceIdentifier() throws InvalidRegistryObjectException {
         return namespaceIdentifier;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getSimpleIdentifier() throws InvalidRegistryObjectException {
         return simpleIdentifier;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getUniqueIdentifier() throws InvalidRegistryObjectException {
         StringBuffer buf = new StringBuffer();
@@ -133,9 +109,6 @@ public class TestExtension implements IExtension {
         return buf.toString();
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public boolean isValid() {
         throw new RuntimeException("Not implemented yet.");
@@ -145,4 +118,5 @@ public class TestExtension implements IExtension {
     public String getLabel(String locale) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
+
 }

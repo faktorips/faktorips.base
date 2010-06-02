@@ -57,12 +57,12 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * @param file The <tt>IIpsSrcFile</tt> in which this <tt>IpsObject</tt> will be stored in.
      */
     protected IpsObject(IIpsSrcFile file) {
-        super(file, (file == null) ? "" : StringUtil.getFilenameWithoutExtension(file.getName()));
+        super(file, (file == null) ? "" : StringUtil.getFilenameWithoutExtension(file.getName())); //$NON-NLS-1$
     }
 
     /** Constructor for testing purposes. */
     protected IpsObject() {
-
+        // Constructor for testing purposes.
     }
 
     @Override
@@ -188,14 +188,13 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /**
-     * Hook for subclasses to implement their own dependency examination. This method returns
-     * allways an empty array.
+     * Hook for subclasses to implement their own dependency examination. This method returns always
+     * an empty array.
      * 
      * @param details The map to collect dependency details for all found dependencies. Can be
      *            <code>null</code> - no details have to be collected in this case.
      * @return An array of found dependencies. If no dependencies are found, this method has to
      *         return an empty array.
-     * @throws CoreException
      */
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         return new IDependency[0];

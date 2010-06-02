@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManager
  */
 public class IpsFeatureVersionManagerSorterTest extends TestCase {
 
-    public void testGetMigrationOperation() throws CoreException {
+    public void testGetMigrationOperation() {
         IpsFeatureVersionManagerSorter sorter = new IpsFeatureVersionManagerSorter();
         Manager[] managers = new Manager[] { new Manager("6", "1"), new Manager("2", ""), new Manager("3", ""),
                 new Manager("4", ""), new Manager("5", ""), new Manager("1", "") };
@@ -79,7 +79,9 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
     }
 
     private class Manager implements IIpsFeatureVersionManager {
+
         private String id;
+
         private String prevId;
 
         public Manager(String id, String predecessorId) {
@@ -87,82 +89,57 @@ public class IpsFeatureVersionManagerSorterTest extends TestCase {
             this.prevId = predecessorId;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void setId(String id) {
+
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getId() {
             return id;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void setPredecessorId(String predecessorId) {
+
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getPredecessorId() {
             return prevId;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void setFeatureId(String featureId) {
+
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getFeatureId() {
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getCurrentVersion() {
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean isCurrentVersionCompatibleWith(String otherVersion) {
             return false;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public int compareToCurrentVersion(String otherVersion) {
             return 0;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
                 throws CoreException {
             return null;
         }
+
     }
+
 }

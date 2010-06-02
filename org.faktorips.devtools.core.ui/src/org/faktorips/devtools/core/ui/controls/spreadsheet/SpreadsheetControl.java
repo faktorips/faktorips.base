@@ -605,9 +605,6 @@ public class SpreadsheetControl extends Composite {
         }
     }
 
-    /**
-     * @see com.fja.pm.pdfs.ui.tablecontrol.SpreadsheetControl#getRowHeightImage()
-     */
     public Image getRowHeightImage() {
         if (rowHeightImage == null) {
             int h = Math.max(table.getItemHeight(), rowHeight);

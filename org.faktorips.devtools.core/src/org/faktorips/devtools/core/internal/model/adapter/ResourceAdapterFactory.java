@@ -21,13 +21,13 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
- * Adapts {@link IResource}s to all classes listed in {@link #getAdapterList()}
+ * Adapts {@link IResource}s to all classes listed in {@link #getAdapterList()}.
  * 
- * @author Thorsten Günther, Faktor Zehn AG
+ * @author Thorsten Günther
  */
 public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
 
-    // required because the signature of this method is fixed by IAdapterFactory
+    // Required because the signature of this method is fixed by IAdapterFactory.
     @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(Object adaptableObject, Class adapterType) {

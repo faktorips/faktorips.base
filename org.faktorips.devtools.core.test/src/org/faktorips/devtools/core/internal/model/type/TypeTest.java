@@ -566,8 +566,6 @@ public class TypeTest extends AbstractIpsPluginTest {
 
     /**
      * Test find associations by target and association type
-     * 
-     * @throws CoreException
      */
     public void testFindAssociationsForTargetAndAssociationType() throws CoreException {
         IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");

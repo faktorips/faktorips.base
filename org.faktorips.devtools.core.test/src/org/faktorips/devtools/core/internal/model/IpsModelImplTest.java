@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import java.io.IOException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
@@ -24,10 +22,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 
-/**
- * 
- * @author Jan Ortmann
- */
 public class IpsModelImplTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -63,7 +57,7 @@ public class IpsModelImplTest extends AbstractIpsPluginTest {
                 .getSpecificBasePackageNameForMergableJavaClasses());
     }
 
-    public void testGetDatatypeHelpers() throws IOException, CoreException {
+    public void testGetDatatypeHelpers() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName() });
         ipsProject.setProperties(props);

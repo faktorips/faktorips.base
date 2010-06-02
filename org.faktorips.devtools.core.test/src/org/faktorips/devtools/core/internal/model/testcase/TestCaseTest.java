@@ -192,7 +192,7 @@ public class TestCaseTest extends AbstractDependencyTest {
         assertEquals(param7, testCase.getExpectedResultTestRules()[0]);
     }
 
-    public void testInitFromXml() throws CoreException {
+    public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element typeEl = XmlUtil.getFirstElement(docEl);
         testCase.initFromXml(typeEl);
@@ -474,8 +474,6 @@ public class TestCaseTest extends AbstractDependencyTest {
      * Test method for
      * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(IIpsProject)}
      * .
-     * 
-     * @throws CoreException
      */
     public void testContainsDifferenceToModel() throws CoreException {
         ITestCaseType testCaseTypeX = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
@@ -495,8 +493,6 @@ public class TestCaseTest extends AbstractDependencyTest {
      * Test method for
      * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(IIpsProject)}
      * .
-     * 
-     * @throws CoreException
      */
     public void testFixAllDifferencesToModel() throws CoreException {
         ITestCaseType testCaseTypeX = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
@@ -641,7 +637,7 @@ public class TestCaseTest extends AbstractDependencyTest {
         for (Object element : expected) {
             boolean found = false;
             for (ITestObject testObject : testObjects) {
-                if (testObjects.equals(testObjects)) {
+                if (testObject.equals(testObjects)) {
                     found = true;
                     break;
                 }
@@ -784,8 +780,6 @@ public class TestCaseTest extends AbstractDependencyTest {
 
     /**
      * test the findMetaClass method
-     * 
-     * @throws CoreException
      */
     public void testFindMetaClass() throws CoreException {
         IIpsSrcFile typeSrcFile = testCase.findMetaClassSrcFile(ipsProject);

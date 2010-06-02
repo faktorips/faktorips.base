@@ -31,15 +31,13 @@ import org.w3c.dom.Element;
 public abstract class MethodCallBFE extends BFElement implements IMethodCallBFE {
 
     private String executableMethodName = ""; //$NON-NLS-1$
+
     private String target = ""; //$NON-NLS-1$
 
     public MethodCallBFE(IIpsObject parent, String id) {
         super(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -52,9 +50,6 @@ public abstract class MethodCallBFE extends BFElement implements IMethodCallBFE 
         return target + ':' + executableMethodName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -105,37 +100,42 @@ public abstract class MethodCallBFE extends BFElement implements IMethodCallBFE 
     }
 
     protected void validateMethodCall(MessageList list, IIpsProject ipsProject) throws CoreException {
-        // parameter has to be specified
+        // The parameter has to be specified.
         if (StringUtils.isEmpty(target)) {
             list.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, Messages.MethodCallBFE_parameterNotSpecified,
                     Message.ERROR, this));
             return;
         }
-        // parameter does not exist
+
+        // The parameter must exist.
         if (getParameter() == null) {
             list.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST, Messages.MethodCallBFE_parameterMissing, Message.ERROR,
                     this));
             return;
         }
-        // method has to be specified
+
+        // The method has to be specified.
         if (StringUtils.isEmpty(getExecutableMethodName())) {
             list.add(new Message(MSGCODE_METHOD_NOT_SPECIFIED, Messages.MethodCallBFE_methodMustBeSpecified,
                     Message.ERROR, this));
             return;
         }
+
         validateNotAllowedNames(getExecutableMethodName(), Messages.MethodCallBFE_methodName, list);
         Datatype datatype = getParameter().findDatatype();
         if (datatype == null) {
-            // this case has to be handled in the parameter validation
+            // This case has to be handled in the parameter validation.
             return;
         }
-        // only parameters with IType datatypes are allowed
+
+        // Only parameters with IType data types are allowed.
         if (!(datatype instanceof IType)) {
             list.add(new Message(MSGCODE_TARGET_NOT_VALID_TYPE, Messages.MethodCallBFE_parameterNoType, Message.ERROR,
                     this));
             return;
         }
-        // method has to exist
+
+        // The method has to exist.
         IType type = (IType)datatype;
         if (type.findMethod(getExecutableMethodName(), new String[0], ipsProject) == null) {
             String text = NLS.bind(Messages.MethodCallBFE_methodDoesNotExistOnParameter, new String[] {

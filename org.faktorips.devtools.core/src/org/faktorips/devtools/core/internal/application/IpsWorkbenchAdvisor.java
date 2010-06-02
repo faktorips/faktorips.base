@@ -268,8 +268,6 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
      * Disconnect from the core workspace.
      * 
      * See Eclipse's IDEWorkbenchAdvisor for more details.
-     * 
-     * The
      */
     private void disconnectFromWorkspace() {
         // save the workspace (this has to be coded as the rcp workbench advisor is not aware of the

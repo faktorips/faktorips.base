@@ -379,8 +379,6 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     /**
      * test the findMetaClass method
-     * 
-     * @throws CoreException
      */
     public void testFindMetaClass() throws CoreException {
         ITableStructure structure = newTableStructure(project, "Structure");

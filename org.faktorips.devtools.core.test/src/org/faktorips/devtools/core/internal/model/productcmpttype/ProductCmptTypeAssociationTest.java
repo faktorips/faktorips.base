@@ -127,10 +127,8 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
     /**
      * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#findTarget()}
-     * .
-     * 
-     * @throws CoreException
+     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#findTarget(IIpsProject)
+     * )} .
      */
     public void testFindTarget() throws CoreException {
         association.setTarget("");

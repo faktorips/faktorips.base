@@ -48,97 +48,61 @@ public class TestExtensionPoint implements IExtensionPoint {
         this.simpleIdentifier = simpleIdentifier;
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public IConfigurationElement[] getConfigurationElements() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public IContributor getContributor() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public IPluginDescriptor getDeclaringPluginDescriptor() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public IExtension getExtension(String extensionId) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IExtension[] getExtensions() throws InvalidRegistryObjectException {
         return extensions;
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public String getLabel() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getNamespace() throws InvalidRegistryObjectException {
         return getNamespaceIdentifier();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getNamespaceIdentifier() throws InvalidRegistryObjectException {
         return nameSpaceIdentifier;
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public String getSchemaReference() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getSimpleIdentifier() throws InvalidRegistryObjectException {
         return simpleIdentifier;
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public String getUniqueIdentifier() throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * Throws RuntimeException
-     */
     @Override
     public boolean isValid() {
         throw new RuntimeException("Not implemented yet.");

@@ -20,7 +20,6 @@ import java.io.ObjectOutputStream;
 
 import junit.framework.TestCase;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -32,7 +31,7 @@ public class QualifiedNameTypeTest extends TestCase {
 
     }
 
-    public void testNewQualifiedNameType() throws CoreException {
+    public void testNewQualifiedNameType() {
         QualifiedNameType qNameType = QualifiedNameType.newQualifedNameType("base/motor/Motorpolicy."
                 + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
         assertEquals("base.motor.Motorpolicy", qNameType.getName());

@@ -121,7 +121,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     /*
      * Test method for 'org.faktorips.plugin.builder.DependencyGraph.getDependants(String)'
      */
-    public void testGetDependants() throws CoreException {
+    public void testGetDependants() {
         IDependency[] dependants = graph.getDependants(a.getQualifiedNameType());
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);
         assertTrue(dependsOnList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a

@@ -33,8 +33,8 @@ public class ValidationResultCache {
     }
 
     /**
-     * Puts a copy of the given the validation result for the given ips object part container into
-     * the chache. Overwrittes any old data for the given container. If result is <code>null</code>,
+     * Puts a copy of the given the validation result for the given IPS object part container into
+     * the cache. Overwrites any old data for the given container. If result is <code>null</code>,
      * any cached data for the container is removed.
      * 
      * @param container The container to that the result belongs
@@ -47,7 +47,7 @@ public class ValidationResultCache {
             data.remove(container);
             return;
         }
-        // cache a defensive copy
+        // Cache a defensive copy.
         MessageList copy = new MessageList();
         copy.add(result);
         data.put(container, copy);
@@ -62,20 +62,22 @@ public class ValidationResultCache {
         if (cached == null) {
             return null;
         }
-        // return a defensive copy
+        // Return a defensive copy.
         MessageList result = new MessageList();
         result.add(cached);
         return result;
     }
 
     /**
-     * Removes the data from the cache that is stale because the given ips source file has changed.
+     * Removes the data from the cache that is stale because the given IPS source file has changed.
      * Does nothing if the given file is <code>null</code>.
      * <p>
      * Implementation note: At the moment we clear the whole cache if a file changes as due to the
      * dependencies between objects the validation result of other objects can also change if one
      * object is changed. We might use the exact dependencies between objects to solve this more
      * efficiently.
+     * 
+     * @param file The IPS source file that has changed.
      */
     synchronized public void removeStaleData(IIpsSrcFile file) {
         data.clear();
@@ -87,4 +89,5 @@ public class ValidationResultCache {
     synchronized public void clear() {
         data.clear();
     }
+
 }

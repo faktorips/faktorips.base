@@ -43,8 +43,11 @@ import org.w3c.dom.NodeList;
 public class ControlFlow extends IpsObjectPart implements IControlFlow {
 
     private String conditionValue = ""; //$NON-NLS-1$
+
     private String targetId;
+
     private String sourceId;
+
     private List<Bendpoint> bendpoints = new ArrayList<Bendpoint>();
 
     public ControlFlow(IIpsObject parent, String id) {
@@ -200,14 +203,17 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
 
     @Override
     protected void addPart(IIpsObjectPart part) {
+        // Nothing to do.
     }
 
     @Override
     protected void reinitPartCollections() {
+        // Nothing to do.
     }
 
     @Override
     protected void removePart(IIpsObjectPart part) {
+        // Nothing to do.
     }
 
     @Override

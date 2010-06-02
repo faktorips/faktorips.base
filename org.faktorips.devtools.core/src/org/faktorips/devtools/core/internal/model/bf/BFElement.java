@@ -39,10 +39,13 @@ import org.w3c.dom.NodeList;
 public class BFElement extends IpsObjectPart implements IBFElement {
 
     Point location;
-    private Dimension size = new Dimension(100, 60);
+
     BFElementType type;
 
+    private Dimension size = new Dimension(100, 60);
+
     private List<String> incommingControlFlows = new ArrayList<String>();
+
     private List<String> outgoingControlFlows = new ArrayList<String>();
 
     public BFElement(IIpsObject parent, String id) {
@@ -65,7 +68,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     }
 
     void setType(BFElementType type) {
-        // no event triggering since this method is only call at object creation time
+        // No event triggering since this method is only call at object creation time.
         this.type = type;
     }
 
@@ -275,14 +278,17 @@ public class BFElement extends IpsObjectPart implements IBFElement {
 
     @Override
     protected void addPart(IIpsObjectPart part) {
+        // Nothing to do.
     }
 
     @Override
     protected void reinitPartCollections() {
+        // Nothing to do.
     }
 
     @Override
     protected void removePart(IIpsObjectPart part) {
+        // Nothing to do.
 
     }
 
@@ -296,7 +302,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
      * element. This method validates if the name has been specified and if the name is valid
      * according to java naming conventions.
      * 
-     * @throws CoreException if an exception occurs during the course of validation
+     * @throws CoreException If an exception occurs during the course of validation.
      */
     protected final void validateName(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(getName())) {
@@ -317,12 +323,10 @@ public class BFElement extends IpsObjectPart implements IBFElement {
      * element. This method checks if the name is equal to the not allowed values <i>execute</i>,
      * <i>start</i>, <i>end</i>.
      * 
-     * @param name the name to be checked
-     * @param nameOfName the error message that is created by this method refers to the name. Here
-     *            there is to specify how to call that name within the error message
-     * @param msgList the message list to which the message is appended
-     * 
-     * @throws CoreException if an exception occurs during the course of validation
+     * @param name The name to be checked.
+     * @param nameOfName The error message that is created by this method refers to the name. Here
+     *            there is to specify how to call that name within the error message.
+     * @param msgList The message list to which the message is appended.
      */
     protected final void validateNotAllowedNames(String name, String nameOfName, MessageList msgList) {
         String uncapName = StringUtils.uncapitalize(name);

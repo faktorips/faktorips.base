@@ -33,59 +33,39 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final IIpsElement[] getChildren() {
         return new IIpsElement[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final IIpsObjectPart newPart(Class<?> partType) {
-        // Here we IllegalArgumentException (and not an UnsupportedOperationException) as this is
-        // specified in the interface.
+        /*
+         * Here we IllegalArgumentException (and not an UnsupportedOperationException) as this is
+         * specified in the interface.
+         */
         throw new IllegalArgumentException("AtomicIpsObjectPart does not support newPart. Part type " + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected final IIpsObjectPart newPart(Element xmlTag, String id) {
         // Contract is to return null, not to throw an Exception!
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws UnsupportedOperationException
-     */
     @Override
     protected final void addPart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws UnsupportedOperationException
-     */
     @Override
     protected final void removePart(IIpsObjectPart part) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected final void reinitPartCollections() {
-        // nothing to do
+        // Nothing to do.
     }
 
 }

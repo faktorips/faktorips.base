@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.enums;
 
 /**
- * An EnumType is a Datatype that represents an enumeration of values e.g. gender, payment mode.
+ * An EnumType is a data type that represents an enumeration of values e.g. gender, payment mode.
  * 
  * @author Jan Ortmann
  */
@@ -26,30 +26,30 @@ public interface EnumType {
     public EnumValue[] getValues();
 
     /**
-     * Returns the type's value ids as string array.
+     * Returns the type's value IDs as string array.
      */
     public String[] getValueIds();
 
     /**
-     * Returns true if the id identifies an EnumValue, otherwise false.
+     * Returns <tt>true</tt> if the ID identifies an <tt>EnumValue</tt>, otherwise <tt>false</tt>.
      */
     public boolean containsValue(String id);
 
     /**
-     * Returns the EnumValue identified by the given id. If the id does not represent an EnumValue,
-     * <code>null</code> is returned.
+     * Returns the <tt>EnumValue</tt> identified by the given ID. If the ID does not represent an
+     * <tt>EnumValue</tt>, <code>null</code> will be returned.
      */
     public EnumValue getEnumValue(String id);
 
     /**
-     * Returns the EnumValue at the given index.
+     * Returns the <tt>EnumValue</tt> at the given index.
      * 
-     * @throws IllegalArgumentException if the index is out of bounce.
+     * @throws IllegalArgumentException If the index is out of bounds.
      */
     public EnumValue getEnumValue(int index) throws IndexOutOfBoundsException;
 
     /**
-     * Returns the number of possible values
+     * Returns the number of values.
      */
     public int getNumOfValues();
 

@@ -60,9 +60,6 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
         return getIpsProject().findDatatype(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
@@ -70,9 +67,6 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
         datatype = element.getAttribute(PROPERTY_DATATYPE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         element.setAttribute(PROPERTY_NAME, name);
@@ -114,4 +108,5 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
             }
         }
     }
+
 }

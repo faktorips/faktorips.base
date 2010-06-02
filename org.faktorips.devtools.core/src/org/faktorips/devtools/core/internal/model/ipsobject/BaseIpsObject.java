@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.w3c.dom.Element;
 
 /**
- * Base class that allows to implement ips object subclasses in a simple way. The handling of parts
+ * Base class that allows to implement IPS object subclasses in a simple way. The handling of parts
  * of this object is done using IpsObjectPartCollections.
  * 
  * @see IpsObjectPartCollection
@@ -43,9 +43,6 @@ public abstract class BaseIpsObject extends IpsObject {
         partCollections.add(container);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() {
         List<IIpsObjectPart> result = new ArrayList<IIpsObjectPart>();
@@ -59,9 +56,6 @@ public abstract class BaseIpsObject extends IpsObject {
         return (result.toArray(new IIpsElement[result.size()]));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
         for (IpsObjectPartCollection<?> container : partCollections) {
@@ -74,9 +68,6 @@ public abstract class BaseIpsObject extends IpsObject {
         throw new RuntimeException("Could not create part for xml element " + xmlTag.getNodeName()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         for (IpsObjectPartCollection<?> container : partCollections) {
@@ -88,9 +79,6 @@ public abstract class BaseIpsObject extends IpsObject {
         throw new IllegalArgumentException("Could not re-add part " + part); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void reinitPartCollections() {
         for (IpsObjectPartCollection<?> container : partCollections) {
@@ -98,9 +86,6 @@ public abstract class BaseIpsObject extends IpsObject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         for (IpsObjectPartCollection<?> container : partCollections) {
@@ -112,9 +97,6 @@ public abstract class BaseIpsObject extends IpsObject {
         return;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         for (IpsObjectPartCollection<?> container : partCollections) {

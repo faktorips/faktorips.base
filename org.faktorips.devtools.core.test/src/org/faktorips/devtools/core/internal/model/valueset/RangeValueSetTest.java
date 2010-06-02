@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -74,7 +73,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         intEl.setPolicyCmptTypeAttribute("test");
     }
 
-    public void testCreateFromXml() throws CoreException {
+    public void testCreateFromXml() {
         Document doc = getTestDocument();
         Element root = doc.getDocumentElement();
 

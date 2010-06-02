@@ -45,13 +45,9 @@ public class TestConfigurationElement implements IConfigurationElement {
         this(name, attributes, value, children, new HashMap<String, Object>());
     }
 
-    /**
-     * @param name
-     * @param attributes
-     * @param children
-     */
     public TestConfigurationElement(String name, Map<String, String> attributes, String value,
             IConfigurationElement[] children, Map<String, Object> executableExtensionMap) {
+
         ArgumentCheck.notNull(name, this);
         ArgumentCheck.notNull(attributes, this);
         ArgumentCheck.notNull(children, this);
@@ -153,4 +149,5 @@ public class TestConfigurationElement implements IConfigurationElement {
     public String getValue(String locale) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
+
 }

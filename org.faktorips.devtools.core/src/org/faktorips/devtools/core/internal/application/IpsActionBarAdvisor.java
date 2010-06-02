@@ -52,9 +52,11 @@ import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
  * @author Thorsten Guenther
  */
 class IpsActionBarAdvisor extends ActionBarAdvisor {
+
     final IWorkbenchWindow window;
 
-    // generic actions
+    // Generic actions
+
     private IWorkbenchAction closeAction;
 
     private IWorkbenchAction closeAllAction;
@@ -121,7 +123,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
     private IWorkbenchAction forwardHistoryAction;
 
-    // generic retarget actions
+    // Generic re-target actions
+
     private IWorkbenchAction undoAction;
 
     private IWorkbenchAction redoAction;
@@ -165,6 +168,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction previousAction;
 
     // IDE-specific actions
+
     private IWorkbenchAction newWizardAction;
 
     private IWorkbenchAction newWizardDropDownAction;
@@ -179,8 +183,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
     private IWorkbenchAction cleanProjectsAction;
 
-    // contribution items
-    // @issue should obtain from ContributionItemFactory
+    // Contribution items
+
     private NewWizardMenu newWizardMenu;
 
     private IContributionItem pinEditorContributionItem;
@@ -194,7 +198,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     private boolean disablingUnwantedActionSets = false;
 
     /**
-     * Indicates if the action builder has been disposed
+     * Indicates if the action builder has been disposed.
      */
     private boolean isDisposed = false;
 
@@ -207,7 +211,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         super(configurer);
         window = configurer.getWindowConfigurer().getWindow();
 
-        // hide actions not usefull in this product
+        // Hide actions that are not useful in this product.
         window.addPageListener(new IPageListener() {
             @Override
             public void pageOpened(IWorkbenchPage page) {
@@ -216,10 +220,12 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
             @Override
             public void pageClosed(IWorkbenchPage page) {
+                // Nothing to do.
             }
 
             @Override
             public void pageActivated(IWorkbenchPage page) {
+                // Nothing to do.
             }
         });
 
@@ -232,6 +238,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
             @Override
             public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
+                // Nothing to do.
             }
         });
     }
@@ -277,14 +284,13 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     }
 
     /**
-     * Creates and returns the File menu.
+     * Creates and returns the "File" menu.
      */
     private MenuManager createFileMenu() {
         MenuManager menu = new MenuManager(Messages.IpsActionBarAdvisor_file, IWorkbenchActionConstants.M_FILE);
         menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
         {
-            // create the New submenu, using the same id for it as the New
-            // action
+            // Create the "New" sub menu, using the same ID for it as for the "New" action.
             String newText = Messages.IpsActionBarAdvisor_new;
             String newId = ActionFactory.NEW.getId();
             MenuManager newMenu = new MenuManager(newText, newId);
@@ -335,7 +341,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     }
 
     /**
-     * Creates and returns the Edit menu.
+     * Creates and returns the "Edit" menu.
      */
     private MenuManager createEditMenu() {
         MenuManager menu = new MenuManager(Messages.IpsActionBarAdvisor_edit, IWorkbenchActionConstants.M_EDIT);
@@ -368,7 +374,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     }
 
     /**
-     * Creates and returns the Navigate menu.
+     * Creates and returns the "Navigate" menu.
      */
     private MenuManager createNavigateMenu() {
         MenuManager menu = new MenuManager(Messages.IpsActionBarAdvisor_navigate, IWorkbenchActionConstants.M_NAVIGATE);
@@ -402,7 +408,6 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         menu.add(new GroupMarker(IWorkbenchActionConstants.NAV_END));
 
-        // TBD: Location of this actions
         menu.add(new Separator());
         menu.add(backwardHistoryAction);
         menu.add(forwardHistoryAction);
@@ -410,7 +415,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     }
 
     /**
-     * Creates and returns the Project menu.
+     * Creates and returns the "Project" menu.
      */
     private MenuManager createProjectMenu() {
         MenuManager menu = new MenuManager(Messages.IpsActionBarAdvisor_project, IWorkbenchActionConstants.M_PROJECT);
@@ -431,7 +436,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     }
 
     /**
-     * Creates and returns the Window menu.
+     * Creates and returns the "Window" menu.
      */
     private MenuManager createWindowMenu() {
         MenuManager menu = new MenuManager(Messages.IpsActionBarAdvisor_Window, IWorkbenchActionConstants.M_WINDOW);
@@ -452,7 +457,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     }
 
     /**
-     * Adds the keyboard navigation submenu to the specified menu.
+     * Adds the keyboard navigation sub menu to the specified menu.
      */
     private void addKeyboardShortcuts(MenuManager menu) {
         MenuManager subMenu = new MenuManager("Navi&gation", Messages.IpsActionBarAdvisor_shortcuts); //$NON-NLS-1$
@@ -473,7 +478,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     }
 
     /**
-     * Creates and returns the Help menu.
+     * Creates and returns the "Help" menu.
      */
     private MenuManager createHelpMenu() {
         MenuManager menu = new MenuManager(Messages.IpsActionBarAdvisor_help, IWorkbenchActionConstants.M_HELP);
@@ -543,7 +548,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
         pinEditorContributionItem.dispose();
 
-        // null out actions to make leak debugging easier
+        // Null out actions to make leak debugging easier.
         closeAction = null;
         closeAllAction = null;
         saveAction = null;
@@ -608,12 +613,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         super.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void makeActions(final IWorkbenchWindow window) {
-
         newWizardAction = ActionFactory.NEW.create(window);
         register(newWizardAction);
 
@@ -830,22 +831,13 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
     /**
      * Class handling the selection of a open-perspective-action.
-     * 
-     * @author Thorsten Guenther
      */
     private class PerspecitveHandler extends PerspectiveMenu {
 
-        /**
-         * @param window
-         * @param id
-         */
         public PerspecitveHandler(IWorkbenchWindow window, String id) {
             super(window, id);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void run(IPerspectiveDescriptor desc) {
             try {
@@ -854,8 +846,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
             } catch (WorkbenchException e) {
                 throw new RuntimeException(e);
             }
-
         }
 
     }
+
 }

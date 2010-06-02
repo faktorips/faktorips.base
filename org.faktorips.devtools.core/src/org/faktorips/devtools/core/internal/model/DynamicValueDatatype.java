@@ -26,11 +26,11 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
 
 /**
- * A dynamic value datatype is a generic value datatype where the Java class represented by the
- * datatype is defined by it's qualified class name. The class is resolved, when one of the
+ * A dynamic value data type is a generic value data type where the Java class represented by the
+ * data type is defined by it's qualified class name. The class is resolved, when one of the
  * datatype's method like is isParsable() is called, which needs a static method of the underlying
  * Java class. If the Java class' source belongs to the IpsProject/JavaProject, than this class (the
- * bytecode) might exist for some time and than be unavailable or incomplete, e.g. if the class has
+ * byte code) might exist for some time and than be unavailable or incomplete, e.g. if the class has
  * compile errors.
  * 
  * @author Jan Ortmann
@@ -38,7 +38,6 @@ import org.w3c.dom.Element;
 public class DynamicValueDatatype extends GenericValueDatatype {
 
     public final static DynamicValueDatatype createFromXml(IIpsProject ipsProject, Element element) {
-
         DynamicValueDatatype datatype = null;
         String isEnumTypeString = element.getAttribute("isEnumType"); //$NON-NLS-1$
         if (StringUtils.isEmpty(isEnumTypeString) || !Boolean.valueOf(isEnumTypeString).booleanValue()) {
@@ -53,7 +52,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
             datatype = enumDatatype;
         }
         // note: up to version 2.1 it was valueClass, since then it is javaClass
-        String javaClass = element.getAttribute("valueClass");
+        String javaClass = element.getAttribute("valueClass"); //$NON-NLS-1$
         if (StringUtils.isEmpty(javaClass)) {
             javaClass = element.getAttribute("javaClass"); //$NON-NLS-1$
         }
@@ -139,9 +138,6 @@ public class DynamicValueDatatype extends GenericValueDatatype {
         adaptedClass = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Class<?> getAdaptedClass() {
         if (adaptedClass == null) {
@@ -152,9 +148,11 @@ public class DynamicValueDatatype extends GenericValueDatatype {
                 classLoaderProvider.addClasspathChangeListener(listener);
             } catch (Throwable t) {
                 IpsPlugin.log(t);
-                adaptedClass = null; // datatype remains invalid as long as the class can't be
-                // loaded.
-                // or an exception occurs while adding the classpath change listener
+                /*
+                 * Data type remains invalid as long as the class can't be loaded or an exception
+                 * occurs while adding the class path change listener.
+                 */
+                adaptedClass = null;
             }
         }
         return adaptedClass;
@@ -162,9 +160,6 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 
     class Listener implements IClasspathContentsChangeListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void classpathContentsChanges(IJavaProject project) {
             clearCache();
@@ -175,4 +170,5 @@ public class DynamicValueDatatype extends GenericValueDatatype {
         }
 
     }
+
 }

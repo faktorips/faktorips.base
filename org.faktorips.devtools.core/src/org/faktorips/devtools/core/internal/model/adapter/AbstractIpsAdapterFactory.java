@@ -23,16 +23,12 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
- * An abstract class for IPS adapter factories, providing standard adaptation methods
- * 
+ * An abstract class for IPS adapter factories, providing standard adaptation methods.
  */
 public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
 
     /**
-     * Getting the {@link IType} of an {@link IpsSrcFile} if the file is of this type
-     * 
-     * @param file
-     * @return
+     * Getting the {@link IType} of an {@link IpsSrcFile} if the file is of this type.
      */
     protected IType adaptToType(IIpsSrcFile file) {
         if (file == null) {
@@ -53,10 +49,7 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
     }
 
     /**
-     * Getting the ProductCmptType of an {@link IpsSrcFile} if the file is of this type
-     * 
-     * @param file
-     * @return
+     * Getting the ProductCmptType of an {@link IpsSrcFile} if the file is of this type.
      */
     protected IProductCmpt adaptToProductCmpt(IIpsSrcFile file) {
         if (file == null) {

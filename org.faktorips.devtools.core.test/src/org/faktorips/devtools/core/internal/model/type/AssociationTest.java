@@ -430,10 +430,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
     /**
      * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#findTarget()}
+     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#findTarget(IIpsProject)}
      * .
-     * 
-     * @throws CoreException
      */
     public void testFindTarget() throws CoreException {
         association.setTarget("");

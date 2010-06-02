@@ -22,13 +22,12 @@ import org.eclipse.ui.PlatformUI;
  */
 public final class IDEInternalWorkbenchImages {
 
-    /** Block instantiation. */
     private IDEInternalWorkbenchImages() {
+        // Block instantiation.
     }
 
-    /*** Constants for Images ***/
+    // Constants for images
 
-    // other toolbar buttons
     public final static String IMG_ETOOL_BUILD_EXEC = "IMG_ETOOL_BUILD_EXEC"; //$NON-NLS-1$
 
     public final static String IMG_ETOOL_BUILD_EXEC_HOVER = "IMG_ETOOL_BUILD_EXEC_HOVER"; //$NON-NLS-1$
@@ -117,7 +116,8 @@ public final class IDEInternalWorkbenchImages {
 
     public final static String IMG_ETOOL_PROBLEM_CATEGORY = "IMG_ETOOL_PROBLEM_CATEGORY"; //$NON-NLS-1$
 
-    // local toolbars
+    // Local tool bars
+
     public final static String IMG_LCL_CLOSE_VIEW = "IMG_LCL_CLOSE_VIEW"; //$NON-NLS-1$
 
     public final static String IMG_LCL_CLOSE_VIEW_HOVER = "IMG_LCL_CLOSE_VIEW_HOVER"; //$NON-NLS-1$ 
@@ -156,7 +156,8 @@ public final class IDEInternalWorkbenchImages {
 
     public final static String IMG_LCL_HIERARCHICAL_LAYOUT = "IMG_LCL_HIERARCHICAL_LAYOUT"; //$NON-NLS-1$
 
-    // wizard images
+    // Wizard images
+
     public final static String IMG_WIZBAN_NEWPRJ_WIZ = "IMG_WIZBAN_NEWPRJ_WIZ"; //$NON-NLS-1$
 
     public final static String IMG_WIZBAN_NEWFOLDER_WIZ = "IMG_WIZBAN_NEWFOLDER_WIZ"; //$NON-NLS-1$
@@ -179,7 +180,8 @@ public final class IDEInternalWorkbenchImages {
 
     public final static String IMG_VIEW_DEFAULTVIEW_MISC = "IMG_VIEW_DEFAULTVIEW_MISC"; //$NON-NLS-1$
 
-    // task objects
+    // Task objects
+
     public final static String IMG_OBJS_HPRIO_TSK = "IMG_OBJS_HPRIO_TSK"; //$NON-NLS-1$
 
     public final static String IMG_OBJS_MPRIO_TSK = "IMG_OBJS_MPRIO_TSK"; //$NON-NLS-1$
@@ -192,36 +194,42 @@ public final class IDEInternalWorkbenchImages {
 
     public final static String IMG_OBJS_BRKPT_TSK = "IMG_OBJS_BRKPT_TSK"; //$NON-NLS-1$
 
-    // problems images
+    // Problem images
+
     public static final String IMG_OBJS_ERROR_PATH = "IMG_OBJS_ERROR_PATH"; //$NON-NLS-1$
 
     public static final String IMG_OBJS_WARNING_PATH = "IMG_OBJS_WARNING_PATH"; //$NON-NLS-1$
 
     public static final String IMG_OBJS_INFO_PATH = "IMG_OBJS_INFO_PATH"; //$NON-NLS-1$
 
-    // product
+    // Product
+
     public final static String IMG_OBJS_DEFAULT_PROD = "IMG_OBJS_DEFAULT_PROD"; //$NON-NLS-1$
 
-    // welcome
+    // Welcome
+
     public final static String IMG_OBJS_WELCOME_ITEM = "IMG_OBJS_WELCOME_ITEM"; //$NON-NLS-1$
 
     public final static String IMG_OBJS_WELCOME_BANNER = "IMG_OBJS_WELCOME_BANNER"; //$NON-NLS-1$
 
-    // synchronization indicator objects
+    // Synchronization indicator objects
+
     public final static String IMG_OBJS_WBET_STAT = "IMG_OBJS_WBET_STAT"; //$NON-NLS-1$
 
     public final static String IMG_OBJS_SBET_STAT = "IMG_OBJS_SBET_STAT"; //$NON-NLS-1$
 
     public final static String IMG_OBJS_CONFLICT_STAT = "IMG_OBJS_CONFLICT_STAT"; //$NON-NLS-1$
 
-    // local content indicator objects
+    // Local content indicator objects
+
     public final static String IMG_OBJS_NOTLOCAL_STAT = "IMG_OBJS_NOTLOCAL_STAT"; //$NON-NLS-1$
 
     public final static String IMG_OBJS_LOCAL_STAT = "IMG_OBJS_LOCAL_STAT"; //$NON-NLS-1$
 
     public final static String IMG_OBJS_FILLLOCAL_STAT = "IMG_OBJS_FILLLOCAL_STAT"; //$NON-NLS-1$
 
-    // part direct manipulation objects
+    // Part direct manipulation objects
+
     public final static String IMG_OBJS_DND_LEFT_SOURCE = "IMG_OBJS_DND_LEFT_SOURCE"; //$NON-NLS-1$
 
     public final static String IMG_OBJS_DND_LEFT_MASK = "IMG_OBJS_DND_LEFT_MASK"; //$NON-NLS-1$
@@ -251,6 +259,7 @@ public final class IDEInternalWorkbenchImages {
     public final static String IMG_OBJS_DND_OFFSCREEN_MASK = "IMG_OBJS_DND_OFFSCREEN_MASK"; //$NON-NLS-1$
 
     // Quick fix images
+
     public static final String IMG_DLCL_QUICK_FIX_DISABLED = "IMG_DLCL_QUICK_FIX_DISABLED";//$NON-NLS-1$
 
     public static final String IMG_ELCL_QUICK_FIX_ENABLED = "IMG_ELCL_QUICK_FIX_ENABLED"; //$NON-NLS-1$
@@ -265,4 +274,5 @@ public final class IDEInternalWorkbenchImages {
     public static ImageDescriptor getImageDescriptor(String symbolicName) {
         return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(symbolicName);
     }
+
 }

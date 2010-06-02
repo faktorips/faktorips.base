@@ -183,10 +183,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_MODIFIER, method, Modifier.PUBLIC);
     }
 
-    /**
-     * @throws CoreException
-     */
-    public void testIsSameSignature() throws CoreException {
+    public void testIsSameSignature() {
         method.setName("calc");
         method.setDatatype("void");
         IParameter param0 = method.newParameter();
@@ -342,9 +339,6 @@ public class MethodTest extends AbstractIpsPluginTest {
 
     }
 
-    /**
-     * @throws CoreException
-     */
     public void testFindOverridingMethod() throws CoreException {
         IType superType = newPolicyCmptType(ipsProject, "superType");
         IType thisType = newPolicyCmptType(ipsProject, "thisType");
@@ -369,9 +363,6 @@ public class MethodTest extends AbstractIpsPluginTest {
 
     }
 
-    /**
-     * @throws CoreException
-     */
     public void testFindOverriddenMethod() throws CoreException {
         IType superSuperType = newPolicyCmptType(ipsProject, "superSuperType");
         IType superType = newPolicyCmptType(ipsProject, "superType");

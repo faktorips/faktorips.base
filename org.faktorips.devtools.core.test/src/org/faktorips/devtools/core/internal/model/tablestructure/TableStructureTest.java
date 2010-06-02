@@ -288,8 +288,6 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 
     /**
      * Test for findAllMetaObjects(..)
-     * 
-     * @throws CoreException
      */
     public void testFindAllMetaObjects() throws CoreException {
         String tableStructureQName = "pack.MyTableStructure";

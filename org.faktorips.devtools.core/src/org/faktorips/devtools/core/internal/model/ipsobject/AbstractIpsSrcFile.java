@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.StringUtil;
 
 /**
- * 
  * @author Jan Ortmann
  */
 public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFile {

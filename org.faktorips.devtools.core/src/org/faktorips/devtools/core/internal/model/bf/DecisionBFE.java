@@ -55,9 +55,6 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
         return super.getDisplayString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
         if (getType().equals(BFElementType.DECISION_METHODCALL)) {
@@ -74,18 +71,12 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
         return ipsProject.findValueDatatype(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -103,24 +94,29 @@ public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
             validateMethodCall(list, ipsProject);
             return;
         }
+
         super.validateThis(list, ipsProject);
-        // datatype specified
+
+        // Data type specified
         if (StringUtils.isEmpty(datatype)) {
             list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, Messages.DecisionBFE_datatypeNotSpecified,
                     Message.ERROR, this));
             return;
         }
-        // datatype exists
+
+        // Data type exists
         Datatype datatype = findDatatype(ipsProject);
         if (datatype == null) {
             list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXIST, Messages.DecisionBFE_datatypeDoesNotExist,
                     Message.ERROR, this));
             return;
         }
-        // datatype only none primitive valuedatatype
+
+        // Data type only none primitive value data type
         if (!datatype.isValueDatatype() || datatype.isPrimitive()) {
             list.add(new Message(MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE,
                     Messages.DecisionBFE_DatatypeMustBeNotPrimitive, Message.ERROR, this));
         }
     }
+
 }

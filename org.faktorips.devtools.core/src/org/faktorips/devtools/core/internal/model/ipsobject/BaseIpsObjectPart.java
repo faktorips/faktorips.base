@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.w3c.dom.Element;
 
 /**
- * Base class that allows to implement subclasses for an ips object part that contains other parts
+ * Base class that allows to implement subclasses for an IPS object part that contains other parts
  * in a simple way. The handling of the contained parts is done using IpsObjectPartCollections.
  * 
  * @see IpsObjectPartCollection
@@ -34,12 +34,9 @@ import org.w3c.dom.Element;
 public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
     private List<String> tagsToIgnore = new ArrayList<String>(0);
+
     private List<IpsObjectPartCollection<?>> partCollections = new ArrayList<IpsObjectPartCollection<?>>(1);
 
-    /**
-     * @param parent
-     * @param id
-     */
     public BaseIpsObjectPart(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
@@ -52,9 +49,6 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
         tagsToIgnore.add(xmlTagName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() {
         List<IIpsObjectPart> result = new ArrayList<IIpsObjectPart>();
@@ -67,9 +61,6 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
         return result.toArray(new IIpsElement[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
         for (IpsObjectPartCollection<?> container : partCollections) {
@@ -84,19 +75,11 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
         throw new RuntimeException("Could not create part for xml element " + xmlTag.getNodeName()); //$NON-NLS-1$
     }
 
-    /**
-     * Renamed to {@link #addPart(IIpsObjectPart)}
-     * 
-     * @param part
-     */
     @Deprecated
     protected void reAddPart(IIpsObjectPart part) {
         addPart(part);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         for (IpsObjectPartCollection<?> container : partCollections) {
@@ -107,9 +90,6 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
         throw new IllegalArgumentException("Could not add part " + part); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void reinitPartCollections() {
         for (IpsObjectPartCollection<?> container : partCollections) {
@@ -117,9 +97,6 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         for (IpsObjectPartCollection<?> container : partCollections) {
@@ -130,9 +107,6 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
         return;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         for (IpsObjectPartCollection<?> container : partCollections) {

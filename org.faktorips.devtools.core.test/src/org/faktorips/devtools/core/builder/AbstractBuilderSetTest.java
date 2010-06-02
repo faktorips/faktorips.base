@@ -32,9 +32,6 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     private DExtendsC d;
     private EExtendsC e;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -79,9 +76,6 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     class A extends DumyJavaSourceFileBuilder {
 
-        /**
-         * @throws CoreException
-         */
         public A() throws CoreException {
             super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
         }
@@ -90,9 +84,6 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     class B extends DumyJavaSourceFileBuilder {
 
-        /**
-         * @throws CoreException
-         */
         public B() throws CoreException {
             super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
         }
@@ -101,9 +92,6 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     class C extends DumyJavaSourceFileBuilder {
 
-        /**
-         * @throws CoreException
-         */
         public C() throws CoreException {
             super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
         }
@@ -112,9 +100,6 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     class DExtendsC extends C {
 
-        /**
-         * @throws CoreException
-         */
         public DExtendsC() throws CoreException {
             super();
         }
@@ -123,9 +108,6 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     class EExtendsC extends C {
 
-        /**
-         * @throws CoreException
-         */
         public EExtendsC() throws CoreException {
             super();
         }
@@ -133,12 +115,11 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     }
 
     class NotInBuilderSer extends DumyJavaSourceFileBuilder {
-        /**
-         * @param builderSet
-         */
+
         public NotInBuilderSer(IIpsArtefactBuilderSet builderSet) {
             super(builderSet, "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
         }
+
     }
 
 }

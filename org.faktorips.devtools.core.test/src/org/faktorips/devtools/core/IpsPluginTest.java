@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -35,6 +34,7 @@ import org.xml.sax.SAXException;
 public class IpsPluginTest extends AbstractIpsPluginTest {
 
     private IpsPreferences pref;
+
     private String oldPresentationString;
 
     public IpsPluginTest() {
@@ -83,7 +83,7 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void testGetIpsLoggingFrameworkConnectors() throws CoreException {
+    public void testGetIpsLoggingFrameworkConnectors() {
         IIpsLoggingFrameworkConnector[] connectors = IpsPlugin.getDefault().getIpsLoggingFrameworkConnectors();
         List<String> connectorIds = new ArrayList<String>();
         for (IIpsLoggingFrameworkConnector connector : connectors) {

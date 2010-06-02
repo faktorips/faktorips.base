@@ -68,7 +68,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(statusChangeListener);
     }
 
-    public void testChangeIpsObjectProperty() throws CoreException {
+    public void testChangeIpsObjectProperty() {
         type.setSupertype("Super");
         assertEquals(1, contentChangeListener.count);
         assertEquals(1, statusChangeListener.count);
@@ -103,7 +103,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         assertEquals(1, statusChangeListener.count);
     }
 
-    public void testAddPart() throws CoreException {
+    public void testAddPart() {
         IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
 
         assertEquals(1, contentChangeListener.count);

@@ -214,15 +214,6 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return element;
     }
 
-    /*
-     * @SuppressWarnings("unchecked") public List<IBFElement> getBFElementsWithoutParameters() {
-     * 
-     * List<IBFElement> nodeList = new ArrayList<IBFElement>(); IIpsObjectPart[] bFParts =
-     * simpleElements.getParts(); nodeList.addAll((Collection)Arrays.asList(bFParts)); bFParts =
-     * actions.getParts(); nodeList.addAll((Collection)Arrays.asList(bFParts)); bFParts =
-     * decisions.getParts(); nodeList.addAll((Collection)Arrays.asList(bFParts)); return nodeList; }
-     */
-
     @Override
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElements() {
@@ -442,6 +433,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             IBFElement current,
             List<IBFElement> successfullyChecked,
             List<IBFElement> currentTrace) {
+
         if (successfullyChecked.contains(source)) {
             if (current != null && !successfullyChecked.contains(current)) {
                 successfullyChecked.add(current);
@@ -517,7 +509,6 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     @Override
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElementsWithoutParameters() {
-
         List<IBFElement> nodeList = new ArrayList<IBFElement>();
         IIpsObjectPart[] bFParts = simpleElements.getParts();
         nodeList.addAll((Collection)Arrays.asList(bFParts));
@@ -533,6 +524,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         @SuppressWarnings("unchecked")
         public BFElementIpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, Class publishedInterface,
                 String xmlTag) {
+
             super(ipsObject, partsClazz, publishedInterface, xmlTag);
         }
 
@@ -547,6 +539,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             };
             return newPart(initializer);
         }
+
     }
 
 }

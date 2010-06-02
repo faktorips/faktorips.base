@@ -39,27 +39,25 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
 
     @Override
     protected void propertiesToXml(Element newElement) {
-
+        // Nothing to do.
     }
 
     @Override
     protected void reinitPartCollections() {
+        // Nothing to do.
     }
 
     @Override
     protected void addPart(IIpsObjectPart part) {
-
+        // Nothing to do.
     }
 
     /**
-     * Overridden Method.
-     * 
      * BusinessFunctions don't have any part, so this method should never be called.
      * 
-     * @throws RuntimeException if the method is called.
+     * @throws RuntimeException If the method is called.
      * 
-     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#newPart(java.lang.String,
-     *      String)
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#newPart(Element, String)
      */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {

@@ -39,6 +39,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
     protected IpsObjectGeneration() {
+
     }
 
     @Override
@@ -59,10 +60,6 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
     /**
      * Returns the valid from formatted with the default <code>DataFormat</code> instance.
-     * 
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getName()
      */
     @Override
     public String getName() {

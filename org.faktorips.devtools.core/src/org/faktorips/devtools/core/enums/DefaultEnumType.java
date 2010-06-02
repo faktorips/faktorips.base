@@ -14,29 +14,33 @@
 package org.faktorips.devtools.core.enums;
 
 /**
- * Default implementation of enum type.
+ * Default implementation of <tt>EnumType</tt>.
+ * 
+ * @see EnumType
  */
 public class DefaultEnumType implements EnumType {
 
     private String name;
+
     private Class<?> valueClass; // Java class representing the values.
+
     private DefaultEnumValue[] values = new DefaultEnumValue[0];
 
     /**
-     * Creates a new enum type.
+     * Creates a new default enumeration type.
      * 
-     * @param name The type's name.
-     * @param valueClass Java class the values are instances of.
+     * @param name The enumeration type's name.
+     * @param valueClass The Java class the values are instances of.
      * 
-     * @throws IllegalArgumentException if name is null or if the valueClass is not a subclass of
-     *             DefaultEnumValue.
+     * @throws IllegalArgumentException If <tt>name</tt> is <tt>null</tt> or if the
+     *             <tt>valueClass</tt> is not a subclass of <tt>DefaultEnumValue</tt>.
      */
     public DefaultEnumType(String name, Class<?> valueClass) {
         if (name == null) {
             throw new NullPointerException();
         }
-        if (!DefaultEnumValue.class.isAssignableFrom(valueClass)) {
-            throw new IllegalArgumentException(valueClass + " is not a subclass of " + DefaultEnumValue.class);
+        if (!(DefaultEnumValue.class.isAssignableFrom(valueClass))) {
+            throw new IllegalArgumentException(valueClass + " is not a subclass of " + DefaultEnumValue.class); //$NON-NLS-1$
         }
         this.name = name;
         this.valueClass = valueClass;
@@ -49,11 +53,11 @@ public class DefaultEnumType implements EnumType {
     /**
      * Adds the value to the type.
      * 
-     * @throws IllegalArgumentException if the type contains already an id with the given id.
+     * @throws IllegalArgumentException If the type contains already an id with the given id.
      */
     void addValue(DefaultEnumValue newValue) {
         if (containsValue(newValue.getId())) {
-            throw new IllegalArgumentException("The enum type " + this + " contains already a value " + newValue);
+            throw new IllegalArgumentException("The enum type " + this + " contains already a value " + newValue); //$NON-NLS-1$ //$NON-NLS-2$
         }
         DefaultEnumValue[] newValues = new DefaultEnumValue[values.length + 1];
         System.arraycopy(values, 0, newValues, 0, values.length);
@@ -61,9 +65,6 @@ public class DefaultEnumType implements EnumType {
         values = newValues;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumValue[] getValues() {
         DefaultEnumValue[] copy = new DefaultEnumValue[values.length];
@@ -71,9 +72,6 @@ public class DefaultEnumType implements EnumType {
         return copy;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getValueIds() {
         String[] ids = new String[values.length];
@@ -83,9 +81,6 @@ public class DefaultEnumType implements EnumType {
         return ids;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsValue(String id) {
         for (DefaultEnumValue value : values) {
@@ -102,16 +97,12 @@ public class DefaultEnumType implements EnumType {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumValue getEnumValue(String id) throws IllegalArgumentException {
         for (DefaultEnumValue value : values) {
             if (value.getId() == null) {
                 if (id == null) {
                     return value;
-                } else {
                 }
             } else {
                 if (value.getId().equals(id)) {
@@ -122,17 +113,11 @@ public class DefaultEnumType implements EnumType {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getNumOfValues() {
         return values.length;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumValue getEnumValue(int index) throws IndexOutOfBoundsException {
         return values[index];
@@ -143,9 +128,6 @@ public class DefaultEnumType implements EnumType {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object[] getValues(String[] value) {
         EnumValue[] elements = new EnumValue[value.length];
         for (int i = 0; i < elements.length; i++) {

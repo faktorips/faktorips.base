@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILog;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -29,7 +28,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
@@ -54,9 +52,6 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
         initialize(config);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
         return getArtefactBuilders(); // are passed into the constructor
@@ -89,15 +84,14 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
         this.roleNamePluralRequiredForTo1Relations = roleNamePluralRequiredForTo1Relations;
     }
 
-    public void setLogger(ILog logger) {
-    }
-
     @Override
     public void setId(String id) {
+
     }
 
     @Override
     public void setLabel(String label) {
+
     }
 
     @Override
@@ -133,57 +127,32 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public String getClassNameForTableBasedEnum(ITableStructure structure) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersion() {
         return null;
@@ -193,4 +162,5 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
         return null;
     }
+
 }

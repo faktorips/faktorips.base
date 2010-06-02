@@ -31,16 +31,10 @@ import org.xml.sax.SAXParseException;
  */
 public abstract class XmlAbstractTestCase extends TestCase {
 
-    /**
-     * 
-     */
     public XmlAbstractTestCase() {
         super();
     }
 
-    /**
-     * @param name
-     */
     public XmlAbstractTestCase(String name) {
         super(name);
     }

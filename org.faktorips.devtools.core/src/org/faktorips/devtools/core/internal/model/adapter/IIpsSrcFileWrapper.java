@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 /**
  * Objects wrapping an {@link IIpsSrcFile} should implement this interface to enable eclipse getting
  * the wrapped {@link IIpsSrcFile}. e.g. this is the case for structural model elements as well as
- * viewer items providing additional information for an ips src file
+ * viewer items providing additional information for an IPS source file.
  * 
  * @author dirmeier
  */

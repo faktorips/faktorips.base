@@ -14,12 +14,16 @@
 package org.faktorips.devtools.core.enums;
 
 /**
- * Default implementation of enum value.
+ * Default implementation of <tt>EnumValue</tt>.
+ * 
+ * @see EnumValue
  */
 public class DefaultEnumValue implements EnumValue {
 
     private DefaultEnumType type;
+
     private String id;
+
     private String name;
 
     public DefaultEnumValue(DefaultEnumType type, String id) {
@@ -36,25 +40,16 @@ public class DefaultEnumValue implements EnumValue {
         type.addValue(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumType getType() {
         return type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getId() {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return name;
@@ -76,12 +71,9 @@ public class DefaultEnumValue implements EnumValue {
 
     @Override
     public String toString() {
-        return type.toString() + "." + id;
+        return type.toString() + '.' + id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compareTo(Object o) {
         EnumValue other = (EnumValue)o;

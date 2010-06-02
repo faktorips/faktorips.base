@@ -19,19 +19,17 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Application for Faktor-IPS to be used with eclipse. Provides reduced functionality in comparison
- * with the use as plugin within an eclipse running the IDE-Product. Used for department-workers.
+ * with the use as plug-in within an eclipse running the IDE-Product. Used for department-workers.
  * 
  * @author Thorsten Guenther
  */
 public class IpsApplication implements IPlatformRunnable {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object run(Object args) throws Exception {
         Display display = PlatformUI.createDisplay();
         Integer retValue = new Integer(PlatformUI.createAndRunWorkbench(display, new IpsWorkbenchAdvisor()));
         return retValue;
     }
+
 }

@@ -18,17 +18,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
-/**
- * 
- * @author Jan Ortmann
- */
 public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -39,7 +32,6 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, "Datatype", 0);
         DynamicValueDatatype type = DynamicValueDatatype.createFromXml(ipsProject, el);
-        assertTrue(type instanceof DynamicValueDatatype);
         assertEquals("foo.bar.MyDate", type.getAdaptedClassName());
         assertEquals("getMyDate", type.getValueOfMethodName());
         assertEquals("isMyDate", type.getIsParsableMethodName());

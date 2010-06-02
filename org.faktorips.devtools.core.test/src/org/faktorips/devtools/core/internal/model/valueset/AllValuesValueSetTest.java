@@ -13,14 +13,10 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -38,7 +34,6 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 
@@ -77,7 +72,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         ce2.setPolicyCmptTypeAttribute("attr2");
     }
 
-    public void testCreateFromXml() throws CoreException, SAXException, IOException, ParserConfigurationException {
+    public void testCreateFromXml() {
         Document doc = getTestDocument();
         Element root = doc.getDocumentElement();
         Element element = XmlUtil.getFirstElement(root);

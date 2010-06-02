@@ -1626,11 +1626,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * 
      * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
      * @param sortDefinition Value of the hash table entry.
-     * @param lastModification
      */
     private void addSortDefinition(IIpsPackageFragment fragment,
             IIpsPackageFragmentSortDefinition sortDefinition,
             Long lastModification) {
+
         sortOrderCache.put(fragment, sortDefinition);
         lastIpSortOrderModifications.put(sortDefinition, lastModification);
     }
@@ -1711,7 +1711,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         List<ITestCase> result = new ArrayList<ITestCase>();
 
         result.addAll(getReferencingTestCases(baseProject, cmpt.getQualifiedName()));
-
         for (IIpsProject project : projects) {
             if (project.isReferencing(baseProject)) {
                 result.addAll(getReferencingTestCases(project, cmpt.getQualifiedName()));
