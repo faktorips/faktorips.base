@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
@@ -82,7 +83,16 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
     @Override
     public IEnumAttributeValue newEnumAttributeValue() throws CoreException {
-        return (IEnumAttributeValue)newPart(EnumAttributeValue.class);
+        return createNewEnumAttributeValue(EnumAttributeValue.class);
+    }
+
+    @Override
+    public IEnumLiteralNameAttributeValue newEnumLiteralNameAttributeValue() {
+        return (IEnumLiteralNameAttributeValue)createNewEnumAttributeValue(EnumLiteralNameAttributeValue.class);
+    }
+
+    private IEnumAttributeValue createNewEnumAttributeValue(Class<? extends IEnumAttributeValue> attributeValueClass) {
+        return (IEnumAttributeValue)newPart(attributeValueClass);
     }
 
     @Override
@@ -234,9 +244,18 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
     @Override
     public IEnumAttributeValue getLiteralNameAttributeValue() {
-        if (getEnumValueContainer() instanceof IEnumType) {
-            IEnumType enumType = (IEnumType)getEnumValueContainer();
-            return getEnumAttributeValue(enumType.getEnumLiteralNameAttribute());
+        return getEnumLiteralNameAttributeValue();
+    }
+
+    @Override
+    public IEnumAttributeValue getEnumLiteralNameAttributeValue() {
+        if (!(getEnumValueContainer() instanceof IEnumType)) {
+            return null;
+        }
+        for (IEnumAttributeValue enumAttributeValue : enumAttributeValues) {
+            if (enumAttributeValue.isEnumLiteralNameAttributeValue()) {
+                return enumAttributeValue;
+            }
         }
         return null;
     }

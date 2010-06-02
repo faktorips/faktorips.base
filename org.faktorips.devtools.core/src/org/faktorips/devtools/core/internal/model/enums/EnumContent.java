@@ -65,7 +65,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      */
     public EnumContent(IIpsSrcFile file) {
         super(file);
-        enumType = "";
+        enumType = ""; //$NON-NLS-1$
         enumAttributeReferences = new IpsObjectPartCollection<IEnumAttributeReference>(this,
                 EnumAttributeReference.class, IEnumAttributeReference.class, IEnumAttributeReference.XML_TAG);
     }

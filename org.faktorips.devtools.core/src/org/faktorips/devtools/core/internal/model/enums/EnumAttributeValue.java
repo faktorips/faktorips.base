@@ -16,8 +16,6 @@ package org.faktorips.devtools.core.internal.model.enums;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -26,7 +24,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
@@ -76,14 +74,14 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         if (value == null) {
-            element.setAttribute("isNull", "true");
+            element.setAttribute("isNull", "true"); //$NON-NLS-1$ //$NON-NLS-2$
             Text textNode = XmlUtil.getTextNode(element);
             if (textNode != null) {
-                textNode.setTextContent("");
+                textNode.setTextContent(""); //$NON-NLS-1$
             }
             return;
         } else {
-            element.setAttribute("isNull", "false");
+            element.setAttribute("isNull", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (XmlUtil.getTextNode(element) == null) {
             XmlUtil.addNewTextChild(element.getOwnerDocument(), element, value);
@@ -95,7 +93,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        Boolean isNull = Boolean.valueOf(element.getAttribute("isNull"));
+        Boolean isNull = Boolean.valueOf(element.getAttribute("isNull")); //$NON-NLS-1$
         if (isNull.booleanValue()) {
             value = null;
             return;
@@ -104,7 +102,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         if (textNode != null) {
             value = textNode.getTextContent();
         } else {
-            value = "";
+            value = ""; //$NON-NLS-1$
         }
     }
 
@@ -129,29 +127,22 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     private IEnumAttribute getEnumAttribute(IEnumType enumType) {
         IEnumValue enumValue = getEnumValue();
-        boolean includeLiteralName = enumValue.getEnumValueContainer() instanceof IEnumType;
 
         // Check number of EnumAttributeValues matching number of EnumAttributes.
         int attributeValueIndex = enumValue.getIndexOfEnumAttributeValue(this);
-        int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName);
+        int enumAttributesCount = enumType.getEnumAttributesCountIncludeSupertypeCopies(true);
         if (!(enumAttributesCount == enumValue.getEnumAttributeValuesCount())
                 || enumAttributesCount < attributeValueIndex + 1) {
             return null;
         }
 
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
         return enumAttributes.get(attributeValueIndex);
     }
 
     @Override
-    public boolean isEnumLiteralNameValue() {
-        IEnumValueContainer enumValueContainer = getEnumValue().getEnumValueContainer();
-        if (enumValueContainer instanceof IEnumContent) {
-            return false;
-        }
-        IEnumType enumType = (IEnumType)enumValueContainer;
-        IEnumAttribute enumAttribute = getEnumAttribute(enumType);
-        return enumAttribute instanceof IEnumLiteralNameAttribute;
+    public boolean isEnumLiteralNameAttributeValue() {
+        return this instanceof IEnumLiteralNameAttributeValue;
     }
 
     @Override
@@ -229,28 +220,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         if (cacheInitialized) {
             if (isUniqueIdentifierEnumAttributeValue(enumAttribute, enumType)) {
                 validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);
-                if (list.getNoOfMessages() == 0) {
-                    if (enumAttribute instanceof IEnumLiteralNameAttribute) {
-                        validateLiteralNameEnumAttributeValue(list);
-                    }
-                }
             }
-        }
-    }
-
-    /**
-     * Validations necessary if this <tt>IEnumAttributeValue</tt> refers to an
-     * <tt>IEnumAttribute</tt> that is used as literal name.
-     */
-    private void validateLiteralNameEnumAttributeValue(MessageList list) {
-        // A literal name EnumAttributeValue must be java conform.
-        String complianceLevel = getIpsProject().getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = getIpsProject().getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        if (!(JavaConventions.validateIdentifier(value, sourceLevel, complianceLevel).isOK())) {
-            String text = NLS.bind(Messages.EnumAttributeValue_LiteralNameValueNotJavaConform, value);
-            Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM, text,
-                    Message.ERROR, this, PROPERTY_VALUE);
-            list.add(validationMessage);
         }
     }
 
@@ -314,11 +284,11 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
 
         String val = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
-        val = val.replaceAll("[Ää]", "AE");
-        val = val.replaceAll("[Öö]", "OE");
-        val = val.replaceAll("[Üü]", "UE");
-        val = val.replaceAll("[ß]", "SS");
-        val = val.replaceAll("[^A-Za-z0-9]", "_");
+        val = val.replaceAll("[Ää]", "AE"); //$NON-NLS-1$ //$NON-NLS-2$
+        val = val.replaceAll("[Öö]", "OE"); //$NON-NLS-1$ //$NON-NLS-2$
+        val = val.replaceAll("[Üü]", "UE"); //$NON-NLS-1$ //$NON-NLS-2$
+        val = val.replaceAll("[ß]", "SS"); //$NON-NLS-1$ //$NON-NLS-2$
+        val = val.replaceAll("[^A-Za-z0-9]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
         setValue(val);
     }
 

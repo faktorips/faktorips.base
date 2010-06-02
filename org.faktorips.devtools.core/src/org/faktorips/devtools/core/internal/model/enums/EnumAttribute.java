@@ -507,6 +507,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
+    public boolean isEnumLiteralNameAttribute() {
+        return this instanceof IEnumLiteralNameAttribute;
+    }
+
+    @Override
     public ProcessorBasedRefactoring getRenameRefactoring() {
         return new ProcessorBasedRefactoring(new RenameEnumAttributeProcessor(this));
     }

@@ -351,7 +351,7 @@ public class Migration2_2_to2_3 {
                             // Theoretically not possible to be null.
                             if (attributeValue != null) {
                                 value = attributeValue.getValue();
-                                currentEnumAttributeValue.setValueAsLiteralName(value);
+                                currentEnumAttributeValue.setValue(value);
                             }
                         }
                     } else {

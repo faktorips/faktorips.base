@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -51,9 +50,6 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         } catch (NullPointerException e) {
         }
 
-        IEnumLiteralNameAttribute literalNameAttribute = genderEnumType.newEnumLiteralNameAttribute();
-        genderEnumType.moveEnumAttribute(literalNameAttribute, true);
-
         assertEquals(genderEnumAttributeId, maleIdAttributeValue.findEnumAttribute(ipsProject));
         assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute(ipsProject));
 
@@ -68,12 +64,12 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertNull(maleNameAttributeValue.findEnumAttribute(ipsProject));
     }
 
-    public void testIsEnumLiteralNameValue() {
-        assertFalse(maleNameAttributeValue.isEnumLiteralNameValue());
+    public void testIsEnumLiteralNameAttributeValue() {
+        assertFalse(maleNameAttributeValue.isEnumLiteralNameAttributeValue());
         IEnumValue enumValue = paymentMode.getEnumValues().get(0);
         IEnumAttributeValue literalNameValue = enumValue.getEnumAttributeValues().get(0);
-        assertTrue(literalNameValue.isEnumLiteralNameValue());
-        assertFalse(enumValue.getEnumAttributeValues().get(1).isEnumLiteralNameValue());
+        assertTrue(literalNameValue.isEnumLiteralNameAttributeValue());
+        assertFalse(enumValue.getEnumAttributeValues().get(1).isEnumLiteralNameAttributeValue());
     }
 
     public void testGetSetValue() {
@@ -221,32 +217,28 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE));
     }
 
-    public void testValidateLiteralNameValueNotJavaConform() throws CoreException {
-        IEnumAttributeValue literalNameAttributeValue = paymentMode.getEnumValues().get(0).getEnumAttributeValues()
-                .get(0);
-        literalNameAttributeValue.setValue("3sdj4%332§4^2");
-        MessageList validationMessageList = literalNameAttributeValue.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM));
-    }
-
     public void testGetEnumValue() {
         assertEquals(genderEnumValueMale, genderEnumValueMale.getEnumAttributeValues().get(0).getEnumValue());
     }
 
+    @SuppressWarnings("deprecation")
+    // Test of deprecated method.
     public void testSetValueAsLiteralNameNull() {
         IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
         testValue.setValueAsLiteralName(null);
         assertNull(testValue.getValue());
     }
 
+    @SuppressWarnings("deprecation")
+    // Test of deprecated method.
     public void testSetValueAsLiteralNameInvalidCharacters() {
         IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
         testValue.setValueAsLiteralName("foo $$%bar");
         assertEquals("FOO____BAR", testValue.getValue());
     }
 
+    @SuppressWarnings("deprecation")
+    // Test of deprecated method.
     public void testSetValueAsLiteralNameUmlaut() {
         IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
 

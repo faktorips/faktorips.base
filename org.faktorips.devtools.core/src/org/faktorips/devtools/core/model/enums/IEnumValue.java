@@ -49,12 +49,17 @@ public interface IEnumValue extends IIpsObjectPart {
     public List<IEnumAttributeValue> getEnumAttributeValues();
 
     /**
-     * Creates a new <tt>IEnumAttributeValue</tt> and returns a reference to it.
+     * Creates a new <tt>IEnumAttributeValue</tt> and returns it.
      * 
-     * @throws CoreException If the <tt>IEnumType</tt>s this <tt>IEnumValue</tt> is based upon
-     *             cannot be found.
+     * @throws CoreException If the <tt>IEnumType</tt> this <tt>IEnumValue</tt> is based upon cannot
+     *             be found.
      */
     public IEnumAttributeValue newEnumAttributeValue() throws CoreException;
+
+    /**
+     * Creates a new <tt>IEnumLiteralNameAttributeValue</tt> and returns it.
+     */
+    public IEnumLiteralNameAttributeValue newEnumLiteralNameAttributeValue();
 
     /**
      * Returns the <tt>IEnumValueContainer</tt> this <tt>IEnumValue</tt> is being stored in.
@@ -189,10 +194,20 @@ public interface IEnumValue extends IIpsObjectPart {
     public int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue);
 
     /**
-     * Returns the <tt>IEnumAttributeValue</tt> referencing the first
-     * <tt>IEnumLiteralNameAttribute</tt> or <tt>null</tt> if there exists none or this
-     * <tt>IEnumValue</tt> is part of an <tt>IEnumContent</tt>.
+     * Returns the <tt>IEnumAttributeValue</tt> referencing the <tt>IEnumLiteralNameAttribute</tt>
+     * or <tt>null</tt> if there exists none or this <tt>IEnumValue</tt> is part of an
+     * <tt>IEnumContent</tt>.
+     * 
+     * @deprecated Since version 3.0 {@link #getEnumLiteralNameAttributeValue()} should be used.
      */
+    @Deprecated
     public IEnumAttributeValue getLiteralNameAttributeValue();
+
+    /**
+     * Returns the <tt>IEnumAttributeValue</tt> referencing the <tt>IEnumLiteralNameAttribute</tt>
+     * or <tt>null</tt> if there exists none or this <tt>IEnumValue</tt> is part of an
+     * <tt>IEnumContent</tt>.
+     */
+    public IEnumAttributeValue getEnumLiteralNameAttributeValue();
 
 }

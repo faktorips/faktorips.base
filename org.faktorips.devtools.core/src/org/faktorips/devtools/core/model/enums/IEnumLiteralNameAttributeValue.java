@@ -11,23 +11,18 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enums.refactor;
+package org.faktorips.devtools.core.model.enums;
 
-import org.eclipse.osgi.util.NLS;
+/**
+ * An <tt>IEnumLiteralNameAttributeValue</tt> represents a value for a
+ * <tt>IEnumLiteralNameAttribute</tt>.
+ * 
+ * @author Alexander Weickmann
+ * 
+ * @since 3.0
+ */
+public interface IEnumLiteralNameAttributeValue extends IEnumAttributeValue {
 
-public class Messages extends NLS {
-
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.enums.refactor.messages"; //$NON-NLS-1$
-
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
-
-    private Messages() {
-        // Messages bundles shall not be initialized.
-    }
-
-    public static String RenameEnumAttributeProcessor_processorName;
-    public static String RenameEnumLiteralNameAttributeValueProcessor_processorName;
+    // No special methods needed by now.
 
 }

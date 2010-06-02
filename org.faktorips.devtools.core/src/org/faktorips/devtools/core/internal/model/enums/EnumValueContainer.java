@@ -103,7 +103,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return valueIds;
 
         } catch (CoreException e) {
-            throw new RuntimeException("Unable to determine the value ids of this enum type.", e);
+            throw new RuntimeException("Unable to determine the value ids of this enum type.", e); //$NON-NLS-1$
         }
     }
 
@@ -151,8 +151,13 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                  * the enumeration type.
                  */
                 boolean includeLiteralNames = EnumValueContainer.this instanceof IEnumType;
-                for (int i = 0; i < enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralNames); i++) {
-                    newEnumValue.newEnumAttributeValue();
+                for (IEnumAttribute enumAttribute : enumType
+                        .getEnumAttributesIncludeSupertypeCopies(includeLiteralNames)) {
+                    if (enumAttribute.isEnumLiteralNameAttribute()) {
+                        newEnumValue.newEnumLiteralNameAttributeValue();
+                    } else {
+                        newEnumValue.newEnumAttributeValue();
+                    }
                 }
                 return true;
             }

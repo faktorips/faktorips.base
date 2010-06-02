@@ -231,6 +231,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     private IEnumAttribute createNewEnumAttribute(final Class<? extends IEnumAttribute> attributeClass)
             throws CoreException {
+
         return executeModificationsWithSingleEvent(new SingleEventModification<IEnumAttribute>() {
 
             IEnumAttribute newEnumAttribute;
@@ -241,7 +242,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
                 // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
                 for (IEnumValue currentEnumValue : getEnumValues()) {
-                    currentEnumValue.newEnumAttributeValue();
+                    if (attributeClass.equals(EnumLiteralNameAttribute.class)) {
+                        currentEnumValue.newEnumLiteralNameAttributeValue();
+                    } else {
+                        currentEnumValue.newEnumAttributeValue();
+                    }
                 }
                 return true;
             }

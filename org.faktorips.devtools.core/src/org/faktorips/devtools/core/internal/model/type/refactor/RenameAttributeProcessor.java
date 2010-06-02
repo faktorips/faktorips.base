@@ -54,7 +54,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * @param attribute The <tt>IAttribute</tt> to be refactored.
      */
     public RenameAttributeProcessor(IAttribute attribute) {
-        super(attribute);
+        super(attribute, attribute.getName());
         addIgnoredValidationMessageCodes();
     }
 

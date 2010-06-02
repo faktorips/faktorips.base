@@ -422,4 +422,9 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(paymentMode.getEnumAttribute("name").isLiteralNameDefaultValueProvider());
     }
 
+    public void testIsEnumLiteralNameAttribute() {
+        assertFalse(genderEnumAttributeId.isEnumLiteralNameAttribute());
+        assertTrue(paymentMode.getEnumAttributes(true).get(0).isEnumLiteralNameAttribute());
+    }
+
 }

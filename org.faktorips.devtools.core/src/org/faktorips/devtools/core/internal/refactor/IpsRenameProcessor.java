@@ -42,10 +42,11 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
      * Creates an <tt>IpsRenameProcessor</tt>.
      * 
      * @param ipsElement The <tt>IIpsElement</tt> to be refactored.
+     * @param originalName The original name of the <tt>IIpsElement</tt> to be refactored.
      */
-    protected IpsRenameProcessor(IIpsElement ipsElement) {
+    protected IpsRenameProcessor(IIpsElement ipsElement, String originalName) {
         super(ipsElement);
-        originalName = ipsElement.getName();
+        this.originalName = originalName;
     }
 
     /**

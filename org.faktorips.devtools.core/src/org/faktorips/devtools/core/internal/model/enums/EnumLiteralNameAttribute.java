@@ -53,7 +53,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
      */
     public EnumLiteralNameAttribute(IEnumType parent, String id) {
         super(parent, id);
-        defaultValueProviderAttribute = "";
+        defaultValueProviderAttribute = ""; //$NON-NLS-1$
     }
 
     @Override
@@ -158,7 +158,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
      */
     @Override
     public void setIdentifier(boolean usedAsIdInFaktorIpsUi) {
-        throw new UnsupportedOperationException("The identifier property is not used by EnumLiteralNameAttributes.");
+        throw new UnsupportedOperationException("The identifier property is not used by EnumLiteralNameAttributes."); //$NON-NLS-1$
     }
 
     /**
@@ -170,7 +170,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
      */
     @Override
     public void setInherited(boolean isInherited) {
-        throw new UnsupportedOperationException("The inherited property is not used by EnumLiteralNameAttributes.");
+        throw new UnsupportedOperationException("The inherited property is not used by EnumLiteralNameAttributes."); //$NON-NLS-1$
     }
 
     /**
@@ -182,7 +182,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
      */
     @Override
     public void setUsedAsNameInFaktorIpsUi(boolean usedAsNameInFaktorIpsUi) {
-        throw new UnsupportedOperationException("The usedAsName property is not used by EnumLiteralNameAttributes.");
+        throw new UnsupportedOperationException("The usedAsName property is not used by EnumLiteralNameAttributes."); //$NON-NLS-1$
     }
 
     @Override

@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -41,7 +42,7 @@ import org.faktorips.util.ArgumentCheck;
 public class ResetLiteralNamesAction extends Action {
 
     /** The name of the image for the action. */
-    private final String IMAGE_NAME = "Refresh.gif";
+    private final String IMAGE_NAME = "Refresh.gif"; //$NON-NLS-1$
 
     /** The table viewer linking the enumeration values UI table widget with the model data. */
     private TableViewer enumValuesTableViewer;
@@ -86,8 +87,9 @@ public class ResetLiteralNamesAction extends Action {
             List<IEnumAttributeValue> attributeValues = currentEnumValue.getEnumAttributeValues();
             String defaultValue = (indexDefaultProvider == -1) ? IpsPlugin.getDefault().getIpsPreferences()
                     .getNullPresentation() : attributeValues.get(indexDefaultProvider).getValue();
-            IEnumAttributeValue literalNameAttributeValue = attributeValues.get(indexLiteralName);
-            literalNameAttributeValue.setValueAsLiteralName(defaultValue);
+            IEnumLiteralNameAttributeValue literalNameAttributeValue = (IEnumLiteralNameAttributeValue)attributeValues
+                    .get(indexLiteralName);
+            literalNameAttributeValue.setValue(defaultValue);
         }
 
         enumValuesTableViewer.refresh();

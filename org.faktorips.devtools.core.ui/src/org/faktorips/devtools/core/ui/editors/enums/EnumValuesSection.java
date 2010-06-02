@@ -83,8 +83,8 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The UI section for the <tt>EnumTypePage</tt> and the <tt>EnumContentEditorPage</tt> that contains the
- * <tt>enumValuesTable</tt> to be edited.
+ * The UI section for the <tt>EnumTypePage</tt> and the <tt>EnumContentEditorPage</tt> that contains
+ * the <tt>enumValuesTable</tt> to be edited.
  * <p>
  * If the IPS object being edited is an <tt>IEnumType</tt> then in-place fixing of the
  * <tt>enumValuesTable</tt> will be done. That means, if an <tt>IEnumAttribute</tt> is added there
@@ -653,10 +653,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 if (defaultValue == null ? false : defaultValue.length() > 0) {
                     if (isOverwriteExistingLiteralPossible(enumValue)) {
                         if (defaultValue.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-                            enumValue.getLiteralNameAttributeValue().setValue(null);
-                        } else {
-                            enumValue.getLiteralNameAttributeValue().setValueAsLiteralName(defaultValue);
+                            defaultValue = null;
                         }
+                        enumValue.getEnumLiteralNameAttributeValue().setValue(defaultValue);
                     }
                 }
             }

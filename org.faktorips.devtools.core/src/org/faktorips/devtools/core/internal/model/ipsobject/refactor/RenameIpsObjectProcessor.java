@@ -41,7 +41,7 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
      * @param toBeRefactored The <tt>IIpsObject</tt> to be renamed.
      */
     public RenameIpsObjectProcessor(IpsObject toBeRefactored) {
-        super(toBeRefactored);
+        super(toBeRefactored, toBeRefactored.getName());
         renameMoveHelper = new MoveRenameIpsObjectHelper(toBeRefactored);
         renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }

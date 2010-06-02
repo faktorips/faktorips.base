@@ -42,7 +42,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
      * @param enumAttribute The <tt>IEnumAttribute</tt> to be refactored.
      */
     public RenameEnumAttributeProcessor(IEnumAttribute enumAttribute) {
-        super(enumAttribute);
+        super(enumAttribute, enumAttribute.getName());
 
         /*
          * Refactoring the current default value provider attribute makes it necessary to ignore

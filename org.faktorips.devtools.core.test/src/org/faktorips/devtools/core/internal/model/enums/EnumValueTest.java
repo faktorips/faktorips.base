@@ -38,6 +38,10 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertNotNull(genderEnumValueMale.newEnumAttributeValue());
     }
 
+    public void testNewEnumLiteralNameAttributeValue() {
+        assertNotNull(genderEnumValueMale.newEnumLiteralNameAttributeValue());
+    }
+
     public void testGetEnumAttributeValues() {
         assertEquals(2, genderEnumValueMale.getEnumAttributeValues().size());
     }
@@ -73,7 +77,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumContent, genderEnumValueMale.getEnumValueContainer());
     }
 
-    public void testGetEnumAttributeValue() throws CoreException {
+    public void testGetEnumAttributeValue() {
         assertNull(genderEnumValueMale.getEnumAttributeValue(null));
 
         assertEquals(genderEnumValueMale.getEnumAttributeValues().get(0), genderEnumValueMale
@@ -132,10 +136,18 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(3, uniqueAttributeValues.size());
     }
 
+    @SuppressWarnings("deprecation")
+    // Test of deprecated method.
     public void testGetLiteralNameAttributeValue() {
         assertNull(genderEnumValueMale.getLiteralNameAttributeValue());
         IEnumValue value = paymentMode.getEnumValues().get(0);
         assertEquals("MONTHLY", value.getLiteralNameAttributeValue().getValue());
+    }
+
+    public void testGetEnumLiteralNameAttributeValue() {
+        assertNull(genderEnumValueMale.getEnumLiteralNameAttributeValue());
+        IEnumValue value = paymentMode.getEnumValues().get(0);
+        assertEquals("MONTHLY", value.getEnumLiteralNameAttributeValue().getValue());
     }
 
 }

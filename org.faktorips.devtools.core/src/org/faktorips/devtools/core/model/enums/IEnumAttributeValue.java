@@ -65,7 +65,11 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     /**
      * Validation message code to indicate that that this <tt>IEnumAttributeValue</tt> is referring
      * a <tt>IEnumLiteralNameAttribute</tt> but its value is not java conform.
+     * 
+     * @deprecated Since version 3.0 a new type called <tt>IEnumLiteralNameAttributeValue</tt>
+     *             exists.
      */
+    @Deprecated
     public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM = MSGCODE_PREFIX
             + "EnumAttributeValueLiteralNameNotJavaConform"; //$NON-NLS-1$
 
@@ -91,7 +95,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * Returns whether this <tt>IEnumAttributeValue</tt> is the value for the
      * <tt>IEnumLiteralNameAttribute</tt>.
      */
-    public boolean isEnumLiteralNameValue();
+    public boolean isEnumLiteralNameAttributeValue();
 
     /** Returns the value as <tt>String</tt>. Can also be <tt>null</tt>. */
     public String getValue();
@@ -112,7 +116,16 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * 
      * @param value The new value. May also be <tt>null</tt>. Will be transformed to a valid literal
      *            name.
+     * 
+     * @deprecated This method is useless since version 3.0 as literal names are now set by casting
+     *             the <tt>IEnumAttributeValue</tt> to <tt>IEnumLiteralNameAttributeValue</tt> and
+     *             calling {@link IEnumLiteralNameAttributeValue#setValue(String)}. The cast should
+     *             only be done after calling {@link #isEnumLiteralNameAttributeValue()}.
+     * 
+     * @see #isEnumLiteralNameAttributeValue()
+     * @see IEnumLiteralNameAttributeValue#setValue(String)
      */
+    @Deprecated
     public void setValueAsLiteralName(String value);
 
     /**

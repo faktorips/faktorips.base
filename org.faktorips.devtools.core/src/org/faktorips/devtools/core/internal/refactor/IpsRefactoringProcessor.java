@@ -63,6 +63,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
      */
     protected IpsRefactoringProcessor(IIpsElement ipsElement) {
         super();
+        ArgumentCheck.notNull(ipsElement);
         this.ipsElement = ipsElement;
         affectedIpsSrcFiles = new HashSet<IIpsSrcFile>();
         ignoredValidationMessageCodes = new HashSet<String>();

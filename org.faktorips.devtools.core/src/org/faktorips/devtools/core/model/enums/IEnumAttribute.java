@@ -420,4 +420,9 @@ public interface IEnumAttribute extends IIpsObjectPart {
      */
     public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Returns whether this <tt>IEnumAttribute</tt> is a <tt>IEnumLiteralNameAttribute</tt>.
+     */
+    public boolean isEnumLiteralNameAttribute();
+
 }
