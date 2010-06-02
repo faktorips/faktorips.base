@@ -101,7 +101,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         AbstractTableExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertEquals(8, ml.getNoOfMessages());
+        assertEquals(7, ml.getNoOfMessages());
     }
 
 }
