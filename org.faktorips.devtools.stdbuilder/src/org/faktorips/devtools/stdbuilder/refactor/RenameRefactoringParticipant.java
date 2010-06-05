@@ -31,6 +31,7 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -171,6 +172,8 @@ public class RenameRefactoringParticipant extends RenameParticipant {
                     throw new RuntimeException(e);
                 }
 
+            } else if (ipsElement instanceof IEnumLiteralNameAttributeValue) {
+                return initializeTargetJavaElements((IEnumLiteralNameAttributeValue)ipsElement, builderSet);
             }
 
             throw new RuntimeException("This kind of IPS element is not supported by the rename participant.");
@@ -211,6 +214,16 @@ public class RenameRefactoringParticipant extends RenameParticipant {
                 inheritedCopy.setName(oldName);
             }
 
+            return true;
+        }
+
+        private boolean initializeTargetJavaElements(IEnumLiteralNameAttributeValue literalNameAttributeValue,
+                StandardBuilderSet builderSet) {
+
+            String oldName = literalNameAttributeValue.getValue();
+            literalNameAttributeValue.setValue(getArguments().getNewName());
+            setTargetJavaElements(builderSet.getGeneratedJavaElements(literalNameAttributeValue));
+            literalNameAttributeValue.setValue(oldName);
             return true;
         }
 

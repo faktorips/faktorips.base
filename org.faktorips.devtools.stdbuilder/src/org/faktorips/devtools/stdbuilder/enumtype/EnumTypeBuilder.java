@@ -39,8 +39,10 @@ import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -1132,6 +1134,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             } else {
                 getGeneratedJavaElementsForAttributeJava5EnumsNotAvailable(javaElements, enumAttribute, javaType);
             }
+
+        } else if (ipsElement instanceof IEnumLiteralNameAttributeValue) {
+            IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)ipsElement;
+            IIpsObject parentIpsObject = literalNameValue.getEnumValue().getEnumValueContainer();
+            IType javaType = getGeneratedJavaTypes(parentIpsObject).get(0);
+            IField javaEnumLiteral = javaType.getField(literalNameValue.getValue());
+            javaElements.add(javaEnumLiteral);
         }
     }
 

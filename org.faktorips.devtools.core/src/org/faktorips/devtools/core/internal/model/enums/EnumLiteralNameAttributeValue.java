@@ -19,6 +19,8 @@ import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumLiteralNameAttributeValueProcessor;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Implementation of <tt>IEnumLiteralNameAttributeValue</tt>, see the corresponding interface for
@@ -62,6 +64,11 @@ public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements
     @Override
     public ProcessorBasedRefactoring getRenameRefactoring() {
         return new ProcessorBasedRefactoring(new RenameEnumLiteralNameAttributeValueProcessor(this));
+    }
+
+    @Override
+    protected Element createElement(Document doc) {
+        return doc.createElement(IEnumLiteralNameAttributeValue.XML_TAG);
     }
 
 }

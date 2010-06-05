@@ -13,16 +13,23 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -33,6 +40,11 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
+import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
+import org.eclipse.ltk.ui.refactoring.RefactoringUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -44,6 +56,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
@@ -65,12 +78,14 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -83,8 +98,8 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The UI section for the <tt>EnumTypePage</tt> and the <tt>EnumContentEditorPage</tt> that contains
- * the <tt>enumValuesTable</tt> to be edited.
+ * The UI section for the <tt>EnumTypeEditorPage</tt> and the <tt>EnumContentEditorPage</tt> that
+ * contains the <tt>enumValuesTable</tt> to be edited.
  * <p>
  * If the IPS object being edited is an <tt>IEnumType</tt> then in-place fixing of the
  * <tt>enumValuesTable</tt> will be done. That means, if an <tt>IEnumAttribute</tt> is added there
@@ -94,8 +109,7 @@ import org.faktorips.util.message.MessageList;
  * Fixing the table when editing <tt>IEnumContent</tt> objects is done manually by the user trough a
  * separate dialog.
  * 
- * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeStructurePage
- * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeValuesPage
+ * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditorPage
  * @see org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditorPage
  * 
  * @author Alexander Weickmann
@@ -671,7 +685,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 if (lockAndSynchronizeLiteralNames) {
                     return true;
                 }
-                String existingLiteral = enumValue.getLiteralNameAttributeValue().getValue();
+                String existingLiteral = enumValue.getEnumLiteralNameAttributeValue().getValue();
                 return (existingLiteral == null) ? true : existingLiteral.length() == 0
                         || existingLiteral.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
             }
@@ -929,12 +943,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         @Override
         public void addListener(ILabelProviderListener listener) {
-
+            // Nothing to do.
         }
 
         @Override
         public void dispose() {
-
+            // Nothing to do.
         }
 
         @Override
@@ -944,7 +958,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         @Override
         public void removeListener(ILabelProviderListener listener) {
-
+            // Nothing to do.
         }
 
     }
@@ -982,15 +996,73 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
             int columnIndex = getColumnIndexByName(property);
             if (columnIndex != -1) {
+                IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(columnIndex);
                 // Do not modify if it is the literal name column and lock and sync is active!
-                if (lockAndSynchronizeLiteralNames) {
-                    if (enumType.getIndexOfEnumLiteralNameAttribute() == columnIndex) {
+                /*
+                 * If it is the literal name column we actually have to apply the corresponding
+                 * Faktor-IPS refactoring now since generated Java code may depend on the value!
+                 */
+                if (isLiteralNameColumn(columnIndex)) {
+                    if (lockAndSynchronizeLiteralNames) {
                         return;
                     }
+                    IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)enumAttributeValue;
+
+                    // TODO AW: Central refactoring execution needed.
+                    ProcessorBasedRefactoring renameRefactoring = literalNameValue.getRenameRefactoring();
+                    IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+                    renameProcessor.setNewName((String)value);
+
+                    final PerformRefactoringOperation workspaceOperation = new PerformRefactoringOperation(
+                            renameRefactoring, CheckConditionsOperation.ALL_CONDITIONS);
+                    ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
+                    try {
+                        dialog.run(true, false, new IRunnableWithProgress() {
+
+                            @Override
+                            public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                                    InterruptedException {
+                                try {
+                                    ResourcesPlugin.getWorkspace().run(workspaceOperation, monitor);
+                                } catch (CoreException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        });
+                    } catch (InvocationTargetException e) {
+                        IpsPlugin.log(e);
+                    } catch (InterruptedException e) {
+                        IpsPlugin.log(e);
+                    }
+
+                    final RefactoringStatus status = workspaceOperation.getConditionStatus();
+                    if (status.hasWarning()) {
+                        proceed(status, getDisplay());
+                    }
+
+                } else {
+                    enumAttributeValue.setValue((String)value);
                 }
-                enumValue.getEnumAttributeValues().get(columnIndex).setValue((String)value);
                 enumValuesTableViewer.refresh(true);
             }
+        }
+
+        private boolean proceed(RefactoringStatus status, Display display) {
+            final Dialog dialog = RefactoringUI.createRefactoringStatusDialog(status, display.getActiveShell(),
+                    "Refactoring Status", false); //$NON-NLS-1$
+            final int[] result = new int[1];
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = dialog.open();
+                }
+            };
+            display.syncExec(r);
+            return result[0] == IDialogConstants.OK_ID;
+        }
+
+        private boolean isLiteralNameColumn(int columnIndex) {
+            return enumType.getIndexOfEnumLiteralNameAttribute() == columnIndex;
         }
 
     }

@@ -96,6 +96,14 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        if (xmlTag.getTagName().equals(IEnumLiteralNameAttributeValue.XML_TAG)) {
+            return newPart(EnumLiteralNameAttributeValue.class);
+        }
+        return super.newPart(xmlTag, id);
+    }
+
+    @Override
     public int moveEnumAttributeValue(IEnumAttributeValue enumAttributeValue, boolean up) {
         ArgumentCheck.notNull(enumAttributeValue);
         int index = getIndexOfEnumAttributeValue(enumAttributeValue);

@@ -23,6 +23,7 @@ package org.faktorips.devtools.core.model.enums;
  */
 public interface IEnumLiteralNameAttributeValue extends IEnumAttributeValue {
 
-    // No special methods needed by now.
+    /** The XML tag for this <tt>IpsObjectPart</tt>. */
+    public final static String XML_TAG = "EnumLiteralNameAttributeValue"; //$NON-NLS-1$
 
 }

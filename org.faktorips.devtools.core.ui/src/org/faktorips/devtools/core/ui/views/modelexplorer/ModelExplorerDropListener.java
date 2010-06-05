@@ -129,8 +129,8 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                             }
                         });
 
-                        // TODO CD: besser den Dialog an zentraler Stelle aufrufen und nicht hier
-                        // manuell
+                        // TODO CD: better call the dialog on a more central position.
+                        // (redundancy for example in EnumValuesSection)
                         final RefactoringStatus status = workspaceOperation.getConditionStatus();
                         if (status.hasWarning()) {
                             proceed(status, event.display);

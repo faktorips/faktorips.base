@@ -103,17 +103,9 @@
             id="org.faktorips.devtools.stdbuilder.renameParticipant"
             name="StdBuilderRenameParticipant">
          <enablement>
-            <or>
-               <instanceof
-                     value="org.faktorips.devtools.core.model.type.IAttribute">
-               </instanceof>
-               <instanceof
-                     value="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
-               </instanceof>
-               <instanceof
-                     value="org.faktorips.devtools.core.model.enums.IEnumAttribute">
-               </instanceof>
-            </or></enablement>
+            <instanceof
+                  value="org.faktorips.devtools.core.model.IIpsElement">
+            </instanceof></enablement>
       </renameParticipant>
    </extension>
    <extension
