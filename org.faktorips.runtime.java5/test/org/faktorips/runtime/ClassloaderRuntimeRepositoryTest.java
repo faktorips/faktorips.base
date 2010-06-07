@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -48,7 +48,14 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
      */
     @Override
     protected void setUp() throws Exception {
-        repository = ClassloaderRuntimeRepository.create("org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
+        /**
+         * The repository loading the empty toc to include testing referenced repositories
+         */
+        repository = ClassloaderRuntimeRepository
+                .create("org/faktorips/runtime/testrepository/fake-repository-toc.xml");
+        ClassloaderRuntimeRepository mainRepository = ClassloaderRuntimeRepository
+                .create("org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
+        repository.addDirectlyReferencedRepository(mainRepository);
     }
 
     public void testGetProductComponent() {
@@ -59,7 +66,9 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
         assertNotNull(motorProductGen);
         assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
         assertEquals(Money.euro(15, 0), motorProductGen.getFixedCosts());
-        assertEquals(new DateTime(2010,1,18), motorPk.getValidTo()); // the valid to of this product component is read from the toc entry
+        assertEquals(new DateTime(2010, 1, 18), motorPk.getValidTo()); // the valid to of this
+        // product component is read
+        // from the toc entry
 
         motorPk = (MotorProduct)repository.getProductComponent("motor.MotorPlus");
         assertNotNull(motorPk);
@@ -67,7 +76,10 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
         assertNotNull(motorProductGen);
         assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
         assertEquals(Money.euro(20, 0), motorProductGen.getFixedCosts());
-        assertEquals(new DateTime(2010,1,16), motorPk.getValidTo()); // the valid to of this product component is read from the xml content of the prod. comp.
+        assertEquals(new DateTime(2010, 1, 16), motorPk.getValidTo()); // the valid to of this
+        // product component is read
+        // from the xml content of
+        // the prod. comp.
 
         HomeProduct homePk = (HomeProduct)repository.getProductComponent("home.HomeBasic");
         assertNotNull(homePk);
@@ -107,19 +119,20 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
         IProductComponentGeneration gen = repository.getProductComponentGeneration("motor.MotorPlus", null);
         assertNull(gen);
 
-        MotorProductGen motorProductGen = (MotorProductGen)repository.
-        getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2005, 1, 1));
+        MotorProductGen motorProductGen = (MotorProductGen)repository.getProductComponentGeneration("motor.MotorPlus",
+                new GregorianCalendar(2005, 1, 1));
         assertNotNull(motorProductGen);
         assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
         assertEquals(Money.euro(20, 0), motorProductGen.getFixedCosts());
 
-        motorProductGen = (MotorProductGen)repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
+        motorProductGen = (MotorProductGen)repository.getProductComponentGeneration("motor.MotorPlus",
+                new GregorianCalendar(2006, 1, 1));
         assertNotNull(motorProductGen);
         assertEquals(Decimal.valueOf("0.16"), motorProductGen.getTaxRate());
         assertEquals(Money.euro(30, 0), motorProductGen.getFixedCosts());
     }
 
-    public void testGetAllProductComponentsByType() {
+    public void testGetAllProductComponents_ByClass() {
         // get all motor products
         List<IProductComponent> list = repository.getAllProductComponents(MotorProduct.class);
         assertEquals(2, list.size());
@@ -159,7 +172,7 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
         assertNotNull(table);
     }
 
-    public void testGetAllProductComponentNames(){
+    public void testGetAllProductComponentNames() {
         List<String> allNames = repository.getAllProductComponentIds();
         assertEquals(3, allNames.size());
         assertTrue(allNames.contains("motor.MotorBasic"));
@@ -167,7 +180,7 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
         assertTrue(allNames.contains("home.HomeBasic"));
     }
 
-    public void testGetAllProductComponents(){
+    public void testGetAllProductComponents() {
         List<IProductComponent> allProductCmpts = repository.getAllProductComponents();
         assertTrue(allProductCmpts.contains(repository.getProductComponent("motor.MotorBasic")));
         assertTrue(allProductCmpts.contains(repository.getProductComponent("motor.MotorPlus")));
@@ -205,27 +218,30 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
         assertEquals(3, tests.size());
     }
 
-    public void testGetNumberOfProductComponentGenerations(){
+    public void testGetNumberOfProductComponentGenerations() {
         IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
         int number = repository.getNumberOfProductComponentGenerations(productComponent);
         assertEquals(3, number);
     }
 
-    public void testGetNextProductComponentGeneration(){
+    public void testGetNextProductComponentGeneration() {
         IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
-        MotorProductGen motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2005, Calendar.JANUARY, 1));
+        MotorProductGen motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(
+                2005, Calendar.JANUARY, 1));
         assertNotNull(motorProductGen);
 
         MotorProductGen next = (MotorProductGen)repository.getNextProductComponentGeneration(motorProductGen);
         assertEquals(new DateTime(2006, 1, 1).toDate(TimeZone.getDefault()), next.getValidFrom(TimeZone.getDefault()));
 
-        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2006, Calendar.JANUARY, 1));
+        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2006,
+                Calendar.JANUARY, 1));
         assertNotNull(motorProductGen);
 
         next = (MotorProductGen)repository.getNextProductComponentGeneration(motorProductGen);
         assertEquals(new DateTime(2007, 1, 1).toDate(TimeZone.getDefault()), next.getValidFrom(TimeZone.getDefault()));
 
-        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2007, Calendar.JANUARY, 1));
+        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2007,
+                Calendar.JANUARY, 1));
         assertNotNull(motorProductGen);
 
         next = (MotorProductGen)repository.getNextProductComponentGeneration(motorProductGen);
@@ -233,34 +249,41 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
 
     }
 
-    public void testGetPreviousProductComponentGeneration(){
+    public void testGetPreviousProductComponentGeneration() {
         IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
 
-        MotorProductGen motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2007, Calendar.JANUARY, 1));
+        MotorProductGen motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(
+                2007, Calendar.JANUARY, 1));
         MotorProductGen previous = (MotorProductGen)repository.getPreviousProductComponentGeneration(motorProductGen);
-        assertEquals(new DateTime(2006, 1, 1).toDate(TimeZone.getDefault()), previous.getValidFrom(TimeZone.getDefault()));
+        assertEquals(new DateTime(2006, 1, 1).toDate(TimeZone.getDefault()), previous.getValidFrom(TimeZone
+                .getDefault()));
 
-        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2006, Calendar.JANUARY, 1));
+        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2006,
+                Calendar.JANUARY, 1));
         previous = (MotorProductGen)repository.getPreviousProductComponentGeneration(motorProductGen);
-        assertEquals(new DateTime(2005, 1, 1).toDate(TimeZone.getDefault()), previous.getValidFrom(TimeZone.getDefault()));
+        assertEquals(new DateTime(2005, 1, 1).toDate(TimeZone.getDefault()), previous.getValidFrom(TimeZone
+                .getDefault()));
 
-        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2005, Calendar.JANUARY, 1));
+        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2005,
+                Calendar.JANUARY, 1));
         previous = (MotorProductGen)repository.getPreviousProductComponentGeneration(motorProductGen);
         assertNull(previous);
     }
 
-    public void testGetLatestProductComponentGeneration(){
+    public void testGetLatestProductComponentGeneration() {
         IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
         IProductComponentGeneration generation = repository.getLatestProductComponentGeneration(productComponent);
-        assertEquals(new DateTime(2007, 1, 1).toDate(TimeZone.getDefault()), generation.getValidFrom(TimeZone.getDefault()));
+        assertEquals(new DateTime(2007, 1, 1).toDate(TimeZone.getDefault()), generation.getValidFrom(TimeZone
+                .getDefault()));
 
     }
 
     public void testGetIpsTestCaseStartingWith() {
-        assertIpsTestCasesStartingWith("test", new String[]{"test.CalculationTest1", "test.CalculationTest2"});
-        assertIpsTestCasesStartingWith("test.CalculationTest", new String[]{"test.CalculationTest1", "test.CalculationTest2"});
-        assertIpsTestCasesStartingWith("test.CalculationTest1", new String[]{"test.CalculationTest1"});
-        assertIpsTestCasesStartingWith("test1", new String[]{});
+        assertIpsTestCasesStartingWith("test", new String[] { "test.CalculationTest1", "test.CalculationTest2" });
+        assertIpsTestCasesStartingWith("test.CalculationTest", new String[] { "test.CalculationTest1",
+                "test.CalculationTest2" });
+        assertIpsTestCasesStartingWith("test.CalculationTest1", new String[] { "test.CalculationTest1" });
+        assertIpsTestCasesStartingWith("test1", new String[] {});
     }
 
     private void assertIpsTestCasesStartingWith(String qNamePrefix, String[] testCasesExpected) {
@@ -270,7 +293,7 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
             boolean found = false;
             for (IpsTest2 ipsTest2 : result) {
                 IpsTestCase2 testCase = (IpsTestCase2)ipsTest2;
-                if (testCase.getQualifiedName().equals(element)){
+                if (testCase.getQualifiedName().equals(element)) {
                     found = true;
                     break;
                 }

@@ -389,7 +389,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     /**
      * {@inheritDoc}
      */
-    public IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt) {
+    @Override
+    public IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
         if (productCmpt == null) {
             throw new NullPointerException("The parameter productCmpt must not be null.");
         }

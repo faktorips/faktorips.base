@@ -325,11 +325,12 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     }
 
     /**
-     * {@inheritDoc}
+     * Override the default implementation for better performance. The default implementation
+     * instantiates all product component before using the class filter. In this implementation we
+     * use the information in the toc to filter the list of product components before instantiation.
      */
     @Override
-    public List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {
-        List<IProductComponent> result = new ArrayList<IProductComponent>();
+    public void getAllProductComponentsInternal(Class<?> productCmptClass, List<IProductComponent> result) {
         List<TocEntryObject> entries = toc.getProductCmptTocEntries();
         for (TocEntryObject entry : entries) {
             Class<?> clazz = getClass(entry.getImplementationClassName(), cl);
@@ -337,7 +338,6 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
                 result.add(getProductComponentInternal(entry));
             }
         }
-        return result;
     }
 
     /**
