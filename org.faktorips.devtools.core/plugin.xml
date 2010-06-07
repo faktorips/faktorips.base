@@ -195,7 +195,7 @@
    
 
    <extension
-         point="org.eclipse.core.runtime.contentTypes">
+         point="org.eclipse.core.contenttype.contentTypes">
       <!-- the ipsSrcFile content-type will be used to open the standard text editor
            if the ips object editor is not available, e.g. ips src file outside ips package -->
       <content-type
