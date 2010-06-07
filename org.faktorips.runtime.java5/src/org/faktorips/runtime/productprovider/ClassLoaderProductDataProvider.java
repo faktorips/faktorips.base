@@ -18,6 +18,7 @@ import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
@@ -29,12 +30,21 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/**
+ * The {@link ClassLoaderProductDataProvider} is a local implementation of
+ * {@link IProductDataProvider} normally for testing purpose. It getting the data similar as the
+ * {@link ClassloaderRuntimeRepository} and do not check for any real modifications. For testing you
+ * could simulate a modification by calling {@link #modify()}.
+ * 
+ * @author dirmeier
+ */
 public class ClassLoaderProductDataProvider implements IProductDataProvider {
 
     private final ClassLoader cl;
     private final DocumentBuilder docBuilder;
     private String tocResourcePath;
-    private long modificationStamp;
+    private long myTimestamp = 0;
+    private long pdsTimestamp = 0;
 
     public ClassLoaderProductDataProvider(ClassLoader cl, String tocResourcePath, DocumentBuilder docBuilder) {
         this.cl = cl;
@@ -42,12 +52,14 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
         this.docBuilder = docBuilder;
     }
 
-    public Element getProductCmptData(IProductCmptTocEntry tocEntry) {
+    public Element getProductCmptData(IProductCmptTocEntry tocEntry) throws DataModifiedException {
         String resourcePath = tocEntry.getXmlResourceName();
+        checkForModifications(tocEntry.getIpsObjectId(), myTimestamp);
         return getDocumentElement(resourcePath);
     }
 
-    public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) {
+    public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException {
+        checkForModifications(tocEntry.getParent().getIpsObjectId(), myTimestamp);
         Element docElement = getDocumentElement(tocEntry.getParent().getXmlResourceName());
         NodeList nl = docElement.getChildNodes();
         DateTime validFrom = tocEntry.getValidFrom();
@@ -63,16 +75,19 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
         throw new RuntimeException("Can't find the generation for the toc entry " + tocEntry);
     }
 
-    public Element getTestcaseElement(ITestCaseTocEntry tocEntry) {
+    public Element getTestcaseElement(ITestCaseTocEntry tocEntry) throws DataModifiedException {
+        checkForModifications(tocEntry.getIpsObjectId(), myTimestamp);
         String resourcePath = tocEntry.getXmlResourceName();
         return getDocumentElement(resourcePath);
     }
 
-    public InputStream getTableContentAsStream(ITableContentTocEntry tocEntry) {
+    public InputStream getTableContentAsStream(ITableContentTocEntry tocEntry) throws DataModifiedException {
+        checkForModifications(tocEntry.getIpsObjectId(), myTimestamp);
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
-    public InputStream getEnumContentAsStream(IEnumContentTocEntry tocEntry) {
+    public InputStream getEnumContentAsStream(IEnumContentTocEntry tocEntry) throws DataModifiedException {
+        checkForModifications(tocEntry.getIpsObjectId(), myTimestamp);
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
@@ -100,6 +115,7 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
             Element tocElement = doc.getDocumentElement();
             ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
             toc.initFromXml(tocElement);
+            myTimestamp = pdsTimestamp;
             return toc;
         } catch (Exception e) {
             throw new RuntimeException("Error creating toc from xml.", e);
@@ -135,11 +151,16 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
     }
 
     public long getModificationStamp() {
-        return modificationStamp;
+        return pdsTimestamp;
     }
 
     public void modify() {
-        modificationStamp++;
+        pdsTimestamp++;
     }
 
+    private void checkForModifications(String name, long timestamp) throws DataModifiedException {
+        if (isExpired(timestamp)) {
+            throw new DataModifiedException(name + " is expired.", this.myTimestamp, timestamp);
+        }
+    }
 }

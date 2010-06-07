@@ -27,6 +27,20 @@ import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
 import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.w3c.dom.Element;
 
+/**
+ * The {@link ProductDataProviderRuntimeRepository} is a runtime repository for product data only.
+ * It is able to parse the product data provided from a {@link IProductDataProvider} and
+ * instantiates the necessary objects.
+ * <p>
+ * Because the data from an {@link IProductDataProvider} could change over time the
+ * {@link ProductDataProviderRuntimeRepository} have to look for modifications and reinstantiates
+ * the classes if necessary. It is also important to have an expirable implementation of the cache
+ * so the {@link ProductDataProviderRuntimeRepository} uses the {@link ExpirableCacheFactory} to
+ * create the cache objects.
+ * 
+ * @author dirmeier
+ */
+
 public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
 
     private final IProductDataProvider productDataProvider;

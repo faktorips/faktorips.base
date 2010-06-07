@@ -13,6 +13,11 @@
 
 package org.faktorips.runtime.productprovider;
 
+/**
+ * Exception thrown if the requested data is expired
+ * 
+ * @author dirmeier
+ */
 public class DataModifiedException extends Exception {
 
     /**
