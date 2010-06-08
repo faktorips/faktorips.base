@@ -38,8 +38,6 @@ import java.util.Map;
  * 
  * @author Peter Erzberger
  */
-@SuppressWarnings("unchecked")
-// TODO change table model to generic?
 public class ReadOnlyBinaryRangeTree implements Serializable {
 
     private static final long serialVersionUID = -5127537049885131034L;
@@ -73,31 +71,6 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
          */
         KEY_IS_TWO_COLUMN_KEY
     }
-
-    /**
-     * Indicates that the keys are meant to be the lower bound of a range.
-     */
-    public static final KeyType KEY_IS_LOWER_BOUND = KeyType.KEY_IS_LOWER_BOUND;
-
-    /**
-     * Indicates that the keys are meant to be the lower bound of a range including the lower bound.
-     */
-    public static final KeyType KEY_IS_LOWER_BOUND_EQUAL = KeyType.KEY_IS_LOWER_BOUND_EQUAL;
-
-    /**
-     * Indicates that the keys are meant to be the upper bound of a range.
-     */
-    public static final KeyType KEY_IS_UPPER_BOUND = KeyType.KEY_IS_UPPER_BOUND;
-
-    /**
-     * Indicates that the keys are meant to be the upper bound of a range including the upper bound.
-     */
-    public static final KeyType KEY_IS_UPPER_BOUND_EQUAL = KeyType.KEY_IS_UPPER_BOUND_EQUAL;
-
-    /**
-     * Indicates that the keys represent Instances of the inner class TwoColumnKey.
-     */
-    public static final KeyType KEY_IS_TWO_COLUMN_KEY = KeyType.KEY_IS_TWO_COLUMN_KEY;
 
     // the root node of the tree. The variable is protected to be able to test the created tree
     protected Node root;
@@ -202,7 +175,7 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
      */
     public Object getValue(Comparable key) {
         NodeVisitor visitor;
-        if (keyType == KEY_IS_TWO_COLUMN_KEY) {
+        if (keyType == KeyType.KEY_IS_TWO_COLUMN_KEY) {
             visitor = new TwoColumnNodeVisitor();
         } else {
             visitor = new OneColumnNodeVisitor(keyType);

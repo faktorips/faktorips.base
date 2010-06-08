@@ -13,10 +13,12 @@
 
 package org.faktorips.runtime.internal.formula.groovy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.faktorips.runtime.internal.formula.IFormulaEvaluator;
-import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 
 /**
  * Testing the {@link GroovyEvaluator}
@@ -33,15 +35,15 @@ public class GroovyEvaluatorTest extends TestCase {
     }
 
     public void testEvaluate() {
-        IFormulaEvaluatorBuilder builder = new GroovyEvaluator.Builder().thiz(this);
+        List<String> expressions = new ArrayList<String>();
         String formulaMethod = "public int add() {" + "return this.var1 + this.var2" + "}";
-        builder.addFormula(formulaMethod);
+        expressions.add(formulaMethod);
         formulaMethod = "public String getString(String param) {" + "return param" + "}";
-        builder.addFormula(formulaMethod);
+        expressions.add(formulaMethod);
         formulaMethod = "import org.faktorips.runtime.internal.formula.groovy.GroovyEvaluatorTest.OtherClass;"
                 + "public String getString() {" + "return new OtherClass().anyMethod()" + "}";
-        builder.addFormula(formulaMethod);
-        IFormulaEvaluator evaluator = builder.build();
+        expressions.add(formulaMethod);
+        IFormulaEvaluator evaluator = new GroovyEvaluator(this, expressions);
 
         var1 = 1;
         var2 = 3;

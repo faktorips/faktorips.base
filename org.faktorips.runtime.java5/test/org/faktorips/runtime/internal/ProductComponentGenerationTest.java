@@ -20,8 +20,7 @@ import java.util.Map;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
-import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
-import org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator;
+import org.faktorips.runtime.internal.formula.FormulaEvaluatorFactory;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
@@ -118,8 +117,13 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
     private class InternalRuntimeRepository extends InMemoryRuntimeRepository {
 
         @Override
-        public IFormulaEvaluatorBuilder getFormulaEvaluatorBuilder() {
-            return new GroovyEvaluator.Builder();
+        public FormulaEvaluatorFactory getFormulaEvaluatorFactory() {
+            try {
+                return new FormulaEvaluatorFactory(getClassLoader(),
+                        "org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator");
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }

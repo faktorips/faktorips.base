@@ -54,12 +54,12 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
 
     public Element getProductCmptData(IProductCmptTocEntry tocEntry) throws DataModifiedException {
         String resourcePath = tocEntry.getXmlResourceName();
-        checkForModifications(tocEntry.getIpsObjectId(), myTimestamp);
+        checkForModifications(tocEntry.getIpsObjectId(), pdsTimestamp);
         return getDocumentElement(resourcePath);
     }
 
     public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getParent().getIpsObjectId(), myTimestamp);
+        checkForModifications(tocEntry.getParent().getIpsObjectId(), pdsTimestamp);
         Element docElement = getDocumentElement(tocEntry.getParent().getXmlResourceName());
         NodeList nl = docElement.getChildNodes();
         DateTime validFrom = tocEntry.getValidFrom();
@@ -76,18 +76,18 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
     }
 
     public Element getTestcaseElement(ITestCaseTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), myTimestamp);
+        checkForModifications(tocEntry.getIpsObjectId(), pdsTimestamp);
         String resourcePath = tocEntry.getXmlResourceName();
         return getDocumentElement(resourcePath);
     }
 
     public InputStream getTableContentAsStream(ITableContentTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), myTimestamp);
+        checkForModifications(tocEntry.getIpsObjectId(), pdsTimestamp);
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
     public InputStream getEnumContentAsStream(IEnumContentTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), myTimestamp);
+        checkForModifications(tocEntry.getIpsObjectId(), pdsTimestamp);
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
@@ -159,7 +159,7 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
     }
 
     private void checkForModifications(String name, long timestamp) throws DataModifiedException {
-        if (isExpired(timestamp)) {
+        if (myTimestamp != timestamp) {
             throw new DataModifiedException(name + " is expired.", this.myTimestamp, timestamp);
         }
     }

@@ -37,7 +37,7 @@ import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.runtime.internal.formula.IFormulaEvaluator;
+import org.faktorips.runtime.internal.formula.AbstractFormulaEvaluator;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -91,7 +91,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
             IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
             if (method != null) {
                 Element formulaElement = (Element)formulaElements.item(formulaIndex);
-                Element javaExpression = document.createElement(IFormulaEvaluator.EXPRESSION_XML_TAG);
+                Element javaExpression = document.createElement(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
                 JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder().appendln();
                 IProductCmptTypeMethod formulaSignature = formula.findFormulaSignature(getIpsProject());
                 JavaCodeFragment formulaFragment = productCmptGenerationImplBuilder.getGenerationBuilder()

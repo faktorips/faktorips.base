@@ -17,8 +17,7 @@ import java.io.InputStream;
 
 import org.faktorips.runtime.AbstractClassLoaderRuntimeRepository;
 import org.faktorips.runtime.ExpirableCacheFactory;
-import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
-import org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator;
+import org.faktorips.runtime.internal.formula.FormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
@@ -44,16 +43,23 @@ import org.w3c.dom.Element;
 public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
 
     private final IProductDataProvider productDataProvider;
+    private final String formulaEvaluatorClass;
 
-    public ProductDataProviderRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider) {
+    public ProductDataProviderRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider,
+            String formulaEvaluatorClass) {
         super(name, new ExpirableCacheFactory(productDataProvider), cl);
         this.productDataProvider = productDataProvider;
+        this.formulaEvaluatorClass = formulaEvaluatorClass;
         reload();
     }
 
     @Override
-    public IFormulaEvaluatorBuilder getFormulaEvaluatorBuilder() {
-        return new GroovyEvaluator.Builder();
+    public FormulaEvaluatorFactory getFormulaEvaluatorFactory() {
+        try {
+            return new FormulaEvaluatorFactory(getClassLoader(), formulaEvaluatorClass);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not instantiate formula evaluator", e);
+        }
     }
 
     @Override

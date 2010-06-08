@@ -26,8 +26,9 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
+import org.faktorips.runtime.internal.formula.AbstractFormulaEvaluator;
+import org.faktorips.runtime.internal.formula.FormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.formula.IFormulaEvaluator;
-import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -167,24 +168,29 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * 
      */
     protected void doInitFormulaFromXml(Element genElement) {
-        IFormulaEvaluatorBuilder formulaEvaluatorBuilder;
         if (getRepository() != null) {
-            formulaEvaluatorBuilder = getRepository().getFormulaEvaluatorBuilder();
-            if (formulaEvaluatorBuilder != null) {
+            FormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
+            if (factory != null) {
+                List<String> expressions = new ArrayList<String>();
                 NodeList formulas = genElement.getElementsByTagName("Formula");
                 for (int i = 0; i < formulas.getLength(); i++) {
                     Element aFormula = (Element)formulas.item(i);
                     String name = aFormula.getAttribute("formulaSignature");
-                    NodeList nodeList = aFormula.getElementsByTagName(IFormulaEvaluator.EXPRESSION_XML_TAG);
+                    NodeList nodeList = aFormula
+                            .getElementsByTagName(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
                     if (nodeList.getLength() == 1) {
                         Element expression = (Element)nodeList.item(0);
                         String formulaExpression = expression.getTextContent();
-                        formulaEvaluatorBuilder.addFormula(formulaExpression);
+                        expressions.add(formulaExpression);
                     } else {
                         throw new RuntimeException("Expression for Formula: " + name + " not found");
                     }
                 }
-                formulaEvaluator = formulaEvaluatorBuilder.thiz(this).build();
+                try {
+                    formulaEvaluator = factory.createFormulaEvaluatorBuilder(this, expressions);
+                } catch (Exception e) {
+                    throw new RuntimeException("Could not instantiate formula evaluator", e);
+                }
             }
         }
     }

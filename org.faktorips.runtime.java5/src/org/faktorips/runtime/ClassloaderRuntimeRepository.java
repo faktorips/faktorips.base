@@ -373,7 +373,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
         try {
             builder = factory.newDocumentBuilder();
         } catch (ParserConfigurationException e1) {
-            throw new RuntimeException("Error creaing document builder.", e1);
+            throw new RuntimeException("Error creating document builder.", e1);
         }
         builder.setErrorHandler(new ErrorHandler() {
             public void error(SAXParseException e) throws SAXException {

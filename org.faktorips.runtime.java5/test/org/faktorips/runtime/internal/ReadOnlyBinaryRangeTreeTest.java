@@ -32,7 +32,8 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         map.put(new TwoColumnKey("a", "c"), new Integer(42));
         map.put(new TwoColumnKey("d", "z"), new Integer(43));
 
-        ReadOnlyBinaryRangeTree tree = new ReadOnlyBinaryRangeTree(map, ReadOnlyBinaryRangeTree.KEY_IS_TWO_COLUMN_KEY);
+        ReadOnlyBinaryRangeTree tree = new ReadOnlyBinaryRangeTree(map,
+                ReadOnlyBinaryRangeTree.KeyType.KEY_IS_TWO_COLUMN_KEY);
         assertEquals(new Integer(43), tree.getValue("m"));
     }
 
@@ -43,7 +44,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         map.put("x", new Integer(44));
 
         ReadOnlyBinaryRangeTree tree = new ReadOnlyBinaryRangeTree(map,
-                ReadOnlyBinaryRangeTree.KEY_IS_LOWER_BOUND_EQUAL);
+                ReadOnlyBinaryRangeTree.KeyType.KEY_IS_LOWER_BOUND_EQUAL);
         assertEquals(new Integer(42), tree.getValue("l"));
         assertEquals(new Integer(43), tree.getValue("o"));
     }
@@ -169,7 +170,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
 
     public void testLowerBoundEqualGetValue() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(10, 10, 10,
-                ReadOnlyBinaryRangeTree.KEY_IS_LOWER_BOUND_EQUAL);
+                ReadOnlyBinaryRangeTree.KeyType.KEY_IS_LOWER_BOUND_EQUAL);
 
         Integer lowerBound = (Integer)tree.getValue(new Integer(5));
         assertNull(lowerBound);
@@ -195,7 +196,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
 
     public void testLowerBoundGetValue() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(10, 10, 10,
-                ReadOnlyBinaryRangeTree.KEY_IS_LOWER_BOUND);
+                ReadOnlyBinaryRangeTree.KeyType.KEY_IS_LOWER_BOUND);
 
         Integer lowerBound = (Integer)tree.getValue(new Integer(10));
         assertNull(lowerBound);
@@ -207,7 +208,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
 
     public void testUpperBoundEqualGetValue() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(10, 10, 10,
-                ReadOnlyBinaryRangeTree.KEY_IS_UPPER_BOUND_EQUAL);
+                ReadOnlyBinaryRangeTree.KeyType.KEY_IS_UPPER_BOUND_EQUAL);
 
         Integer upperBound = (Integer)tree.getValue(new Integer(5));
         assertEquals(new Integer(10), upperBound);
@@ -236,7 +237,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
 
     public void testUpperBoundGetValue() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(10, 10, 10,
-                ReadOnlyBinaryRangeTree.KEY_IS_UPPER_BOUND);
+                ReadOnlyBinaryRangeTree.KeyType.KEY_IS_UPPER_BOUND);
 
         Integer upperBound = (Integer)tree.getValue(new Integer(10));
         assertEquals(new Integer(20), upperBound);
@@ -304,7 +305,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
                 int startPos,
                 int rangWidth) {
             return createTreeWidthIntegerValues(nodeCount, startPos, rangWidth,
-                    ReadOnlyBinaryRangeTree.KEY_IS_LOWER_BOUND_EQUAL);
+                    ReadOnlyBinaryRangeTree.KeyType.KEY_IS_LOWER_BOUND_EQUAL);
         }
 
         private static TestReadOnlyBinaryRangTree createTreeWidthIntegerValues(int nodeCount,
@@ -327,7 +328,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         /**
          */
         public TestTwoColumnReadOnlyBinaryRangeTree(Map map) {
-            super(map, ReadOnlyBinaryRangeTree.KEY_IS_TWO_COLUMN_KEY);
+            super(map, ReadOnlyBinaryRangeTree.KeyType.KEY_IS_TWO_COLUMN_KEY);
         }
 
         private static TestTwoColumnReadOnlyBinaryRangeTree createTreeWithIntegerValues(int nodeCount,

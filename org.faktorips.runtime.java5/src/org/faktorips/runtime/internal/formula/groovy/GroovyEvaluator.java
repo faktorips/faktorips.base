@@ -17,12 +17,9 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.runtime.internal.formula.AbstractFormulaEvaluator;
-import org.faktorips.runtime.internal.formula.IFormulaEvaluator;
-import org.faktorips.runtime.internal.formula.IFormulaEvaluatorBuilder;
 
 public class GroovyEvaluator extends AbstractFormulaEvaluator {
 
@@ -32,11 +29,11 @@ public class GroovyEvaluator extends AbstractFormulaEvaluator {
 
     private Script groovyScript;
 
-    private GroovyEvaluator(Builder builder) {
-        super(builder.thiz);
-        setVariable(THIS_CLASS_VAR, builder.thiz);
+    public GroovyEvaluator(Object thiz, List<String> compiledExpressions) {
+        super(thiz);
+        setVariable(THIS_CLASS_VAR, thiz);
         GroovyShell groovyShell = new GroovyShell(binding);
-        String sourceCode = getSourceCode(builder.formulaList);
+        String sourceCode = getSourceCode(compiledExpressions);
         groovyScript = groovyShell.parse(sourceCode);
     }
 
@@ -57,31 +54,6 @@ public class GroovyEvaluator extends AbstractFormulaEvaluator {
     @Override
     protected Object evaluateInternal(String formularName, Object... parameters) {
         return groovyScript.invokeMethod(formularName, parameters);
-    }
-
-    public static class Builder implements IFormulaEvaluatorBuilder {
-
-        private Object thiz;
-
-        private List<String> formulaList = new ArrayList<String>(1);
-
-        public Builder thiz(Object thiz) {
-            this.thiz = thiz;
-            return this;
-        }
-
-        public IFormulaEvaluator build() {
-            if (thiz == null) {
-                throw new IllegalStateException("The variable thiz have to be set");
-            }
-            return new GroovyEvaluator(this);
-        }
-
-        public IFormulaEvaluatorBuilder addFormula(String formulaCode) {
-            formulaList.add(formulaCode);
-            return this;
-        }
-
     }
 
 }

@@ -24,9 +24,14 @@ import org.w3c.dom.Element;
  */
 public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
 
+    public static final String COMPILED_EXPRESSION_XML_TAG = "compiledExpression";
+
     private final Object thiz;
 
     public AbstractFormulaEvaluator(Object thiz) {
+        if (thiz == null) {
+            throw new IllegalStateException("The variable thiz have to be set");
+        }
         this.thiz = thiz;
     }
 
