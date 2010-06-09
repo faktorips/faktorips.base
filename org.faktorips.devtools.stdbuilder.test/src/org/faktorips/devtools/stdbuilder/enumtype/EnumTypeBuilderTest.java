@@ -20,7 +20,10 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 
@@ -55,7 +58,6 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
         enumType.setAbstract(true);
         enumType.setContainingValues(true);
-        enumType.setEnumContentName("DoesNotMatter");
         enumType.setSuperEnumType(superEnumType.getQualifiedName());
         idAttribute = enumType.newEnumAttribute();
         idAttribute.setName("id");
@@ -148,6 +150,23 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         expectGetterMethod(inheritedAttribute, false);
         expectGetValueByMethod(inheritedAttribute, false);
         expectIsValueByMethod(inheritedAttribute, false);
+    }
+
+    public void testGetGeneratedJavaElementsForLiteralNameAttributeValue() throws CoreException {
+        enumType.setAbstract(false);
+
+        IEnumLiteralNameAttribute literalAttribute = enumType.newEnumLiteralNameAttribute();
+        literalAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
+        IEnumValue enumValue = enumType.newEnumValue();
+        enumValue.setEnumAttributeValue(0, "id");
+        enumValue.setEnumAttributeValue(1, "name");
+        enumValue.setEnumAttributeValue(2, "false");
+        enumValue.setEnumAttributeValue(3, "NAME");
+
+        IEnumLiteralNameAttributeValue literalNameAttributeValue = enumValue.getEnumLiteralNameAttributeValue();
+        generatedJavaElements = builder.getGeneratedJavaElements(literalNameAttributeValue);
+        assertEquals(1, generatedJavaElements.size());
+        assertTrue(generatedJavaElements.contains(javaEnum.getField("NAME")));
     }
 
     private void expectMemberVar(IEnumAttribute enumAttribute, boolean shallExist) {
