@@ -26,11 +26,6 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     public void testCheckInitialConditionsValid() throws OperationCanceledException, CoreException {

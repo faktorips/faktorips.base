@@ -35,7 +35,10 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -165,6 +168,10 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     protected IEnumContent enumContent;
 
+    protected IEnumType valuedEnumType;
+
+    protected IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue;
+
     protected ITableStructure tableStructure;
 
     protected ITableContents tableContents;
@@ -283,6 +290,32 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         enumAttribute.setIdentifier(true);
         enumAttribute.setUnique(true);
         enumAttribute.setUsedAsNameInFaktorIpsUi(true);
+
+        valuedEnumType = newEnumType(ipsProject, "ValuedEnumType");
+        valuedEnumType.setAbstract(false);
+        valuedEnumType.setContainingValues(true);
+
+        IEnumAttribute idAttribute = valuedEnumType.newEnumAttribute();
+        idAttribute.setName("id");
+        idAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttribute.setIdentifier(true);
+        idAttribute.setUnique(true);
+
+        IEnumAttribute nameAttribute = valuedEnumType.newEnumAttribute();
+        nameAttribute.setName("name");
+        nameAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        nameAttribute.setUnique(true);
+        nameAttribute.setUsedAsNameInFaktorIpsUi(true);
+
+        IEnumLiteralNameAttribute literalAttribute = valuedEnumType.newEnumLiteralNameAttribute();
+        literalAttribute.setDefaultValueProviderAttribute("name");
+
+        IEnumValue enumValue = valuedEnumType.newEnumValue();
+        enumValue.setEnumAttributeValue(0, "0");
+        enumValue.setEnumAttributeValue(1, "foo");
+        enumValue.setEnumAttributeValue(2, "FOO");
+
+        enumLiteralNameAttributeValue = enumValue.getEnumLiteralNameAttributeValue();
     }
 
     private void createTableModel() throws CoreException {
