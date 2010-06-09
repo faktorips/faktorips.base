@@ -208,6 +208,6 @@ public interface IEnumValue extends IIpsObjectPart {
      * or <tt>null</tt> if there exists none or this <tt>IEnumValue</tt> is part of an
      * <tt>IEnumContent</tt>.
      */
-    public IEnumAttributeValue getEnumLiteralNameAttributeValue();
+    public IEnumLiteralNameAttributeValue getEnumLiteralNameAttributeValue();
 
 }

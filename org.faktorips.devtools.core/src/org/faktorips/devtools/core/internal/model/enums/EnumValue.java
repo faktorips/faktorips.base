@@ -256,13 +256,13 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
-    public IEnumAttributeValue getEnumLiteralNameAttributeValue() {
+    public IEnumLiteralNameAttributeValue getEnumLiteralNameAttributeValue() {
         if (!(getEnumValueContainer() instanceof IEnumType)) {
             return null;
         }
         for (IEnumAttributeValue enumAttributeValue : enumAttributeValues) {
             if (enumAttributeValue.isEnumLiteralNameAttributeValue()) {
-                return enumAttributeValue;
+                return (IEnumLiteralNameAttributeValue)enumAttributeValue;
             }
         }
         return null;
