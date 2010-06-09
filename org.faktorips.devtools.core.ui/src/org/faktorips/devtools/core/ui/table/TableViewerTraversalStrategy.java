@@ -184,7 +184,10 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     @Override
     protected void editCell(int rowIndex, int columnIndex) {
         if (columnIndex != getColumnIndex() || rowIndex != getCurrentRow()) {
-            tableViewer.editElement(tableViewer.getElementAt(rowIndex), columnIndex);
+            Object element = tableViewer.getElementAt(rowIndex);
+            if (element != null) {
+                tableViewer.editElement(element, columnIndex);
+            }
         }
     }
 
