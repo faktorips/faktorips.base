@@ -17,24 +17,16 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
-import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
-import org.eclipse.ltk.ui.refactoring.RefactoringUI;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -45,6 +37,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
+import org.faktorips.devtools.core.ui.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 
 public class ModelExplorerDropListener extends IpsElementDropListener {
@@ -92,6 +85,8 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         if (!FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
             return;
         }
+
+        Shell shell = event.display.getActiveShell();
         try {
             Object target = getTarget(event);
             Object[] sources = getTransferedElements(event.currentDataType);
@@ -113,28 +108,8 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                         IIpsMoveProcessor moveProcessor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
                         moveProcessor.setTargetIpsPackageFragment((IIpsPackageFragment)target);
 
-                        final PerformRefactoringOperation workspaceOperation = new PerformRefactoringOperation(
-                                moveRefactoring, CheckConditionsOperation.ALL_CONDITIONS);
-                        ProgressMonitorDialog dialog = new ProgressMonitorDialog(event.display.getActiveShell());
-                        dialog.run(true, false, new IRunnableWithProgress() {
-
-                            @Override
-                            public void run(IProgressMonitor monitor) throws InvocationTargetException,
-                                    InterruptedException {
-                                try {
-                                    ResourcesPlugin.getWorkspace().run(workspaceOperation, monitor);
-                                } catch (CoreException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        });
-
-                        // TODO CD: better call the dialog on a more central position.
-                        // (redundancy for example in EnumValuesSection)
-                        final RefactoringStatus status = workspaceOperation.getConditionStatus();
-                        if (status.hasWarning()) {
-                            proceed(status, event.display);
-                        }
+                        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(moveRefactoring, shell);
+                        refactorOp.execute();
                     }
 
                     return;
@@ -155,14 +130,13 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                 return;
             }
 
-            ProgressMonitorDialog dialog = new ProgressMonitorDialog(event.display.getActiveShell());
+            ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
             // Run the operation with fork = true to ensure UI responsiveness.
             dialog.run(true, false, new ModifyOperation(moveOp));
         } catch (CoreException e) {
             IStatus status = e.getStatus();
             if (status instanceof IpsStatus) {
-                MessageDialog.openError(event.display.getActiveShell(), Messages.ModelExplorer_errorTitle,
-                        ((IpsStatus)status).getMessage());
+                MessageDialog.openError(shell, Messages.ModelExplorer_errorTitle, ((IpsStatus)status).getMessage());
             } else {
                 IpsPlugin.log(e);
             }
@@ -171,20 +145,6 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         } catch (InterruptedException e) {
             IpsPlugin.log(e);
         }
-    }
-
-    private boolean proceed(RefactoringStatus status, Display display) {
-        final Dialog dialog = RefactoringUI.createRefactoringStatusDialog(status, display.getActiveShell(),
-                "Refactoring Status", false); //$NON-NLS-1$
-        final int[] result = new int[1];
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                result[0] = dialog.open();
-            }
-        };
-        display.syncExec(r);
-        return result[0] == IDialogConstants.OK_ID;
     }
 
     private Object getTarget(DropTargetEvent event) {

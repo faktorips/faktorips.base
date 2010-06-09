@@ -13,23 +13,16 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -40,11 +33,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
-import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
-import org.eclipse.ltk.ui.refactoring.RefactoringUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -56,7 +45,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
@@ -86,6 +74,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.ui.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -997,10 +986,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             int columnIndex = getColumnIndexByName(property);
             if (columnIndex != -1) {
                 IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(columnIndex);
-                // Do not modify if it is the literal name column and lock and sync is active!
+
                 /*
-                 * If it is the literal name column we actually have to apply the corresponding
-                 * Faktor-IPS refactoring now since generated Java code may depend on the value!
+                 * Do not modify if it is the literal name column and the lock and sync option is
+                 * active!
                  */
                 if (isLiteralNameColumn(columnIndex)) {
                     if (lockAndSynchronizeLiteralNames) {
@@ -1008,57 +997,22 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     }
                     IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)enumAttributeValue;
 
-                    // TODO AW: Central refactoring execution needed.
+                    /*
+                     * If it is the literal name column we actually have to apply the corresponding
+                     * Faktor-IPS refactoring now since generated Java code may depend on the value!
+                     */
                     ProcessorBasedRefactoring renameRefactoring = literalNameValue.getRenameRefactoring();
                     IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
                     renameProcessor.setNewName((String)value);
 
-                    final PerformRefactoringOperation workspaceOperation = new PerformRefactoringOperation(
-                            renameRefactoring, CheckConditionsOperation.ALL_CONDITIONS);
-                    ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
-                    try {
-                        dialog.run(true, false, new IRunnableWithProgress() {
-
-                            @Override
-                            public void run(IProgressMonitor monitor) throws InvocationTargetException,
-                                    InterruptedException {
-                                try {
-                                    ResourcesPlugin.getWorkspace().run(workspaceOperation, monitor);
-                                } catch (CoreException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        });
-                    } catch (InvocationTargetException e) {
-                        IpsPlugin.log(e);
-                    } catch (InterruptedException e) {
-                        IpsPlugin.log(e);
-                    }
-
-                    final RefactoringStatus status = workspaceOperation.getConditionStatus();
-                    if (status.hasWarning()) {
-                        proceed(status, getDisplay());
-                    }
+                    IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
+                    refactorOp.execute();
 
                 } else {
                     enumAttributeValue.setValue((String)value);
                 }
                 enumValuesTableViewer.refresh(true);
             }
-        }
-
-        private boolean proceed(RefactoringStatus status, Display display) {
-            final Dialog dialog = RefactoringUI.createRefactoringStatusDialog(status, display.getActiveShell(),
-                    "Refactoring Status", false); //$NON-NLS-1$
-            final int[] result = new int[1];
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    result[0] = dialog.open();
-                }
-            };
-            display.syncExec(r);
-            return result[0] == IDialogConstants.OK_ID;
         }
 
         private boolean isLiteralNameColumn(int columnIndex) {
