@@ -17,7 +17,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.faktorips.runtime.IValidationContext;
@@ -229,6 +232,51 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(policyClass.getMethod("getRenamedProduct", new String[0]).exists());
         assertTrue(policyClass.getMethod("getRenamedProductGen", new String[0]).exists());
         assertTrue(policyClass.getMethod("setRenamedProduct", new String[] { "QIRenamedProduct;", "Z" }).exists());
+    }
+
+    public void testRenameEnumLiteralNameAttributeValueJava5Enums() throws CoreException {
+        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
+        performTestRenameEnumLiteralNameAttributeValue();
+    }
+
+    public void testRenameEnumLiteralNameAttributeValue() throws CoreException {
+        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
+        performTestRenameEnumLiteralNameAttributeValue();
+    }
+
+    private void performTestRenameEnumLiteralNameAttributeValue() throws CoreException {
+        IEnumType valuedEnumType = newEnumType(ipsProject, "ValuedEnumType");
+        valuedEnumType.setAbstract(false);
+        valuedEnumType.setContainingValues(true);
+
+        IEnumAttribute idAttribute = valuedEnumType.newEnumAttribute();
+        idAttribute.setName("id");
+        idAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttribute.setIdentifier(true);
+        idAttribute.setUnique(true);
+
+        IEnumAttribute nameAttribute = valuedEnumType.newEnumAttribute();
+        nameAttribute.setName("name");
+        nameAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        nameAttribute.setUnique(true);
+        nameAttribute.setUsedAsNameInFaktorIpsUi(true);
+
+        IEnumLiteralNameAttribute literalAttribute = valuedEnumType.newEnumLiteralNameAttribute();
+        literalAttribute.setDefaultValueProviderAttribute("name");
+
+        IEnumValue enumValue = valuedEnumType.newEnumValue();
+        enumValue.setEnumAttributeValue(0, "0");
+        enumValue.setEnumAttributeValue(1, "foo");
+        enumValue.setEnumAttributeValue(2, "FOO");
+
+        performFullBuild();
+        IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue = enumValue.getEnumLiteralNameAttributeValue();
+        performRenameRefactoring(enumLiteralNameAttributeValue, "bar");
+
+        IType javaType = getJavaType("", "ValuedEnumType", true, false);
+        assertFalse(javaType.getField("FOO").exists());
+        assertFalse(javaType.getField("bar").exists());
+        assertTrue(javaType.getField("BAR").exists());
     }
 
     public void testRenameEnumType() throws CoreException {
