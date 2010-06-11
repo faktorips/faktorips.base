@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.ui,
  org.faktorips.devtools.core.ui,
  org.eclipse.jdt.core,
  org.eclipse.ui.forms,
- org.faktorips.valuetypes,
+ org.faktorips.valuetypes.java5,
  org.eclipse.ui.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

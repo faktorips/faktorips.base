@@ -11,5 +11,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.faktorips.devtools.core,
  org.faktorips.devtools.core.test,
  org.faktorips.devtools.tableconversion,
- org.faktorips.valuetypes,
+ org.faktorips.valuetypes.java5,
  org.junit;bundle-version="3.8.2"

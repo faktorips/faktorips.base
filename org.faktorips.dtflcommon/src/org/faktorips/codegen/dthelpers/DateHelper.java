@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.values.DateUtil;
-import org.faktorips.valueset.DateRange;
 
 /**
  * 
@@ -89,11 +88,7 @@ public class DateHelper extends AbstractDatatypeHelper {
      */
     @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-        if (useTypesafeCollections) {
-            return Java5ClassNames.DefaultRange_QualifiedName + "<" + Date.class.getName() + ">";
-        } else {
-            return DateRange.class.getName();
-        }
+        return Java5ClassNames.DefaultRange_QualifiedName + "<" + Date.class.getName() + ">";
     }
 
     /**

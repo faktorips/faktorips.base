@@ -18,7 +18,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.valueset.DefaultEnumValueSet;
 
 /**
  * Abstract base class for datatype helpers.
@@ -148,41 +147,19 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
             boolean containsNull,
             boolean useTypesafeCollections) {
         JavaCodeFragment frag = new JavaCodeFragment();
-        if (useTypesafeCollections) {
-            frag.append("new ");
-            frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
-            frag.append("<");
-            frag.appendClassName(getJavaClassName());
-            frag.append(">(");
-            frag.append(containsNull);
+        frag.append("new ");
+        frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
+        frag.append("<");
+        frag.appendClassName(getJavaClassName());
+        frag.append(">(");
+        frag.append(containsNull);
+        frag.append(", ");
+        frag.append(newInstance(null));
+        for (String value : values) {
             frag.append(", ");
-            frag.append(newInstance(null));
-            for (String value : values) {
-                frag.append(", ");
-                frag.append(newInstance(value));
-            }
-            frag.appendln(")");
-        } else {
-            frag.append("new ");
-            frag.appendClassName(DefaultEnumValueSet.class);
-            frag.append("(");
-            frag.append("new ");
-            frag.appendClassName(getJavaClassName());
-            frag.append("[] ");
-            frag.appendOpenBracket();
-            for (int i = 0; i < values.length; i++) {
-                if (i > 0) {
-                    frag.append(", ");
-                }
-                frag.append(newInstance(values[i]));
-            }
-            frag.appendCloseBracket();
-            frag.append(", ");
-            frag.append(containsNull);
-            frag.append(", ");
-            frag.append(newInstance(null));
-            frag.appendln(")");
+            frag.append(newInstance(value));
         }
+        frag.appendln(")");
         return frag;
     }
 
@@ -194,14 +171,10 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
             boolean useTypesafeCollections) {
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.append("new ");
-        if (useTypesafeCollections) {
-            frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
-            frag.append("<");
-            frag.appendClassName(getJavaClassName());
-            frag.append(">");
-        } else {
-            frag.appendClassName(DefaultEnumValueSet.class);
-        }
+        frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
+        frag.append("<");
+        frag.appendClassName(getJavaClassName());
+        frag.append(">");
         frag.append("(");
         frag.append(valueCollection);
         frag.append(", ");
