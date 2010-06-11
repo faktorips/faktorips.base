@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 import org.faktorips.runtime.AbstractClassLoaderRuntimeRepository;
 import org.faktorips.runtime.ExpirableCacheFactory;
-import org.faktorips.runtime.internal.formula.FormulaEvaluatorFactory;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
@@ -43,20 +43,20 @@ import org.w3c.dom.Element;
 public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
 
     private final IProductDataProvider productDataProvider;
-    private final String formulaEvaluatorClass;
+    private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
     public ProductDataProviderRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider,
-            String formulaEvaluatorClass) {
+            IFormulaEvaluatorFactory formulaEvaluatorFactory) {
         super(name, new ExpirableCacheFactory(productDataProvider), cl);
         this.productDataProvider = productDataProvider;
-        this.formulaEvaluatorClass = formulaEvaluatorClass;
+        this.formulaEvaluatorFactory = formulaEvaluatorFactory;
         reload();
     }
 
     @Override
-    public FormulaEvaluatorFactory getFormulaEvaluatorFactory() {
+    public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
         try {
-            return new FormulaEvaluatorFactory(getClassLoader(), formulaEvaluatorClass);
+            return formulaEvaluatorFactory;
         } catch (Exception e) {
             throw new RuntimeException("Could not instantiate formula evaluator", e);
         }
@@ -91,7 +91,11 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRun
 
     @Override
     protected String getProductComponentGenerationImplClass(GenerationTocEntry tocEntry) {
-        return tocEntry.getParent().getGenerationImplClassName();
+        if (formulaEvaluatorFactory != null) {
+            return tocEntry.getParent().getGenerationImplClassName();
+        } else {
+            return tocEntry.getImplementationClassName();
+        }
     }
 
     @Override

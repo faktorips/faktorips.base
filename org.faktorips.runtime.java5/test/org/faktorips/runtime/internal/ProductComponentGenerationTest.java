@@ -20,7 +20,6 @@ import java.util.Map;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
-import org.faktorips.runtime.internal.formula.FormulaEvaluatorFactory;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
@@ -32,7 +31,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
 
     @Override
     public void setUp() {
-        repository = new InternalRuntimeRepository();
+        repository = new InMemoryRuntimeRepository();
         pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
         gen = new TestProductCmptGeneration(pc);
     }
@@ -107,24 +106,4 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
 
     }
 
-    public void testFormulaEvaluation() {
-        Element genEl = getTestDocument().getDocumentElement();
-        gen.doInitFormulaFromXml(genEl);
-        int result = gen.computeTestFormula(123, "abc");
-        assertEquals(1, result);
-    }
-
-    private class InternalRuntimeRepository extends InMemoryRuntimeRepository {
-
-        @Override
-        public FormulaEvaluatorFactory getFormulaEvaluatorFactory() {
-            try {
-                return new FormulaEvaluatorFactory(getClassLoader(),
-                        "org.faktorips.runtime.internal.formula.groovy.GroovyEvaluator");
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-    }
 }

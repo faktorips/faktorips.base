@@ -13,22 +13,9 @@
 
 package org.faktorips.runtime.internal;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.TimeZone;
-
-import org.faktorips.runtime.IConfigurableModelObject;
-import org.faktorips.runtime.ICopySupport;
-import org.faktorips.runtime.IDeltaSupport;
-import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.IModelObjectVisitor;
-import org.faktorips.runtime.IVisitorSupport;
-import org.faktorips.runtime.test.IpsTestCase2;
-import org.w3c.dom.Element;
-
 /**
  * Gives access to the method names defined in the runtime that the generated code refers to, e.g.
- * by implementing a method with the given name. The reference to the acutal method is documented in
+ * by implementing a method with the given name. The reference to the actual method is documented in
  * the Javadoc "see" tags.
  * <p>
  * The constants are used by the code generator.
@@ -75,7 +62,7 @@ public class MethodNames {
     /**
      * @see ProductComponent#getRepository()
      * @see ProductComponentGeneration#getRepository()
-     * @see IpsTestCase2#getRepository()
+     * @see org.faktorips.runtime.test.IpsTestCase2#getRepository()
      */
     public final static String GET_REPOSITORY = "getRepository";
 
@@ -90,12 +77,12 @@ public class MethodNames {
     public final static String GET_PARENT = "getParentModelObject";
 
     /**
-     * @see AbstractModelObject#removeChildModelObjectInternal(IModelObject)
+     * @see AbstractModelObject#removeChildModelObjectInternal(org.faktorips.runtime.IModelObject)
      */
     public final static String REMOVE_CHILD_MODEL_OBJECT_INTERNAL = "removeChildModelObjectInternal";
 
     /**
-     * @see IConfigurableModelObject#getProductCmptGeneration()
+     * @see org.faktorips.runtime.IConfigurableModelObject#getProductCmptGeneration()
      */
     public final static String GET_PRODUCT_CMPT_GENERATION = "getProductCmptGeneration";
 
@@ -106,17 +93,17 @@ public class MethodNames {
 
     /**
      * @see org.faktorips.runtime.IRuntimeRepository#getExistingProductComponentGeneration(String,
-     *      Calendar)
+     *      java.util.Calendar)
      */
     public final static String GET_EXISTING_PRODUCT_COMPONENT_GENERATION = "getExistingProductComponentGeneration";
 
     /**
-     * @see AbstractConfigurableModelObject#initPropertiesFromXml(HashMap)
+     * @see AbstractConfigurableModelObject#initPropertiesFromXml(java.util.HashMap)
      */
     public final static String INIT_PROPERTIES_FROM_XML = "initPropertiesFromXml";
 
     /**
-     * @see AbstractConfigurableModelObject#createChildFromXml(Element)
+     * @see AbstractConfigurableModelObject#createChildFromXml(org.w3c.dom.Element)
      */
     public final static String CREATE_CHILD_FROM_XML = "createChildFromXml";
 
@@ -136,18 +123,18 @@ public class MethodNames {
     public final static String EXISTS_CHANGE_LISTENER_TO_BE_INFORMED = "existsChangeListenerToBeInformed";
 
     /**
-     * @see ProductComponentGeneration#getValidFrom(TimeZone)
+     * @see ProductComponentGeneration#getValidFrom(java.util.TimeZone)
      */
     public final static String GET_VALID_FROM = "getValidFrom";
 
     /**
-     * @see IDeltaSupport#computeDelta(org.faktorips.runtime.IModelObject,
+     * @see org.faktorips.runtime.IDeltaSupport#computeDelta(org.faktorips.runtime.IModelObject,
      *      org.faktorips.runtime.IDeltaComputationOptions)
      */
     public final static String COMPUTE_DELTA = "computeDelta";
 
     /**
-     * @see ICopySupport#newCopy
+     * @see org.faktorips.runtime.ICopySupport#newCopy
      */
     public final static String NEW_COPY = "newCopy";
 
@@ -157,7 +144,7 @@ public class MethodNames {
     public final static String MODELOBJECTDELTA_CHECK_PROPERTY_CHANGE = "checkPropertyChange";
 
     /**
-     * @see ModelObjectDelta#createChildDeltas(..)
+     * @see org.faktorips.runtime.internal.ModelObjectDelta#createChildDeltas(..)
      */
     public final static String MODELOBJECTDELTA_CREATE_CHILD_DELTAS = "createChildDeltas";
 
@@ -174,12 +161,13 @@ public class MethodNames {
     public final static String MODELOBJECTDELTA_NEW_DELTA = "newDelta";
 
     /**
-     * @see IVisitorSupport#accept
+     * @see org.faktorips.runtime.IVisitorSupport#accept
      */
     public final static String ACCEPT_VISITOR = "accept";
 
     /**
-     * @see IModelObjectVisitor#visit(org.faktorips.runtime.IModelObject)
+     * @see org.faktorips.runtime.IModelObjectVisitor#visit(org.faktorips.runtime.IModelObject)
      */
     public final static String VISITOR_VISIT = "visit";
+
 }

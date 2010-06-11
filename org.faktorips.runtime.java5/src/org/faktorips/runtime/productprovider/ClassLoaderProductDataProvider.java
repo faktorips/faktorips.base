@@ -15,6 +15,8 @@ package org.faktorips.runtime.productprovider;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -33,8 +35,8 @@ import org.w3c.dom.NodeList;
 /**
  * The {@link ClassLoaderProductDataProvider} is a local implementation of
  * {@link IProductDataProvider} normally for testing purpose. It getting the data similar as the
- * {@link ClassloaderRuntimeRepository} and do not check for any real modifications. For testing you
- * could simulate a modification by calling {@link #modify()}.
+ * {@link ClassloaderRuntimeRepository}. Modification is checked by checking the modification date
+ * of the toc resource.
  * 
  * @author dirmeier
  */
@@ -42,24 +44,27 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
 
     private final ClassLoader cl;
     private final DocumentBuilder docBuilder;
-    private String tocResourcePath;
-    private long myTimestamp = 0;
-    private long pdsTimestamp = 0;
+    private long lastModification = -1;
+    private URL tocUrl;
+    private ReadonlyTableOfContents toc;
 
     public ClassLoaderProductDataProvider(ClassLoader cl, String tocResourcePath, DocumentBuilder docBuilder) {
         this.cl = cl;
-        this.tocResourcePath = tocResourcePath;
+        tocUrl = cl.getResource(tocResourcePath);
+        if (tocUrl == null) {
+            throw new IllegalArgumentException("Can' find table of contents file " + tocResourcePath);
+        }
         this.docBuilder = docBuilder;
     }
 
     public Element getProductCmptData(IProductCmptTocEntry tocEntry) throws DataModifiedException {
         String resourcePath = tocEntry.getXmlResourceName();
-        checkForModifications(tocEntry.getIpsObjectId(), pdsTimestamp);
+        checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
         return getDocumentElement(resourcePath);
     }
 
     public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getParent().getIpsObjectId(), pdsTimestamp);
+        checkForModifications(tocEntry.getParent().getIpsObjectId(), getModificationStamp());
         Element docElement = getDocumentElement(tocEntry.getParent().getXmlResourceName());
         NodeList nl = docElement.getChildNodes();
         DateTime validFrom = tocEntry.getValidFrom();
@@ -76,32 +81,33 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
     }
 
     public Element getTestcaseElement(ITestCaseTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), pdsTimestamp);
+        checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
         String resourcePath = tocEntry.getXmlResourceName();
         return getDocumentElement(resourcePath);
     }
 
     public InputStream getTableContentAsStream(ITableContentTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), pdsTimestamp);
+        checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
     public InputStream getEnumContentAsStream(IEnumContentTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), pdsTimestamp);
+        checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
     public ReadonlyTableOfContents loadToc() {
+        if (toc != null && lastModification == getModificationStamp()) {
+            return toc;
+        }
         InputStream is = null;
         Document doc;
         try {
-            is = cl.getResourceAsStream(tocResourcePath);
-            if (is == null) {
-                throw new IllegalArgumentException("Can' find table of contents file " + tocResourcePath);
-            }
+            lastModification = getModificationStamp();
+            is = tocUrl.openStream();
             doc = docBuilder.parse(is);
         } catch (Exception e) {
-            throw new RuntimeException("Error loading table of contents from " + tocResourcePath, e);
+            throw new RuntimeException("Error loading table of contents from " + tocUrl.getFile(), e);
         } finally {
             if (is != null) {
                 try {
@@ -113,9 +119,8 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
         }
         try {
             Element tocElement = doc.getDocumentElement();
-            ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+            toc = new ReadonlyTableOfContents();
             toc.initFromXml(tocElement);
-            myTimestamp = pdsTimestamp;
             return toc;
         } catch (Exception e) {
             throw new RuntimeException("Error creating toc from xml.", e);
@@ -151,16 +156,18 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
     }
 
     public long getModificationStamp() {
-        return pdsTimestamp;
-    }
-
-    public void modify() {
-        pdsTimestamp++;
+        URLConnection connection;
+        try {
+            connection = tocUrl.openConnection();
+            return connection.getLastModified();
+        } catch (IOException e) {
+            return 0;
+        }
     }
 
     private void checkForModifications(String name, long timestamp) throws DataModifiedException {
-        if (myTimestamp != timestamp) {
-            throw new DataModifiedException(name + " is expired.", this.myTimestamp, timestamp);
+        if (lastModification != timestamp) {
+            throw new DataModifiedException(name + " is expired.", this.lastModification, timestamp);
         }
     }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableContents numOfColumns="1" tableStructure="testpack.A1Table">
+    <Description/>
+    <validTo isNull="true"/>
+    <Generation id="b10f59b7-df26-4767-ab56-aabb604532e7" validFrom="2007-01-01">
+        <Description/>
+    </Generation>
+</TableContents>

@@ -27,8 +27,8 @@ import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.internal.formula.AbstractFormulaEvaluator;
-import org.faktorips.runtime.internal.formula.FormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.formula.IFormulaEvaluator;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorFactory;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -169,7 +169,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      */
     protected void doInitFormulaFromXml(Element genElement) {
         if (getRepository() != null) {
-            FormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
+            IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
             if (factory != null) {
                 List<String> expressions = new ArrayList<String>();
                 NodeList formulas = genElement.getElementsByTagName("Formula");
@@ -186,11 +186,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
                         throw new RuntimeException("Expression for Formula: " + name + " not found");
                     }
                 }
-                try {
-                    formulaEvaluator = factory.createFormulaEvaluatorBuilder(this, expressions);
-                } catch (Exception e) {
-                    throw new RuntimeException("Could not instantiate formula evaluator", e);
-                }
+                formulaEvaluator = factory.createFormulaEvaluatorBuilder(this, expressions);
             }
         }
     }

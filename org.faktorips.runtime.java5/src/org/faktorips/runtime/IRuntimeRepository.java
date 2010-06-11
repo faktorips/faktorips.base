@@ -19,7 +19,7 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 
-import org.faktorips.runtime.internal.formula.FormulaEvaluatorFactory;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
@@ -385,5 +385,5 @@ public interface IRuntimeRepository {
      * 
      * @return The configured formula evaluator or null if no evaluation is supported
      */
-    public FormulaEvaluatorFactory getFormulaEvaluatorFactory();
+    public IFormulaEvaluatorFactory getFormulaEvaluatorFactory();
 }

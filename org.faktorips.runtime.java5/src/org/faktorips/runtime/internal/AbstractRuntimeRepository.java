@@ -44,7 +44,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
-import org.faktorips.runtime.internal.formula.FormulaEvaluatorFactory;
+import org.faktorips.runtime.internal.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.jaxb.IpsJAXBContext;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.internal.ModelType;
@@ -853,7 +853,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * If you want to support formula evaluation you have to override this method
      * 
      */
-    public FormulaEvaluatorFactory getFormulaEvaluatorFactory() {
+    public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
         return null;
     }
 
