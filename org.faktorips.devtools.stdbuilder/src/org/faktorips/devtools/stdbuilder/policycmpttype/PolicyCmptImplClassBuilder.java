@@ -1337,7 +1337,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Note that the field is declared using the class, otherwise it is not possible to use the
      * field with JAXB.
      * 
-     * @param association
      */
     private void generateFieldForParent(JavaCodeFragmentBuilder memberVarsBuilder,
             IPolicyCmptTypeAssociation association) throws CoreException {
