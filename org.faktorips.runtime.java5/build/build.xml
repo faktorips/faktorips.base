@@ -1,4 +1,4 @@
-<project name="org.faktorips.util" default="buildjar">
+<project name="org.faktorips.runtime.java5" default="buildjar">
 
 	<property name="clientpackage" value="**" />
 
