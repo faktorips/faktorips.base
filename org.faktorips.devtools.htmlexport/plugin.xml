@@ -14,5 +14,20 @@
 		  	
 		</objectContribution>
    </extension>
-
+      <extension
+            point="org.eclipse.ui.exportWizards">
+                   <category
+             id="org.faktorips.devtools"
+             name="%org.faktorips.devtools.exportWizard.category">
+       </category>
+     	<wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.htmlexport.wizards.IpsProjectHtmlExportWizard"
+            icon="icons/ExportIpsArchive.gif"
+            id="ipsProjectHtmlExportWizard"
+            name="HTMLEXPORTWIZARD_NAME">
+    	   <description>BESCHREIBUNG</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+      </extension>
 </plugin>

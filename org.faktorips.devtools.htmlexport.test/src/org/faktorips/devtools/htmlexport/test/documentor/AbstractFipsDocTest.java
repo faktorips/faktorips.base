@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.Documentor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.helper.html.HtmlLayouter;
+import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
