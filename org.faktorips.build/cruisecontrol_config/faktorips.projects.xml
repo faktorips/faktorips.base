@@ -40,11 +40,14 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.valuetypes-->
         <!--=====================================================-->        
+        
+        <!-- deactivated in version FIPS 3.0    
         <project name="org.faktorips.valuetypes" mainbuildtarget="valuetypes">
             <depends>
                 <project name="org.faktorips.util"/>
             </depends>
         </project>
+        -->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.java5-->
@@ -68,13 +71,15 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.runtime-->
         <!--=====================================================-->          
+        <!-- deactivated in version FIPS 3.0    
         <project name="org.faktorips.runtime" mainbuildtarget="runtime">
             <depends>
                 <project name="org.faktorips.valuetypes"/>
                 <project name="org.faktorips.util"/>
             </depends>               
         </project>
-        
+	-->
+	        
         <!--=====================================================-->
         <!--Project definition: org.faktorips.runtime.java5-->
         <!--=====================================================-->         
