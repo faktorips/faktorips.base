@@ -106,6 +106,7 @@
 	    <target name="test" depends="compile" >
 	    	
 	    	<property name="haltOnProblem" value="yes"/>
+	    	<property name="junitTimeout" value="15000"/>
 		
 	    	<!-- delete previos junit-logging -->
 	    	<delete includeemptydirs="true" >
@@ -114,7 +115,7 @@
 	    		</fileset>
 	    	</delete>
     	
-	    	<junit fork="yes" haltonerror="${haltOnProblem}" haltonfailure="${haltOnProblem}" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
+	    	<junit fork="yes" haltonerror="${haltOnProblem}" haltonfailure="${haltOnProblem}" printsummary="withOutAndErr" timeout="${junitTimeout}" showoutput="yes">
 	    		<jvmarg value="-Djava.endorsed.dirs=${src}/../endorsed/"/>
 	    		<formatter type="xml" usefile="true"/>
 	    		<classpath>
