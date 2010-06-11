@@ -54,7 +54,7 @@ public class DeepCopyWizard extends ResizableWizard {
 
     private static final String SECTION_NAME = "DeepCopyWizard"; //$NON-NLS-1$
 
-    private static boolean TRACE = true;
+    private static boolean TRACE = IpsPlugin.TRACE_UI;
 
     private Map<String, Long> traceTimer;
 
