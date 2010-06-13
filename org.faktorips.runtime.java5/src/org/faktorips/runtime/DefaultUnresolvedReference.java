@@ -55,45 +55,27 @@ public class DefaultUnresolvedReference implements IUnresolvedReference {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void resolve(IObjectReferenceStore store) throws Exception {
         Object target = store.getObject(targetClass, targetId);
         establishMethod.invoke(sourceObj, new Object[] { target });
     }
 
-    /**
-     * @return Returns the establishMethod.
-     */
     public Method getEstablishMethod() {
         return establishMethod;
     }
 
-    /**
-     * @return Returns the sourceObj.
-     */
     public Object getSourceObj() {
         return sourceObj;
     }
 
-    /**
-     * @return Returns the sourceObjId.
-     */
     public Object getSourceObjId() {
         return sourceObjId;
     }
 
-    /**
-     * @return Returns the targetClass.
-     */
     public Class<?> getTargetClass() {
         return targetClass;
     }
 
-    /**
-     * @return Returns the targetId.
-     */
     public Object getTargetId() {
         return targetId;
     }
@@ -103,4 +85,5 @@ public class DefaultUnresolvedReference implements IUnresolvedReference {
         return "Unresolved reference: " + "From " + sourceObj + "(" + sourceObjId + ")" + "To: " + targetClass + "("
                 + targetId + ")" + "Method to estabalish: " + establishMethod;
     }
+
 }

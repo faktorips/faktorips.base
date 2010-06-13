@@ -21,9 +21,6 @@ import junit.framework.TestCase;
  */
 public class ObjectUtilTest extends TestCase {
 
-    /*
-     * Test method for 'org.faktorips.values.ObjectUtil.isNull(Object)'
-     */
     public void testIsNull() {
         assertTrue(ObjectUtil.isNull(null));
         assertTrue(ObjectUtil.isNull(Money.NULL));

@@ -11,17 +11,6 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-/*
- * Copyright der Gesellschaften der KarstadtQuelle Versicherungen Projekt: Dateiname:
- * IModelObjectVersionDelta.java Erzeugt: 24.04.2007
- * 
- * Beschreibung:
- * 
- * 
- * *********************************************************************** Modification History:
- * 
- * ***********************************************************************
- */
 package org.faktorips.runtime;
 
 import java.util.List;
@@ -30,7 +19,6 @@ import java.util.List;
  * A model object delta represents the delta between two model objects. The two model objects must
  * be instances of the same model class. One typical use case is that the two (technical) objects
  * represent the same business object but at two different points in time.
- * 
  * <p>
  * <strong> The delta support is experimental in this version. The API might change without notice
  * until it is finalized in a future version. </strong>
@@ -45,7 +33,7 @@ public interface IModelObjectDelta {
      * If the object is a root object, this means that all properties are equal, no children have
      * been removed, added or have changed their position.
      * <p>
-     * If this object is a dependant object (it belongs to a parent), this means that all properties
+     * If this object is a dependent object (it belongs to a parent), this means that all properties
      * are equal and this object has neither been added to or removed from its parent nor has the
      * position of the object changed.
      */
@@ -153,8 +141,6 @@ public interface IModelObjectDelta {
      * @see #PROPERTY_CHANGED
      * @see #STRUCTURE_CHANGED
      * @see #CHILD_CHANGED
-     * 
-     * @return
      */
     public int getKindOfChange();
 

@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * Base class for ips test cases.
+ * Base class for IPS test cases.
  * 
  * @author Jan Ortmann
  */
@@ -38,8 +38,6 @@ public abstract class IpsTestCase extends TestCase {
 
     /**
      * Creates a new test case.
-     * 
-     * @param testCaseResourceName The name of a resource containing the test case's data.
      */
     public IpsTestCase(String name) {
         super(name);

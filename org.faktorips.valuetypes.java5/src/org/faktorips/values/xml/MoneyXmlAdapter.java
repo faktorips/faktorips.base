@@ -18,9 +18,6 @@ import org.faktorips.values.Money;
  */
 public class MoneyXmlAdapter extends XmlAdapter<String, Money> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String marshal(Money v) throws Exception {
         if (v == null || v.isNull()) {
@@ -30,9 +27,6 @@ public class MoneyXmlAdapter extends XmlAdapter<String, Money> {
         return v.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Money unmarshal(String v) throws Exception {
         return Money.valueOf(v);

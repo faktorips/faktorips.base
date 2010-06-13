@@ -27,7 +27,7 @@ import java.util.Map;
  * can be considered as the lower bound, lower or equal bound, upper bound, upper or equal bound of
  * a range. The following key in the order of keys is considered the other end of the range while it
  * is not included in it. That means the range is open at least at one side. The two-column tree
- * expects the keys of the given map to be instances of the static innner class TwoColumnKey. The
+ * expects the keys of the given map to be instances of the static inner class TwoColumnKey. The
  * upper and lower bound of TwoColumnKeys are always inclusive, which means there are no different
  * tree types for a two-column tree. There is no check whether the keys of the map given to the
  * two-column tree constructor are really instances of TwoColumnKey, instead a ClassCastException
@@ -72,13 +72,13 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
         KEY_IS_TWO_COLUMN_KEY
     }
 
-    // the root node of the tree. The variable is protected to be able to test the created tree
+    /** The root node of the tree. The variable is protected to be able to test the created tree. */
     protected Node root;
 
-    // the values that are associated with the ranges
+    /** The values that are associated with the ranges. */
     private Object[] values;
 
-    // the type that specifies how the result of the visitor has to be interpreted
+    /** The type that specifies how the result of the visitor has to be interpreted. */
     private final KeyType keyType;
 
     /**
@@ -110,7 +110,6 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
     }
 
     private void buildValuesArray(Comparable[] keys, Map map) {
-
         values = new Object[keys.length];
         for (int i = 0; i < keys.length; i++) {
             values[i] = map.get(keys[i]);
@@ -118,7 +117,6 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
     }
 
     private void buildTree(Map map) {
-
         if (map.isEmpty()) {
             return;
         }
@@ -137,7 +135,6 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
     }
 
     private void buildChildNodes(int middlePos, int widthCount, Comparable[] keys, int[] visited, Node parent) {
-
         if (parent == null) {
             return;
         }
@@ -217,14 +214,16 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
      */
     private static class OneColumnNodeVisitor implements NodeVisitor, Serializable {
 
-        /**
-         * 
-         */
         private static final long serialVersionUID = 8409704039187989276L;
+
         private Comparable key;
+
         private int keyForSmallestMax = -1;
+
         private int keyForGreatestMin = -1;
+
         private int keyForEqual = -1;
+
         private final KeyType keyType;
 
         private OneColumnNodeVisitor(KeyType keyType) {
@@ -304,11 +303,10 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
      */
     private static class TwoColumnNodeVisitor implements NodeVisitor, Serializable {
 
-        /**
-         * 
-         */
         private static final long serialVersionUID = 42L;
+
         private int foundIndex = -1;
+
         private Comparable key;
 
         public void start(Node startNode, Comparable key) {
@@ -347,13 +345,14 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
      */
     public static class Node implements Serializable {
 
-        /**
-         * 
-         */
         private static final long serialVersionUID = -3023843176585381905L;
+
         protected Comparable key;
+
         protected Node left;
+
         protected Node right;
+
         private final int fValueIndex;
 
         private Node(Comparable key, int valueIndex) {
@@ -379,11 +378,11 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
     }
 
     public static class TwoColumnKey implements Comparable, Serializable {
-        /**
-         * 
-         */
+
         private static final long serialVersionUID = 42L;
+
         private final Comparable lowerBound;
+
         private final Comparable upperBound;
 
         /**
@@ -418,18 +417,14 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
             return lowerBound.hashCode() + upperBound.hashCode();
         }
 
-        /**
-         * @return Returns the lowerBound.
-         */
         public Comparable getLowerBound() {
             return lowerBound;
         }
 
-        /**
-         * @return Returns the upperBound.
-         */
         public Comparable getUpperBound() {
             return upperBound;
         }
+
     }
+
 }

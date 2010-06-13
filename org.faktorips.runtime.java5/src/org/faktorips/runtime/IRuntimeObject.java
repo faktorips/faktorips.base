@@ -29,6 +29,7 @@ public interface IRuntimeObject {
 
     /**
      * @param propertyId the id of the desired extension property.
+     * 
      * @return the value of the extension property defined by the given <code>propertyId</code> or
      *         <code>null</code> if the extension property's <code>isNull</code> attribute is
      *         <code>true</code>.

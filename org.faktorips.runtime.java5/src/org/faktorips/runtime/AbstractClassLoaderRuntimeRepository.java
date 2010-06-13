@@ -48,9 +48,6 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
         this.cl = cl;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IProductComponent createProductCmpt(IProductCmptTocEntry tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
@@ -114,9 +111,6 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
         return enumValues;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry tocEntry) {
         ProductComponent productCmpt = (ProductComponent)getProductComponent(tocEntry.getParent().getIpsObjectId());
@@ -164,9 +158,6 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ITable createTable(ITableContentTocEntry tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
@@ -194,9 +185,6 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
         return table;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsTestCaseBase createTestCase(ITestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
@@ -207,12 +195,12 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
         } catch (Exception e) {
             throw new RuntimeException("Can't create test case instance for toc entry " + tocEntry, e);
         }
-        // sets the runtime repository which will be used to instantiate the test case,
-        // this could be a different one (e.g. contains more dependence repositories) as the test
-        // case belongs to,
-        // because the test case itself could contain objects from different repositories, the
-        // runtime repository
-        // should contain all needed repositories
+        /*
+         * sets the runtime repository which will be used to instantiate the test case, this could
+         * be a different one (e.g. contains more dependence repositories) as the test case belongs
+         * to, because the test case itself could contain objects from different repositories, the
+         * runtime repository should contain all needed repositories
+         */
         test.setRepository(runtimeRepository);
         if (test instanceof IpsTestCase2) {
             // only classes of type ips test case 2 supports xml input
@@ -223,9 +211,6 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
         return test;
     }
 
-    /**
-     * @return Returns the cl.
-     */
     @Override
     public ClassLoader getClassLoader() {
         return cl;

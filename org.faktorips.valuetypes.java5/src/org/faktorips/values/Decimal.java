@@ -13,7 +13,6 @@
 
 package org.faktorips.values;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -33,7 +32,7 @@ import org.faktorips.values.xml.DecimalXmlAdapter;
  * @see Decimal#NULL
  */
 @XmlJavaTypeAdapter(DecimalXmlAdapter.class)
-public class Decimal extends Number implements Comparable<Decimal>, NullObjectSupport, Serializable {
+public class Decimal extends Number implements Comparable<Decimal>, NullObjectSupport {
 
     private static final long serialVersionUID = -642726667937769164L;
 
@@ -100,16 +99,10 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
         this.value = value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNull() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNotNull() {
         return true;
     }
@@ -446,33 +439,21 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
         return setScale(precision, roundingMode).setScale(scale(), BigDecimal.ROUND_UNNECESSARY);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int intValue() {
         return value.intValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public long longValue() {
         return value.longValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public float floatValue() {
         return value.floatValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public double doubleValue() {
         return value.doubleValue();
@@ -617,11 +598,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
         return s.hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return value.toString();
     }
+
 }

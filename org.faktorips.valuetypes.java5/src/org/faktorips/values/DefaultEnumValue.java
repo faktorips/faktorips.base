@@ -36,29 +36,14 @@ public class DefaultEnumValue implements EnumValue {
         type.addValue(this);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.values.EnumValue#getType()
-     */
     public EnumType getType() {
         return type;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.values.EnumValue#getId()
-     */
     public String getId() {
         return id;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.values.EnumValue#getName()
-     */
     public String getName() {
         return name;
     }
@@ -82,11 +67,6 @@ public class DefaultEnumValue implements EnumValue {
         return type.toString() + "." + id;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
     public int compareTo(EnumValue other) {
         return id.compareTo(other.getId());
     }

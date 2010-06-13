@@ -14,7 +14,7 @@
 package org.faktorips.runtime;
 
 /**
- * Interface that defines a model object as dependant object, i.e. the object is part of another
+ * Interface that defines a model object as dependent object, i.e. the object is part of another
  * object.
  * 
  * @author Jan Ortmann
@@ -26,4 +26,5 @@ public interface IDependantObject {
      * (currently) not a part of another.
      */
     public IModelObject getParentModelObject();
+
 }

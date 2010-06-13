@@ -18,9 +18,6 @@ import java.util.Currency;
 
 import junit.framework.TestCase;
 
-/**
- *
- */
 public class MoneyTest extends TestCase {
 
     public void testValueOf_DecimalCurrency() {
@@ -31,6 +28,7 @@ public class MoneyTest extends TestCase {
             Money.valueOf(Decimal.valueOf("13.413"), Currency.getInstance("EUR"));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         // null
@@ -55,9 +53,6 @@ public class MoneyTest extends TestCase {
         assertEquals(Money.NULL, Money.valueOf(Decimal.valueOf(42, 0), null, BigDecimal.ROUND_HALF_UP));
     }
 
-    /*
-     * Class under test for Money valueOf(String)
-     */
     public void testValueOfString() {
         assertEquals(Money.euro(10, 12), Money.valueOf("10.12EUR"));
         assertEquals(Money.euro(10, 12), Money.valueOf("10.12 EUR"));
@@ -84,30 +79,31 @@ public class MoneyTest extends TestCase {
             Money.valueOf("1");
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             Money.valueOf("111");
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             Money.valueOf("1a1EUR");
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             Money.valueOf("1.123EUR");
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
     }
 
-    /*
-     * Class under test for Money valueOf(long, int, Currency)
-     */
     public void testValueOflongintCurrency() {
         Money money = Money.valueOf(123, 74, Currency.getInstance("EUR"));
         assertEquals(Currency.getInstance("EUR"), money.getCurrency());
@@ -152,6 +148,7 @@ public class MoneyTest extends TestCase {
             m1.add(Money.usd(1, 0));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         // null
@@ -159,14 +156,15 @@ public class MoneyTest extends TestCase {
             m1.add(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             Money.NULL.add(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
-
     }
 
     public void testSubtract() {
@@ -183,6 +181,7 @@ public class MoneyTest extends TestCase {
             m1.add(Money.usd(1, 0));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         // null
@@ -190,19 +189,17 @@ public class MoneyTest extends TestCase {
             m1.subtract(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             Money.NULL.subtract(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
-
     }
 
-    /*
-     * Class under test for Money multiply(int)
-     */
     public void testMultiplyint() {
         Money m = Money.euro(10, 12);
         int factor = 2;
@@ -210,9 +207,6 @@ public class MoneyTest extends TestCase {
         assertTrue(Money.NULL.multiply(factor).isNull());
     }
 
-    /*
-     * Class under test for Money multiply(long)
-     */
     public void testMultiplylong() {
         Money m = Money.euro(10, 12);
         long factor = 2;
@@ -237,12 +231,14 @@ public class MoneyTest extends TestCase {
             m.multiply(null, BigDecimal.ROUND_HALF_UP);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             Money.NULL.multiply(null, BigDecimal.ROUND_UP);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
     }
@@ -292,12 +288,14 @@ public class MoneyTest extends TestCase {
             m.divide(null, BigDecimal.ROUND_HALF_UP);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             Money.NULL.divide(null, BigDecimal.ROUND_UP);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
     }
 
@@ -311,24 +309,28 @@ public class MoneyTest extends TestCase {
             m.compareTo(Money.usd(10, 42));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             m.compareTo(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             m.compareTo(Money.NULL);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             Money.NULL.compareTo(m);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
     }
 
@@ -344,18 +346,21 @@ public class MoneyTest extends TestCase {
             m.greaterThan(Money.usd(10, 42));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             m.greaterThan(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             Money.NULL.greaterThan(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
     }
 
@@ -371,18 +376,21 @@ public class MoneyTest extends TestCase {
             m.greaterThanOrEqual(Money.usd(10, 42));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             m.greaterThanOrEqual(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             Money.NULL.greaterThanOrEqual(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
     }
 
@@ -398,18 +406,21 @@ public class MoneyTest extends TestCase {
             m.lessThan(Money.usd(10, 42));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             m.lessThan(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             Money.NULL.lessThan(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
     }
 
@@ -425,18 +436,21 @@ public class MoneyTest extends TestCase {
             m.lessThanOrEqual(Money.usd(10, 42));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             m.lessThanOrEqual(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
 
         try {
             Money.NULL.lessThanOrEqual(null);
             fail();
         } catch (NullPointerException e) {
+            // Expected exception.
         }
     }
 
@@ -463,9 +477,6 @@ public class MoneyTest extends TestCase {
 
     }
 
-    /*
-     * Class under test for boolean equals(Object)
-     */
     public void testEqualsObject() {
         // different class
         assertFalse(Money.euro(0, 0).equals(this));
@@ -492,9 +503,6 @@ public class MoneyTest extends TestCase {
         assertTrue(Money.NULL.equals(Money.NULL));
     }
 
-    /*
-     * Class under test for String toString()
-     */
     public void testToString() {
         assertEquals("100.77 EUR", Money.euro(100, 77).toString());
     }

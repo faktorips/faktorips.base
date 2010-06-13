@@ -43,4 +43,5 @@ public interface EnumValue extends Comparable<EnumValue> {
      * <code>Gender.male</code>
      */
     public abstract String toString();
+
 }

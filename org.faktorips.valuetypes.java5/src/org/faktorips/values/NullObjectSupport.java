@@ -34,4 +34,5 @@ public interface NullObjectSupport {
      * <code>true</code>.
      */
     public boolean isNotNull();
+
 }

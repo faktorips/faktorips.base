@@ -18,27 +18,19 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * Maps a {@link GregorianCalendar} to an ISO date.
- * 
  * <p>
  * This adapter can be used, if you are only interested in the date portion of an
  * {@link GregorianCalendar}.
- * </p>
  */
 public class GregorianCalendarXmlAdapter extends XmlAdapter<String, GregorianCalendar> {
 
     private DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String marshal(GregorianCalendar v) throws Exception {
         return df.format(v.getTime());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public GregorianCalendar unmarshal(String v) throws Exception {
         GregorianCalendar cal = new GregorianCalendar();

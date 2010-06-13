@@ -46,11 +46,11 @@ public class LongRangeTest extends TestCase {
             range = new LongRange(1L, Integer.MAX_VALUE + 3L);
             range.size();
         } catch (RuntimeException e) {
+            // Expected exception.
         }
 
         range = LongRange.valueOf(100L, 1100L, 200L);
         assertEquals(6, range.size());
-
     }
 
     public void testGetValues() {
@@ -68,7 +68,6 @@ public class LongRangeTest extends TestCase {
         range = LongRange.valueOf(100L, 1100L, 200L, true);
         values = range.getValues(false);
         assertTrue(values.contains(null));
-
     }
 
     public void testValueOf() {
@@ -85,6 +84,7 @@ public class LongRangeTest extends TestCase {
             LongRange.valueOf(10L, 101L, 10L);
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         range = LongRange.valueOf(new Long(10), new Long(100), new Long(10));
@@ -97,6 +97,7 @@ public class LongRangeTest extends TestCase {
             LongRange.valueOf(new Long(10), new Long(101), new Long(10));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         range = LongRange.valueOf(new Long(10), new Long(100), new Long(10), true);
@@ -106,17 +107,19 @@ public class LongRangeTest extends TestCase {
             LongRange.valueOf(new Long(10), new Long(101), new Long(10), true);
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             LongRange.valueOf(new Long(10), new Long(101), new Long(0), true);
             fail("Expect to since zero step size is not allowed.");
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
-
     }
 
     public void testSerializable() throws Exception {
         TestUtil.testSerializable(LongRange.valueOf(new Long(10), new Long(100), new Long(10)));
     }
+
 }

@@ -159,34 +159,18 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
         }
     }
 
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.valueset.Range#getLowerBound()
-     */
     public T getLowerBound() {
         return lowerBound;
     }
 
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.valueset.Range#getUpperBound()
-     */
     public T getUpperBound() {
         return upperBound;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public T getStep() {
         return step;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isEmpty() {
         if (isLowerBoundNull() || isUpperBoundNull()) {
             return false;
@@ -205,7 +189,6 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
      * @throws RuntimeException if the <code>isDiscrete()</code> method returns <code>true</code>
      */
     public int size() {
-
         if (isLowerBoundNull() || isUpperBoundNull()) {
             return Integer.MAX_VALUE;
         }
@@ -228,10 +211,6 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
 
     /**
      * Two Ranges are equals if lower, upper bound and step are equal.
-     * 
-     * Overridden Method.
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -261,9 +240,6 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
         return first.equals(second);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
 
@@ -299,9 +275,6 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
         return step == null || (step instanceof NullObjectSupport ? ((NullObjectSupport)step).isNull() : false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean contains(T value) {
         if (value == null) {
             if (containsNull()) {
@@ -345,18 +318,11 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
         return !isStepNull();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsNull() {
         return containsNull;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Set<T> getValues(boolean excludeNull) {
-
         if (!isDiscrete()) {
             throw new IllegalStateException("This method cannot be called for ranges that are not discrete.");
         }
@@ -384,4 +350,5 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
         }
         return values;
     }
+
 }

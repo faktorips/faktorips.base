@@ -25,39 +25,40 @@ import java.beans.PropertyChangeSupport;
 public interface INotificationSupport {
 
     /**
-     * @see {@link PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)}
+     * @see PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)
      */
     public void addPropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * @see {@link PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)}
+     * @see PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)
+     * 
      * @param propagateEventsFromChildren if set to {@code true}, this object's change listeners
      *            will also be notified when one of this object's children fires a change event.
      */
     public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren);
 
     /**
-     * @see {@link PropertyChangeSupport#removePropertyChangeListener(PropertyChangeListener)}
+     * @see PropertyChangeSupport#removePropertyChangeListener(PropertyChangeListener)
      */
     public void removePropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * @see {@link PropertyChangeSupport#addPropertyChangeListener(String, PropertyChangeListener)}
+     * @see PropertyChangeSupport#addPropertyChangeListener(String, PropertyChangeListener)
      */
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
     /**
-     * @see {@link PropertyChangeSupport#removePropertyChangeListener(String, PropertyChangeListener)}
+     * @see PropertyChangeSupport#removePropertyChangeListener(String, PropertyChangeListener)
      */
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
     /**
-     * @see {@link PropertyChangeSupport#hasListeners(String)}
+     * @see PropertyChangeSupport#hasListeners(String)
      */
     public boolean hasListeners(String propertyName);
 
     /**
-     * @see {@link PropertyChangeSupport#firePropertyChange(PropertyChangeEvent)}
+     * @see PropertyChangeSupport#firePropertyChange(PropertyChangeEvent)
      */
     public void notifyChangeListeners(PropertyChangeEvent event);
 

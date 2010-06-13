@@ -168,6 +168,7 @@ public class XmlUtil {
     }
 
     private XmlUtil() {
+        // Utility class not to be instantiated.
     }
 
 }

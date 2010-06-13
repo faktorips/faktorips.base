@@ -18,14 +18,8 @@ import java.util.GregorianCalendar;
 
 import junit.framework.TestCase;
 
-/**
- *
- */
 public class DateUtilTest extends TestCase {
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -73,4 +67,5 @@ public class DateUtilTest extends TestCase {
         date = new GregorianCalendar(2005, 9, 10).getTime();
         assertEquals(date, DateUtil.parseIsoDateStringToDate("2005-10-10"));
     }
+
 }

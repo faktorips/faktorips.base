@@ -104,9 +104,6 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
         hashCode = result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return hashCode;
@@ -122,23 +119,14 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
         return Collections.unmodifiableSet(set);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Set<E> getValues(boolean excludeNull) {
         return excludeNull ? getValuesWithoutNull() : Collections.unmodifiableSet(set);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final boolean isDiscrete() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
@@ -152,16 +140,10 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsNull() {
         return containsNull;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();

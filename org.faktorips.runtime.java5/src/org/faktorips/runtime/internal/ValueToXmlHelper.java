@@ -122,6 +122,7 @@ public class ValueToXmlHelper {
     }
 
     private ValueToXmlHelper() {
+        // Utility class not to be instantiated.
     }
 
 }

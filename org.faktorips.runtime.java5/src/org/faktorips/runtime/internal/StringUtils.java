@@ -30,6 +30,7 @@ public class StringUtils {
     }
 
     private StringUtils() {
+        // Utility class not to be instantiated.
     }
 
 }

@@ -29,20 +29,18 @@ public class OrderedValueSetTest extends TestCase {
             new OrderedValueSet<Integer>(false, null, new Integer(1), new Integer(2), new Integer(3), new Integer(1));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             new OrderedValueSet<Integer>(false, null, new Integer(1), null, new Integer(2), new Integer(3), null);
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
     }
 
-    /*
-     * Test method for 'org.faktorips.valueset.OrderedValueSet.getValues(boolean)'
-     */
     public void testGetValues() {
-
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
         assertEquals(Arrays.asList(values), Arrays.asList(valueSet.getValues(false).toArray()));
@@ -63,20 +61,13 @@ public class OrderedValueSetTest extends TestCase {
         expectedValues.add(values[1]);
         expectedValues.add(values[2]);
         assertEquals(expectedValues, Arrays.asList(valueSet.getValues(true).toArray()));
-
     }
 
-    /*
-     * Test method for 'org.faktorips.valueset.OrderedValueSet.isDiscrete()'
-     */
     public void testIsDiscrete() {
         OrderedValueSet<Object> valueSet = new OrderedValueSet<Object>(false, null, new Object[0]);
         assertTrue(valueSet.isDiscrete());
     }
 
-    /*
-     * Test method for 'org.faktorips.valueset.OrderedValueSet.contains(Object)'
-     */
     public void testContains() {
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3), null };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(true, null, values);
@@ -84,12 +75,8 @@ public class OrderedValueSetTest extends TestCase {
         assertTrue(valueSet.contains(new Integer(2)));
         assertTrue(valueSet.contains(null));
         assertFalse(valueSet.contains(new Integer(5)));
-
     }
 
-    /*
-     * Test method for 'org.faktorips.valueset.OrderedValueSet.containsNull()'
-     */
     public void testContainsNull() {
         OrderedValueSet<Object> valueSet = new OrderedValueSet<Object>(false, null, new Object[0]);
         assertFalse(valueSet.containsNull());
@@ -98,9 +85,6 @@ public class OrderedValueSetTest extends TestCase {
         assertTrue(valueSet.containsNull());
     }
 
-    /*
-     * Test method for 'org.faktorips.valueset.OrderedValueSet.isEmpty()'
-     */
     public void testIsEmpty() {
         OrderedValueSet<Object> valueSet = new OrderedValueSet<Object>(false, null, new Object[0]);
         assertTrue(valueSet.isEmpty());
@@ -113,9 +97,6 @@ public class OrderedValueSetTest extends TestCase {
         assertFalse(valueSet.isEmpty());
     }
 
-    /*
-     * Test method for 'org.faktorips.valueset.OrderedValueSet.size()'
-     */
     public void testSize() {
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
@@ -150,7 +131,6 @@ public class OrderedValueSetTest extends TestCase {
     }
 
     public void testHashCode() {
-
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
 
@@ -168,13 +148,12 @@ public class OrderedValueSetTest extends TestCase {
         OrderedValueSet<Integer> valueSet4 = new OrderedValueSet<Integer>(false, null, values);
 
         assertFalse(valueSet.hashCode() == valueSet4.hashCode());
-
     }
 
     public void testToString() {
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
         assertEquals("[1, 2, 3]", valueSet.toString());
-
     }
+
 }

@@ -38,24 +38,27 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
  */
 public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
-    // contains product component ids as keys and instances of product components as values.
+    /** Contains product component IDs as keys and instances of product components as values. */
     private HashMap<String, IProductComponent> productCmpts = new HashMap<String, IProductComponent>();
 
-    // a map that contains a list (value) by product component id (key).
-    // each list contains the generations for the product component.
+    /**
+     * A map that contains a list (value) by product component id (key). Each list contains the
+     * generations for the product component.
+     */
     private HashMap<String, SortedSet<IProductComponentGeneration>> productCmptGenLists = new HashMap<String, SortedSet<IProductComponentGeneration>>();
 
-    // contains all table contents
     private List<ITable> tables = new ArrayList<ITable>();
 
-    // contains the table contents for structures that allow multiple contents
-    // key is the qName, value the table
+    /**
+     * Contains the table contents for structures that allow multiple contents key is the qName,
+     * value the table.
+     */
     private Map<String, ITable> multipleContentTables = new HashMap<String, ITable>();
 
-    // contains all test cases with their qualified name as key.
+    /** Contains all test cases with their qualified name as key. */
     private HashMap<String, IpsTestCaseBase> testCasesByQName = new HashMap<String, IpsTestCaseBase>();
 
-    // contains all enumeration values for the faktor ips enumerations which content is deferred
+    /** Contains all enumeration values for the Faktor-IPS enumerations which content is deferred. */
     private Map<Class<?>, List<?>> enumValuesMap = new HashMap<Class<?>, List<?>>();
 
     private List<XmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<XmlAdapter<?, ?>>();
@@ -68,17 +71,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         super(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductComponent getProductComponentInternal(String id) {
         return productCmpts.get(id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductComponent getProductComponentInternal(String kindId, String versionId) {
         if (kindId == null) {
@@ -95,9 +92,6 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void getAllProductComponents(String kindId, List<IProductComponent> result) {
         for (IProductComponent cmpt : productCmpts.values()) {
@@ -111,9 +105,6 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         return productCmptGenLists.get(productCmptId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void getProductComponentGenerations(IProductComponent productCmpt, List<IProductComponentGeneration> result) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(productCmpt.getId());
@@ -146,7 +137,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     /**
-     * Puts the table intto the repository. Replaces any table instance of the same class or any of
+     * Puts the table into the repository. Replaces any table instance of the same class or any of
      * it's superclasses. The latter check is needed to replace tables with mock implementations.
      * 
      * @throws NullPointerException if table is <code>null</code>.
@@ -185,33 +176,21 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         enumValuesMap.put(enumType, copy);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITable getTableInternal(String qualifiedTableName) {
         return multipleContentTables.get(qualifiedTableName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void getAllProductComponents(List<IProductComponent> result) {
         result.addAll(productCmpts.values());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void getAllProductComponentIds(List<String> result) {
         result.addAll(productCmpts.keySet());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isModifiable() {
         return true;
     }
@@ -232,9 +211,6 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         productCmpts.put(productCmpt.getId(), productCmpt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductComponentGeneration getProductComponentGenerationInternal(String productCmptId,
             Calendar effectiveDate) {
@@ -288,18 +264,12 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         return genSortedSet;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void getAllIpsTestCases(List<IpsTest2> result, IRuntimeRepository runtimeRepository) {
         // ignore the runtimeRepository to instantiate the test case because we using in memory
         result.addAll(testCasesByQName.values());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void getIpsTestCasesStartingWith(String qNamePrefix,
             List<IpsTest2> result,
@@ -311,9 +281,6 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsTestCaseBase getIpsTestCaseInternal(String qName, IRuntimeRepository runtimeRepository) {
         // ignore the runtimeRepository to instantiate the test case because we using in memory
@@ -332,9 +299,6 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         throw new RuntimeException("Currently not supported by InMemoryRuntimeRepository.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(generation
@@ -352,18 +316,12 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected int getNumberOfProductComponentGenerationsInternal(IProductComponent productCmpt) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(productCmpt.getId());
         return genSet.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(generation
@@ -375,9 +333,6 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         return predecessors.last();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt) {
         if (productCmpt == null) {
             throw new NullPointerException("The parameter productCmpt cannot be null.");

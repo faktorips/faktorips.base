@@ -25,9 +25,10 @@ import org.w3c.dom.Element;
 public interface IClRepositoryObject {
 
     /**
-     * Initializes this object with the data stored in the xml element.
+     * Initializes this object with the data stored in the XML element.
      * 
      * @throws NullPointerException if element is <code>null</code>.
      */
     public void initFromXml(Element element);
+
 }

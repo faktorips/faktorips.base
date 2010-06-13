@@ -25,44 +25,26 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean contains(Object value) {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean containsNull() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Set<? extends T> getValues(boolean excludeNull) {
         throw new IllegalStateException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isDiscrete() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isEmpty() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int size() {
         return Integer.MAX_VALUE;
     }

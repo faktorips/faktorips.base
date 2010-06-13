@@ -18,9 +18,6 @@ import org.faktorips.values.Decimal;
  */
 public class DecimalXmlAdapter extends XmlAdapter<String, Decimal> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String marshal(Decimal v) throws Exception {
         if (v == null || v.isNull()) {
@@ -30,9 +27,6 @@ public class DecimalXmlAdapter extends XmlAdapter<String, Decimal> {
         return v.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Decimal unmarshal(String v) throws Exception {
         return Decimal.valueOf(v);

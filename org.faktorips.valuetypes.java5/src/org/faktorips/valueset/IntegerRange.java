@@ -94,9 +94,6 @@ public class IntegerRange extends DefaultRange<Integer> {
         super(lower, upper, step, containsNull);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean checkIfValueCompliesToStepIncrement(Integer value, Integer bound) {
 
@@ -108,9 +105,6 @@ public class IntegerRange extends DefaultRange<Integer> {
         return remaining == 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         int lowerInt = getLowerBound();
@@ -119,17 +113,11 @@ public class IntegerRange extends DefaultRange<Integer> {
         return diff / getStep() + 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Integer getNextValue(Integer currentValue) {
         return currentValue + getStep();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Integer getNullValue() {
         return null;

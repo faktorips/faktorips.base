@@ -89,9 +89,6 @@ public class DecimalRange extends DefaultRange<Decimal> {
         super(lowerBound, upperBound, step, containsNull);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean checkIfValueCompliesToStepIncrement(Decimal value, Decimal bound) {
 
@@ -111,26 +108,17 @@ public class DecimalRange extends DefaultRange<Decimal> {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         return getUpperBound().subtract(getLowerBound()).abs().divide(getStep(), 0, BigDecimal.ROUND_UNNECESSARY)
                 .intValue() + 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Decimal getNextValue(Decimal currentValue) {
         return currentValue.add(getStep());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Decimal getNullValue() {
         return Decimal.NULL;

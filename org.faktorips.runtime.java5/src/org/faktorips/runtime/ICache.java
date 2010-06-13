@@ -39,4 +39,5 @@ public interface ICache<T> {
      * the cache with the same key.
      */
     public void put(Object key, T o);
+
 }

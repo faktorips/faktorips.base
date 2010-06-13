@@ -23,4 +23,6 @@ package org.faktorips.values;
  */
 public interface NullObject {
 
+    // Marker interface.
+
 }

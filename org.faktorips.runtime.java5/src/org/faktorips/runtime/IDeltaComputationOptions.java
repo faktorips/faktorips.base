@@ -103,4 +103,5 @@ public interface IDeltaComputationOptions {
      * @param property The name of the property.
      */
     public boolean ignore(Class<?> clazz, String property);
+
 }

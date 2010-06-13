@@ -29,21 +29,12 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
     private Map<Object, List<Object>> objects = new HashMap<Object, List<Object>>(100);
     private List<IUnresolvedReference> references = new ArrayList<IUnresolvedReference>();
 
-    public DefaultObjectReferenceStore() {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void resolveReferences() throws Exception {
         for (IUnresolvedReference ref : references) {
             ref.resolve(this);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void putObject(Object id, Object object) {
         List<Object> list = objects.get(id);
         if (list == null) {
@@ -51,23 +42,19 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
             objects.put(id, list);
         }
         if (!list.contains(object)) {
-            // assumtion here is that there won't be too many objects with same id of different
-            // classes
-            // in the store, so this implementation is fast and there is no need to use a set class.
+            /*
+             * Assumption here is that there won't be too many objects with same id of different
+             * classes in the store, so this implementation is fast and there is no need to use a
+             * set class.
+             */
             list.add(object);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void addUnresolvedReference(IUnresolvedReference reference) {
         references.add(reference);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object getObject(Class<?> clazz, Object id) {
         List<Object> objectsWithId = objects.get(id);
         if (objectsWithId == null) {
@@ -81,16 +68,10 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Collection<List<Object>> getAllObjects() {
         return objects.values();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Collection<IUnresolvedReference> getAllUnresolvedReferences() {
         return references;
     }

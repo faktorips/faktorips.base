@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 public class TestAbstractRangeTest extends TestCase {
 
     public void testConstructor() {
-
         IntegerRange range = new IntegerRange(null, new Integer(10));
         assertNull(range.getLowerBound());
         assertEquals(new Integer(10), range.getUpperBound());
@@ -62,8 +61,8 @@ public class TestAbstractRangeTest extends TestCase {
             IntegerRange.valueOf(new Integer(0), new Integer(100), 7);
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
-
     }
 
     public void testIsEmpty() {
@@ -150,7 +149,6 @@ public class TestAbstractRangeTest extends TestCase {
     }
 
     public void testHashCode() {
-
         IntegerRange range1 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
         IntegerRange range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
         assertEquals(range1.hashCode(), range2.hashCode());
@@ -160,7 +158,6 @@ public class TestAbstractRangeTest extends TestCase {
     }
 
     public void testIsDiscrete() {
-
         IntegerRange range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, true);
         assertFalse(range.isDiscrete());
         range = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
@@ -174,4 +171,5 @@ public class TestAbstractRangeTest extends TestCase {
         range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, true);
         assertTrue(range.containsNull());
     }
+
 }

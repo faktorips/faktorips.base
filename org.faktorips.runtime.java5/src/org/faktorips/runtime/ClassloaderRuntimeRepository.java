@@ -265,9 +265,6 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
         reload();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ReadonlyTableOfContents loadTableOfContents() {
         InputStream is = null;
@@ -391,9 +388,6 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
         return builder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isModifiable() {
         return false;
     }

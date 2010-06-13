@@ -65,9 +65,6 @@ public class LongRange extends DefaultRange<Long> {
         super(lower, upper, step, containsNull);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean checkIfValueCompliesToStepIncrement(Long value, Long bound) {
         if (getStep().longValue() == 0L) {
@@ -78,9 +75,6 @@ public class LongRange extends DefaultRange<Long> {
         return divAndRemainder[1].longValue() == 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         BigInteger diff = BigInteger.valueOf(Math.abs(getUpperBound() - getLowerBound()));
@@ -95,19 +89,14 @@ public class LongRange extends DefaultRange<Long> {
         return returnValue.intValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Long getNextValue(Long currentValue) {
         return currentValue + getStep();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Long getNullValue() {
         return null;
     }
+
 }

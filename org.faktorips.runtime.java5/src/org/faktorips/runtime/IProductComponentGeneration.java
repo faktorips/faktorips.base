@@ -68,4 +68,5 @@ public interface IProductComponentGeneration extends IRuntimeObject {
      * component generation to other product components.
      */
     public List<IProductComponentLink<? extends IProductComponent>> getLinks();
+
 }

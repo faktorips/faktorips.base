@@ -36,4 +36,5 @@ public interface IObjectReferenceStore {
     public Collection<IUnresolvedReference> getAllUnresolvedReferences();
 
     public void resolveReferences() throws Exception;
+
 }

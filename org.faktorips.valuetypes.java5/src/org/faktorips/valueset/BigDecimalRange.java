@@ -22,9 +22,7 @@ import java.math.BigDecimal;
  * @author Joerg Ortmann
  */
 public class BigDecimalRange extends DefaultRange<BigDecimal> {
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
+
     private static final long serialVersionUID = -9040271817746215911L;
 
     /**
@@ -91,9 +89,6 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
         super(lowerBound, upperBound, step, containsNull);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean checkIfValueCompliesToStepIncrement(BigDecimal value, BigDecimal bound) {
         BigDecimal step = getStep();
@@ -112,26 +107,17 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         return getUpperBound().subtract(getLowerBound()).abs().divide(getStep(), 0, BigDecimal.ROUND_UNNECESSARY)
                 .intValue() + 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected BigDecimal getNextValue(BigDecimal currentValue) {
         return currentValue.add(getStep());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected BigDecimal getNullValue() {
         return null;

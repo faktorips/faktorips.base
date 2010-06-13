@@ -24,9 +24,6 @@ package org.faktorips.runtime;
  */
 public class DeltaComputationOptionsByPosition implements IDeltaComputationOptions {
 
-    /**
-     * {@inheritDoc}
-     */
     public ComputationMethod getMethod(String association) {
         return ComputationMethod.BY_POSITION;
     }

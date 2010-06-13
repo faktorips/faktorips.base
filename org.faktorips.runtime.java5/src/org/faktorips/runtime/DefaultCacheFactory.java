@@ -71,9 +71,6 @@ public class DefaultCacheFactory implements ICacheFactory {
         return initSize;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public <T> ICache<T> createCache(Class<T> typeClass) {
         return new SoftReferenceCache<T>(getInitialSiez(typeClass));
     }
@@ -89,4 +86,5 @@ public class DefaultCacheFactory implements ICacheFactory {
     public ICache<ITable> createTableCache() {
         return createCache(ITable.class);
     }
+
 }

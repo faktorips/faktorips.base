@@ -22,7 +22,6 @@ public interface ICacheFactory {
 
     /**
      * Creates a new cache of the given type.
-     * 
      */
     public <T> ICache<T> createCache(Class<T> typeClass);
 

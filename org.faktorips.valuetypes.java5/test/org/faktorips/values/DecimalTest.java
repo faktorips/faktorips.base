@@ -17,9 +17,6 @@ import java.math.BigDecimal;
 
 import junit.framework.TestCase;
 
-/**
- *
- */
 public class DecimalTest extends TestCase {
 
     public void testDoubleValue() {
@@ -66,9 +63,6 @@ public class DecimalTest extends TestCase {
         assertTrue(Decimal.valueOf(decNull.toString()).isNull());
     }
 
-    /*
-     * Class under test for Decimal valueOf(String)
-     */
     public void testValueOfInteger() {
         Decimal expected = Decimal.valueOf("42");
         assertEquals(expected, Decimal.valueOf(new Integer(42)));
@@ -79,9 +73,6 @@ public class DecimalTest extends TestCase {
         assertTrue(Decimal.valueOf((Integer)null).isNull());
     }
 
-    /*
-     * Class under test for Decimal valueOf(BigDecimal)
-     */
     public void testValueOfBigDecimal() {
         Decimal d = Decimal.valueOf(BigDecimal.valueOf(93245, 4));
         assertEquals(Decimal.valueOf(93245, 4), d);
@@ -90,9 +81,6 @@ public class DecimalTest extends TestCase {
 
     }
 
-    /*
-     * Class under test for Decimal valueOf(long, int)
-     */
     public void testValueOflongint() {
         Decimal d = Decimal.valueOf(6541, 1);
         assertEquals(Decimal.valueOf("654.1"), d);
@@ -113,9 +101,6 @@ public class DecimalTest extends TestCase {
         assertTrue(d1.compareTo(Decimal.valueOf("3.45")) == 0);
     }
 
-    /*
-     * Class under test for boolean equals(Object)
-     */
     public void testEqualsObject() {
         Decimal d = Decimal.valueOf("3.45");
 
@@ -142,9 +127,6 @@ public class DecimalTest extends TestCase {
 
     }
 
-    /*
-     * Class under test for String toString()
-     */
     public void testToString() {
         assertEquals("3", Decimal.valueOf("3").toString());
         assertEquals("3.50", Decimal.valueOf("3.50").toString());
@@ -358,6 +340,6 @@ public class DecimalTest extends TestCase {
 
         Decimal value3 = Decimal.valueOf(105, 2);
         assertSame(value1, value1.min(value3));
-
     }
+
 }

@@ -16,7 +16,6 @@ package org.faktorips.runtime;
 /**
  * Interface indicating that it is possible to compute a delta between two instances of the class
  * implementing this interface.
- * 
  * <p>
  * <strong> The delta support is experimental in this version. The API might change without notice
  * until it is finalized in a future version. </strong>

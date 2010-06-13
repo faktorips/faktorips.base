@@ -14,21 +14,15 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 /**
  * Can be used to map interfaces.
  * 
- * @see https://jaxb.dev.java.net/guide/Mapping_interfaces.html
+ * @see "https://jaxb.dev.java.net/guide/Mapping_interfaces.html"
  */
 public class AnyTypeAdapter extends XmlAdapter<Object, Object> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object unmarshal(Object v) {
         return v;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object marshal(Object v) {
         return v;

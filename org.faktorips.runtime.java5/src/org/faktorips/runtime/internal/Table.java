@@ -74,8 +74,6 @@ public abstract class Table implements ITable {
 
     /**
      * Initializes this object with the data stored in the xml element.
-     * 
-     * @throws Exception
      */
     public void initFromXml(InputStream is, IRuntimeRepository productRepository) throws Exception {
         rows = new ArrayList(200);

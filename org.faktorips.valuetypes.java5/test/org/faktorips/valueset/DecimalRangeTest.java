@@ -38,7 +38,6 @@ public class DecimalRangeTest extends TestCase {
     }
 
     public void testConstructorWithStep() {
-
         DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)), Decimal
                 .valueOf(10, 0));
         DecimalRange.valueOf(Decimal.valueOf(135, 2), Decimal.valueOf(108, 1), Decimal.valueOf(135, 2));
@@ -49,6 +48,7 @@ public class DecimalRangeTest extends TestCase {
                     .valueOf(new Integer(12)));
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
@@ -56,11 +56,11 @@ public class DecimalRangeTest extends TestCase {
                     .valueOf(new Integer(0)));
             fail("Expect to fail since a step size of zero is not allowed.");
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
     }
 
     public void testContains() {
-
         DecimalRange range = new DecimalRange(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)));
         assertTrue(range.contains(Decimal.valueOf(new Integer(30))));
         assertFalse(range.contains(Decimal.valueOf(new Integer(120))));
@@ -76,16 +76,15 @@ public class DecimalRangeTest extends TestCase {
 
         assertTrue(range.contains(Decimal.valueOf(30, 0)));
         assertFalse(range.contains(Decimal.valueOf(35, 0)));
-
     }
 
     public void testGetValues() {
-
         DecimalRange range = new DecimalRange(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)));
         try {
             range.getValues(false);
             fail();
         } catch (IllegalStateException e) {
+            // Expected exception.
         }
 
         range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)), Decimal.NULL);
@@ -93,6 +92,7 @@ public class DecimalRangeTest extends TestCase {
             range.getValues(false);
             fail();
         } catch (IllegalStateException e) {
+            // Expected exception.
         }
 
         range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), null, Decimal.valueOf(new Integer(10)));
@@ -101,6 +101,7 @@ public class DecimalRangeTest extends TestCase {
             range.getValues(false);
             fail();
         } catch (IllegalStateException e) {
+            // Expected exception.
         }
 
         range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)), Decimal
@@ -122,7 +123,6 @@ public class DecimalRangeTest extends TestCase {
         assertTrue(values.contains(Decimal.valueOf(70, 0)));
         assertTrue(values.contains(Decimal.valueOf(10, 0)));
         assertTrue(values.contains(Decimal.NULL));
-
     }
 
     public void testSerializable() throws Exception {
@@ -130,4 +130,5 @@ public class DecimalRangeTest extends TestCase {
                 Decimal.valueOf(new Integer(10)), true);
         TestUtil.testSerializable(range);
     }
+
 }

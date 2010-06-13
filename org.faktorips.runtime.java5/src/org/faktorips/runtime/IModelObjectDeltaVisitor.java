@@ -15,7 +15,6 @@ package org.faktorips.runtime;
 
 /**
  * Visitor to visit a model object delta.
- * 
  * <p>
  * <strong> The delta support is experimental in this version. The API might change without notice
  * until it is finalized in a future version. </strong>
@@ -33,4 +32,5 @@ public interface IModelObjectDeltaVisitor {
      *         they should be skipped.
      */
     public boolean visit(IModelObjectDelta delta);
+
 }

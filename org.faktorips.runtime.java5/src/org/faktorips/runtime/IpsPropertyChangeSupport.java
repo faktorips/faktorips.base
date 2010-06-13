@@ -37,9 +37,6 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
 
     private Vector<PropertyChangeListener> childChangeListeners;
 
-    /**
-     * @param sourceBean
-     */
     public IpsPropertyChangeSupport(Object sourceBean) {
         super(sourceBean);
         this.sourceBean = sourceBean;
@@ -93,7 +90,7 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
      * the removed association target is null.
      * 
      * @param associationName The programmatic name of the association that was changed.
-     * @param addedAssociationTarget The target removed from the association.
+     * @param removedAssociationTarget The target removed from the association.
      */
     public void fireAssociationRemoved(String associationName, Object removedAssociationTarget) {
         if (removedAssociationTarget == null) {
@@ -103,7 +100,8 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
     }
 
     /**
-     * @see {@link PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)}
+     * @see PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)
+     * 
      * @param propagateEventsFromChildren if set to {@code true}, this object's change listeners
      *            will also be notified when one of this object's children fires a change event.
      */
@@ -136,10 +134,6 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
         }
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     @Override
     public synchronized void removePropertyChangeListener(PropertyChangeListener listener) {
         super.removePropertyChangeListener(listener);
@@ -147,4 +141,5 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
             childChangeListeners.remove(listener);
         }
     }
+
 }

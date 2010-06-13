@@ -37,7 +37,6 @@ public class BigDecimalRangeTest extends TestCase {
     }
 
     public void testConstructorWithStep() {
-
         BigDecimalRange.valueOf(BigDecimal.valueOf(new Integer(10)), BigDecimal.valueOf(new Integer(100)), BigDecimal
                 .valueOf(10, 0));
         BigDecimalRange.valueOf(BigDecimal.valueOf(135, 2), BigDecimal.valueOf(108, 1), BigDecimal.valueOf(135, 2));
@@ -61,7 +60,6 @@ public class BigDecimalRangeTest extends TestCase {
     }
 
     public void testContains() {
-
         BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(new Integer(10)), BigDecimal
                 .valueOf(new Integer(100)));
         assertTrue(range.contains(BigDecimal.valueOf(new Integer(30))));
@@ -79,7 +77,6 @@ public class BigDecimalRangeTest extends TestCase {
 
         assertTrue(range.contains(BigDecimal.valueOf(30, 0)));
         assertFalse(range.contains(BigDecimal.valueOf(35, 0)));
-
     }
 
     public void testGetValues() {
@@ -138,4 +135,5 @@ public class BigDecimalRangeTest extends TestCase {
                 .valueOf(new Integer(100)), BigDecimal.valueOf(new Integer(10)), true);
         TestUtil.testSerializable(range);
     }
+
 }

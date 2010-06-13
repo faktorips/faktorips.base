@@ -55,4 +55,5 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
      * be null indicating that this is a continuous range.
      */
     public T getStep();
+
 }

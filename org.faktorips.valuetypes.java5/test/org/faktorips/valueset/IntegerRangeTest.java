@@ -62,11 +62,11 @@ public class IntegerRangeTest extends TestCase {
             IntegerRange.valueOf(new Integer(0), new Integer(100), new Integer(0), false);
             fail("Expect to fail since zero step size is not allowed.");
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
     }
 
     public void testContains() {
-
         IntegerRange range = IntegerRange.valueOf(null, new Integer(100), 10);
         assertTrue(range.contains(30));
         assertTrue(range.contains(100));
@@ -78,11 +78,9 @@ public class IntegerRangeTest extends TestCase {
         assertTrue(range.contains(10));
         assertFalse(range.contains(-10));
         assertFalse(range.contains(44));
-
     }
 
     public void testGetValues() {
-
         IntegerRange range = IntegerRange.valueOf(0, 100, 20);
         Set<Integer> values = range.getValues(false);
         assertEquals(6, range.size());
@@ -107,4 +105,5 @@ public class IntegerRangeTest extends TestCase {
     public void testSerializable() throws Exception {
         TestUtil.testSerializable(IntegerRange.valueOf(0, 100, 20));
     }
+
 }

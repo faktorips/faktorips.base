@@ -62,4 +62,5 @@ public interface ValueSet<T> extends Serializable {
      *             values or has an unlimited number of values
      */
     public Set<? extends T> getValues(boolean excludeNull);
+
 }

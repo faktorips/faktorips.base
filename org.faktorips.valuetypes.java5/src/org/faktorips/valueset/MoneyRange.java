@@ -70,12 +70,8 @@ public class MoneyRange extends DefaultRange<Money> {
         super(lowerBound, upperBound, step, containsNull);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean checkIfValueCompliesToStepIncrement(Money value, Money bound) {
-
         Decimal step = getStep().getAmount();
         Decimal zero = Decimal.valueOf(0, step.scale());
         if (zero.equals(step)) {
@@ -91,12 +87,8 @@ public class MoneyRange extends DefaultRange<Money> {
             return false;
         }
         return true;
-
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Money getNextValue(Money currentValue) {
         return currentValue.add(getStep());
@@ -120,9 +112,6 @@ public class MoneyRange extends DefaultRange<Money> {
         return super.contains(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         Decimal upperAmount = getUpperBound().getAmount();
@@ -132,11 +121,9 @@ public class MoneyRange extends DefaultRange<Money> {
         return upperAmount.subtract(lowerAmount).abs().divide(stepAmount, 0, BigDecimal.ROUND_UNNECESSARY).intValue() + 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Money getNullValue() {
         return Money.NULL;
     }
+
 }

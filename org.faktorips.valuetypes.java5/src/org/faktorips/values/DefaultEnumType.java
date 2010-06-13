@@ -62,18 +62,12 @@ public class DefaultEnumType implements EnumType {
         values = newValues;
     }
 
-    /**
-     * Overridden.
-     */
     public EnumValue[] getValues() {
         DefaultEnumValue[] copy = new DefaultEnumValue[values.length];
         System.arraycopy(values, 0, copy, 0, values.length);
         return copy;
     }
 
-    /**
-     * Overridden.
-     */
     public String[] getValueIds() {
         String[] ids = new String[values.length];
         for (int i = 0; i < values.length; i++) {
@@ -82,9 +76,6 @@ public class DefaultEnumType implements EnumType {
         return ids;
     }
 
-    /**
-     * Overridden.
-     */
     public boolean containsValue(String id) {
         for (DefaultEnumValue value : values) {
             if (value.getId() == null) {
@@ -100,15 +91,11 @@ public class DefaultEnumType implements EnumType {
         return false;
     }
 
-    /**
-     * Overridden.
-     */
     public EnumValue getEnumValue(String id) throws IllegalArgumentException {
         for (DefaultEnumValue value : values) {
             if (value.getId() == null) {
                 if (id == null) {
                     return value;
-                } else {
                 }
             } else {
                 if (value.getId().equals(id)) {
@@ -119,9 +106,6 @@ public class DefaultEnumType implements EnumType {
         return null;
     }
 
-    /**
-     * Overridden.
-     */
     public boolean contains(Object value) {
         if (!(value instanceof EnumValue)) {
             return false;
@@ -129,25 +113,14 @@ public class DefaultEnumType implements EnumType {
         return contains(value);
     }
 
-    /**
-     * Overridden.
-     */
     public boolean containsNull() {
         return contains((String)null);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.valueset.ValueSet#getNumOfValues()
-     */
     public int getNumOfValues() {
         return values.length;
     }
 
-    /**
-     * Overridden.
-     */
     public EnumValue getEnumValue(int index) throws IndexOutOfBoundsException {
         return values[index];
     }
@@ -157,9 +130,6 @@ public class DefaultEnumType implements EnumType {
         return name;
     }
 
-    /**
-     * Overridden.
-     */
     public Object[] getValues(String[] value) {
         EnumValue[] elements = new EnumValue[value.length];
         for (int i = 0; i < elements.length; i++) {

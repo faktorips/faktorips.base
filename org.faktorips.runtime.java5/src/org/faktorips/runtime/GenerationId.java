@@ -33,23 +33,14 @@ public class GenerationId implements Comparable<GenerationId> {
         this.hashCode = qName.hashCode() * 17 + validFrom.hashCode();
     }
 
-    /**
-     * @return Returns the qName.
-     */
     public String getQName() {
         return qName;
     }
 
-    /**
-     * @return Returns the validFrom.
-     */
     public DateTime getValidFrom() {
         return validFrom;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof GenerationId)) {
@@ -62,25 +53,16 @@ public class GenerationId implements Comparable<GenerationId> {
         return qName.equals(other.qName) && validFrom.equals(other.validFrom);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return hashCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return qName + " " + validFrom.toIsoFormat();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int compareTo(GenerationId other) {
         int c = qName.compareTo(other.qName);
         if (c != 0) {
@@ -88,4 +70,5 @@ public class GenerationId implements Comparable<GenerationId> {
         }
         return validFrom.compareTo(other.validFrom);
     }
+
 }

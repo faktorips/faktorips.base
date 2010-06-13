@@ -29,7 +29,7 @@ import java.util.List;
  * property.
  * <p>
  * Message is an immutable value object. Two message objects are considered equal if they have the
- * same severity, code, text, "invalid properties" and replacement parametes.
+ * same severity, code, text, "invalid properties" and replacement parameters.
  * 
  * @author Jan Ortmann
  */
@@ -80,20 +80,21 @@ public class Message implements Serializable {
      */
     public static final Severity ERROR = Severity.ERROR;
 
-    // one of the constants ERROR, WARNING, INFO
+    /** One of the constants ERROR, WARNING or INFO. */
     private Severity severity = Severity.ERROR;
 
-    // the human readable text
+    /** The human readable text. */
     private String text = "";
 
-    // code to identifiy the type of message
+    /** Code to identify the type of message. */
     private String code = "";
 
-    // the object and their properties that are adressed in the message
-    // as having an error or that a warning or information relates to.
+    /**
+     * The object and their properties that are addressed in the message as having an error or that
+     * a warning or information relates to.
+     */
     private List<ObjectProperty> invalidOp = null;
 
-    // list of replacement parameters.
     private List<MsgReplacementParameter> replacementParameters = null;
 
     /**

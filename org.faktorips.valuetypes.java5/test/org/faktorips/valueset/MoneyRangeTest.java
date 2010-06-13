@@ -37,12 +37,14 @@ public class MoneyRangeTest extends TestCase {
             MoneyRange.valueOf(Money.euro(10, 0), Money.euro(10, 10), Money.euro(10, 0), false);
             fail();
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         try {
             MoneyRange.valueOf(Money.euro(10, 0), Money.euro(10, 10), Money.euro(0, 0), false);
             fail("Expected to fail since zero step size is not allowed.");
         } catch (IllegalArgumentException e) {
+            // Expected exception.
         }
 
         range = MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true);
@@ -50,7 +52,6 @@ public class MoneyRangeTest extends TestCase {
         assertEquals(Money.euro(100, 0), range.getUpperBound());
         assertEquals(Money.euro(10, 0), range.getStep());
         assertTrue(range.containsNull());
-
     }
 
     public void testConstructor() {
@@ -78,7 +79,6 @@ public class MoneyRangeTest extends TestCase {
         assertTrue(range.contains(Money.euro(30, 0)));
         assertTrue(range.contains(Money.euro(100, 0)));
         assertFalse(range.contains(Money.euro(110, 0)));
-
     }
 
     public void testSize() {
@@ -87,7 +87,6 @@ public class MoneyRangeTest extends TestCase {
 
         range = MoneyRange.valueOf(Money.euro(0, 0), Money.euro(100, 0), Money.euro(10, 0), false);
         assertEquals(11, range.size());
-
     }
 
     public void testGetValues() {
@@ -114,4 +113,5 @@ public class MoneyRangeTest extends TestCase {
     public void testSerializable() throws Exception {
         TestUtil.testSerializable(MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true));
     }
+
 }

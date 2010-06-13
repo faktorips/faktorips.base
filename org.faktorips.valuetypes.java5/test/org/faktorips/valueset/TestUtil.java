@@ -27,6 +27,7 @@ public class TestUtil {
 
     public final static void testSerializable(Serializable serializableObject) throws AssertionFailedError,
             IOException, ClassNotFoundException {
+
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(bos);
         os.writeObject(serializableObject);
@@ -37,4 +38,5 @@ public class TestUtil {
         Object deserializedObject = is.readObject();
         Assert.assertEquals(serializableObject, deserializedObject);
     }
+
 }

@@ -23,44 +23,27 @@ import java.beans.PropertyChangeEvent;
  */
 public class AssociationChangedEvent extends PropertyChangeEvent {
 
-    /**
-     * Generated <code>serialVersionUID</code>
-     */
     private static final long serialVersionUID = 7545458044844395021L;
 
     private final Object addedAssociationTarget;
     private final Object removedAssociationTarget;
 
-    /**
-     * @param source
-     * @param propertyName
-     * @param oldValue
-     * @param newValue
-     */
     public AssociationChangedEvent(Object source, String associationName, Object removedAssociationTarget,
             Object addedAssociationTarget) {
+
         super(source, associationName, null, null);
         this.addedAssociationTarget = addedAssociationTarget;
         this.removedAssociationTarget = removedAssociationTarget;
     }
 
-    /**
-     * Returns the added AssociationTarget.
-     */
     public Object getAddedAssociationTarget() {
         return addedAssociationTarget;
     }
 
-    /**
-     * Returns the removed AssociationTarget.
-     */
     public Object getRemovedAssociationTarget() {
         return removedAssociationTarget;
     }
 
-    /**
-     * Returns the association's name.
-     */
     public String getAssociationName() {
         return getPropertyName();
     }

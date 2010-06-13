@@ -27,4 +27,5 @@ public interface IModelObjectVisitor {
      *         otherwise <code>false</code>.
      */
     public boolean visit(IModelObject modelObject);
+
 }

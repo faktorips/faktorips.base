@@ -54,6 +54,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      * Creates an empty message list.
      */
     public MessageList() {
+        // Provides default constructor.
     }
 
     /**

@@ -63,4 +63,5 @@ public class DoubleRange extends DefaultRange<Double> {
     public static DoubleRange valueOf(Double lower, Double upper, boolean containsNull) {
         return new DoubleRange(lower, upper, containsNull);
     }
+
 }

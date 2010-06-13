@@ -64,8 +64,10 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
 
     private final static int[] power10 = new int[] { 1, 10, 100, 1000, 10000, 100000 };
 
-    // the money's amount is stored internally as long.
-    // Example: The internal amount for 3.50EUR is 350
+    /**
+     * the money's amount is stored internally as long; for example: The internal amount for 3.50EUR
+     * is 350.
+     */
     private final long internalAmount;
 
     private final Currency currency;
