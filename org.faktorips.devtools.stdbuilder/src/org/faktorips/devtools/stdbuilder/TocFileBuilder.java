@@ -88,10 +88,6 @@ import org.w3c.dom.Element;
  */
 public class TocFileBuilder extends AbstractArtefactBuilder {
 
-    // a map contains the modification stamp for each ips package fragment root's runtime
-    // repository table of contents.
-    private Map<IIpsPackageFragmentRoot, Long> packFrgmtRootTocModStamps = new HashMap<IIpsPackageFragmentRoot, Long>();
-
     // a map that contains the table of contents objects (value) for each table of contents file.
     private Map<IFile, TableOfContent> tocFileMap = new HashMap<IFile, TableOfContent>();
 
@@ -207,8 +203,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
                 getToc(root).clear();
             }
-            long modStamp = getToc(root).getModificationStamp();
-            packFrgmtRootTocModStamps.put(root, new Long(modStamp));
             // next lines are a workaround for a bug in PDE
             // if we create the folder in afterBuildProcess, it is marked in the MANIFEST section
             // for exported packages as not existing (but it's there).
@@ -230,8 +224,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
             IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoot;
-            Long oldModStamp = packFrgmtRootTocModStamps.get(root);
-            if (oldModStamp.longValue() != getToc(root).getModificationStamp()) {
+            if (getToc(root).isModified()) {
                 saveToc(root);
             }
         }

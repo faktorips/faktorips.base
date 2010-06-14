@@ -78,107 +78,104 @@ public class TableOfContentTest extends XmlAbstractTestCase {
     }
 
     public void testAddOrReplaceTocEntry_TestCase() {
-        long modStamp = toc.getModificationStamp();
         ITocEntryObject entry0 = new TestCaseTocEntry("TestCaseId", "TestCaseName", "TestCase.xml", "TestCase");
         boolean changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertEquals(1, toc.getEntries().size());
         assertEquals(entry0, toc.getEntries().iterator().next());
     }
 
     public void testAddOrReplaceTocEntry() {
-        long modStamp = toc.getModificationStamp();
         ITocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
         boolean changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertEquals(1, toc.getEntries().size());
         assertEquals(entry0, toc.getEntries().iterator().next());
 
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         ITocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPkAnpStufe", new DateTime(2010, 1, 1));
         assertTrue(changed);
         changed = toc.addOrReplaceTocEntry(entry1);
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertEquals(2, toc.getEntries().size());
         Iterator<ITocEntryObject> iterator = toc.getEntries().iterator();
         assertEquals(entry1, iterator.next());
         assertEquals(entry0, iterator.next());
 
         // replace Motor with product component class name changed
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "org.sample.MotorPolicyPkAnpStufe",
                 new DateTime(2010, 1, 1));
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertEquals(2, toc.getEntries().size());
         iterator = toc.getEntries().iterator();
         assertEquals(entry1, iterator.next());
         assertEquals(entry0, iterator.next());
 
         // replace Motor with policy component class name changed
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "org.sample.MotorPolicyPkAnpStufe",
                 new DateTime(2010, 1, 1));
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertEquals(2, toc.getEntries().size());
         iterator = toc.getEntries().iterator();
         assertEquals(entry1, iterator.next());
         assertEquals(entry0, iterator.next());
 
         // replace Motor with xml resource name changed
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk",
                 "org.sample.MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertEquals(2, toc.getEntries().size());
         iterator = toc.getEntries().iterator();
         assertEquals(entry1, iterator.next());
         assertEquals(entry0, iterator.next());
 
         // replace but without changing
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk",
                 "org.sample.MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
         changed = toc.addOrReplaceTocEntry(entry0);
         assertFalse(changed);
-        assertEquals(modStamp, toc.getModificationStamp());
+        assertFalse(toc.isModified());
         assertEquals(2, toc.getEntries().size());
         iterator = toc.getEntries().iterator();
         assertEquals(entry1, iterator.next());// !! still old entry0 !!
         assertEquals(entry0, iterator.next());
 
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         ITocEntryObject tocEntry = new EnumXmlAdapterTocEntry("org.faktorips.AnEnum", "org.faktorips.AnEnum",
                 "org.faktorips.AnEnum");
         changed = toc.addOrReplaceTocEntry(tocEntry);
         assertTrue(changed);
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertTrue(toc.getEntries().contains(tocEntry));
 
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         changed = toc.addOrReplaceTocEntry(tocEntry);
         assertFalse(changed);
-        assertEquals(modStamp, toc.getModificationStamp());
+        assertFalse(toc.isModified());
 
     }
 
     public void testRemoveEntry() {
-        long modStamp = toc.getModificationStamp();
         toc.removeEntry(new QualifiedNameType("MotorProduct", IpsObjectType.PRODUCT_CMPT));
-        assertEquals(modStamp, toc.getModificationStamp());
+        assertFalse(toc.isModified());
 
         ITocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
@@ -194,39 +191,40 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         toc.addOrReplaceTocEntry(entry2);
         toc.addOrReplaceTocEntry(entry3);
 
-        modStamp = toc.getModificationStamp();
+        assertTrue(toc.isModified());
+        toc.resetModified();
         toc.removeEntry(new QualifiedNameType("Unknown Product", IpsObjectType.BUSINESS_FUNCTION));
-        assertEquals(modStamp, toc.getModificationStamp());
+        assertFalse(toc.isModified());
 
-        modStamp = toc.getModificationStamp();
         toc.removeEntry(new QualifiedNameType(entry1.getIpsObjectQualifiedName(), IpsObjectType.PRODUCT_CMPT));
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
+        toc.resetModified();
         assertEquals(3, toc.getEntries().size());
         assertEquals(entry0, toc.getEntry(new QualifiedNameType("MotorPolicy", IpsObjectType.PRODUCT_CMPT)));
 
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         toc.removeEntry(new QualifiedNameType(entry0.getIpsObjectQualifiedName(), IpsObjectType.PRODUCT_CMPT));
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertEquals(2, toc.getEntries().size());
 
         assertNotNull(toc.getEntry(new QualifiedNameType("TestTable", IpsObjectType.TABLE_CONTENTS)));
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         toc.removeEntry(new QualifiedNameType(entry3.getIpsObjectQualifiedName(), IpsObjectType.TABLE_CONTENTS));
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertNull(toc.getEntry(new QualifiedNameType("TestTable", IpsObjectType.TABLE_CONTENTS)));
 
         assertNotNull(toc.getEntry(new QualifiedNameType("RateTable", IpsObjectType.TABLE_CONTENTS)));
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         toc.removeEntry(new QualifiedNameType(entry2.getIpsObjectQualifiedName(), IpsObjectType.TABLE_CONTENTS));
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertNull(toc.getEntry(new QualifiedNameType("RateTable", IpsObjectType.TABLE_CONTENTS)));
 
         ITocEntryObject tocEntry = new EnumXmlAdapterTocEntry("org.faktorips.AnEnum", "org.faktorips.AnEnum",
                 "org.faktorips.AnEnum");
         toc.addOrReplaceTocEntry(tocEntry);
-        modStamp = toc.getModificationStamp();
+        toc.resetModified();
         toc.removeEntry(new QualifiedNameType(tocEntry.getIpsObjectQualifiedName(), IpsObjectType.ENUM_TYPE));
-        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.isModified());
         assertEquals(0, toc.getEntries().size());
 
     }

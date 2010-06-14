@@ -18,8 +18,6 @@ import java.util.Set;
 
 public interface IReadonlyTableOfContents {
 
-    public final static String TOC_XML_ELEMENT = "FaktorIps-TableOfContents";
-
     /**
      * Returns the toc entry representing a product component for the given id or null if no entry
      * exists for the given id.

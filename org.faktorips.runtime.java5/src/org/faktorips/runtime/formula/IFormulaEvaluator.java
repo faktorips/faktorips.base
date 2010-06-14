@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.formula;
+package org.faktorips.runtime.formula;
 
 /**
  * The published interface for the formula evaluator. You could set variables for the formula

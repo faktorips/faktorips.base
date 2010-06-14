@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.formula;
+package org.faktorips.runtime.formula;
 
 import org.faktorips.runtime.FormulaExecutionException;
 import org.w3c.dom.Element;

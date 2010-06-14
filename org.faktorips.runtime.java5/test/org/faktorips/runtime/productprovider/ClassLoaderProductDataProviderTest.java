@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
 
 public class ClassLoaderProductDataProviderTest extends TestCase {
 
-    private IProductDataProvider pdp;
+    private ClassLoaderProductDataProvider pdp;
 
     private DocumentBuilder docBuilder;
 
@@ -51,7 +51,8 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         docBuilder = createDocumentBuilder();
-        pdp = new ClassLoaderProductDataProvider(getClassLoader(), TOC_FIlE_NAME, docBuilder);
+        pdp = new ClassLoaderProductDataProvider(getClassLoader(), TOC_FIlE_NAME);
+        pdp.setCheckTocModifications(true);
         copy(TOC_FIlE_NAME_1, TOC_FIlE_NAME);
     }
 
@@ -77,10 +78,6 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         assertEquals(expectedToc.toString(), pdp.loadToc().toString());
 
         copy(TOC_FIlE_NAME_2, TOC_FIlE_NAME);
-
-        // modificationstamp is unchanged --> should not reload data
-        tocFile.setLastModified(321321000);
-        assertEquals(expectedToc.toString(), pdp.loadToc().toString());
 
         tocFile.setLastModified(999999000);
 
@@ -239,18 +236,6 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         return getClass().getClassLoader();
     }
 
-    private final static DocumentBuilder createDocumentBuilder() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        DocumentBuilder builder;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e1) {
-            throw new RuntimeException("Error creating document builder.", e1);
-        }
-        return builder;
-    }
-
     void copy(String srcName, String dstName) throws Exception {
         File src = new File(getClassLoader().getResource(srcName).toURI());
         File dst = new File(getClassLoader().getResource(dstName).toURI());
@@ -293,4 +278,17 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
             }
         }
     }
+
+    private final static DocumentBuilder createDocumentBuilder() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(false);
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e1) {
+            throw new RuntimeException("Error creating document builder.", e1);
+        }
+        return builder;
+    }
+
 }

@@ -19,7 +19,7 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 
-import org.faktorips.runtime.internal.formula.IFormulaEvaluatorFactory;
+import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;

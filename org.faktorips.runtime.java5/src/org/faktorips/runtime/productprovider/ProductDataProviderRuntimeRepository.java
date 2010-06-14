@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 import org.faktorips.runtime.AbstractClassLoaderRuntimeRepository;
 import org.faktorips.runtime.ExpirableCacheFactory;
-import org.faktorips.runtime.internal.formula.IFormulaEvaluatorFactory;
+import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
@@ -55,11 +55,7 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRun
 
     @Override
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
-        try {
-            return formulaEvaluatorFactory;
-        } catch (Exception e) {
-            throw new RuntimeException("Could not instantiate formula evaluator", e);
-        }
+        return formulaEvaluatorFactory;
     }
 
     @Override

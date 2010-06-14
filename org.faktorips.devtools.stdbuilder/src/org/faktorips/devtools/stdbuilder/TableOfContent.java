@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,11 +23,11 @@ import java.util.TreeSet;
 
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.IEnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntryObject;
 import org.faktorips.runtime.internal.toc.PolicyCmptTypeTocEntry;
@@ -43,8 +44,11 @@ import org.w3c.dom.NodeList;
  */
 public class TableOfContent {
 
-    // a value that is increased every time the registry content's is changed.
-    private long modificationStamp;
+    /*
+     * Modified is true if there was any change since last initFromXml or toXml call (or
+     * resetModified)
+     */
+    private boolean modified;
 
     private Map<QualifiedNameType, ITocEntryObject> entriesMap = new HashMap<QualifiedNameType, ITocEntryObject>(100);
 
@@ -53,15 +57,18 @@ public class TableOfContent {
     }
 
     /**
-     * Returns a non-negative modification stamp.
-     * <p>
-     * A table of content's modification stamp gets updated each time the table of content is
-     * modified. If a table of content's modification stamp is the same, the table of content has
-     * not changed. Conversely, if a table of content's modification stamp is different, it's
-     * contents has been modified at least once (possibly several times).
+     * Check if the table of content was modified since last {@link #initFromXml(Element)},
+     * {@link #toXml(Document)} or {@link #resetModified()}
      */
-    public long getModificationStamp() {
-        return modificationStamp;
+    public boolean isModified() {
+        return modified;
+    }
+
+    /**
+     * Setting modified to false.
+     */
+    public void resetModified() {
+        modified = false;
     }
 
     /**
@@ -69,7 +76,7 @@ public class TableOfContent {
      */
     public void clear() {
         entriesMap.clear();
-        ++modificationStamp;
+        modified = true;
     }
 
     /**
@@ -85,7 +92,7 @@ public class TableOfContent {
             if (entry.equals(oldValue)) {
                 return false;
             } else {
-                modificationStamp++;
+                modified = true;
                 return true;
             }
         } else {
@@ -101,7 +108,7 @@ public class TableOfContent {
     public ITocEntryObject removeEntry(QualifiedNameType id) {
         ITocEntryObject oldValue = entriesMap.remove(id);
         if (oldValue != null) {
-            modificationStamp++;
+            modified = true;
             return oldValue;
         } else {
             return null;
@@ -133,10 +140,13 @@ public class TableOfContent {
      * @throws NullPointerException if doc is <code>null</code>.
      */
     public Element toXml(Document doc) {
-        Element element = doc.createElement(IReadonlyTableOfContents.TOC_XML_ELEMENT);
+        Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
+        long lastModified = new Date().getTime();
+        element.setAttribute(AbstractReadonlyTableOfContents.LASTMOD_XML_ELEMENT, "" + lastModified);
         for (ITocEntryObject entry : getEntries()) {
             element.appendChild(entry.toXml(doc));
         }
+        modified = false;
         return element;
     }
 
@@ -148,7 +158,7 @@ public class TableOfContent {
                 addOrReplaceTocEntry(TocEntryObject.createFromXml(entryElement));
             }
         }
-        ++modificationStamp;
+        modified = false;
     }
 
     private static IpsObjectType getIpsObjectType(ITocEntryObject entry) {

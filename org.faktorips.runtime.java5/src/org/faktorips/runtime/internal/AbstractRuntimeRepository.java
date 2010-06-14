@@ -44,7 +44,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
-import org.faktorips.runtime.internal.formula.IFormulaEvaluatorFactory;
+import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.jaxb.IpsJAXBContext;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.internal.ModelType;

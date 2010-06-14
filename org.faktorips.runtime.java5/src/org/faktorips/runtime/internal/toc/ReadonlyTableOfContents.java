@@ -264,4 +264,15 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
 
     }
 
+    public List<ITocEntryObject> getEntries() {
+        List<ITocEntryObject> results = new ArrayList<ITocEntryObject>();
+        results.addAll(pcIdTocEntryMap.values());
+        results.addAll(tableContentNameTocEntryMap.values());
+        results.addAll(testCaseNameTocEntryMap.values());
+        results.addAll(modelTypeNameTocEntryMap.values());
+        results.addAll(enumContentImplClassTocEntryMap.values());
+        results.addAll(enumXmlAdapterTocEntryMap.values());
+        return results;
+    }
+
 }

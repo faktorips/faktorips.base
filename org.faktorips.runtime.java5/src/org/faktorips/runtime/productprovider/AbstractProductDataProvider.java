@@ -11,12 +11,18 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal.formula;
+package org.faktorips.runtime.productprovider;
 
-import java.util.List;
+public abstract class AbstractProductDataProvider implements IProductDataProvider {
 
-public interface IFormulaEvaluatorFactory {
+    protected static final String MODIFIED_EXCEPTION_MESSAGE = "Data has changed: ";
 
-    public IFormulaEvaluator createFormulaEvaluatorBuilder(Object thiz, List<String> compiledExpressions);
+    public AbstractProductDataProvider() {
+        super();
+    }
+
+    public boolean isExpired(long timestamp) {
+        return getModificationStamp() != timestamp;
+    }
 
 }

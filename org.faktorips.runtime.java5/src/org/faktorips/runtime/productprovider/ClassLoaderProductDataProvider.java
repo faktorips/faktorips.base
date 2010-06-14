@@ -13,12 +13,16 @@
 
 package org.faktorips.runtime.productprovider;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
@@ -31,6 +35,9 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * The {@link ClassLoaderProductDataProvider} is a local implementation of
@@ -40,13 +47,22 @@ import org.w3c.dom.NodeList;
  * 
  * @author dirmeier
  */
-public class ClassLoaderProductDataProvider implements IProductDataProvider {
+public class ClassLoaderProductDataProvider extends AbstractProductDataProvider {
 
     private final ClassLoader cl;
-    private final DocumentBuilder docBuilder;
-    private long lastModification = -1;
+    private boolean checkTocModifications = false;
+    private long tocFileLastModified = -1;
     private URL tocUrl;
     private ReadonlyTableOfContents toc;
+    protected DocumentBuilder docBuilder;
+
+    public ClassLoaderProductDataProvider(ClassLoader cl, String tocResourcePath) {
+        this(cl, tocResourcePath, createDocumentBuilder());
+    }
+
+    public void setCheckTocModifications(boolean checkTocModifications) {
+        this.checkTocModifications = checkTocModifications;
+    }
 
     public ClassLoaderProductDataProvider(ClassLoader cl, String tocResourcePath, DocumentBuilder docBuilder) {
         this.cl = cl;
@@ -97,13 +113,9 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
     }
 
     public ReadonlyTableOfContents loadToc() {
-        if (toc != null && lastModification == getModificationStamp()) {
-            return toc;
-        }
         InputStream is = null;
         Document doc;
         try {
-            lastModification = getModificationStamp();
             is = tocUrl.openStream();
             doc = docBuilder.parse(is);
         } catch (Exception e) {
@@ -120,6 +132,9 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
         try {
             Element tocElement = doc.getDocumentElement();
             toc = new ReadonlyTableOfContents();
+            if (checkTocModifications) {
+                tocFileLastModified = getModificationStamp();
+            }
             toc.initFromXml(tocElement);
             return toc;
         } catch (Exception e) {
@@ -151,23 +166,61 @@ public class ClassLoaderProductDataProvider implements IProductDataProvider {
         return element;
     }
 
-    public boolean isExpired(long timestamp) {
-        return getModificationStamp() != timestamp;
-    }
-
     public long getModificationStamp() {
-        URLConnection connection;
-        try {
-            connection = tocUrl.openConnection();
-            return connection.getLastModified();
-        } catch (IOException e) {
+        if (checkTocModifications) {
+            long lastMod = 0;
+            try {
+                URLConnection connection = tocUrl.openConnection();
+                if (connection instanceof JarURLConnection) {
+                    JarURLConnection jarUrlConnection = (JarURLConnection)connection;
+                    URL jarUrl = jarUrlConnection.getJarFileURL();
+                    File jarFile = new File(jarUrl.toURI());
+                    lastMod = jarFile.lastModified();
+                } else {
+                    File tocFile = new File(tocUrl.getFile());
+                    lastMod = tocFile.lastModified();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Cannot get last modification stamp of toc url", e);
+            }
+            return lastMod;
+        }
+        if (toc != null) {
+            return toc.getLastModified();
+        } else {
             return 0;
         }
     }
 
     private void checkForModifications(String name, long timestamp) throws DataModifiedException {
-        if (lastModification != timestamp) {
-            throw new DataModifiedException(name + " is expired.", this.lastModification, timestamp);
+        if (checkTocModifications && tocFileLastModified != timestamp) {
+            throw new DataModifiedException(MODIFIED_EXCEPTION_MESSAGE + name, tocFileLastModified, timestamp);
         }
     }
+
+    protected final static DocumentBuilder createDocumentBuilder() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(false);
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e1) {
+            throw new RuntimeException("Error creating document builder.", e1);
+        }
+        builder.setErrorHandler(new ErrorHandler() {
+            public void error(SAXParseException e) throws SAXException {
+                throw e;
+            }
+
+            public void fatalError(SAXParseException e) throws SAXException {
+                throw e;
+            }
+
+            public void warning(SAXParseException e) throws SAXException {
+                throw e;
+            }
+        });
+        return builder;
+    }
+
 }
