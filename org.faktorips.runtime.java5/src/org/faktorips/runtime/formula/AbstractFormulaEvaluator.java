@@ -14,6 +14,7 @@
 package org.faktorips.runtime.formula;
 
 import org.faktorips.runtime.FormulaExecutionException;
+import org.faktorips.runtime.IProductComponentGeneration;
 import org.w3c.dom.Element;
 
 /**
@@ -26,16 +27,21 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
 
     public static final String COMPILED_EXPRESSION_XML_TAG = "compiledExpression";
 
-    private final Object thiz;
+    private final IProductComponentGeneration productCmptGeneration;
 
-    public AbstractFormulaEvaluator(Object thiz) {
-        if (thiz == null) {
-            throw new IllegalStateException("The variable thiz have to be set");
+    public AbstractFormulaEvaluator(IProductComponentGeneration gen) {
+        if (gen == null) {
+            throw new NullPointerException();
         }
-        this.thiz = thiz;
+        this.productCmptGeneration = gen;
     }
 
-    public abstract void setVariable(String name, Object value);
+    /**
+     * {@inheritDoc}
+     */
+    public IProductComponentGeneration getProductComponentGeneration() {
+        return productCmptGeneration;
+    }
 
     /**
      * Evaluates a formula that was added through the builder
@@ -54,7 +60,8 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
                     parameterValues.append(", ");
                 }
             }
-            throw new FormulaExecutionException(thiz.toString(), formularName, parameterValues.toString(), e);
+            throw new FormulaExecutionException(productCmptGeneration.toString(), formularName, parameterValues
+                    .toString(), e);
         }
 
     }

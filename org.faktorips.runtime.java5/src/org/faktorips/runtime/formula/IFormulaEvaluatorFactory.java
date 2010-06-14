@@ -15,8 +15,10 @@ package org.faktorips.runtime.formula;
 
 import java.util.List;
 
+import org.faktorips.runtime.IProductComponentGeneration;
+
 public interface IFormulaEvaluatorFactory {
 
-    public IFormulaEvaluator createFormulaEvaluator(Object thiz, List<String> compiledExpressions);
+    public IFormulaEvaluator createFormulaEvaluator(IProductComponentGeneration gen, List<String> compiledExpressions);
 
 }

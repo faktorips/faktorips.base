@@ -13,24 +13,19 @@
 
 package org.faktorips.runtime.formula;
 
+import org.faktorips.runtime.IProductComponentGeneration;
+
 /**
- * The published interface for the formula evaluator. You could set variables for the formula
- * context and evaluate a formula.
+ * Evaluates the formulas of a product component generation.
  * 
  * @author dirmeier
  */
 public interface IFormulaEvaluator {
 
     /**
-     * Use this method to set additional variables that have to be visible inside your compiled
-     * formula expression. For example the variable 'thiz' is set to get access to the class
-     * context. Formula parameters are not set by this method but are specified directly when
-     * calling {@link #evaluate(String, Object...)}.
-     * 
-     * @param name the name of the variable
-     * @param value the value of the variable
+     * Returns the product component generation this is an evaluator for.
      */
-    void setVariable(String name, Object value);
+    public IProductComponentGeneration getProductComponentGeneration();
 
     /**
      * Evaluates the formula with the given name and the specified parameters.
