@@ -34,7 +34,7 @@ import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 
 /**
- * A ProductComponentRegistry that keeps it's data in memory.
+ * A runtime repository that keeps it's data in memory.
  */
 public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
@@ -118,6 +118,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      */
     public void reload() {
         // nothing to do
+    }
+
+    @Override
+    protected void getAllTables(List<ITable> result) {
+        result.addAll(this.tables);
     }
 
     /**

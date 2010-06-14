@@ -338,6 +338,25 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * {@inheritDoc}
      */
+    public List<ITable> getAllTables() {
+        List<ITable> result = new ArrayList<ITable>();
+        getAllTables(result);
+        for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
+            AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
+            refRepository.getAllTables(result);
+        }
+        return result;
+    }
+
+    /**
+     * Same as <code>getAllTables()</code> but searches only in this repository and not the ones,
+     * this repository depends on. Adds the tables found to the given result list.
+     */
+    protected abstract void getAllTables(List<ITable> result);
+
+    /**
+     * {@inheritDoc}
+     */
     public final ITable getTable(Class<?> tableClass) {
         ITable table = getTableInternal(tableClass);
         if (table != null) {

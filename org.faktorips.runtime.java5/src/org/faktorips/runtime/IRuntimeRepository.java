@@ -242,6 +242,14 @@ public interface IRuntimeRepository {
     public List<String> getAllProductComponentIds();
 
     /**
+     * Returns all tables available in this repository. Returns an empty list if no table is
+     * available.
+     * <p>
+     * Note that this is an expensive operation as all tables have to be loaded into memory.
+     */
+    public List<ITable> getAllTables();
+
+    /**
      * Returns the table contents for the given table class.
      */
     public ITable getTable(Class<?> tableClass);

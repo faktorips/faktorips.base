@@ -191,9 +191,6 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
 
     protected abstract IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry generationTocEntry);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void getAllProductComponents(List<IProductComponent> result) {
         for (ITocEntryObject entry : toc.getProductCmptTocEntries()) {
@@ -201,9 +198,13 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
+    public void getAllTables(List<ITable> result) {
+        for (ITocEntryObject entry : toc.getTableTocEntries()) {
+            result.add(getTable(entry.getIpsObjectQualifiedName()));
+        }
+    }
+
     @Override
     public void getProductComponentGenerations(IProductComponent productCmpt, List<IProductComponentGeneration> result) {
         if (productCmpt.getRepository() != this) {
