@@ -45,8 +45,6 @@
         
     	<ant dir="../org.faktorips.devtools.ormext.ui/build" antfile="build.xml" target="${target}"/>
 
-    	<ant dir="../de.qv.faktorips/build" antfile="build.xml" target="${target}"/>
-    	
 <!-- none plugin projects 
     	<ant dir="../org.faktorips.pluginbuilder/build" antfile="build.xml" target="${target}"/>
         <ant dir="../org.faktorips.integrationtest/build" antfile="build.xml" target="${target}"/>
