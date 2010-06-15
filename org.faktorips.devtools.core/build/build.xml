@@ -1,5 +1,7 @@
 <project name="org.faktorips.util" default="buildjar">
 	
+	<property name="eclipseDir" value="/usr/lib/eclipse-3.4-test"/>
+
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
 	    <filelist dir="./../../org.faktorips.build/lib">
