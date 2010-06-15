@@ -7,12 +7,6 @@
 		<antcall target="-build.all.target"/>
 	</target>
 	
-	<target name="test.all">
-		<property name="target" value="test"/>
-		<property name="haltOnProblem" value="no"/>
-		<antcall target="-build.all.target"/>
-	</target>
-
 	<!-- simulate Cruise Control ant build calls -->
 	<target name="-build.all.target">
         
