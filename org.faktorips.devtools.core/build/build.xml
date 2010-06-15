@@ -5,8 +5,9 @@
 	    <filelist dir="./../../org.faktorips.build/lib">
 	            <file name="junit.jar"/>
 	    </filelist>
+		
 		<!-- eclipse libraries -->
-		<fileset dir="/usr/lib/eclipse-3.4-test/">
+		<fileset dir="${eclipseDir}">
 			<patternset>
 					<include name="plugins/org.eclipse.jface*.jar" />
 					<include name="plugins/org.eclipse.text*.jar" />

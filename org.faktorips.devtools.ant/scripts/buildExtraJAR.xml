@@ -6,7 +6,7 @@
 	<property name="temp.folder" value="${basedir}/temp.folder"/>
 	<property name="plugin.destination" value="${basedir}"/>
 	<property name="build.result.folder" value="${basedir}/ant_tasks"/>
-	<property name="eclipsehome" value="/usr/lib/eclipse-3.4-test/" />
+	<property name="eclipseDir" value="/usr/lib/eclipse-3.4-test/" />
 	
 	<target name="main" depends="clean, test">
 	</target>
@@ -15,7 +15,7 @@
 		
 		
 		<path id="path">
-			<dirset dir="${eclipsehome}">
+			<dirset dir="${eclipseDir}">
 				<include name="org.eclipse.core.resources/bin"/>
 				<include name="org.eclipse.core.runtime/bin"/>
 				<include name="org.eclipse.equinox.common/bin"/>
@@ -24,7 +24,7 @@
 				<include name="org.eclipse.ant.core/bin"/>
 			</dirset>
 			
-			<fileset dir="${eclipsehome}">
+			<fileset dir="${eclipseDir}">
 				<include name="plugins/org.eclipse.core.resources*.jar"/>
 				<include name="plugins/org.eclipse.core.runtime*.jar"/>
 				<include name="plugins/org.eclipse.equinox.common*.jar"/>
@@ -44,7 +44,7 @@
 			</fileset>
 
 			<!-- eclipse libraries, dependency by org.faktorips.devtools.core  -->
-			<fileset dir="${eclipsehome}">
+			<fileset dir="${eclipseDir}">
 				<patternset>
 					<include name="plugins/org.eclipse.jface*.jar" />
 					<include name="plugins/org.eclipse.text*.jar" />

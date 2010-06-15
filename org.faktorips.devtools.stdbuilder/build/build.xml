@@ -1,6 +1,5 @@
 <project name="org.faktorips.util" default="buildjar">
 
-	
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
 	    <filelist dir="./../../org.faktorips.build/lib">
@@ -8,7 +7,7 @@
 	    </filelist>
 
 		<!-- eclipse libraries -->
-		<fileset dir="/usr/lib/eclipse-3.4-test/">
+		<fileset dir="${eclipseDir}">
 			<patternset>
 					<include name="plugins/org.eclipse.jface*.jar" />
 					<include name="plugins/org.eclipse.text*.jar" />

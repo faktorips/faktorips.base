@@ -1,6 +1,7 @@
 <project name="org.faktorips.build" default="buildjar">
 	
 		<!-- set global properties for this build -->
+		<property name="eclipseDir" value="/usr/lib/eclipse-3.4-test"/>
 
 		<!-- src -->
 		<property name="src" location="../src"/>
@@ -71,7 +72,9 @@
 	    </target>
 	
 	   <!--Compile -->
-        <target name="compile" depends="init">
+        <target name="compile" depends="init, -compile.src, -compile.test" />
+
+		<target name="-compile.src">
         	<!-- compile with debug=on to keep source line numbers -->
         	<echo message="Compile with source/target VM-Version: ${vmversion}" />
 			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath" 
@@ -80,7 +83,9 @@
         		<compilerarg value="-Xlint:deprecation" / -->
         		<compilerarg value="-Xlint:none" />
         	</javac>
-        	
+		</target>
+
+		<target name="-compile.test" if="doesTestExists" depends="-checkTestExists">
         	<copy todir="${test_classes}" failonerror="false">
         	    <fileset dir="${test_src}" >
         	      <include name="**/*.properties" />
@@ -96,16 +101,21 @@
         	      <include name="**/*.ipsproduct" />
         	    </fileset>
         	</copy>
+        	
         	<javac encoding="UTF-8" srcdir="${test_src}:${src}" destdir="${test_classes}" classpathref="classpath" 
-        		debug="on" target="${vmversion}" source="${vmversion}" failonerror="false">
+        		debug="on" target="${vmversion}" source="${vmversion}">
         		<compilerarg value="-Xlint:none" />
 			</javac>
-        </target>
+		</target>
+	
+		<target name="-checkTestExists">
+            <available file="${test_src}" property="doesTestExists" />
+		</target>
 	
 	   <!-- perform Junit Tests -->
-	    <target name="test" depends="compile" >
+	    <target name="test" depends="-checkTestExists,compile" if="doesTestExists">
 	    	
-	    	<property name="haltOnProblem" value="yes"/>
+	    	<property name="haltOnJunitFailOrError" value="yes"/>
 	    	<property name="junitTimeout" value="15000"/>
 		
 	    	<!-- delete previos junit-logging -->
@@ -115,7 +125,7 @@
 	    		</fileset>
 	    	</delete>
     	
-	    	<junit fork="yes" haltonerror="${haltOnProblem}" haltonfailure="${haltOnProblem}" printsummary="withOutAndErr" timeout="${junitTimeout}" showoutput="yes">
+	    	<junit fork="yes" haltonerror="${haltOnJunitFailOrError}" haltonfailure="${haltOnJunitFailOrError}" printsummary="withOutAndErr" timeout="${junitTimeout}" showoutput="yes">
 	    		<jvmarg value="-Djava.endorsed.dirs=${src}/../endorsed/"/>
 	    		<formatter type="xml" usefile="true"/>
 	    		<classpath>
