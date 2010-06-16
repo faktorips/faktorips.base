@@ -135,7 +135,12 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         if (getWrapped() != null) {
             hash = 31 * hash + getWrapped().hashCode();
         }
-        hash = 31 * hash + getWrappedIpsObject().hashCode();
-        return 31 * hash + getStructure().hashCode();
+        if (getWrappedIpsObject() != null) {
+            hash = 31 * hash + getWrappedIpsObject().hashCode();
+        }
+        if (getStructure() != null) {
+            hash = 31 * hash + getStructure().hashCode();
+        }
+        return hash;
     }
 }
