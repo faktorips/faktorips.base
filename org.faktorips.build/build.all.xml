@@ -39,7 +39,7 @@
         
     	<ant dir="../org.faktorips.devtools.ormext.ui/build" antfile="build.xml" target="buildjar"/>
 
-		<antcall target="build.runtime.additions" />
+		<antcall target="build.runtime.addons" />
 
 <!-- none plugin projects 
     	<ant dir="../org.faktorips.pluginbuilder/build" antfile="build.xml" target="buildjar"/>
@@ -48,7 +48,7 @@
 -->
     </target>
 	
-	<target name="build.runtime.additions">
+	<target name="build.runtime.addons">
 		<!-- runtime additions -->
 		
     	<ant dir="../org.faktorips.runtime.groovy/build" antfile="build.xml" target="buildjar"/>
