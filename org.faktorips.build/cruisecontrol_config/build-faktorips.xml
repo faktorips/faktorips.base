@@ -469,9 +469,9 @@
         <!--    runtime and valuetypes zip -->
 		<property name="faktoripsRuntimeAndValuetypesZipName" value="faktorips-runtime-valuetypes-${build.version}.zip"/>
 		<property name="faktoripsRuntimeAndValuetypesZipPath" value="${downloadDir}/${faktoripsRuntimeAndValuetypesZipName}"/>
-        <!--    runtime additions zip -->
-		<property name="faktoripsRuntimeAdditionsZipName" value="faktorips-runtime-additions-${build.version}.zip"/>
-		<property name="faktoripsRuntimeAdditionsZipPath" value="${downloadDir}/${faktoripsRuntimeAdditionsZipName}"/>
+        <!--    runtime addons zip -->
+		<property name="faktoripsRuntimeAddonsZipName" value="faktorips-runtime-addons-${build.version}.zip"/>
+		<property name="faktoripsRuntimeAddonsZipPath" value="${downloadDir}/${faktoripsRuntimeAddonsZipName}"/>
     	<!-- pluginbuilder configuration files -->
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
@@ -559,7 +559,7 @@
 	    <!-- build runtime and valuetypes separately,
 		       the eclipse build doesn't set the version number in the manifest file -->
 		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAndValuetypesJars"/>
-		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAdditions"/>
+		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAddons"/>
 
 		<antcall inheritall="true" target="-publish.release.all"/>
 		<antcall inheritall="true" target="-publish.product"/>
@@ -617,7 +617,7 @@ ${faktoripsProductLinuxZipPath}
        </antcall>
     </target>
 	
-    <target name="-buildAndPublish.release.runtimeAdditions" unless="is.product.build" if="isMinVersion3">
+    <target name="-buildAndPublish.release.runtimeAddons" unless="is.product.build" if="isMinVersion3">
     	<!-- build runtime and valutypes using own build files -->
         <ant dir="${buildDirectory}/plugins/org.faktorips.runtime.groovy/build" antfile="build.xml" target="buildAllsJars">
     	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
@@ -631,12 +631,12 @@ ${faktoripsProductLinuxZipPath}
         <ant dir="${buildDirectory}/plugins/org.faktorips.runtime.productdataprovider.ejbclient/build" antfile="build.xml" target="buildAllsJars">
     	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
     	</ant>
-        <antcall inheritall="true" target="-publish.release.runtimeAdditions"></antcall>
+        <antcall inheritall="true" target="-publish.release.runtimeAddons"></antcall>
     </target>
-	<target name="-publish.release.runtimeAdditions">
+	<target name="-publish.release.runtimeAddons">
        <property name="zip.dir" value="${buildDirectory}/zip_tmp"/>
-       <property name="zipFile" value="${buildDirectory}/results/${faktoripsRuntimeAdditionsZipName}"/>
-       <echo message="Create runtime additions zip file: ${zipFile}"/> 
+       <property name="zipFile" value="${buildDirectory}/results/${faktoripsRuntimeAddonsZipName}"/>
+       <echo message="Create runtime addons zip file: ${zipFile}"/> 
 	   <delete includeemptydirs="true" dir="${zip.dir}"/>
        <mkdir dir="${zip.dir}"/>
 	   <copy todir="${zip.dir}">
@@ -647,8 +647,8 @@ ${faktoripsProductLinuxZipPath}
 	   </copy>
        <zip destfile="${zipFile}" basedir="${zip.dir}" />
        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-           <param name="source" value="${faktoripsRuntimeAdditionsZipName}" />
-           <param name="dest.name" value="${faktoripsRuntimeAdditionsZipPath}" />
+           <param name="source" value="${faktoripsRuntimeAddonsZipName}" />
+           <param name="dest.name" value="${faktoripsRuntimeAddonsZipPath}" />
        </antcall>
     </target>
 

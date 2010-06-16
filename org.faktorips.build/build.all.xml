@@ -49,7 +49,7 @@
     </target>
 	
 	<target name="build.runtime.addons">
-		<!-- runtime additions -->
+		<!-- runtime addons -->
 		
     	<ant dir="../org.faktorips.runtime.groovy/build" antfile="build.xml" target="buildjar"/>
 
