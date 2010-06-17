@@ -29,8 +29,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
 
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -124,7 +124,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         IReadonlyTableOfContents toc = pdp.loadToc();
         assertEquals(321321000, pdp.getModificationStamp());
 
-        IProductCmptTocEntry pcmptEntry = toc.getProductCmptTocEntry("sample.TestProduct 2006-01");
+        ProductCmptTocEntry pcmptEntry = toc.getProductCmptTocEntry("sample.TestProduct 2006-01");
         Element actualElement = pdp.getProductCmptGenerationData(pcmptEntry.getLatestGenerationEntry());
         assertTrue(generations.item(1).isEqualNode(actualElement));
 

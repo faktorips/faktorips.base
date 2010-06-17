@@ -29,11 +29,11 @@ import org.faktorips.runtime.internal.EnumSaxHandler;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Table;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.w3c.dom.Element;
@@ -49,7 +49,7 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
     }
 
     @Override
-    protected IProductComponent createProductCmpt(IProductCmptTocEntry tocEntry) {
+    protected IProductComponent createProductCmpt(ProductCmptTocEntry tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
         ProductComponent productCmpt;
         try {
@@ -66,7 +66,7 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
     }
 
     @Override
-    protected <T> List<T> createEnumValues(IEnumContentTocEntry tocEntry, Class<T> clazz) {
+    protected <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> clazz) {
         InputStream is = getXmlAsStream(tocEntry);
 
         EnumSaxHandler saxhandler = new EnumSaxHandler();
@@ -148,8 +148,8 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
     @Override
     public List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
-        List<IProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
-        for (IProductCmptTocEntry entry : entries) {
+        List<ProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
+        for (ProductCmptTocEntry entry : entries) {
             Class<?> clazz = getClass(entry.getImplementationClassName(), getClassLoader());
             if (productCmptClass.isAssignableFrom(clazz)) {
                 result.add(getProductComponentInternal(entry));
@@ -159,7 +159,7 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
     }
 
     @Override
-    protected ITable createTable(ITableContentTocEntry tocEntry) {
+    protected ITable createTable(TableContentTocEntry tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
         Table table;
         try {
@@ -186,7 +186,7 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
     }
 
     @Override
-    protected IpsTestCaseBase createTestCase(ITestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository) {
+    protected IpsTestCaseBase createTestCase(TestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
         IpsTestCaseBase test;
         try {
@@ -216,12 +216,27 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
         return cl;
     }
 
-    protected abstract Element getDocumentElement(IProductCmptTocEntry tocEntry);
+    /**
+     * This method returns the xml element of the product component identified by the tocEntry
+     */
+    protected abstract Element getDocumentElement(ProductCmptTocEntry tocEntry);
 
+    /**
+     * This method returns the xml element of the product component generation identified by the
+     * tocEntry
+     */
     protected abstract Element getDocumentElement(GenerationTocEntry tocEntry);
 
-    protected abstract Element getDocumentElement(ITestCaseTocEntry tocEntry);
+    /**
+     * This method returns the xml element of the test case identified by the tocEntry
+     */
+    protected abstract Element getDocumentElement(TestCaseTocEntry tocEntry);
 
+    /**
+     * This method returns the name of the product component generation implementation class
+     * identified by the tocEntry. This could either be an implementation class using the formula
+     * evaluation or an implementation class containing the compiled formulas.
+     */
     protected abstract String getProductComponentGenerationImplClass(GenerationTocEntry tocEntry);
 
     /**
@@ -232,7 +247,7 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
      * @throws RuntimeException in case of any exception do not return null but an accurate
      *             {@link RuntimeException}
      */
-    protected abstract InputStream getXmlAsStream(IEnumContentTocEntry tocEntry);
+    protected abstract InputStream getXmlAsStream(EnumContentTocEntry tocEntry);
 
     /**
      * Returns the XML data for the specified tocEntry as {@link InputStream}
@@ -242,6 +257,6 @@ public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBa
      * @throws RuntimeException in case of any exception do not return null but an accurate
      *             {@link RuntimeException}
      */
-    protected abstract InputStream getXmlAsStream(ITableContentTocEntry tocEntry);
+    protected abstract InputStream getXmlAsStream(TableContentTocEntry tocEntry);
 
 }

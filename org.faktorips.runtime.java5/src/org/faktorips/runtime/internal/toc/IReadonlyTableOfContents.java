@@ -22,49 +22,49 @@ public interface IReadonlyTableOfContents {
      * Returns the toc entry representing a product component for the given id or null if no entry
      * exists for the given id.
      */
-    public IProductCmptTocEntry getProductCmptTocEntry(String id);
+    public ProductCmptTocEntry getProductCmptTocEntry(String id);
 
     /**
      * Returns the toc entry representing a product component for the given product component kind
      * id and versionId or null if no such entry exists.
      */
-    public IProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId);
+    public ProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId);
 
     /**
      * Returns all toc's entries representing product components.
      */
-    public List<IProductCmptTocEntry> getProductCmptTocEntries();
+    public List<ProductCmptTocEntry> getProductCmptTocEntries();
 
     /**
      * Returns all toc's entries representing product components that belong to the indicated
      * product component kind.
      */
-    public List<IProductCmptTocEntry> getProductCmptTocEntries(String kindId);
+    public List<ProductCmptTocEntry> getProductCmptTocEntries(String kindId);
 
     /**
      * Returns all toc's entries representing tables.
      */
-    public List<ITableContentTocEntry> getTableTocEntries();
+    public List<TableContentTocEntry> getTableTocEntries();
 
     /**
      * Returns all toc's entries representing test cases.
      */
-    public List<ITestCaseTocEntry> getTestCaseTocEntries();
+    public List<TestCaseTocEntry> getTestCaseTocEntries();
 
     /**
      * Returns a toc entry representing a test case for the given qualified name.
      */
-    public ITestCaseTocEntry getTestCaseTocEntryByQName(String qName);
+    public TestCaseTocEntry getTestCaseTocEntryByQName(String qName);
 
     /**
      * Returns a toc entry representing a table for the table's class object.
      */
-    public ITableContentTocEntry getTableTocEntryByClassname(String implementationClass);
+    public TableContentTocEntry getTableTocEntryByClassname(String implementationClass);
 
     /**
      * Returns a toc entry representing a table for this table's qualified table name.
      */
-    public ITableContentTocEntry getTableTocEntryByQualifiedTableName(String qualifiedTableName);
+    public TableContentTocEntry getTableTocEntryByQualifiedTableName(String qualifiedTableName);
 
     /**
      * Returns all toc's entries representing model types.
@@ -74,11 +74,11 @@ public interface IReadonlyTableOfContents {
     /**
      * Returns the toc entry representing enum contents for the specified implementation class.
      */
-    public IEnumContentTocEntry getEnumContentTocEntry(String className);
+    public EnumContentTocEntry getEnumContentTocEntry(String className);
 
     /**
      * Returns all toc entries that link to an enumeration xml adapter.
      */
-    public Set<IEnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries();
+    public Set<EnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries();
 
 }

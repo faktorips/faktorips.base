@@ -16,28 +16,30 @@ package org.faktorips.runtime.productprovider;
 import java.io.InputStream;
 
 import org.faktorips.runtime.IModificationChecker;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.w3c.dom.Element;
 
 /**
- * A product data provider is able to get the content of product data identified by its toc entry.
- * To get the toc entries you have to call 'loadToc'.
- * <p/>
+ * A {@link IProductDataProvider} provides the content of product data identified by its toc entry.
+ * To get the table of contents you have to call 'loadToc'. The product data could change over time.
  * If the user tries to request data from product data provider that has changed since last
- * modification check, you get a {@link DataModifiedException}.
+ * modification check, you get a {@link DataModifiedException}. To get correct the actualized
+ * content you first have to reload your table of content by calling {@link #loadToc()}
  * 
  * @author dirmeier
  */
 public interface IProductDataProvider extends IModificationChecker {
 
     /**
-     * Reload the toc in the product data provider and returns it. This setting the modification
-     * time.
+     * Reload the toc in the product data provider and returns it. This call also set the
+     * modification time. When product data has changed the user have to call {@link #loadToc()} to
+     * actualize the contents. Otherwise all other methods would throwing
+     * {@link DataModifiedException}
      * 
      * @return The loaded toc
      */
@@ -52,7 +54,7 @@ public interface IProductDataProvider extends IModificationChecker {
      * @return the xml element of the requested product component
      * @throws DataModifiedException when toc data was modified
      */
-    public Element getProductCmptData(IProductCmptTocEntry tocEntry) throws DataModifiedException;
+    public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException;
 
     /**
      * Getting the product component generation data element for given tocEntry. If the toc has been
@@ -74,7 +76,7 @@ public interface IProductDataProvider extends IModificationChecker {
      * @return the xml element of the requested test case element
      * @throws DataModifiedException when toc data was modified
      */
-    public Element getTestcaseElement(ITestCaseTocEntry tocEntry) throws DataModifiedException;
+    public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException;
 
     /**
      * Getting the input stream of table content for given tocEntry. If the toc has been modified
@@ -85,7 +87,7 @@ public interface IProductDataProvider extends IModificationChecker {
      * @return the input stream of the requested table content
      * @throws DataModifiedException when toc data was modified
      */
-    public InputStream getTableContentAsStream(ITableContentTocEntry tocEntry) throws DataModifiedException;
+    public InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException;
 
     /**
      * Getting the input stream of enum content for given tocEntry. If the toc has been modified
@@ -96,6 +98,6 @@ public interface IProductDataProvider extends IModificationChecker {
      * @return the input stream of the requested enum content
      * @throws DataModifiedException when toc data was modified
      */
-    public InputStream getEnumContentAsStream(IEnumContentTocEntry tocEntry) throws DataModifiedException;
+    public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException;
 
 }

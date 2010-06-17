@@ -30,21 +30,21 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.ITocEntry;
-import org.faktorips.runtime.internal.toc.ITocEntryObject;
 import org.faktorips.runtime.internal.toc.ModelTypeTocEntry;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.TocEntry;
+import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 
 /**
  * Abstract base implementation of runtime repository that uses a table of contents to lazily load
- * the product data.
+ * the product data. This implementation also manages the caches.
  * 
  * @author Jan Ortmann
  */
@@ -88,7 +88,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         if (obj != null) {
             return (IProductComponent)obj;
         }
-        IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
+        ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
         if (tocEntry == null) {
             return null;
         }
@@ -99,7 +99,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         return pc;
     }
 
-    protected synchronized IProductComponent getProductComponentInternal(IProductCmptTocEntry tocEntry) {
+    protected synchronized IProductComponent getProductComponentInternal(ProductCmptTocEntry tocEntry) {
         if (tocEntry == null) {
             return null;
         }
@@ -121,7 +121,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         if (enumValues != null) {
             return enumValues;
         }
-        IEnumContentTocEntry tocEntries = toc.getEnumContentTocEntry(clazz.getName());
+        EnumContentTocEntry tocEntries = toc.getEnumContentTocEntry(clazz.getName());
         if (tocEntries == null) {
             return null;
         }
@@ -132,14 +132,14 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         return enumValues;
     }
 
-    protected abstract <T> List<T> createEnumValues(IEnumContentTocEntry tocEntry, Class<T> clazz);
+    protected abstract <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> clazz);
 
     /**
      * {@inheritDoc}
      */
     @Override
     public final IProductComponent getProductComponentInternal(String kindId, String versionId) {
-        IProductCmptTocEntry entry = toc.getProductCmptTocEntry(kindId, versionId);
+        ProductCmptTocEntry entry = toc.getProductCmptTocEntry(kindId, versionId);
         if (entry == null) {
             return null;
         }
@@ -151,19 +151,19 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
      */
     @Override
     public void getAllProductComponents(String kindId, List<IProductComponent> result) {
-        for (IProductCmptTocEntry entry : toc.getProductCmptTocEntries(kindId)) {
+        for (ProductCmptTocEntry entry : toc.getProductCmptTocEntries(kindId)) {
             result.add(getProductComponent(entry.getIpsObjectId()));
         }
     }
 
-    protected abstract IProductComponent createProductCmpt(IProductCmptTocEntry tocEntry);
+    protected abstract IProductComponent createProductCmpt(ProductCmptTocEntry tocEntry);
 
     /**
      * {@inheritDoc}
      */
     @Override
     protected IProductComponentGeneration getProductComponentGenerationInternal(String id, Calendar effectiveDate) {
-        IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
+        ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
         if (tocEntry == null) {
             return null;
         }
@@ -193,14 +193,14 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
 
     @Override
     public void getAllProductComponents(List<IProductComponent> result) {
-        for (ITocEntryObject entry : toc.getProductCmptTocEntries()) {
+        for (TocEntryObject entry : toc.getProductCmptTocEntries()) {
             result.add(getProductComponent(entry.getIpsObjectId()));
         }
     }
 
     @Override
     public void getAllTables(List<ITable> result) {
-        for (ITocEntryObject entry : toc.getTableTocEntries()) {
+        for (TocEntryObject entry : toc.getTableTocEntries()) {
             result.add(getTable(entry.getIpsObjectQualifiedName()));
         }
     }
@@ -210,7 +210,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         if (productCmpt.getRepository() != this) {
             return;
         }
-        IProductCmptTocEntry entry = toc.getProductCmptTocEntry(productCmpt.getId());
+        ProductCmptTocEntry entry = toc.getProductCmptTocEntry(productCmpt.getId());
         List<GenerationTocEntry> genEntries = entry.getGenerationEntries();
         for (GenerationTocEntry genEntry : genEntries) {
             IProductComponentGeneration gen = getProductComponentGeneration(productCmpt.getId(), genEntry
@@ -224,8 +224,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
      */
     @Override
     public void getAllProductComponentIds(List<String> result) {
-        List<IProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
-        for (ITocEntryObject entry : entries) {
+        List<ProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
+        for (TocEntryObject entry : entries) {
             result.add(entry.getIpsObjectId());
         }
     }
@@ -240,7 +240,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
             return obj;
         }
         String tableClassName = tableClass.getName();
-        ITableContentTocEntry tocEntry = toc.getTableTocEntryByClassname(tableClassName);
+        TableContentTocEntry tocEntry = toc.getTableTocEntryByClassname(tableClassName);
         return getTableInternal(tocEntry);
     }
 
@@ -253,11 +253,11 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         if (obj != null) {
             return obj;
         }
-        ITableContentTocEntry tocEntry = toc.getTableTocEntryByQualifiedTableName(qualifiedTableName);
+        TableContentTocEntry tocEntry = toc.getTableTocEntryByQualifiedTableName(qualifiedTableName);
         return getTableInternal(tocEntry);
     }
 
-    private ITable getTableInternal(ITableContentTocEntry tocEntry) {
+    private ITable getTableInternal(TableContentTocEntry tocEntry) {
         if (tocEntry == null) {
             return null;
         }
@@ -272,14 +272,14 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     /**
      * Creates the table object for the given toc entry.
      */
-    protected abstract ITable createTable(ITableContentTocEntry tocEntry);
+    protected abstract ITable createTable(TableContentTocEntry tocEntry);
 
     /**
      * {@inheritDoc}
      */
     @Override
     protected void getAllIpsTestCases(List<IpsTest2> result, IRuntimeRepository runtimeRepository) {
-        for (ITocEntryObject entry : toc.getTestCaseTocEntries()) {
+        for (TocEntryObject entry : toc.getTestCaseTocEntries()) {
             result.add(getIpsTestCase(entry.getIpsObjectQualifiedName(), runtimeRepository));
         }
     }
@@ -291,7 +291,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     protected void getIpsTestCasesStartingWith(String qNamePrefix,
             List<IpsTest2> result,
             IRuntimeRepository runtimeRepository) {
-        for (ITocEntryObject entry : toc.getTestCaseTocEntries()) {
+        for (TocEntryObject entry : toc.getTestCaseTocEntries()) {
             if (entry.getIpsObjectQualifiedName().startsWith(qNamePrefix)) {
                 result.add(getIpsTestCase(entry.getIpsObjectQualifiedName(), runtimeRepository));
             }
@@ -303,7 +303,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
      */
     @Override
     public synchronized IpsTestCaseBase getIpsTestCaseInternal(String qName, IRuntimeRepository runtimeRepository) {
-        ITestCaseTocEntry tocEntry = toc.getTestCaseTocEntryByQName(qName);
+        TestCaseTocEntry tocEntry = toc.getTestCaseTocEntryByQName(qName);
         if (tocEntry == null) {
             return null;
         }
@@ -313,7 +313,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     /**
      * Creates the test case object for the given toc entry.
      */
-    protected abstract IpsTestCaseBase createTestCase(ITestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository);
+    protected abstract IpsTestCaseBase createTestCase(TestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository);
 
     /**
      * {@inheritDoc}
@@ -346,7 +346,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     @Override
     protected IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation) {
         String id = generation.getProductComponent().getId();
-        IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
+        ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
         TimeZone timeZone = TimeZone.getDefault();
         Date validFromAsDate = generation.getValidFrom(timeZone);
         Calendar validFromAsCalendar = Calendar.getInstance();
@@ -363,7 +363,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
      */
     @Override
     protected int getNumberOfProductComponentGenerationsInternal(IProductComponent productCmpt) {
-        IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(productCmpt.getId());
+        ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(productCmpt.getId());
         return tocEntry.getNumberOfGenerationEntries();
     }
 
@@ -373,7 +373,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     @Override
     protected IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation) {
         String id = generation.getProductComponent().getId();
-        IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
+        ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
         TimeZone timeZone = TimeZone.getDefault();
         Date validFromAsDate = generation.getValidFrom(timeZone);
         Calendar validFromAsCalendar = Calendar.getInstance();
@@ -392,7 +392,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         if (productCmpt == null) {
             throw new NullPointerException("The parameter productCmpt must not be null.");
         }
-        IProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(productCmpt.getId());
+        ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(productCmpt.getId());
         GenerationTocEntry entryGeneration = tocEntry.getLatestGenerationEntry();
         return getProductComponentGeneration(productCmpt.getId(), entryGeneration);
     }
@@ -400,7 +400,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     @Override
     protected void getAllModelTypeImplementationClasses(Set<String> result) {
         Set<ModelTypeTocEntry> entries = toc.getModelTypeTocEntries();
-        for (ITocEntryObject tocEntryObject : entries) {
+        for (TocEntryObject tocEntryObject : entries) {
             result.add(tocEntryObject.getImplementationClassName());
         }
     }
@@ -413,7 +413,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         if (!enumXmlAdapters.isEmpty()) {
             return enumXmlAdapters;
         }
-        for (ITocEntry tocEntry : toc.getEnumXmlAdapterTocEntries()) {
+        for (TocEntry tocEntry : toc.getEnumXmlAdapterTocEntries()) {
             try {
                 enumXmlAdapters.add(createEnumXmlAdapter(tocEntry.getImplementationClassName(), repository));
             } catch (Exception e) {

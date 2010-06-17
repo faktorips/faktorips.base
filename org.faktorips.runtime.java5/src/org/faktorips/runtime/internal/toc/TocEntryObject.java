@@ -25,9 +25,11 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class TocEntryObject extends TocEntry implements ITocEntryObject {
+public abstract class TocEntryObject extends TocEntry {
 
     public static final String PROPERTY_ENTRYTYPE = "entryType";
+    public static final String PROPERTY_IPS_OBJECT_ID = "ipsObjectId";
+    public static final String PROPERTY_IPS_OBJECT_QNAME = "ipsObjectQualifiedName";
 
     /**
      * The identifier of the ips object (either the qualified name for a table or the runtime id for
@@ -38,20 +40,20 @@ public abstract class TocEntryObject extends TocEntry implements ITocEntryObject
     /** The qualified name of the ips object. */
     private String ipsObjectQualifiedName;
 
-    public static ITocEntryObject createFromXml(Element entryElement) {
+    public static TocEntryObject createFromXml(Element entryElement) {
         String entryName = entryElement.getNodeName();
 
-        if (IProductCmptTocEntry.XML_TAG.equals(entryName)) {
+        if (ProductCmptTocEntry.XML_TAG.equals(entryName)) {
             return ProductCmptTocEntry.createFromXml(entryElement);
-        } else if (ITableContentTocEntry.XML_TAG.equals(entryName)) {
+        } else if (TableContentTocEntry.XML_TAG.equals(entryName)) {
             return TableContentTocEntry.createFromXml(entryElement);
-        } else if (ITestCaseTocEntry.XML_TAG.equals(entryName)) {
+        } else if (TestCaseTocEntry.TEST_XML_TAG.equals(entryName)) {
             return TestCaseTocEntry.createFromXml(entryElement);
-        } else if (IEnumContentTocEntry.XML_TAG.equals(entryName)) {
+        } else if (EnumContentTocEntry.XML_TAG.equals(entryName)) {
             return EnumContentTocEntry.createFromXml(entryElement);
-        } else if (IEnumXmlAdapterTocEntry.XML_TAG.equals(entryName)) {
+        } else if (EnumXmlAdapterTocEntry.XML_TAG.equals(entryName)) {
             return EnumXmlAdapterTocEntry.createFromXml(entryElement);
-        } else if (IFormulaTestTocEntry.XML_TAG.equals(entryName)) {
+        } else if (FormulaTestTocEntry.FORMULA_TEST_XML_TAG.equals(entryName)) {
             return FormulaTestTocEntry.createFromXml(entryElement);
         } else if (ProductCmptTypeTocEntry.XML_TAG.equals(entryName)) {
             return ProductCmptTypeTocEntry.createFromXml(entryElement);

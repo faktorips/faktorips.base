@@ -17,13 +17,14 @@ import java.io.InputStream;
 
 import org.faktorips.runtime.AbstractClassLoaderRuntimeRepository;
 import org.faktorips.runtime.ExpirableCacheFactory;
+import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.w3c.dom.Element;
 
 /**
@@ -45,6 +46,22 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRun
     private final IProductDataProvider productDataProvider;
     private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
+    /**
+     * This is the constructor for the {@link ProductDataProviderRuntimeRepository} expecting a name
+     * for the repository, a {@link ClassLoader} to load the product data instances, a
+     * {@link IProductDataProvider} to get product data and optionally a
+     * {@link IFormulaEvaluatorFactory} to evaluate formula instead of loading compiled code.
+     * 
+     * @param name The name of the runtime repository
+     * @param cl the {@link ClassLoader} to load the product data instances
+     * @param productDataProvider the {@link IProductDataProvider} to get the product data content
+     * @param formulaEvaluatorFactory a {@link IFormulaEvaluatorFactory} to create a
+     *            {@link IFormulaEvaluator} for evaluating formula on the fly instead of loading
+     *            classes with compiled formulas. If you have no {@link IFormulaEvaluatorFactory}
+     *            the repository try to load the classes containing compiled formula. In this case
+     *            you could not change the product data in the product data provider because once
+     *            loaded classes could not change.
+     */
     public ProductDataProviderRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider,
             IFormulaEvaluatorFactory formulaEvaluatorFactory) {
         super(name, new ExpirableCacheFactory(productDataProvider), cl);
@@ -53,13 +70,21 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRun
         reload();
     }
 
+    /**
+     * Getting the {@link IFormulaEvaluatorFactory} set in the constructor. This could be null if
+     * formula should not be evaluated on the fly. The repository would load the classes containing
+     * the compiled formula.
+     * 
+     * @return the {@link IFormulaEvaluatorFactory} of this repository or null if formula should not
+     *         be evaluated
+     */
     @Override
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
         return formulaEvaluatorFactory;
     }
 
     @Override
-    protected Element getDocumentElement(IProductCmptTocEntry tocEntry) {
+    protected Element getDocumentElement(ProductCmptTocEntry tocEntry) {
         try {
             return productDataProvider.getProductCmptData(tocEntry);
         } catch (DataModifiedException e) {
@@ -77,7 +102,7 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRun
     }
 
     @Override
-    protected Element getDocumentElement(ITestCaseTocEntry tocEntry) {
+    protected Element getDocumentElement(TestCaseTocEntry tocEntry) {
         try {
             return productDataProvider.getTestcaseElement(tocEntry);
         } catch (DataModifiedException e) {
@@ -100,7 +125,7 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRun
     }
 
     @Override
-    protected InputStream getXmlAsStream(IEnumContentTocEntry tocEntry) {
+    protected InputStream getXmlAsStream(EnumContentTocEntry tocEntry) {
         try {
             return productDataProvider.getEnumContentAsStream(tocEntry);
         } catch (DataModifiedException e) {
@@ -109,7 +134,7 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRun
     }
 
     @Override
-    protected InputStream getXmlAsStream(ITableContentTocEntry tocEntry) {
+    protected InputStream getXmlAsStream(TableContentTocEntry tocEntry) {
         try {
             return productDataProvider.getTableContentAsStream(tocEntry);
         } catch (DataModifiedException e) {

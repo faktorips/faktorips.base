@@ -15,9 +15,11 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
-public class EnumContentTocEntry extends TocEntryObject implements IEnumContentTocEntry {
+public class EnumContentTocEntry extends TocEntryObject {
 
-    public static IEnumContentTocEntry createFromXml(Element entryElement) {
+    public static final String XML_TAG = "EnumContent";
+
+    public static EnumContentTocEntry createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String ipsObjectQualifiedName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
         String xmlResourceName = entryElement.getAttribute(PROPERTY_XML_RESOURCE);

@@ -15,7 +15,9 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
-public class FormulaTestTocEntry extends TestCaseTocEntry implements IFormulaTestTocEntry {
+public class FormulaTestTocEntry extends TestCaseTocEntry {
+
+    public static final String FORMULA_TEST_XML_TAG = "FormulaTest";
 
     private final String kindId;
     private final String versionId;
@@ -25,8 +27,8 @@ public class FormulaTestTocEntry extends TestCaseTocEntry implements IFormulaTes
         String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
 
         String ipsObjectName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
-        String kindId = entryElement.getAttribute(IProductCmptTocEntry.PROPERTY_KIND_ID);
-        String versionId = entryElement.getAttribute(IProductCmptTocEntry.PROPERTY_VERSION_ID);
+        String kindId = entryElement.getAttribute(ProductCmptTocEntry.PROPERTY_KIND_ID);
+        String versionId = entryElement.getAttribute(ProductCmptTocEntry.PROPERTY_VERSION_ID);
 
         return new FormulaTestTocEntry(ipsObjectId, ipsObjectName, kindId, versionId, implementationClassName);
     }
@@ -55,13 +57,13 @@ public class FormulaTestTocEntry extends TestCaseTocEntry implements IFormulaTes
     @Override
     protected void addToXml(Element entryElement) {
         super.addToXml(entryElement);
-        entryElement.setAttribute(IProductCmptTocEntry.PROPERTY_KIND_ID, kindId);
-        entryElement.setAttribute(IProductCmptTocEntry.PROPERTY_VERSION_ID, versionId);
+        entryElement.setAttribute(ProductCmptTocEntry.PROPERTY_KIND_ID, kindId);
+        entryElement.setAttribute(ProductCmptTocEntry.PROPERTY_VERSION_ID, versionId);
     }
 
     @Override
     protected String getXmlElementTag() {
-        return IFormulaTestTocEntry.XML_TAG;
+        return FORMULA_TEST_XML_TAG;
     }
 
 }

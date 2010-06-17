@@ -70,8 +70,6 @@ import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.FormulaTestTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.ITocEntryObject;
 import org.faktorips.runtime.internal.toc.PolicyCmptTypeTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTypeTocEntry;
@@ -341,7 +339,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IIpsObject object = null;
         try {
-            ITocEntryObject entry;
+            TocEntryObject entry;
             object = ipsSrcFile.getIpsObject();
             IpsObjectType type = object.getIpsObjectType();
             if (type.equals(IpsObjectType.PRODUCT_CMPT)) {
@@ -392,7 +390,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    public IProductCmptTocEntry createTocEntry(IProductCmpt productCmpt) throws CoreException {
+    public ProductCmptTocEntry createTocEntry(IProductCmpt productCmpt) throws CoreException {
         if (productCmpt.getNumOfGenerations() == 0) {
             return null;
         }
@@ -415,7 +413,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String versionId = productCmpt.getVersionId();
         DateTime validTo = DateTime.createDateOnly(productCmpt.getValidTo());
 
-        IProductCmptTocEntry entry = new ProductCmptTocEntry(ipsObjectId, ipsObjectQName, kindId, versionId,
+        ProductCmptTocEntry entry = new ProductCmptTocEntry(ipsObjectId, ipsObjectQName, kindId, versionId,
                 xmlResourceName, implementationClass, generationImplClass, validTo);
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         List<GenerationTocEntry> genEntries = new ArrayList<GenerationTocEntry>(generations.length);
@@ -437,7 +435,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * Creates a toc entry for the given formula test.
      */
-    private ITocEntryObject createFormulaTestTocEntry(IProductCmpt productCmpt) throws CoreException {
+    private TocEntryObject createFormulaTestTocEntry(IProductCmpt productCmpt) throws CoreException {
         if (!productCmpt.containsFormulaTest()) {
             // only build toc entry if at least one formula is specified
             return null;
@@ -452,7 +450,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String formulaTestCaseName = formulaTestBuilder.getQualifiedClassName(productCmpt);
 
         String kindId = productCmpt.findProductCmptKind().getName();
-        ITocEntryObject entry = new FormulaTestTocEntry(objectId, productCmpt.getQualifiedName(), kindId, productCmpt
+        TocEntryObject entry = new FormulaTestTocEntry(objectId, productCmpt.getQualifiedName(), kindId, productCmpt
                 .getVersionId(), formulaTestCaseName);
         // new TestCaseTocEntry(objectId, productCmpt.getQualifiedName(), "", formulaTestCaseName);
         // TODO CD: bisher stand hier TestCaseTocEntry nicht FormulaTestTocEntry???
@@ -489,7 +487,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * Creates a toc entry for the given test case.
      */
-    public ITocEntryObject createTocEntry(ITestCase testCase) throws CoreException {
+    public TocEntryObject createTocEntry(ITestCase testCase) throws CoreException {
         ITestCaseType type = testCase.findTestCaseType(getIpsProject());
         if (type == null) {
             return null;
@@ -504,13 +502,13 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
         String xmlResourceName = testCaseBuilder.getXmlResourcePath(testCase);
         String testCaseTypeName = testCaseTypeClassBuilder.getQualifiedClassName(type);
-        ITocEntryObject entry = new TestCaseTocEntry(objectId, testCase.getQualifiedName(), xmlResourceName,
+        TocEntryObject entry = new TestCaseTocEntry(objectId, testCase.getQualifiedName(), xmlResourceName,
                 testCaseTypeName);
         return entry;
     }
 
     /** Creates a toc entry for the given enum content. */
-    public ITocEntryObject createTocEntry(IEnumContent enumContent) throws CoreException {
+    public TocEntryObject createTocEntry(IEnumContent enumContent) throws CoreException {
         IEnumType enumType = enumContent.findEnumType(enumContent.getIpsProject());
         if (enumType == null) {
             return null;
@@ -528,7 +526,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 enumContent.getIpsSrcFile()).replace('.', '/');
         String xmlResourceName = packageString + '/' + enumContent.getName() + ".xml"; //$NON-NLS-1$
         String enumTypeName = enumTypeBuilder.getQualifiedClassName(enumType);
-        ITocEntryObject entry = new EnumContentTocEntry(objectId, enumContent.getQualifiedName(), xmlResourceName,
+        TocEntryObject entry = new EnumContentTocEntry(objectId, enumContent.getQualifiedName(), xmlResourceName,
                 enumTypeName);
         return entry;
     }
@@ -538,14 +536,14 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
     }
 
-    public ITocEntryObject createTocEntry(IEnumType enumType) throws CoreException {
+    public TocEntryObject createTocEntry(IEnumType enumType) throws CoreException {
         if (!isGenerateJaxbSupport() || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             return null;
         }
         if (enumType.isContainingValues() || enumType.isAbstract()) {
             return null;
         }
-        ITocEntryObject entry = new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumType.getQualifiedName(),
+        TocEntryObject entry = new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumType.getQualifiedName(),
                 enumXmlAdapterBuilder.getQualifiedClassName(enumType));
         return entry;
     }

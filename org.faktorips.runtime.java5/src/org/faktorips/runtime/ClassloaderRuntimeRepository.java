@@ -21,13 +21,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.ITocEntry;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.TocEntry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -302,8 +302,8 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
     }
 
     @Override
-    protected Element getDocumentElement(IProductCmptTocEntry tocEntry) {
-        return getDocumentElement((ITocEntry)tocEntry);
+    protected Element getDocumentElement(ProductCmptTocEntry tocEntry) {
+        return getDocumentElement((TocEntry)tocEntry);
     }
 
     @Override
@@ -324,12 +324,12 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
     }
 
     @Override
-    protected Element getDocumentElement(ITestCaseTocEntry tocEntry) {
-        return getDocumentElement((ITocEntry)tocEntry);
+    protected Element getDocumentElement(TestCaseTocEntry tocEntry) {
+        return getDocumentElement((TocEntry)tocEntry);
     }
 
     @Override
-    protected InputStream getXmlAsStream(IEnumContentTocEntry tocEntry) {
+    protected InputStream getXmlAsStream(EnumContentTocEntry tocEntry) {
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
         if (is == null) {
             throw new RuntimeException("Cant't load the input stream for the enumeration content resource "
@@ -338,7 +338,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
         return is;
     }
 
-    private Element getDocumentElement(ITocEntry tocEntry) {
+    private Element getDocumentElement(TocEntry tocEntry) {
         String resource = tocEntry.getXmlResourceName();
         InputStream is = getClassLoader().getResourceAsStream(resource);
         if (is == null) {
@@ -393,7 +393,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepo
     }
 
     @Override
-    protected InputStream getXmlAsStream(ITableContentTocEntry tocEntry) {
+    protected InputStream getXmlAsStream(TableContentTocEntry tocEntry) {
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
         if (is == null) {
             throw new RuntimeException("Can' find resource " + tocEntry.getXmlResourceName() + " for toc entry "

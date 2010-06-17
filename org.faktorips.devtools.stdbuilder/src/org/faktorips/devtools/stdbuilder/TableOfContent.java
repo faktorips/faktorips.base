@@ -24,14 +24,13 @@ import java.util.TreeSet;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
-import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.IEnumXmlAdapterTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.ITocEntryObject;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
+import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.PolicyCmptTypeTocEntry;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTypeTocEntry;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,7 +49,7 @@ public class TableOfContent {
      */
     private boolean modified;
 
-    private Map<QualifiedNameType, ITocEntryObject> entriesMap = new HashMap<QualifiedNameType, ITocEntryObject>(100);
+    private Map<QualifiedNameType, TocEntryObject> entriesMap = new HashMap<QualifiedNameType, TocEntryObject>(100);
 
     public TableOfContent() {
         super();
@@ -85,9 +84,9 @@ public class TableOfContent {
      * 
      * @return true if the table of content was changed
      */
-    public boolean addOrReplaceTocEntry(ITocEntryObject entry) {
+    public boolean addOrReplaceTocEntry(TocEntryObject entry) {
         if (entry != null) {
-            ITocEntryObject oldValue;
+            TocEntryObject oldValue;
             oldValue = entriesMap.put(getQualifiedNameType(entry), entry);
             if (entry.equals(oldValue)) {
                 return false;
@@ -105,8 +104,8 @@ public class TableOfContent {
      * full qualified name for product components). Does nothing if the id does not identify an
      * entry.
      */
-    public ITocEntryObject removeEntry(QualifiedNameType id) {
-        ITocEntryObject oldValue = entriesMap.remove(id);
+    public TocEntryObject removeEntry(QualifiedNameType id) {
+        TocEntryObject oldValue = entriesMap.remove(id);
         if (oldValue != null) {
             modified = true;
             return oldValue;
@@ -115,21 +114,21 @@ public class TableOfContent {
         }
     }
 
-    public Set<ITocEntryObject> getEntries() {
-        Comparator<ITocEntryObject> c = new Comparator<ITocEntryObject>() {
+    public Set<TocEntryObject> getEntries() {
+        Comparator<TocEntryObject> c = new Comparator<TocEntryObject>() {
 
             @Override
-            public int compare(ITocEntryObject o1, ITocEntryObject o2) {
+            public int compare(TocEntryObject o1, TocEntryObject o2) {
                 return getQualifiedNameType(o1).compareTo(getQualifiedNameType(o2));
             }
 
         };
-        SortedSet<ITocEntryObject> sortedEntries = new TreeSet<ITocEntryObject>(c);
+        SortedSet<TocEntryObject> sortedEntries = new TreeSet<TocEntryObject>(c);
         sortedEntries.addAll(entriesMap.values());
         return sortedEntries;
     }
 
-    public ITocEntryObject getEntry(QualifiedNameType id) {
+    public TocEntryObject getEntry(QualifiedNameType id) {
         return entriesMap.get(id);
     }
 
@@ -143,7 +142,7 @@ public class TableOfContent {
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
         long lastModified = new Date().getTime();
         element.setAttribute(AbstractReadonlyTableOfContents.LASTMOD_XML_ELEMENT, "" + lastModified);
-        for (ITocEntryObject entry : getEntries()) {
+        for (TocEntryObject entry : getEntries()) {
             element.appendChild(entry.toXml(doc));
         }
         modified = false;
@@ -161,27 +160,27 @@ public class TableOfContent {
         modified = false;
     }
 
-    private static IpsObjectType getIpsObjectType(ITocEntryObject entry) {
-        if (entry instanceof IProductCmptTocEntry) {
+    private static IpsObjectType getIpsObjectType(TocEntryObject entry) {
+        if (entry instanceof ProductCmptTocEntry) {
             return IpsObjectType.PRODUCT_CMPT;
-        } else if (entry instanceof IEnumContentTocEntry) {
+        } else if (entry instanceof EnumContentTocEntry) {
             return IpsObjectType.ENUM_CONTENT;
-        } else if (entry instanceof ITestCaseTocEntry) {
+        } else if (entry instanceof TestCaseTocEntry) {
             return IpsObjectType.TEST_CASE;
-        } else if (entry instanceof ITableContentTocEntry) {
+        } else if (entry instanceof TableContentTocEntry) {
             return IpsObjectType.TABLE_CONTENTS;
         } else if (entry instanceof PolicyCmptTypeTocEntry) {
             return IpsObjectType.POLICY_CMPT_TYPE;
         } else if (entry instanceof ProductCmptTypeTocEntry) {
             return IpsObjectType.PRODUCT_CMPT_TYPE;
-        } else if (entry instanceof IEnumXmlAdapterTocEntry) {
+        } else if (entry instanceof EnumXmlAdapterTocEntry) {
             return IpsObjectType.ENUM_TYPE;
         } else {
             return null;
         }
     }
 
-    private static QualifiedNameType getQualifiedNameType(ITocEntryObject entry) {
+    private static QualifiedNameType getQualifiedNameType(TocEntryObject entry) {
         IpsObjectType type = getIpsObjectType(entry);
         if (type != null) {
             return new QualifiedNameType(entry.getIpsObjectQualifiedName(), type);

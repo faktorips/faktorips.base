@@ -15,9 +15,11 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
-public class TableContentTocEntry extends TocEntryObject implements ITableContentTocEntry {
+public class TableContentTocEntry extends TocEntryObject {
 
-    public static ITableContentTocEntry createFromXml(Element entryElement) {
+    public static final String XML_TAG = "TableContent";
+
+    public static TableContentTocEntry createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String ipsObjectQualifiedName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
         String xmlResourceName = entryElement.getAttribute(PROPERTY_XML_RESOURCE);

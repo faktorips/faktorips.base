@@ -30,13 +30,13 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     /**
      * A map that contains the runtime id of product components as key and the toc entry as value.
      */
-    protected Map<String, IProductCmptTocEntry> pcIdTocEntryMap = new HashMap<String, IProductCmptTocEntry>(1000);
+    protected Map<String, ProductCmptTocEntry> pcIdTocEntryMap = new HashMap<String, ProductCmptTocEntry>(1000);
 
     /**
      * A map that contains the fully qualified name of product components as key and the toc entry
      * as value.
      */
-    protected Map<String, IProductCmptTocEntry> pcNameTocEntryMap = new HashMap<String, IProductCmptTocEntry>(1000);
+    protected Map<String, ProductCmptTocEntry> pcNameTocEntryMap = new HashMap<String, ProductCmptTocEntry>(1000);
 
     /** A map that contains per kindId the list of product component ids that are of the kind. */
     protected Map<String, List<VersionIdTocEntry>> kindIdTocEntryListMap = new HashMap<String, List<VersionIdTocEntry>>(
@@ -46,18 +46,18 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * Maps a table class to the toc entry that contains information about a table object
      * represented by this class.
      */
-    protected Map<String, ITableContentTocEntry> tableImplClassTocEntryMap = new HashMap<String, ITableContentTocEntry>(
+    protected Map<String, TableContentTocEntry> tableImplClassTocEntryMap = new HashMap<String, TableContentTocEntry>(
             100);
 
     /** Maps a qualified table name to the toc entry that contains information about a table object. */
-    protected Map<String, ITableContentTocEntry> tableContentNameTocEntryMap = new HashMap<String, ITableContentTocEntry>(
+    protected Map<String, TableContentTocEntry> tableContentNameTocEntryMap = new HashMap<String, TableContentTocEntry>(
             100);
 
     /**
      * Maps a qualified test case name to the toc entry that contains information about a test case
      * object.
      */
-    protected Map<String, ITestCaseTocEntry> testCaseNameTocEntryMap = new HashMap<String, ITestCaseTocEntry>(10);
+    protected Map<String, TestCaseTocEntry> testCaseNameTocEntryMap = new HashMap<String, TestCaseTocEntry>(10);
 
     /**
      * Maps a qualified model type name to the toc entry that contains information about the model
@@ -66,14 +66,14 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     protected Map<String, ModelTypeTocEntry> modelTypeNameTocEntryMap = new HashMap<String, ModelTypeTocEntry>(100);
 
     /** A map that contains the runtime id of enum contents as key and the toc entry as value. */
-    protected Map<String, IEnumContentTocEntry> enumContentImplClassTocEntryMap = new HashMap<String, IEnumContentTocEntry>(
+    protected Map<String, EnumContentTocEntry> enumContentImplClassTocEntryMap = new HashMap<String, EnumContentTocEntry>(
             100);
 
     /**
      * Maps the qualified name of an enumtype to a toc entry of an XmlAdapter. Only for enum type
      * that defer their content XmlAdapters and hence entries into this map are created.
      */
-    protected Map<String, IEnumXmlAdapterTocEntry> enumXmlAdapterTocEntryMap = new HashMap<String, IEnumXmlAdapterTocEntry>(
+    protected Map<String, EnumXmlAdapterTocEntry> enumXmlAdapterTocEntryMap = new HashMap<String, EnumXmlAdapterTocEntry>(
             100);
 
     /**
@@ -87,9 +87,9 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    protected void internalAddEntry(ITocEntryObject entry) {
-        if (entry instanceof IProductCmptTocEntry) {
-            IProductCmptTocEntry prodEntry = (IProductCmptTocEntry)entry;
+    protected void internalAddEntry(TocEntryObject entry) {
+        if (entry instanceof ProductCmptTocEntry) {
+            ProductCmptTocEntry prodEntry = (ProductCmptTocEntry)entry;
             pcIdTocEntryMap.put(prodEntry.getIpsObjectId(), prodEntry);
             pcNameTocEntryMap.put(prodEntry.getIpsObjectQualifiedName(), prodEntry);
             List<VersionIdTocEntry> versions = getVersionList(prodEntry.getKindId());
@@ -97,23 +97,23 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             return;
         }
 
-        if (entry instanceof ITableContentTocEntry) {
+        if (entry instanceof TableContentTocEntry) {
             /*
              * TODO store the first or last entry of multiple toc entries with the same class name?
              * This stores only the last found toc entry.
              */
-            tableImplClassTocEntryMap.put(entry.getImplementationClassName(), (ITableContentTocEntry)entry);
-            tableContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (ITableContentTocEntry)entry);
+            tableImplClassTocEntryMap.put(entry.getImplementationClassName(), (TableContentTocEntry)entry);
+            tableContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (TableContentTocEntry)entry);
             return;
         }
 
-        if (entry instanceof ITestCaseTocEntry) {
-            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (ITestCaseTocEntry)entry);
+        if (entry instanceof TestCaseTocEntry) {
+            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (TestCaseTocEntry)entry);
             return;
         }
 
-        if (entry instanceof IFormulaTestTocEntry) {
-            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (IFormulaTestTocEntry)entry);
+        if (entry instanceof FormulaTestTocEntry) {
+            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (FormulaTestTocEntry)entry);
             return;
         }
 
@@ -122,12 +122,12 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             return;
         }
 
-        if (entry instanceof IEnumContentTocEntry) {
-            enumContentImplClassTocEntryMap.put(entry.getImplementationClassName(), (IEnumContentTocEntry)entry);
+        if (entry instanceof EnumContentTocEntry) {
+            enumContentImplClassTocEntryMap.put(entry.getImplementationClassName(), (EnumContentTocEntry)entry);
             return;
         }
-        if (entry instanceof IEnumXmlAdapterTocEntry) {
-            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), (IEnumXmlAdapterTocEntry)entry);
+        if (entry instanceof EnumXmlAdapterTocEntry) {
+            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), (EnumXmlAdapterTocEntry)entry);
             return;
         }
         throw new IllegalArgumentException("Unknown entry type " + entry);
@@ -137,15 +137,15 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public List<IProductCmptTocEntry> getProductCmptTocEntries() {
-        return new ArrayList<IProductCmptTocEntry>(pcIdTocEntryMap.values());
+    public List<ProductCmptTocEntry> getProductCmptTocEntries() {
+        return new ArrayList<ProductCmptTocEntry>(pcIdTocEntryMap.values());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public IProductCmptTocEntry getProductCmptTocEntry(String id) {
+    public ProductCmptTocEntry getProductCmptTocEntry(String id) {
         return pcIdTocEntryMap.get(id);
     }
 
@@ -153,7 +153,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public IProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId) {
+    public ProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId) {
         if (kindId == null) {
             return null;
         }
@@ -173,8 +173,8 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public List<IProductCmptTocEntry> getProductCmptTocEntries(String kindId) {
-        List<IProductCmptTocEntry> result = new ArrayList<IProductCmptTocEntry>();
+    public List<ProductCmptTocEntry> getProductCmptTocEntries(String kindId) {
+        List<ProductCmptTocEntry> result = new ArrayList<ProductCmptTocEntry>();
         List<VersionIdTocEntry> versionList = getVersionList(kindId);
         for (VersionIdTocEntry each : versionList) {
             result.add(each.tocEntry);
@@ -195,15 +195,15 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public List<ITableContentTocEntry> getTableTocEntries() {
-        return new ArrayList<ITableContentTocEntry>(tableContentNameTocEntryMap.values());
+    public List<TableContentTocEntry> getTableTocEntries() {
+        return new ArrayList<TableContentTocEntry>(tableContentNameTocEntryMap.values());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ITableContentTocEntry getTableTocEntryByClassname(String implementationClass) {
+    public TableContentTocEntry getTableTocEntryByClassname(String implementationClass) {
         return tableImplClassTocEntryMap.get(implementationClass);
     }
 
@@ -211,7 +211,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public ITableContentTocEntry getTableTocEntryByQualifiedTableName(String qualifiedTableName) {
+    public TableContentTocEntry getTableTocEntryByQualifiedTableName(String qualifiedTableName) {
         return tableContentNameTocEntryMap.get(qualifiedTableName);
     }
 
@@ -219,15 +219,15 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public List<ITestCaseTocEntry> getTestCaseTocEntries() {
-        return new ArrayList<ITestCaseTocEntry>(testCaseNameTocEntryMap.values());
+    public List<TestCaseTocEntry> getTestCaseTocEntries() {
+        return new ArrayList<TestCaseTocEntry>(testCaseNameTocEntryMap.values());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ITestCaseTocEntry getTestCaseTocEntryByQName(String qName) {
+    public TestCaseTocEntry getTestCaseTocEntryByQName(String qName) {
         return testCaseNameTocEntryMap.get(qName);
     }
 
@@ -243,29 +243,29 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      * {@inheritDoc}
      */
     @Override
-    public IEnumContentTocEntry getEnumContentTocEntry(String className) {
+    public EnumContentTocEntry getEnumContentTocEntry(String className) {
         return enumContentImplClassTocEntryMap.get(className);
     }
 
     @Override
-    public Set<IEnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries() {
-        return new HashSet<IEnumXmlAdapterTocEntry>(enumXmlAdapterTocEntryMap.values());
+    public Set<EnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries() {
+        return new HashSet<EnumXmlAdapterTocEntry>(enumXmlAdapterTocEntryMap.values());
     }
 
     private class VersionIdTocEntry {
 
         private String versionId;
-        private IProductCmptTocEntry tocEntry;
+        private ProductCmptTocEntry tocEntry;
 
-        public VersionIdTocEntry(String versionId, IProductCmptTocEntry entry) {
+        public VersionIdTocEntry(String versionId, ProductCmptTocEntry entry) {
             this.versionId = versionId;
             this.tocEntry = entry;
         }
 
     }
 
-    public List<ITocEntryObject> getEntries() {
-        List<ITocEntryObject> results = new ArrayList<ITocEntryObject>();
+    public List<TocEntryObject> getEntries() {
+        List<TocEntryObject> results = new ArrayList<TocEntryObject>();
         results.addAll(pcIdTocEntryMap.values());
         results.addAll(tableContentNameTocEntryMap.values());
         results.addAll(testCaseNameTocEntryMap.values());

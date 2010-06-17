@@ -39,10 +39,9 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITocEntryObject;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.w3c.dom.Document;
 
@@ -114,10 +113,10 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         structure.getIpsSrcFile().save(true, null);
         table.getIpsSrcFile().save(true, null);
 
-        ITocEntryObject entry = tocFileBuilder.createTocEntry(table);
+        TocEntryObject entry = tocFileBuilder.createTocEntry(table);
         assertEquals("motor.RateTable", entry.getIpsObjectId());
         assertEquals(tableImplBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
-        assertTrue(entry instanceof ITableContentTocEntry);
+        assertTrue(entry instanceof TableContentTocEntry);
     }
 
     /*
@@ -179,28 +178,28 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         toc.initFromXml(doc.getDocumentElement());
 
         // asserts for product cmpt entry
-        List<IProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
+        List<ProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
         assertEquals(2, entries.size());
 
-        IProductCmptTocEntry entry0 = toc.getProductCmptTocEntry(motorProduct.getRuntimeId());
+        ProductCmptTocEntry entry0 = toc.getProductCmptTocEntry(motorProduct.getRuntimeId());
         assertNotNull(entry0);
         GenerationTocEntry genEntry0 = entry0.getGenerationEntry(validFrom);
         assertNotNull(genEntry0);
 
         // asserts for table entry
-        ITocEntryObject entry1 = toc.getTableTocEntryByQualifiedTableName("motor.RateTable");
+        TocEntryObject entry1 = toc.getTableTocEntryByQualifiedTableName("motor.RateTable");
         assertNotNull(entry1);
 
         // asserts for second table entry
-        ITocEntryObject entry2 = toc.getTableTocEntryByQualifiedTableName("motor.RateTable2");
+        TocEntryObject entry2 = toc.getTableTocEntryByQualifiedTableName("motor.RateTable2");
         assertNotNull(entry2);
 
         // assert for test case entry
-        ITocEntryObject testCaseEntry = toc.getTestCaseTocEntryByQName("tests.PremiumCalcTestA");
+        TocEntryObject testCaseEntry = toc.getTestCaseTocEntryByQName("tests.PremiumCalcTestA");
         assertNotNull(testCaseEntry);
 
         // assert for formula test entry
-        ITocEntryObject formulaTestEntry = toc.getTestCaseTocEntryByQName(pcFromula.getQualifiedName());
+        TocEntryObject formulaTestEntry = toc.getTestCaseTocEntryByQName(pcFromula.getQualifiedName());
         assertNotNull(formulaTestEntry);
 
         // no changes => toc file should remain untouched.

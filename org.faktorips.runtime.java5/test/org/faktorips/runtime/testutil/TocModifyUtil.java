@@ -26,8 +26,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
-import org.faktorips.runtime.internal.toc.ITocEntryObject;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.faktorips.runtime.productprovider.ClassLoaderProductDataProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -54,7 +54,7 @@ public class TocModifyUtil {
         Document doc = docBuilder.newDocument();
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
         element.setAttribute(AbstractReadonlyTableOfContents.LASTMOD_XML_ELEMENT, "" + lastModified);
-        for (ITocEntryObject entry : toc.getEntries()) {
+        for (TocEntryObject entry : toc.getEntries()) {
             element.appendChild(entry.toXml(doc));
         }
 

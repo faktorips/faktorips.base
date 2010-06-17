@@ -14,7 +14,7 @@
 package org.faktorips.runtime.productprovider;
 
 /**
- * Exception thrown if the requested data is expired
+ * Exception thrown if the requested data has been modified since last correct modification check.
  * 
  * @author dirmeier
  */

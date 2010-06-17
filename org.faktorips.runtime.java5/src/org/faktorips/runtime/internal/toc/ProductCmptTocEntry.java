@@ -22,7 +22,13 @@ import org.faktorips.runtime.internal.DateTime;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptTocEntry {
+public class ProductCmptTocEntry extends TocEntryObject {
+
+    public static final String PROPERTY_KIND_ID = "kindId";
+    public static final String PROPERTY_VERSION_ID = "versionId";
+    public static final String PROPERTY_VALID_TO = "validTo";
+    public static final String PROPERTY_GENERATION_IMPL_CLASS_NAME = "generationImplClassName";
+    public static final String XML_TAG = "ProductComponent";
 
     protected List<GenerationTocEntry> generationEntries = new ArrayList<GenerationTocEntry>(0);
     /**
@@ -45,16 +51,16 @@ public class ProductCmptTocEntry extends TocEntryObject implements IProductCmptT
      */
     protected final String generationImplClassName;
 
-    public static IProductCmptTocEntry createFromXml(Element entryElement) {
+    public static ProductCmptTocEntry createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String ipsObjectName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
         String xmlResourceName = entryElement.getAttribute(PROPERTY_XML_RESOURCE);
         String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
         String generationImplClassName = entryElement.getAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME);
 
-        DateTime validTo = DateTime.parseIso(entryElement.getAttribute(IProductCmptTocEntry.PROPERTY_VALID_TO));
-        String kindId = entryElement.getAttribute(IProductCmptTocEntry.PROPERTY_KIND_ID);
-        String versionId = entryElement.getAttribute(IProductCmptTocEntry.PROPERTY_VERSION_ID);
+        DateTime validTo = DateTime.parseIso(entryElement.getAttribute(PROPERTY_VALID_TO));
+        String kindId = entryElement.getAttribute(PROPERTY_KIND_ID);
+        String versionId = entryElement.getAttribute(PROPERTY_VERSION_ID);
 
         ProductCmptTocEntry newEntry = new ProductCmptTocEntry(ipsObjectId, ipsObjectName, kindId, versionId,
                 xmlResourceName, implementationClassName, generationImplClassName, validTo);

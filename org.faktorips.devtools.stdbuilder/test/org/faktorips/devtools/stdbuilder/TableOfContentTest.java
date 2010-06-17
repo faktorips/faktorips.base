@@ -23,15 +23,11 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
-import org.faktorips.runtime.internal.toc.IEnumXmlAdapterTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.ITocEntryObject;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.w3c.dom.Element;
 
 /**
@@ -50,9 +46,9 @@ public class TableOfContentTest extends XmlAbstractTestCase {
     public void testGetTocEntry() {
         assertNull(toc.getEntry(new QualifiedNameType("Unkown", IpsObjectType.POLICY_CMPT_TYPE)));
 
-        ITocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPk", new DateTime(2010, 1, 1));
-        ITocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPk", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
@@ -64,21 +60,21 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
     public void testGetProductCmptTocEntries() {
         assertEquals(0, toc.getEntries().size());
-        ITocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         assertEquals(entry0, toc.getEntries().iterator().next());
 
-        ITocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPkAnpStufe", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry1);
-        Iterator<ITocEntryObject> iterator = toc.getEntries().iterator();
+        Iterator<TocEntryObject> iterator = toc.getEntries().iterator();
         assertEquals(entry1, iterator.next());
         assertEquals(entry0, iterator.next());
     }
 
     public void testAddOrReplaceTocEntry_TestCase() {
-        ITocEntryObject entry0 = new TestCaseTocEntry("TestCaseId", "TestCaseName", "TestCase.xml", "TestCase");
+        TocEntryObject entry0 = new TestCaseTocEntry("TestCaseId", "TestCaseName", "TestCase.xml", "TestCase");
         boolean changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(toc.isModified());
@@ -87,7 +83,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
     }
 
     public void testAddOrReplaceTocEntry() {
-        ITocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
         boolean changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
@@ -96,13 +92,13 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertEquals(entry0, toc.getEntries().iterator().next());
 
         toc.resetModified();
-        ITocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPkAnpStufe", new DateTime(2010, 1, 1));
         assertTrue(changed);
         changed = toc.addOrReplaceTocEntry(entry1);
         assertTrue(toc.isModified());
         assertEquals(2, toc.getEntries().size());
-        Iterator<ITocEntryObject> iterator = toc.getEntries().iterator();
+        Iterator<TocEntryObject> iterator = toc.getEntries().iterator();
         assertEquals(entry1, iterator.next());
         assertEquals(entry0, iterator.next());
 
@@ -159,7 +155,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertEquals(entry0, iterator.next());
 
         toc.resetModified();
-        ITocEntryObject tocEntry = new EnumXmlAdapterTocEntry("org.faktorips.AnEnum", "org.faktorips.AnEnum",
+        TocEntryObject tocEntry = new EnumXmlAdapterTocEntry("org.faktorips.AnEnum", "org.faktorips.AnEnum",
                 "org.faktorips.AnEnum");
         changed = toc.addOrReplaceTocEntry(tocEntry);
         assertTrue(changed);
@@ -177,13 +173,13 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         toc.removeEntry(new QualifiedNameType("MotorProduct", IpsObjectType.PRODUCT_CMPT));
         assertFalse(toc.isModified());
 
-        ITocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
-        ITocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPkAnpStufe", new DateTime(2010, 1, 1));
-        ITocEntryObject entry2 = new TableContentTocEntry("RateTable", "RateTable", "RateTable.ipstablecontents",
+        TocEntryObject entry2 = new TableContentTocEntry("RateTable", "RateTable", "RateTable.ipstablecontents",
                 "RateTable");
-        ITocEntryObject entry3 = new TableContentTocEntry("TestTable", "TestTable", "TestTable.ipstablecontents",
+        TocEntryObject entry3 = new TableContentTocEntry("TestTable", "TestTable", "TestTable.ipstablecontents",
                 "TestTable");
 
         toc.addOrReplaceTocEntry(entry0);
@@ -219,7 +215,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertTrue(toc.isModified());
         assertNull(toc.getEntry(new QualifiedNameType("RateTable", IpsObjectType.TABLE_CONTENTS)));
 
-        ITocEntryObject tocEntry = new EnumXmlAdapterTocEntry("org.faktorips.AnEnum", "org.faktorips.AnEnum",
+        TocEntryObject tocEntry = new EnumXmlAdapterTocEntry("org.faktorips.AnEnum", "org.faktorips.AnEnum",
                 "org.faktorips.AnEnum");
         toc.addOrReplaceTocEntry(tocEntry);
         toc.resetModified();
@@ -230,13 +226,13 @@ public class TableOfContentTest extends XmlAbstractTestCase {
     }
 
     public void testToXml() throws Exception {
-        ITocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
-        ITocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
+        TocEntryObject entry1 = new ProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01",
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPkAnpStufe", new DateTime(2010, 1, 1));
-        ITocEntryObject entry2 = new TestCaseTocEntry("TestCaseId", "TestCase", "TestCase.xml", "TestCase");
-        ITocEntryObject entry3 = new TableContentTocEntry("TableId", "Table", "Table.xml", "Table");
-        ITocEntryObject entry4 = new EnumXmlAdapterTocEntry("AnEnum", "AnEnum", "AnEnum");
+        TocEntryObject entry2 = new TestCaseTocEntry("TestCaseId", "TestCase", "TestCase.xml", "TestCase");
+        TocEntryObject entry3 = new TableContentTocEntry("TableId", "Table", "Table.xml", "Table");
+        TocEntryObject entry4 = new EnumXmlAdapterTocEntry("AnEnum", "AnEnum", "AnEnum");
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
         toc.addOrReplaceTocEntry(entry2);
@@ -247,13 +243,13 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertNotNull(tocElement);
         AbstractReadonlyTableOfContents readOnlyToc = new ReadonlyTableOfContents();
         readOnlyToc.initFromXml(tocElement);
-        List<IProductCmptTocEntry> entries = readOnlyToc.getProductCmptTocEntries();
+        List<ProductCmptTocEntry> entries = readOnlyToc.getProductCmptTocEntries();
         assertEquals(2, entries.size());
-        List<ITestCaseTocEntry> testEntries = readOnlyToc.getTestCaseTocEntries();
+        List<TestCaseTocEntry> testEntries = readOnlyToc.getTestCaseTocEntries();
         assertEquals(1, testEntries.size());
-        List<ITableContentTocEntry> tableEntries = readOnlyToc.getTableTocEntries();
+        List<TableContentTocEntry> tableEntries = readOnlyToc.getTableTocEntries();
         assertEquals(1, tableEntries.size());
-        Set<IEnumXmlAdapterTocEntry> xmlAdapterEntries = readOnlyToc.getEnumXmlAdapterTocEntries();
+        Set<EnumXmlAdapterTocEntry> xmlAdapterEntries = readOnlyToc.getEnumXmlAdapterTocEntries();
         assertEquals(1, xmlAdapterEntries.size());
     }
 
@@ -267,9 +263,9 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         String s2 = "" + (char)0 + (char)31;
         assertEquals(s1.hashCode(), s2.hashCode()); // so they must habe the same hashcode
         toc = new TableOfContent();
-        ITocEntryObject entry0 = new ProductCmptTocEntry(s1, "Entry0", "MotorProduct", "2005-01",
+        TocEntryObject entry0 = new ProductCmptTocEntry(s1, "Entry0", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpstufe", new DateTime(2010, 1, 1));
-        ITocEntryObject entry1 = new ProductCmptTocEntry(s2, "Entry1", "MotorProduct", "2005-01",
+        TocEntryObject entry1 = new ProductCmptTocEntry(s2, "Entry1", "MotorProduct", "2005-01",
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPkAnpStufe", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);

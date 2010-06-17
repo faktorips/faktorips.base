@@ -26,12 +26,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -73,7 +73,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         this.docBuilder = docBuilder;
     }
 
-    public Element getProductCmptData(IProductCmptTocEntry tocEntry) throws DataModifiedException {
+    public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException {
         String resourcePath = tocEntry.getXmlResourceName();
         checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
         return getDocumentElement(resourcePath);
@@ -96,18 +96,18 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         throw new RuntimeException("Can't find the generation for the toc entry " + tocEntry);
     }
 
-    public Element getTestcaseElement(ITestCaseTocEntry tocEntry) throws DataModifiedException {
+    public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException {
         checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
         String resourcePath = tocEntry.getXmlResourceName();
         return getDocumentElement(resourcePath);
     }
 
-    public InputStream getTableContentAsStream(ITableContentTocEntry tocEntry) throws DataModifiedException {
+    public InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException {
         checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
-    public InputStream getEnumContentAsStream(IEnumContentTocEntry tocEntry) throws DataModifiedException {
+    public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException {
         checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }

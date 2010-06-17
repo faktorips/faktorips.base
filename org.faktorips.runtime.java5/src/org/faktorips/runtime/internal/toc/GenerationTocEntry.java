@@ -29,18 +29,18 @@ public class GenerationTocEntry extends TocEntry {
 
     private final static TimeZone defaultTimeZone = TimeZone.getDefault();
 
-    public final static GenerationTocEntry createFromXml(IProductCmptTocEntry parent, Element element) {
+    public final static GenerationTocEntry createFromXml(ProductCmptTocEntry parent, Element element) {
         DateTime validFrom = DateTime.parseIso(element.getAttribute("validFrom"));
         String className = element.getAttribute("implementationClass");
         String xmlResourceName = element.getAttribute("xmlResource");
         return new GenerationTocEntry(parent, validFrom, className, xmlResourceName);
     }
 
-    private IProductCmptTocEntry parent;
+    private ProductCmptTocEntry parent;
     private DateTime validFrom;
     private long validFromAsLongInDefaultTimeZone;
 
-    public GenerationTocEntry(IProductCmptTocEntry parent, DateTime validFrom, String className, String xmlResourceName) {
+    public GenerationTocEntry(ProductCmptTocEntry parent, DateTime validFrom, String className, String xmlResourceName) {
         super(className, xmlResourceName);
         this.parent = parent;
         this.validFrom = validFrom;
@@ -59,7 +59,7 @@ public class GenerationTocEntry extends TocEntry {
     /**
      * @return Returns the parent entry.
      */
-    public IProductCmptTocEntry getParent() {
+    public ProductCmptTocEntry getParent() {
         return parent;
     }
 

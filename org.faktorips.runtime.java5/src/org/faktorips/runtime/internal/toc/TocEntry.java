@@ -19,7 +19,10 @@ import org.w3c.dom.Element;
 /**
  * The class represents an entry in the repository's table of contents.
  */
-public abstract class TocEntry implements ITocEntry {
+public abstract class TocEntry {
+
+    public static final String PROPERTY_XML_RESOURCE = "xmlResource";
+    public static final String PROPERTY_IMPLEMENTATION_CLASS = "implementationClass";
 
     // The qualified name of the resource that contains the ips object's xml representation,
     // e.g. org.faktips.samples.products.motor.internal.MotorProduct2005.

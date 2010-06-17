@@ -25,11 +25,11 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.IEnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.IProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.ITableContentTocEntry;
-import org.faktorips.runtime.internal.toc.ITestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -333,13 +333,13 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         }
 
         @Override
-        public InputStream getEnumContentAsStream(IEnumContentTocEntry tocEntry) throws DataModifiedException {
+        public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException {
             flag = true;
             return super.getEnumContentAsStream(tocEntry);
         }
 
         @Override
-        public Element getProductCmptData(IProductCmptTocEntry tocEntry) throws DataModifiedException {
+        public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException {
             flag = true;
             return super.getProductCmptData(tocEntry);
         }
@@ -351,13 +351,13 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         }
 
         @Override
-        public InputStream getTableContentAsStream(ITableContentTocEntry tocEntry) throws DataModifiedException {
+        public InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException {
             flag = true;
             return super.getTableContentAsStream(tocEntry);
         }
 
         @Override
-        public Element getTestcaseElement(ITestCaseTocEntry tocEntry) throws DataModifiedException {
+        public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException {
             flag = true;
             return super.getTestcaseElement(tocEntry);
         }
