@@ -13,6 +13,12 @@
 
 package org.faktorips.runtime.productprovider;
 
+/**
+ * This is the abstract implementation for product data providers. For a description of product data
+ * providers @see {@link IProductDataProvider}
+ * 
+ * @author dirmeier
+ */
 public abstract class AbstractProductDataProvider implements IProductDataProvider {
 
     protected static final String MODIFIED_EXCEPTION_MESSAGE = "Data has changed: ";

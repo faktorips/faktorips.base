@@ -15,6 +15,11 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
+/**
+ * A {@link TocEntryObject} representing a enum xml adapter element
+ * 
+ * @author dirmeier
+ */
 public class EnumXmlAdapterTocEntry extends TocEntryObject {
 
     public static final String XML_TAG = "EnumXmlAdapter";

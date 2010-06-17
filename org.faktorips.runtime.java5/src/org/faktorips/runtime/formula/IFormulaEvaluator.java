@@ -16,7 +16,10 @@ package org.faktorips.runtime.formula;
 import org.faktorips.runtime.IProductComponentGeneration;
 
 /**
- * Evaluates the formulas of a product component generation.
+ * Evaluates the formulas of a product component generation. This interface only provides methods to
+ * get the configured product component generation and to evaluate already configured formulas. The
+ * code of the formulas is set while creating the evaluator by an {@link IFormulaEvaluatorFactory}.
+ * 
  * 
  * @author dirmeier
  */

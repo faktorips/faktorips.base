@@ -15,11 +15,13 @@ package org.faktorips.runtime.formula;
 
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IProductComponentGeneration;
-import org.w3c.dom.Element;
 
 /**
- * An abstract implementation of {@link IFormulaEvaluator}. This implementation handles the
- * expression encapsulated in an {@link Element} and forwarding the expression as String. T
+ * An abstract implementation of {@link IFormulaEvaluator} holding the product component generation
+ * and handles the exceptions thrown by the {@link #evaluateInternal(String, Object...)} method.
+ * <p>
+ * There is no method to set the compiled formula expression because the expressions have to be set
+ * by the {@link IFormulaEvaluatorFactory} while creating the evaluator.
  * 
  * @author dirmeier
  */
@@ -66,6 +68,15 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
 
     }
 
-    protected abstract Object evaluateInternal(String formularName, Object... parameters);
+    /**
+     * This method evaluates the formula with the given name and the specified parameters. With the
+     * name and parameters you have the complete formula method signature. The order of the
+     * parameters is given by the formula signature.
+     * 
+     * @param formularName name of the formula to evaluate
+     * @param parameters the parameters to evaluate the formula
+     * @return the return value of the evaluated formula
+     */
+    protected abstract Object evaluateInternal(String formularName, Object... parameters) throws Exception;
 
 }

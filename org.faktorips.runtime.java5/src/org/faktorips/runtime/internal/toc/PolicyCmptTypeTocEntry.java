@@ -15,6 +15,11 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
+/**
+ * This special kind of {@link ModelTypeTocEntry} represents an entry for policy component types
+ * 
+ * @author dirmeier
+ */
 public class PolicyCmptTypeTocEntry extends ModelTypeTocEntry {
 
     public static final String XML_TAG = "PolicyCmptType";

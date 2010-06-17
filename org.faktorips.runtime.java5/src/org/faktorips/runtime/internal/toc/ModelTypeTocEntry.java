@@ -13,6 +13,11 @@
 
 package org.faktorips.runtime.internal.toc;
 
+/**
+ * This {@link TocEntryObject} represents an entry for model types
+ * 
+ * @author dirmeier
+ */
 public abstract class ModelTypeTocEntry extends TocEntryObject {
 
     public ModelTypeTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName,

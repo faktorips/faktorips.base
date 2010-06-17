@@ -18,10 +18,16 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.DateTime;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/**
+ * A {@link TocEntryObject} for {@link IProductComponent}s
+ * 
+ * @author dirmeier
+ */
 public class ProductCmptTocEntry extends TocEntryObject {
 
     public static final String PROPERTY_KIND_ID = "kindId";

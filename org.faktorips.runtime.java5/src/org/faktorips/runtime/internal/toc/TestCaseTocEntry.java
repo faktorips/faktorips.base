@@ -15,6 +15,11 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
+/**
+ * A {@link TocEntryObject} for test cases
+ * 
+ * @author dirmeier
+ */
 public class TestCaseTocEntry extends TocEntryObject {
 
     public static final String TEST_XML_TAG = "TestCase";

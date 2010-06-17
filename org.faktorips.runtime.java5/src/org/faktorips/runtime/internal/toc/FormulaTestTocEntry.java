@@ -15,6 +15,11 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
+/**
+ * A special kind of {@link TestCaseTocEntry} for formula test entries
+ * 
+ * @author dirmeier
+ */
 public class FormulaTestTocEntry extends TestCaseTocEntry {
 
     public static final String FORMULA_TEST_XML_TAG = "FormulaTest";

@@ -16,6 +16,13 @@ package org.faktorips.runtime.internal.toc;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * This is the interface for readonly table of contents used by the runtime repositories. With the
+ * methods in this interface you could find a single entry in the table of contents or the list of
+ * entries of a special type
+ * 
+ * @author dirmeier
+ */
 public interface IReadonlyTableOfContents {
 
     /**

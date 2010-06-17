@@ -15,6 +15,11 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
+/**
+ * A {@link TocEntryObject} for table contents
+ * 
+ * @author dirmeier
+ */
 public class TableContentTocEntry extends TocEntryObject {
 
     public static final String XML_TAG = "TableContent";

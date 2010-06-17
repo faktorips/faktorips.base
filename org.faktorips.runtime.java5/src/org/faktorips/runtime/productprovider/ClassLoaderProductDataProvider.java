@@ -40,10 +40,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * The {@link ClassLoaderProductDataProvider} is a local implementation of
- * {@link IProductDataProvider} normally for testing purpose. It getting the data similar as the
- * {@link ClassloaderRuntimeRepository}. Modification is checked by checking the modification date
- * of the toc resource.
+ * The {@link ClassLoaderProductDataProvider} is an implementation of {@link IProductDataProvider}
+ * normally for testing purpose. It loads data similar as the {@link ClassloaderRuntimeRepository}.
+ * Modification is checked by checking the modification date of the toc resource.
  * 
  * @author dirmeier
  */

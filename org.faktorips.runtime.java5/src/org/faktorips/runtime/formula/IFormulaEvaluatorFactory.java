@@ -17,6 +17,13 @@ import java.util.List;
 
 import org.faktorips.runtime.IProductComponentGeneration;
 
+/**
+ * An interface for formula evaluator factories to create a {@link IFormulaEvaluator}. It is part of
+ * the creation of an evaluator to set the {@link IProductComponentGeneration} and a list of
+ * compiled expressions the evaluator should handle.
+ * 
+ * @author dirmeier
+ */
 public interface IFormulaEvaluatorFactory {
 
     public IFormulaEvaluator createFormulaEvaluator(IProductComponentGeneration gen, List<String> compiledExpressions);
