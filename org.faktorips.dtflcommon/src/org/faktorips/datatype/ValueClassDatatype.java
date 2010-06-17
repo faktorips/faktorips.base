@@ -112,7 +112,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 
     public boolean isParsable(String value) {
         try {
-            if (value.length() == 0) {
+            if ("".equals(value)) { //$NON-NLS-1$
                 /*
                  * by default the empty space is not parsable. This has to be handled explicitly as
                  * most value classes assume that the value of the string "" is null. This is
