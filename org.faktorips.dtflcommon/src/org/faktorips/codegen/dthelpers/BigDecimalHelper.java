@@ -29,20 +29,18 @@ import org.faktorips.valueset.BigDecimalRange;
 public class BigDecimalHelper extends AbstractDatatypeHelper {
 
     public BigDecimalHelper() {
+        // Provides default constructor.
     }
 
     public BigDecimalHelper(BigDecimalDatatype datatype) {
         super(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
-        JavaCodeFragment code = new JavaCodeFragment("new ");
+        JavaCodeFragment code = new JavaCodeFragment("new "); //$NON-NLS-1$
         code.appendClassName(BigDecimal.class);
         code.append('(');
         code.appendQuoted(value);
@@ -50,16 +48,13 @@ public class BigDecimalHelper extends AbstractDatatypeHelper {
         return code;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
-        JavaCodeFragment code = new JavaCodeFragment("new ");
+        JavaCodeFragment code = new JavaCodeFragment("new "); //$NON-NLS-1$
         code.appendClassName(BigDecimal.class);
         code.append('(');
         code.append(expression);
@@ -67,36 +62,30 @@ public class BigDecimalHelper extends AbstractDatatypeHelper {
         return code;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
-     */
     @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
         return BigDecimalRange.class.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
             boolean useTypesafeCollections) {
+
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
-        frag.append(".valueOf(");
+        frag.append(".valueOf("); //$NON-NLS-1$
         frag.append(lowerBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(upperBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(stepExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(containsNullExp);
-        frag.append(")");
+        frag.append(")"); //$NON-NLS-1$
         return frag;
     }
+
 }

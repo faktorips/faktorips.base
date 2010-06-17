@@ -32,6 +32,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * Constructs a new helper.
      */
     public AbstractDatatypeHelper() {
+        // Provides default constructor
     }
 
     /**
@@ -42,16 +43,10 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         this.datatype = datatype;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Datatype getDatatype() {
         return datatype;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDatatype(Datatype datatype) {
         this.datatype = datatype;
     }
@@ -69,56 +64,41 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      */
     protected abstract JavaCodeFragment valueOfExpression(String expression);
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment newInstanceFromExpression(String expression) {
-        if (expression == null || expression.equals("")) {
+        if (expression == null || expression.length() == 0) {
             return nullExpression();
         }
-        // ((expression==null) || (expression.equals(""))) ? nullExpression() :
-        // valueOfExpression(expression)
-        if (expression.startsWith("(")) {
+        if (expression.startsWith("(")) { //$NON-NLS-1$
             expression = '(' + expression + ')';
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("(");
+        fragment.append("("); //$NON-NLS-1$
         fragment.append(expression);
-        fragment.append("==null || ");
+        fragment.append("==null || "); //$NON-NLS-1$
         fragment.append(expression);
-        fragment.append(".equals(\"\")");
-        fragment.append(") ? ");
+        fragment.append(".equals(\"\")"); //$NON-NLS-1$
+        fragment.append(") ? "); //$NON-NLS-1$
         fragment.append(nullExpression());
-        fragment.append(" : ");
+        fragment.append(" : "); //$NON-NLS-1$
         fragment.append(valueOfExpression(expression));
 
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
         return datatype.getJavaClassName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @return <code>null</code>
-     */
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
             boolean useTypesafeCollections) {
+
         return null;
     }
 
@@ -146,48 +126,44 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     public JavaCodeFragment newEnumValueSetInstance(String[] values,
             boolean containsNull,
             boolean useTypesafeCollections) {
+
         JavaCodeFragment frag = new JavaCodeFragment();
-        frag.append("new ");
+        frag.append("new "); //$NON-NLS-1$
         frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
-        frag.append("<");
+        frag.append("<"); //$NON-NLS-1$
         frag.appendClassName(getJavaClassName());
-        frag.append(">(");
+        frag.append(">("); //$NON-NLS-1$
         frag.append(containsNull);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(newInstance(null));
         for (String value : values) {
-            frag.append(", ");
+            frag.append(", "); //$NON-NLS-1$
             frag.append(newInstance(value));
         }
-        frag.appendln(")");
+        frag.appendln(")"); //$NON-NLS-1$
         return frag;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection,
             JavaCodeFragment containsNullExpression,
             boolean useTypesafeCollections) {
+
         JavaCodeFragment frag = new JavaCodeFragment();
-        frag.append("new ");
+        frag.append("new "); //$NON-NLS-1$
         frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
-        frag.append("<");
+        frag.append("<"); //$NON-NLS-1$
         frag.appendClassName(getJavaClassName());
-        frag.append(">");
-        frag.append("(");
+        frag.append(">"); //$NON-NLS-1$
+        frag.append("("); //$NON-NLS-1$
         frag.append(valueCollection);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(containsNullExpression);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(nullExpression());
-        frag.appendln(")");
+        frag.appendln(")"); //$NON-NLS-1$
         return frag;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment referenceOrSafeCopyIfNeccessary(String expression) {
         if (datatype.isValueDatatype() && ((ValueDatatype)datatype).isMutable()) {
             return newSafeCopy(expression);
@@ -200,9 +176,8 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * in the expression.
      */
     protected JavaCodeFragment newSafeCopy(String expression) {
-        throw new RuntimeException("The DatatypeHelper for datatype " + datatype
-                + " does not override the method newSafeCopy!");
-
+        throw new RuntimeException("The DatatypeHelper for datatype " + datatype //$NON-NLS-1$
+                + " does not override the method newSafeCopy!"); //$NON-NLS-1$
     }
 
 }

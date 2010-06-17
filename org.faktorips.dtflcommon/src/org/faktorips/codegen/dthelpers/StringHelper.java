@@ -18,9 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.StringDatatype;
 
-/**
- *  
- */
 public class StringHelper extends AbstractDatatypeHelper {
 
     /**
@@ -39,11 +36,6 @@ public class StringHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
-     */
     public JavaCodeFragment newInstance(String value) {
         if (value == null) {
             return nullExpression();
@@ -53,17 +45,11 @@ public class StringHelper extends AbstractDatatypeHelper {
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment newInstanceFromExpression(String expression) {
         return valueOfExpression(expression);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         if (StringUtils.isEmpty(expression)) {
@@ -74,11 +60,8 @@ public class StringHelper extends AbstractDatatypeHelper {
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
 }

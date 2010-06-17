@@ -32,18 +32,18 @@ import org.faktorips.values.NullObjectSupport;
  */
 public abstract class GenericValueDatatype implements ValueDatatype {
 
-    private final static String MSGCODE_PREFIX = "GENERIC DATATYPE-";
-    public final static String MSGCODE_JAVACLASS_NOT_FOUND = MSGCODE_PREFIX + "Java class not found";
-    public final static String MSGCODE_GETVALUE_METHOD_NOT_FOUND = MSGCODE_PREFIX + "getValue() Method not found";
-    public final static String MSGCODE_ISPARSABLE_METHOD_NOT_FOUND = MSGCODE_PREFIX + "isParsable() Method not found";
-    public final static String MSGCODE_TOSTRING_METHOD_NOT_FOUND = MSGCODE_PREFIX + "toString() Method not found";
-    public final static String MSGCODE_SPECIALCASE_NULL_NOT_FOUND = MSGCODE_PREFIX + "Special case null not found";
-    public final static String MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL = MSGCODE_PREFIX + "Special case null is not null";
+    private final static String MSGCODE_PREFIX = "GENERIC DATATYPE-"; //$NON-NLS-1$
+    public final static String MSGCODE_JAVACLASS_NOT_FOUND = MSGCODE_PREFIX + "Java class not found"; //$NON-NLS-1$
+    public final static String MSGCODE_GETVALUE_METHOD_NOT_FOUND = MSGCODE_PREFIX + "getValue() Method not found"; //$NON-NLS-1$
+    public final static String MSGCODE_ISPARSABLE_METHOD_NOT_FOUND = MSGCODE_PREFIX + "isParsable() Method not found"; //$NON-NLS-1$
+    public final static String MSGCODE_TOSTRING_METHOD_NOT_FOUND = MSGCODE_PREFIX + "toString() Method not found"; //$NON-NLS-1$
+    public final static String MSGCODE_SPECIALCASE_NULL_NOT_FOUND = MSGCODE_PREFIX + "Special case null not found"; //$NON-NLS-1$
+    public final static String MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL = MSGCODE_PREFIX + "Special case null is not null"; //$NON-NLS-1$
 
     private String qualifiedName;
-    private String valueOfMethodName = "valueOf";
-    private String isParsableMethodName = "isParsable";
-    private String toStringMethodName = "toString";
+    private String valueOfMethodName = "valueOf"; //$NON-NLS-1$
+    private String isParsableMethodName = "isParsable"; //$NON-NLS-1$
+    private String toStringMethodName = "toString"; //$NON-NLS-1$
 
     private boolean nullObjectDefined = false;
     private String nullObjectId = null;
@@ -52,13 +52,6 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     protected Method isParsableMethod;
     protected Method toStringMethod;
 
-    public GenericValueDatatype() {
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public String getDefaultValue() {
         return null;
     }
@@ -76,16 +69,13 @@ public abstract class GenericValueDatatype implements ValueDatatype {
      */
     public abstract String getAdaptedClassName();
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList checkReadyToUse() {
         MessageList list = new MessageList();
         if (getAdaptedClass() == null) {
-            String text = "The Java class represented by the datatype can't be found. (Classname: "
+            String text = "The Java class represented by the datatype can't be found. (Classname: " //$NON-NLS-1$
                     + getAdaptedClassName()
-                    + "). "
-                    + "Either the class is not on the classpath or the resource it is stored in is out of sync. See error log for more details.";
+                    + "). " //$NON-NLS-1$
+                    + "Either the class is not on the classpath or the resource it is stored in is out of sync. See error log for more details."; //$NON-NLS-1$
             list.add(Message.newError(MSGCODE_JAVACLASS_NOT_FOUND, text));
             return list;
         }
@@ -93,7 +83,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             try {
                 getIsParsableMethod();
             } catch (RuntimeException e) {
-                String text = "The Java class hasn't got a method " + getIsParsableMethodName() + "(String)";
+                String text = "The Java class hasn't got a method " + getIsParsableMethodName() + "(String)"; //$NON-NLS-1$ //$NON-NLS-2$
                 list.add(Message.newError(MSGCODE_ISPARSABLE_METHOD_NOT_FOUND, text));
             }
         }
@@ -101,14 +91,14 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             try {
                 getToStringMethod();
             } catch (RuntimeException e) {
-                String text = "The Java class hasn't got a method " + getToStringMethodName() + "(Object)";
+                String text = "The Java class hasn't got a method " + getToStringMethodName() + "(Object)"; //$NON-NLS-1$ //$NON-NLS-2$
                 list.add(Message.newError(MSGCODE_TOSTRING_METHOD_NOT_FOUND, text));
             }
         }
         try {
             getValueOfMethod();
         } catch (RuntimeException e) {
-            String text = "The Java class hasn't got a method " + getValueOfMethodName() + "(String)";
+            String text = "The Java class hasn't got a method " + getValueOfMethodName() + "(String)"; //$NON-NLS-1$ //$NON-NLS-2$
             list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
             return list;
         }
@@ -117,12 +107,12 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                 Object value = getValue(nullObjectId);
                 if (value instanceof NullObjectSupport) {
                     if (!((NullObjectSupport)value).isNull()) {
-                        String text = "The string " + nullObjectId + " does not represent the special null value.";
+                        String text = "The string " + nullObjectId + " does not represent the special null value."; //$NON-NLS-1$ //$NON-NLS-2$
                         list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL, text));
                     }
                 }
             } catch (RuntimeException e) {
-                String text = "The null value string " + nullObjectId + " is not a value defined by the datatype.";
+                String text = "The null value string " + nullObjectId + " is not a value defined by the datatype."; //$NON-NLS-1$ //$NON-NLS-2$
                 list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_NOT_FOUND, text));
             }
         }
@@ -189,16 +179,10 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         this.qualifiedName = qualifiedName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype getWrapperType() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isParsable(String value) {
         if (value == null) {
             return true;
@@ -209,16 +193,16 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                 Object o = isParsableMethod.invoke(null, new Object[] { value });
                 return ((Boolean)o).booleanValue();
             } catch (Exception e) {
-                throw new RuntimeException("Error executing method " + isParsableMethod);
+                throw new RuntimeException("Error executing method " + isParsableMethod); //$NON-NLS-1$
             }
         }
         try {
             getValueOfMethod().invoke(null, new Object[] { value });
             return true; // getValue() has executed without exception, the value can be parsed.
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Error executing method " + valueOfMethod, e);
+            throw new RuntimeException("Error executing method " + valueOfMethod, e); //$NON-NLS-1$
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error executing method " + valueOfMethod, e);
+            throw new RuntimeException("Error executing method " + valueOfMethod, e); //$NON-NLS-1$
         } catch (InvocationTargetException e) {
             return false; // getValue() has thrown an exception, the value can't be parsed.
         }
@@ -232,8 +216,8 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                     throw new NullPointerException();
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Can't get the method isParsable(String), Class: " + getAdaptedClassName()
-                        + ", Methodname: " + isParsableMethodName, e);
+                throw new RuntimeException("Can't get the method isParsable(String), Class: " + getAdaptedClassName() //$NON-NLS-1$
+                        + ", Methodname: " + isParsableMethodName, e); //$NON-NLS-1$
             }
         }
         return isParsableMethod;
@@ -246,7 +230,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         try {
             return getValueOfMethod().invoke(null, new Object[] { value });
         } catch (Exception e) {
-            throw new RuntimeException("Error invoking method to get the value " + valueOfMethod, e);
+            throw new RuntimeException("Error invoking method to get the value " + valueOfMethod, e); //$NON-NLS-1$
         }
     }
 
@@ -258,8 +242,8 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                     throw new NullPointerException();
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Can't get valueOfMethod(String), Class: " + getAdaptedClass()
-                        + ", Methodname: " + valueOfMethodName);
+                throw new RuntimeException("Can't get valueOfMethod(String), Class: " + getAdaptedClass() //$NON-NLS-1$
+                        + ", Methodname: " + valueOfMethodName); //$NON-NLS-1$
             }
         }
         return valueOfMethod;
@@ -276,7 +260,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         try {
             return (String)toStringMethod.invoke(value, new Object[0]);
         } catch (Exception e) {
-            throw new RuntimeException("Error executing method " + toStringMethod);
+            throw new RuntimeException("Error executing method " + toStringMethod); //$NON-NLS-1$
         }
     }
 
@@ -288,16 +272,13 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                     throw new NullPointerException();
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Can't get method toString(String), Class: " + getAdaptedClass()
-                        + ", Methodname: " + toStringMethodName);
+                throw new RuntimeException("Can't get method toString(String), Class: " + getAdaptedClass() //$NON-NLS-1$
+                        + ", Methodname: " + toStringMethodName); //$NON-NLS-1$
             }
         }
         return toStringMethod;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNull(String value) {
         if (value == null) {
             return true;
@@ -308,38 +289,23 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return value.equals(getValue(nullObjectId));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isEnum() {
         return this instanceof EnumDatatype;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return StringUtil.unqualifiedName(qualifiedName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
         return qualifiedName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return getName().hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -351,52 +317,31 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return getQualifiedName().equals(((Datatype)o).getQualifiedName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isVoid() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isValueDatatype() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
         return getAdaptedClass().getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     // TODO pk: this cannot be right
     public int compareTo(Datatype o) {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return qualifiedName;
@@ -408,9 +353,6 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         toStringMethod = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean areValuesEqual(String valueA, String valueB) {
 
         if (valueA == null && valueB == null) {
@@ -422,35 +364,23 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return getValue(valueA).equals(getValue(valueB));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         if (!supportsCompare()) {
-            throw new UnsupportedOperationException("The class " + getAdaptedClassName() + " does not implement "
+            throw new UnsupportedOperationException("The class " + getAdaptedClassName() + " does not implement " //$NON-NLS-1$ //$NON-NLS-2$
                     + Comparable.class.getName());
         }
 
         return ((Comparable)getValue(valueA)).compareTo(valueB);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return Comparable.class.isAssignableFrom(getAdaptedClass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isImmutable() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isMutable() {
         return false;
     }

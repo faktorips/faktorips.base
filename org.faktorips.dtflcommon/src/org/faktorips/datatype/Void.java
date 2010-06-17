@@ -22,139 +22,85 @@ import org.apache.commons.lang.ObjectUtils;
  */
 public class Void extends AbstractDatatype implements ValueDatatype {
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
-        return "void";
+        return "void"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
-        return "void";
+        return "void"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isVoid() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isImmutable() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isMutable() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isValueDatatype() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype getWrapperType() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
-        return "void";
+        return "void"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDefaultValue() {
-        throw new UnsupportedOperationException("Can't get a default value for Datatype void.");
+        throw new UnsupportedOperationException("Can't get a default value for Datatype void."); //$NON-NLS-1$
     }
 
     public Object getValue(String value) {
-        throw new UnsupportedOperationException("Can't get a value for Datatype void.");
+        throw new UnsupportedOperationException("Can't get a value for Datatype void."); //$NON-NLS-1$
     }
 
     public String valueToXmlString(Object value) {
-        return "void";
+        return "void"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String valueToString(Object value) {
-        return "void";
+        return "void"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isParsable(String value) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasNullObject() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNull(String value) {
         return value == null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("The datatype " + getQualifiedName()
-                + " does not support comparison for values");
+        throw new UnsupportedOperationException("The datatype " + getQualifiedName() //$NON-NLS-1$
+                + " does not support comparison for values"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean areValuesEqual(String valueA, String valueB) {
         return ObjectUtils.equals(valueA, valueB);
     }

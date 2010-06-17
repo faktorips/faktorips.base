@@ -17,31 +17,19 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
 
-/**
- *
- */
 public class LongToDecimalCg extends AbstractSingleConversionCg {
 
-    /**
-     * @param from
-     * @param to
-     */
     public LongToDecimalCg() {
         super(Datatype.LONG, Datatype.DECIMAL);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.codegen.SingleConversionCg#getConversionCode()
-     */
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Decimal.class);
         // Decimal.valueOf(long unscaledValue, int scale)
-        fragment.append(".valueOf(");
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(fromValue);
-        fragment.append(".longValue(), 0");
+        fragment.append(".longValue(), 0"); //$NON-NLS-1$
         fragment.append(')');
         return fragment;
     }

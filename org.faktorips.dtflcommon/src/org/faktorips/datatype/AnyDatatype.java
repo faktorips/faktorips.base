@@ -28,9 +28,6 @@ public class AnyDatatype implements Datatype {
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList validate() {
         return new MessageList();
     }
@@ -39,65 +36,38 @@ public class AnyDatatype implements Datatype {
         return "any"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
         return "any"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isVoid() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isValueDatatype() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isEnum() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int compareTo(Datatype o) {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasNullObject() {
         return false;
     }

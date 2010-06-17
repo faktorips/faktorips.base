@@ -42,7 +42,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
         GenericValueDatatype datatype = getGenericValueDatatype();
         JavaCodeFragment code = new JavaCodeFragment();
         if (!datatype.hasNullObject()) {
-            code.append("null");
+            code.append("null"); //$NON-NLS-1$
             return code;
         }
         code.appendClassName(datatype.getJavaClassName());
@@ -50,7 +50,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
         code.append(datatype.getValueOfMethodName());
         code.append('(');
         if (datatype.getNullObjectId() == null) {
-            code.append("null");
+            code.append("null"); //$NON-NLS-1$
         } else {
             code.appendQuoted(datatype.getNullObjectId());
         }

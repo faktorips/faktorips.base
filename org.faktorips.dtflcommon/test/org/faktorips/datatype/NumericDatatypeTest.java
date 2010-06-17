@@ -29,32 +29,33 @@ import org.faktorips.datatype.classtypes.MoneyDatatype;
 public class NumericDatatypeTest extends TestCase {
 
     private class TestDatatypeWithDecinalPlaces<T extends NumericDatatype> extends TestCase {
+
         private T datatype;
 
         public TestDatatypeWithDecinalPlaces(T datatype) {
             this.datatype = datatype;
             if (!datatype.hasDecimalPlaces()) {
-                throw new RuntimeException("Not supported! Class tests only datatypes with decimal places.");
+                throw new RuntimeException("Not supported! Class tests only datatypes with decimal places."); //$NON-NLS-1$
             }
         }
 
         public void testDivisibleWithoutRemainderDecimal() {
-            assertTrue(datatype.divisibleWithoutRemainder("10", "2"));
-            assertFalse(datatype.divisibleWithoutRemainder("9", "2"));
+            assertTrue(datatype.divisibleWithoutRemainder("10", "2")); //$NON-NLS-1$ //$NON-NLS-2$
+            assertFalse(datatype.divisibleWithoutRemainder("9", "2")); //$NON-NLS-1$ //$NON-NLS-2$
 
-            assertFalse(datatype.divisibleWithoutRemainder("10", "0"));
+            assertFalse(datatype.divisibleWithoutRemainder("10", "0")); //$NON-NLS-1$ //$NON-NLS-2$
 
-            assertTrue(datatype.divisibleWithoutRemainder("2.4", "1.2"));
-            assertFalse(datatype.divisibleWithoutRemainder("2.41", "1.2"));
+            assertTrue(datatype.divisibleWithoutRemainder("2.4", "1.2")); //$NON-NLS-1$ //$NON-NLS-2$
+            assertFalse(datatype.divisibleWithoutRemainder("2.41", "1.2")); //$NON-NLS-1$ //$NON-NLS-2$
 
             try {
-                datatype.divisibleWithoutRemainder("10", null);
+                datatype.divisibleWithoutRemainder("10", null); //$NON-NLS-1$
                 fail();
             } catch (NullPointerException e) {
                 // success
             }
             try {
-                datatype.divisibleWithoutRemainder(null, "2");
+                datatype.divisibleWithoutRemainder(null, "2"); //$NON-NLS-1$
                 fail();
             } catch (NullPointerException e) {
                 // success
@@ -72,8 +73,8 @@ public class NumericDatatypeTest extends TestCase {
         DoubleDatatype datatype = new DoubleDatatype();
         defaultTests(datatype);
 
-        assertTrue(datatype.divisibleWithoutRemainder("100", "0.25"));
-        assertTrue(datatype.divisibleWithoutRemainder("100", "0.2"));
+        assertTrue(datatype.divisibleWithoutRemainder("100", "0.25")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertTrue(datatype.divisibleWithoutRemainder("100", "0.2")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void testDivisibleWithoutRemainderInteger() {
@@ -97,39 +98,39 @@ public class NumericDatatypeTest extends TestCase {
 
         // decimal only special test case for the null value
         DecimalDatatype datatype = new DecimalDatatype();
-        assertTrue(datatype.divisibleWithoutRemainder("10", ""));
-        assertTrue(datatype.divisibleWithoutRemainder("", "2"));
+        assertTrue(datatype.divisibleWithoutRemainder("10", "")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertTrue(datatype.divisibleWithoutRemainder("", "2")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void defaultTests(NumericDatatype datatype) {
-        assertTrue(datatype.divisibleWithoutRemainder("10", "2"));
-        assertFalse(datatype.divisibleWithoutRemainder("9", "2"));
+        assertTrue(datatype.divisibleWithoutRemainder("10", "2")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(datatype.divisibleWithoutRemainder("9", "2")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        assertFalse(datatype.divisibleWithoutRemainder("10", "0"));
+        assertFalse(datatype.divisibleWithoutRemainder("10", "0")); //$NON-NLS-1$ //$NON-NLS-2$
 
         try {
-            datatype.divisibleWithoutRemainder("10", "");
+            datatype.divisibleWithoutRemainder("10", ""); //$NON-NLS-1$ //$NON-NLS-2$
             fail();
         } catch (NumberFormatException e) {
             // success
         }
 
         try {
-            datatype.divisibleWithoutRemainder("10", null);
+            datatype.divisibleWithoutRemainder("10", null); //$NON-NLS-1$
             fail();
         } catch (NullPointerException e) {
             // success
         }
 
         try {
-            datatype.divisibleWithoutRemainder("", "2");
+            datatype.divisibleWithoutRemainder("", "2"); //$NON-NLS-1$ //$NON-NLS-2$
             fail();
         } catch (NumberFormatException e) {
             // success
         }
 
         try {
-            datatype.divisibleWithoutRemainder(null, "2");
+            datatype.divisibleWithoutRemainder(null, "2"); //$NON-NLS-1$
             fail();
         } catch (NullPointerException e) {
             // success

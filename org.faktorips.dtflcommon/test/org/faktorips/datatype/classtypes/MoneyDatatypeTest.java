@@ -23,8 +23,8 @@ public class MoneyDatatypeTest extends TestCase {
 
     public void testDivisibleWithoutRemainder() {
         MoneyDatatype datatype = new MoneyDatatype();
-        assertTrue(datatype.divisibleWithoutRemainder("10 EUR", "2 EUR"));
-        assertFalse(datatype.divisibleWithoutRemainder("10 EUR", "3 EUR"));
+        assertTrue(datatype.divisibleWithoutRemainder("10 EUR", "2 EUR")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(datatype.divisibleWithoutRemainder("10 EUR", "3 EUR")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

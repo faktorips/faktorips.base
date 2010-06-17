@@ -34,45 +34,30 @@ public class MoneyDatatype extends ValueClassDatatype implements NumericDatatype
         super(Money.class, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String s) {
         return Money.valueOf(s);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasNullObject() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
-            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+            throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
         }
         return Money.valueOf(minuend).subtract(Money.valueOf(subtrahend)).toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
-            throw new NullPointerException("dividend and divisor both can not be null.");
+            throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
         }
         Money a = Money.valueOf(dividend);
         Money b = Money.valueOf(divisor);
@@ -87,4 +72,5 @@ public class MoneyDatatype extends ValueClassDatatype implements NumericDatatype
     public boolean hasDecimalPlaces() {
         return true;
     }
+
 }

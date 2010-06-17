@@ -23,9 +23,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
  * @author Jan Ortmann
  */
 public class JavaCodeFragmentBuilderTest extends TestCase {
-    /**
-     * Constructor for JavaCodeFragmentBuilderTest.
-     */
+
     public JavaCodeFragmentBuilderTest(String name) {
         super(name);
     }
@@ -37,13 +35,14 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         assertEquals(1, builder.getFragment().getIndentationLevel());
         builder.openBracket();
         assertEquals(2, builder.getFragment().getIndentationLevel());
-        builder.append("blabla");
+        builder.append("blabla"); //$NON-NLS-1$
         builder.closeBracket();
         assertEquals(1, builder.getFragment().getIndentationLevel());
         builder.closeBracket();
         assertEquals(0, builder.getFragment().getIndentationLevel());
-        String expected = "{" + SystemUtils.LINE_SEPARATOR + "    {" + SystemUtils.LINE_SEPARATOR + "        blabla"
-                + SystemUtils.LINE_SEPARATOR + "    }" + SystemUtils.LINE_SEPARATOR + "}" + SystemUtils.LINE_SEPARATOR;
+        String expected = "{" + SystemUtils.LINE_SEPARATOR + "    {" + SystemUtils.LINE_SEPARATOR + "        blabla" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR + "    }" + SystemUtils.LINE_SEPARATOR + "}" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(expected, builder.getFragment().getSourcecode());
     }
+
 }

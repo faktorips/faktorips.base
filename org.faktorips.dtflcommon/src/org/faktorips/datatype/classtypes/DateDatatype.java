@@ -28,7 +28,7 @@ import org.faktorips.values.DateUtil;
  */
 public class DateDatatype extends ValueClassDatatype {
 
-    private final static String format = "yyyy-MM-dd";
+    private final static String format = "yyyy-MM-dd"; //$NON-NLS-1$
 
     private static SimpleDateFormat formatter = new SimpleDateFormat(format);
 
@@ -46,9 +46,6 @@ public class DateDatatype extends ValueClassDatatype {
         super(Date.class, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String value) {
         if (StringUtils.isEmpty(value)) {
@@ -56,29 +53,23 @@ public class DateDatatype extends ValueClassDatatype {
         }
         try {
             if (!DateUtil.isIsoDate(value)) {
-                throw new IllegalArgumentException("Date value must have the format " + format);
+                throw new IllegalArgumentException("Date value must have the format " + format); //$NON-NLS-1$
             }
             return formatter.parse(value);
         } catch (Exception e) {
             IllegalArgumentException ill = new IllegalArgumentException(
-                    "Unable to convert the provided string parameter: \"" + value + "\"  into a " + Date.class
-                            + " instance");
+                    "Unable to convert the provided string parameter: \"" + value + "\"  into a " + Date.class //$NON-NLS-1$ //$NON-NLS-2$
+                            + " instance"); //$NON-NLS-1$
             ill.initCause(e);
             throw ill;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isParsable(String value) {
         return StringUtils.isEmpty(value) || DateUtil.isIsoDate(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String valueToString(Object value) {
         if (value == null) {
@@ -94,10 +85,8 @@ public class DateDatatype extends ValueClassDatatype {
         return (Date)getValue(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return true;
     }
+
 }

@@ -17,9 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 
-/**
- *
- */
 public class BooleanHelper extends AbstractDatatypeHelper {
 
     /**
@@ -38,38 +35,30 @@ public class BooleanHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
         Boolean booleanValue = Boolean.valueOf(value);
         if (booleanValue.booleanValue()) {
-            return new JavaCodeFragment("Boolean.TRUE");
+            return new JavaCodeFragment("Boolean.TRUE"); //$NON-NLS-1$
         } else {
-            return new JavaCodeFragment("Boolean.FALSE");
+            return new JavaCodeFragment("Boolean.FALSE"); //$NON-NLS-1$
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Boolean.class);
-        fragment.append(".valueOf(");
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(expression);
         fragment.append(')');
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
+
 }

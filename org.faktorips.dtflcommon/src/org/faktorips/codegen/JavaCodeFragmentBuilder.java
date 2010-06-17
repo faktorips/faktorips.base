@@ -23,7 +23,7 @@ import org.apache.commons.lang.SystemUtils;
  * A builder to create JavaCodeFragments with a uniform coding style.
  * <p>
  * The JavaCodeFragmentBuilder uses the method chaining pattern. That means: every method modifying
- * the {@link JavaCodeFragment} retunrs this JavaCodeFragmentBuilder. So you could chain the methods
+ * the {@link JavaCodeFragment} returNs this JavaCodeFragmentBuilder. So you could chain the methods
  * like this: javaCodeFragmentBuilder.methodBegin(<method signature parameter>).appendln(<one
  * line>).methodEnd();
  * 
@@ -229,8 +229,7 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType The className that the methods returns an instance of or <code>null</code>
      *            to indicate no return type in case of a constructor. The return type
-     *            <code>void</code> is indictaed by <code>java.lang.Void.class</code>:
-     * @param methodName
+     *            <code>void</code> is indicated by <code>java.lang.Void.class</code>:
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
@@ -250,7 +249,6 @@ public class JavaCodeFragmentBuilder {
      * @param returnType The className that the methods returns an instance of or <code>null</code>
      *            to indicate no return type in case of a constructor. The return type
      *            <code>void</code> is indicated by <code>java.lang.Void.class</code>:
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
@@ -455,7 +453,6 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      * @param javaDoc the java documentation for this method signature
@@ -480,7 +477,6 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      * @param javaDoc the java documentation for this method signature
@@ -507,7 +503,6 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      * @param javaDoc the java documentation for this method signature
@@ -534,7 +529,6 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
@@ -558,7 +552,6 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
@@ -581,7 +574,6 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
@@ -600,7 +592,6 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      * @param argFinal indicates if the arguments are prefix be a final modifier
@@ -611,6 +602,7 @@ public class JavaCodeFragmentBuilder {
             String[] argName,
             String[] argClass,
             boolean argFinal) {
+
         signatureInternal(modifier, methodName, new StringAsParameterTypeSupport(argName, argClass, null, returnType),
                 argFinal);
         return this;
@@ -620,6 +612,7 @@ public class JavaCodeFragmentBuilder {
             String methodName,
             MethodSignatureTypesSupport support,
             boolean argFinal) {
+
         lastMethodModifier = modifier;
         append(Modifier.toString(modifier));
         append(' ');
@@ -631,10 +624,10 @@ public class JavaCodeFragmentBuilder {
         append('(');
         for (int i = 0; i < support.getNumberOfParameters(); i++) {
             if (i > 0) {
-                append(", ");
+                append(", "); //$NON-NLS-1$
             }
             if (argFinal) {
-                append("final ");
+                append("final "); //$NON-NLS-1$
             }
             support.appendParameterType(i);
             append(' ');
@@ -645,10 +638,10 @@ public class JavaCodeFragmentBuilder {
         if (support.getNumberOfExceptionExtensions() == 0) {
             return this;
         }
-        append(" throws ");
+        append(" throws "); //$NON-NLS-1$
         for (int i = 0, max = support.getNumberOfExceptionExtensions(); i < max; i++) {
             if (i > 0) {
-                append(", ");
+                append(", "); //$NON-NLS-1$
             }
             support.appendExceptionExtension(i);
         }
@@ -661,7 +654,6 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      * @param exceptionClasses the thrown exceptions
@@ -686,7 +678,6 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
-     * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
      * @param javaDoc the java documentation for this method signature
@@ -712,7 +703,7 @@ public class JavaCodeFragmentBuilder {
      */
     public JavaCodeFragmentBuilder methodEnd() {
         if (Modifier.isAbstract(lastMethodModifier)) {
-            fragment.appendln(";");
+            fragment.appendln(";"); //$NON-NLS-1$
         } else {
             closeBracket();
         }
@@ -737,6 +728,7 @@ public class JavaCodeFragmentBuilder {
             String className,
             Class<?> extendsClass,
             Class<?> interfaces[]) {
+
         String extendsClassString = extendsClass == null ? null : extendsClass.getName();
         if (interfaces == null) {
             classBegin(modifier, className, extendsClassString, null);
@@ -760,18 +752,18 @@ public class JavaCodeFragmentBuilder {
             String interfaces[]) {
 
         fragment.append(Modifier.toString(modifier));
-        fragment.append(" class ");
+        fragment.append(" class "); //$NON-NLS-1$
         fragment.append(className);
         if (extendsClassName != null) {
-            fragment.append(" extends ");
+            fragment.append(" extends "); //$NON-NLS-1$
             fragment.appendClassName(extendsClassName);
         }
         if (interfaces != null) {
             for (int i = 0; i < interfaces.length; i++) {
                 if (i == 0) {
-                    fragment.append(" implements ");
+                    fragment.append(" implements "); //$NON-NLS-1$
                 } else {
-                    fragment.append(", ");
+                    fragment.append(", "); //$NON-NLS-1$
                 }
                 fragment.appendClassName(interfaces[i]);
             }
@@ -792,18 +784,18 @@ public class JavaCodeFragmentBuilder {
             String interfaces[]) {
 
         fragment.append(Modifier.toString(modifier));
-        fragment.append(" enum ");
+        fragment.append(" enum "); //$NON-NLS-1$
         fragment.append(className);
         if (extendsClassName != null) {
-            fragment.append(" extends ");
+            fragment.append(" extends "); //$NON-NLS-1$
             fragment.appendClassName(extendsClassName);
         }
         if (interfaces != null) {
             for (int i = 0; i < interfaces.length; i++) {
                 if (i == 0) {
-                    fragment.append(" implements ");
+                    fragment.append(" implements "); //$NON-NLS-1$
                 } else {
-                    fragment.append(", ");
+                    fragment.append(", "); //$NON-NLS-1$
                 }
                 fragment.appendClassName(interfaces[i]);
             }
@@ -827,7 +819,7 @@ public class JavaCodeFragmentBuilder {
      * construction.
      */
     public JavaCodeFragmentBuilder interfaceBegin(String interfaceName) {
-        interfaceBegin(interfaceName, "");
+        interfaceBegin(interfaceName, ""); //$NON-NLS-1$
         return this;
     }
 
@@ -836,10 +828,10 @@ public class JavaCodeFragmentBuilder {
      * construction.
      */
     public JavaCodeFragmentBuilder interfaceBegin(String interfaceName, String extendsInterfaceName) {
-        fragment.append("public interface ");
+        fragment.append("public interface "); //$NON-NLS-1$
         fragment.append(interfaceName);
         if (StringUtils.isNotEmpty(extendsInterfaceName)) {
-            fragment.append(" extends ");
+            fragment.append(" extends "); //$NON-NLS-1$
             fragment.appendClassName(extendsInterfaceName);
         }
         fragment.appendln();
@@ -852,13 +844,13 @@ public class JavaCodeFragmentBuilder {
      * construction.
      */
     public JavaCodeFragmentBuilder interfaceBegin(String interfaceName, String[] extendedInterfaces) {
-        fragment.append("public interface ");
+        fragment.append("public interface "); //$NON-NLS-1$
         fragment.append(interfaceName);
         if (extendedInterfaces != null && extendedInterfaces.length > 0) {
-            fragment.append(" extends ");
+            fragment.append(" extends "); //$NON-NLS-1$
             for (int i = 0; i < extendedInterfaces.length; i++) {
                 if (i > 0) {
-                    fragment.append(", ");
+                    fragment.append(", "); //$NON-NLS-1$
                 }
                 fragment.appendClassName(extendedInterfaces[i]);
             }
@@ -876,7 +868,6 @@ public class JavaCodeFragmentBuilder {
      * @param varName the variable's name.
      */
     public JavaCodeFragmentBuilder varDeclaration(int modifier, Class<?> clazz, String varName) {
-
         varDeclaration(modifier, clazz.getName(), varName);
         return this;
     }
@@ -920,10 +911,10 @@ public class JavaCodeFragmentBuilder {
         }
         fragment.append(varName);
         if (expression != null) {
-            fragment.append(" = ");
+            fragment.append(" = "); //$NON-NLS-1$
             fragment.append(expression);
         }
-        fragment.appendln(";");
+        fragment.appendln(";"); //$NON-NLS-1$
         return this;
     }
 
@@ -966,9 +957,9 @@ public class JavaCodeFragmentBuilder {
      */
     public JavaCodeFragmentBuilder assignment(String variable, JavaCodeFragment expression) {
         fragment.append(variable);
-        fragment.append(" = ");
+        fragment.append(" = "); //$NON-NLS-1$
         fragment.append(expression);
-        fragment.appendln(";");
+        fragment.appendln(";"); //$NON-NLS-1$
         return this;
     }
 
@@ -981,14 +972,14 @@ public class JavaCodeFragmentBuilder {
      */
     public JavaCodeFragmentBuilder assignment(String variable, String value) {
         fragment.append(variable);
-        fragment.append(" = ");
+        fragment.append(" = "); //$NON-NLS-1$
         fragment.append(value);
-        fragment.appendln(";");
+        fragment.appendln(";"); //$NON-NLS-1$
         return this;
     }
 
     public JavaCodeFragmentBuilder singleLineComment(String comment) {
-        fragment.append("// ");
+        fragment.append("// "); //$NON-NLS-1$
         if (comment != null) {
             fragment.appendln(comment);
         }
@@ -996,17 +987,17 @@ public class JavaCodeFragmentBuilder {
     }
 
     public JavaCodeFragmentBuilder multiLineComment(String comment) {
-        fragment.appendln("/*");
+        fragment.appendln("/*"); //$NON-NLS-1$
         if (comment != null) {
-            fragment.appendln("   ");
+            fragment.appendln("   "); //$NON-NLS-1$
             fragment.appendln(comment);
         }
-        fragment.appendln("*/");
+        fragment.appendln("*/"); //$NON-NLS-1$
         return this;
     }
 
     /**
-     * Put the given text into a javadoc comment.
+     * Put the given text into a Javadoc comment.
      */
     public JavaCodeFragmentBuilder javaDoc(String text) {
         javaDoc(text, null);
@@ -1017,47 +1008,42 @@ public class JavaCodeFragmentBuilder {
      * Puts the given text and annotations into a java doc comment. For an annotation only the
      * annotation name and optionally separated by a space character an annotation text needs to be
      * specified. The '@' character will be automatically added.
-     * 
-     * @param text
-     * @param annotations
      */
     public JavaCodeFragmentBuilder javaDoc(String text, String[] annotations) {
         if (text == null && annotations == null) {
             return this;
         }
-        fragment.appendln("/**");
+        fragment.appendln("/**"); //$NON-NLS-1$
         if (StringUtils.isNotEmpty(text)) {
             String[] lines = StringUtils.split(text, SystemUtils.LINE_SEPARATOR);
             for (String line : lines) {
-                fragment.append(" * ");
+                fragment.append(" * "); //$NON-NLS-1$
                 fragment.appendln(line);
             }
         }
         if (annotations != null) {
             // create an empty line to separate the text (if any) from the custom tags.
             if (StringUtils.isNotEmpty(text)) {
-                fragment.appendln(" * ");
+                fragment.appendln(" * "); //$NON-NLS-1$
             }
             for (String annotation : annotations) {
-                fragment.append(" * @");
+                fragment.append(" * @"); //$NON-NLS-1$
                 fragment.appendln(annotation);
             }
         }
-        fragment.appendln(" */");
+        fragment.appendln(" */"); //$NON-NLS-1$
         return this;
     }
 
     /**
      * Writes the annotation and a line separator. For an annotation only the annotation name needs
      * to be specified. The '@' character will be automatically added.
-     * 
-     * @param annotation
      */
     public JavaCodeFragmentBuilder annotationLn(Class<?> annotation) {
         if (annotation == null) {
             return this;
         }
-        fragment.append("@");
+        fragment.append("@"); //$NON-NLS-1$
         fragment.appendClassName(annotation);
         fragment.appendln();
         return this;
@@ -1120,7 +1106,7 @@ public class JavaCodeFragmentBuilder {
         if (annotation == null) {
             return this;
         }
-        fragment.append("@");
+        fragment.append("@"); //$NON-NLS-1$
         fragment.appendClassName(annotation);
         if (params != null && params.length() > 0) {
             fragment.append('(');
@@ -1154,7 +1140,7 @@ public class JavaCodeFragmentBuilder {
         if (annotation == null) {
             return this;
         }
-        fragment.append("@");
+        fragment.append("@"); //$NON-NLS-1$
         fragment.appendClassName(annotation);
         fragment.append('(');
         fragment.append(paramName);
@@ -1186,13 +1172,13 @@ public class JavaCodeFragmentBuilder {
         if (annotation == null) {
             return this;
         }
-        fragment.append("@");
+        fragment.append("@"); //$NON-NLS-1$
         fragment.appendClassName(annotation);
         fragment.append('(');
         fragment.append(paramName);
         fragment.append('=');
         fragment.appendClassName(classValue);
-        fragment.append(".class");
+        fragment.append(".class"); //$NON-NLS-1$
         fragment.append(')');
         fragment.appendln();
         return this;
@@ -1218,13 +1204,13 @@ public class JavaCodeFragmentBuilder {
         if (annotation == null) {
             return this;
         }
-        fragment.append("@");
+        fragment.append("@"); //$NON-NLS-1$
         fragment.appendClassName(annotation);
         fragment.append('(');
         fragment.append(paramName);
         fragment.append('=');
         fragment.appendClassName(qualifiedClassName);
-        fragment.append(".class");
+        fragment.append(".class"); //$NON-NLS-1$
         fragment.append(')');
         fragment.appendln();
         return this;
@@ -1241,7 +1227,7 @@ public class JavaCodeFragmentBuilder {
         if (annotation == null) {
             return this;
         }
-        fragment.append("@");
+        fragment.append("@"); //$NON-NLS-1$
         int index = annotation.indexOf('(');
         if (index == -1) {
             fragment.appendClassName(annotation);
@@ -1256,8 +1242,6 @@ public class JavaCodeFragmentBuilder {
     /**
      * Writes the annotations. For an annotation only the annotation name needs to be specified. The
      * '@' character and a line feed will be automatically added.
-     * 
-     * @param annotations
      */
     public JavaCodeFragmentBuilder annotationLn(Class<?>[] annotations) {
         if (annotations == null) {
@@ -1272,8 +1256,6 @@ public class JavaCodeFragmentBuilder {
     /**
      * Writes the annotations. For an annotation only the annotation name needs to be specified. The
      * '@' character and a line feed will be automatically added.
-     * 
-     * @param annotations
      */
     public JavaCodeFragmentBuilder annotation(String[] annotations) {
         if (annotations == null) {
@@ -1322,7 +1304,6 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param name the name of the method
      * @param parameters the list of parameters
-     * @param finishLine
      * @return the fragment builder for method chaining
      */
     public JavaCodeFragmentBuilder methodCall(String name, List<String> parameters, boolean finishLine) {
@@ -1332,13 +1313,11 @@ public class JavaCodeFragmentBuilder {
     /**
      * append a constructor call: new <name>(parameters[0], parameters[1], ...)
      * 
-     * @param className
-     * @param parameters
      * @param finishLine append a semicolon and new line if true
      * @return the JavaCodeFragmentBuilder for Method chaining
      */
     public JavaCodeFragmentBuilder constructorCall(String className, String[] parameters, boolean finishLine) {
-        append("new ");
+        append("new "); //$NON-NLS-1$
         appendClassName(className);
         appendParameters(parameters);
         if (finishLine) {
@@ -1349,9 +1328,6 @@ public class JavaCodeFragmentBuilder {
 
     /**
      * @see #constructorCall(String, String[], boolean)
-     * @param className
-     * @param parameters
-     * @param finishLine
      * @return @see #constructorCall(String, String[], boolean)
      */
     public JavaCodeFragmentBuilder constructorCall(String className, List<String> parameters, boolean finishLine) {
@@ -1373,7 +1349,7 @@ public class JavaCodeFragmentBuilder {
         for (JavaCodeFragment aParameter : parameters) {
             append(aParameter);
             if (i < parameters.length) {
-                fragment.append(", ");
+                fragment.append(", "); //$NON-NLS-1$
             }
             i++;
         }
@@ -1385,9 +1361,6 @@ public class JavaCodeFragmentBuilder {
      * Appends the generic parameters to the builder: <className1, className2, ...>
      * <p>
      * Note: You have to make sure that generics are supported by target compiler
-     * 
-     * @param strings
-     * @return
      */
     public JavaCodeFragmentBuilder appendGenerics(String... classNames) {
         if (classNames.length > 0) {
@@ -1395,7 +1368,7 @@ public class JavaCodeFragmentBuilder {
             for (String className : classNames) {
                 append(className);
                 if (!className.equals(classNames[classNames.length - 1])) {
-                    append(", ");
+                    append(", "); //$NON-NLS-1$
                 }
             }
             append('>');
@@ -1407,9 +1380,6 @@ public class JavaCodeFragmentBuilder {
      * Appends the generic parameters to the builder: <class1, class2, ...>
      * <p>
      * Note: You have to make sure that generics are supported by target compiler
-     * 
-     * @param strings
-     * @return
      */
     public JavaCodeFragmentBuilder appendGenerics(Class<?>... classes) {
         if (classes.length > 0) {
@@ -1418,7 +1388,7 @@ public class JavaCodeFragmentBuilder {
             for (Class<?> clazz : classes) {
                 appendClassName(clazz);
                 if (i < classes.length) {
-                    append(", ");
+                    append(", "); //$NON-NLS-1$
                     i++;
                 }
             }
@@ -1444,7 +1414,7 @@ public class JavaCodeFragmentBuilder {
 
         protected void check(String[] parameterNames, Object[] parameterTypes) {
             if (parameterNames != null && parameterNames.length != parameterTypes.length) {
-                throw new RuntimeException("Named and Class array must have the same length");
+                throw new RuntimeException("Named and Class array must have the same length"); //$NON-NLS-1$
             }
         }
 

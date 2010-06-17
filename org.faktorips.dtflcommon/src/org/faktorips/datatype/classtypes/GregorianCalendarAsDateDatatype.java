@@ -25,7 +25,7 @@ public class GregorianCalendarAsDateDatatype extends GregorianCalendarDatatype {
      * Constructs a new instance with the name "GregorianCalendar".
      */
     public GregorianCalendarAsDateDatatype() {
-        this("GregorianCalendar");
+        this("GregorianCalendar"); //$NON-NLS-1$
     }
 
     /**

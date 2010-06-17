@@ -18,73 +18,46 @@ package org.faktorips.datatype;
  */
 public class PrimitiveLongDatatype extends AbstractPrimitiveDatatype implements NumericDatatype {
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
-        return "long";
+        return "long"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
-        return "long";
+        return "long"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype getWrapperType() {
         return Datatype.LONG;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
-        return "long";
+        return "long"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDefaultValue() {
-        return "0";
+        return "0"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String value) {
         return Long.valueOf(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
-            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+            throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
         }
         long result = ((Long)getValue(minuend)).longValue() - ((Long)getValue(subtrahend)).longValue();
         return Long.toString(result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
-            throw new NullPointerException("dividend and divisor both can not be null.");
+            throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
         }
         long a = ((Long)getValue(dividend)).longValue();
         long b = ((Long)getValue(divisor)).longValue();
@@ -94,4 +67,5 @@ public class PrimitiveLongDatatype extends AbstractPrimitiveDatatype implements 
     public boolean hasDecimalPlaces() {
         return false;
     }
+
 }

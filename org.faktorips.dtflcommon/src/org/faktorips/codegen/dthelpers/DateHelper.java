@@ -33,18 +33,10 @@ public class DateHelper extends AbstractDatatypeHelper {
         super();
     }
 
-    /**
-     * @param datatype
-     */
     public DateHelper(DateDatatype datatype) {
         super(datatype);
     }
 
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         if (StringUtils.isEmpty(expression)) {
@@ -52,26 +44,16 @@ public class DateHelper extends AbstractDatatypeHelper {
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(DateUtil.class);
-        fragment.append(".parseIsoDateStringToDate(");
+        fragment.append(".parseIsoDateStringToDate("); //$NON-NLS-1$
         fragment.append(expression);
         fragment.append(')');
         return fragment;
     }
 
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
-     */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
-     */
     public JavaCodeFragment newInstance(String value) {
         if (value == null) {
             return valueOfExpression(value);
@@ -81,36 +63,30 @@ public class DateHelper extends AbstractDatatypeHelper {
         return valueOfExpression(buf.toString());
     }
 
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
-     */
     @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-        return Java5ClassNames.DefaultRange_QualifiedName + "<" + Date.class.getName() + ">";
+        return Java5ClassNames.DefaultRange_QualifiedName + "<" + Date.class.getName() + ">"; //$NON-NLS-1$//$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
             boolean useTypesafeCollections) {
+
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
-        frag.append(".valueOf(");
+        frag.append(".valueOf("); //$NON-NLS-1$
         frag.append(lowerBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(upperBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(stepExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(containsNullExp);
-        frag.append(")");
+        frag.append(")"); //$NON-NLS-1$
         return frag;
     }
+
 }

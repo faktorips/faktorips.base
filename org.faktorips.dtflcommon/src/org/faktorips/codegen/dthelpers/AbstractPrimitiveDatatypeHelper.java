@@ -32,33 +32,23 @@ public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHe
         super(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment newInstanceFromExpression(String expression) {
         return valueOfExpression(expression);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment nullExpression() {
-        throw new RuntimeException("Primitive datatype does not support null.");
+        throw new RuntimeException("Primitive datatype does not support null."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection,
             JavaCodeFragment containsNullExpression) {
-        throw new UnsupportedOperationException("Call the helper of the wrapper type instead.");
+
+        throw new UnsupportedOperationException("Call the helper of the wrapper type instead."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment newEnumValueSetInstance(String[] values, boolean containsNull) {
-        throw new UnsupportedOperationException("Call the helper of the wrapper type instead.");
+        throw new UnsupportedOperationException("Call the helper of the wrapper type instead."); //$NON-NLS-1$
     }
+
 }

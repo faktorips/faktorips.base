@@ -18,8 +18,8 @@ import org.faktorips.values.NullObjectSupport;
 
 public class PaymentMode implements NullObjectSupport {
 
-    final static PaymentMode ANNUAL = new PaymentMode("annual", "Annual Payment");
-    final static PaymentMode MONTHLY = new PaymentMode("monthly", "Monthly Payment");
+    final static PaymentMode ANNUAL = new PaymentMode("annual", "Annual Payment"); //$NON-NLS-1$ //$NON-NLS-2$
+    final static PaymentMode MONTHLY = new PaymentMode("monthly", "Monthly Payment"); //$NON-NLS-1$ //$NON-NLS-2$
     final static PaymentMode NULL = new PaymentModeNull();
 
     private String id;
@@ -48,7 +48,7 @@ public class PaymentMode implements NullObjectSupport {
         if (MONTHLY.id.equals(id)) {
             return MONTHLY;
         }
-        throw new IllegalArgumentException("The id " + id + " does not identify a PaymentMode");
+        throw new IllegalArgumentException("The id " + id + " does not identify a PaymentMode"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     PaymentMode(String id, String name) {
@@ -77,9 +77,6 @@ public class PaymentMode implements NullObjectSupport {
         return this == PaymentMode.NULL;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNotNull() {
         return !isNotNull();
     }
@@ -87,7 +84,7 @@ public class PaymentMode implements NullObjectSupport {
     static class PaymentModeNull extends PaymentMode implements NullObject {
 
         PaymentModeNull() {
-            super("null", "No Payment");
+            super("null", "No Payment"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
     }

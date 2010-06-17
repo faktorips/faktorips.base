@@ -42,11 +42,8 @@ public class ArrayOfValueDatatypeHelper extends AbstractDatatypeHelper {
         return nullExpression();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     /**
@@ -57,4 +54,5 @@ public class ArrayOfValueDatatypeHelper extends AbstractDatatypeHelper {
     public JavaCodeFragment newInstance(String value) {
         return nullExpression();
     }
+
 }

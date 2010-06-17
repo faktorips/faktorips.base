@@ -16,27 +16,15 @@ package org.faktorips.codegen.conversion;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 
-/**
- *
- */
 public class PrimitiveLongToLongCg extends AbstractSingleConversionCg {
 
-    /**
-     * @param from
-     * @param to
-     */
     public PrimitiveLongToLongCg() {
         super(Datatype.PRIMITIVE_LONG, Datatype.LONG);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.codegen.SingleConversionCg#getConversionCode()
-     */
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ");
+        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Long.class);
         fragment.append('(');
         fragment.append(fromValue);

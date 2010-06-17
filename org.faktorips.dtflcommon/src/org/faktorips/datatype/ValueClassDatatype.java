@@ -36,65 +36,38 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
         this.name = name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isMutable() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final boolean isImmutable() {
         return !isMutable();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isValueDatatype() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDefaultValue() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype getWrapperType() {
         return null;
     }
@@ -103,9 +76,6 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
         return clazz;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
         return clazz.getName();
     }
@@ -123,9 +93,6 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
         return value.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNull(String valueString) {
         Object value;
         try {
@@ -143,18 +110,15 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
         return ((NullObjectSupport)value).isNull();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isParsable(String value) {
         try {
-            if ("".equals(value)) {
-                // by default the empty space is not parsable. This has to be handled explicitly as
-                // most value classes assume that the value of the string "" is null. This is
-                // however
-                // more a convenience. In the IDE context it is bothering if null can be represented
-                // by
-                // null or the string "".
+            if (value.length() == 0) {
+                /*
+                 * by default the empty space is not parsable. This has to be handled explicitly as
+                 * most value classes assume that the value of the string "" is null. This is
+                 * however more a convenience. In the IDE context it is bothering if null can be
+                 * represented by null or the string "".
+                 */
                 return false;
             }
             if (isNull(value)) {
@@ -168,28 +132,19 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasNullObject() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean areValuesEqual(String valueA, String valueB) {
         return ObjectUtils.equals(getValue(valueA), getValue(valueB));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         if (!supportsCompare()) {
-            throw new UnsupportedOperationException("Datatype " + getQualifiedName()
-                    + " does not support comparison of values");
+            throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
+                    + " does not support comparison of values"); //$NON-NLS-1$
         }
         Comparable valA = (Comparable)getValue(valueA);
         if (valA == null) {
@@ -219,4 +174,5 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
      */
     @Deprecated
     public abstract Object getValue(String value);
+
 }

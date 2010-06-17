@@ -26,11 +26,6 @@ import org.faktorips.codegen.ImportDeclaration;
  */
 public class ImportDeclarationTest extends TestCase {
 
-    /**
-     * Constructor for ImportDeclarationTest.
-     * 
-     * @param name
-     */
     public ImportDeclarationTest(String name) {
         super(name);
     }
@@ -42,18 +37,18 @@ public class ImportDeclarationTest extends TestCase {
 
     public void testImportDeclaration_ImportDeclaration_PackageName() {
         ImportDeclaration id = new ImportDeclaration();
-        id.add("moredummy.DummyClass");
-        id.add("dummy.*");
+        id.add("moredummy.DummyClass"); //$NON-NLS-1$
+        id.add("dummy.*"); //$NON-NLS-1$
 
-        assertEquals(2, new ImportDeclaration(id, "differentPackage").getNoOfImports());
+        assertEquals(2, new ImportDeclaration(id, "differentPackage").getNoOfImports()); //$NON-NLS-1$
 
-        ImportDeclaration newId = new ImportDeclaration(id, "dummy");
+        ImportDeclaration newId = new ImportDeclaration(id, "dummy"); //$NON-NLS-1$
         assertEquals(1, newId.getNoOfImports());
-        assertEquals("moredummy.DummyClass", newId.iterator().next());
+        assertEquals("moredummy.DummyClass", newId.iterator().next()); //$NON-NLS-1$
 
-        newId = new ImportDeclaration(id, "moredummy");
+        newId = new ImportDeclaration(id, "moredummy"); //$NON-NLS-1$
         assertEquals(1, newId.getNoOfImports());
-        assertEquals("dummy.*", newId.iterator().next());
+        assertEquals("dummy.*", newId.iterator().next()); //$NON-NLS-1$
     }
 
     public void testAdd() {
@@ -61,42 +56,42 @@ public class ImportDeclarationTest extends TestCase {
         id.iterator();
         id.getNoOfImports();
 
-        id.add("java.util.List");
+        id.add("java.util.List"); //$NON-NLS-1$
         assertEquals(1, id.getNoOfImports());
 
-        id.add("java.util.ArrayList");
+        id.add("java.util.ArrayList"); //$NON-NLS-1$
         assertEquals(2, id.getNoOfImports());
 
-        id.add("org.faktorips.*");
+        id.add("org.faktorips.*"); //$NON-NLS-1$
         assertEquals(3, id.getNoOfImports());
 
-        id.add("java.util.*");
+        id.add("java.util.*"); //$NON-NLS-1$
         assertEquals(2, id.getNoOfImports());
 
-        id.add("java.util.Map");
+        id.add("java.util.Map"); //$NON-NLS-1$
         assertEquals(2, id.getNoOfImports());
-        id.add("java.lang.Integer");
+        id.add("java.lang.Integer"); //$NON-NLS-1$
         assertEquals(2, id.getNoOfImports());
-        id.add("java.lang.*");
+        id.add("java.lang.*"); //$NON-NLS-1$
         assertEquals(2, id.getNoOfImports());
-        id.add("boolean");
-        id.add("long");
-        id.add("int");
-        id.add("double");
+        id.add("boolean"); //$NON-NLS-1$
+        id.add("long"); //$NON-NLS-1$
+        id.add("int"); //$NON-NLS-1$
+        id.add("double"); //$NON-NLS-1$
         assertEquals(2, id.getNoOfImports());
 
         Iterator it = id.iterator();
-        assertEquals("org.faktorips.*", it.next());
-        assertEquals("java.util.*", it.next());
+        assertEquals("org.faktorips.*", it.next()); //$NON-NLS-1$
+        assertEquals("java.util.*", it.next()); //$NON-NLS-1$
         assertFalse(it.hasNext());
     }
 
     public void testToString() {
         ImportDeclaration id = new ImportDeclaration();
-        id.add("java.util.List");
-        id.add("java.util.Iterator");
+        id.add("java.util.List"); //$NON-NLS-1$
+        id.add("java.util.Iterator"); //$NON-NLS-1$
 
-        String expected = "import java.util.List;" + SystemUtils.LINE_SEPARATOR + "import java.util.Iterator;"
+        String expected = "import java.util.List;" + SystemUtils.LINE_SEPARATOR + "import java.util.Iterator;" //$NON-NLS-1$ //$NON-NLS-2$
                 + SystemUtils.LINE_SEPARATOR;
 
         assertEquals(expected, id.toString());
@@ -104,42 +99,42 @@ public class ImportDeclarationTest extends TestCase {
 
     public void testEquals() {
         ImportDeclaration id = new ImportDeclaration();
-        id.add("java.util.List");
-        id.add("java.io.*");
+        id.add("java.util.List"); //$NON-NLS-1$
+        id.add("java.io.*"); //$NON-NLS-1$
 
         ImportDeclaration id2 = new ImportDeclaration();
-        id2.add("java.util.List");
-        id2.add("java.io.*");
+        id2.add("java.util.List"); //$NON-NLS-1$
+        id2.add("java.io.*"); //$NON-NLS-1$
         assertEquals(id, id2);
 
         id2 = new ImportDeclaration();
-        id2.add("java.util.List");
+        id2.add("java.util.List"); //$NON-NLS-1$
         assertFalse(id.equals(id2));
 
         id2 = new ImportDeclaration();
-        id2.add("java.io.*");
+        id2.add("java.io.*"); //$NON-NLS-1$
         assertFalse(id.equals(id2));
     }
 
     public void testGetUncoveredImports() {
         ImportDeclaration decl = new ImportDeclaration();
-        decl.add("java.util.List");
-        decl.add("java.io.*");
+        decl.add("java.util.List"); //$NON-NLS-1$
+        decl.add("java.io.*"); //$NON-NLS-1$
 
         ImportDeclaration toTest = new ImportDeclaration();
-        toTest.add("java.io.File");
+        toTest.add("java.io.File"); //$NON-NLS-1$
         ImportDeclaration uncovered = decl.getUncoveredImports(toTest);
         assertEquals(0, uncovered.getNoOfImports());
 
-        toTest.add("java.util.List");
+        toTest.add("java.util.List"); //$NON-NLS-1$
         uncovered = decl.getUncoveredImports(toTest);
         assertEquals(0, uncovered.getNoOfImports());
 
-        toTest.add("java.math.Math");
+        toTest.add("java.math.Math"); //$NON-NLS-1$
         uncovered = decl.getUncoveredImports(toTest);
         assertEquals(1, uncovered.getNoOfImports());
 
-        toTest.add("java.util.ArrayList");
+        toTest.add("java.util.ArrayList"); //$NON-NLS-1$
         uncovered = decl.getUncoveredImports(toTest);
         assertEquals(2, uncovered.getNoOfImports());
 
@@ -148,6 +143,6 @@ public class ImportDeclarationTest extends TestCase {
 
         uncovered = decl.getUncoveredImports(null);
         assertEquals(0, uncovered.getNoOfImports());
-
     }
+
 }

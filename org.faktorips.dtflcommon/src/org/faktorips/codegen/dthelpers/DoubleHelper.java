@@ -31,43 +31,25 @@ public class DoubleHelper extends AbstractDatatypeHelper {
         super();
     }
 
-    /**
-     * @param datatype
-     */
     public DoubleHelper(DoubleDatatype datatype) {
         super(datatype);
     }
 
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         return newInstance(expression);
     }
 
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
-     */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
-    /**
-     * Overridden Method.
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
-     */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ");
+        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Double.class);
         fragment.append('(');
         fragment.append(value);
@@ -75,32 +57,27 @@ public class DoubleHelper extends AbstractDatatypeHelper {
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
         return DoubleRange.class.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
             boolean useTypesafeCollections) {
+
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
-        frag.append(".valueOf(");
+        frag.append(".valueOf("); //$NON-NLS-1$
         frag.append(lowerBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(upperBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(containsNullExp);
-        frag.append(")");
+        frag.append(")"); //$NON-NLS-1$
         return frag;
     }
 

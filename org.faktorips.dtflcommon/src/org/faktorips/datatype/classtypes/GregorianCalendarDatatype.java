@@ -20,9 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueClassDatatype;
 import org.faktorips.values.DateUtil;
 
-/**
- *
- */
 public class GregorianCalendarDatatype extends ValueClassDatatype {
 
     private boolean timeInfoIncluded;
@@ -31,70 +28,55 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
         super(GregorianCalendar.class, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isMutable() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String value) {
         if (timeInfoIncluded) {
-            throw new RuntimeException("Not implemented yet");
+            throw new RuntimeException("Not implemented yet"); //$NON-NLS-1$
         }
         if (StringUtils.isEmpty(value)) {
             return null;
         }
         if (!DateUtil.isIsoDate(value)) {
-            throw new IllegalArgumentException("Date value must have the format YYYY-MM-DD");
+            throw new IllegalArgumentException("Date value must have the format YYYY-MM-DD"); //$NON-NLS-1$
         }
         try {
-            StringTokenizer tokenizer = new StringTokenizer(value, "-");
+            StringTokenizer tokenizer = new StringTokenizer(value, "-"); //$NON-NLS-1$
             int year = Integer.parseInt(tokenizer.nextToken());
             int month = Integer.parseInt(tokenizer.nextToken());
             int date = Integer.parseInt(tokenizer.nextToken());
             return new GregorianCalendar(year, month - 1, date);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Can't parse " + value + " to a date!");
+            throw new IllegalArgumentException("Can't parse " + value + " to a date!"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isParsable(String value) {
         return StringUtils.isEmpty(value) || DateUtil.isIsoDate(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String valueToString(Object value) {
         if (timeInfoIncluded) {
-            throw new RuntimeException("Not implemented yet");
+            throw new RuntimeException("Not implemented yet"); //$NON-NLS-1$
         }
         GregorianCalendar calendar = (GregorianCalendar)value;
         if (calendar == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         int month = calendar.get(GregorianCalendar.MONTH) + 1;
         int date = calendar.get(GregorianCalendar.DATE);
-        return calendar.get(GregorianCalendar.YEAR) + "-" + (month < 10 ? "0" + month : "" + month) + "-"
-                + (date < 10 ? "0" + date : "" + date);
-
+        return calendar.get(GregorianCalendar.YEAR) + "-" + (month < 10 ? "0" + month : "" + month) + "-" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return true;
     }
+
 }

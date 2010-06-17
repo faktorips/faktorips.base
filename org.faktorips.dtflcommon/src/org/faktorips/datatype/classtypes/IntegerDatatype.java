@@ -32,9 +32,6 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
         super(Integer.class, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String s) {
         if (StringUtils.isEmpty(s)) {
@@ -43,41 +40,32 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
         return Integer.valueOf(s);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
-            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+            throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
         }
 
         int result = ((Integer)getValue(minuend)).intValue() - ((Integer)getValue(subtrahend)).intValue();
         return Integer.toString(result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
-            throw new NullPointerException("dividend and divisor both can not be null.");
+            throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
         }
         Integer intA = (Integer)getValue(dividend);
         Integer intB = (Integer)getValue(divisor);
 
         if (intA == null) {
-            throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to an Integer");
+            throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to an Integer"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (intB == null) {
-            throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to an Integer");
+            throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to an Integer"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         int a = intA.intValue();
@@ -89,4 +77,5 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
     public boolean hasDecimalPlaces() {
         return false;
     }
+
 }

@@ -40,15 +40,15 @@ public class ImportDeclaration {
         if (importSpec == null) {
             return false;
         }
-        return "*".equals(importSpec.substring(importSpec.length() - 1));
+        return "*".equals(importSpec.substring(importSpec.length() - 1)); //$NON-NLS-1$
     }
 
-    private final static String JAVA_LANG_ASTERIX = "java.lang.*";
+    private final static String JAVA_LANG_ASTERIX = "java.lang.*"; //$NON-NLS-1$
 
-    // List that holds the class imports
+    /** List that holds the class imports. */
     private List<String> classes;
 
-    // Set that holds the package imports (e.g. java.util.*)
+    /** Set that holds the package imports (e.g. java.util.*). */
     private List<String> packages;
 
     /**
@@ -73,7 +73,7 @@ public class ImportDeclaration {
      */
     public ImportDeclaration(ImportDeclaration decl, String packageName) {
         this();
-        String packageImport = packageName + ".*";
+        String packageImport = packageName + ".*"; //$NON-NLS-1$
         ImportDeclaration temp = new ImportDeclaration(decl);
         temp.add(packageImport);
         for (Iterator<String> it = temp.iterator(); it.hasNext();) {
@@ -156,7 +156,7 @@ public class ImportDeclaration {
     }
 
     /**
-     * Returns true if the import specification is covered by thisimport declaration.
+     * Returns true if the import specification is covered by this import declaration.
      * 
      * @throws NullPointerException if importSpec is null.
      */
@@ -166,7 +166,7 @@ public class ImportDeclaration {
         }
         if (importSpec.equals(Boolean.TYPE.getName()) || importSpec.equals(Integer.TYPE.getName())
                 || importSpec.equals(Double.TYPE.getName()) || importSpec.equals(Long.TYPE.getName())
-                || importSpec.equals("void")) {
+                || importSpec.equals("void")) { //$NON-NLS-1$
             return true; // this is a primitive type
         }
         if (isPackageImport(importSpec)) {
@@ -178,7 +178,7 @@ public class ImportDeclaration {
         if (classes.contains(importSpec)) {
             return true;
         }
-        return isCovered(StringUtil.getPackageName(importSpec) + ".*");
+        return isCovered(StringUtil.getPackageName(importSpec) + ".*"); //$NON-NLS-1$
     }
 
     /**
@@ -186,7 +186,7 @@ public class ImportDeclaration {
      * specification.
      */
     private boolean classImportCoveredByPackageImport(String classImport, String packageImport) {
-        return packageImport.equals(StringUtil.getPackageName(classImport) + ".*");
+        return packageImport.equals(StringUtil.getPackageName(classImport) + ".*"); //$NON-NLS-1$
     }
 
     /**
@@ -225,9 +225,6 @@ public class ImportDeclaration {
         return uncovered;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -237,9 +234,6 @@ public class ImportDeclaration {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -275,11 +269,12 @@ public class ImportDeclaration {
         StringBuffer sb = new StringBuffer();
         String separator = SystemUtils.LINE_SEPARATOR;
         for (Iterator<String> it = iterator(); it.hasNext();) {
-            sb.append(("import "));
+            sb.append(("import ")); //$NON-NLS-1$
             sb.append(it.next());
-            sb.append(";");
+            sb.append(";"); //$NON-NLS-1$
             sb.append(separator);
         }
         return sb.toString();
     }
+
 }

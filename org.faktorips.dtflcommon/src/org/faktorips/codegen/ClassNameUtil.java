@@ -25,7 +25,7 @@ public class ClassNameUtil {
      * Takes a name like a class name and removes the package information from the beginning.
      */
     public final static String unqualifiedName(String qualifiedName) {
-        int index = qualifiedName.lastIndexOf(".");
+        int index = qualifiedName.lastIndexOf("."); //$NON-NLS-1$
         if (index == -1) {
             return qualifiedName;
         }
@@ -40,7 +40,7 @@ public class ClassNameUtil {
      */
     public final static String qualifiedName(String packageName, String unqualifiedName) {
         ArgumentCheck.notNull(unqualifiedName);
-        if (packageName == null || packageName.equals("")) {
+        if (packageName == null || packageName.length() == 0) {
             return unqualifiedName;
         }
         return packageName + '.' + unqualifiedName;
@@ -53,14 +53,15 @@ public class ClassNameUtil {
      * @throws NullPointerException if the qualifiedClassName is null.
      */
     public final static String getPackageName(String qualifiedClassName) {
-        int index = qualifiedClassName.lastIndexOf(".");
+        int index = qualifiedClassName.lastIndexOf("."); //$NON-NLS-1$
         if (index == -1) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return qualifiedClassName.substring(0, index);
     }
 
     private ClassNameUtil() {
+        // Utility class not to be instantiated.
     }
 
 }

@@ -25,12 +25,9 @@ public class GenericEnumDatatypeTest extends TestCase {
         datatype = new DefaultGenericEnumDatatype(PaymentMode.class);
     }
 
-    /*
-     * Test method for 'org.faktorips.datatype.GenericEnumDatatype.getAllValueIds()'
-     */
     public void testGetAllValueIds() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes");
-        datatype.setToStringMethodName("getId");
+        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setNullObjectDefined(false);
         String[] valueIds = datatype.getAllValueIds(false);
         assertEquals(2, valueIds.length);
@@ -53,37 +50,35 @@ public class GenericEnumDatatypeTest extends TestCase {
         assertEquals(null, valueIds[2]);
     }
 
-    /*
-     * Test method for 'org.faktorips.datatype.GenericEnumDatatype.getGetAllValuesMethod()'
-     */
     public void testGetGetAllValuesMethod() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes");
+        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         assertNotNull(datatype.getGetAllValuesMethod());
-        datatype.setGetAllValuesMethodName("unknownMethod");
+        datatype.setGetAllValuesMethodName("unknownMethod"); //$NON-NLS-1$
         try {
             datatype.getGetAllValuesMethod();
             fail();
         } catch (RuntimeException e) {
+            // Expected exception
         }
     }
 
     public void testGetValueName() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes");
-        datatype.setToStringMethodName("getId");
-        datatype.setGetNameMethodName("getName");
-        datatype.setValueOfMethodName("getPaymentMode");
+        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
+        datatype.setGetNameMethodName("getName"); //$NON-NLS-1$
+        datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setIsSupportingNames(true);
         datatype.setCacheData(false);
-        assertEquals("Annual Payment", datatype.getValueName(PaymentMode.ANNUAL.getId()));
+        assertEquals("Annual Payment", datatype.getValueName(PaymentMode.ANNUAL.getId())); //$NON-NLS-1$
 
         datatype.setCacheData(true);
-        assertEquals("Annual Payment", datatype.getValueName(PaymentMode.ANNUAL.getId()));
+        assertEquals("Annual Payment", datatype.getValueName(PaymentMode.ANNUAL.getId())); //$NON-NLS-1$
     }
 
     public void testGetValue() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes");
-        datatype.setToStringMethodName("getId");
-        datatype.setValueOfMethodName("getPaymentMode");
+        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
+        datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setCacheData(false);
         assertEquals(PaymentMode.ANNUAL, datatype.getValue(PaymentMode.ANNUAL.getId()));
 
@@ -92,21 +87,21 @@ public class GenericEnumDatatypeTest extends TestCase {
     }
 
     public void testIsParsable() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes");
-        datatype.setToStringMethodName("getId");
-        datatype.setValueOfMethodName("getPaymentMode");
+        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
+        datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setCacheData(false);
         assertTrue(datatype.isParsable(PaymentMode.ANNUAL.getId()));
-        assertFalse(datatype.isParsable("unknownId"));
+        assertFalse(datatype.isParsable("unknownId")); //$NON-NLS-1$
 
         datatype.setCacheData(true);
         assertTrue(datatype.isParsable(PaymentMode.ANNUAL.getId()));
-        assertFalse(datatype.isParsable("unknownId"));
+        assertFalse(datatype.isParsable("unknownId")); //$NON-NLS-1$
     }
 
     public void testGetValueIdsFromCache() throws Exception {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes");
-        datatype.setToStringMethodName("getId");
+        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
 
         String[] ids = datatype.getAllValueIdsFromCache();
         assertNull(ids);
@@ -119,24 +114,24 @@ public class GenericEnumDatatypeTest extends TestCase {
 
         datatype.setCacheData(false);
         ids = datatype.getAllValueIdsFromCache();
-        assertNull(ids); // should have cleared the cachde
+        assertNull(ids); // should have cleared the cached
     }
 
     public void testGetValueNamesFromCache() throws Exception {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes");
-        datatype.setValueOfMethodName("getPaymentMode");
-        datatype.setToStringMethodName("getId");
+        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
 
         datatype.setIsSupportingNames(false);
         try {
             datatype.getAllValueNamesFromCache();
             fail();
         } catch (RuntimeException e) {
-            // datatype doesn not support names
+            // data type does not support names
         }
 
         datatype.setIsSupportingNames(true);
-        datatype.setGetNameMethodName("getName");
+        datatype.setGetNameMethodName("getName"); //$NON-NLS-1$
         String[] names = datatype.getAllValueNamesFromCache();
         assertNull(names);
 
@@ -148,7 +143,7 @@ public class GenericEnumDatatypeTest extends TestCase {
 
         datatype.setCacheData(false);
         names = datatype.getAllValueNamesFromCache();
-        assertNull(names); // should have cleared the cachde
+        assertNull(names); // should have cleared the cached
     }
 
 }

@@ -30,26 +30,20 @@ public class BooleanDatatype extends ValueClassDatatype {
         super(Boolean.class, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String s) {
         if (s == null) {
             return null;
         }
-        if (s.equalsIgnoreCase("false")) {
+        if (s.equalsIgnoreCase("false")) { //$NON-NLS-1$
             return Boolean.FALSE;
         }
-        if (s.equalsIgnoreCase("true")) {
+        if (s.equalsIgnoreCase("true")) { //$NON-NLS-1$
             return Boolean.TRUE;
         }
-        throw new IllegalArgumentException("Can't parse " + s + " to Boolean!");
+        throw new IllegalArgumentException("Can't parse " + s + " to Boolean!"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return false;
     }

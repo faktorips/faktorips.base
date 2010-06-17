@@ -39,9 +39,6 @@ public class IntegerHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
@@ -54,22 +51,19 @@ public class IntegerHelper extends AbstractDatatypeHelper {
         // new Integer(08) won't compile (try it out!)
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Integer.class);
-        fragment.append(".valueOf(");
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.appendQuoted(value);
         fragment.append(')');
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         if (StringUtils.isEmpty(expression)) {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ");
+        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Integer.class);
         fragment.append('(');
         fragment.append(expression);
@@ -77,41 +71,33 @@ public class IntegerHelper extends AbstractDatatypeHelper {
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
         return IntegerRange.class.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
             boolean useTypesafeCollections) {
+
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
-        frag.append(".valueOf(");
+        frag.append(".valueOf("); //$NON-NLS-1$
         frag.append(lowerBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(upperBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(stepExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(containsNullExp);
-        frag.append(")");
+        frag.append(")"); //$NON-NLS-1$
         return frag;
     }
 

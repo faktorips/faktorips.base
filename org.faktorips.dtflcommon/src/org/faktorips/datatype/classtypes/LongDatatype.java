@@ -32,9 +32,6 @@ public class LongDatatype extends ValueClassDatatype implements NumericDatatype 
         super(Long.class, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String s) {
         if (StringUtils.isEmpty(s)) {
@@ -43,41 +40,32 @@ public class LongDatatype extends ValueClassDatatype implements NumericDatatype 
         return Long.valueOf(s);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
-            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+            throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
         }
 
         long result = ((Long)getValue(minuend)).longValue() - ((Long)getValue(subtrahend)).longValue();
         return Long.toString(result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
-            throw new NullPointerException("dividend and divisor both can not be null.");
+            throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
         }
         Long longA = (Long)getValue(dividend);
         Long longB = (Long)getValue(divisor);
 
         if (longA == null) {
-            throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to a Long");
+            throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to a Long"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (longB == null) {
-            throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to a Long");
+            throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to a Long"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         long a = longA.longValue();
@@ -89,4 +77,5 @@ public class LongDatatype extends ValueClassDatatype implements NumericDatatype 
     public boolean hasDecimalPlaces() {
         return false;
     }
+
 }

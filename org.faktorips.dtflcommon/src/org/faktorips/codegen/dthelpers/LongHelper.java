@@ -39,15 +39,12 @@ public class LongHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ");
+        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Long.class);
         fragment.append('(');
         fragment.append(value);
@@ -55,49 +52,39 @@ public class LongHelper extends AbstractDatatypeHelper {
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         return newInstance(expression);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
         return LongRange.class.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
             boolean useTypesafeCollections) {
+
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
-        frag.append(".valueOf(");
+        frag.append(".valueOf("); //$NON-NLS-1$
         frag.append(lowerBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(upperBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(stepExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(containsNullExp);
-        frag.append(")");
+        frag.append(")"); //$NON-NLS-1$
         return frag;
     }
+
 }

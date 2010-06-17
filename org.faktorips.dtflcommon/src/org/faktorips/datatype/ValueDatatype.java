@@ -77,7 +77,7 @@ public interface ValueDatatype extends Datatype {
      * @return A value less than 0 if valueA is less than valueB, 0 if valueA is equal to valueB and
      *         a value greater than 0 if valueA is greater than valueB.
      * @throws UnsupportedOperationException if compare is not supported by this datatype.
-     * @see supportsCompare()
+     * @see #supportsCompare()
      */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException;
 

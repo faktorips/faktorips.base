@@ -30,7 +30,7 @@ import org.faktorips.util.StringUtil;
  */
 public class JavaCodeFragment {
 
-    private final static String INDENT_HELPER = "                                                         ";
+    private final static String INDENT_HELPER = "                                                         "; //$NON-NLS-1$
 
     // true if lines after a call to appendOpenBracket() are indented or not
     // the default is false, as Faktor-IPS formats the generated sourcecode via the Eclipse
@@ -131,7 +131,7 @@ public class JavaCodeFragment {
      */
     public void decIndentationLevel() {
         if (indentLevel == 0) {
-            throw new RuntimeException("IndentationLevel can't be lesser than 0.");
+            throw new RuntimeException("Indentation level can't be lesser than 0."); //$NON-NLS-1$
         }
         indentLevel--;
     }
@@ -195,7 +195,7 @@ public class JavaCodeFragment {
      * Transform the given int into a String and appends it to the sourcecode.
      */
     public JavaCodeFragment append(int i) {
-        append("" + i);
+        append("" + i); //$NON-NLS-1$
         return this;
     }
 
@@ -203,7 +203,7 @@ public class JavaCodeFragment {
      * Transform the given boolean into a String and appends it to the sourcecode.
      */
     public JavaCodeFragment append(boolean b) {
-        append("" + b);
+        append("" + b); //$NON-NLS-1$
         return this;
     }
 
@@ -216,7 +216,7 @@ public class JavaCodeFragment {
     public JavaCodeFragment appendClassName(Class<?> clazz) {
         if (clazz.isArray()) {
             appendClassName(clazz.getComponentType());
-            append("[]");
+            append("[]"); //$NON-NLS-1$
             return this;
         }
         appendClassName(clazz.getName());
@@ -241,7 +241,7 @@ public class JavaCodeFragment {
      * @throws NullPointerException if clazz is null.
      */
     public JavaCodeFragment appendInnerClassName(String qualifiedClassName) {
-        appendClassName(qualifiedClassName.replaceAll("\\$", "\\."));
+        appendClassName(qualifiedClassName.replaceAll("\\$", "\\.")); //$NON-NLS-1$ //$NON-NLS-2$
         return this;
     }
 
@@ -257,18 +257,18 @@ public class JavaCodeFragment {
             appendClassName(qualifiedClassName.substring(0, qualifiedClassName.indexOf('<')));
             append('<');
             String[] classNames = qualifiedClassName.substring(qualifiedClassName.indexOf('<') + 1,
-                    qualifiedClassName.lastIndexOf('>')).split(",");
+                    qualifiedClassName.lastIndexOf('>')).split(","); //$NON-NLS-1$
             for (int i = 0; i < classNames.length; i++) {
                 String className = classNames[i].trim();
-                if (className.indexOf("extends") > className.indexOf('>')) {
-                    String prefix = className.substring(0, className.indexOf("extends")).trim();
+                if (className.indexOf("extends") > className.indexOf('>')) { //$NON-NLS-1$
+                    String prefix = className.substring(0, className.indexOf("extends")).trim(); //$NON-NLS-1$
                     append(prefix);
-                    append(" extends ");
-                    className = className.substring(className.indexOf("extends") + 8).trim();
+                    append(" extends "); //$NON-NLS-1$
+                    className = className.substring(className.indexOf("extends") + 8).trim(); //$NON-NLS-1$
                 }
                 appendClassName(className);
                 if (i < classNames.length - 1) {
-                    append(", ");
+                    append(", "); //$NON-NLS-1$
                 }
             }
             append('>');
@@ -288,7 +288,7 @@ public class JavaCodeFragment {
         if (qualifiedClassName.indexOf('.') < 0) {
             return this;
         }
-        int bracketIndex = qualifiedClassName.indexOf("[]");
+        int bracketIndex = qualifiedClassName.indexOf("[]"); //$NON-NLS-1$
         if (bracketIndex > -1) {
             importDecl.add(qualifiedClassName.substring(0, bracketIndex));
         } else {
@@ -367,27 +367,53 @@ public class JavaCodeFragment {
                     }
                 }
                 if (sourcecode.endsWith(SystemUtils.LINE_SEPARATOR)) {
-                    appendln("");
+                    appendln(""); //$NON-NLS-1$
                 }
             }
         }
         return this;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((importDecl == null) ? 0 : importDecl.hashCode());
+        result = prime * result + ((sourcecode == null) ? 0 : sourcecode.hashCode());
+        return result;
+    }
+
     /**
      * Two fragments are equal if they contain the same sourcecode and have the same import
      * declaration.
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof JavaCodeFragment)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        JavaCodeFragment other = (JavaCodeFragment)o;
-        return importDecl.equals(other.importDecl) && sourcecode.length() == other.sourcecode.length()
-                && sourcecode.toString().equals(other.sourcecode.toString());
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        JavaCodeFragment other = (JavaCodeFragment)obj;
+        if (importDecl == null) {
+            if (other.importDecl != null) {
+                return false;
+            }
+        } else if (!importDecl.equals(other.importDecl)) {
+            return false;
+        }
+        if (sourcecode == null) {
+            if (other.sourcecode != null) {
+                return false;
+            }
+        } else if (!sourcecode.toString().equals(other.sourcecode.toString())) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -409,7 +435,7 @@ public class JavaCodeFragment {
             return (sourcecode.charAt(length - 2) == SystemUtils.LINE_SEPARATOR.charAt(0))
                     && (sourcecode.charAt(length - 1) == SystemUtils.LINE_SEPARATOR.charAt(1));
         }
-        throw new RuntimeException("Unknown line separator [" + SystemUtils.LINE_SEPARATOR + "]");
+        throw new RuntimeException("Unknown line separator [" + SystemUtils.LINE_SEPARATOR + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

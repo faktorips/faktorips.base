@@ -16,32 +16,20 @@ package org.faktorips.codegen.conversion;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 
-/**
- *
- */
 public class DecimalToIntegerCg extends AbstractSingleConversionCg {
 
-    /**
-     * @param from
-     * @param to
-     */
     public DecimalToIntegerCg() {
         super(Datatype.DECIMAL, Datatype.INTEGER);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.codegen.SingleConversionCg#getConversionCode()
-     */
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // new Integer(Decimal.valueOf("").intValue());
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ");
+        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Integer.class);
-        fragment.append("(");
+        fragment.append("("); //$NON-NLS-1$
         fragment.append(fromValue);
-        fragment.append(".intValue())");
+        fragment.append(".intValue())"); //$NON-NLS-1$
         return fragment;
     }
 

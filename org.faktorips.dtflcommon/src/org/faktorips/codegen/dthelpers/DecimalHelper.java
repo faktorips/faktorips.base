@@ -40,34 +40,23 @@ public class DecimalHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
-     */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Decimal.class);
-        fragment.append(".valueOf(");
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.appendQuoted(value);
         fragment.append(')');
         return fragment;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Decimal.class);
-        fragment.append(".valueOf(");
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(expression);
         fragment.append(')');
         return fragment;
@@ -82,48 +71,37 @@ public class DecimalHelper extends AbstractDatatypeHelper {
         return valueOfExpression(expression);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
-     */
     public JavaCodeFragment nullExpression() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Decimal.class);
-        fragment.append(".NULL");
+        fragment.append(".NULL"); //$NON-NLS-1$
         return fragment;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
-     */
     @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
         return DecimalRange.class.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
             boolean useTypesafeCollections) {
+
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
-        frag.append(".valueOf(");
+        frag.append(".valueOf("); //$NON-NLS-1$
         frag.append(lowerBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(upperBoundExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(stepExp);
-        frag.append(", ");
+        frag.append(", "); //$NON-NLS-1$
         frag.append(containsNullExp);
-        frag.append(")");
+        frag.append(")"); //$NON-NLS-1$
         return frag;
     }
+
 }

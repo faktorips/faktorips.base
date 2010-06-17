@@ -32,11 +32,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
  * @author Jan Ortmann
  */
 public class JavaCodeFragmentTest extends TestCase {
-    /**
-     * Constructor for JavaCodeFragmentTest.
-     * 
-     * @param name
-     */
+
     public JavaCodeFragmentTest(String name) {
         super(name);
     }
@@ -53,14 +49,14 @@ public class JavaCodeFragmentTest extends TestCase {
 
     public void testJavaCodeFragment() {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        assertEquals("", fragment.getSourcecode());
+        assertEquals("", fragment.getSourcecode()); //$NON-NLS-1$
         assertEquals(new ImportDeclaration(), fragment.getImportDeclaration());
     }
 
     public void testBol() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         assertTrue(fragment.bol());
-        fragment.append("blabla");
+        fragment.append("blabla"); //$NON-NLS-1$
         assertFalse(fragment.bol());
         fragment.appendln();
         assertTrue(fragment.bol());
@@ -68,42 +64,42 @@ public class JavaCodeFragmentTest extends TestCase {
 
     public void testAppend_String() {
         JavaCodeFragment fragment = new JavaCodeFragment(true);
-        fragment.append("blabla");
-        assertEquals("blabla", fragment.getSourcecode());
+        fragment.append("blabla"); //$NON-NLS-1$
+        assertEquals("blabla", fragment.getSourcecode()); //$NON-NLS-1$
 
         fragment = new JavaCodeFragment(true);
         fragment.incIndentationLevel();
-        fragment.append("blabla");
-        assertEquals("    blabla", fragment.getSourcecode());
+        fragment.append("blabla"); //$NON-NLS-1$
+        assertEquals("    blabla", fragment.getSourcecode()); //$NON-NLS-1$
 
         fragment = new JavaCodeFragment(true);
         fragment.incIndentationLevel();
-        fragment.append("bla");
-        fragment.append("bla");
-        assertEquals("    blabla", fragment.getSourcecode());
+        fragment.append("bla"); //$NON-NLS-1$
+        fragment.append("bla"); //$NON-NLS-1$
+        assertEquals("    blabla", fragment.getSourcecode()); //$NON-NLS-1$
 
         fragment.appendln();
-        fragment.append("line2");
-        String expected = "    blabla" + SystemUtils.LINE_SEPARATOR + "    line2";
+        fragment.append("line2"); //$NON-NLS-1$
+        String expected = "    blabla" + SystemUtils.LINE_SEPARATOR + "    line2"; //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(expected, fragment.getSourcecode());
     }
 
     public void testAppendClassName() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(List.class);
-        assertEquals("List", fragment.getSourcecode());
+        assertEquals("List", fragment.getSourcecode()); //$NON-NLS-1$
         assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
         assertTrue(fragment.getImportDeclaration().isCovered(List.class));
 
         fragment = new JavaCodeFragment();
-        fragment.appendClassName(List.class.getName() + "[]");
-        assertEquals("List[]", fragment.getSourcecode());
+        fragment.appendClassName(List.class.getName() + "[]"); //$NON-NLS-1$
+        assertEquals("List[]", fragment.getSourcecode()); //$NON-NLS-1$
         assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
         assertTrue(fragment.getImportDeclaration().isCovered(List.class));
 
         fragment = new JavaCodeFragment();
-        fragment.appendClassName(List.class.getName() + "[][]");
-        assertEquals("List[][]", fragment.getSourcecode());
+        fragment.appendClassName(List.class.getName() + "[][]"); //$NON-NLS-1$
+        assertEquals("List[][]", fragment.getSourcecode()); //$NON-NLS-1$
         assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
         assertTrue(fragment.getImportDeclaration().isCovered(List.class));
 
@@ -112,9 +108,9 @@ public class JavaCodeFragmentTest extends TestCase {
     public void testAppendInnerClassName() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendInnerClassName(Entry.class);
-        assertEquals("Entry", fragment.getSourcecode());
+        assertEquals("Entry", fragment.getSourcecode()); //$NON-NLS-1$
         assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
-        assertTrue(fragment.getImportDeclaration().isCovered(Entry.class.getName().replaceAll("\\$", "\\.")));
+        assertTrue(fragment.getImportDeclaration().isCovered(Entry.class.getName().replaceAll("\\$", "\\."))); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void testAppend_Fragment() {
@@ -139,33 +135,33 @@ public class JavaCodeFragmentTest extends TestCase {
 
         String result = fragment2.getSourcecode();
         StringTokenizer tokenizer = new StringTokenizer(result, SystemUtils.LINE_SEPARATOR);
-        assertEquals("{", tokenizer.nextToken());
-        assertEquals("    List", tokenizer.nextToken());
-        assertEquals("    {", tokenizer.nextToken());
-        assertEquals("        Map", tokenizer.nextToken());
-        assertEquals("    }", tokenizer.nextToken());
-        assertEquals("}", tokenizer.nextToken());
+        assertEquals("{", tokenizer.nextToken()); //$NON-NLS-1$
+        assertEquals("    List", tokenizer.nextToken()); //$NON-NLS-1$
+        assertEquals("    {", tokenizer.nextToken()); //$NON-NLS-1$
+        assertEquals("        Map", tokenizer.nextToken()); //$NON-NLS-1$
+        assertEquals("    }", tokenizer.nextToken()); //$NON-NLS-1$
+        assertEquals("}", tokenizer.nextToken()); //$NON-NLS-1$
 
         // test if insert does not introduce any new lineSeparators.
-        JavaCodeFragment f1 = new JavaCodeFragment(true).append("Hello ");
-        JavaCodeFragment f2 = new JavaCodeFragment(true).append("world!");
+        JavaCodeFragment f1 = new JavaCodeFragment(true).append("Hello "); //$NON-NLS-1$
+        JavaCodeFragment f2 = new JavaCodeFragment(true).append("world!"); //$NON-NLS-1$
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.append(f1);
         builder.append(f2);
-        assertEquals("Hello world!", builder.getFragment().getSourcecode());
+        assertEquals("Hello world!", builder.getFragment().getSourcecode()); //$NON-NLS-1$
     }
 
     public void testEquals() {
         ImportDeclaration id1 = new ImportDeclaration();
         ImportDeclaration id2 = new ImportDeclaration();
-        JavaCodeFragment fragment1 = new JavaCodeFragment("return", id1);
-        JavaCodeFragment fragment2 = new JavaCodeFragment("return", id2);
+        JavaCodeFragment fragment1 = new JavaCodeFragment("return", id1); //$NON-NLS-1$
+        JavaCodeFragment fragment2 = new JavaCodeFragment("return", id2); //$NON-NLS-1$
 
         assertEquals(fragment1, fragment2);
-        assertFalse(fragment1.equals(new JavaCodeFragment("blabla", id2)));
+        assertFalse(fragment1.equals(new JavaCodeFragment("blabla", id2))); //$NON-NLS-1$
 
-        id2.add("java.util.*");
-        assertFalse(fragment1.equals(new JavaCodeFragment("return", id2)));
+        id2.add("java.util.*"); //$NON-NLS-1$
+        assertFalse(fragment1.equals(new JavaCodeFragment("return", id2))); //$NON-NLS-1$
     }
 
     public void testAddImport() {
@@ -174,4 +170,5 @@ public class JavaCodeFragmentTest extends TestCase {
         assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
         assertTrue(fragment.getImportDeclaration().isCovered(Calendar.class));
     }
+
 }

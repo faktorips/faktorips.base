@@ -37,19 +37,13 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
         super(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment newInstance(String value) {
         return new JavaCodeFragment(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment toWrapper(JavaCodeFragment expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ");
+        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Integer.class);
         fragment.append('(');
         fragment.append(expression);
@@ -57,13 +51,11 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("Integer.parseInt(" + expression + ")");
+        fragment.append("Integer.parseInt(" + expression + ")"); //$NON-NLS-1$//$NON-NLS-2$
         return fragment;
     }
+
 }

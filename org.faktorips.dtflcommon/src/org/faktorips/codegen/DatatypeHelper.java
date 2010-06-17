@@ -62,8 +62,7 @@ public interface DatatypeHelper {
             (PrimitiveBooleanDatatype)Datatype.PRIMITIVE_BOOLEAN);
 
     /**
-     * Helper for {@link org.faktorips.datatype.Datatype#PRIMITIVE_INTEGER
-     * Datatype.PRIMITIVE_INTEGER}.
+     * Helper for {@link org.faktorips.datatype.Datatype#PRIMITIVE_INT Datatype.PRIMITIVE_INTEGER}.
      */
     public final static PrimitiveDatatypeHelper PRIMITIVE_INTEGER = new PrimitiveIntegerHelper(
             (PrimitiveIntegerDatatype)Datatype.PRIMITIVE_INT);

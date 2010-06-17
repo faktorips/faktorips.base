@@ -23,30 +23,30 @@ public class ArrayOfValueDatatypeTest extends TestCase {
 
     public void testGetDimenion() {
         assertEquals(0, ArrayOfValueDatatype.getDimension(null));
-        assertEquals(0, ArrayOfValueDatatype.getDimension("Money"));
-        assertEquals(1, ArrayOfValueDatatype.getDimension("Money[]"));
-        assertEquals(2, ArrayOfValueDatatype.getDimension("Money[][]"));
+        assertEquals(0, ArrayOfValueDatatype.getDimension("Money")); //$NON-NLS-1$
+        assertEquals(1, ArrayOfValueDatatype.getDimension("Money[]")); //$NON-NLS-1$
+        assertEquals(2, ArrayOfValueDatatype.getDimension("Money[][]")); //$NON-NLS-1$
     }
 
     public void testGetBasicDatatypeName() {
-        assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money"));
-        assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[]"));
-        assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[][]"));
+        assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[]")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[][]")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void testGetName() {
         ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
-        assertEquals(datatype.getBasicDatatype().getName() + "[][]", datatype.getName());
+        assertEquals(datatype.getBasicDatatype().getName() + "[][]", datatype.getName()); //$NON-NLS-1$
     }
 
     public void testGetQualifiedName() {
         ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
-        assertEquals(datatype.getBasicDatatype().getQualifiedName() + "[][]", datatype.getQualifiedName());
+        assertEquals(datatype.getBasicDatatype().getQualifiedName() + "[][]", datatype.getQualifiedName()); //$NON-NLS-1$
     }
 
     public void testGetJavaClassName() {
         ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
-        assertEquals(datatype.getBasicDatatype().getJavaClassName() + "[][]", datatype.getJavaClassName());
+        assertEquals(datatype.getBasicDatatype().getJavaClassName() + "[][]", datatype.getJavaClassName()); //$NON-NLS-1$
     }
 
 }

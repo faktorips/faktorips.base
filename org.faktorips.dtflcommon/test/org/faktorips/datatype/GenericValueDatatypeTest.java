@@ -35,9 +35,9 @@ public class GenericValueDatatypeTest extends TestCase {
     }
 
     public void testValidate_InvalidMethods() {
-        datatype.setIsParsableMethodName("unknwonMethod");
-        datatype.setToStringMethodName("unknwonMethod");
-        datatype.setValueOfMethodName("unknwonMethod");
+        datatype.setIsParsableMethodName("unknownMethod"); //$NON-NLS-1$
+        datatype.setToStringMethodName("unknownMethod"); //$NON-NLS-1$
+        datatype.setValueOfMethodName("unknownMethod"); //$NON-NLS-1$
         datatype.setNullObjectDefined(false);
         MessageList list = datatype.checkReadyToUse();
         assertEquals(3, list.getNoOfMessages());
@@ -47,11 +47,11 @@ public class GenericValueDatatypeTest extends TestCase {
     }
 
     public void testValidate_InvalidSpecialCaseNull() {
-        datatype.setIsParsableMethodName("isParsable");
-        datatype.setToStringMethodName("getId");
-        datatype.setValueOfMethodName("getPaymentMode");
+        datatype.setIsParsableMethodName("isParsable"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
+        datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setNullObjectDefined(true);
-        datatype.setNullObjectId("unknownValue");
+        datatype.setNullObjectId("unknownValue"); //$NON-NLS-1$
         MessageList list = datatype.checkReadyToUse();
         assertEquals(1, list.getNoOfMessages());
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_NOT_FOUND));
@@ -61,87 +61,71 @@ public class GenericValueDatatypeTest extends TestCase {
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL));
     }
 
-    /*
-     * Test method for 'org.faktorips.datatype.GenericValueDatatype.isParsable(String)'
-     */
     public void testIsParsable() {
-        datatype.setIsParsableMethodName("isParsable");
+        datatype.setIsParsableMethodName("isParsable"); //$NON-NLS-1$
         assertTrue(datatype.isParsable(PaymentMode.ANNUAL.getId()));
-        assertFalse(datatype.isParsable("unknownId"));
+        assertFalse(datatype.isParsable("unknownId")); //$NON-NLS-1$
         assertTrue(datatype.isParsable(null));
 
         datatype = new DefaultGenericValueDatatype(TestValueClass.class);
-        datatype.setValueOfMethodName("getInteger");
-        datatype.setIsParsableMethodName("isInteger");
-        assertTrue(datatype.isParsable("42"));
+        datatype.setValueOfMethodName("getInteger"); //$NON-NLS-1$
+        datatype.setIsParsableMethodName("isInteger"); //$NON-NLS-1$
+        assertTrue(datatype.isParsable("42")); //$NON-NLS-1$
         assertTrue(datatype.isParsable(null));
-        assertFalse(datatype.isParsable("abc"));
+        assertFalse(datatype.isParsable("abc")); //$NON-NLS-1$
     }
 
-    /*
-     * Test method for 'org.faktorips.datatype.GenericValueDatatype.getIsParsableMethod()'
-     */
     public void testGetIsParsableMethod() {
         assertNotNull(datatype.getIsParsableMethod());
-        datatype.setIsParsableMethodName("unknownMethod");
+        datatype.setIsParsableMethodName("unknownMethod"); //$NON-NLS-1$
         try {
             datatype.getIsParsableMethod();
             fail();
         } catch (RuntimeException e) {
+            // Expected exception
         }
     }
 
-    /*
-     * Test method for 'org.faktorips.datatype.GenericValueDatatype.getValue(String)'
-     */
     public void testGetValue() {
-        datatype.setValueOfMethodName("getPaymentMode");
+        datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         assertEquals(PaymentMode.ANNUAL, datatype.getValue(PaymentMode.ANNUAL.getId()));
 
         datatype = new DefaultGenericValueDatatype(TestValueClass.class);
-        datatype.setValueOfMethodName("getInteger");
-        assertEquals(new Integer(42), datatype.getValue("42"));
+        datatype.setValueOfMethodName("getInteger"); //$NON-NLS-1$
+        assertEquals(new Integer(42), datatype.getValue("42")); //$NON-NLS-1$
         assertNull(datatype.getValue(null));
     }
 
-    /*
-     * Test method for 'org.faktorips.datatype.GenericValueDatatype.getValueOfMethod()'
-     */
     public void testGetValueOfMethod() {
-        datatype.setValueOfMethodName("getPaymentMode");
+        datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         assertNotNull(datatype.getValueOfMethod());
-        datatype.setValueOfMethodName("unknownMethod");
+        datatype.setValueOfMethodName("unknownMethod"); //$NON-NLS-1$
         try {
             datatype.getValueOfMethod();
             fail();
         } catch (RuntimeException e) {
+            // Expected exception
         }
     }
 
-    /*
-     * Test method for 'org.faktorips.datatype.GenericValueDatatype.valueToString(Object)'
-     */
     public void testValueToString() {
-        datatype.setToStringMethodName("getId");
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         assertEquals(PaymentMode.ANNUAL.getId(), datatype.valueToString(PaymentMode.ANNUAL));
     }
 
-    /*
-     * Test method for 'org.faktorips.datatype.GenericValueDatatype.getValueToStringMethod()'
-     */
     public void testGetToStringMethod() {
-        datatype.setToStringMethodName("getId");
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         assertNotNull(datatype.getToStringMethod());
-        datatype.setToStringMethodName("unknownMethod");
+        datatype.setToStringMethodName("unknownMethod"); //$NON-NLS-1$
         try {
             datatype.getValueOfMethod();
             fail();
         } catch (RuntimeException e) {
+            // Expected exception
         }
-        // Payment hasn't got a special toString method, but the supertype
-        datatype.setToStringMethodName("toString");
+        // Payment hasn't got a special toString method, but the super type
+        datatype.setToStringMethodName("toString"); //$NON-NLS-1$
         assertNotNull(datatype.getToStringMethod());
-
     }
 
     public void testEquals() {
@@ -160,9 +144,8 @@ public class GenericValueDatatypeTest extends TestCase {
             }
 
         };
-        paymentMode2.setQualifiedName("PaymentMode");
+        paymentMode2.setQualifiedName("PaymentMode"); //$NON-NLS-1$
         assertEquals(datatype, paymentMode2);
-
     }
 
     public void testHashCode() {
@@ -181,16 +164,12 @@ public class GenericValueDatatypeTest extends TestCase {
             }
 
         };
-        paymentMode2.setQualifiedName("PaymentMode");
+        paymentMode2.setQualifiedName("PaymentMode"); //$NON-NLS-1$
         assertEquals(datatype.hashCode(), paymentMode2.hashCode());
-
     }
 
-    /*
-     * Test method for 'org.faktorips.datatype.GenericValueDatatype.isNull(Object)'
-     */
     public void testIsNull() {
-        datatype.setValueOfMethodName("getPaymentMode");
+        datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         assertFalse(datatype.isNull(PaymentMode.ANNUAL.getId()));
         assertTrue(datatype.isNull(null));
     }
@@ -204,7 +183,7 @@ public class GenericValueDatatypeTest extends TestCase {
 
         @Override
         public String getAdaptedClassName() {
-            return "UnknownClass";
+            return "UnknownClass"; //$NON-NLS-1$
         }
 
     }

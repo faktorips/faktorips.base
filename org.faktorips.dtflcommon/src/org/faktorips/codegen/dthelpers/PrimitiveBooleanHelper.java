@@ -16,9 +16,6 @@ package org.faktorips.codegen.dthelpers;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 
-/**
- *
- */
 public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
 
     /**
@@ -37,39 +34,29 @@ public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
         super(datatype);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
-     */
     public JavaCodeFragment newInstance(String value) {
         Boolean booleanValue = Boolean.valueOf(value);
         if (booleanValue.booleanValue()) {
-            return new JavaCodeFragment("true");
+            return new JavaCodeFragment("true"); //$NON-NLS-1$
         } else {
-            return new JavaCodeFragment("false");
+            return new JavaCodeFragment("false"); //$NON-NLS-1$
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public JavaCodeFragment toWrapper(JavaCodeFragment expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Boolean.class);
-        fragment.append(".valueOf(");
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(expression);
         fragment.append(')');
         return fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("Boolean.valueOf(" + expression + ").booleanValue()");
+        fragment.append("Boolean.valueOf(" + expression + ").booleanValue()"); //$NON-NLS-1$//$NON-NLS-2$
         return fragment;
     }
+
 }

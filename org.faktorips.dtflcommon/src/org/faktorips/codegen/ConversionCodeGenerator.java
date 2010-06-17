@@ -46,7 +46,7 @@ public class ConversionCodeGenerator implements ConversionMatrix {
      * Returns a default ConversionCodeGenerator that contains the following conversions.
      * <p>
      * <ul>
-     * <li>Primitve boolean to Boolean</li>
+     * <li>Primitive boolean to Boolean</li>
      * <li>Boolean to primitive boolean</li>
      * <li>Primitive int to Integer</li>
      * <li>Integer to primitive int</li>
@@ -77,20 +77,10 @@ public class ConversionCodeGenerator implements ConversionMatrix {
     /** List of single conversion code generators. */
     private List<SingleConversionCg> conversions = new ArrayList<SingleConversionCg>();
 
-    /**
-     * Creates a new instance.
-     */
-    public ConversionCodeGenerator() {
-
-    }
-
     public void add(SingleConversionCg conversion) {
         conversions.add(conversion);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean canConvert(Datatype from, Datatype to) {
         if (from.equals(to)) {
             return true;

@@ -25,24 +25,14 @@ import org.faktorips.datatype.ValueClassDatatype;
  */
 public class DoubleDatatype extends ValueClassDatatype implements NumericDatatype {
 
-    /**
-     * @param clazz
-     */
     public DoubleDatatype() {
         super(Double.class);
     }
 
-    /**
-     * @param clazz
-     * @param name
-     */
     public DoubleDatatype(String name) {
         super(Double.class, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String s) {
         if (StringUtils.isEmpty(s)) {
@@ -51,30 +41,21 @@ public class DoubleDatatype extends ValueClassDatatype implements NumericDatatyp
         return Double.valueOf(s);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
-            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+            throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
         }
         double result = ((Double)getValue(minuend)).doubleValue() - ((Double)getValue(subtrahend)).doubleValue();
         return Double.toString(result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
-            throw new NullPointerException("dividend and divisor both can not be null.");
+            throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
         }
 
         BigDecimal a = new BigDecimal(dividend);
@@ -91,4 +72,5 @@ public class DoubleDatatype extends ValueClassDatatype implements NumericDatatyp
     public boolean hasDecimalPlaces() {
         return true;
     }
+
 }

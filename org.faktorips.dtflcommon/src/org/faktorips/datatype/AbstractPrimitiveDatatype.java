@@ -27,32 +27,20 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPrimitive() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isValueDatatype() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String valueToString(Object value) {
-        return "" + value;
+        return "" + value; //$NON-NLS-1$
     }
 
     /**
@@ -73,9 +61,6 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasNullObject() {
         return false;
@@ -83,41 +68,26 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
 
     public abstract Object getValue(String value);
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean areValuesEqual(String valueA, String valueB) {
         return ObjectUtils.equals(getValue(valueA), getValue(valueB));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         if (!supportsCompare()) {
-            throw new UnsupportedOperationException("Datatype " + getQualifiedName()
-                    + " does not support comparison of values");
+            throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
+                    + " does not support comparison of values"); //$NON-NLS-1$
         }
         return ((Comparable)getValue(valueA)).compareTo(getValue(valueB));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNull(String value) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isMutable() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isImmutable() {
         return true;
     }

@@ -41,7 +41,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
             return 0;
         }
         int dimension = 0;
-        while (datatypeName.endsWith("[]")) {
+        while (datatypeName.endsWith("[]")) { //$NON-NLS-1$
             dimension++;
             datatypeName = datatypeName.substring(0, datatypeName.length() - 2);
         }
@@ -54,12 +54,9 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
      * Examples:<br>
      * "Money" specifies basic datatype Money. "Money[]" specifies basic datatype Money. "Money[][]"
      * specifies basic datatype Money.
-     * 
-     * @param datatypeName
-     * @return
      */
     public final static String getBasicDatatypeName(String datatypeName) {
-        while (datatypeName.endsWith("[]")) {
+        while (datatypeName.endsWith("[]")) { //$NON-NLS-1$
             datatypeName = datatypeName.substring(0, datatypeName.length() - 2);
         }
         return datatypeName;
@@ -97,84 +94,54 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return dimension;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isImmutable() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isMutable() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         StringBuffer buffer = new StringBuffer(datatype.getName());
         for (int i = 0; i < dimension; i++) {
-            buffer.append("[]");
+            buffer.append("[]"); //$NON-NLS-1$
         }
         return buffer.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
         StringBuffer buffer = new StringBuffer(datatype.getQualifiedName());
         for (int i = 0; i < dimension; i++) {
-            buffer.append("[]");
+            buffer.append("[]"); //$NON-NLS-1$
         }
         return buffer.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDefaultValue() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isValueDatatype() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
         StringBuffer buffer = new StringBuffer(datatype.getJavaClassName());
         for (int i = 0; i < dimension; i++) {
-            buffer.append("[]");
+            buffer.append("[]"); //$NON-NLS-1$
         }
         return buffer.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype getWrapperType() {
         return null;
     }
@@ -192,36 +159,28 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
 
     /**
      * If the value is null, null will be returned. Other values are not supported yet.
-     * {@inheritDoc}
      */
     public Object getValue(String value) {
         if (value == null) {
             return null;
         }
-        throw new RuntimeException("No supported yet.");
+        throw new RuntimeException("No supported yet."); //$NON-NLS-1$
     }
 
     /**
      * If the value is null, null will be returned. Other values are not supported yet.
-     * {@inheritDoc}
      */
     public String valueToString(Object value) {
         if (value == null) {
             return null;
         }
-        throw new RuntimeException("No supported yet.");
+        throw new RuntimeException("No supported yet."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNull(String value) {
         return value == null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         if (datatype.isValueDatatype() && ((ValueDatatype)datatype).supportsCompare()) {
             return true;
@@ -229,21 +188,15 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         if (!supportsCompare()) {
-            throw new UnsupportedOperationException("The datatype " + datatype.getQualifiedName()
-                    + " does not support comparison for values.");
+            throw new UnsupportedOperationException("The datatype " + datatype.getQualifiedName() //$NON-NLS-1$
+                    + " does not support comparison for values."); //$NON-NLS-1$
         }
 
         return ((ValueDatatype)datatype).compare(valueA, valueB);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean areValuesEqual(String valueA, String valueB) {
         if (datatype.isValueDatatype()) {
             return ((ValueDatatype)datatype).areValuesEqual(valueA, valueB);

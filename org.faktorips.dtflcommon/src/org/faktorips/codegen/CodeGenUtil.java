@@ -20,7 +20,7 @@ import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 
 /**
- * A collection of util methods related to sourcecode generation.
+ * A collection of utility methods related to sourcecode generation.
  */
 public class CodeGenUtil {
 
@@ -31,10 +31,11 @@ public class CodeGenUtil {
         if (type instanceof PrimitiveIntegerDatatype) {
             return new PrimitiveIntegerHelper((PrimitiveIntegerDatatype)type).toWrapper(expression);
         }
-        throw new IllegalArgumentException("Can't convert dataype " + type);
+        throw new IllegalArgumentException("Can't convert dataype " + type); //$NON-NLS-1$
     }
 
     private CodeGenUtil() {
+        // Utility class not to be instantiated.
     }
 
 }

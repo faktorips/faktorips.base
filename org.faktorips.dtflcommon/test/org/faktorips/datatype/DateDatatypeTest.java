@@ -13,7 +13,6 @@
 
 package org.faktorips.datatype;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -35,7 +34,7 @@ public class DateDatatypeTest extends TestCase {
     }
 
     public void testGetValue() {
-        String valueStr = "2000-01-01";
+        String valueStr = "2000-01-01"; //$NON-NLS-1$
         Date date = (Date)datatype.getValue(valueStr);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -48,34 +47,34 @@ public class DateDatatypeTest extends TestCase {
         assertNull(datatype.getValue(null));
 
         try {
-            datatype.getValue("01.01.2000");
+            datatype.getValue("01.01.2000"); //$NON-NLS-1$
             fail();
         } catch (Exception e) {
+            // Expected exception.
         }
     }
 
-    public void testIsParsable() throws ParseException {
-        assertTrue(datatype.isParsable("2000-01-01"));
-        assertTrue(datatype.isParsable("2000-01-01"));
+    public void testIsParsable() {
+        assertTrue(datatype.isParsable("2000-01-01")); //$NON-NLS-1$
+        assertTrue(datatype.isParsable("2000-01-01")); //$NON-NLS-1$
         assertTrue(datatype.isParsable(null));
-        assertFalse(datatype.isParsable("2000.01.01"));
-        assertFalse(datatype.isParsable("01-01-2001"));
-        assertFalse(datatype.isParsable("2001-01-01 "));
-        assertFalse(datatype.isParsable(" 2001-01-01"));
-        assertTrue(datatype.isParsable("2001-1-1"));
-        assertTrue(datatype.isParsable("2001-1-1"));
+        assertFalse(datatype.isParsable("2000.01.01")); //$NON-NLS-1$
+        assertFalse(datatype.isParsable("01-01-2001")); //$NON-NLS-1$
+        assertFalse(datatype.isParsable("2001-01-01 ")); //$NON-NLS-1$
+        assertFalse(datatype.isParsable(" 2001-01-01")); //$NON-NLS-1$
+        assertTrue(datatype.isParsable("2001-1-1")); //$NON-NLS-1$
+        assertTrue(datatype.isParsable("2001-1-1")); //$NON-NLS-1$
     }
 
     public void testValueToString() {
-
         Calendar cal = Calendar.getInstance();
         cal.set(2000, Calendar.FEBRUARY, 20);
         String valueStr = datatype.valueToString(cal.getTime());
-        String[] tokens = valueStr.split("-");
+        String[] tokens = valueStr.split("-"); //$NON-NLS-1$
         assertEquals(3, tokens.length);
-        assertEquals(tokens[0], "2000");
-        assertEquals(tokens[1], "02");
-        assertEquals(tokens[2], "20");
+        assertEquals(tokens[0], "2000"); //$NON-NLS-1$
+        assertEquals(tokens[1], "02"); //$NON-NLS-1$
+        assertEquals(tokens[2], "20"); //$NON-NLS-1$
 
         assertNull(datatype.valueToString(null));
 
@@ -83,6 +82,8 @@ public class DateDatatypeTest extends TestCase {
             datatype.valueToString(cal);
             fail();
         } catch (Exception e) {
+            // Expected exception.
         }
     }
+
 }

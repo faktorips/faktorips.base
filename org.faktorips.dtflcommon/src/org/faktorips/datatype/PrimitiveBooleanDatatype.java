@@ -18,52 +18,31 @@ package org.faktorips.datatype;
  */
 public class PrimitiveBooleanDatatype extends AbstractPrimitiveDatatype {
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
-        return "boolean";
+        return "boolean"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
-        return "boolean";
+        return "boolean"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDefaultValue() {
         return Boolean.FALSE.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype getWrapperType() {
         return Datatype.BOOLEAN;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
-        return "boolean";
+        return "boolean"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String value) {
         return Boolean.valueOf(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return false;
     }

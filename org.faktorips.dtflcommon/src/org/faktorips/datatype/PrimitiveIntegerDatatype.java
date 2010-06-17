@@ -18,73 +18,46 @@ package org.faktorips.datatype;
  */
 public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implements NumericDatatype {
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
-        return "int";
+        return "int"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQualifiedName() {
-        return "int";
+        return "int"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueDatatype getWrapperType() {
         return Datatype.INTEGER;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getJavaClassName() {
-        return "int";
+        return "int"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDefaultValue() {
-        return "0";
+        return "0"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String value) {
         return Integer.valueOf(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean supportsCompare() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
-            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+            throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
         }
         int result = ((Integer)getValue(minuend)).intValue() - ((Integer)getValue(subtrahend)).intValue();
         return Integer.toString(result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
-            throw new NullPointerException("dividend and divisor both can not be null.");
+            throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
         }
         int a = ((Integer)getValue(dividend)).intValue();
         int b = ((Integer)getValue(divisor)).intValue();
@@ -94,4 +67,5 @@ public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implemen
     public boolean hasDecimalPlaces() {
         return false;
     }
+
 }

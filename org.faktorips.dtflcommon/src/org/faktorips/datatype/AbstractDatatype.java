@@ -22,16 +22,10 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class AbstractDatatype implements Datatype {
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList checkReadyToUse() {
         return new MessageList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isVoid() {
         return false;
     }
@@ -40,17 +34,11 @@ public abstract class AbstractDatatype implements Datatype {
         return this instanceof EnumDatatype;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return getName().hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -78,9 +66,6 @@ public abstract class AbstractDatatype implements Datatype {
         return getQualifiedName().compareTo(type.getQualifiedName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasNullObject() {
         return false;
     }

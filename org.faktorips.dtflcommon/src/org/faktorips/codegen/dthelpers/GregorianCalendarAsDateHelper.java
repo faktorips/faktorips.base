@@ -42,35 +42,24 @@ public class GregorianCalendarAsDateHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
-     */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
-        GregorianCalendar date = (GregorianCalendar)new GregorianCalendarDatatype("", false).getValue(value);
-        fragment.append("new ");
+        GregorianCalendar date = (GregorianCalendar)new GregorianCalendarDatatype("", false).getValue(value); //$NON-NLS-1$
+        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(GregorianCalendar.class);
         fragment.append('(');
         fragment.append(date.get(GregorianCalendar.YEAR));
-        fragment.append(", ");
+        fragment.append(", "); //$NON-NLS-1$
         fragment.append(date.get(GregorianCalendar.MONTH));
-        fragment.append(", ");
+        fragment.append(", "); //$NON-NLS-1$
         fragment.append(date.get(GregorianCalendar.DATE));
         fragment.append(')');
         return fragment;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         if (StringUtils.isEmpty(expression)) {
@@ -78,19 +67,14 @@ public class GregorianCalendarAsDateHelper extends AbstractDatatypeHelper {
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(DateUtil.class);
-        fragment.append(".parseIsoDateStringToGregorianCalendar(");
+        fragment.append(".parseIsoDateStringToGregorianCalendar("); //$NON-NLS-1$
         fragment.append(expression);
-        fragment.append(")");
+        fragment.append(")"); //$NON-NLS-1$
         return fragment;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
-     */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     @Override
@@ -98,12 +82,12 @@ public class GregorianCalendarAsDateHelper extends AbstractDatatypeHelper {
         // sample code: (GregorianCalendar) (calendar == null ? null : calendar.clone());
         JavaCodeFragment code = new JavaCodeFragment();
         code.append(expression);
-        code.append(" == null ? null : ");
+        code.append(" == null ? null : "); //$NON-NLS-1$
         code.append('(');
         code.appendClassName(GregorianCalendar.class);
-        code.append(")");
+        code.append(")"); //$NON-NLS-1$
         code.append(expression);
-        code.append(".clone()");
+        code.append(".clone()"); //$NON-NLS-1$
         return code;
     }
 

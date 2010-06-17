@@ -26,9 +26,6 @@ import org.faktorips.datatype.ValueClassDatatype;
  */
 public class BigDecimalDatatype extends ValueClassDatatype implements NumericDatatype {
 
-    /**
-     * @param clazz
-     */
     public BigDecimalDatatype() {
         super(BigDecimal.class);
     }
@@ -47,7 +44,7 @@ public class BigDecimalDatatype extends ValueClassDatatype implements NumericDat
 
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
-            throw new NullPointerException("dividend and divisor both can not be null.");
+            throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
         }
         BigDecimal a = (BigDecimal)getValue(dividend);
         BigDecimal b = (BigDecimal)getValue(divisor);
@@ -57,7 +54,6 @@ public class BigDecimalDatatype extends ValueClassDatatype implements NumericDat
             return false;
         }
         return true;
-
     }
 
     public boolean hasDecimalPlaces() {
@@ -66,9 +62,9 @@ public class BigDecimalDatatype extends ValueClassDatatype implements NumericDat
 
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
-            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+            throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
         }
         return ((BigDecimal)getValue(minuend)).subtract((BigDecimal)getValue(subtrahend)).toString();
-
     }
+
 }
