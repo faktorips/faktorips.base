@@ -1,5 +1,6 @@
 package org.faktorips.devtools.htmlexport.standard;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
@@ -10,7 +11,7 @@ import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageEleme
 
 public class StandardOnePageDocumentorScript implements IDocumentorScript {
 
-    public void execute(DocumentorConfiguration config) {
+    public void execute(DocumentorConfiguration config, IProgressMonitor monitor) {
         writeProjectOverviewPage(config);
 
         // TODO HIER WEITERMACHEN!!!;

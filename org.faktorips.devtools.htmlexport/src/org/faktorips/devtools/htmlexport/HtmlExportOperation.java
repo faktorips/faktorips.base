@@ -51,11 +51,7 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
     public void run(IProgressMonitor monitor) throws CoreException {
         List<IDocumentorScript> scripts = getDocumentorConfiguration().getScripts();
 
-        monitor.beginTask("HTML EXPORT PROGRESS MONITOR", scripts.size() + 1);
-
-        getDocumentorConfiguration().getLinkedObjects();
-
-        monitor.worked(1);
+        monitor.beginTask("HTML EXPORT PROGRESS MONITOR", scripts.size());
 
         for (IDocumentorScript documentorScript : scripts) {
             IProgressMonitor subProgressMonitor = new SubProgressMonitor(monitor, 1);

@@ -5,11 +5,11 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 
-public class IpsObjectInIpsProjectFilter implements IpsElementFilter {
+public class IpsObjectInLinkedObjectsFilter implements IpsElementFilter {
 
-    private DocumentorConfiguration config;
+    private final DocumentorConfiguration config;
 
-    public IpsObjectInIpsProjectFilter(DocumentorConfiguration config) {
+    public IpsObjectInLinkedObjectsFilter(DocumentorConfiguration config) {
         this.config = config;
     }
 

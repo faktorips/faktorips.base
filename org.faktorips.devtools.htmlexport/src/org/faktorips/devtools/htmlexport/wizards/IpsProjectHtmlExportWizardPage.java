@@ -17,6 +17,7 @@ import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -34,18 +35,23 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage implements ValueChangeListener,
         ModifyListener, ICheckStateListener {
 
     private static final String PAGE_NAME = "IpsProjectHtmlExportWizardPage";
 
+    private static final String STORE_DESTINATION_NAMES = PAGE_NAME + ".DESTINATION_NAMES_ID"; //$NON-NLS-1$
+
     private IStructuredSelection selection;
 
-    // private Checkbox includeReferencedProjects;
+    private UIToolkit toolkit = new UIToolkit(null);
+    private Checkbox includeReferencedProjects;
     private Combo destinationNamesCombo;
 
     protected IpsProjectHtmlExportWizardPage(IStructuredSelection selection) {
@@ -75,6 +81,10 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         composite.setLayout(new GridLayout(1, true));
 
         createDestinationGroup(composite);
+
+        includeReferencedProjects = toolkit.createCheckbox(composite, "Include referenced Projects");
+
+        restoreWidgetValues();
 
         setControl(composite);
     }
@@ -145,8 +155,12 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     private String getDefaultDestinationDirectory() {
         IProject firstElement = (IProject)selection.getFirstElement();
-        return firstElement.getFullPath().toOSString() + File.separator + "html";
+        return firstElement.getLocation().toOSString() + File.separator + "html";
 
+    }
+
+    public boolean isIncludingReferencedProjects() {
+        return includeReferencedProjects.isChecked();
     }
 
     private void canFinish() {
@@ -156,4 +170,43 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         }
         setPageComplete(false);
     }
+
+    @Override
+    protected void restoreWidgetValues() {
+        IDialogSettings settings = getDialogSettings();
+        if (settings == null) {
+            return;
+        }
+
+        // restore previous entered destination
+        destinationNamesCombo.setText(""); //$NON-NLS-1$
+        String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES);
+        if (directoryNames == null) {
+            return; // ie.- no settings stored
+        }
+        if (!destinationNamesCombo.getText().equals(directoryNames[0])) {
+            destinationNamesCombo.add(destinationNamesCombo.getText());
+        }
+        for (String directoryName : directoryNames) {
+            destinationNamesCombo.add(directoryName);
+        }
+
+    }
+
+    @Override
+    protected void saveWidgetValues() {
+        IDialogSettings settings = getDialogSettings();
+        if (settings == null) {
+            return;
+        }
+
+        // store destination history
+        String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES);
+        if (directoryNames == null) {
+            directoryNames = new String[0];
+        }
+        directoryNames = addToHistory(directoryNames, getDestinationDirectory());
+        settings.put(STORE_DESTINATION_NAMES, directoryNames);
+    }
+
 }

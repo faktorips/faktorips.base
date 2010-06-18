@@ -20,6 +20,10 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
 /**
  * Configuration for the Documentator
  * 
+ * 
+ * TODO: Refactoring zu Value-Object
+ * 
+ * 
  * @author dicker
  * 
  */
@@ -29,31 +33,35 @@ public class DocumentorConfiguration {
      * related {@link IpsObjectType}s: Just {@link IIpsObject} of these types are documented
      */
     protected IpsObjectType[] linkedIpsObjectTypes = new IpsObjectType[0];
+
     /**
      * Path for output
      */
     protected String path;
+
     /**
      * All scripts within this documentation
      */
-    protected List<IDocumentorScript> scripts = new ArrayList<IDocumentorScript>();
+    private List<IDocumentorScript> scripts = new ArrayList<IDocumentorScript>();
+
     /**
      * {@link IIpsProject}, which will be documented
      */
-    protected IIpsProject ipsProject;
+    private IIpsProject ipsProject;
+
     /**
      * {@link ILayouter} contains the layout for the documentation
      */
-    protected ILayouter layouter;
+    private ILayouter layouter;
 
-    protected SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy"); //$NON-NLS-1$
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy"); //$NON-NLS-1$
     private List<IIpsObject> linkedObjects;
 
     public DocumentorConfiguration() {
         super();
     }
 
-    public void setLinkedIpsObjectClasses(IpsObjectType... ipsObjectTypes) {
+    public void setLinkedIpsObjectTypes(IpsObjectType... ipsObjectTypes) {
         linkedIpsObjectTypes = ipsObjectTypes;
     }
 
@@ -81,20 +89,25 @@ public class DocumentorConfiguration {
         if (linkedObjects == null) {
             linkedObjects = getLinkedObjects(getLinkedIpsObjectTypes());
         }
+
         return linkedObjects;
+
     }
 
     private List<IIpsObject> getLinkedObjects(IpsObjectType... ipsObjectTypes) {
+
         List<IIpsObject> objects = new ArrayList<IIpsObject>();
 
         List<IIpsSrcFile> srcFiles = getLinkedSource(ipsObjectTypes);
         for (IIpsSrcFile ipsSrcFile : srcFiles) {
+
             try {
                 objects.add(ipsSrcFile.getIpsObject());
             } catch (CoreException e) {
                 e.printStackTrace();
             }
         }
+
         return objects;
     }
 
@@ -102,25 +115,29 @@ public class DocumentorConfiguration {
      * returns all {@link IIpsSrcFile} within the {@link IpsProject}, which type is within the given
      * array.
      * 
-     * @param ipsObjectTypes
+     * @param ipsObjectTypes Array with all relevant {@link IpsObjectType}s
      * @return List<IIpsSrcFile>
      */
     public List<IIpsSrcFile> getLinkedSource(IpsObjectType... ipsObjectTypes) {
+
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         try {
             ipsProject.findAllIpsSrcFiles(result, ipsObjectTypes);
         } catch (CoreException e) {
             e.printStackTrace();
         }
+
         return result;
     }
 
     public Collection<IIpsPackageFragment> getLinkedPackageFragments() {
+
         Set<IIpsPackageFragment> relatedPackageFragments = new HashSet<IIpsPackageFragment>();
         List<IIpsObject> linkedObjects = getLinkedObjects();
         for (IIpsObject ipsObject : linkedObjects) {
             relatedPackageFragments.add(ipsObject.getIpsPackageFragment());
         }
+
         return relatedPackageFragments;
     }
 

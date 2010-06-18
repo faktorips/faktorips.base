@@ -8,7 +8,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectInIpsProjectFilter;
+import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectInLinkedObjectsFilter;
 
 /**
  * Utility for {@link PageElement}s
@@ -88,7 +88,7 @@ public class PageElementUtils {
             String text,
             boolean useImage,
             Style... styles) {
-        IpsObjectInIpsProjectFilter filter = new IpsObjectInIpsProjectFilter(config);
+        IpsObjectInLinkedObjectsFilter filter = new IpsObjectInLinkedObjectsFilter(config);
 
         PageElement element = createInnerLinkPageElement(to, text, useImage);
 

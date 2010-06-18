@@ -14,6 +14,7 @@
 package org.faktorips.devtools.htmlexport.wizards;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -24,14 +25,15 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.htmlexport.Documentor;
+import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
+import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
 public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard {
 
-    private static String DIALOG_SETTINGS_KEY = "ipsProjectHtmlExportWizard";
+    private static String DIALOG_SETTINGS_KEY = "org.faktorips.devtools.htmlexport.ipsProjectHtmlExportWizard";
     private IpsProjectHtmlExportWizardPage ipsProjectHtmlExportWizardPage;
     /**
      * Create a new IpsArExportWizard
@@ -57,24 +59,46 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
 
     @Override
     public boolean performFinish() {
-        String directory = ipsProjectHtmlExportWizardPage.getDestinationDirectory();
-        exportHtml(directory);
+        exportHtml();
+
+        // save the dialog settings
+        if (hasNewDialogSettings) {
+            IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
+            IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
+            section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
+            setDialogSettings(section);
+        }
+
+        ipsProjectHtmlExportWizardPage.saveWidgetValues();
 
         return true;
     }
 
-    private void exportHtml(String selected) {
-
+    private boolean exportHtml() {
         DocumentorConfiguration documentorConfig = new DocumentorConfiguration();
 
-        documentorConfig.setPath(selected);
+        documentorConfig.setPath(ipsProjectHtmlExportWizardPage.getDestinationDirectory());
+        // documentorConfig.
+
         documentorConfig.setIpsProject(IpsProjectHtmlExportWizard.getIpsProject(selection));
         documentorConfig.setLayouter(new HtmlLayouter(".resource"));
 
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());
-        documentorConfig.setLinkedIpsObjectClasses(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
+        documentorConfig.setLinkedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
 
-        new Documentor(documentorConfig).execute();
+        IWorkspaceRunnable op = new HtmlExportOperation(documentorConfig);
+
+        WorkbenchRunnableAdapter workbenchRunnableAdapter = new WorkbenchRunnableAdapter(op);
+        try {
+            getContainer().run(true, true, workbenchRunnableAdapter);
+        } catch (InterruptedException e) {
+            return false;
+        } catch (Exception e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return false;
+        }
+        return true;
+
     }
 
     @Override
