@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.htmlexport.Documentor;
+import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.util.message.Message;
@@ -36,7 +36,7 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 	protected String zielpfad;
 	protected IIpsProject ipsProject;
 	protected DocumentorConfiguration documentorConfig;
-	protected Documentor documentor;
+	protected HtmlExportOperation operation;
 
 	public AbstractFipsDocTest() {
 		super();
@@ -62,7 +62,7 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 		documentorConfig.setIpsProject(ipsProject);
 		documentorConfig.setLayouter(new HtmlLayouter(".resource"));
 
-		documentor = new Documentor(documentorConfig);
+		operation = new HtmlExportOperation(documentorConfig);
 	}
 
 	protected void createStandardProjekt() {

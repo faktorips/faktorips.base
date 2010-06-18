@@ -10,11 +10,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
-import org.faktorips.devtools.htmlexport.Documentor;
+import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
@@ -24,7 +25,7 @@ public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTest
 	protected String zielpfad;
 	protected IIpsProject ipsProject;
 	protected DocumentorConfiguration documentorConfig;
-	protected Documentor documentor;
+	protected HtmlExportOperation documentor;
 
 	private IWorkspace workspace;
 	
@@ -66,31 +67,31 @@ public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTest
 		documentorConfig.setIpsProject(ipsProject);
 		documentorConfig.setLayouter(new HtmlLayouter(".resource"));
 
-		documentor = new Documentor(documentorConfig);
+		documentor = new HtmlExportOperation(documentorConfig);
         
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());
-        documentorConfig.setLinkedIpsObjectClasses(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
+        documentorConfig.setLinkedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
 	}
 
-    public void testWriteWithoutExceptionHausratmodell()  {
+    public void testWriteWithoutExceptionHausratmodell() throws Exception  {
 		String projectName = "org.faktorips.tutorial.de.Hausratmodell";
 		setUpProject(workspace, projectName);
     	
         deletePreviousGeneratedFiles();
         
         long start = System.currentTimeMillis();
-        documentor.execute();
+        documentor.run(new NullProgressMonitor());
         System.out.println("=====================\nMODELL: " + (System.currentTimeMillis() - start) + "\n=====================");
     }
 
-    public void testWriteWithoutExceptionHausratprodukte()  {
+    public void testWriteWithoutExceptionHausratprodukte() throws Exception  {
 		String projectName = "org.faktorips.tutorial.de.Hausratprodukte";
 		setUpProject(workspace, projectName);
     	
         deletePreviousGeneratedFiles();
 
         long start = System.currentTimeMillis();
-        documentor.execute();
+        documentor.run(new NullProgressMonitor());
         System.out.println("=====================\nPRODUKTE: " + (System.currentTimeMillis() - start) + "\n=====================");
     }
 
