@@ -2,6 +2,10 @@ package org.faktorips.devtools.htmlexport;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 
 /**
@@ -10,7 +14,7 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
  * @author dicker
  * 
  */
-public class Documentor {
+public class HtmlExportOperation implements IWorkspaceRunnable {
     private DocumentorConfiguration config;
 
     /**
@@ -19,7 +23,7 @@ public class Documentor {
      * @param config
      * @throws IllegalArgumentException
      */
-    public Documentor(DocumentorConfiguration config) {
+    public HtmlExportOperation(DocumentorConfiguration config) {
         setDocumentorConfiguration(config);
     }
 
@@ -40,11 +44,23 @@ public class Documentor {
 
     /**
      * Takes all scripts from the config and and executes them with the configuration
+     * 
+     * {@inheritDoc}
      */
-    public void execute() {
+    @Override
+    public void run(IProgressMonitor monitor) throws CoreException {
         List<IDocumentorScript> scripts = getDocumentorConfiguration().getScripts();
+
+        monitor.beginTask("HTML EXPORT PROGRESS MONITOR", scripts.size() + 1);
+
+        getDocumentorConfiguration().getLinkedObjects();
+
+        monitor.worked(1);
+
         for (IDocumentorScript documentorScript : scripts) {
-            documentorScript.execute(getDocumentorConfiguration());
+            IProgressMonitor subProgressMonitor = new SubProgressMonitor(monitor, 1);
+            documentorScript.execute(getDocumentorConfiguration(), subProgressMonitor);
         }
+        monitor.done();
     }
 }

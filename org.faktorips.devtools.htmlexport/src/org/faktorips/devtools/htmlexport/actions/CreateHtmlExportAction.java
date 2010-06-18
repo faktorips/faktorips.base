@@ -3,6 +3,8 @@ package org.faktorips.devtools.htmlexport.actions;
 import java.io.File;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -16,7 +18,7 @@ import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.htmlexport.Documentor;
+import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
@@ -86,9 +88,13 @@ public class CreateHtmlExportAction extends ActionDelegate {
         documentorConfig.setLayouter(new HtmlLayouter(".resource"));
 
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());
-        documentorConfig.setLinkedIpsObjectClasses(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
+        documentorConfig.setLinkedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
 
-        new Documentor(documentorConfig).execute();
+        try {
+            new HtmlExportOperation(documentorConfig).run(new NullProgressMonitor());
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
     }
 
     private String getDestinationFolder() {

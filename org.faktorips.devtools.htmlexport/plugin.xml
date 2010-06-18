@@ -3,7 +3,7 @@
 <plugin>
 
       <extension point="org.eclipse.ui.popupMenus">
-		<objectContribution adaptable="true" id="createHtmlExport" objectClass="org.eclipse.jdt.core.IJavaProject">
+		<objectContribution adaptable="true" id="createHtmlExport" objectClass="org.eclipse.core.resources.IProject">
 			<action
 		    class="org.faktorips.devtools.htmlexport.actions.CreateHtmlExportAction"
 		    enablesFor="*"
