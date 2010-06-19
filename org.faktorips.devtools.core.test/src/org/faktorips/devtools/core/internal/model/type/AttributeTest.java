@@ -40,9 +40,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
     private IType type;
     private IAttribute attribute;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -130,11 +127,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DATATYPE, attribute, "newDatatype");
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#findDatatype(IIpsProject)
-     * )} .
-     */
     public void testFindValueDatatype() throws CoreException {
         attribute.setDatatype(Datatype.BOOLEAN.getName());
         assertEquals(Datatype.BOOLEAN, attribute.findDatatype(ipsProject));
@@ -145,12 +137,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
     public void testSetDefaultValue() {
         testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DEFAULT_VALUE, attribute, "newDefault");
     }
-
-    // public void testDelete() {
-    // attribute.delete();
-    // assertNull(type.getAttribute(attribute.getName()));
-    // assertEquals(0, type.getNumOfAttributes());
-    // }
 
     public void testInitFromXml() {
         IProductCmptTypeAttribute attr = ((IProductCmptType)type).newProductCmptTypeAttribute();
@@ -184,7 +170,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         el = attribute.toXml(newDocument());
         copy.initFromXml(el);
         assertNull(copy.getDefaultValue());
-
     }
 
 }

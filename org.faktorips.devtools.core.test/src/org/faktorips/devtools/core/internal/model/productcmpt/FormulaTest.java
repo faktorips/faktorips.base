@@ -21,7 +21,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -60,9 +59,6 @@ public class FormulaTest extends AbstractIpsPluginTest {
     private IFormula formula;
     private IProductCmptTypeMethod formulaSignature;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -205,7 +201,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         policyAttr.setDatatype("Integer");
         enumtypes = formula.getEnumDatatypesAllowedInFormula();
         assertEquals(0, enumtypes.length); // 0 because policeType hasn't got an attribute with an
-                                           // enum type so far
+        // enum type so far
 
         IPolicyCmptTypeAttribute policyAttr2 = policyType.newPolicyCmptTypeAttribute();
         policyAttr2.setDatatype(testType.getQualifiedName());
@@ -235,7 +231,6 @@ public class FormulaTest extends AbstractIpsPluginTest {
         enumtypes = formula.getEnumDatatypesAllowedInFormula();
         assertEquals(1, enumtypes.length);
         assertEquals(testType, enumtypes[0]);
-
     }
 
     public void testGetParameterIdentifiersUsedInFormula() throws Exception {

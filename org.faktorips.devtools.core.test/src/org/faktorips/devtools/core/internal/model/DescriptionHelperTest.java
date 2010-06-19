@@ -26,11 +26,6 @@ import org.w3c.dom.Element;
  */
 public class DescriptionHelperTest extends XmlAbstractTestCase {
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.DescriptionHelper.setDescription(Element,
-     * String)'
-     */
     public void testSetDescription() {
         Document doc = newDocument();
         Element el = doc.createElement("Test");
@@ -50,10 +45,6 @@ public class DescriptionHelperTest extends XmlAbstractTestCase {
         assertEquals("l1" + SystemUtils.LINE_SEPARATOR + "l2", DescriptionHelper.getDescription(el));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.DescriptionHelper.getDescription(Element)'
-     */
     public void testGetDescription() {
         Element rootEl = getTestDocument().getDocumentElement();
 

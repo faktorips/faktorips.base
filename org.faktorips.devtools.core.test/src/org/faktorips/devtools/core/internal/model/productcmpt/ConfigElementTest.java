@@ -48,9 +48,6 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class ConfigElementTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -347,7 +344,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         ce.changeValueSetType(ValueSetType.UNRESTRICTED);
         ml = ce.validate(ipsProject);
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-
     }
 
     public void testValidate_ValueSetNotASubset() throws CoreException {
@@ -434,9 +430,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertEquals("4", range.getStep());
     }
 
-    /*
-     * Class under test for Element toXml(Document)
-     */
     public void testToXmlDocument() {
         IConfigElement cfgElement = generation.newConfigElement();
         cfgElement.setValue("value");

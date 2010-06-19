@@ -21,9 +21,6 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrat
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
 
-/**
- *
- */
 public class IpsFeatureVersionManagerSorterTest extends TestCase {
 
     public void testGetMigrationOperation() {

@@ -56,7 +56,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH));
     }
 
-    public void testInitFromXml() throws CoreException {
+    public void testInitFromXml() {
         NodeList nodeList = getTestDocument().getElementsByTagName(IPersistentAttributeInfo.XML_TAG);
         assertEquals(1, nodeList.getLength());
 

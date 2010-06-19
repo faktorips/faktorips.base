@@ -51,6 +51,7 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestPolicyCmptTest extends AbstractIpsPluginTest {
+
     private IIpsProject project;
     private ITestCase testCase;
     private ITestPolicyCmpt testPolicyCmptObjectExpected;
@@ -58,9 +59,6 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     private ITestCaseType testCaseType;
     private ITestPolicyCmptTypeParameter childTestPolicyCmptTypeParameter;
 
-    /**
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -179,7 +177,6 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         (testPolicyCmptObjectCombined = testCase.newTestPolicyCmpt())
                 .setTestPolicyCmptTypeParameter("testPolicyCmptTypeParameter3");
         testPolicyCmptObjectCombined.setName(testPolicyCmptObjectCombined.getTestPolicyCmptTypeParameter());
-
     }
 
     public void testInitFromXml() {
@@ -275,11 +272,11 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         ITestPolicyCmpt targetChild = null;
         try {
             targetChild = association.findTarget();
+            assertNotNull(targetChild);
+            assertEquals(policyCmptTypeName, targetChild.getTestPolicyCmptTypeParameter());
         } catch (CoreException e) {
             fail(e.getLocalizedMessage());
         }
-        assertNotNull(targetChild);
-        assertEquals(policyCmptTypeName, targetChild.getTestPolicyCmptTypeParameter());
     }
 
     public void testValidateTestCaseTypeParamNotFound() throws Exception {
@@ -531,7 +528,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals(associationPos0, testPolicyCmptObjectInput.getTestPolicyCmptLinks()[2]);
     }
 
-    /*
+    /**
      * Test that adding test objects doesn't end in a fix sort order
      */
     public void testAddTestPcTypeAssociationCorrectOrder() throws CoreException {

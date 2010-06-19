@@ -32,9 +32,6 @@ public class IpsObjectPartStringExtPropertyTest extends TestCase {
 
     private StringExtensionPropertyDefinition property;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

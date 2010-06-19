@@ -32,9 +32,6 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
     private ITestValueParameter valueParamInput;
     private IIpsProject project;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

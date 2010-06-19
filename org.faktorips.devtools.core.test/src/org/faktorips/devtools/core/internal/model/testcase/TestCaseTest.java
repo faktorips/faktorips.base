@@ -55,15 +55,13 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestCaseTest extends AbstractDependencyTest {
+
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot root;
     private ITestCase testCase;
     private ITestCaseType testCaseType;
     private ITestPolicyCmptTypeParameter policyCmptTypeParameterChild0;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -128,6 +126,7 @@ public class TestCaseTest extends AbstractDependencyTest {
             int testExpResultValues,
             int testInputPolicyCmpts,
             int testExpPolicyCmpts) {
+
         assertTestCaseObjects(testInputValues, testExpResultValues, testInputPolicyCmpts, testExpPolicyCmpts, 0);
     }
 
@@ -136,6 +135,7 @@ public class TestCaseTest extends AbstractDependencyTest {
             int testInputPolicyCmpts,
             int testExpPolicyCmpts,
             int testExpResultRules) {
+
         assertEquals(testInputValues, testCase.getInputTestValues().length);
         assertEquals(testExpResultValues, testCase.getExpectedResultTestValues().length);
         assertEquals(testInputPolicyCmpts, testCase.getInputTestPolicyCmpts().length);
@@ -470,11 +470,6 @@ public class TestCaseTest extends AbstractDependencyTest {
         assertTrue(testRuleParametersList.contains(ruleD));
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(IIpsProject)}
-     * .
-     */
     public void testContainsDifferenceToModel() throws CoreException {
         ITestCaseType testCaseTypeX = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
                 "testCaseTypeX");
@@ -489,11 +484,6 @@ public class TestCaseTest extends AbstractDependencyTest {
         assertEquals(true, testCaseX.containsDifferenceToModel(ipsProject));
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(IIpsProject)}
-     * .
-     */
     public void testFixAllDifferencesToModel() throws CoreException {
         ITestCaseType testCaseTypeX = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
                 "testCaseTypeX");
@@ -702,6 +692,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     private class TestValues {
+
         private ITestValue paramInput;
         private ITestValue paramExpected;
         private ITestAttributeValue attributeValueInput;
@@ -778,9 +769,6 @@ public class TestCaseTest extends AbstractDependencyTest {
         }
     }
 
-    /**
-     * test the findMetaClass method
-     */
     public void testFindMetaClass() throws CoreException {
         IIpsSrcFile typeSrcFile = testCase.findMetaClassSrcFile(ipsProject);
         assertEquals(testCaseType.getIpsSrcFile(), typeSrcFile);

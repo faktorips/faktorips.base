@@ -37,9 +37,6 @@ public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
     private IIpsSrcFile srcFile;
     private IPolicyCmptType originalType;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

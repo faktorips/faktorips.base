@@ -39,9 +39,6 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     private ITestAttribute testAttribute;
     private IIpsProject ipsProject;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

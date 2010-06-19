@@ -25,11 +25,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class ComplianceCheckTest extends AbstractIpsPluginTest {
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.builder.ComplianceCheck#isComplianceLevelAtLeast5(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
-     * .
-     */
     public void testIsComplianceLevelAtLeast5() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         IJavaProject javaProject = ipsProject.getJavaProject();

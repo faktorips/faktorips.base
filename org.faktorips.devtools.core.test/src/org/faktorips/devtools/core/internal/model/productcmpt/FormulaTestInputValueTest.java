@@ -55,7 +55,6 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate_relatedAttributeNotFound_datatypeOfRelatedAttributeNotFound() throws CoreException {
-
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setDatatype(Datatype.STRING.getQualifiedName());
         method.setName("calculatePremium");

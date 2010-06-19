@@ -28,19 +28,12 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
     private ChangesOverTimeNamingConvention vaa;
     private ChangesOverTimeNamingConvention pm;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         vaa = new ChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
         pm = new ChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.PM);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.ChangesInTimeNamingConvention.getName()'
-     */
     public void testGetName() {
         assertEquals("VAA", vaa.getName(Locale.ENGLISH));
         assertEquals("VAA", vaa.getName(Locale.GERMAN));
@@ -48,10 +41,6 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
         assertEquals("Produkt-Manager", pm.getName(Locale.GERMAN));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.ChangesInTimeNamingConvention.getGenerationConceptNameSingular(Locale)'
-     */
     public void testGetGenerationConceptNameSingular() {
         assertNotNull(vaa.getGenerationConceptNameSingular(Locale.ENGLISH));
         assertNotNull(vaa.getGenerationConceptNameSingular(Locale.GERMAN));
@@ -59,10 +48,6 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
         assertNotNull(pm.getGenerationConceptNameSingular(Locale.GERMAN));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.ChangesInTimeNamingConvention.getGenerationConceptNamePlural(Locale)'
-     */
     public void testGetGenerationConceptNamePlural() {
         assertNotNull(vaa.getGenerationConceptNamePlural(Locale.ENGLISH));
         assertNotNull(vaa.getGenerationConceptNamePlural(Locale.GERMAN));
@@ -82,10 +67,6 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
         assertNotNull(pm.getGenerationConceptNamePlural(false));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.ChangesInTimeNamingConvention.getGenerationConceptNameAbbreviation(Locale)'
-     */
     public void testGetGenerationConceptNameAbbreviation() {
         assertNotNull(vaa.getGenerationConceptNameAbbreviation(Locale.ENGLISH));
         assertNotNull(vaa.getGenerationConceptNameAbbreviation(Locale.GERMAN));

@@ -34,9 +34,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 
-/**
- *
- */
 public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -219,7 +216,6 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     public void testGetSortedIpsPackageFragments() throws CoreException, IOException {
-
         IIpsPackageFragment defaultFolder = ipsRoot.getIpsPackageFragment("");
 
         IIpsPackageFragment[] children = ipsRoot.getSortedIpsPackageFragments();

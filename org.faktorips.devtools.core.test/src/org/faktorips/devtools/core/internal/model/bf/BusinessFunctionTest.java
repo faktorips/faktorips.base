@@ -98,7 +98,6 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(source, cf.getSource());
         IBFElement target = bf.getBFElement("12");
         assertEquals(target, cf.getTarget());
-
     }
 
     public void testToXml() throws Exception {
@@ -218,7 +217,6 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
         MessageList list2 = msgList.getMessagesFor(start2);
         assertNotNull(list2.getMessageByCode(IBusinessFunction.MSGCODE_START_SINGLE_OCCURRENCE));
-
     }
 
     public void testValidateEndOnlyOnce() throws Exception {
@@ -235,7 +233,6 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
         MessageList list2 = msgList.getMessagesFor(end2);
         assertNotNull(list2.getMessageByCode(IBusinessFunction.MSGCODE_END_SINGLE_OCCURRENCE));
-
     }
 
     public void testValidateBFElementNameCollision() throws Exception {
@@ -431,7 +428,6 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         msgAction2 = msgList.getMessagesFor(action2);
         assertNull(msgAction2.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
         assertNull(msgAction2.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
-
     }
 
     public void testDependsOn() throws Exception {
@@ -484,6 +480,5 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         details = bf.getDependencyDetails(dependencies[0]);
         assertEquals(1, details.size());
         assertTrue(details.contains(new DependencyDetail(param, IParameterBFE.PROPERTY_DATATYPE)));
-
     }
 }

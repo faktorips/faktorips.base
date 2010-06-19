@@ -412,7 +412,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         assertEquals(1, baseProject.findReferencingProjectLeavesOrSelf().length);
         assertEquals(lastProject, baseProject.findReferencingProjectLeavesOrSelf()[0]);
-
     }
 
     public void testIsAccessibleViaIpsObjectPath() throws CoreException {
@@ -768,7 +767,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(datatypeList.contains(new EnumTypeDatatypeAdapter(gender, null)));
     }
 
-    /*
+    /**
      * Creates an ips project called RefProject that is referenced by the ips project and has 2
      * predefined datatypes and one dynamic datatype.
      */
@@ -1103,7 +1102,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testFindAllTableContentsSrcFiles() throws CoreException {
-
         ITableStructure ts0 = newTableStructure(ipsProject, "structure0");
         ITableStructure ts1 = newTableStructure(ipsProject, "structure1");
 
@@ -1141,7 +1139,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testFindAllEnumContentSrcFiles() throws CoreException {
-
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
 
         IEnumType enumType0 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType0", true, null)
@@ -1564,7 +1561,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateDuplicateTocFilesInDifferentProjects() throws Exception {
-
         // check if the validation doesn't fail for a valid non duplicate toc file path
         MessageList ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS));
@@ -1926,7 +1922,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testFindAllIpsSrcFilesByPackageFragment() throws Exception {
-
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.B");
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.C");

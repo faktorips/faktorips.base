@@ -96,9 +96,6 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
             super(ipsProject);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IType currentType) throws CoreException {
             if (stopVisitingAfterThisType == null) {

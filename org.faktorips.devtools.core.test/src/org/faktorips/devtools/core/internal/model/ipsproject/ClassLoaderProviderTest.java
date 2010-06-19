@@ -40,9 +40,6 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     private IJavaProject javaProject;
     private ClassLoaderProvider provider;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -55,8 +52,6 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
      * Following test covers the followng case: A listener is notified and deregisters itself from
      * the provider. This needn't result in a Exception because of a concurrent modification
      * exception in the provider.
-     * 
-     * @throws Exception
      */
     public void testRemoveListenerDuringNotification() throws Exception {
         createClassFile();
@@ -79,10 +74,6 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         deleteClassFile();
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.ClassLoaderProvider.getClassLoader()'
-     */
     public void testGetClassLoader() throws Exception {
         createClassFile();
         createJarFileAndAppendToClasspath();
@@ -202,9 +193,6 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
 
         private IJavaProject project = null;
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void classpathContentsChanges(IJavaProject project) {
             this.project = project;

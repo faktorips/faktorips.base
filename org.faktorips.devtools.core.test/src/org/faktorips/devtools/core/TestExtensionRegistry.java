@@ -54,6 +54,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
             String name,
             ResourceBundle translationBundle,
             Object token) throws IllegalArgumentException {
+
         throw new RuntimeException("Not implemented");
     }
 
@@ -143,9 +144,6 @@ public class TestExtensionRegistry implements IExtensionRegistry {
         return getExtensionPoint(namespace, extensionPointName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IExtensionPoint getExtensionPoint(String namespace, String extensionPointName) {
         for (IExtensionPoint extensionPoint : extensionPoints) {

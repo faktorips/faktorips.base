@@ -209,9 +209,6 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         int count = 0;
         ModificationStatusChangedEvent lastEvent;
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
             lastEvent = event;

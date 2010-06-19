@@ -36,9 +36,6 @@ public class PropertyValueComparatorTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration generation;
     private PropertyValueComparator comparator;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

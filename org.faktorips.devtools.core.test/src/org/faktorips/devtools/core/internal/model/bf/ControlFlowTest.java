@@ -105,7 +105,6 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         cf2.setBendpoint(4, null);
         assertTrue(cf2.getBendpoints().isEmpty());
         assertTrue(listener.getIpsObjectParts().isEmpty());
-
     }
 
     public void testAddBendpoint() {

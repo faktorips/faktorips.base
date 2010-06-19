@@ -27,9 +27,6 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class ColumnRangeTest extends AbstractIpsPluginTest {
 
     private IIpsSrcFile ipsSrcFile;

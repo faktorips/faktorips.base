@@ -17,9 +17,6 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class IpsArtefactBuilderSetConfigTest extends AbstractIpsPluginTest {
 
     public void testInitFromXml() throws Exception {

@@ -92,9 +92,6 @@ public class ProductCmptTypeHierarchyVisitorTest extends AbstractIpsPluginTest {
             super(ipsProject);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             if (stopVisitingAfterThisType == null) {

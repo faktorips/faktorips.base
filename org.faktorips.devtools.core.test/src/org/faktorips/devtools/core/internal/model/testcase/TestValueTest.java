@@ -37,9 +37,6 @@ public class TestValueTest extends AbstractIpsPluginTest {
     private ITestValue valueObjectUnknown;
     private IIpsProject project;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

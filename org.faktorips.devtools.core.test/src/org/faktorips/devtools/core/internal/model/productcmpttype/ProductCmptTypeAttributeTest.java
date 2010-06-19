@@ -38,9 +38,6 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     private IProductCmptTypeAttribute productAttribute;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -88,8 +85,6 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     /**
      * Tests if a attributes with properties containing null can be transformed to xml without
      * exceptions as null handling can be a problem especially transforming the xml to strings.
-     * 
-     * @throws TransformerException
      */
     public void testToXml_NullHandlng() throws TransformerException {
         IProductCmptTypeAttribute a = productCmptType.newProductCmptTypeAttribute();

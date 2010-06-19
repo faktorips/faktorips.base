@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -56,9 +55,6 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType motorPolicyType;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -117,7 +113,6 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertTrue(archive.containsPackage("motor.collision"));
         assertTrue(archive.containsPackage("home"));
         assertFalse(archive.containsPackage("unknwon"));
-
     }
 
     public void testGetArchivePath() {
@@ -139,7 +134,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertFalse(archive2.exists());
     }
 
-    public void testExists_FileOutsideWorkspace() throws IOException {
+    public void testExists_FileOutsideWorkspace() {
         IpsArchive archive = new IpsArchive(project, externalArchivePath);
         assertTrue(archive.exists());
 
@@ -179,7 +174,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(archiveFile.getLocation(), archive.getLocation());
     }
 
-    public void testGetLocation_FileInWorkspaceButDifferentProject() throws CoreException {
+    public void testGetLocation_FileInWorkspaceButDifferentProject() {
         IpsArchive ipsArchive = new IpsArchive(project, externalArchivePath);
         assertEquals(externalArchivePath, ipsArchive.getLocation());
     }
@@ -235,7 +230,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
                 qntArray[3]);
     }
 
-    public void testGetQNameTypes_FileOutsideWorkspace() throws CoreException, IOException {
+    public void testGetQNameTypes_FileOutsideWorkspace() throws CoreException {
         IIpsArchive archiveOutsideWorkspace = new IpsArchive(project, externalArchivePath);
         assertNotNull(archiveOutsideWorkspace);
 

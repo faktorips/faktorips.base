@@ -41,9 +41,6 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     private IpsProject ipsProject;
     private IIpsProjectNamingConventions namingConventions;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -55,8 +52,6 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
      * Test method for
      * {@link org.faktorips.devtools.core.internal.model.ipsproject.DefaultIpsProjectNamingConventions#validateIpsPackageName(java.lang.String)}
      * .
-     * 
-     * @throws CoreException
      */
     public void testValidateIpsPackageName() throws CoreException {
         MessageList ml = namingConventions.validateIpsPackageName("validName");
@@ -236,7 +231,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         invalidNamesMsgCodes.add(IIpsProjectNamingConventions.DISCOURAGED_NAME);
     }
 
-    /*
+    /**
      * Validates the given valid- and invalid names. For each invalid name the relevant message code
      * must be given, to perform the assert against this message code.
      */
@@ -272,7 +267,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         }
     }
 
-    /*
+    /**
      * Test if the validate method of the ips objects includes the naming validation.
      */
     public void testValidateNameWithIpsObjects() throws Exception {

@@ -36,9 +36,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/**
- *
- */
 public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     private IIpsPackageFragmentRoot ipsRootFolder;
@@ -215,9 +212,6 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertTrue(attribute.isOverwrite());
     }
 
-    /*
-     * Class under test for Element toXml(Document)
-     */
     public void testToXml() {
         attribute = pcType.newPolicyCmptTypeAttribute(); // => id=1 as this is the type's 2
         // attribute

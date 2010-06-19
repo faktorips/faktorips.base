@@ -45,12 +45,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -60,9 +60,6 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class PolicyCmptTypeTest extends AbstractDependencyTest implements ContentsChangeListener {
 
     private IIpsPackageFragment pack;
@@ -198,7 +195,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNull(policyCmptType.findProductCmptType(ipsProject));
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, policyCmptType.getIpsPackageFragment()
-                .getName() + ".Product");
+                .getName()
+                + ".Product");
         policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
         assertSame(productCmptType, policyCmptType.findProductCmptType(ipsProject));
     }
@@ -406,8 +404,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
         List<IDependency> dependencyList = Arrays.asList(a.dependsOn());
         assertEquals(2, dependencyList.size());
-        IDependency dependency = IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(),
-                b.getQualifiedNameType());
+        IDependency dependency = IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), b
+                .getQualifiedNameType());
         assertTrue(dependencyList.contains(dependency));
 
         assertSingleDependencyDetail(a, dependency, aToB, IAssociation.PROPERTY_TARGET);
@@ -446,8 +444,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         c.setSupertype(a.getQualifiedName());
         List<IDependency> dependencyList = Arrays.asList(c.dependsOn());
         assertEquals(3, dependencyList.size());
-        IDependency dependency = IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(),
-                a.getQualifiedNameType());
+        IDependency dependency = IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a
+                .getQualifiedNameType());
         assertTrue(dependencyList.contains(dependency));
         assertSingleDependencyDetail(c, dependency, c, IPolicyCmptType.PROPERTY_SUPERTYPE);
 
@@ -548,8 +546,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSingleDependencyDetail(a, dependency, aToD1, IAssociation.PROPERTY_TARGET);
 
         dependsOn = Arrays.asList(d1.dependsOn());
-        dependency = IpsObjectDependency.createCompostionMasterDetailDependency(d1.getQualifiedNameType(),
-                d2.getQualifiedNameType());
+        dependency = IpsObjectDependency.createCompostionMasterDetailDependency(d1.getQualifiedNameType(), d2
+                .getQualifiedNameType());
         assertTrue(dependsOn.contains(dependency));
         assertSingleDependencyDetail(d1, dependency, d1ToD2, IAssociation.PROPERTY_TARGET);
 
@@ -661,9 +659,6 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
                 policyCmptType, "NewProduct");
     }
 
-    /**
-     * Overridden.
-     */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;
@@ -744,7 +739,6 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
     }
 
     public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreException {
-
         IIpsProject a = newIpsProject("aProject");
         IProductCmptType aProductTypeProjectA = newProductCmptType(a, "faktorzehn.example.APolicy");
         IIpsProject b = newIpsProject("bProject");

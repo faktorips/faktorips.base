@@ -22,9 +22,6 @@ public class AssociationTypeTest extends AbstractIpsPluginTest {
 
     private IAssociation association;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

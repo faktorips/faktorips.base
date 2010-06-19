@@ -31,9 +31,6 @@ public class TestParameterTest extends AbstractIpsPluginTest {
     private ITestPolicyCmptTypeParameter testParam;
     private IIpsProject project;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

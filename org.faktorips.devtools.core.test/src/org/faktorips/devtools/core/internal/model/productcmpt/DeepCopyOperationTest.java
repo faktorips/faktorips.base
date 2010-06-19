@@ -44,9 +44,6 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IProductCmpt product;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -58,8 +55,6 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     /**
      * For this test, the comfort-product of the default test content is copied completely. After
      * that, the new files are expected to be existant and not dirty.
-     * 
-     * @throws CycleException
      */
     public void testCopyAll() throws Exception {
         createTestContent();
@@ -100,8 +95,6 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
      * For this test, the comfort-product of the default test content is copied only in part. After
      * that, the new files are expected to be existant and not dirty. Some relations from the new
      * objects link now the the not copied old objects.
-     * 
-     * @throws CycleException
      */
     public void testCopySome() throws Exception {
         createTestContent();
@@ -249,30 +242,25 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         createPolicyCmptTypeAssociation(contract, coverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL, "Coverage",
                 "Coverages", 0, Integer.MAX_VALUE);
         createProductCmptTypeAssociation(contract.findProductCmptType(ipsProject), coverage
-                .findProductCmptType(ipsProject), AssociationType.COMPOSITION_MASTER_TO_DETAIL, "CoverageType",
-                "CoverageTypes", 0, 1);
+                .findProductCmptType(ipsProject), "CoverageType", "CoverageTypes", 0, 1);
 
         // create association: MotorContract to Vehicle
         createPolicyCmptTypeAssociation(motorContract, vehicle, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "Vehicle", "Vehicles", 0, 1);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject), vehicle
-                .findProductCmptType(ipsProject), AssociationType.COMPOSITION_MASTER_TO_DETAIL, "VehicleType",
-                "VehicleTypes", 0, 1);
+                .findProductCmptType(ipsProject), "VehicleType", "VehicleTypes", 0, 1);
 
         // create association: MotorContract to CollisionCoverage
         createPolicyCmptTypeAssociation(motorContract, collisionCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "CollisionCoverage", "CollisionCoverages", 0, 2);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject), collisionCoverage
-                .findProductCmptType(ipsProject), AssociationType.COMPOSITION_MASTER_TO_DETAIL,
-                "CollisionCoverageType", "CollisionCoverageTypes", 0, 2);
+                .findProductCmptType(ipsProject), "CollisionCoverageType", "CollisionCoverageTypes", 0, 2);
 
         // create association: MotorContract to TplCoverage
         createPolicyCmptTypeAssociation(motorContract, tplCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "TplCoverage", "TplCoverages", 0, 1);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject), tplCoverage
-                .findProductCmptType(ipsProject), AssociationType.COMPOSITION_MASTER_TO_DETAIL, "TplCoverageType",
-                "TplCoverageTypes", 0, 1);
-
+                .findProductCmptType(ipsProject), "TplCoverageType", "TplCoverageTypes", 0, 1);
     }
 
     private void createProducts() throws CoreException {
@@ -312,11 +300,11 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
     private void createProductCmptTypeAssociation(IProductCmptType source,
             IProductCmptType target,
-            AssociationType assocType,
             String roleNameSingular,
             String roleNamePlural,
             int minCardinality,
             int maxCardinality) {
+
         IProductCmptTypeAssociation coverageTypeAssoc = source.newProductCmptTypeAssociation();
         coverageTypeAssoc.setTarget(target.getQualifiedName());
         coverageTypeAssoc.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -333,6 +321,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             String roleNamePlural,
             int minCardinality,
             int maxCardinality) {
+
         IPolicyCmptTypeAssociation assoc = source.newPolicyCmptTypeAssociation();
         assoc.setTarget(target.getQualifiedName());
         assoc.setAssociationType(assocType);

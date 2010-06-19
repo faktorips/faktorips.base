@@ -249,7 +249,6 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
                 .toString());
         assertEquals("ipssrc/products", ((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath()
                 .toString());
-
     }
 
     public void testToXml() {
@@ -320,7 +319,6 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsSrcFiles() throws Exception {
-
         IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
         IIpsObject obj2 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.B");
         IIpsObject obj3 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.C");
@@ -398,7 +396,6 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(0, ml.getNoOfMessages());
-
     }
 
     public void testValidateOutputFolderMergableAndDerivedEmpty() throws Exception {
@@ -439,7 +436,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
 
         IIpsObjectPathEntry entry0 = path.getEntries()[0]; // default test project contains already
-                                                           // 1 entry
+        // 1 entry
         IIpsSrcFolderEntry entry1 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src"));
         IIpsSrcFolderEntry entry2 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src2"));
         IIpsSrcFolderEntry entry3 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src3"));
@@ -451,12 +448,12 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(4, path.getEntries().length);
         assertEquals(2, newIndices.length);
         assertTrue((newIndices[0] == 1) || (newIndices[1] == 1)); // check if the expected indices
-                                                                  // are contained in the
+        // are contained in the
         assertTrue((newIndices[0] == 2) || (newIndices[1] == 2)); // returned array (no order
-                                                                  // guaranteed)
+        // guaranteed)
 
         assertEquals(entry2, path.getEntries()[0]); // check if the IPS object path was really
-                                                    // modified in the
+        // modified in the
         assertEquals(entry0, path.getEntries()[1]); // expected manner
         assertEquals(entry1, path.getEntries()[2]);
         assertEquals(entry3, path.getEntries()[3]);

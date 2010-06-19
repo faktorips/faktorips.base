@@ -49,7 +49,6 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsSrcFiles() throws Exception {
-
         IpsProject refProject = (IpsProject)newIpsProject("RefProject");
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.B");

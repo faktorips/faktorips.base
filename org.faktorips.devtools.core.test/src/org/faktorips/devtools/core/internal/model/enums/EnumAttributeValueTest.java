@@ -127,7 +127,6 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         enumType3.initFromXml(enumTypeEl3);
         assertEquals("foo", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(0).getValue());
         assertEquals("bar", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
-
     }
 
     public void testValidateParsable() throws CoreException {

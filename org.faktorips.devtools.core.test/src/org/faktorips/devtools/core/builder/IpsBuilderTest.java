@@ -383,11 +383,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         final IProductCmptType aConfigTypeFinal = aConfigType;
         final IProductCmpt aProductFinal = aProduct;
 
-        // to ensure that the build has finished before the results are checked the assertions are
-        // done within this resource change listener. The listener is registered for post build
-        // events
-        // it is necessary to remove the listener after assertion sind the workspace will be the
-        // same for all test cases that are executed in one test suite
+        /*
+         * to ensure that the build has finished before the results are checked the assertions are
+         * done within this resource change listener. The listener is registered for post build
+         * events it is necessary to remove the listener after assertion sind the workspace will be
+         * the same for all test cases that are executed in one test suite
+         */
         IResourceChangeListener listener = new IResourceChangeListener() {
             @Override
             public void resourceChanged(IResourceChangeEvent event) {
@@ -404,7 +405,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     public void testDependencyGraphWithAggregateRootBuilderNoComposits() throws Exception {
-
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
@@ -425,9 +425,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         builder.getBuiltIpsObjects().clear();
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-        // list is expected to be empty since only master to detail compositions will be build when
-        // the
-        // the builder set is an aggregate root builder set
+        /*
+         * list is expected to be empty since only master to detail compositions will be build when
+         * the the builder set is an aggregate root builder set
+         */
         List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
         assertTrue(builtIpsObjects.contains(c));
     }
@@ -454,9 +455,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         builder.getBuiltIpsObjects().clear();
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-        // all dependent objects are expected to be in the list since all relations are composite
-        // master to
-        // detail relations
+        /*
+         * all dependent objects are expected to be in the list since all relations are composite
+         * master to detail relations
+         */
         List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
         assertTrue(builtIpsObjects.contains(a));
         assertTrue(builtIpsObjects.contains(b));
@@ -485,15 +487,15 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         builder.getBuiltIpsObjects().clear();
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-        // all dependent objects are expected to be in the list since all relations are composite
-        // master to
-        // detail relations
+        /*
+         * all dependent objects are expected to be in the list since all relations are composite
+         * master to detail relations
+         */
         List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
         assertTrue(builtIpsObjects.contains(c));
     }
 
     public void testDependencyGraph() throws CoreException {
-
         IProductCmptType a = newProductCmptType(root, "A");
         IProductCmptType b = newProductCmptType(root, "B");
         b.setSupertype(a.getQualifiedName());
@@ -630,7 +632,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     public void testDependencyGraphWithReferencingProjects() throws Exception {
-
         IIpsProject projectB = createSubProject(ipsProject, "projectB");
         IIpsProject projectC = createSubProject(projectB, "projectC");
 
@@ -847,7 +848,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(buildObjectsC.contains(cProduct));
         assertEquals(projectC, builderProjectC.ipsProjectOfBeforeBuildProcess);
         assertEquals(projectC, builderProjectC.ipsProjectOfAfterBuildProcess);
-
     }
 
     private IIpsProject createSubProject(IIpsProject superProject, String projectName) throws CoreException {
@@ -864,6 +864,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     private TestDependencyIpsArtefactBuilder createTestBuilderForProject(IIpsProject project,
             boolean isAggregateRootBuilderSet) throws CoreException {
+
         IIpsProjectProperties props = project.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         project.setProperties(props);
@@ -911,6 +912,5 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSet builderSet = ((IpsModel)ipsProject.getIpsModel()).getIpsArtefactBuilderSet(ipsProject,
                 false);
         assertEquals(ipsProject, builderSet.getIpsProject());
-
     }
 }

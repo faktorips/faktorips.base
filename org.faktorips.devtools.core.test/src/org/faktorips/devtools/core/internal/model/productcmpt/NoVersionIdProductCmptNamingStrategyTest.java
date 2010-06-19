@@ -42,44 +42,23 @@ public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginT
         strategy.setIpsProject(project);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy.getNextVersionId(IProductCmpt)'
-     */
     public void testGetNextVersionId() throws CoreException {
         IProductCmpt pc = newProductCmpt(project, "TestProduct");
         assertEquals("", strategy.getNextVersionId(pc));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getConstantPart(String)'
-     */
     public void testGetConstantPart() {
         assertEquals("abc", strategy.getKindId("abc"));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getVersionId(String)'
-     */
     public void testGetVersionId() {
         assertEquals("", strategy.getVersionId("abc.- 123"));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getNextName(IProductCmpt)'
-     */
     public void testGetNextName() {
-
         assertEquals("abc", strategy.getKindId("abc"));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.validate(String)'
-     */
     public void testValidate() {
         MessageList list = strategy.validate("abc");
         assertFalse(list.containsErrorMsg());

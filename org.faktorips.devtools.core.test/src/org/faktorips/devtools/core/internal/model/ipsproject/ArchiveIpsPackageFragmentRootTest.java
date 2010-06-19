@@ -45,9 +45,6 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     private ArchiveIpsPackageFragmentRoot root;
     private IPolicyCmptType type;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

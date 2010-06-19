@@ -785,7 +785,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(rootEnumType.isSubEnumTypeOf(level1EnumType, otherProject));
         assertTrue(rootEnumType.isSubEnumTypeOf(level2EnumType, otherProject));
         assertTrue(rootEnumType.isSubEnumTypeOf(level3EnumType, otherProject));
-
     }
 
     public void testIsSubEnumTypeOrSelf() throws CoreException {

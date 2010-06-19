@@ -24,9 +24,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 
-/**
- *
- */
 public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
 
     IPolicyCmptTypeAttribute attribute;

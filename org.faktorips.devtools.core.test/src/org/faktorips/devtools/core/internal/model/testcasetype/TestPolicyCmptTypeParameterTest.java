@@ -170,6 +170,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
             boolean isInput,
             boolean isExpected,
             boolean isCombined) {
+
         assertNotNull(targetChild);
         assertEquals(name, targetChild.getName());
         assertEquals(policyCmptTypeName, targetChild.getPolicyCmptType());
@@ -642,7 +643,6 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
             childParameter.setPolicyCmptType(coverage.getQualifiedName());
             childParameter.setAssociation(coverages.getName());
             childParameter.setName("CoverageParam");
-
         }
     }
 }

@@ -118,9 +118,6 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         assertEquals(a.getQualifiedNameType(), dependants[0].getSource());
     }
 
-    /*
-     * Test method for 'org.faktorips.plugin.builder.DependencyGraph.getDependants(String)'
-     */
     public void testGetDependants() {
         IDependency[] dependants = graph.getDependants(a.getQualifiedNameType());
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);
@@ -150,9 +147,6 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         assertEquals(1, dependants.length);
     }
 
-    /*
-     * Test method for 'org.faktorips.plugin.builder.DependencyGraph.update(String)'
-     */
     public void testUpdate() throws Exception {
         a.getPolicyCmptTypeAssociations()[0].delete();
         a.getIpsSrcFile().save(true, null);

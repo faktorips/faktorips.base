@@ -55,10 +55,6 @@ public class TableContentsTest extends AbstractDependencyTest {
         pdSrcFile = table.getIpsSrcFile();
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.plugin.internal.model.tablecontents.TableContentsImpl.dependsOn()'
-     */
     public void testDependsOn() throws Exception {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IDependency[] dependsOn = table.dependsOn();
@@ -73,7 +69,6 @@ public class TableContentsTest extends AbstractDependencyTest {
     }
 
     public void testNewColumn() {
-
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
@@ -126,7 +121,6 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("c", row12.getValue(1));
         assertEquals("c", row21.getValue(1));
         assertEquals("c", row22.getValue(1));
-
     }
 
     public void testInitFromXml() {
@@ -212,9 +206,6 @@ public class TableContentsTest extends AbstractDependencyTest {
                 exception);
     }
 
-    /*
-     * Class under test for Element toXml(Document)
-     */
     public void testToXmlDocument() {
         table.setDescription("blabla");
         table.setTableStructure("RateTableStructure");
@@ -333,7 +324,6 @@ public class TableContentsTest extends AbstractDependencyTest {
 
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
-
     }
 
     public void testValidate() throws Exception {

@@ -22,17 +22,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
 
     private ITimedIpsObject timedObj;
     private IIpsObjectGeneration generation;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -88,9 +82,6 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertEquals(new GregorianCalendar(2005, 0, 1), generation.getValidFrom());
     }
 
-    /*
-     * Class under test for Element toXml(Document)
-     */
     public void testToXmlDocument() {
         generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
         Element element = generation.toXml(newDocument());

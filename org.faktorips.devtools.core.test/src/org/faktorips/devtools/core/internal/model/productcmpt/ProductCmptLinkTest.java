@@ -29,9 +29,6 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     private IIpsSrcFile ipsSrcFile;
@@ -42,9 +39,6 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     private IProductCmptType productCmptType;
     private IIpsProject ipsProject;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -57,7 +51,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         ipsSrcFile = productCmpt.getIpsSrcFile();
     }
 
-    public void testGetAssociation() throws CoreException {
+    public void testGetAssociation() {
         assertEquals("CoverageType", link.getAssociation());
     }
 

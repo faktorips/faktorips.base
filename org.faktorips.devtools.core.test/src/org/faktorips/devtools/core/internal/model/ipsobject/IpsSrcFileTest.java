@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
@@ -38,9 +37,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
 
-/**
- *
- */
 public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificationStatusChangeListener,
         ContentsChangeListener {
 
@@ -56,9 +52,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
 
     private PrintStream errorStream;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -96,7 +89,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertEquals("ParsableFile", parsableFile.getIpsObjectName());
     }
 
-    public void testSave() throws IOException, CoreException {
+    public void testSave() throws CoreException {
         policyCmptType.newPolicyCmptTypeAttribute();
         assertTrue(parsableFile.isDirty());
 
@@ -207,17 +200,11 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertFalse(parsableFile.isDirty());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
         lastModStatusEvent = event;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         lastContentChangedEvent = event;

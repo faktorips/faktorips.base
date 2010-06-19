@@ -196,7 +196,6 @@ public class ActionBFETest extends AbstractIpsPluginTest {
     }
 
     public void testValidateInlineAction() throws Exception {
-
         // check name specified
         IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
         MessageList msgList = action.validate(ipsProject);
@@ -217,7 +216,6 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         action.setName("execute");
         msgList = action.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_NAME_NOT_VALID));
-
     }
 
     public void testValidateBusinessFunctionCallAction() throws Exception {
@@ -264,7 +262,6 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         action = bf.newOpaqueAction(new Point(10, 10));
         action.setTarget("a.b.c.target");
         assertNull(action.getReferencedBfUnqualifedName());
-
     }
 
     public void testGetDisplayString() {

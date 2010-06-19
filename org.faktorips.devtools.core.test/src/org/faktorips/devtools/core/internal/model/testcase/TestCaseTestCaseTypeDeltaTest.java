@@ -35,13 +35,11 @@ import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 
 public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
+
     private ITestCase testCase;
     private ITestCaseType testCaseType;
     private IIpsProject ipsProject;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -51,10 +49,6 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testCase.setTestCaseType(testCaseType.getName());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.testcase.ITestCaseTestCaseTypeDelta.isEmpty()'
-     */
     public void testIsEmpty() throws CoreException {
         ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
         assertTrue(delta.isEmpty());
@@ -75,10 +69,6 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
 
         fixAndAssert(testCase.computeDeltaToTestCaseType());
     }
-
-    //
-    // Missing test case type side objects
-    //
 
     public void testGetTestValuesWithMissingTestValueParam() throws CoreException {
         ITestValue value = testCase.newTestValue();
@@ -163,10 +153,6 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
 
         fixAndAssert(testCase.computeDeltaToTestCaseType());
     }
-
-    //
-    // Missing test case type side objects
-    //
 
     public void testGetTestValueParametersWithMissingTestValue() throws CoreException {
         ITestValueParameter testValueParam1 = testCaseType.newInputTestValueParameter();

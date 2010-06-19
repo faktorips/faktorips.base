@@ -47,9 +47,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     private TestIpsObjectPartContainer container;
     private IpsModel model;
 
-    /**
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -124,7 +121,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     public void testToXml_ExtensionProperties() {
-
         // no extension properties
         Element el = container.toXml(newDocument());
         Element extPropertiesEl = XmlUtil.getFirstElement(el, IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
@@ -284,8 +280,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     /**
      * Test method for IpsObjectPartContainer#validate(). Tests wether the validation is performed
      * on <code>IpsObjectPartContainer</code>s contained in historic <code>IIpsSrcFile</code>s.
-     * 
-     * @throws CoreException
      */
     public void testValidate() throws CoreException {
         // create srcfile with contents
@@ -333,17 +327,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             return doc.createElement("TestPart");
         }
 
-        /**
-         * @return Returns the name.
-         */
         @Override
         public String getName() {
             return name;
         }
 
-        /**
-         * @param name The name to set.
-         */
         @Override
         public void setName(String name) {
             this.name = name;

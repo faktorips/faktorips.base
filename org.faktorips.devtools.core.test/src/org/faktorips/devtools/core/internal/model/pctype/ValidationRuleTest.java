@@ -26,9 +26,6 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     private PolicyCmptType pcType;
@@ -121,9 +118,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("b", validatedAttributes[1]);
     }
 
-    /*
-     * Class under test for Element toXml(Document)
-     */
     public void testToXmlDocument() {
         rule = pcType.newRule(); // => id=1 because it's the second rule
         rule.setName("checkAge");

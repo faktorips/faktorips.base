@@ -146,7 +146,6 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
     }
 
     public void testloadExtensionsBooleanValue() {
-
         HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("name", "useChangeListener");
         attributes.put("type", "boolean");
@@ -168,11 +167,9 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
 
         assertEquals("false", propertyDef.getDisableValue(null));
         assertEquals(Boolean.FALSE, propertyDef.parseValue(propertyDef.getDisableValue(null)));
-
     }
 
     public void testloadExtensionsExtensionPointValue() {
-
         HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("name", "loggingConnectorRef");
         attributes.put("type", "extensionPoint");
@@ -205,8 +202,8 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
                 "builderSetId", logger, null);
 
         assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector", propertyDef.getDefaultValue(null));
-        assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector",
-                propertyDef.parseValue(propertyDef.getDefaultValue(null)));
+        assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector", propertyDef.parseValue(propertyDef
+                .getDefaultValue(null)));
 
         assertEquals("None", propertyDef.getDisableValue(null));
         assertEquals("None", propertyDef.parseValue(propertyDef.getDisableValue(null)));
@@ -218,11 +215,9 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector"));
         assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".log4jLoggingConnector"));
         assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".ownLoggingConnector"));
-
     }
 
     public void testloadExtensionsWithClassSpecfied() {
-
         HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("class", IpsBuilderSetPropertyDef.class.getName());
 
@@ -293,7 +288,6 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
 
         ipsProject = createTestIpsProject("1.3");
         assertFalse(propertyDef.isAvailable(ipsProject));
-
     }
 
     private IIpsProject createTestIpsProject(final String complianceLevel) {

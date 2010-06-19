@@ -22,145 +22,91 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     public final static String ANNUAL = "annual";
     public final static String MONTHLY = "monthly";
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getAllValueIds(boolean includeNull) {
         return new String[] { ANNUAL, MONTHLY };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isParsable(String value) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultValue() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getQualifiedName() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValueDatatype() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getJavaClassName() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSupportingNames() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getValueName(String id) {
         throw new RuntimeException("Not supported");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isNull(String value) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean supportsCompare() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isImmutable() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isMutable() {
         return false;

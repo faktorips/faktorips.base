@@ -32,10 +32,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.model.CreateIpsArchiveOperation.run(IProgressMonitor)'
-     */
     public void testRun() throws CoreException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");

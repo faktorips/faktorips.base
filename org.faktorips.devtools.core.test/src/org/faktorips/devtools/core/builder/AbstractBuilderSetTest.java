@@ -43,11 +43,6 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { a, b, c, d, e });
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.builder.AbstractBuilderSet#getBuildersByClass(java.lang.Class)}
-     * .
-     */
     public void testGetBuilderByClass() {
         assertEquals(0, builderSet.getBuildersByClass(NotInBuilderSer.class).size());
         assertEquals(5, builderSet.getBuildersByClass(DumyJavaSourceFileBuilder.class).size());
@@ -69,10 +64,6 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         assertEquals(1, builderSet.getBuildersByClass(EExtendsC.class).size());
         assertEquals(e, builderSet.getBuildersByClass(EExtendsC.class).get(0));
     }
-
-    /*
-     * -------------- TEST CLASSES --------------
-     */
 
     class A extends DumyJavaSourceFileBuilder {
 

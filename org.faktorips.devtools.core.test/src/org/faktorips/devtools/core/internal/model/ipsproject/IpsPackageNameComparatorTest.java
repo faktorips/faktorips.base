@@ -42,7 +42,6 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
     }
 
     public void testCompareBasicDefaultSortOrder() throws CoreException {
-
         comparator = new IpsPackageNameComparator(true);
 
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$

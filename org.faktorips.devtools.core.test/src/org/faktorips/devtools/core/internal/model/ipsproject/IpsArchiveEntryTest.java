@@ -51,9 +51,6 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     private QualifiedNameType qntMotorPolicy;
     private QualifiedNameType qntMotorCollision;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -106,7 +103,6 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsSrcFiles() throws Exception {
-
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
@@ -119,7 +115,6 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsSrcFilesWithPackageFragment() throws Exception {
-
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "pack1", result, new HashSet<IIpsObjectPathEntry>());
 
@@ -133,7 +128,6 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertEquals(1, result.size());
         IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);
         assertTrue(result.contains(motorCollision.getIpsSrcFile()));
-
     }
 
     public void testInitFromXml() {
@@ -147,7 +141,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertNull(entry.getArchivePath());
     }
 
-    public void testGetIpsArchive() throws CoreException {
+    public void testGetIpsArchive() {
         IIpsArchive archive = entry.getIpsArchive();
         assertNotNull(archive);
         assertEquals(archivePath, archive.getArchivePath());
@@ -165,12 +159,8 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
     public void testToXml() throws CoreException {
         Element el = entry.toXml(newDocument());
-        IPath dummyArchivePath = project.getIpsProjectPropertiesFile().getLocation(); // to create a
-                                                                                      // new entry
-                                                                                      // we need a
-                                                                                      // handle to
-                                                                                      // an existing
-                                                                                      // file path
+        // to create a new entry we need a handle to an existing file path
+        IPath dummyArchivePath = project.getIpsProjectPropertiesFile().getLocation();
         IpsArchiveEntry newEntry = (IpsArchiveEntry)project.getIpsObjectPath().newArchiveEntry(dummyArchivePath);
         newEntry.initFromXml(el, project.getProject());
         assertEquals(archivePath, newEntry.getArchivePath());

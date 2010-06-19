@@ -35,10 +35,6 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
         dataType = newDefinedEnumDatatype(project, new Class[] { TestEnumType.class })[0];
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.DynamicEnumDatatype.getAllValueIds()'
-     */
     public void testGetAllValueIds() {
         List<String> allValues = Arrays.asList(dataType.getAllValueIds(false));
         assertTrue(allValues.contains(TestEnumType.FIRSTVALUE.getId()));
@@ -49,18 +45,10 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
         assertTrue(allValues.contains(null));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.DynamicEnumDatatype.isSupportingNames()'
-     */
     public void testIsSupportingNames() {
         assertTrue(dataType.isSupportingNames());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.DynamicEnumDatatype.getValueName(String)'
-     */
     public void testGetValueName() {
         assertEquals(TestEnumType.FIRSTVALUE.getName(), dataType.getValueName(TestEnumType.FIRSTVALUE.getId()));
         assertEquals(TestEnumType.SECONDVALUE.getName(), dataType.getValueName(TestEnumType.SECONDVALUE.getId()));

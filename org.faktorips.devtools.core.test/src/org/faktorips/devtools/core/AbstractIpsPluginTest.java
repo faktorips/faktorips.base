@@ -183,7 +183,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         createLinkIfNecessary(archiveFile, file);
     }
 
-    /*
+    /**
      * Creates a links to the given file in the workspace.
      */
     protected void createLinkIfNecessary(IFile archiveFile, File file) throws CoreException {

@@ -125,7 +125,6 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         decision = bf.newMethodCallDecision(new Point(10, 10));
         msgList = decision.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
-
     }
 
     public void testFindDatatypeMethodCallDecision() {

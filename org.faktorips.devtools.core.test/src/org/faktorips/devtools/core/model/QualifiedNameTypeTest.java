@@ -57,7 +57,6 @@ public class QualifiedNameTypeTest extends TestCase {
     }
 
     public void testSerialize() throws Exception {
-
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
         QualifiedNameType qnt = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
@@ -99,9 +98,6 @@ public class QualifiedNameTypeTest extends TestCase {
         assertEquals(expectedPath, qnt.toPath());
     }
 
-    /*
-     * Test method for 'org.faktorips.plugin.model.QualifiedNameType.hashCode()'
-     */
     public void testHashCode() {
         QualifiedNameType type1 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
         QualifiedNameType type2 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
@@ -111,10 +107,6 @@ public class QualifiedNameTypeTest extends TestCase {
         assertFalse(type1.hashCode() == type3.hashCode());
     }
 
-    /*
-     * Test method for 'org.faktorips.plugin.model.QualifiedNameType.QualifiedNameType(String,
-     * IpsObjectType)'
-     */
     public void testQualifiedNameType() {
         new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
         try {
@@ -134,9 +126,6 @@ public class QualifiedNameTypeTest extends TestCase {
         assertEquals("Motorpolicy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension(), qnt.getFileName());
     }
 
-    /*
-     * Test method for 'org.faktorips.plugin.model.QualifiedNameType.equals(Object)'
-     */
     public void testEqualsObject() {
         QualifiedNameType type1 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
         QualifiedNameType type2 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
@@ -149,9 +138,6 @@ public class QualifiedNameTypeTest extends TestCase {
         assertFalse(type1.equals(type4));
     }
 
-    /*
-     * Test method for 'org.faktorips.plugin.model.QualifiedNameType.toString()'
-     */
     public void testToString() {
         QualifiedNameType type1 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals(type1.toString(), "PolicyCmptType: test");

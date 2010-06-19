@@ -22,9 +22,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class RowImplTest extends AbstractIpsPluginTest {
 
     private IIpsSrcFile ipsSrcFile;
@@ -110,9 +107,6 @@ public class RowImplTest extends AbstractIpsPluginTest {
         }
     }
 
-    /*
-     * Test for Row#getRowNumber()
-     */
     public void testGetRowNumber() {
         assertEquals(0, row.getRowNumber());
         assertEquals(1, row2.getRowNumber());

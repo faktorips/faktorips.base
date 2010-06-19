@@ -40,7 +40,6 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     public void testBeforeBuild() throws Exception {
-
         builder.beforeBuild(ipsSrcFile, null);
         assertEquals(ipsSrcFile, builder.getIpsSrcFile());
     }
@@ -66,9 +65,10 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         IFile file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile("TestPolicy.java");
         assertTrue(file.exists());
 
-        // this checks if the merge.xml has been found since it will try to merge the content
-        // because
-        // the java file exists already
+        /*
+         * this checks if the merge.xml has been found since it will try to merge the content
+         * because the java file exists already
+         */
         builder.setMergeEnabled(true);
         builder.reset();
         builder.isBuilderFor = true;

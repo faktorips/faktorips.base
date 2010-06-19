@@ -48,9 +48,6 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType policyCmptType;
@@ -234,9 +231,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(link2, generation.getLinks()[1]);
     }
 
-    /*
-     * Class under test for void toXml(Element)
-     */
     public void testToXmlElement() {
         generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
         generation.newConfigElement();
@@ -370,8 +364,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     /**
      * test for bug #829
-     * 
-     * @throws Exception
      */
     public void testCanCreateValidRelation_RelationDefinedInSupertypeHierarchyOfSourceType() throws Exception {
         // create a subtype of the existing policy component type
@@ -428,7 +420,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         assertEquals(ce2, generation.getConfigElement("a2"));
         assertNull(generation.getConfigElement("unkown"));
-
     }
 
     public void testGetNumOfConfigElements() {
@@ -447,9 +438,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(1, generation.getNumOfConfigElements());
     }
 
-    /*
-     * Class under test for ProductCmptRelation[] getRelations()
-     */
     public void testGetRelations() {
         IProductCmptLink r1 = generation.newLink("coverage");
         assertEquals(r1, generation.getLinks()[0]);
@@ -459,9 +447,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(r2, generation.getLinks()[1]);
     }
 
-    /*
-     * Class under test for ProductCmptRelation[] getRelations(String)
-     */
     public void testGetRelations_String() {
         IProductCmptLink r1 = generation.newLink("coverage");
         generation.newLink("risk");

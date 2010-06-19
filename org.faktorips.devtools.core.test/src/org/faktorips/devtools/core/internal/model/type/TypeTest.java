@@ -359,7 +359,6 @@ public class TypeTest extends AbstractIpsPluginTest {
 
         ml = target.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
-
     }
 
     public void testValidate_MustImplementDerivedUnion() throws Exception {
@@ -533,7 +532,6 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(2, methods.size());
         assertTrue(methods.contains(method3));
         assertTrue(methods.contains(method4));
-
     }
 
     public void testFindAttribute() throws CoreException {
@@ -564,9 +562,6 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(type.findAttribute("unknown", ipsProject));
     }
 
-    /**
-     * Test find associations by target and association type
-     */
     public void testFindAssociationsForTargetAndAssociationType() throws CoreException {
         IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
         IProductCmptType motor = (IProductCmptType)type;
@@ -646,7 +641,6 @@ public class TypeTest extends AbstractIpsPluginTest {
                 fail("the attribute is expected to be overridden.");
             }
         }
-
     }
 
     public void testNewAttribute() {

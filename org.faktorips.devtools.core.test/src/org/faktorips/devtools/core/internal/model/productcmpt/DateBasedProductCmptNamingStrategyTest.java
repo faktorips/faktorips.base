@@ -35,9 +35,6 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
     private IIpsProject ipsProject;
     private DateBasedProductCmptNamingStrategy strategy;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -52,10 +49,6 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
         ipsProject.setProperties(props);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy.validateVersionId(String)'
-     */
     public void testValidateVersionId() {
         MessageList list = new MessageList();
         list = strategy.validateVersionId("a2006-01-31");
@@ -81,10 +74,6 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
         assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_VERSION_ID));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy.getNextVersionId(IProductCmpt)'
-     */
     public void testGetNextVersionId() throws CoreException {
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2006, 0, 31));
         IProductCmpt pc = newProductCmpt(ipsProject, "TestProduct 2005-01-01");

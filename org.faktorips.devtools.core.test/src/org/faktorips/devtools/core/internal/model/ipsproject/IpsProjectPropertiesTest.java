@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.List;
 
-import javax.xml.transform.TransformerException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
@@ -93,7 +91,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void testToXml() throws TransformerException {
+    public void testToXml() {
         IpsProjectProperties props = new IpsProjectProperties();
         props.setModelProject(true);
         props.setProductDefinitionProject(true);

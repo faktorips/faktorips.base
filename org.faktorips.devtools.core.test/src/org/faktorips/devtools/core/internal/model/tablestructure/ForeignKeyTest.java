@@ -20,9 +20,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class ForeignKeyTest extends AbstractIpsPluginTest {
 
     private IIpsSrcFile ipsSrcFile;

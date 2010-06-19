@@ -44,9 +44,6 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     private IPolicyCmptType policy;
     private IPolicyCmptType coverage;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -163,10 +160,6 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         }
     }
 
-    /**
-     * @throws Exception
-     * 
-     */
     private IIpsProject createTestArchive() throws Exception {
         IIpsProject archiveProject = newIpsProject("ArchiveProject2");
         newPolicyCmptType(archiveProject, "products.hausrat.file1");

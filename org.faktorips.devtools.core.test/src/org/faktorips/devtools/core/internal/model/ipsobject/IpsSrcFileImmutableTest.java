@@ -68,7 +68,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         assertNull(srcFileImmutable.getCorrespondingResource());
     }
 
-    public void testGetCorrespondingFile() throws CoreException {
+    public void testGetCorrespondingFile() {
         assertNull(srcFileImmutable.getCorrespondingFile());
     }
 
@@ -139,7 +139,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         assertFalse(srcFileImmutable.isMutable());
     }
 
-    public void testIsHistoric() throws CoreException {
+    public void testIsHistoric() {
         assertTrue(srcFileImmutable.isHistoric());
     }
 

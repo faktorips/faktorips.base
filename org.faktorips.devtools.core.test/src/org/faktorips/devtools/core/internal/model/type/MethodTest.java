@@ -109,9 +109,6 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertEquals(0, method.getNumOfParameters());
     }
 
-    /*
-     * Class under test for Element toXml(Document)
-     */
     public void testToXmlDocument() {
         method = type.newMethod(); // => id=1, because it's the second method
         method.setName("getAge");
@@ -150,35 +147,18 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertTrue(method.getIpsSrcFile().isDirty());
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.type.Method#setName(java.lang.String)}.
-     */
     public void testSetName() {
         testPropertyAccessReadWrite(Method.class, IIpsElement.PROPERTY_NAME, method, "calcPremium");
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.type.Method#setDatatype(java.lang.String)}.
-     */
     public void testSetDatatype() {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_DATATYPE, method, "Integer");
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.type.Method#setAbstract(boolean)}.
-     */
     public void testSetAbstract() {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_ABSTRACT, method, Boolean.TRUE);
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.type.Method#setModifier(org.faktorips.devtools.core.model.ipsobject.Modifier)}
-     * .
-     */
     public void testSetModifier() {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_MODIFIER, method, Modifier.PUBLIC);
     }

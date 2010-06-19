@@ -118,7 +118,6 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
 
         assertTrue((sorter.compare("grunddeckung", "grunddeckung") == 0));
         assertFalse((sorter.compare("grunddeckung", "dummy") == 0));
-
     }
 
     public void testCopy() throws CoreException {
@@ -135,7 +134,6 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
 
         assertNotNull(sortDefCopy);
         assertEquals(sorter.toPersistenceContent(), sortDefCopy.toPersistenceContent());
-
     }
 
     public void testGetSegmentNames() throws CoreException {
@@ -176,7 +174,6 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
     }
 
     public void testSetSegmentNames() throws CoreException {
-
         String packageNames = getSortDefinitionContent(packLeistungFix);
         sorter.initPersistenceContent(packageNames);
 
@@ -225,9 +222,6 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals("fix", test[2]);
     }
 
-    /**
-     * @see IpsPackageFragment
-     */
     private String getSortDefinitionContent(IIpsPackageFragment fragment) throws CoreException {
         IFolder folder;
 

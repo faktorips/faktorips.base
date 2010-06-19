@@ -524,7 +524,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(ipsRoot.getIpsPackageFragment("target.source").exists());
         assertTrue(ipsRoot.getIpsPackageFragment("target.source.empty").exists());
         assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "target.source.TestProduct").exists());
-
     }
 
     public void testMovePackageContainingEmptyPackage() throws Exception {

@@ -34,9 +34,6 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class TableStructureTest extends AbstractIpsPluginTest {
 
     private TableStructure table;
@@ -185,9 +182,6 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals("ageFrom-ageTo", table.getRanges()[0].getName());
     }
 
-    /*
-     * Class under test for Element toXml(Document)
-     */
     public void testToXmlDocument() {
         table.setDescription("blabla");
         table.setTableStructureType(TableStructureType.MULTIPLE_CONTENTS);
@@ -286,9 +280,6 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(ITableStructure.MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS));
     }
 
-    /**
-     * Test for findAllMetaObjects(..)
-     */
     public void testFindAllMetaObjects() throws CoreException {
         String tableStructureQName = "pack.MyTableStructure";
         String tableStructureProj2QName = "otherpack.MyTableStructureProj2";
@@ -356,6 +347,5 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 
         result = tableStructureProj2.searchMetaObjectSrcFiles(true);
         assertEquals(0, result.length);
-
     }
 }

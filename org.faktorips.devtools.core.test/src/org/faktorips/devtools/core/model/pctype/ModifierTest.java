@@ -17,9 +17,6 @@ import junit.framework.TestCase;
 
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 
-/**
- *
- */
 public class ModifierTest extends TestCase {
 
     /**

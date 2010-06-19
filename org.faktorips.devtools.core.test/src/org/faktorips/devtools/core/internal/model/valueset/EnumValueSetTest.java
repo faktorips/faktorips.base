@@ -42,8 +42,6 @@ import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- */
 public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     private DefaultEnumType gender;

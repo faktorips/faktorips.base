@@ -174,7 +174,6 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         tableStructureUsage.setRoleName("role1");
         ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
-
     }
 
     public void testValidateRoleNameInSupertypeHierarchy() throws CoreException {

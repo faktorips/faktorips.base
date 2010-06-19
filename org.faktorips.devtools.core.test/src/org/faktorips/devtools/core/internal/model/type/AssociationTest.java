@@ -40,9 +40,6 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
     private IAssociation implementationRelation;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -212,8 +209,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertTrue(association.isSubsetOfDerivedUnion(union, ipsProject));
 
         // check if the method returns false if the container relation has the same name but belongs
-        // to a
-        // different type
+        // to a different type
         IType otherType = newProductCmptType(ipsProject, "OtherType");
         IAssociation otherRelation = otherType.newAssociation();
         otherRelation.setDerivedUnion(true);
@@ -325,7 +321,6 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateDerivedUnionAndSubsetOfDerivedUnionNotTheSame() throws Exception {
-
         IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
         IAssociation association = sourceCmpt.newAssociation();
@@ -343,7 +338,6 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateSubsetOfDerivedUnionSameMaxCardinality() throws Exception {
-
         IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
@@ -376,14 +370,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(1);
         msgList = subAssociation.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY));
-
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#toXml(org.w3c.dom.Document)}
-     * .
-     */
     public void testToXml() {
         association.setAssociationType(AssociationType.AGGREGATION);
         association.setTarget("pack1.CoverageType");
@@ -408,11 +396,6 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#initFromXml(org.w3c.dom.Element)}
-     * .
-     */
     public void testInitFromXmlElement() {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, 0);
@@ -428,11 +411,6 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals("blabla", association.getDescription());
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#findTarget(IIpsProject)}
-     * .
-     */
     public void testFindTarget() throws CoreException {
         association.setTarget("");
         assertNull(association.findTarget(ipsProject));

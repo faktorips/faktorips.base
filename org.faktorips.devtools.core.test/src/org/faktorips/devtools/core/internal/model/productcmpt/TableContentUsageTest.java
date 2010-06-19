@@ -44,9 +44,6 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
 
     final private String STRUCTURE_ROLENAME = "StructUsageRole";
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

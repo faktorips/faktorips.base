@@ -49,9 +49,6 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
     private ITestCaseType type;
     private IIpsPackageFragmentRoot root;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -315,10 +312,6 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertTrue(paramsList.contains(valueParameter));
     }
 
-    /**
-     * Test for findAllMetaObjects(..)
-     * 
-     */
     public void testFindAllMetaObjects() throws CoreException {
         String testCaseTypeQName = "pack.MyTestCaseType";
         String testCaseTypeProj2QName = "otherpack.MyTestCaseTypeProj2";
@@ -386,7 +379,6 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
 
         result = testCaseTypeProj2.searchMetaObjectSrcFiles(true);
         assertEquals(0, result.length);
-
     }
 
 }

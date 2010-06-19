@@ -44,9 +44,6 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IProductCmptTreeStructure structure;
 
-    /*
-     * @see PluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

@@ -124,7 +124,6 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertTrue(bfe.removeIncomingControlFlow(in));
         assertTrue(bfe.getIncomingControlFlow().isEmpty());
         assertTrue(listener.getIpsObjectParts().contains(bfe));
-
     }
 
     public void testRemoveOutgoingControlFlow() throws Exception {
@@ -145,7 +144,6 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertTrue(bfe.removeOutgoingControlFlow(out));
         assertTrue(bfe.getOutgoingControlFlow().isEmpty());
         assertTrue(listener.getIpsObjectParts().contains(bfe));
-
     }
 
     public void testGetAllControlFlows() throws Exception {

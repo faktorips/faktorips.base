@@ -44,18 +44,12 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.util.StringUtil;
 
-/**
- *
- */
 public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot rootPackage;
     private IpsPackageFragment pack;
 
-    /*
-     * @see PluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -160,9 +154,6 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertEquals(pack, file.getParent());
     }
 
-    /*
-     * Class under test for IpsSrcFile createPdFile(String, String, boolean, IProgressMonitor)
-     */
     public void testCreateIpsFile() throws CoreException, IOException {
         // need to supress the file's contents is not valid!
         suppressLoggingDuringExecutionOfThisTestCase();
@@ -193,7 +184,6 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsObjects() throws Exception {
-
         IIpsObject obj1 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
         IIpsObject obj2 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.B");
         IIpsObject obj3 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.C");
@@ -225,7 +215,6 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertFalse(result.contains(obj1));
         assertFalse(result.contains(obj2));
         assertFalse(result.contains(obj3));
-
     }
 
     public void testFindIpsObjectsStartingWith() throws CoreException {
@@ -431,7 +420,6 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     public void testGetSortedChildIpsPackageFragmentsExtend() throws CoreException, IOException {
-
         rootPackage.createPackageFragment("products.hausrat", true, null);
         rootPackage.createPackageFragment("products.kranken", true, null);
         IIpsPackageFragment service = rootPackage.createPackageFragment("products.kranken.leistungsarten", true, null);
@@ -549,11 +537,9 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         // test delete sort order
         hausrat.setSortDefinition(null);
         assertTrue(hausrat.getSortDefinition() instanceof IpsPackageFragmentDefaultSortDefinition);
-
     }
 
     public void testGetSortDefinition() throws CoreException, IOException {
-
         rootPackage.createPackageFragment("products.hausrat", true, null);
         rootPackage.createPackageFragment("products.kranken", true, null);
         rootPackage.createPackageFragment("products.unfall", true, null);
@@ -600,7 +586,6 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     public void testHasChildPackageFragments() throws CoreException {
-
         assertFalse(pack.hasChildIpsPackageFragments());
 
         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");

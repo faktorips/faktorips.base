@@ -46,9 +46,6 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class ProductCmptTest extends AbstractIpsPluginTest {
 
     private ProductCmpt productCmpt;
@@ -57,9 +54,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     private IIpsSrcFile srcFile;
     private IIpsProject ipsProject;
 
-    /*
-     * @see PluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -144,8 +138,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     /**
      * Test if a runtime id change will be correctly updated in the product component which
      * referenced the product cmpt on which the runtime id was changed.
-     * 
-     * @throws IOException
      */
     public void testRuntimeIdDependency() throws CoreException, IOException {
         IProductCmptType c = newProductCmptType(root, "C");
@@ -353,7 +345,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         // assertTrue(dependsOnAsList.contains(tableContents2.getQualifiedNameType()));
     }
 
-    public void testDependsOnWithFormula() throws CoreException {
+    public void testDependsOnWithFormula() {
         // TODO v2 - fix test
         // IPolicyCmptType a = newPolicyCmptType(root, "A");
         // IPolicyCmptType b = newPolicyCmptType(root, "B");
@@ -400,8 +392,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * Test method for
      * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(IIpsProject)}
      * .
-     * 
-     * @throws CoreException
      */
     public void testContainsDifferenceToModel() throws CoreException {
         PolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
@@ -437,8 +427,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * Test method for
      * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(IIpsProject)}
      * .
-     * 
-     * @throws CoreException
      */
     public void testFixAllDifferencesToModel() throws CoreException {
         IPolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
@@ -477,11 +465,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(new GregorianCalendar(2000, 1, 1), productCmpt.getValidTo());
     }
 
-    /**
-     * test the findMetaClass method
-     * 
-     * @throws CoreException
-     */
     public void testFindMetaClass() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());

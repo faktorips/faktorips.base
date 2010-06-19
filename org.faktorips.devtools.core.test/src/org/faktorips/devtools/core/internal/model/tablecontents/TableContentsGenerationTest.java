@@ -21,9 +21,6 @@ import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class TableContentsGenerationTest extends AbstractIpsPluginTest {
 
     private ITableContents table;

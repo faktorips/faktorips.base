@@ -40,9 +40,6 @@ public class TestRuleTest extends AbstractIpsPluginTest {
     private ITestCase testCase;
     private ITestRule testRule;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -129,9 +126,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         ruleC.setName("RuleC");
         ruleC.setMessageCode("RuleC");
 
-        /**
-         * simple validation
-         */
+        // simple validation
         MessageList ml = testRule.validate(project);
         testRule.setValidationRule("x");
         assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
@@ -155,9 +150,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         ml = testRule.validate(project);
         assertNull(ml.getMessageByCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
 
-        /**
-         * /* complex validation @see TestCaseTest#testGetTestRuleCandidates
-         */
+        // complex validation @see TestCaseTest#testGetTestRuleCandidates
         ITestPolicyCmptTypeParameter paramA1 = testCaseType.newInputTestPolicyCmptTypeParameter();
         paramA1.setPolicyCmptType(policyCmptTypeA.getQualifiedName());
         paramA1.setName("PolicyCmptA1");

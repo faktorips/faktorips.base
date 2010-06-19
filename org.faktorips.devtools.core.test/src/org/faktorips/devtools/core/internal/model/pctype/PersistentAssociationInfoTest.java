@@ -266,7 +266,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         }
     }
 
-    public void testInitFromXml() throws CoreException {
+    public void testInitFromXml() {
         NodeList nodeList = getTestDocument().getElementsByTagName(IPersistentAssociationInfo.XML_TAG);
         assertEquals(1, nodeList.getLength());
 
@@ -309,8 +309,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals("joinColumn0", copyOfPersistenceAssociatonInfo.getJoinColumnName());
     }
 
-    public void testIsJoinColumnRequired() throws CoreException {
-
+    public void testIsJoinColumnRequired() {
         // due to performance reason do the cast to PersistentAssociationInfo
         // thus we can use the public method isJoinTableRequired(inverseAss)
         PersistentAssociationInfo persistenceAssociatonInfo = (PersistentAssociationInfo)pcAssociation

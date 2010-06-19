@@ -32,9 +32,6 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
     private ITestRuleParameter ruleInput;
     private IIpsProject project;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

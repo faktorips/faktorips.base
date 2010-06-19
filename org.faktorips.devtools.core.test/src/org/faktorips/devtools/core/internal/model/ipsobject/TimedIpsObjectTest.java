@@ -24,16 +24,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class TimedIpsObjectTest extends AbstractIpsPluginTest {
 
     private ITimedIpsObject timedObject;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

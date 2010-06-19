@@ -60,6 +60,7 @@ public class PersistenceUtilTest extends TestCase {
             boolean lengthSupport,
             boolean decinalPlacesSupport,
             boolean temporalTypeSupport) {
+
         assertEquals(lengthSupport, PersistenceUtil.isSupportingLenght(valueDatatype));
         assertEquals(decinalPlacesSupport, PersistenceUtil.isSupportingDecimalPlaces(valueDatatype));
         assertEquals(temporalTypeSupport, PersistenceUtil.isSupportingTemporalType(valueDatatype));

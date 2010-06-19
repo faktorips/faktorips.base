@@ -26,9 +26,6 @@ import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class UniqueKeyTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;

@@ -36,9 +36,6 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
     private ITestCase testCase;
     private ITestPolicyCmptLink testPcTypeAssociation;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

@@ -23,9 +23,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
-/**
- *
- */
 public class IpsObjectPartTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;

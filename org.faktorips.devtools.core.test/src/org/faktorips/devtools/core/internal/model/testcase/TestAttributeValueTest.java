@@ -41,9 +41,6 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
     private ITestAttributeValue testAttributeValue;
     private IIpsProject ipsProject;
 
-    /*
-     * @see AbstractIpsPluginTest#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -88,7 +85,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
 
         testAttributeValue.setTestAttribute("x"); // the value must be set, otherwise the attribute
-                                                  // will be ignored
+        // will be ignored
         ml = testAttributeValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
     }
@@ -161,7 +158,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
 
         attr.setName("attribute2");
         testAttributeValue.setValue("x"); // the value must be set, otherwise the attribute will be
-                                          // ignored
+        // ignored
         ml = testAttributeValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         assertNull(testAttributeValue.findAttribute(ipsProject));
