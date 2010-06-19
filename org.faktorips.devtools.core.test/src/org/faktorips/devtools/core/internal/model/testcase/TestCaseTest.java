@@ -671,21 +671,21 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     public void testClearInputTestValues() throws CoreException {
-        TestValues values = new TestValues(testCase);
+        TestValues values = new TestValues();
         testCase.clearTestValues(TestParameterType.INPUT);
         values.assertInputValues(true);
         values.assertExpectedValues(false);
     }
 
     public void testClearExpectedTestValues() throws CoreException {
-        TestValues values = new TestValues(testCase);
+        TestValues values = new TestValues();
         testCase.clearTestValues(TestParameterType.EXPECTED_RESULT);
         values.assertInputValues(false);
         values.assertExpectedValues(true);
     }
 
     public void testClearCombinedTestValues() throws CoreException {
-        TestValues values = new TestValues(testCase);
+        TestValues values = new TestValues();
         testCase.clearTestValues(TestParameterType.COMBINED);
         values.assertInputValues(true);
         values.assertExpectedValues(true);
@@ -697,10 +697,8 @@ public class TestCaseTest extends AbstractDependencyTest {
         private ITestValue paramExpected;
         private ITestAttributeValue attributeValueInput;
         private ITestAttributeValue attributeValueExpected;
-        private ITestCase testCase;
 
-        public TestValues(ITestCase testCase) {
-            this.testCase = testCase;
+        public TestValues() {
             try {
                 initTestValues();
             } catch (CoreException e) {
@@ -750,7 +748,7 @@ public class TestCaseTest extends AbstractDependencyTest {
         public void assertInputValues(boolean empty) {
             if (empty) {
                 assertEquals(null, paramInput.getValue());
-                // if the type is inpunt then the default value of the model attribute will be set
+                // if the type is input then the default value of the model attribute will be set
                 assertEquals("99", attributeValueInput.getValue());
             } else {
                 assertNotNull(paramInput.getValue());

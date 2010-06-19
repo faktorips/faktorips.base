@@ -680,9 +680,6 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         fixAndAssert(delta);
     }
 
-    /**
-     * Asserts the container length
-     */
     private void assertDeltaContainer(ITestCaseTestCaseTypeDelta delta,
             int testValuesWithMissingTestValueParam,
             int testPolicyCmptsWithMissingTypeParam,
@@ -691,21 +688,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
             int testValueParametersWithMissingTestValue,
             int testPolicyCmptTypeParametersWithMissingTestPolicyCmpt,
             int testAttributesWithMissingTestAttributeValue) {
-        assertDeltaContainer(delta, testValuesWithMissingTestValueParam, testPolicyCmptsWithMissingTypeParam,
-                testPolicyCmptAssociationsWithMissingTypeParam, testAttributeValuesWithMissingTestAttribute,
-                testValueParametersWithMissingTestValue, testPolicyCmptTypeParametersWithMissingTestPolicyCmpt,
-                testAttributesWithMissingTestAttributeValue, 0);
-    }
 
-    private void assertDeltaContainer(ITestCaseTestCaseTypeDelta delta,
-            int testValuesWithMissingTestValueParam,
-            int testPolicyCmptsWithMissingTypeParam,
-            int testPolicyCmptAssociationsWithMissingTypeParam,
-            int testAttributeValuesWithMissingTestAttribute,
-            int testValueParametersWithMissingTestValue,
-            int testPolicyCmptTypeParametersWithMissingTestPolicyCmpt,
-            int testAttributesWithMissingTestAttributeValue,
-            int testPolicyCmptWithDifferentSortOrder) {
         assertDeltaContainer(delta, testValuesWithMissingTestValueParam, testPolicyCmptsWithMissingTypeParam,
                 testPolicyCmptAssociationsWithMissingTypeParam, testAttributeValuesWithMissingTestAttribute,
                 testValueParametersWithMissingTestValue, testPolicyCmptTypeParametersWithMissingTestPolicyCmpt,
@@ -742,7 +725,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
                 .getTestPolicyCmptWithDifferentSortOrderTestAttr().length);
     }
 
-    /*
+    /**
      * Fixes the delta and assert that there is no new delta between the test case and test case
      * type.
      */
@@ -751,7 +734,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         ITestCaseTestCaseTypeDelta newDelta = testCase.computeDeltaToTestCaseType();
         assertFalse(newDelta.isDifferentTestParameterOrder());
         assertTrue(newDelta.isEmpty());
-        assertDeltaContainer(newDelta, 0, 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(newDelta, 0, 0, 0, 0, 0, 0, 0);
     }
 
     public void testDifferentSortOrderAttributes() throws CoreException {
