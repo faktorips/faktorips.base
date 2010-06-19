@@ -107,8 +107,4 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile {
         return archive.getBasePackageNameForDerivedArtefacts(getQualifiedNameType());
     }
 
-    public void renameCorrespondingResource(String newName) throws CoreException {
-        throw new UnsupportedOperationException("Renaming is not possible for archived IPS source files."); //$NON-NLS-1$
-    }
-
 }
