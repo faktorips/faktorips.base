@@ -194,7 +194,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     // cache sort order
     private Map<IIpsPackageFragment, IIpsPackageFragmentSortDefinition> sortOrderCache = new HashMap<IIpsPackageFragment, IIpsPackageFragmentSortDefinition>();
 
-    private Map<IIpsPackageFragmentSortDefinition, Long> lastIpSortOrderModifications = new HashMap<IIpsPackageFragmentSortDefinition, Long>();
+    private Map<IIpsPackageFragmentSortDefinition, Long> lastIpsSortOrderModifications = new HashMap<IIpsPackageFragmentSortDefinition, Long>();
 
     public IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
@@ -1632,7 +1632,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             Long lastModification) {
 
         sortOrderCache.put(fragment, sortDefinition);
-        lastIpSortOrderModifications.put(sortDefinition, lastModification);
+        lastIpsSortOrderModifications.put(sortDefinition, lastModification);
     }
 
     /**
@@ -1645,57 +1645,61 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      *         not <code>null</code>.
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment fragment) {
-        // SortDefinitions are cached in IpsModel
         IIpsPackageFragmentSortDefinition sortDef = sortOrderCache.get(fragment);
-
+        boolean sortDefModified = false;
         if (sortDef != null) {
-            // sortdefinition cached, check modification
-            IFile file = fragment.getSortOrderFile();
+            sortDefModified = checkCachedSortDefinitionModification(fragment, sortDef);
+        }
+        if (sortDefModified || sortDef == null) {
+            sortDef = addNewOrUpdatedSortOrder(fragment);
+        }
+        return sortDef;
+    }
 
+    private boolean checkCachedSortDefinitionModification(IIpsPackageFragment fragment,
+            IIpsPackageFragmentSortDefinition sortDef) {
+
+        IFile file = fragment.getSortOrderFile();
+        if (file == null || !(file.exists())) {
+            // remove deleted sort orders
+            // TODO Distinguish between DefaultSortOrder and deleted files!.
+            sortOrderCache.remove(fragment);
+            lastIpsSortOrderModifications.remove(sortDef);
+            return true;
+        }
+
+        Long lastModification = lastIpsSortOrderModifications.get(sortDef);
+        if (lastModification == null) {
+            throw new IllegalStateException();
+        }
+        if (!(lastModification.equals(file.getModificationStamp()))) {
+            // update current fragment
+            sortOrderCache.remove(fragment);
+            lastIpsSortOrderModifications.remove(sortDef);
+            return true;
+        }
+        return false;
+    }
+
+    private IIpsPackageFragmentSortDefinition addNewOrUpdatedSortOrder(IIpsPackageFragment fragment) {
+        IIpsPackageFragmentSortDefinition sortDef = new IpsPackageFragmentDefaultSortDefinition();
+        Long lastModification = 0l;
+
+        IFile file = fragment.getSortOrderFile();
+        try {
             if (file != null && file.exists()) {
-                Long lastModification = lastIpSortOrderModifications.get(sortDef);
-
-                if (!lastModification.equals(new Long(file.getModificationStamp()))) {
-                    // update current fragment
-                    sortOrderCache.remove(fragment);
-                    lastIpSortOrderModifications.remove(sortDef);
-                    sortDef = null;
+                sortDef = ((IpsPackageFragment)fragment).loadSortDefinition();
+                if (sortDef != null) {
+                    lastModification = file.getModificationStamp();
                 }
-            } else {
-                // remove deleted sort orders
-                // TODO Distinguish between DefaultSortOrder and deleted files!.
-                sortOrderCache.remove(fragment);
-                lastIpSortOrderModifications.remove(sortDef);
-                sortDef = null;
             }
+        } catch (CoreException e) {
+            sortDef = new IpsPackageFragmentDefaultSortDefinition();
+            lastModification = 0l;
+            IpsPlugin.log(e);
         }
 
-        if (sortDef == null) {
-            // add new or updated sort order
-            IFile file = fragment.getSortOrderFile();
-            Long lastModification;
-
-            try {
-                if (file != null && file.exists()) {
-                    sortDef = ((IpsPackageFragment)fragment).loadSortDefinition();
-                }
-
-                // use default sort order if no sort definition is set.
-                if (sortDef == null) {
-                    sortDef = new IpsPackageFragmentDefaultSortDefinition();
-                    lastModification = new Long(0);
-                } else {
-                    lastModification = new Long(file.getModificationStamp());
-                }
-            } catch (CoreException e) {
-                sortDef = new IpsPackageFragmentDefaultSortDefinition();
-                lastModification = new Long(0);
-                IpsPlugin.log(e);
-            }
-
-            addSortDefinition(fragment, sortDef, lastModification);
-        }
-
+        addSortDefinition(fragment, sortDef, lastModification);
         return sortDef;
     }
 

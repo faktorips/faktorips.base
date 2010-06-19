@@ -34,18 +34,18 @@ public class Migration_2_5_1_rfinal extends AbstractIpsProjectMigrationOperation
 
     @Override
     public String getDescription() {
-        return "IMPORTANT: \n"
-                + "\n"
-                + "In this version we have changed the signature of some copy methods. The changes only affects "
-                + "the parameters of the copy methods. Unfortunately the changes will lead to errors in the java code "
-                + "of existing Faktor-IPS projects when a clean build is executed after this Faktor-IPS version has been installed. "
-                + "This is because of a bug in JMerge. To fix the generated code you have to execute two search/replace operations:\n"
-                + "\n" + "1.\nSearch:\n"
-                + "public IModelObject newCopyInternal(Map<AbstractModelObject, AbstractModelObject> copyMap)\n"
-                + "Replace with:\n" + "public IModelObject newCopyInternal(Map<IModelObject, IModelObject> copyMap)\n"
-                + "\n" + "2.\nSearch (with regular Expressions!):\n"
-                + "protected void copyProperties\\((.*), Map<AbstractModelObject, AbstractModelObject> copyMap\\)\n"
-                + "Replace with:" + "protected void copyProperties\\($1, Map<IModelObject, IModelObject> copyMap\\)";
+        return "IMPORTANT: \n" //$NON-NLS-1$
+                + "\n" //$NON-NLS-1$
+                + "In this version we have changed the signature of some copy methods. The changes only affects " //$NON-NLS-1$
+                + "the parameters of the copy methods. Unfortunately the changes will lead to errors in the java code " //$NON-NLS-1$
+                + "of existing Faktor-IPS projects when a clean build is executed after this Faktor-IPS version has been installed. " //$NON-NLS-1$
+                + "This is because of a bug in JMerge. To fix the generated code you have to execute two search/replace operations:\n" //$NON-NLS-1$
+                + "\n" + "1.\nSearch:\n" //$NON-NLS-1$//$NON-NLS-2$
+                + "public IModelObject newCopyInternal(Map<AbstractModelObject, AbstractModelObject> copyMap)\n" //$NON-NLS-1$
+                + "Replace with:\n" + "public IModelObject newCopyInternal(Map<IModelObject, IModelObject> copyMap)\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "\n" + "2.\nSearch (with regular Expressions!):\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "protected void copyProperties\\((.*), Map<AbstractModelObject, AbstractModelObject> copyMap\\)\n" //$NON-NLS-1$
+                + "Replace with:" + "protected void copyProperties\\($1, Map<IModelObject, IModelObject> copyMap\\)"; //$NON-NLS-1$//$NON-NLS-2$
     }
 
     @Override

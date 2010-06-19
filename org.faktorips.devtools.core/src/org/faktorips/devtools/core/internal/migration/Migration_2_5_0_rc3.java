@@ -34,9 +34,9 @@ public class Migration_2_5_0_rc3 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getDescription() {
-        return "The generated method newCopy() in policy component types has changed to recognice"
-                + "associated copied components. This migration does not change the code or model but"
-                + "triggers a full build.";
+        return "The generated method newCopy() in policy component types has changed to recognice" //$NON-NLS-1$
+                + "associated copied components. This migration does not change the code or model but" //$NON-NLS-1$
+                + "triggers a full build."; //$NON-NLS-1$
     }
 
     @Override

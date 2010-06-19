@@ -92,6 +92,10 @@ public class JavaNamingConvention {
      * Returns the method name for the method with that the property is read.
      */
     public String getGetterMethodName(String propertyName, Class<?> datatype) {
+        /*
+         * FIXME: AW: This will not work correctly I think if you pass for example
+         * Datatype.PRIMITIVE_BOOLEAN.getClass()
+         */
         if (datatype.equals(Boolean.TYPE)) {
             return "is" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
         }
@@ -102,6 +106,7 @@ public class JavaNamingConvention {
      * Returns the method name for the method with that the property is read.
      */
     public String getGetterMethodName(String propertyName, Datatype datatype) {
+        // FIXME AW: Isn't Datatype.BOOLEAN missing in the if clause?
         if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
             return "is" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
         }
@@ -117,15 +122,36 @@ public class JavaNamingConvention {
 
     /**
      * Returns the method name for the method with that the property is set.
+     * 
+     * @param datatype The class of the property's data type.
+     * 
+     * @deprecated Use {@link #getSetterMethodName(String)} instead as the data type is of no
+     *             relevance.
      */
+    @Deprecated
+    // Deprecated since 3.0
     public String getSetterMethodName(String propertyName, Class<?> datatype) {
-        return "set" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
+        return getSetterMethodName(propertyName);
     }
 
     /**
      * Returns the method name for the method with that the property is set.
+     * 
+     * @param datatype The data type of the property.
+     * 
+     * @deprecated Use {@link #getSetterMethodName(String)} instead as the data type is of no
+     *             relevance.
      */
+    @Deprecated
+    // Deprecated since 3.0
     public String getSetterMethodName(String propertyName, Datatype datatype) {
+        return getSetterMethodName(propertyName);
+    }
+
+    /**
+     * Returns the setter method name for the given property name.
+     */
+    public String getSetterMethodName(String propertyName) {
         return "set" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
     }
 

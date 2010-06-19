@@ -460,27 +460,39 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns a single line comment containing a TO DO, e.g.
+     * Returns a single line comment containing a TO DO.
      * 
-     * <pre>
-     * // TODO Implement this rule.
-     * </pre>
+     * @param element Any IPS element used to access the IPS project and determine the language for
+     *            the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
+     *            prefix
+     * 
+     * @deprecated Use {@link #getLocalizedToDo(IIpsElement, String)} instead as the builder is of
+     *             no relevance.
+     */
+    @Deprecated
+    // Deprecated since 3.0
+    @SuppressWarnings("unused")
+    // Suppressing warning that the parameter builder is not used since the method is deprecated
+    // because of that
+    public String getLocalizedToDo(IIpsElement element, String keyPrefix, JavaCodeFragmentBuilder builder) {
+        return getLocalizedToDo(element, keyPrefix);
+    }
+
+    /**
+     * Returns a single line comment containing a TO DO.
      * 
      * @param element Any IPS element used to access the IPS project and determine the language for
      *            the generated code.
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
      *            prefix
      */
-    public String getLocalizedToDo(IIpsElement element, String keyPrefix, JavaCodeFragmentBuilder builder) {
+    public String getLocalizedToDo(IIpsElement element, String keyPrefix) {
         return getLocalizedToDo(element, keyPrefix, new Object[0]);
     }
 
     /**
-     * Returns a single line comment containing a TO DO, e.g.
-     * 
-     * <pre>
-     * // TODO Implement the rule xyz.
-     * </pre>
+     * Returns a single line comment containing a TO DO.
      * 
      * @param element Any IPS element used to access the IPS project and determine the language for
      *            the generated code.
@@ -493,11 +505,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns a single line comment containing a TO DO, e.g.
-     * 
-     * <pre>
-     * // TODO Implement the rule xyz.
-     * </pre>
+     * Returns a single line comment containing a TO DO.
      * 
      * @param element Any IPS element used to access the IPS project and determine the language for
      *            the generated code.

@@ -42,25 +42,35 @@ public class LocalizedTextHelper {
     }
 
     /**
-     * Returns a single line comment containing a TO DO, e.g.
+     * Returns a single line comment containing a TO DO.
      * 
-     * <pre>
-     * // TODO Implement this rule.
-     * </pre>
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
+     *            prefix
+     * 
+     * @deprecated Use {@link #getLocalizedText(String, Locale)} instead since the builder is of no
+     *             relevance.
+     */
+    @Deprecated
+    // Deprecated since 3.0
+    @SuppressWarnings("unused")
+    // Suppressing warning that the parameter builder is not used since the method is deprecated
+    // because of that
+    public String getLocalizedToDo(String keyPrefix, JavaCodeFragmentBuilder builder, Locale locale) {
+        return getLocalizedText(keyPrefix, locale);
+    }
+
+    /**
+     * Returns a single line comment containing a TO DO.
      * 
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
      *            prefix
      */
-    public String getLocalizedToDo(String keyPrefix, JavaCodeFragmentBuilder builder, Locale locale) {
+    public String getLocalizedToDo(String keyPrefix, Locale locale) {
         return getLocalizedToDo(keyPrefix, new Object[0], locale);
     }
 
     /**
-     * Returns a single line comment containing a TO DO, e.g.
-     * 
-     * <pre>
-     * // TODO Implement the rule xyz.
-     * </pre>
+     * Returns a single line comment containing a TO DO.
      * 
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
      *            prefix
@@ -71,11 +81,7 @@ public class LocalizedTextHelper {
     }
 
     /**
-     * Returns a single line comment containing a TO DO, e.g.
-     * 
-     * <pre>
-     * // TODO Implement the rule xyz.
-     * </pre>
+     * Returns a single line comment containing a TO DO.
      * 
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
      *            prefix

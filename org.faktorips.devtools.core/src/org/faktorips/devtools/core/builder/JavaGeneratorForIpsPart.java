@@ -183,11 +183,7 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     /**
-     * Returns a single line comment containing a TO DO, e.g.
-     * 
-     * <pre>
-     * // TODO Implement the rule xyz.
-     * </pre>
+     * Returns a single line comment containing a TO DO.
      * 
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
      *            prefix
@@ -210,9 +206,23 @@ public abstract class JavaGeneratorForIpsPart {
 
     /**
      * Returns the setter method to access a property/attribute value.
+     * 
+     * @param datatype The data type of the property.
+     * 
+     * @deprecated Use {@link #getMethodNameSetPropertyValue(String)} instead as the data type is of
+     *             no relevance.
      */
+    @Deprecated
+    // Deprecated since 3.0
     protected String getMethodNametSetPropertyValue(String propName, Datatype datatype) {
-        return getJavaNamingConvention().getSetterMethodName(propName, datatype);
+        return getMethodNameSetPropertyValue(propName);
+    }
+
+    /**
+     * Returns the method name of the setter method enabling to access the given property.
+     */
+    protected String getMethodNameSetPropertyValue(String propertyName) {
+        return getJavaNamingConvention().getSetterMethodName(propertyName);
     }
 
     /**
