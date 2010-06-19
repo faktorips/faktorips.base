@@ -61,7 +61,6 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
                 IpsPlugin.log(e);
             }
         }
-
     }
 
     @Override

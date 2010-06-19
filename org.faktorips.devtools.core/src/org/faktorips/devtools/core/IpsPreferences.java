@@ -19,6 +19,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.util.XmlParseException;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 
@@ -163,8 +164,8 @@ public class IpsPreferences {
     public final GregorianCalendar getWorkingDate() {
         String date = IpsPlugin.getDefault().getIpsPreferences().prefStore.getString(WORKING_DATE);
         try {
-            return XmlUtil.parseXmlDateStringToGregorianCalendar(date);
-        } catch (Exception e) {
+            return XmlUtil.parseGregorianCalendarFromXmlDateString(date);
+        } catch (XmlParseException e) {
             return new GregorianCalendar();
         }
     }

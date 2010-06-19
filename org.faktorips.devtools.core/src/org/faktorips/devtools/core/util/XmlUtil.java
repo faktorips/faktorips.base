@@ -101,8 +101,23 @@ public class XmlUtil {
 
     /**
      * Parses the given XML String to a Gregorian calendar.
+     * 
+     * @throws IllegalArgumentException If the given string cannot be parsed to a Gregorian
+     *             calendar.
+     * 
+     * @deprecated Use {@link #parseGregorianCalendarFromXmlDateString(String)} instead.
      */
+    @Deprecated
+    // Deprecated since 3.0
     public final static GregorianCalendar parseXmlDateStringToGregorianCalendar(String s) {
+        try {
+            return parseGregorianCalendarFromXmlDateString(s);
+        } catch (XmlParseException e) {
+            throw new IllegalArgumentException("Can't parse " + s + " to a date!"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+    }
+
+    public final static GregorianCalendar parseGregorianCalendarFromXmlDateString(String s) throws XmlParseException {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
@@ -112,8 +127,8 @@ public class XmlUtil {
             int month = Integer.parseInt(tokenizer.nextToken());
             int date = Integer.parseInt(tokenizer.nextToken());
             return new GregorianCalendar(year, month - 1, date);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Can't parse " + s + " to a date!"); //$NON-NLS-1$ //$NON-NLS-2$
+        } catch (NumberFormatException e) {
+            throw new XmlParseException("Can't parse " + s + " to a date!", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

@@ -193,8 +193,12 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * 
      * @param details The map to collect dependency details for all found dependencies. Can be
      *            <code>null</code> - no details have to be collected in this case.
+     * 
      * @return An array of found dependencies. If no dependencies are found, this method has to
      *         return an empty array.
+     * 
+     * @throws CoreException exceptions can be wrapped into CoreExceptions and propagated by this
+     *             method
      */
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         return new IDependency[0];
