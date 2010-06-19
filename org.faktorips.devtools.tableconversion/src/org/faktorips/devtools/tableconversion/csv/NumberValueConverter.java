@@ -28,8 +28,6 @@ public abstract class NumberValueConverter extends AbstractValueConverter {
      * <code>CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR</code> on the given ITableFormat
      * instance.
      * 
-     * @param tableFormat
-     * 
      * @return A decimal format with custom decimal separator and grouping character symbols,
      *         according to the properties set on the table format. A default decimal format is
      *         returned if the properties are not set.

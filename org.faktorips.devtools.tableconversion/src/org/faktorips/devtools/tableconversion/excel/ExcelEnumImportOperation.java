@@ -78,7 +78,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         }
         try {
             initWorkbookAndSheet();
-            monitor.beginTask("Import file " + sourceFile, 2 + getNumberOfExcelRows(sheet));
+            monitor.beginTask("Import file " + sourceFile, 2 + getNumberOfExcelRows(sheet)); //$NON-NLS-1$
 
             // Update datatypes because the structure might be altered if this operation is reused.
             initDatatypes();
@@ -132,7 +132,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
                     objects[0] = new Integer(i);
                     objects[1] = new Integer(j);
                     objects[2] = nullRepresentationString;
-                    String msg = NLS.bind("In row {0}, column {1} no value is set - imported {2} instead.", objects);
+                    String msg = NLS.bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
                     messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
                     enumAttributeValue.setValue(nullRepresentationString);
                 } else {

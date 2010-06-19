@@ -60,8 +60,8 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
 
         if (!(typeToExport instanceof IEnumValueContainer)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null"
-                            : typeToExport.getClass().toString() + "'");
+                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null" //$NON-NLS-1$ //$NON-NLS-2$
+                            : typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
         }
         this.typeToExport = typeToExport;
         this.filename = filename;
@@ -71,9 +71,6 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         messageList = list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
@@ -153,8 +150,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
      * @param list The enum type's attributes as a list
      * @param exportColumnHeaderRow Flag to indicate whether to export the header
      */
-    private void exportHeader(CSVWriter writer, List<IEnumAttribute> list, boolean exportColumnHeaderRow)
-            throws IOException {
+    private void exportHeader(CSVWriter writer, List<IEnumAttribute> list, boolean exportColumnHeaderRow) {
         if (exportColumnHeaderRow) {
             String[] header = new String[list.size()];
             for (int i = 0; i < header.length; i++) {
@@ -180,7 +176,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             List<IEnumValue> values,
             IEnumType structure,
             IProgressMonitor monitor,
-            boolean exportColumnHeaderRow) throws CoreException, IOException {
+            boolean exportColumnHeaderRow) throws CoreException {
 
         List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
 

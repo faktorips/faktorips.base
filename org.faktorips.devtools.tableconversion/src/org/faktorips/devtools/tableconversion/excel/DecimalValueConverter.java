@@ -30,8 +30,6 @@ public class DecimalValueConverter extends AbstractValueConverter {
 
     /**
      * Supported types for the externalDataValue are String and Number.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
@@ -53,9 +51,6 @@ public class DecimalValueConverter extends AbstractValueConverter {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         try {
@@ -67,9 +62,6 @@ public class DecimalValueConverter extends AbstractValueConverter {
         return ipsValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.DECIMAL;

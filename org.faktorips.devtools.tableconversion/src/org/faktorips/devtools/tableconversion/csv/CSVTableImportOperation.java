@@ -79,7 +79,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         try {
-            monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN);
+            monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
             MessageList ml = structure.validate(structure.getIpsProject());
             if (ml.containsErrorMsg()) {
@@ -141,7 +141,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                     continue;
                 }
                 if (readLine.length != expectedFields) {
-                    String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber);
+                    String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber); //$NON-NLS-1$
                     messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
                 }
 
@@ -151,9 +151,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
 
                     String tableField = readLine[j];
                     if (j < readLine.length) {
-                        if (nullRepresentationString.equals(tableField)) {
-                            ipsValue = null;
-                        } else {
+                        if (!(nullRepresentationString.equals(tableField))) {
                             ipsValue = getIpsValue(tableField, datatypes[j]);
                         }
                     }
@@ -164,7 +162,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                         objects[1] = new Integer(j);
                         objects[2] = nullRepresentationString;
                         String msg = NLS
-                                .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects);
+                                .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
                         messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
 
                     }
@@ -174,9 +172,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             }
         } finally {
             try {
-                if (reader != null) {
-                    reader.close();
-                }
+                reader.close();
             } catch (IOException e) {
                 // this is a serious problem, so report it.
                 IpsPlugin.log(e);
@@ -185,7 +181,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     }
 
     private boolean isEmptyRow(String[] row) {
-        return row.length == 1 && row[0].equals("");
+        return row.length == 1 && row[0].length() == 0;
     }
 
     private String getIpsValue(Object rawValue, Datatype datatype) {

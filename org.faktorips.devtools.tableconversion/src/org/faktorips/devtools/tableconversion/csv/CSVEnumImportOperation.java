@@ -54,7 +54,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
 
     public CSVEnumImportOperation(IEnumValueContainer valueContainer, String filename,
             AbstractExternalTableFormat format, String nullRepresentationString, boolean ignoreColumnHeaderRow,
-            MessageList messageList, boolean importIntoExisting) {
+            MessageList messageList) {
 
         this.valueContainer = valueContainer;
         sourceFile = filename;
@@ -86,7 +86,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         try {
-            monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN);
+            monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
             monitor.worked(1);
             if (monitor.isCanceled()) {
@@ -139,7 +139,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
                     continue;
                 }
                 if (readLine.length != expectedFields) {
-                    String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber);
+                    String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber); //$NON-NLS-1$
                     messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
                 }
 
@@ -162,7 +162,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
                         objects[1] = new Integer(j);
                         objects[2] = nullRepresentationString;
                         String msg = NLS
-                                .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects);
+                                .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
                         messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
 
                     }
@@ -172,9 +172,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
             }
         } finally {
             try {
-                if (reader != null) {
-                    reader.close();
-                }
+                reader.close();
             } catch (IOException e) {
                 // this is a serious problem, so report it.
                 IpsPlugin.log(e);
@@ -183,7 +181,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     }
 
     private boolean isEmptyRow(String[] row) {
-        return row.length == 1 && row[0].equals("");
+        return row.length == 1 && row[0].length() == 0;
     }
 
     private String getIpsValue(Object rawValue, Datatype datatype) {

@@ -19,9 +19,11 @@ import org.eclipse.osgi.util.NLS;
  * @author Roman Grutza
  */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.tableconversion.ui.messages"; //$NON-NLS-1$
 
     private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     static {

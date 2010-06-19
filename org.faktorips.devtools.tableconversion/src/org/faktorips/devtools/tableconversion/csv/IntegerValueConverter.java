@@ -48,9 +48,6 @@ public class IntegerValueConverter extends NumberValueConverter {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.INTEGER;

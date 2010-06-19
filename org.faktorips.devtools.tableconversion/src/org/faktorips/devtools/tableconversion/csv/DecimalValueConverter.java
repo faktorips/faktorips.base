@@ -34,7 +34,7 @@ public class DecimalValueConverter extends NumberValueConverter {
             String result = d.toString();
             String decimalSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
             if (tableFormat != null && decimalSeparator.length() == 1) {
-                result = result.replace(".", tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR));
+                result = result.replace(".", tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR)); //$NON-NLS-1$
             }
 
             return result;
@@ -76,9 +76,6 @@ public class DecimalValueConverter extends NumberValueConverter {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.DECIMAL;

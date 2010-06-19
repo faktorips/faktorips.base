@@ -27,8 +27,6 @@ public class StringValueConverter extends AbstractValueConverter {
 
     /**
      * Every type is allowed for externalDataValue.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
@@ -38,17 +36,11 @@ public class StringValueConverter extends AbstractValueConverter {
         return externalDataValue == null ? null : externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         return ipsValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.STRING;

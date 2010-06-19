@@ -45,15 +45,12 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
 
         Locale locale = IpsPlugin.getDefault().getUsedLanguagePackLocale();
         if (locale.equals(Locale.GERMAN)) {
-            properties.put(PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
+            properties.put(PROPERTY_DATE_FORMAT, "dd.MM.yyyy"); //$NON-NLS-1$
         } else {
-            properties.put(PROPERTY_DATE_FORMAT, "yyyy-MM-dd");
+            properties.put(PROPERTY_DATE_FORMAT, "yyyy-MM-dd"); //$NON-NLS-1$
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean executeTableExport(ITableContents contents,
             IPath filename,
@@ -94,13 +91,10 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             boolean importIntoExisting) throws CoreException {
 
         CSVEnumImportOperation enumImportOperation = new CSVEnumImportOperation(valueContainer, filename.toOSString(),
-                this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
+                this, nullRepresentationString, ignoreColumnHeaderRow, list);
         enumImportOperation.run(new NullProgressMonitor());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean executeEnumExport(IEnumValueContainer valueContainer,
             IPath filename,
@@ -119,9 +113,6 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValidImportSource(String source) {
         File file = new File(source);
@@ -173,12 +164,9 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     }
 
     private boolean isEmptyRow(String[] row) {
-        return row.length == 1 && row[0].equals("");
+        return row.length == 1 && row[0].length() == 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public List getImportTablePreview(ITableStructure structure,
@@ -189,9 +177,6 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public List getImportEnumPreview(IEnumType structure,
@@ -235,6 +220,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
             String nullRepresentation) {
+
         if (datatypes == null || filename == null || !isValidImportSource(filename.toOSString())) {
             return Collections.EMPTY_LIST;
         }

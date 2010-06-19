@@ -61,14 +61,11 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         super(typeToExport, filename, format, nullRepresentationString, exportColumnHeaderRow, list);
         if (!(typeToExport instanceof ITableContents)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport == null ? "null"
-                            : typeToExport.getClass().toString() + "'");
+                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport == null ? "null" //$NON-NLS-1$ //$NON-NLS-2$
+                            : typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
@@ -120,10 +117,8 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
      * @param sheet The sheet where to create the header.
      * @param columns The columns defined by the structure.
      * @param exportColumnHeaderRow column header names included or not.
-     * 
-     * @throws CoreException
      */
-    private void exportHeader(HSSFSheet sheet, IColumn[] columns, boolean exportColumnHeaderRow) throws CoreException {
+    private void exportHeader(HSSFSheet sheet, IColumn[] columns, boolean exportColumnHeaderRow) {
         if (!exportColumnHeaderRow) {
             return;
         }

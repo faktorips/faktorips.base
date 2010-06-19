@@ -72,9 +72,6 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
@@ -102,9 +99,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         }
     }
 
-    private void fillGeneration(ITableContentsGeneration generation, HSSFSheet sheet, IProgressMonitor monitor)
-            throws CoreException {
-
+    private void fillGeneration(ITableContentsGeneration generation, HSSFSheet sheet, IProgressMonitor monitor) {
         // Row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0 contains data.
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
         for (int i = startRow;; i++) {

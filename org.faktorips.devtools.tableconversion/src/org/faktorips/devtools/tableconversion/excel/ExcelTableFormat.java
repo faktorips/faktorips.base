@@ -46,9 +46,6 @@ import org.faktorips.util.message.MessageList;
  */
 public class ExcelTableFormat extends AbstractExternalTableFormat {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean executeTableExport(ITableContents contents,
             IPath filename,
@@ -81,9 +78,6 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         excelTableImportOperation.run(new NullProgressMonitor());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean executeEnumExport(IEnumValueContainer valueContainer,
             IPath filename,
@@ -115,9 +109,6 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         enumImportOperation.run(new NullProgressMonitor());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValidImportSource(String source) {
         File file = new File(source);
@@ -191,6 +182,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
             String nullRepresentation) {
+
         HSSFSheet sheet = null;
         try {
             sheet = ExcelHelper.getWorksheetFromWorkbook(filename.toOSString(), 0);

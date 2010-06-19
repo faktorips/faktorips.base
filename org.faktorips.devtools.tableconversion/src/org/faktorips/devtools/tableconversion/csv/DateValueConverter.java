@@ -29,9 +29,6 @@ public class DateValueConverter extends AbstractValueConverter {
 
     private DateDatatype datatype = new DateDatatype();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
@@ -53,8 +50,6 @@ public class DateValueConverter extends AbstractValueConverter {
 
     /**
      * The supported type for externalDataValue is String or java.util.Date.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
@@ -78,9 +73,6 @@ public class DateValueConverter extends AbstractValueConverter {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return datatype;

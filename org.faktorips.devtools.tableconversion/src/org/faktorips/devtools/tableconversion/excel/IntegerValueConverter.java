@@ -28,8 +28,6 @@ public class IntegerValueConverter extends AbstractValueConverter {
 
     /**
      * Supported types for externalDataValue are Integer and Double.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
@@ -58,9 +56,6 @@ public class IntegerValueConverter extends AbstractValueConverter {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
@@ -78,9 +73,6 @@ public class IntegerValueConverter extends AbstractValueConverter {
         return ipsValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.INTEGER;

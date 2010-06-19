@@ -20,9 +20,6 @@ import org.faktorips.util.message.MessageList;
 
 public class LongValueConverter extends AbstractValueConverter {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
@@ -33,8 +30,6 @@ public class LongValueConverter extends AbstractValueConverter {
 
     /**
      * The only supported type for externalDataValue is String.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
@@ -54,9 +49,6 @@ public class LongValueConverter extends AbstractValueConverter {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.LONG;

@@ -60,8 +60,8 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
         if (!(typeToExport instanceof ITableContents)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport == null ? "null"
-                            : typeToExport.getClass().toString() + "'");
+                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport == null ? "null" //$NON-NLS-1$ //$NON-NLS-2$
+                            : typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
         }
         this.typeToExport = typeToExport;
         this.filename = filename;
@@ -71,13 +71,8 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         messageList = list;
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
@@ -165,8 +160,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
      * @param columns The tablescontents` columns
      * @param exportColumnHeaderRow Flag to indicate whether to export the header
      */
-    private void exportHeader(CSVWriter writer, IColumn[] columns, boolean exportColumnHeaderRow) throws IOException {
-
+    private void exportHeader(CSVWriter writer, IColumn[] columns, boolean exportColumnHeaderRow) {
         if (exportColumnHeaderRow) {
             String[] header = new String[columns.length];
             for (int i = 0; i < header.length; i++) {
@@ -194,7 +188,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             ITableContentsGeneration generation,
             ITableStructure structure,
             IProgressMonitor monitor,
-            boolean exportColumnHeaderRow) throws CoreException, IOException {
+            boolean exportColumnHeaderRow) throws CoreException {
 
         Datatype[] datatypes = new Datatype[contents.getNumOfColumns()];
         for (int i = 0; i < datatypes.length; i++) {

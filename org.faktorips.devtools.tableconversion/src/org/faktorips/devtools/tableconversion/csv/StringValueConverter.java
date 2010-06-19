@@ -19,25 +19,16 @@ import org.faktorips.util.message.MessageList;
 
 public class StringValueConverter extends AbstractValueConverter {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         return ipsValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.STRING;

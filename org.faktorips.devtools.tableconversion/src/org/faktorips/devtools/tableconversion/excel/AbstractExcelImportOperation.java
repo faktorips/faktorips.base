@@ -44,15 +44,13 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
 
     protected abstract void initDatatypes();
 
-    private HSSFWorkbook getWorkbook(String sourcefile) throws IOException {
+    private HSSFWorkbook getWorkbook() throws IOException {
         File importFile = new File(sourceFile);
         FileInputStream fis = null;
         HSSFWorkbook workbook = null;
         fis = new FileInputStream(importFile);
         workbook = new HSSFWorkbook(fis);
-        if (fis != null) {
-            fis.close();
-        }
+        fis.close();
         return workbook;
     }
 
@@ -74,7 +72,7 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
     }
 
     protected void initWorkbookAndSheet() throws IOException {
-        workbook = getWorkbook(null);
+        workbook = getWorkbook();
         sheet = workbook.getSheetAt(0);
     }
 

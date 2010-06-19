@@ -125,7 +125,6 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
         validateFieldDelimiter(ml);
         validateDateFormat(ml);
         validateDecimalSeparator(ml);
-        validateDecimalGrouping(ml);
 
         return ml;
     }
@@ -149,27 +148,6 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
             ml.add(new Message("", Messages.CSVPropertyCompositeFactory_errMsgDecimalSeparatorLength, //$NON-NLS-1$
                     Message.ERROR));
         }
-        validateDecimalSeparatorAndGroupingAreNotEqual(ml);
-    }
-
-    private void validateDecimalGrouping(MessageList ml) {
-        // String decimalGrouping = decimalGroupingText.getText();
-        // if (decimalGrouping.length() != 1) {
-        //            ml.add(new Message("", Messages.CSVPropertyCompositeFactory_errMsgDecimalGroupingLength, Message.ERROR)); //$NON-NLS-1$
-        // }
-        // validateDecimalSeparatorAndGroupingAreNotEqual(ml);
-    }
-
-    private void validateDecimalSeparatorAndGroupingAreNotEqual(MessageList ml) {
-        // String decimalSeparator = decimalSeparatorText.getText();
-        // String decimalGrouping = decimalGroupingText.getText();
-        // if (decimalSeparator.equals(decimalGrouping)) {
-        // ml
-        // .add(new Message(
-        //                            "", //$NON-NLS-1$
-        // Messages.CSVPropertyCompositeFactory_errMsgDecimalSeparatorAndGroupingCharsAreEqual,
-        // Message.ERROR));
-        // }
     }
 
     private void validateFieldDelimiter(MessageList ml) {

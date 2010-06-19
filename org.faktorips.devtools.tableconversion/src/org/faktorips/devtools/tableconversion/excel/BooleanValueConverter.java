@@ -27,8 +27,6 @@ public class BooleanValueConverter extends AbstractValueConverter {
 
     /**
      * Supported types for the externalDataValue are String and Boolean.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
@@ -43,9 +41,6 @@ public class BooleanValueConverter extends AbstractValueConverter {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
@@ -54,9 +49,6 @@ public class BooleanValueConverter extends AbstractValueConverter {
         return new Boolean(ipsValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.BOOLEAN;

@@ -50,8 +50,6 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
 
     /**
      * The only supported type for externalDataValue is String.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
@@ -78,9 +76,6 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.GREGORIAN_CALENDAR;

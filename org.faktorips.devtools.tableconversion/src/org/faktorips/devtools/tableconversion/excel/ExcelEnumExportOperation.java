@@ -64,15 +64,12 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         super(typeToExport, filename, format, nullRepresentationString, exportColumnHeaderRow, list);
         if (!(typeToExport instanceof IEnumValueContainer)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null"
-                            : typeToExport.getClass().toString() + "'");
+                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null" //$NON-NLS-1$ //$NON-NLS-2$
+                            : typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
         }
         enumValueContainer = (IEnumValueContainer)typeToExport;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
@@ -84,8 +81,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         monitor.worked(1);
 
         IEnumType structure = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
-        boolean includeLiteralName = structure instanceof IEnumType;
-        List<IEnumAttribute> attributes = structure.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
+        List<IEnumAttribute> attributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
         exportHeader(sheet, attributes, exportColumnHeaderRow);
         monitor.worked(1);
         if (monitor.isCanceled()) {
@@ -145,7 +141,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         for (int i = 0; i < values.size(); i++) {
             HSSFRow sheetRow = sheet.createRow(i + offest);
             IEnumValue value = values.get(i);
-            String[] fieldsToExport = getFieldsForEnumValue(datatypes, value);
+            String[] fieldsToExport = getFieldsForEnumValue(value);
             for (int j = 0; j < value.getEnumAttributeValuesCount(); j++) {
                 HSSFCell cell = sheetRow.createCell((short)j);
                 fillCell(cell, fieldsToExport[j], datatypes[j]);
@@ -157,7 +153,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         }
     }
 
-    private String[] getFieldsForEnumValue(Datatype[] datatypes, IEnumValue value) {
+    private String[] getFieldsForEnumValue(IEnumValue value) {
         int numberOfFields = value.getEnumAttributeValuesCount();
         String[] fieldsToExport = new String[numberOfFields];
         for (int j = 0; j < numberOfFields; j++) {

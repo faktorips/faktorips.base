@@ -31,9 +31,6 @@ public class ExcelHelper {
     /**
      * @param sourceFile A platform-dependant String which denotes the full path to an Excel file.
      * @return A workbook constructed from the given source file.
-     * 
-     * @throws FileNotFoundException
-     * @throws IOException
      */
     public static HSSFWorkbook getWorkbook(String sourceFile) throws FileNotFoundException, IOException {
         File importFile = new File(sourceFile);
@@ -41,25 +38,20 @@ public class ExcelHelper {
         HSSFWorkbook workbook = null;
         fis = new FileInputStream(importFile);
         workbook = new HSSFWorkbook(fis);
-        if (fis != null) {
-            fis.close();
-        }
+        fis.close();
         return workbook;
     }
 
     /**
      * @param sourceFile A platform-dependant String which denotes the full path to an Excel file.
      * @param indexOfWorkbook The zero-based index of the desired worksheet.
-     * 
-     * @throws FileNotFoundException
-     * @throws IOException
      */
     public static HSSFSheet getWorksheetFromWorkbook(String sourceFile, int indexOfWorkbook)
             throws FileNotFoundException, IOException {
         HSSFWorkbook workbook = getWorkbook(sourceFile);
         if (workbook.getNumberOfSheets() < indexOfWorkbook + 1) {
-            throw new IllegalArgumentException("The excel file '" + sourceFile
-                    + "' does not contain the sheet with index " + indexOfWorkbook);
+            throw new IllegalArgumentException("The excel file '" + sourceFile //$NON-NLS-1$
+                    + "' does not contain the sheet with index " + indexOfWorkbook); //$NON-NLS-1$
         }
         return workbook.getSheetAt(indexOfWorkbook);
     }

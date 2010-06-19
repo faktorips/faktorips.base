@@ -21,9 +21,6 @@ import org.faktorips.values.Money;
 
 public class MoneyValueConverter extends AbstractValueConverter {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (!Datatype.MONEY.isParsable(ipsValue)) {
@@ -35,8 +32,6 @@ public class MoneyValueConverter extends AbstractValueConverter {
 
     /**
      * Supported type for the externalDataValue is String.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
@@ -58,9 +53,6 @@ public class MoneyValueConverter extends AbstractValueConverter {
         return externalDataValue.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getSupportedDatatype() {
         return Datatype.MONEY;
