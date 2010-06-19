@@ -99,11 +99,6 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         createPackageOrderFile((IFolder)root.getCorrespondingResource(), list);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelSorter.compare(Viewer, Object,
-     * Object)'
-     */
     public void testCompareViewerObjectObject() {
         // Identity should be evaluated as equal
         assertTrue(sorter.compare(null, proj, proj) == 0);

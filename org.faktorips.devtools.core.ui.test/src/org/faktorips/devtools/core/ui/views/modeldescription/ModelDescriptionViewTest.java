@@ -28,7 +28,6 @@ public class ModelDescriptionViewTest extends TestCase {
     }
 
     public void test() {
-
         assertEquals("eins", "ei" + "ns");
     }
 

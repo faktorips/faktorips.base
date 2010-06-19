@@ -47,7 +47,6 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStru
  * Note: LinkCreatorUtilTest is very similar
  * 
  * @author Cornelius Dirmeier
- * 
  */
 public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
@@ -67,9 +66,6 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation associationToB2;
     private IProductCmptTypeAssociation associationToC;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -107,11 +103,6 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         dropListener = new TestDropListener(treeViewer);
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.ui.LinkDropListener#validateDrop(java.lang.Object, int, org.eclipse.swt.dnd.TransferData)}
-     * .
-     */
     public void testValidateDrop() {
         IProductCmptReference target = structure.getRoot();
         int operation = DND.DROP_LINK;
@@ -144,21 +135,16 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         assertTrue(dropListener.validateDrop(references[1], operation, multiTransfer));
         assertFalse(dropListener.validateDrop(references[2], operation, transfer));
         assertFalse(dropListener.validateDrop(references[2], operation, multiTransfer));
-
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.ui.LinkDropListener#performDrop(java.lang.Object)}.
-     */
     public void testPerformDropObject() {
         IProductCmptLink[] links;
 
-        // CmptReference targe
+        // CmptReference target
         dropListener.setTarget(structure.getRoot());
         checkDropWithSinglePossibility(0);
 
-        // AssociationReference targe
+        // AssociationReference target
         IProductCmptTypeAssociationReference[] references = structure
                 .getChildProductCmptTypeAssociationReferences(structure.getRoot());
         dropListener.setTarget(references[2]);
@@ -289,8 +275,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
      * check dropping components on the target, target have to be set before calling this method. In
      * case of target is a link there already have to exists at least one link
      * 
-     * @param the number of links that already exists in the product cmpt
-     * 
+     * @param alreadyExistingLinks The number of links that already exists in the product cmpt
      */
     private void checkDropWithSinglePossibility(int alreadyExistingLinks) {
         // drop single component on CmptReference with no possibility to add

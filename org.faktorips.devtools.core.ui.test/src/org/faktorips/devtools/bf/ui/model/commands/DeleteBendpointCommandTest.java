@@ -42,7 +42,7 @@ public class DeleteBendpointCommandTest extends AbstractIpsPluginTest {
     public void testExecute() {
         try {
             command.execute();
-            fail(); // since no bendpoint has been added
+            fail(); // since no bend point has been added
         } catch (IndexOutOfBoundsException e) {
         }
 

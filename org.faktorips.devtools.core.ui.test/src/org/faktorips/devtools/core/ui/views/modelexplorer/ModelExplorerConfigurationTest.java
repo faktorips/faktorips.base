@@ -96,10 +96,6 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
 
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration.isAllowedIpsElementType(IIpsElement)'
-     */
     public void testIsAllowedIpsElement() {
         assertTrue(config.isAllowedIpsElement(proj));
         assertTrue(config.isAllowedIpsElement(root));
@@ -112,10 +108,6 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.isAllowedIpsElement(tableStructure));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration.isAllowedIpsElementType(Class)'
-     */
     public void testIsAllowedIpsElementType() {
         assertTrue(config.isAllowedIpsElementType(pcType.getIpsObjectType()));
         assertTrue(config.isAllowedIpsElementType(prodCmpt.getIpsObjectType()));

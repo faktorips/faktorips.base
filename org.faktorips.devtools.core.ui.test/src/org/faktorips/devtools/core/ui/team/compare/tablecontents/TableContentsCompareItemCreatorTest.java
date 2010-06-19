@@ -19,7 +19,6 @@ import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -71,10 +70,6 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
         compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getStructure(Object)'
-     */
     public void testGetStructure() {
         assertEquals(srcFile, compareItemRoot.getIpsElement());
 
@@ -99,11 +94,6 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
         assertEquals(row4, compareItemRow4.getIpsElement());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getContents(Object,
-     * boolean)'
-     */
     public void testGetContents() {
         Object[] children = compareItemRoot.getChildren();
         TableContentsCompareItem compareItem = (TableContentsCompareItem)children[0];
@@ -119,27 +109,12 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
         assertTrue(compareItem.getContentStringWithoutWhiteSpace().equals(contentString));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItemCreator.getName()'
-     */
     public void testGetName() {
         assertEquals(Messages.TableContentsCompareItemCreator_TableContentsStructureCompare, structureCreator.getName());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator.locate(Object,
-     * Object)'
-     */
     public void testLocate() {
         assertNull(structureCreator.locate(null, compareItemRoot));
     }
-
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator.save(IStructureComparator,
-     * Object)' Nothing to test
-     */
 
 }

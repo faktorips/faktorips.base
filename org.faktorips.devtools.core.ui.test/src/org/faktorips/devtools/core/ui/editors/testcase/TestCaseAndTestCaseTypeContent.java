@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
  * @author Joerg Ortmann
  */
 public class TestCaseAndTestCaseTypeContent {
+
     ITestPolicyCmpt testPolicyCmpt1;
     ITestPolicyCmptLink link1;
     ITestPolicyCmpt testPolicyCmpt2;

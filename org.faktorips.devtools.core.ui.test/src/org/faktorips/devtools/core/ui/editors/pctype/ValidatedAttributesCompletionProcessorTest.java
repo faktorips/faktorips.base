@@ -35,11 +35,6 @@ public class ValidatedAttributesCompletionProcessorTest extends AbstractIpsPlugi
         pcType = (PolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "policy");
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.editors.pctype.ValidatedAttributesCompletionProcessor.doComputeCompletionProposals(String,
-     * int, List)'
-     */
     public void testDoComputeCompletionProposals() throws Exception {
         IPolicyCmptTypeAttribute attr = pcType.newPolicyCmptTypeAttribute();
         attr.setName("anna");

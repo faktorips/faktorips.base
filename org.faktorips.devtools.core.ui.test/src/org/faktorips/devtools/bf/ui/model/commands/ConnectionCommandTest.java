@@ -132,7 +132,6 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         target.addIncomingControlFlow(in);
         command.setTarget(target);
         assertFalse(command.canExecute());
-
     }
 
     public void testExecute() {

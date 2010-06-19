@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.search;
 
 import java.util.HashSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.NewSearchUI;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -64,11 +63,7 @@ public class ReferencesToPolicySearchQueryTest extends AbstractIpsPluginTest {
         pcTypeNoRef = newPolicyCmptType(root, "TestPCTypeNoRef");
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.search.ReferencesToPolicySearchQuery.findReferences(String)'
-     */
-    public void testRun() throws CoreException {
+    public void testRun() {
         query = new ReferencesToPolicySearchQuery(pcTypeReferenced);
         // run query in same thread as this test
         NewSearchUI.runQueryInForeground(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow(), query);

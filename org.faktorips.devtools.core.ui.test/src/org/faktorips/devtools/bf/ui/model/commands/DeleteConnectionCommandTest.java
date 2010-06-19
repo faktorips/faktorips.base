@@ -73,7 +73,6 @@ public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
         assertEquals(source, cf.getSource());
         assertEquals(target, cf.getTarget());
         assertFalse(cf.isDeleted());
-
     }
 
 }

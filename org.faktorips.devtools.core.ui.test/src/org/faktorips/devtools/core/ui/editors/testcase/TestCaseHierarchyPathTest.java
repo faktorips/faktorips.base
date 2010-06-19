@@ -31,9 +31,6 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
 
     private TestCaseAndTestCaseTypeContent testContent;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setUp() throws Exception {
         super.setUp();

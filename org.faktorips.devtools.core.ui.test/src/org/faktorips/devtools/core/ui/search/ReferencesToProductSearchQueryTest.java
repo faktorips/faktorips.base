@@ -67,10 +67,6 @@ public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(calendar);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.search.ReferenceSearchQuery.run(IProgressMonitor)'
-     */
     public void testRun() {
         query = new ReferencesToProductSearchQuery(prodCmptReferenced);
         // run query in same thread as this test

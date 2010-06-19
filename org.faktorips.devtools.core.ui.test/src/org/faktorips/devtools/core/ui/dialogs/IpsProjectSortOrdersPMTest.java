@@ -196,27 +196,27 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
 
         elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(3, elements.length);
-        assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.kranken.leistungsarten", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.kranken.gruppenarten", ((IIpsPackageFragment)elements[2]).getName());
+        assertEquals("products.kranken.vertragsarten", elements[0].getName());
+        assertEquals("products.kranken.leistungsarten", elements[1].getName());
+        assertEquals("products.kranken.gruppenarten", elements[2].getName());
 
         selectedFragment = rootPackage.getIpsPackageFragment("products.kranken.vertragsarten");
         sortOrderPM.moveUp(selectedFragment, 2);
 
         elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(3, elements.length);
-        assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.kranken.leistungsarten", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.kranken.gruppenarten", ((IIpsPackageFragment)elements[2]).getName());
+        assertEquals("products.kranken.vertragsarten", elements[0].getName());
+        assertEquals("products.kranken.leistungsarten", elements[1].getName());
+        assertEquals("products.kranken.gruppenarten", elements[2].getName());
 
         selectedFragment = rootPackage.getIpsPackageFragment("products.kranken.gruppenarten");
         sortOrderPM.moveUp(selectedFragment, 1);
 
         elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(3, elements.length);
-        assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.kranken.gruppenarten", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.kranken.leistungsarten", ((IIpsPackageFragment)elements[2]).getName());
+        assertEquals("products.kranken.vertragsarten", elements[0].getName());
+        assertEquals("products.kranken.gruppenarten", elements[1].getName());
+        assertEquals("products.kranken.leistungsarten", elements[2].getName());
     }
 
     public void testMoveDown() throws IOException, CoreException {
@@ -245,27 +245,27 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         fragment = rootPackage.getIpsPackageFragment("products.kranken");
         IIpsPackageFragment[] elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(3, elements.length);
-        assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.kranken.gruppenarten", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.kranken.leistungsarten", ((IIpsPackageFragment)elements[2]).getName());
+        assertEquals("products.kranken.vertragsarten", (elements[0]).getName());
+        assertEquals("products.kranken.gruppenarten", (elements[1]).getName());
+        assertEquals("products.kranken.leistungsarten", (elements[2]).getName());
 
         selectedFragment = rootPackage.getIpsPackageFragment("products.kranken.vertragsarten");
         sortOrderPM.moveDown(selectedFragment, elements.length + 3);
 
         elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(3, elements.length);
-        assertEquals("products.kranken.gruppenarten", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.kranken.leistungsarten", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[2]).getName());
+        assertEquals("products.kranken.gruppenarten", (elements[0]).getName());
+        assertEquals("products.kranken.leistungsarten", (elements[1]).getName());
+        assertEquals("products.kranken.vertragsarten", (elements[2]).getName());
 
         selectedFragment = rootPackage.getIpsPackageFragment("products.kranken.gruppenarten");
         sortOrderPM.moveDown(selectedFragment, 1);
 
         elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(3, elements.length);
-        assertEquals("products.kranken.leistungsarten", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.kranken.gruppenarten", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[2]).getName());
+        assertEquals("products.kranken.leistungsarten", elements[0].getName());
+        assertEquals("products.kranken.gruppenarten", elements[1].getName());
+        assertEquals("products.kranken.vertragsarten", elements[2].getName());
     }
 
     public void testRestore() throws IOException, CoreException {
@@ -294,9 +294,9 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
 
         elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(3, elements.length);
-        assertEquals("products.kranken.gruppenarten", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.kranken.leistungsarten", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[2]).getName());
+        assertEquals("products.kranken.gruppenarten", elements[0].getName());
+        assertEquals("products.kranken.leistungsarten", elements[1].getName());
+        assertEquals("products.kranken.vertragsarten", elements[2].getName());
     }
 
     public void testSaveSortDefDelta() throws IOException, CoreException {
@@ -320,17 +320,17 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         fragment = rootPackage.getIpsPackageFragment("products.kranken");
         elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(3, elements.length);
-        assertEquals("products.kranken.leistungsarten", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.kranken.gruppenarten", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[2]).getName());
+        assertEquals("products.kranken.leistungsarten", elements[0].getName());
+        assertEquals("products.kranken.gruppenarten", elements[1].getName());
+        assertEquals("products.kranken.vertragsarten", elements[2].getName());
 
         fragment = rootPackage.getIpsPackageFragment("products");
         elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(4, elements.length);
-        assertEquals("products.kranken", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.unfall", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.hausrat", ((IIpsPackageFragment)elements[2]).getName());
-        assertEquals("products.haftpflicht", ((IIpsPackageFragment)elements[3]).getName());
+        assertEquals("products.kranken", elements[0].getName());
+        assertEquals("products.unfall", elements[1].getName());
+        assertEquals("products.hausrat", elements[2].getName());
+        assertEquals("products.haftpflicht", elements[3].getName());
 
         sortOrderPM.restore();
         sortOrderPM.saveSortDefDelta();
@@ -338,8 +338,8 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         fragment = rootPackage.getIpsPackageFragment("products.kranken");
         elements = (IIpsPackageFragment[])sortOrderPM.getChildren(fragment);
         assertEquals(3, elements.length);
-        assertEquals("products.kranken.gruppenarten", ((IIpsPackageFragment)elements[0]).getName());
-        assertEquals("products.kranken.leistungsarten", ((IIpsPackageFragment)elements[1]).getName());
-        assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[2]).getName());
+        assertEquals("products.kranken.gruppenarten", elements[0].getName());
+        assertEquals("products.kranken.leistungsarten", elements[1].getName());
+        assertEquals("products.kranken.vertragsarten", elements[2].getName());
     }
 }

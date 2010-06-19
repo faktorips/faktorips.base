@@ -75,18 +75,10 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.getContents()'
-     */
     public void testGetContents() throws CoreException {
         assertNull(compareItemRoot.getContents());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.getChildren()'
-     */
     public void testGetChildren() {
         assertEquals(1, compareItemRoot.getChildren().length);
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
@@ -95,10 +87,6 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(4, genItem.getChildren().length);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.equals(Object)'
-     */
     public void testEqualsObject() {
         TableContentsCompareItem secondCompareItemRoot = (TableContentsCompareItem)structureCreator
                 .getStructure(new ResourceNode(correspondingFile));
@@ -112,17 +100,11 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertFalse(rowItem1.equals(rowItem2));
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.getImage()'
-     */
     public void testGetImage() {
         assertEquals(IpsUIPlugin.getImageHandling().getImage(compareItemRoot.getIpsElement()), compareItemRoot
                 .getImage());
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.isRoot()'
-     */
     public void testIsRoot() {
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
         TableContentsCompareItem genItem = (TableContentsCompareItem)tableItem.getChildren()[0];
@@ -136,9 +118,6 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertTrue(compareItem.isRoot());
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.getParent()'
-     */
     public void testGetParent() {
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
         TableContentsCompareItem genItem = (TableContentsCompareItem)tableItem.getChildren()[0];
@@ -158,10 +137,6 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertNull(compareItem.getParent());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.getIpsElement()'
-     */
     public void testGetIpsElement() {
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
         TableContentsCompareItem genItem = (TableContentsCompareItem)tableItem.getChildren()[0];
@@ -181,10 +156,6 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(row4, rowItem4.getIpsElement());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.getDocument()'
-     */
     public void testGetDocument() {
         IDocument doc = compareItemRoot.getDocument();
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
@@ -203,9 +174,6 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertSame(doc, rowItem2.getDocument());
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.getRange()'
-     */
     public void testGetRange() {
         // Position range= new Position(23, 42);
         // compareItemRoot.setRange(23, 42);
@@ -215,9 +183,6 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertNotSame(compareItemRoot.getRange(), compareItemRoot.getRange());
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.init()'
-     */
     public void testInit() {
         // create uninitialized compareItem
         TableContentsCompareItem compareItem = new TableContentsCompareItem(null, srcFile);
@@ -231,54 +196,5 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertNotNull(compareItem.getName());
         assertNotNull(compareItem.getDocument());
     }
-
-    /* **************************************************************
-     * TESTS for protected methods
-     */
-
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.setRange(int, int)'
-     */
-    // public void testSetRange() {
-    // Position range= new Position(23, 42);
-    // compareItemRoot.setRange(23, 42);
-    // assertEquals(range, compareItemRoot.getRange());
-    // }
-
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.initTreeContentString(StringBuffer,
-     * int)'
-     */
-    // public void testInitTreeContentString() {
-    // }
-
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.needsTextSeparator()'
-     */
-    // public void testNeedsTextSeparator() {
-    // AbstractCompareItem tableItem= (TableContentsCompareItem) compareItemRoot.getChildren()[0];
-    // AbstractCompareItem genItem= (TableContentsCompareItem) tableItem.getChildren()[0];
-    // AbstractCompareItem rowItem= (TableContentsCompareItem) genItem.getChildren()[0];
-    // assertFalse(compareItemRoot.needsTextSeparator());
-    // assertFalse(tableItem.needsTextSeparator());
-    // assertTrue(genItem.needsTextSeparator());
-    // assertFalse(rowItem.needsTextSeparator());
-    // }
-
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.hasChildren()'
-     */
-    // public void testHasChildren() {
-    // assertTrue(compareItemRoot.hasChildren());
-    // TableContentsCompareItem tableItem= (TableContentsCompareItem)
-    // compareItemRoot.getChildren()[0];
-    // assertTrue(tableItem.hasChildren());
-    // TableContentsCompareItem genItem= (TableContentsCompareItem) tableItem.getChildren()[0];
-    // assertTrue(genItem.hasChildren());
-    // }
 
 }

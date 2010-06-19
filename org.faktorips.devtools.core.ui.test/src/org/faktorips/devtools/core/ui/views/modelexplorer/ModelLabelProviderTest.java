@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class ModelLabelProviderTest extends AbstractIpsPluginTest {
+
     private ModelLabelProvider flatProvider = new ModelLabelProvider(true);
     private ModelLabelProvider hierarchyProvider = new ModelLabelProvider(false);
 
@@ -85,10 +86,6 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals("/a3 : float", hierarchyProvider.getText(attr3));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider.getImage(Object)'
-     */
     public void testGetImage() {
         // Image returned by getImage() equals Image returned by IpsElement#getImage()
         Image img = IpsUIPlugin.getImageHandling().getImage(proj.getProject());
@@ -119,10 +116,6 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         flatProvider.dispose();
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider.getText(Object)'
-     */
     public void testGetText() throws CoreException {
         String fragmentName;
         // packagefragment Labels
@@ -199,35 +192,18 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals(proj.getName() + " (" + Messages.ModelLabelProvider_noProductDefinitionProjectLabel + ")", name);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider.addListener(ILabelProviderListener)'
-     */
     public void testAddListener() {
         // no tests
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider.dispose()'
-     */
     public void testDispose() {
         // no tests
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider.isLabelProperty(Object,
-     * String)'
-     */
     public void testIsLabelProperty() {
         // no tests
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider.removeListener(ILabelProviderListener)'
-     */
     public void testRemoveListener() {
         // no tests
     }

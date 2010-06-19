@@ -46,9 +46,6 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
         plugin.setTestAnswerProvider(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void tearDownExtension() throws Exception {
         plugin.getLog().removeLogListener(this);
@@ -72,34 +69,22 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
         plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void logging(IStatus status, String plugin) {
         // never ever should a logentry appear...
         fail();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean getBooleanAnswer() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStringAnswer() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getAnswer() {
         return null;

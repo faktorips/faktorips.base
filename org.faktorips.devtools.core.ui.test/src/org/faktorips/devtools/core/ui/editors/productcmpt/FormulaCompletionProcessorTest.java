@@ -73,11 +73,6 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         processor = new FormulaCompletionProcessor(configElement);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.editors.productcmpt.FormulaCompletionProcessor.doComputeCompletionProposals(String,
-     * int, List)'
-     */
     public void testDoComputeCompletionProposals() throws Exception {
         ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
         processor.doComputeCompletionProposals("Test", 0, results);
@@ -134,7 +129,6 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
     }
 
     public void testDoComputeCompletionProposalsForSingleTableContents() throws Exception {
-
         ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
                 IpsObjectType.TABLE_STRUCTURE, "Testtable");
         IColumn column = table.newColumn();

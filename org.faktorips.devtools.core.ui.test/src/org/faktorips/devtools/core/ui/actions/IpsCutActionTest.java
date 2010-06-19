@@ -13,11 +13,6 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import java.io.IOException;
-
-import javax.xml.transform.TransformerException;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -35,7 +30,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.xml.sax.SAXException;
 
 /**
  * Test for IpsCutAction.
@@ -65,7 +59,7 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
 
     }
 
-    public void testRun() throws CoreException, SAXException, IOException, TransformerException {
+    public void testRun() {
         String current = new IpsObjectPartState(attribute).toString();
 
         assertEquals(1, pcType.getNumOfAttributes());

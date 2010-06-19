@@ -49,7 +49,6 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
     }
 
     public void test_FlatLayout() throws CoreException, InterruptedException {
-
         // test case 1: new package "model.base" and new PolicyCmptType
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "model.base.Policy");
         IIpsPackageFragment basePack = policyType.getIpsPackageFragment();
@@ -194,7 +193,6 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
     }
 
     public void test_HierarchicalLayout() throws CoreException, InterruptedException {
-
         // test case 1: new package "model.base" and new PolicyCmptType
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "model.base.Policy");
         IIpsPackageFragment basePack = policyType.getIpsPackageFragment();
@@ -244,10 +242,10 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         assertTrue(elementsToRefresh.contains(basePack));
         assertFalse(elementsToUpdate.contains(basePack));
 
-        // No need to refreh the added child as the parent is refreshed.
+        // No need to refresh the added child as the parent is refreshed.
         assertFalse(elementsToRefresh.contains(coverageType.getIpsSrcFile()));
 
-        // test case 3: all ips elements above the package containg the added type needn't be
+        // test case 3: all ips elements above the package containing the added type needn't be
         // refresh, but
         // must be updated
         IPolicyCmptType personType = newPolicyCmptType(ipsProject, "model.Person");

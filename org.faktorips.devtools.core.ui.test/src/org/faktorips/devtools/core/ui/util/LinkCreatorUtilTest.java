@@ -41,7 +41,6 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStru
  * Tests for LinkCreatorUtil
  * 
  * @author Cornelius Dirmeier
- * 
  */
 public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
 
@@ -107,13 +106,6 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         linkCreator = new MyLinkCreator(true);
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.ui.LinkDropListener#validateDrop(java.lang.Object, int, org.eclipse.swt.dnd.TransferData)}
-     * .
-     * 
-     * @throws CoreException
-     */
     public void testValidateCreateLink() throws CoreException {
         IProductCmptReference target = structure.getRoot();
         List<IProductCmpt> singleCmpt = getList(cmptB1);
@@ -156,10 +148,6 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // link.delete();
     }
 
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.ui.LinkDropListener#performDrop(java.lang.Object)}.
-     */
     public void testCreateLink() {
         IProductCmptLink[] links;
 
@@ -307,8 +295,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
      * check dropping components on the target, target have to be set before calling this method. In
      * case of target is a link there already have to exists at least one link
      * 
-     * @param the number of links that already exists in the product cmpt
-     * 
+     * @param alreadyExistingLinks the number of links that already exists in the product cmpt
      */
     private void checkDropWithSinglePossibility(IProductCmptStructureReference target, int alreadyExistingLinks) {
         // drop single component on CmptReference with no possibility to add
@@ -368,16 +355,10 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
             return result;
         }
 
-        /**
-         * @param selection The selection to set.
-         */
         public void setSelection(int selection) {
             this.selection = selection;
         }
 
-        /**
-         * @return Returns the selection.
-         */
         public int getSelection() {
             return selection;
         }

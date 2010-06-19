@@ -40,9 +40,8 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
      * Note: this test is also covered by the test for the method
      * IType.findAssociationsForTargetAndAssociationType()
      * 
-     * @see {@link IType#findAssociationsForTargetAndAssociationType(String, AssociationType, IIpsProject)}
-     * 
-     * @throws Exception
+     * @see IType#findAssociationsForTargetAndAssociationType(String, AssociationType, IIpsProject,
+     *      boolean)
      */
     public void testGetCorrespondingTargetAssociations() throws Exception {
         IPolicyCmptType policyCmptTypeSuper1 = newPolicyCmptType(project, "policyCmptSuper1");
@@ -144,7 +143,6 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
 
     /**
      * Test if the last pages for creating the product cmpt type association are available or not.
-     * 
      */
     public void testIsProductCmptTypeAvailable() throws CoreException {
         PolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(project, "Policy", "PolicyType");

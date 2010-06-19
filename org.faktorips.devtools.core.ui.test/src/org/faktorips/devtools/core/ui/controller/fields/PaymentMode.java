@@ -25,9 +25,6 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
     public final static String ANNUAL_NAME = "annual";
     public final static String MONTHLY_NAME = "monthly";
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getAllValueIds(boolean includeNull) {
         if (includeNull) {
@@ -36,17 +33,11 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
         return new String[] { ANNUAL_ID, MONTHLY_ID };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isParsable(String value) {
         if (value == null) {
@@ -55,73 +46,46 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
         return value.equals(ANNUAL_ID) || value.equals(MONTHLY_ID);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return "PaymentMode";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultValue() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getQualifiedName() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValueDatatype() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getJavaClassName() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSupportingNames() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getValueName(String id) {
         if (id == null) {
@@ -136,9 +100,6 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
         throw new IllegalArgumentException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isNull(String value) {
         if (value == null) {
@@ -147,41 +108,26 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean supportsCompare() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isImmutable() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isMutable() {
         return false;

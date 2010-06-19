@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -38,13 +37,13 @@ public class LayoutStyleTest extends AbstractIpsPluginTest {
         packOrg = packOrgMotor.getParentIpsPackageFragment();
     }
 
-    public void testGetParent_Flat() throws CoreException {
+    public void testGetParent_Flat() {
         assertEquals(root, LayoutStyle.FLAT.getParent(root.getDefaultIpsPackageFragment()));
         assertEquals(root, LayoutStyle.FLAT.getParent(packOrg));
         assertEquals(root, LayoutStyle.FLAT.getParent(packOrgMotor));
     }
 
-    public void testGetParent_Hierarchical() throws CoreException {
+    public void testGetParent_Hierarchical() {
         assertEquals(root, LayoutStyle.HIERACHICAL.getParent(root.getDefaultIpsPackageFragment()));
         assertEquals(root, LayoutStyle.HIERACHICAL.getParent(packOrg));
         assertEquals(packOrg, LayoutStyle.HIERACHICAL.getParent(packOrgMotor));

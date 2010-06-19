@@ -48,7 +48,6 @@ public class ParameterFigureConstraintCommandTest extends AbstractIpsPluginTest 
         command.execute();
         command.undo();
         assertEquals(new Dimension(0, 0), bf.getParameterRectangleSize());
-
     }
 
 }

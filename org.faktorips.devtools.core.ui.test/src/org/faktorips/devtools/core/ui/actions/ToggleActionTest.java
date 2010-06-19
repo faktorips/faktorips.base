@@ -17,12 +17,10 @@ import junit.framework.TestCase;
 
 import org.eclipse.core.databinding.observable.value.WritableValue;
 
-/**
- * Tests the class {@link ToggleAction}.
- */
-@SuppressWarnings("nls")
 public class ToggleActionTest extends TestCase {
+
     private static final String WRONG_OBSERVABLE_STATE = "Wrong observable state";
+
     private static final String WRONG_ACTION_CHECKED_STATE = "Wrong action checked state";
 
     /**

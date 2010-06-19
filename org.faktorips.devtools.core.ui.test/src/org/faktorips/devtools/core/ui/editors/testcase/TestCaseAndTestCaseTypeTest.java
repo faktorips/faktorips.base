@@ -92,7 +92,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         testCase.newTestValue().setTestValueParameter("expectedResultValueParameter4");
     }
 
-    public void testContentProvider() throws CoreException {
+    public void testContentProvider() {
         TestCaseContentProvider testCaseCntProviderIn = new TestCaseContentProvider(TestCaseContentProvider.INPUT,
                 testCase);
         TestCaseContentProvider testCaseContentProviderExp = new TestCaseContentProvider(

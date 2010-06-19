@@ -17,7 +17,6 @@ import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -65,10 +64,6 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
         System.arraycopy(pcChildren2, 0, parentElement2, 1, pcChildren2.length);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.search.SearchResultContentProvider.getChildren(Object)'
-     */
     public void testGetChildren() throws CoreException {
         // The first element in the Object[] is the search result, the others are its children.
 
@@ -81,10 +76,6 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
         assertTrue(Arrays.equals(pcType2.getChildren(), children));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.search.SearchResultContentProvider.getParent(Object)'
-     */
     public void testGetParent() {
         Object parent = provider.getParent(generation);
         assertEquals(generation.getProductCmpt(), parent);
@@ -92,11 +83,7 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(pcType.getParent(), parent);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.search.SearchResultContentProvider.hasChildren(Object)'
-     */
-    public void testHasChildren() throws CoreException {
+    public void testHasChildren() {
         assertFalse(provider.hasChildren(parentElement));
         assertTrue(provider.hasChildren(parentElement2));
     }

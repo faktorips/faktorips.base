@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -26,13 +25,11 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.values.DateUtil;
 
 public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
+
     private IIpsProject project;
     private IProductCmpt productCmpt;
     private Shell shell;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -46,7 +43,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         shell.dispose();
     }
 
-    public void testCreatedChoiceBtns() throws CoreException {
+    public void testCreatedChoiceBtns() {
         GenerationSelectionDialog dialog = null;
         IIpsObjectGeneration[] generations = new IIpsObjectGeneration[10];
 

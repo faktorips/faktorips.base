@@ -143,8 +143,6 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
     /**
      * Testing the image methods in the IpsUIPlugin by loading the same images several times. So
      * there should be only one instance of the real image.
-     * 
-     * @throws Exception
      */
     public void testImageLoadingStress() throws Exception {
         String imageName = "New.gif";
@@ -204,4 +202,5 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertEquals(resourceManager.get(expected), IpsUIPlugin.getImageHandling().getImage(actual));
         resourceManager.dispose();
     }
+
 }

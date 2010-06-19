@@ -28,9 +28,6 @@ public class BooleanComboFieldTest extends TestCase {
 
     private Shell shell;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

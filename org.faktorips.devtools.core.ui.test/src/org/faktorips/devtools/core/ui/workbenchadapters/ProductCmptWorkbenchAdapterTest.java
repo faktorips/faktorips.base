@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import java.io.IOException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -32,6 +30,7 @@ import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdap
 // Problem beim der Autotestsuite (stefan w.)?
 // die Tests von IpsUIPluginTest wurden immer mit ausgefuehrt
 public class ProductCmptWorkbenchAdapterTest extends AbstractIpsPluginTest {
+
     private IIpsPackageFragmentRoot root;
     private IIpsProject ipsProject;
 
@@ -45,7 +44,7 @@ public class ProductCmptWorkbenchAdapterTest extends AbstractIpsPluginTest {
         root = newIpsPackageFragmentRoot(ipsProject, null, "root");
     }
 
-    public void testProductCmptIconDesc() throws CoreException, IOException {
+    public void testProductCmptIconDesc() throws CoreException {
         // create Types
         IProductCmptType aSuperType = newProductCmptType(root, "ASuperType");
         IProductCmptType bNormalType = newProductCmptType(root, "BNormalType");

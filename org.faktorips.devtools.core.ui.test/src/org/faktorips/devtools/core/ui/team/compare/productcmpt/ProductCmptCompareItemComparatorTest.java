@@ -81,11 +81,6 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         compareItemRoot = (ProductCmptCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItemComparator.compare(Object,
-     * Object)'
-     */
     public void testCompare() {
         ProductCmptCompareItemComparator comparator = new ProductCmptCompareItemComparator();
 

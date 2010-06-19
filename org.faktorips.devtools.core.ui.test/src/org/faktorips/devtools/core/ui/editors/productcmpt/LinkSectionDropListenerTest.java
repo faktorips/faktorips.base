@@ -366,9 +366,6 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
             return operation;
         }
 
-        /**
-         * @param operation The operation to set.
-         */
         public void setOperation(int operation) {
             this.operation = operation;
         }
@@ -378,9 +375,6 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
             return location;
         }
 
-        /**
-         * @param location The location to set.
-         */
         public void setLocation(int location) {
             this.location = location;
         }

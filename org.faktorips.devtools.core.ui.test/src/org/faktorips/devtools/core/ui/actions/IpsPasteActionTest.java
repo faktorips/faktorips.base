@@ -15,10 +15,7 @@ package org.faktorips.devtools.core.ui.actions;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Arrays;
-
-import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -42,7 +39,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.xml.sax.SAXException;
 
 /**
  * Test for IpsCutAction.
@@ -96,7 +92,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         return archiveFile;
     }
 
-    public void testRun() throws CoreException, SAXException, IOException, TransformerException {
+    public void testRun() throws CoreException {
         cutAction = newIpsCutAction(attribute);
         pasteAction = newIpsPasteAction(pcType);
 
@@ -115,10 +111,6 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         pasteAction.run();
         assertEquals(2, root.getDefaultIpsPackageFragment().getChildIpsPackageFragments().length);
     }
-
-    //
-    // Tests from package fragments and ips elements
-    //
 
     public void testCopyPasteIpsObject2IpsPackageFragment() throws CoreException {
         IIpsPackageFragment fragment = root.createPackageFragment("testTarget", true, null);
@@ -168,10 +160,6 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(1, folder.members().length);
         assertEquals(2, ((IFolder)folder.members()[0]).members().length);
     }
-
-    //
-    // Tests copy from ips archives
-    //
 
     public void testCopyPasteIpsObjectFromArchive2IpsPackageFragment() throws CoreException {
         IIpsPackageFragment fragment = root.createPackageFragment("test", true, null);

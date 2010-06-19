@@ -39,9 +39,6 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
     private ITableStructureUsage tableStructureUsage;
     private IIpsProject project;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();

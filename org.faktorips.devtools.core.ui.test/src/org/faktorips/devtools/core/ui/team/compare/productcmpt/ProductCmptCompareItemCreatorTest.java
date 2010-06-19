@@ -20,7 +20,6 @@ import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -65,7 +64,7 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
 
         configElement1 = generation1.newConfigElement();
         configElement1.setPolicyCmptTypeAttribute("configElement1"); // set name to ensure sorting
-                                                                     // order
+        // order
         configElement2 = generation1.newConfigElement();
         configElement2.setPolicyCmptTypeAttribute("configElement2");
         relation1 = generation1.newLink(productReferenced.getQualifiedName());
@@ -77,10 +76,6 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
         compareItemRoot = (ProductCmptCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getStructure(Object)'
-     */
     public void testGetStructure() {
         assertEquals(srcFile, compareItemRoot.getIpsElement());
 
@@ -109,11 +104,6 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
         assertEquals(relation2, compareItemRelation2.getIpsElement());
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getContents(Object,
-     * boolean)'
-     */
     public void testGetContents() {
         Object[] children = compareItemRoot.getChildren();
         ProductCmptCompareItem compareItem = (ProductCmptCompareItem)children[0];

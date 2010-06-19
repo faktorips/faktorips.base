@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
 
 /**
- * Test für threading issues (we hopefully once HAD).
+ * Test for threading issues (we hopefully once HAD).
  * 
  * @author Jan Ortmann
  */
@@ -74,8 +74,6 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
 
     /**
      * Same as above but with an open editor on the file.
-     * 
-     * @throws Exception
      */
     public void testChangeDirectlyOnDiskWithoutUsingTheEclipseApiAndOpenEditor() throws Exception {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {

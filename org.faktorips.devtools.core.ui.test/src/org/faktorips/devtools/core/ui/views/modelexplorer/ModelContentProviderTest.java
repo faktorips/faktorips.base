@@ -138,11 +138,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         project.setProperties(props);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.getChildren(Object)'
-     */
-    public void testGetChildren() throws CoreException {
+    public void testGetChildren() {
         List<Object> list;
         // --- Tests for hierarchical layout style ---
         // Proj contains only the packageFragmentRoot and a folder,
@@ -257,10 +253,6 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertTrue(list.contains(file));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.getParent(Object)'
-     */
     public void testGetParent() {
         Object parent;
         // tests for hierarchical layout
@@ -327,11 +319,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(folder, parent);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.hasChildren(Object)'
-     */
-    public void testHasChildren() throws CoreException {
+    public void testHasChildren() {
         // hierarchical tests
         assertTrue(hierarchyProvider.hasChildren(proj));
         assertTrue(hierarchyProvider.hasChildren(modelProj));
@@ -373,10 +361,6 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertFalse(flatProvider.hasChildren(file));
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.getElements(Object)'
-     */
     public void testGetElements() throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
@@ -405,19 +389,10 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(3, children.length);
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.dispose()'
-     */
     public void testDispose() {
         // no tests
     }
 
-    /*
-     * Test method for
-     * 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.inputChanged(Viewer,
-     * Object, Object)'
-     */
     public void testInputChanged() {
         // no tests
     }
