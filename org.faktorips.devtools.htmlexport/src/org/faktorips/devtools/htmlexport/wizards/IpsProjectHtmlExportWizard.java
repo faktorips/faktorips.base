@@ -43,11 +43,12 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
 
     public IpsProjectHtmlExportWizard() {
         super();
-        setWindowTitle("FENSTER_TITEL");
+        setWindowTitle("Faktor-IPS Html Export");
         setDefaultPageImageDescriptor(HtmlExportPlugin.getImageDescriptor("icons/HtmlExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
         IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
+
         if (section == null) {
             hasNewDialogSettings = true;
         } else {

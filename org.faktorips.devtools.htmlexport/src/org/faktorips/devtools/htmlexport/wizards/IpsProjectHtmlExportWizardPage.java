@@ -39,7 +39,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage implements ValueChangeListener,
         ModifyListener, ICheckStateListener {
@@ -51,14 +50,14 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     private IStructuredSelection selection;
 
     private UIToolkit toolkit = new UIToolkit(null);
-    private Checkbox includeReferencedProjects;
+    // TODO private Checkbox includeReferencedProjects;
     private Combo destinationNamesCombo;
 
     protected IpsProjectHtmlExportWizardPage(IStructuredSelection selection) {
         super(PAGE_NAME);
         this.selection = selection;
-        setTitle("TITEL");
-        setDescription("BESCHREIBUNG");
+        setTitle("Html Export of " + getProject().getName());
+        setDescription("Choose destination and options");
 
         setPageComplete(false);
     }
@@ -82,7 +81,8 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
         createDestinationGroup(composite);
 
-        includeReferencedProjects = toolkit.createCheckbox(composite, "Include referenced Projects");
+        // TODO includeReferencedProjects = toolkit.createCheckbox(composite,
+        // "Include referenced Projects");
 
         restoreWidgetValues();
 
@@ -98,7 +98,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         destinationSelectionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_FILL));
 
-        new Label(destinationSelectionGroup, SWT.NONE).setText("ZIEL");
+        new Label(destinationSelectionGroup, SWT.NONE).setText("Destination");
 
         // destination name entry field
         destinationNamesCombo = new Combo(destinationSelectionGroup, SWT.SINGLE | SWT.BORDER);
@@ -110,7 +110,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
         // destination browse button
         Button destinationBrowseButton = new Button(destinationSelectionGroup, SWT.PUSH);
-        destinationBrowseButton.setText("BROWSE");
+        destinationBrowseButton.setText("Browse");
         destinationBrowseButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         destinationBrowseButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -126,12 +126,16 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     protected void handleDestinationBrowseButtonPressed() {
         DirectoryDialog directoryDialog = new DirectoryDialog(getContainer().getShell());
         directoryDialog.setText("DIALOG TEXT");
-        directoryDialog.setFilterPath(((IProject)selection.getFirstElement()).getLocation() + File.separator + "html");
+        directoryDialog.setFilterPath(getProject().getLocation() + File.separator + "html");
 
         String selectedDirectoryName = directoryDialog.open();
         if (selectedDirectoryName != null) {
             destinationNamesCombo.setText(selectedDirectoryName);
         }
+    }
+
+    private IProject getProject() {
+        return (IProject)selection.getFirstElement();
     }
 
     @Override
@@ -154,16 +158,20 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     private String getDefaultDestinationDirectory() {
-        IProject firstElement = (IProject)selection.getFirstElement();
+        IProject firstElement = getProject();
         return firstElement.getLocation().toOSString() + File.separator + "html";
 
     }
 
     public boolean isIncludingReferencedProjects() {
-        return includeReferencedProjects.isChecked();
+        return true; // TODO includeReferencedProjects.isChecked();
     }
 
     private void canFinish() {
+        if (selection.size() != 1) {
+            setPageComplete(false);
+            return;
+        }
         if (StringUtils.isNotBlank(getDestinationDirectory())) {
             setPageComplete(true);
             return;

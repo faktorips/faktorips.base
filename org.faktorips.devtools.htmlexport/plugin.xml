@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
+<!--
       <extension point="org.eclipse.ui.popupMenus">
 		<objectContribution adaptable="true" id="createHtmlExport" objectClass="org.eclipse.core.resources.IProject">
 			<action
@@ -14,6 +14,7 @@
 		  	
 		</objectContribution>
    </extension>
+-->
       <extension
             point="org.eclipse.ui.exportWizards">
                    <category
@@ -25,8 +26,8 @@
             class="org.faktorips.devtools.htmlexport.wizards.IpsProjectHtmlExportWizard"
             icon="icons/HtmlExport.gif"
             id="ipsProjectHtmlExportWizard"
-            name="HTMLEXPORTWIZARD_NAME">
-    	   <description>BESCHREIBUNG</description>
+            name="%exportIpsProjectHtml">
+    	   <description>%exportIpsProjectHtmlDescription</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
       </extension>
