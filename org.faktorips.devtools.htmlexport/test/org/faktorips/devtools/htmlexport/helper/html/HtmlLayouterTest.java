@@ -16,7 +16,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
  * <div>Achtung: Für die Generierung der Links sind momentan noch IPS-Objekte notwendig und werden
  * daher im Plugin-Test-Projekt getestet</div>
  */
-public class HtmlLayouterTest extends AbstractHtmlLayouterTest {
+public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
     public void testHtmlLayouterRootPageElement() throws Exception {
         AbstractRootPageElement pageElement = new AbstractRootPageElement() {
 

@@ -4,7 +4,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 
-public class HtmlLayouterStyleTest extends AbstractHtmlLayouterTest {
+public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
 
     public void testStyleBold() {
         String text = "text beispiel";

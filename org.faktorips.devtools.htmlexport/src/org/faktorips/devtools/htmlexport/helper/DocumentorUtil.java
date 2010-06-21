@@ -43,10 +43,9 @@ public class DocumentorUtil {
      * @param srcFile
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends IIpsObject> T getIpsObject(IIpsSrcFile srcFile) {
+    public static IIpsObject getIpsObject(IIpsSrcFile srcFile) {
         try {
-            return (T)srcFile.getIpsObject();
+            return srcFile.getIpsObject();
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +62,8 @@ public class DocumentorUtil {
         List<T> objects = new ArrayList<T>();
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            T ipsObject = getIpsObject(srcFile);
+            @SuppressWarnings("unchecked")
+            T ipsObject = (T)getIpsObject(srcFile);
             objects.add(ipsObject);
         }
 

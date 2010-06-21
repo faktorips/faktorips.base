@@ -10,15 +10,15 @@ import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 
-public abstract class AbstractHtmlLayouterTest extends TestCase {
+public abstract class AbstractTestHtmlLayouter extends TestCase {
 
     HtmlLayouter layouter = new HtmlLayouter(".resources");
 
-    public AbstractHtmlLayouterTest() {
+    public AbstractTestHtmlLayouter() {
         super();
     }
 
-    public AbstractHtmlLayouterTest(String name) {
+    public AbstractTestHtmlLayouter(String name) {
         super(name);
     }
 
