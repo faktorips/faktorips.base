@@ -900,11 +900,21 @@ ${faktoripsProductLinuxZipPath}
 		<cvs command="co" package="de.qv.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="de.qv.faktorips" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		
+		<antcall target="-checkout.OLD_runtimeAndValuetypes" />
+		<antcall target="-checkout.runtime.addons" />
     </target>
 	
-	<target name="-checkout.OLD_runtimeAndValuetypes">
+	<target name="-checkout.OLD_runtimeAndValuetypes" unless="isMinVersion3">
 		<cvs command="co" package="org.faktorips.runtime" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.valuetypes" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	</target>
+	
+	<target name="-checkout.runtime.addons" if="isMinVersion3">
+		<cvs command="co" package="org.faktorips.runtime.groovy" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		<cvs command="co" package="org.faktorips.runtime.productdataservice.common" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		<cvs command="co" package="org.faktorips.runtime.productdataservice" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		<cvs command="co" package="org.faktorips.runtime.productdataprovider.ejbclient" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	</target>
 	
     <target name="-checkout.pluginbuilder" if="isUseCvs">
