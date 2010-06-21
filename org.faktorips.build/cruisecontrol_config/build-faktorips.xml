@@ -164,7 +164,17 @@
         <ant dir="${projectCoreUiDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectCoreUiDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
-	
+
+    <target name="devtools.core.htmlexport" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.core.htmlexport' project">
+        <property name="cvsCoreHtmlexportmodule" value="org.faktorips.devtools.core.htmlexport"/>
+        <property name="projectCoreHtmlexportDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co" package="${cvsCoreHtmlexportmodule}" dest="${projectCoreHtmlexportDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectCoreHtmlexportDir}/${cvsCoreHtmlexportmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectCoreHtmlexportDir}/${cvsCoreHtmlexportmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+
     <target name="devtools.tableconversion" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.tableconversion' project">
         <property name="cvsModule" value="org.faktorips.devtools.tableconversion"/>
         <property name="projectDir" value="checkout/"/>
@@ -846,12 +856,14 @@ ${faktoripsProductLinuxZipPath}
 		<cvs command="co" package="org.faktorips.devtools.core.ui" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.devtools.tableconversion" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.nebula" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		<cvs command="co" package="org.faktorips.devtools.core.htmlexport" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		
 		<!-- checkout nl1 plugins -->
 		<cvs command="co" package="org.faktorips.nls.devtools.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.nls.devtools.core.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.devtools.tableconversion.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.nls.devtools.stdbuilder.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		<cvs command="co" package="org.faktorips.devtools.core.htmlexport.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    
 		<!-- checkout test plugins -->
 	    <cvs command="co" package="org.faktorips.devtools.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
