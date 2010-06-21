@@ -23,7 +23,7 @@
      	<wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.htmlexport.wizards.IpsProjectHtmlExportWizard"
-            icon="icons/ExportIpsArchive.gif"
+            icon="icons/HtmlExport.gif"
             id="ipsProjectHtmlExportWizard"
             name="HTMLEXPORTWIZARD_NAME">
     	   <description>BESCHREIBUNG</description>
