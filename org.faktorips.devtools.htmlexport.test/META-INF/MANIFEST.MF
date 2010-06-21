@@ -2,10 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport.test
-Bundle-Version: 1.0.0
+Bundle-Version: 0.0.0
 Require-Bundle: org.eclipse.core.runtime,
  org.faktorips.devtools.htmlexport;bundle-version="0.0.0",
  org.faktorips.devtools.core.test;bundle-version="0.0.0",
- org.faktorips.devtools.core
-Bundle-ActivationPolicy: lazy
+ org.faktorips.devtools.core,
+  org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.faktorips.devtools.htmlexport.test.documentor,
+ org.faktorips.devtools.htmlexport.test.helper.html,
+ org.faktorips.devtools.htmlexport.test.standard
