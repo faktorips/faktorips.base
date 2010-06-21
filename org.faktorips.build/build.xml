@@ -116,7 +116,7 @@
 	    <target name="test" depends="-checkTestExists,compile" if="doesTestExists">
 	    	
 	    	<property name="haltOnJunitFailOrError" value="yes"/>
-	    	<property name="junitTimeout" value="15000"/>
+	    	<property name="junitTimeout" value="30000"/>
 		
 	    	<!-- delete previos junit-logging -->
 	    	<delete includeemptydirs="true" >
