@@ -34,6 +34,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.util-->
         <!--=====================================================-->
+        <!-- change to hudson    
         <project name="org.faktorips.util" mainbuildtarget="util">
         </project>
     
@@ -52,6 +53,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.java5-->
         <!--=====================================================-->             
+        <!-- change to hudson    
         <project name="org.faktorips.valuetypes.java5" mainbuildtarget="valuetypes.java5">
             <depends>
                 <project name="org.faktorips.util"/>
@@ -61,6 +63,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.dtflcommon-->
         <!--=====================================================-->            
+        <!-- change to hudson    
         <project name="org.faktorips.dtflcommon" mainbuildtarget="dtflcommon">
             <depends>
                 <project name="org.faktorips.valuetypes"/>
@@ -83,6 +86,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.runtime.java5-->
         <!--=====================================================-->         
+         <!-- change to hudson    
         <project name="org.faktorips.runtime.java5" mainbuildtarget="runtime.java5">
             <depends>
                 <project name="org.faktorips.valuetypes.java5"/>
@@ -93,6 +97,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.fl-->
         <!--=====================================================-->                 
+         <!-- change to hudson    
         <project name="org.faktorips.fl" mainbuildtarget="fl">
             <depends>
                 <project name="org.faktorips.dtflcommon"/>
@@ -102,6 +107,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.core-->
         <!--=====================================================-->           
+         <!-- change to hudson    
         <project name="org.faktorips.devtools.core" mainbuildtarget="devtools.core">
             <depends>
                 <project name="org.faktorips.fl"/>
@@ -111,6 +117,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.stdbuilder-->
         <!--=====================================================-->           
+         <!-- change to hudson    
         <project name="org.faktorips.devtools.stdbuilder" mainbuildtarget="devtools.stdbuilder">
             <depends>
                 <project name="org.faktorips.fl"/>
@@ -122,6 +129,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.nebula-->
         <!--=====================================================-->          
+         <!-- change to hudson    
         <project name="org.faktorips.nebula" mainbuildtarget="nebula">
             <depends>
                 <project name="org.faktorips.devtools.core"/>
@@ -131,6 +139,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.core.ui-->
         <!--=====================================================-->          
+         <!-- change to hudson    
         <project name="org.faktorips.devtools.core.ui" mainbuildtarget="devtools.core.ui">
             <depends>
                 <project name="org.faktorips.nebula"/>
@@ -140,6 +149,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.tableconversion-->
         <!--=====================================================-->          
+         <!-- change to hudson    
         <project name="org.faktorips.devtools.tableconversion" mainbuildtarget="devtools.tableconversion">
             <depends>
                 <project name="org.faktorips.devtools.core.ui"/>
@@ -149,6 +159,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ant-->
         <!--=====================================================-->           
+         <!-- change to hudson    
         <project name="org.faktorips.devtools.ant" mainbuildtarget="devtools.ant" 
             testresult="${workdir}/${project.name}/scripts/">
         </project>
@@ -156,6 +167,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.uml-->
         <!--=====================================================-->           
+        <!-- change to hudson    
         <project name="org.faktorips.uml" mainbuildtarget="uml">
             <depends>
                 <project name="org.faktorips.devtools.core"/>
@@ -165,6 +177,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ormext-->
         <!--=====================================================-->          
+        <!-- change to hudson    
         <project name="org.faktorips.devtools.ormext" mainbuildtarget="ormext">
             <depends>
                 <project name="org.faktorips.devtools.core"/>
@@ -174,6 +187,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ormext.ui-->
         <!--=====================================================-->           
+        <!-- change to hudson    
            <project name="org.faktorips.devtools.ormext.ui" mainbuildtarget="ormext.ui">
             <depends>
                 <project name="org.faktorips.devtools.core.ui"/>
@@ -186,6 +200,7 @@
         <!--Project definition: org.faktorips.pluginbuilder-->
         <!--=====================================================-->
         <!-- scheduleintervall: 300 = 5 minutes -->
+        <!-- change to hudson    
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
@@ -193,7 +208,6 @@
             <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
             <jvmarg arg="-Xmx600m"/>
             <depends>
-                <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
                 <cvs module="org.faktorips.util"/>
                 <cvs module="org.faktorips.valuetypes"/>
                 <cvs module="org.faktorips.dtflcommon"/>
@@ -208,7 +222,6 @@
                 <cvs module="org.faktorips.devtools.ormext"/>
                 <cvs module="org.faktorips.devtools.ormext.ui"/>
                                 
-                <!-- plugin test dependencies-->
                 <cvs module="org.faktorips.devtools.core.test"/>
                 <cvs module="org.faktorips.devtools.stdbuilder.test"/>
                 <cvs module="org.faktorips.devtools.core.ui.test"/>            
@@ -216,17 +229,11 @@
                 <cvs module="org.faktorips.devtools.ant.test"/>            
                 <cvs module="org.faktorips.uml.test"/> 
 
-				<!-- features -->
                 <cvs module="org.faktorips.feature"/> 
                 <cvs module="org.faktorips.feature.test"/> 
                 <cvs module="org.faktorips.uml.feature"/> 
                 <cvs module="org.faktorips.uml.feature.test"/> 
 
-                <!-- customer plugins # does not work in head yet               
-                <cvs module="de.qv.faktorips"/>
-                <cvs module="de.qv.ormext.builder"/>
-                <cvs module="de.qv.ormext.builder.test"/>
-                -->
             </depends>      
         </project>
 
@@ -418,6 +425,7 @@
         <!--============================================================-->
         <!--Project definition: org.faktorips.integrationtest.java5-->
         <!--============================================================-->    
+        <!-- change to hudson    
         <project name="org.faktorips.integrationtest.java5" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
             testmerge="*Test.xml" scheduleintervall="300"
@@ -425,7 +433,6 @@
             <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
             <depends>
                 <project name="org.faktorips.pluginbuilder"/>
-<!-- TODO to receive emails add cvs projects -->
             </depends>         
         </project>
 
@@ -569,8 +576,8 @@
         <!--============================================================-->
         <!--Project definition: de.qv.faktorips -->
         <!--============================================================-->    
+        <!-- change to hudson    
         <project name="de.qv.faktorips" mainbuildtarget="de.qv.faktorips">
-            <!-- TODO mail nur an developer bei der kqv -->
             <depends>
                 <project name="org.faktorips.devtools.core"/>
             </depends>         
