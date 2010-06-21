@@ -93,4 +93,9 @@ img {
 
 a {
 	text-decoration: none;
+	white-space: nowrap;
+}
+
+.DEAD_LINK {
+	color: red;
 }

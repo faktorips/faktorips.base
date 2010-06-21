@@ -3,8 +3,6 @@
 	<target name="main">
 		<ant antfile="build.xml" dir="../org.faktorips.util" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.valuetypes.java5" target="build.jars"/>
-		<ant antfile="build.xml" dir="../org.faktorips.valuetypes" target="build.jars"/>
-		<ant antfile="build.xml" dir="../org.faktorips.runtime" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.dtflcommon" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.fl" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.runtime.java5" target="build.jars"/>
@@ -14,5 +12,6 @@
 		<ant antfile="build.xml" dir="../org.faktorips.devtools.ant" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.devtools.core.ui" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.devtools.tableconversion" target="build.jars"/>
+		<ant antfile="build.xml" dir="../org.faktorips.devtools.htmlexport" target="build.jars"/>
 	</target>
 </project>

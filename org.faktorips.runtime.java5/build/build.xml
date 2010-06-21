@@ -45,7 +45,7 @@
 		    </patternset>
 		</fileset>
 		
-		<!-- runtime depends on org.faktorips.valuetypes -->
+		<!-- runtime depends on org.faktorips.valuetypes.java5 -->
 		<fileset dir="../../org.faktorips.valuetypes.java5/" >
 		    <patternset> 
 	    		<include name="lib/*.jar" /> 

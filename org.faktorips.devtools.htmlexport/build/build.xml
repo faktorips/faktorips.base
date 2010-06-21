@@ -55,7 +55,7 @@
 			</patternset>
 		</fileset>
 
-		<!--htmlexport depends on org.faktorips.runtime-->
+		<!--htmlexport depends on org.faktorips.runtime.java5 -->
 		<fileset dir="../../org.faktorips.runtime.java5/">
 			<patternset>
 				<include name="build/results/*.jar" />

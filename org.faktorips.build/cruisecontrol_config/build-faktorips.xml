@@ -29,7 +29,7 @@
         <ant dir="${projectUtilDir}/${cvsUtilmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
-    <target name="valuetypes" depends="updateBuildTemplate" description="builds the 'org.faktorips.valuetypes' project">
+    <target name="valuetypes" depends="updateBuildTemplate" description="builds the 'org.faktorips.valuetypes' project" unless="isMinVersion3">
         <property name="cvsValuetypesmodule" value="org.faktorips.valuetypes"/>
         <property name="projectValuetypesDir" value="checkout/"/>
         <!--checkout/update project-->
@@ -59,7 +59,7 @@
         <ant dir="${projectDtflcommonDir}/${cvsDtflcommonmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
-    <target name="runtime" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime' project">
+    <target name="runtime" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime' project" unless="isMinVersion3">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime"/>
         <property name="projectRuntimeDir" value="checkout/"/>
         <!--checkout/update project-->
@@ -593,14 +593,8 @@ ${faktoripsProductLinuxZipPath}
 	
     <!--helper targets-->
     <target name="-buildAndPublish.release.runtimeAndValuetypesJars" unless="is.product.build">
-    	<!-- build runtime and valutypes using own build files -->
-    	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars">
-    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
-    	</ant>
+    	<antcall target="-buildAndPublish.release.OLD_runtimeAndValuetypesJars" />
     	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes.java5/build" antfile="build.xml" target="buildAllsJars">
-    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
-    	</ant>
-        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime/build" antfile="build.xml" target="buildAllsJars">
     	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
     	</ant>
         <ant dir="${buildDirectory}/plugins/org.faktorips.runtime.java5/build" antfile="build.xml" target="buildAllsJars">
@@ -608,6 +602,17 @@ ${faktoripsProductLinuxZipPath}
     	</ant>
         <antcall inheritall="true" target="-publish.release.runtimeAndValutypesJars"></antcall>
     </target>
+	
+	<target name="-buildAndPublish.release.OLD_runtimeAndValuetypesJars" unless="isMinVersion3">
+    	<!-- build runtime and valutypes using own build files -->
+    	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars">
+    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
+    	</ant>
+        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime/build" antfile="build.xml" target="buildAllsJars">
+    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
+    	</ant>
+	</target>
+	
 	<target name="-publish.release.runtimeAndValutypesJars">
        <property name="zip.dir" value="${buildDirectory}/zip_tmp"/>
        <property name="zipFile" value="${buildDirectory}/results/${faktoripsRuntimeAndValuetypesZipName}"/>
@@ -615,7 +620,7 @@ ${faktoripsProductLinuxZipPath}
 	   <delete includeemptydirs="true" dir="${zip.dir}"/>
        <mkdir dir="${zip.dir}"/>
 	   <copy todir="${zip.dir}">
-	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build/results" includes="*.jar *.zip"/>
+	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build/results" includes="*.jar *.zip" />
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes.java5/build/results" includes="*.jar *.zip"/>
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" includes="*.jar *.zip"/>
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime.java5/build/results" includes="*.jar *.zip"/>
@@ -844,10 +849,8 @@ ${faktoripsProductLinuxZipPath}
 		<!-- checkout plugins -->
 		<cvs command="co" package="org.faktorips.dtflcommon" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.fl" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-		<cvs command="co" package="org.faktorips.runtime" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.util" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.apache.commons.lang" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-		<cvs command="co" package="org.faktorips.valuetypes" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.devtools.ant" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.devtools.core" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.devtools.stdbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
@@ -898,6 +901,11 @@ ${faktoripsProductLinuxZipPath}
 		<cvs command="co" package="de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="de.qv.faktorips" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     </target>
+	
+	<target name="-checkout.OLD_runtimeAndValuetypes">
+		<cvs command="co" package="org.faktorips.runtime" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		<cvs command="co" package="org.faktorips.valuetypes" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+	</target>
 	
     <target name="-checkout.pluginbuilder" if="isUseCvs">
         <cvs command="co" package="org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>

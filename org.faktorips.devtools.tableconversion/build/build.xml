@@ -31,7 +31,7 @@
             </patternset>
         </fileset>
         <!--depends other projects -->
-        <fileset dir="../../org.faktorips.valuetypes/">
+        <fileset dir="../../org.faktorips.valuetypes.java5/">
             <patternset>
                 <include name="build/results/*.jar"/>
             </patternset>
@@ -54,7 +54,7 @@
                 <include name="build/results/*.jar"/>
             </patternset>
         </fileset>
-        <fileset dir="../../org.faktorips.runtime/">
+        <fileset dir="../../org.faktorips.runtime.java5/">
             <patternset>
                 <include name="lib/*.jar"/>
                 <include name="build/results/*.jar"/>

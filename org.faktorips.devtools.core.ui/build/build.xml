@@ -33,8 +33,8 @@
 			    <include name="plugins/org.eclipse.ltk.ui.refactoring*.jar"/>
             </patternset>
         </fileset>
-        <!--devtools.core depends on org.faktorips.valuetypes-->
-        <fileset dir="../../org.faktorips.valuetypes/">
+        <!--devtools.core depends on org.faktorips.valuetypes.java5-->
+        <fileset dir="../../org.faktorips.valuetypes.java5/">
             <patternset>
                 <include name="build/results/*.jar"/>
             </patternset>
@@ -60,8 +60,8 @@
                 <include name="build/results/*.jar"/>
             </patternset>
         </fileset>
-        <!--devtools.core depends on org.faktorips.dtflcommon-->
-        <fileset dir="../../org.faktorips.runtime/">
+        <!--devtools.core depends on org.faktorips.runtime.java5-->
+        <fileset dir="../../org.faktorips.runtime.java5/">
             <patternset>
                 <include name="lib/*.jar"/>
                 <include name="build/results/*.jar"/>

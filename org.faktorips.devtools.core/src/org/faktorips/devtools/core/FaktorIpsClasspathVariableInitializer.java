@@ -60,10 +60,6 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
                 "org.faktorips.valuetypes.java5", "/faktorips-valuetypes-java5src.zip")); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Mapping(VARNAME_RUNTIME_JAVA5_BIN, "org.faktorips.runtime.java5", "/faktorips-runtime-java5.jar")); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Mapping(VARNAME_RUNTIME_JAVA5_SRC, "org.faktorips.runtime.java5", "/faktorips-runtime-java5src.zip")); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Mapping(VARNAME_VALUETYPES_BIN, "org.faktorips.valuetypes", "/faktorips-valuetypes.jar")); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Mapping(VARNAME_VALUETYPES_SRC, "org.faktorips.valuetypes", "/faktorips-valuetypessrc.zip")); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Mapping(VARNAME_RUNTIME_BIN, "org.faktorips.runtime", "/faktorips-runtime.jar")); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Mapping(VARNAME_RUNTIME_SRC, "org.faktorips.runtime", "/faktorips-runtimesrc.zip")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     protected void add(Mapping m) {

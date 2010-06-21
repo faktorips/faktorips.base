@@ -771,9 +771,9 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.faktorips.devtools.stdbuilder"/>
       <import plugin="org.faktorips.dtflcommon"/>
       <import plugin="org.faktorips.fl"/>
-      <import plugin="org.faktorips.runtime"/>
+      <import plugin="org.faktorips.runtime.java5"/>
       <import plugin="org.faktorips.util"/>
-      <import plugin="org.faktorips.valuetypes"/>
+      <import plugin="org.faktorips.valuetypes.java5"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
