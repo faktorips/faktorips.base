@@ -898,6 +898,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         IProductCmptTypeAssociationReference[] child = structure.getChildProductCmptTypeAssociationReferences(structure
                 .getRoot());
 
+        if (isSearchPatternMatch(structure.getRoot().getWrappedIpsObject().getName(), searchPattern)) {
+            return true;
+        }
+
         for (int i = 0; i < child.length; i++) {
             getAllChildElements(child[i], childs);
         }
@@ -906,13 +910,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             if (!getDeepCopyWizard().getDeepCopyPreview().isCopy(reference)) {
                 continue;
             }
-            String name = reference.getWrappedIpsObject().getName();
-            String newName = name.replaceAll(searchPattern, getReplaceText());
-            if (!newName.equals(name)) {
+            if (isSearchPatternMatch(reference.getWrappedIpsObject().getName(), searchPattern)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isSearchPatternMatch(String name, String searchPattern) {
+        String newName = name.replaceAll(searchPattern, getReplaceText());
+        return !name.equals(newName);
     }
 
     private void validateWorkingDate() {
