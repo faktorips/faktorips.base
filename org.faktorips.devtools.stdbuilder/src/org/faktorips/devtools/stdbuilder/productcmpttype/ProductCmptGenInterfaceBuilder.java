@@ -23,7 +23,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -49,7 +48,7 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
 
-    public ProductCmptGenInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+    public ProductCmptGenInterfaceBuilder(StandardBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
         setMergeEnabled(true);
     }
@@ -194,8 +193,8 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        GenProductCmptTypeMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
-                .getGenerator((IProductCmptTypeMethod)method);
+        GenProductCmptTypeMethod generator = getStandardBuilderSet().getGenerator(getProductCmptType()).getGenerator(
+                (IProductCmptTypeMethod)method);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }

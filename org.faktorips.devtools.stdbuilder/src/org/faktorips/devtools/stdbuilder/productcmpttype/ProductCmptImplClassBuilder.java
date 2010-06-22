@@ -26,7 +26,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -56,7 +55,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
-    public ProductCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+    public ProductCmptImplClassBuilder(StandardBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
         setMergeEnabled(true);
     }
@@ -95,7 +94,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     @Override
     protected String[] getExtendedInterfaces() throws CoreException {
-        return new String[] { GenType.getQualifiedName(getProductCmptType(), (StandardBuilderSet)getBuilderSet(), true) };
+        return new String[] { GenType.getQualifiedName(getProductCmptType(), getStandardBuilderSet(), true) };
     }
 
     /**
@@ -103,8 +102,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String interfaceName = GenType.getUnqualifiedClassName(getProductCmptType(),
-                (StandardBuilderSet)getBuilderSet(), true);
+        String interfaceName = GenType.getUnqualifiedClassName(getProductCmptType(), getStandardBuilderSet(), true);
         appendLocalizedJavaDoc("CLASS", interfaceName, getIpsObject(), builder);
     }
 
@@ -153,8 +151,10 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateFactoryMethodsForPolicyCmptType(IPolicyCmptType returnedTypeInSignature,
             JavaCodeFragmentBuilder methodsBuilder,
             Set<IPolicyCmptType> supertypesHandledSoFar) throws CoreException {
-
-        if (returnedTypeInSignature != null && !returnedTypeInSignature.isAbstract()) {
+        if (returnedTypeInSignature == null) {
+            return;
+        }
+        if (!returnedTypeInSignature.isAbstract()) {
             generateMethodCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
         }
         IPolicyCmptType supertype = (IPolicyCmptType)returnedTypeInSignature.findSupertype(getIpsProject());
@@ -188,12 +188,10 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         } else {
             appendOverrideAnnotation(methodsBuilder, true);
         }
-        ((StandardBuilderSet)getBuilderSet()).getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(
-                methodsBuilder);
+        getStandardBuilderSet().getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return new ");
-        methodsBuilder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType())
-                .getQualifiedName(false));
+        methodsBuilder.appendClassName(getStandardBuilderSet().getGenerator(getPcType()).getQualifiedName(false));
         methodsBuilder.appendln("(this);");
         methodsBuilder.closeBracket();
     }
@@ -242,7 +240,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", getIpsObject(), methodsBuilder);
         appendOverrideAnnotation(methodsBuilder, true);
-        GenProductCmptType genProd = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
+        GenProductCmptType genProd = getStandardBuilderSet().getGenerator(getProductCmptType());
         genProd.generateSignatureGetGeneration(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");

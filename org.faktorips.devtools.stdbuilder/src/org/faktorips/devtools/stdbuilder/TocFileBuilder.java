@@ -105,8 +105,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
     private boolean generateEntriesForModelTypes;
 
-    public TocFileBuilder(IIpsArtefactBuilderSet builderSet) {
+    public TocFileBuilder(StandardBuilderSet builderSet) {
         super(builderSet);
+    }
+
+    private StandardBuilderSet getStandardBuilderSet() {
+        return (StandardBuilderSet)getBuilderSet();
     }
 
     public boolean isGenerateEntriesForModelTypes() {
@@ -421,7 +425,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             DateTime validFrom = DateTime.createDateOnly(generation.getValidFrom());
             IProductCmptGeneration gen = (IProductCmptGeneration)generation;
             String generationClassName;
-            if (gen.getProductCmpt().containsFormula()) {
+            if (gen.getProductCmpt().containsFormula()
+                    && getStandardBuilderSet().getFormulaCompiling().compileToSubclass()) {
                 generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generation);
             } else {
                 generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(pcType);
@@ -452,8 +457,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String kindId = productCmpt.findProductCmptKind().getName();
         TocEntryObject entry = new FormulaTestTocEntry(objectId, productCmpt.getQualifiedName(), kindId, productCmpt
                 .getVersionId(), formulaTestCaseName);
-        // new TestCaseTocEntry(objectId, productCmpt.getQualifiedName(), "", formulaTestCaseName);
-        // TODO CD: bisher stand hier TestCaseTocEntry nicht FormulaTestTocEntry???
 
         return entry;
     }
@@ -531,13 +534,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         return entry;
     }
 
-    public boolean isGenerateJaxbSupport() {
-        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
-    }
-
     public TocEntryObject createTocEntry(IEnumType enumType) throws CoreException {
-        if (!isGenerateJaxbSupport() || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
+        if (!getStandardBuilderSet().isGenerateJaxbSupport()
+                || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             return null;
         }
         if (enumType.isContainingValues() || enumType.isAbstract()) {

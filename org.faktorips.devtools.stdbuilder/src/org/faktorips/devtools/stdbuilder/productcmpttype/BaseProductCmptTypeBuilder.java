@@ -19,7 +19,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -37,7 +36,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptTypeBuilder {
 
-    public BaseProductCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
+    public BaseProductCmptTypeBuilder(StandardBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, kindId, localizedStringsSet);
     }
@@ -48,7 +47,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     }
 
     public GenProdAssociation getGenerator(IProductCmptTypeAssociation a) throws CoreException {
-        return ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(a);
+        return getStandardBuilderSet().getGenerator(getProductCmptType()).getGenerator(a);
     }
 
     /**
@@ -61,13 +60,13 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
      * @param methodsBuilder The code fragment builder to build the method section.
      */
     @Override
-    protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a,
+    protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(a.getPolicyCmptType());
-        GenChangeableAttribute generator = (GenChangeableAttribute)genPolicyCmptType.getGenerator(a);
+        GenPolicyCmptType genPolicyCmptType = getStandardBuilderSet().getGenerator(attribute.getPolicyCmptType());
+        GenChangeableAttribute generator = (GenChangeableAttribute)genPolicyCmptType.getGenerator(attribute);
         if (generator != null) {
             generator.generateCodeForProductCmptType(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
@@ -89,15 +88,15 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             JavaCodeFragmentBuilder methodsBuilder,
             JavaCodeFragmentBuilder constantBuilder) throws CoreException {
 
-        GenProductCmptTypeAttribute generator = ((StandardBuilderSet)getBuilderSet())
-                .getGenerator(getProductCmptType()).getGenerator(attribute);
+        GenProductCmptTypeAttribute generator = getStandardBuilderSet().getGenerator(getProductCmptType())
+                .getGenerator(attribute);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
     }
 
     protected boolean isUseTypesafeCollections() {
-        return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
+        return getStandardBuilderSet().isUseTypesafeCollections();
     }
 
     public StandardBuilderSet getStandardBuilderSet() {
@@ -106,7 +105,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
 
     protected final GenProductCmptType getGenProductCmptType(IProductCmptType productCmptType) {
         try {
-            return ((StandardBuilderSet)getBuilderSet()).getGenerator(productCmptType);
+            return getStandardBuilderSet().getGenerator(productCmptType);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

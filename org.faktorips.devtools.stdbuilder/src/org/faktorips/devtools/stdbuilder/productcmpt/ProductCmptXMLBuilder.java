@@ -60,6 +60,10 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         this.productCmptGenerationImplBuilder = productCmptGenerationImplBuilder;
     }
 
+    public StandardBuilderSet getStandardBuilderSet() {
+        return (StandardBuilderSet)getBuilderSet();
+    }
+
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
@@ -72,10 +76,11 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
             updateTargetRuntimeId((IProductCmptGeneration)generations[i], (Element)generationNodes.item(i));
 
             // creating compiled formula expressions
-            // TODO CD check for groovy builder property
-            IFormula[] formulas = ((IProductCmptGeneration)generations[i]).getFormulas();
-            NodeList formulaElements = ((Element)generationNodes.item(i)).getElementsByTagName(Formula.TAG_NAME);
-            addCompiledFormulaExpressions(document, formulas, formulaElements);
+            if (getStandardBuilderSet().getFormulaCompiling().compileToXml()) {
+                IFormula[] formulas = ((IProductCmptGeneration)generations[i]).getFormulas();
+                NodeList formulaElements = ((Element)generationNodes.item(i)).getElementsByTagName(Formula.TAG_NAME);
+                addCompiledFormulaExpressions(document, formulas, formulaElements);
+            }
         }
         try {
             super.build(ipsSrcFile, XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset()));
@@ -115,11 +120,11 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier();
         String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), false,
-                (StandardBuilderSet)getBuilderSet(), getIpsProject());
+                getStandardBuilderSet(), getIpsProject());
 
         String[] parameterNames = BuilderHelper.extractParameterNames(parameters);
         String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, false,
-                (StandardBuilderSet)getBuilderSet(), getIpsProject());
+                getStandardBuilderSet(), getIpsProject());
         String[] parameterInSignatur = parameterNames;
         String[] parameterTypesInSignatur = parameterTypes;
 

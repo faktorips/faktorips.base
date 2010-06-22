@@ -94,6 +94,25 @@
                </value>
             </discreteValues>               
          </builderSetPropertyDef>         
+         <builderSetPropertyDef
+               defaultValue="Both"
+               description="Specifies the kind of formula compiling."
+               label="Formula Compiling"
+               name="formulaCompiling"
+               type="enum">
+	            <discreteValues>
+	            	<!-- @see org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling -->
+	               <value
+	                     value="Subclass">
+	               </value>
+	               <value
+	                     value="XML">
+	               </value>
+	               <value
+	                     value="Both">
+	               </value>
+	            </discreteValues>               
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension

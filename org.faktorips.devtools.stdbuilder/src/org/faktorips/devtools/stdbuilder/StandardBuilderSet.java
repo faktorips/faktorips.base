@@ -137,6 +137,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final static String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider"; //$NON-NLS-1$
 
+    /**
+     * Configuration property contains kind of formula compiling.
+     */
+    public final static String CONFIG_PROPERTY_FORMULA_COMPILING = "formulaCompiling"; //$NON-NLS-1$
+
     private TableImplBuilder tableImplBuilder;
 
     private TableRowBuilder tableRowBuilder;
@@ -566,7 +571,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      *            {@link AnnotatedJavaElementType} for a list of possible types.
      * @param ipsElement The IPS element to create the annotations for.
      */
-    public JavaCodeFragment addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) throws CoreException {
+    public JavaCodeFragment addAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) {
         JavaCodeFragment code = new JavaCodeFragment();
         List<IAnnotationGenerator> generators = annotationGeneratorsMap.get(type);
         if (generators == null) {
@@ -642,6 +647,16 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
     }
 
+    public FormulaCompiling getFormulaCompiling() {
+        String kind = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_FORMULA_COMPILING);
+        try {
+            return FormulaCompiling.valueOf(kind);
+        } catch (Exception e) {
+            // if value is not set correctly we use Both as default value
+            return FormulaCompiling.Both;
+        }
+    }
+
     private void initSupportedPersistenceProviderMap() {
         allSupportedPersistenceProvider = new HashMap<String, CachedPersistenceProvider>(2);
         allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1,
@@ -661,13 +676,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public IPersistenceProvider getPersistenceProviderImplementation() {
         String persistenceProviderKey = (String)getConfig().getPropertyValue(CONFIG_PROPERTY_PERSISTENCE_PROVIDER);
-        if (StringUtils.isEmpty(persistenceProviderKey) || "none".equalsIgnoreCase(persistenceProviderKey)) { //$NON-NLS-1$
+        if (StringUtils.isEmpty(persistenceProviderKey) || "none".equalsIgnoreCase(persistenceProviderKey)) {
             return null;
         }
         CachedPersistenceProvider pProviderCached = allSupportedPersistenceProvider.get(persistenceProviderKey);
         if (pProviderCached == null) {
             IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unknow persistence provider  \"" + persistenceProviderKey //$NON-NLS-1$
-                    + "\". Supported provider are: " + allSupportedPersistenceProvider.keySet().toString())); //$NON-NLS-1$
+                    + "\". Supported provider are: " + allSupportedPersistenceProvider.keySet().toString()));
             return null;
         }
 
@@ -782,6 +797,21 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             CachedPersistenceProvider providerCache = new CachedPersistenceProvider();
             providerCache.persistenceProviderClass = pPClass;
             return providerCache;
+        }
+    }
+
+    public enum FormulaCompiling {
+
+        Subclass,
+        XML,
+        Both;
+
+        public boolean compileToSubclass() {
+            return this == Subclass || this == Both;
+        }
+
+        public boolean compileToXml() {
+            return this == XML || this == Both;
         }
     }
 }

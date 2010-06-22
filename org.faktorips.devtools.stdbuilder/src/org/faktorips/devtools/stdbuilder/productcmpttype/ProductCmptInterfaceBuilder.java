@@ -22,7 +22,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -47,7 +46,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
-    public ProductCmptInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) throws CoreException {
+    public ProductCmptInterfaceBuilder(StandardBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptInterfaceBuilder.class));
         setMergeEnabled(true);
     }
@@ -57,7 +56,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
         return getJavaNamingConvention().getPublishedInterfaceName(getConceptName(ipsSrcFile));
     }
 
-    public String getConceptName(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public String getConceptName(IIpsSrcFile ipsSrcFile) {
         return ipsSrcFile.getIpsObjectName();
     }
 
@@ -118,8 +117,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
         String generationConceptName = convention
                 .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode());
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", generationConceptName, getIpsObject(), methodsBuilder);
-        ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).generateSignatureGetGeneration(
-                methodsBuilder);
+        getStandardBuilderSet().getGenerator(getProductCmptType()).generateSignatureGetGeneration(methodsBuilder);
         methodsBuilder.append(';');
     }
 
@@ -133,7 +131,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IPolicyCmptType policyCmptType = getPcType();
-        GenPolicyCmptType genPcType = ((StandardBuilderSet)getBuilderSet()).getGenerator(policyCmptType);
+        GenPolicyCmptType genPcType = getStandardBuilderSet().getGenerator(policyCmptType);
         String policyCmptTypeName = genPcType.getPolicyCmptTypeName();
         appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[] { policyCmptTypeName }, getIpsObject(),
                 methodsBuilder);
