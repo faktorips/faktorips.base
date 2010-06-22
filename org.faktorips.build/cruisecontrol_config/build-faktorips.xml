@@ -492,6 +492,7 @@
 
 
 		<property name="isMinVersion3" value="true" />
+		<echo>VERSION 3: ${isMinVersion3}</echo>
 		
       <condition property="isUseCvs" value="true">
         <equals arg1="${noCvs}" arg2="false"/>
