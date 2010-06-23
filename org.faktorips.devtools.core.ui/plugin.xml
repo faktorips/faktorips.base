@@ -757,42 +757,30 @@
         <page
               class="org.faktorips.devtools.core.ui.preferencepages.IpsObjectPathPropertyPage"
               id="org.faktorips.devtools.core.ui.propertyPages.IpsObjectPathsPropertyPage"
-              name="%org.faktorips.ipsobjectpathspropertypage"
-              objectClass="org.eclipse.core.resources.IProject"> 
+              name="%org.faktorips.ipsobjectpathspropertypage">
          <filter
                name="nature"
                value="org.faktorips.devtools.core.ipsnature">
          </filter>
-        </page>
-        <page
-              class="org.faktorips.devtools.core.ui.preferencepages.IpsObjectPathPropertyPage"
-              id="org.faktorips.devtools.core.ui.propertyPages.IpsObjectPathsPropertyPage"
-              name="%org.faktorips.ipsobjectpathspropertypage"
-              objectClass="org.eclipse.jdt.core.IJavaProject"> 
-         <filter
-               name="nature"
-               value="org.faktorips.devtools.core.ipsnature">
-         </filter>
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+            </adapt>
+         </enabledWhen>
         </page>
         <page
               class="org.faktorips.devtools.core.ui.preferencepages.BuilderSetPropertyPage"
               id="org.faktorips.devtools.core.ui.propertyPages.BuilderSetPropertyPage"
-              name="%org.faktorips.ipsbuildersetpropertypage"
-              objectClass="org.eclipse.core.resources.IProject"> 
+              name="%org.faktorips.ipsbuildersetpropertypage"> 
          <filter
                name="nature"
                value="org.faktorips.devtools.core.ipsnature">
          </filter>
-        </page>
-        <page
-              class="org.faktorips.devtools.core.ui.preferencepages.BuilderSetPropertyPage"
-              id="org.faktorips.devtools.core.ui.propertyPages.BuilderSetPropertyPage"
-              name="%org.faktorips.ipsbuildersetpropertypage"
-              objectClass="org.eclipse.jdt.core.IJavaProject"> 
-         <filter
-               name="nature"
-               value="org.faktorips.devtools.core.ipsnature">
-         </filter>
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+            </adapt>
+         </enabledWhen>
         </page>
 	    <page
 	          class="org.eclipse.ui.internal.ide.dialogs.ResourceInfoPage"
