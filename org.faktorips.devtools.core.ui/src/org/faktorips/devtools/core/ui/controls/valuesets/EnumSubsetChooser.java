@@ -34,7 +34,7 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.values.ObjectUtil;
 
 /**
- * A {@link ListChooser} that allowed to define an enum value set. The list of possible values in
+ * A {@link ListChooser} that allowes to define an enum value set. The list of possible values in
  * the set that is defined in the control can be provided by another value set (source value set) or
  * by an {@link EnumDatatype}.
  * 
@@ -73,11 +73,11 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     /**
      * Creates a new chooser where the allowed values are defined by the given EnumDatatype.
      * 
-     * @param parent
-     * @param toolkit
-     * @param target
-     * @param datatype
-     * @param uiController
+     * @param parent The parent control
+     * @param toolkit The toolkit to make creation of UI easier.
+     * @param target The target-valueset (the one to add the values to).
+     * @param datatype The enum datatype that provides the allowed values.
+     * @param uiController The controller to notify upon change
      */
     public EnumSubsetChooser(Composite parent, UIToolkit toolkit, IEnumValueSet target, EnumDatatype datatype,
             UIController uiController) {
@@ -115,8 +115,6 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     /**
      * If {link {@link #allowedValuesAreDefinedByEnumDatatype()} returns <code>true</code>, this
      * method returns the enum datatype providing the allowed values.
-     * 
-     * @return
      */
     private EnumDatatype getEnumDatatype() {
         if (valueDatatype.isEnum()) {
@@ -192,8 +190,8 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     /**
      * Sets the new enum value set being edited in the control.
      * 
-     * @param newSet The new set of values.
-     * @param valueDatatype The datatype the values in the set are instances of.
+     * @param valueSet The new set of values.
+     * @param newDatatype The datatype the values in the set are instances of.
      * 
      * @throws NullPointerException if newSet is <code>null</code>.
      */

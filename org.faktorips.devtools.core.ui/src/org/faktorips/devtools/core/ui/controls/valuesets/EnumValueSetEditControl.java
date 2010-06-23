@@ -113,77 +113,43 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         return valueSet.isEnum() && !valueDatatype.isEnum();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IValueSet getValueSet() {
         return getEnumValueSet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValueSet(IValueSet newSet, ValueDatatype valueDatatype) {
         setEnumValueSet((IEnumValueSet)newSet);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createContentProvider()
-     */
     @Override
     protected IStructuredContentProvider createContentProvider() {
         return new ContentProvider();
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createLabelProvider()
-     */
     @Override
     protected ILabelProvider createLabelProvider() {
         return new TableLabelProvider();
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createTableColumns(org.eclipse.swt.widgets.TableContentsGeneration)
-     */
     @Override
     protected void createTableColumns(Table table) {
         new TableColumn(table, SWT.NONE).setResizable(false);
         new TableColumn(table, SWT.NONE).setResizable(false);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#getColumnPropertyNames()
-     */
     @Override
     protected String[] getColumnPropertyNames() {
         return new String[] { Messages.EnumValueSetEditControl_colName_1, Messages.EnumValueSetEditControl_colName_2 };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
         layouter.addColumnData(new ColumnPixelData(15, false)); // message image
         layouter.addColumnData(new ColumnWeightData(95, true));
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createCellEditors()
-     */
     @Override
     protected UnfocusableTextCellEditor[] createCellEditors() {
         UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
@@ -192,21 +158,11 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         return editors;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createCellModifier()
-     */
     @Override
     protected ICellModifier createCellModifier() {
         return new CellModifier();
     }
 
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#addElement()
-     */
     @Override
     public Object addElement() {
         String newValue = ""; //$NON-NLS-1$
@@ -214,9 +170,6 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         return newValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeElement(int index) {
         valueSet.removeValue(index);
@@ -278,10 +231,12 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
         @Override
         public void dispose() {
+            // nothing to do
         }
 
         @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // nothing to do
         }
 
     }

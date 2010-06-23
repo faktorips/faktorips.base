@@ -39,9 +39,8 @@ public class ValueSetEditControlFactory {
      * @param valueSet The value set that needs to be edited.
      * @param valueDatatype The datatype the values in the set are instances of.
      * @param parent The parent composite.
-     * @param toolkit
-     * @param uiController
-     * @param validator
+     * @param toolkit The ui toolkit to use.
+     * @param uiController The ui controller.
      * 
      * @return The new composite.
      */

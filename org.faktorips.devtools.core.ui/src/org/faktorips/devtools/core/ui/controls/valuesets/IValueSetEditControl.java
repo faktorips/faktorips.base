@@ -42,8 +42,6 @@ public interface IValueSetEditControl {
 
     /**
      * Returns the value set being edited in the control.
-     * 
-     * @return
      */
     public IValueSet getValueSet();
 
