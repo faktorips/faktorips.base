@@ -24,14 +24,14 @@ import org.faktorips.values.NullObjectSupport;
  */
 public abstract class ValueClassDatatype extends AbstractDatatype implements ValueDatatype {
 
-    private Class clazz;
+    private Class<?> clazz;
     private String name;
 
-    public ValueClassDatatype(Class clazz) {
+    public ValueClassDatatype(Class<?> clazz) {
         this(clazz, StringUtil.unqualifiedName(clazz.getName()));
     }
 
-    public ValueClassDatatype(Class clazz, String name) {
+    public ValueClassDatatype(Class<?> clazz, String name) {
         this.clazz = clazz;
         this.name = name;
     }
@@ -72,7 +72,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
         return null;
     }
 
-    public Class getJavaClass() {
+    public Class<?> getJavaClass() {
         return clazz;
     }
 
