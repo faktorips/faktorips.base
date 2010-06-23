@@ -43,7 +43,23 @@ import org.w3c.dom.NodeList;
  */
 public class TableOfContent {
 
-    /*
+    /**
+     * the name of the attribute specifying the actual xml version @see {@link #ACTUAL_XML_VERSION}
+     */
+    public final static String VERSION_XML_ATTRIBUTE = "xmlversion";
+
+    /**
+     * This is the version of the table of contents XML file. If change the XML format that old xml
+     * files are incompatible with the newer format you have to increase this version. The version
+     * is checked before loading the content of the xml file. If the version is incompatible (not
+     * equals) the {@link TocFileBuilder} have to rebuild the whole {@link TableOfContent}.
+     * <p>
+     * The version is only interesting while building the XML file, especially in
+     * {@link #initFromXml(Element)} for incremental build. It is not considered at runtime.
+     */
+    public final static String ACTUAL_XML_VERSION = "3.0";
+
+    /**
      * Modified is true if there was any change since last initFromXml or toXml call (or
      * resetModified)
      */
@@ -141,6 +157,7 @@ public class TableOfContent {
     public Element toXml(Document doc) {
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
         long lastModified = new Date().getTime();
+        element.setAttribute(VERSION_XML_ATTRIBUTE, ACTUAL_XML_VERSION);
         element.setAttribute(AbstractReadonlyTableOfContents.LASTMOD_XML_ELEMENT, "" + lastModified);
         for (TocEntryObject entry : getEntries()) {
             element.appendChild(entry.toXml(doc));
@@ -150,6 +167,12 @@ public class TableOfContent {
     }
 
     public void initFromXml(Element tocElement) {
+        String version = tocElement.getAttribute(VERSION_XML_ATTRIBUTE);
+        if (!ACTUAL_XML_VERSION.equals(version)) {
+            clear();
+            modified = true;
+            return;
+        }
         NodeList nl = tocElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
