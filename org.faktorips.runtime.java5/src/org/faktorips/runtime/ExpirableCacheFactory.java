@@ -13,6 +13,11 @@
 
 package org.faktorips.runtime;
 
+/**
+ * A cache factory that produces {@link ExpirableSoftReferenceCache}s
+ * 
+ * @author dirmeier
+ */
 public class ExpirableCacheFactory extends DefaultCacheFactory {
 
     private final IModificationChecker modificationChecker;
