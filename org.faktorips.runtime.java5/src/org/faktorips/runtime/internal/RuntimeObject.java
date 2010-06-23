@@ -21,6 +21,10 @@ import org.faktorips.runtime.IRuntimeObject;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/**
+ * Baseclass for all runtime objects
+ * 
+ */
 public class RuntimeObject implements IRuntimeObject {
 
     private Map<String, String> extPropertyValues = new HashMap<String, String>();

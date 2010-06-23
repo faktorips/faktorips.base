@@ -39,11 +39,25 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-public abstract class AbstractClassLoaderRuntimeRepository extends AbstractTocBasedRuntimeRepository {
+/**
+ * An abstract repository that handles the common stuff between the
+ * {@link AbstractTocBasedRuntimeRepository} and the concrete runtime repositories. This abstract
+ * layer is responsible for loading the classes and instantiates the objects. The content of the
+ * objects - the concrete data - is provided by the concrete implementation.
+ * 
+ * @author dirmeier
+ */
+public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocBasedRuntimeRepository {
 
     private final ClassLoader cl;
 
-    public AbstractClassLoaderRuntimeRepository(String name, ICacheFactory cacheFactory, ClassLoader cl) {
+    /**
+     * 
+     * @param name The name of the runtime repository
+     * @param cacheFactory the cache factory used by this runtime repository
+     * @param cl the {@link ClassLoader} used to load the classes
+     */
+    public AbstractClassLoadingRuntimeRepository(String name, ICacheFactory cacheFactory, ClassLoader cl) {
         super(name, cacheFactory);
         this.cl = cl;
     }

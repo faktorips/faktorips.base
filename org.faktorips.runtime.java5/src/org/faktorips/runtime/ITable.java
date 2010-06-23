@@ -14,6 +14,7 @@
 package org.faktorips.runtime;
 
 /**
+ * Base interface for table contents
  * 
  * @author Peter Erzberger
  */

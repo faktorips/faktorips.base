@@ -23,7 +23,8 @@ package org.faktorips.runtime;
 public interface IModificationChecker {
 
     /**
-     * Check whether a given time stamp is expired or not.
+     * Check whether a given time stamp is expired or not. This method is called very often and have
+     * to be as fast as possible!
      * 
      * @param timestamp The time stamp to check against the modification checker
      * @return true if the time stamp is expired

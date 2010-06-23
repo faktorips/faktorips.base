@@ -26,6 +26,17 @@ import org.faktorips.runtime.IProductComponentGeneration;
  */
 public interface IFormulaEvaluatorFactory {
 
+    /**
+     * This method creates a new formula evaluator. The evaluator getting the product component
+     * generation in which context the formulas have to be evaluated and a list of compiled formula
+     * expressions.
+     * 
+     * @param gen The {@link IProductComponentGeneration} in which context a formula have to be
+     *            executed
+     * @param compiledExpressions The list of compiled formula expressions
+     * @return The new formula evaluator that is able to evaluate every formula the was in the list
+     *         of compiled expressions
+     */
     public IFormulaEvaluator createFormulaEvaluator(IProductComponentGeneration gen, List<String> compiledExpressions);
 
 }

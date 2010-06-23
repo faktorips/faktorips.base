@@ -36,10 +36,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
+ * A runtime repository that loads the resources by calling
+ * {@link ClassLoader#getResourceAsStream(String)}
  * 
  * @author Jan Ortmann
  */
-public class ClassloaderRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
+public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRepository {
 
     /**
      * Name of the xml element representing the product component registry.

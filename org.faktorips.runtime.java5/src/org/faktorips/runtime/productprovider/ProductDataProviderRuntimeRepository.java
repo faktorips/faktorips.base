@@ -15,7 +15,7 @@ package org.faktorips.runtime.productprovider;
 
 import java.io.InputStream;
 
-import org.faktorips.runtime.AbstractClassLoaderRuntimeRepository;
+import org.faktorips.runtime.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.ExpirableCacheFactory;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author dirmeier
  */
 
-public class ProductDataProviderRuntimeRepository extends AbstractClassLoaderRuntimeRepository {
+public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRuntimeRepository {
 
     private final IProductDataProvider productDataProvider;
     private final IFormulaEvaluatorFactory formulaEvaluatorFactory;

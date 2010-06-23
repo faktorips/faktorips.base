@@ -50,7 +50,6 @@ import org.xml.sax.InputSource;
  * 
  * @author Peter Erzberger, Thorsten Waertel
  */
-@SuppressWarnings("unchecked")
 // TODO change table model to generic?
 public abstract class Table implements ITable {
 
