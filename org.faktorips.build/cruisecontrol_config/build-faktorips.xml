@@ -492,7 +492,11 @@
 
 
 		<property name="isMinVersion3" value="true" />
-		<echo>VERSION 3: ${isMinVersion3}</echo>
+		<condition property="isNotVersion3" value="true" else="false">
+			<not>
+		        <equals arg1="${isMinVersion3}" arg2="true"/>
+			</not>
+		</condition>
 		
       <condition property="isUseCvs" value="true">
         <equals arg1="${noCvs}" arg2="false"/>
@@ -620,11 +624,13 @@ ${faktoripsProductLinuxZipPath}
        <echo message="Create runtime and valuetypes zip file: ${zipFile}"/> 
 	   <delete includeemptydirs="true" dir="${zip.dir}"/>
        <mkdir dir="${zip.dir}"/>
-	   <copy todir="${zip.dir}">
+	   <copy todir="${zip.dir}" failonerror="${isNotVersion3}">
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build/results" includes="*.jar *.zip" />
-	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes.java5/build/results" includes="*.jar *.zip"/>
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" includes="*.jar *.zip"/>
-	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime.java5/build/results" includes="*.jar *.zip"/>
+	   </copy>
+      <copy todir="${zip.dir}">
+		   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes.java5/build/results" includes="*.jar *.zip"/>
+		   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime.java5/build/results" includes="*.jar *.zip"/>
 	   </copy>
        <zip destfile="${zipFile}" basedir="${zip.dir}" />
        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
