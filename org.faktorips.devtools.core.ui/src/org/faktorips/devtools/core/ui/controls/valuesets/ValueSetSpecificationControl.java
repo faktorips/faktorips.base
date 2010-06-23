@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.controls.Messages;
 /**
  * A control to specify the value set belonging to a {@link IValueSetOwner} . The control also
  * allows to change the type of the value set. Which value set types are allowed are defined by
- * {@link IValueSetOwner#getAllowedValueSetTypes(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
+ * {@link IValueSetOwner#getAllowedValueSetTypes(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
  */
 public class ValueSetSpecificationControl extends ControlComposite implements IDataChangeableReadWriteAccess {
 
@@ -329,21 +329,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         List<ValueSetType> types = new ArrayList<ValueSetType>();
         types.addAll(allowedValueSetTypes);
         return types;
-    }
-
-    /**
-     * Sets the available value set types.
-     * 
-     * @deprecated use {@link #setAllowedValueSetTypes(List)
-
-     */
-    @Deprecated
-    public void setAllowedValueSetTypes(ValueSetType[] valueSetTypes) {
-        List<ValueSetType> types = new ArrayList<ValueSetType>();
-        for (ValueSetType valueSetType : valueSetTypes) {
-            types.add(valueSetTypes[0]);
-        }
-        setAllowedValueSetTypes(types);
     }
 
     private class ValueSetTypeModifyListener implements ValueChangeListener {
