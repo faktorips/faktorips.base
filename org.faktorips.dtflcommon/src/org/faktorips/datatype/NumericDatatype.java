@@ -30,7 +30,6 @@ public interface NumericDatatype extends ValueDatatype {
      * @throws NullPointerException if at least one of minuend and subtrahend is <code>null</code>
      * @throws NumberFormatException if at least one of minuend and subtrahend can not be converted
      *             into a number of this datatype.
-     * @see org.faktorips.devtools.core.internal.model.valueset.RangeValueSet
      */
     public String subtract(String minuend, String subtrahend);
 

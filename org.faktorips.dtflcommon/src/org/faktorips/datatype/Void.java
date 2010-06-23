@@ -67,18 +67,6 @@ public class Void extends AbstractDatatype implements ValueDatatype {
         throw new UnsupportedOperationException("Can't get a default value for Datatype void."); //$NON-NLS-1$
     }
 
-    public Object getValue(String value) {
-        throw new UnsupportedOperationException("Can't get a value for Datatype void."); //$NON-NLS-1$
-    }
-
-    public String valueToXmlString(Object value) {
-        return "void"; //$NON-NLS-1$
-    }
-
-    public String valueToString(Object value) {
-        return "void"; //$NON-NLS-1$
-    }
-
     public boolean isParsable(String value) {
         return false;
     }
