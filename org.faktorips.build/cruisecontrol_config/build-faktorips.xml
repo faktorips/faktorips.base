@@ -10,9 +10,9 @@
 	<!--needs to be updated on every buildcall IMPORTANT - DONT TOUCH THIS!!!!-->
     <target name="updateBuildTemplate">
         <property name="cvsBuildmodule" value="org.faktorips.build"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsBuildmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsBuildmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     
 	<!--============================================================================================-->
@@ -21,226 +21,226 @@
 	
     <target name="util" depends="updateBuildTemplate" description="builds the 'org.faktorips.util' project">
         <property name="cvsUtilmodule" value="org.faktorips.util"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsUtilmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsUtilmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsUtilmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsUtilmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsUtilmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsUtilmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
     <target name="valuetypes" depends="updateBuildTemplate" description="builds the 'org.faktorips.valuetypes' project" unless="isMinVersion3">
         <property name="cvsValuetypesmodule" value="org.faktorips.valuetypes"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsValuetypesmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsValuetypesmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
     <target name="valuetypes.java5" depends="updateBuildTemplate" description="builds the 'org.faktorips.valuetypes.java5' project">
         <property name="cvsValuetypesmodule" value="org.faktorips.valuetypes.java5"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsValuetypesmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsValuetypesmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
     <target name="dtflcommon" depends="updateBuildTemplate" description="builds the 'org.faktorips.dtflcommon' project">
         <property name="cvsDtflcommonmodule" value="org.faktorips.dtflcommon"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsDtflcommonmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsDtflcommonmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsDtflcommonmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsDtflcommonmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsDtflcommonmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsDtflcommonmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
     <target name="runtime" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime' project" unless="isMinVersion3">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the clean-target-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
     <target name="runtime.java5" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.java5' project">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.java5"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the clean-target-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
     <target name="runtime.groovy" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.groovy' project">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.groovy"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the clean-target-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
     <target name="runtime.productdataprovider.ejbclient" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.productdataprovider.ejbclient' project">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.productdataprovider.ejbclient"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the clean-target-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
     <target name="runtime.productdataservice" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.productdataservice' project">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.productdataservice"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the clean-target-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
     <target name="runtime.productdataservice.common" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.productdataservice.common' project">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.productdataservice.common"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the clean-target-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
     <target name="fl" depends="updateBuildTemplate" description="builds the 'org.faktorips.fl' project">
         <property name="cvsFlmodule" value="org.faktorips.fl"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsFlmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="cleanParserSource"/>
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="cleanParserSource"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
     <target name="devtools.ant" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.ant' project">
         <property name="cvsAntModule" value="org.faktorips.devtools.ant"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsAntModule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsAntModule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="main"/>
+        <ant dir="${buildDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="main"/>
     </target>
 	
     <target name="devtools.core" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.core' project">
         <property name="cvsFlmodule" value="org.faktorips.devtools.core"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsFlmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
     <target name="devtools.core.ui" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.core.ui' project">
         <property name="cvsCoreUimodule" value="org.faktorips.devtools.core.ui"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsCoreUimodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsCoreUimodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsCoreUimodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsCoreUimodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
     <target name="devtools.core.htmlexport" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.core.htmlexport' project">
         <property name="cvsCoreHtmlexportmodule" value="org.faktorips.devtools.core.htmlexport"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsCoreHtmlexportmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsCoreHtmlexportmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsCoreHtmlexportmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsCoreHtmlexportmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsCoreHtmlexportmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsCoreHtmlexportmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
     <target name="devtools.tableconversion" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.tableconversion' project">
         <property name="cvsModule" value="org.faktorips.devtools.tableconversion"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsModule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsModule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
     <target name="nebula" depends="updateBuildTemplate" description="builds the 'org.faktorips.nebula' project">
         <property name="cvsModule" value="org.faktorips.nebula"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsModule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsModule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
         	
     <target name="devtools.stdbuilder" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.stdbuilder' project">
         <property name="cvsFlmodule" value="org.faktorips.devtools.stdbuilder"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsFlmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
 	<target name="uml" depends="updateBuildTemplate" description="builds the 'org.faktorips.uml' project">
         <property name="cvsModule" value="org.faktorips.uml"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsModule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsModule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
 	<target name="ormext" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.ormext' project">
     	<property name="checkoutdir" value="checkout"/>
     	<property name="cvsTag" value="HEAD"/>
-        <property name="buildDirectory" value="${basedir}/${checkoutdir}"/>
+        <property name="buildDir" value="${basedir}/${checkoutdir}"/>
 
         <property name="cvsModule" value="org.faktorips.devtools.ormext"/>
         <property name="projectDir" value="${checkoutdir}"/>
         <!--checkout/update project-->
 		<antcall target="-checkout.all" />
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
 	<target name="ormext.ui" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.ormext.ui' project">
     	<property name="checkoutdir" value="checkout"/>
     	<property name="cvsTag" value="HEAD"/>
-        <property name="buildDirectory" value="${basedir}/${checkoutdir}"/>
+        <property name="buildDir" value="${basedir}/${checkoutdir}"/>
 
         <property name="cvsModule" value="org.faktorips.devtools.ormext.ui"/>
         <property name="projectDir" value="${checkoutdir}"/>
         <!--checkout/update project-->
 		<antcall target="-checkout.all" />
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
     <!--============================================================================================-->
@@ -249,46 +249,46 @@
     
     <target name="de.qv.faktorips" depends="updateBuildTemplate" description="builds the 'de.qv.faktorips' project">
         <property name="cvsModule" value="de.qv.faktorips"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsModule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsModule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
 	<target name="de.bbv.faktorips.runtime" depends="updateBuildTemplate" description="builds the 'de.bbv.faktorips.runtime' project">
         <property name="cvsFlmodule" value="de.bbv.faktorips.runtime"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="de.bbv.cm.CMPlugin" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
-        <cvs command="co" package="${cvsFlmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="de.bbv.cm.CMPlugin" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 		
     <target name="de.bbv.faktorips.devtools" depends="updateBuildTemplate" description="builds the 'de.bbv.faktorips.devtools' project">
         <property name="cvsFlmodule" value="de.bbv.faktorips.devtools"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="de.bbv.cm.CMPlugin" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
-        <cvs command="co" package="${cvsFlmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="de.bbv.cm.CMPlugin" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
 	
     <target name="devtools.msgpm" depends="updateBuildTemplate" description="builds the  project">
         <property name="cvsFlmodule" value="org.faktorips.devtools.msgpm"/>
-        <property name="buildDirectory" value="checkout/"/>
+        <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
         <delete includeemptydirs="true" dir="${cvsFlmodule}"/>
-        <cvs command="co" package="${cvsFlmodule}" dest="${buildDirectory}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${buildDirectory}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${buildDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
     <!--============================================================================================-->
@@ -641,6 +641,7 @@ ${faktoripsProductLinuxZipPath}
 	
     <target name="-buildAndPublish.release.runtimeAddons" unless="is.product.build" if="isMinVersion3">
     	<!-- checkout and build runtime addons. these project are not handled as plugins and so not checked out via pluginbuilder -->
+    	<property name="buildDir" value="${buildDirectory}/plugins"/>
     	<antcall target="runtime.groovy" />
     	<antcall target="runtime.productdataservice.common" />
     	<antcall target="runtime.productdataservice"/>
