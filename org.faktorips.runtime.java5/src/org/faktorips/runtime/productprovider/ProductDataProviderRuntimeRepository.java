@@ -17,7 +17,6 @@ import java.io.InputStream;
 
 import org.faktorips.runtime.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.ExpirableCacheFactory;
-import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -56,11 +55,11 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
      * @param cl the {@link ClassLoader} to load the product data instances
      * @param productDataProvider the {@link IProductDataProvider} to get the product data content
      * @param formulaEvaluatorFactory a {@link IFormulaEvaluatorFactory} to create a
-     *            {@link IFormulaEvaluator} for evaluating formula on the fly instead of loading
-     *            classes with compiled formulas. If you have no {@link IFormulaEvaluatorFactory}
-     *            the repository try to load the classes containing compiled formula. In this case
-     *            you could not change the product data in the product data provider because once
-     *            loaded classes could not change.
+     *            {@link org.faktorips.runtime.formula.IFormulaEvaluator} for evaluating formula on
+     *            the fly instead of loading classes with compiled formulas. If you have no
+     *            {@link IFormulaEvaluatorFactory} the repository try to load the classes containing
+     *            compiled formula. In this case you could not change the product data in the
+     *            product data provider because once loaded classes could not change.
      */
     public ProductDataProviderRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider,
             IFormulaEvaluatorFactory formulaEvaluatorFactory) {

@@ -23,7 +23,6 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.EnumSaxHandler;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -157,7 +156,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
 
     /**
      * More efficient implementation of
-     * {@link AbstractRuntimeRepository#getAllProductComponents(Class)}
+     * {@link org.faktorips.runtime.internal.AbstractRuntimeRepository#getAllProductComponents(Class)}
      */
     @Override
     public List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {

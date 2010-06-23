@@ -15,9 +15,6 @@ package org.faktorips.runtime;
 
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
@@ -86,16 +83,17 @@ public interface IEnumValueLookupService<T> {
      * and have to return an instance of your enumeration class. In most cases you need the (this)
      * enum value lookup service to do so. The easiest thing to get a reference to this service is
      * by returning an XmlAdapter that has a reference to it, right here. If you create a new
-     * {@link JAXBContext} with {@link IRuntimeRepository#newJAXBContext()} the adapter returned by
-     * this method is added to the {@link Marshaller} and {@link Unmarshaller} created by the
-     * <code>JAXBContext</code> via {@link JAXBContext#createMarshaller()} and
-     * {@link JAXBContext#createUnmarshaller()}
+     * {@link javax.xml.bind.JAXBContext} with {@link IRuntimeRepository#newJAXBContext()} the
+     * adapter returned by this method is added to the {@link javax.xml.bind.Marshaller} and
+     * {@link javax.xml.bind.Unmarshaller} created by the <code>JAXBContext</code> via
+     * {@link javax.xml.bind.JAXBContext#createMarshaller()} and
+     * {@link javax.xml.bind.JAXBContext#createUnmarshaller()}
      * 
      * @see IRuntimeRepository#newJAXBContext()
-     * @see JAXBContext#createMarshaller()
-     * @see JAXBContext#createUnmarshaller()
-     * @see Marshaller#setAdapter(XmlAdapter)
-     * @see Unmarshaller#setAdapter(XmlAdapter)
+     * @see javax.xml.bind.JAXBContext#createMarshaller()
+     * @see javax.xml.bind.JAXBContext#createUnmarshaller()
+     * @see javax.xml.bind.Marshaller#setAdapter(XmlAdapter)
+     * @see javax.xml.bind.Unmarshaller#setAdapter(XmlAdapter)
      */
     public XmlAdapter<?, T> getXmlAdapter();
 

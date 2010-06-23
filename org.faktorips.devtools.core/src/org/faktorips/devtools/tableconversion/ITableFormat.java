@@ -245,7 +245,7 @@ public interface ITableFormat {
      *         <tt>Collections.EMPTY_LIST</tt> if the preview could not be computed or the file
      *         contains no entries.
      */
-    public List getImportTablePreview(ITableStructure structure,
+    public List<String[]> getImportTablePreview(ITableStructure structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -264,7 +264,7 @@ public interface ITableFormat {
      *            column header row.
      * @param nullRepresentationString The string to use to replace <code>null</code>.
      */
-    public List getImportEnumPreview(IEnumType structure,
+    public List<String[]> getImportEnumPreview(IEnumType structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,

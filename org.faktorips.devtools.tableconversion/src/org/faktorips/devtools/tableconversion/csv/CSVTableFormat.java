@@ -168,8 +168,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List getImportTablePreview(ITableStructure structure,
+    public List<String[]> getImportTablePreview(ITableStructure structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -178,8 +177,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List getImportEnumPreview(IEnumType structure,
+    public List<String[]> getImportEnumPreview(IEnumType structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -192,7 +190,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
      *         an {@link ITableStructure} or an {@link IEnumType}.
      */
     @SuppressWarnings("unchecked")
-    private List getImportPreview(IIpsObject structure,
+    private List<String[]> getImportPreview(IIpsObject structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -215,7 +213,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     }
 
     @SuppressWarnings("unchecked")
-    private List getPreviewInternal(Datatype[] datatypes,
+    private List<String[]> getPreviewInternal(Datatype[] datatypes,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -225,7 +223,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             return Collections.EMPTY_LIST;
         }
 
-        List result = new ArrayList();
+        List<String[]> result = new ArrayList<String[]>();
         MessageList ml = new MessageList();
         CSVReader reader = null;
         try {

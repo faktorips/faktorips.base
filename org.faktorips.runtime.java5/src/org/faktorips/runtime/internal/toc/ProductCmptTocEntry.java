@@ -18,13 +18,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.DateTime;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * A {@link TocEntryObject} for {@link IProductComponent}s
+ * A {@link TocEntryObject} for {@link org.faktorips.runtime.IProductComponent}s
  * 
  * @author dirmeier
  */

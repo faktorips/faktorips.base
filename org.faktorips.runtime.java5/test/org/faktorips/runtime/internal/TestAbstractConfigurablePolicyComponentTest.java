@@ -297,7 +297,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         }
     }
 
-    private class XmlPc extends AbstractConfigurableModelObject {
+    class XmlPc extends AbstractConfigurableModelObject {
 
         GregorianCalendar effectiveDate;
         String prop0;
@@ -322,8 +322,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             }
         }
 
-        @SuppressWarnings("unused")
-        // reflection
+        // used per reflection
         public void setChild(ChildXmlPc child) {
             this.child = child;
         }
@@ -341,9 +340,8 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             return null;
         }
 
-        @SuppressWarnings("unused")
-        // reflection
-        public void setInsuredPerson(PcA person) {
+        // used per reflection
+        public void setInsuredPerson(@SuppressWarnings("unused") PcA person) {
             // do nothing
         }
 
@@ -377,7 +375,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
 
     }
 
-    private class ChildXmlPc extends AbstractConfigurableModelObject {
+    class ChildXmlPc extends AbstractConfigurableModelObject {
 
         private AbstractModelObject parent;
         String prop0;
@@ -410,8 +408,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             // do nothing
         }
 
-        @SuppressWarnings("unused")
-        // reflection
+        // used per reflection
         public IModelObject getParentModelObject() {
             return parent;
         }

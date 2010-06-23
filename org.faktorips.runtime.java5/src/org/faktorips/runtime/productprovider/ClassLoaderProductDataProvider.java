@@ -24,7 +24,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -41,8 +40,9 @@ import org.xml.sax.SAXParseException;
 
 /**
  * The {@link ClassLoaderProductDataProvider} is an implementation of {@link IProductDataProvider}
- * normally for testing purpose. It loads data similar as the {@link ClassloaderRuntimeRepository}.
- * Modification is checked by checking the modification date of the toc resource.
+ * normally for testing purpose. It loads data similar as the
+ * {@link org.faktorips.runtime.ClassloaderRuntimeRepository}. Modification is checked by checking
+ * the modification date of the toc resource.
  * 
  * @author dirmeier
  */

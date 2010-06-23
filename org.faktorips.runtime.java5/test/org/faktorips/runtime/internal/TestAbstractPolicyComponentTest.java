@@ -247,7 +247,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         }
     }
 
-    private class XmlPc extends AbstractModelObject {
+    class XmlPc extends AbstractModelObject {
 
         String prop0;
         String prop1;
@@ -267,8 +267,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             }
         }
 
-        @SuppressWarnings("unused")
-        // reflection
+        // used per reflection
         public void setChild(ChildXmlPc child) {
             this.child = child;
         }
@@ -286,9 +285,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             return null;
         }
 
-        @SuppressWarnings("unused")
-        // reflection
-        public void setInsuredPerson(PcA person) {
+        // used per reflection
+        public void setInsuredPerson(@SuppressWarnings("unused") PcA person) {
             // do nothing
         }
 
@@ -315,7 +313,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
 
     }
 
-    private class ChildXmlPc extends AbstractModelObject {
+    class ChildXmlPc extends AbstractModelObject {
 
         private XmlPc parent;
 
@@ -332,8 +330,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             this.parent = parent;
         }
 
-        @SuppressWarnings("unused")
-        // reflection
+        // used per reflection
         public IModelObject getParentPolicyComponent() {
             return parent;
         }

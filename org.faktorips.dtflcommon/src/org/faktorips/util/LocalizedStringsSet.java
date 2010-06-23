@@ -51,7 +51,7 @@ public class LocalizedStringsSet {
      * 
      * @throws IllegalArgumentException if the clazz is null.
      */
-    public LocalizedStringsSet(Class clazz) {
+    public LocalizedStringsSet(Class<?> clazz) {
         this(clazz.getName(), clazz.getClassLoader());
     }
 

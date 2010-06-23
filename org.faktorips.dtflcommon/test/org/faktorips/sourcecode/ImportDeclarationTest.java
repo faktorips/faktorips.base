@@ -80,7 +80,7 @@ public class ImportDeclarationTest extends TestCase {
         id.add("double"); //$NON-NLS-1$
         assertEquals(2, id.getNoOfImports());
 
-        Iterator it = id.iterator();
+        Iterator<String> it = id.iterator();
         assertEquals("org.faktorips.*", it.next()); //$NON-NLS-1$
         assertEquals("java.util.*", it.next()); //$NON-NLS-1$
         assertFalse(it.hasNext());

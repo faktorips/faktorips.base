@@ -27,7 +27,6 @@ import junit.framework.TestCase;
  */
 public class SoftReferenceCacheTest extends TestCase {
     private final static int DUMMY_BLOCK_SIZE_IN_MB = 42;
-    private final static int ENTRY_SIZE_IN_MB = 3;
 
     public void testDummy() {
         // Remark: the test methods are not active, because the asserts depends on the JVM space
@@ -146,8 +145,7 @@ public class SoftReferenceCacheTest extends TestCase {
     }
 
     private static class BigEntry {
-        @SuppressWarnings("unused")
-        byte[] block = new byte[ENTRY_SIZE_IN_MB * 1024 * 1024];
+
         private final Integer value;
 
         public BigEntry(int value) {
