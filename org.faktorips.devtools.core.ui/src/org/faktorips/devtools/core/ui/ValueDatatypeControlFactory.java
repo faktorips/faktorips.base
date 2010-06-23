@@ -32,9 +32,6 @@ import org.faktorips.devtools.core.ui.table.IpsCellEditor;
  */
 public abstract class ValueDatatypeControlFactory {
 
-    public ValueDatatypeControlFactory() {
-    }
-
     /**
      * Returns <code>true</code> if this factory can create controls for the given datatype,
      * otherwise <code>false</code>.
@@ -93,9 +90,9 @@ public abstract class ValueDatatypeControlFactory {
      * for.
      * 
      * @param toolkit The ui toolkit to use for creating ui elements.
-     * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
+     * @param datatype The <code>ValueDatatype</code> to create a cell editor for.
      * @param valueSet An optional valueset.
-     * @param tableViewer
+     * @param tableViewer The viewer
      * @param columnIndex The index of the column.
      */
     public abstract IpsCellEditor createTableCellEditor(UIToolkit toolkit,
@@ -110,9 +107,9 @@ public abstract class ValueDatatypeControlFactory {
      * for.
      * 
      * @param toolkit The ui toolkit to use for creating ui elements.
-     * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
+     * @param datatype The <code>ValueDatatype</code> to create a cell editor for.
      * @param valueSet An optional valueset.
-     * @param grifViewer
+     * @param gridViewer The viewer
      * @param columnIndex The index of the column.
      */
     public abstract IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
@@ -127,9 +124,9 @@ public abstract class ValueDatatypeControlFactory {
      * for.
      * 
      * @param toolkit The ui toolkit to use for creating ui elements.
-     * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
+     * @param datatype The <code>ValueDatatype</code> to create a cell editor for.
      * @param valueSet An optional valueset.
-     * @param grifViewer
+     * @param gridViewer The viewer
      * @param columnIndex The index of the column.
      */
     public abstract IpsCellEditor createGridTreeCellEditor(UIToolkit toolkit,
