@@ -640,19 +640,20 @@ ${faktoripsProductLinuxZipPath}
     </target>
 	
     <target name="-buildAndPublish.release.runtimeAddons" unless="is.product.build" if="isMinVersion3">
-    	<!-- build runtime and valutypes using own build files -->
-        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime.groovy/build" antfile="build.xml" target="buildAllsJars">
-    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
-    	</ant>
-        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime.productdataservice.common/build" antfile="build.xml" target="buildAllsJars">
-    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
-    	</ant>
-        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime.productdataservice/build" antfile="build.xml" target="buildAllsJars">
-    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
-    	</ant>
-        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime.productdataprovider.ejbclient/build" antfile="build.xml" target="buildAllsJars">
-    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
-    	</ant>
+    	<!-- checkout and build runtime addons. these project are not handled as plugins and so not checked out via pluginbuilder -->
+    	<antcall target="runtime.groovy">
+    		<property name="projectRuntimeDir" location="${buildDirectory}"/>
+    	</antcall>
+    	<antcall target="runtime.productdataservice.common">
+    		<property name="projectRuntimeDir" location="${buildDirectory}"/>
+    	</antcall>
+    	<antcall target="runtime.productdataservice">
+    		<property name="projectRuntimeDir" location="${buildDirectory}"/>
+    	</antcall>
+       	<antcall target="runtime.productdataprovider.ejbclient">
+       		<property name="projectRuntimeDir" location="${buildDirectory}"/>
+       	</antcall>
+    	
         <antcall inheritall="true" target="-publish.release.runtimeAddons"></antcall>
     </target>
 	<target name="-publish.release.runtimeAddons">
