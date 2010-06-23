@@ -641,18 +641,11 @@ ${faktoripsProductLinuxZipPath}
 	
     <target name="-buildAndPublish.release.runtimeAddons" unless="is.product.build" if="isMinVersion3">
     	<!-- checkout and build runtime addons. these project are not handled as plugins and so not checked out via pluginbuilder -->
-    	<antcall target="runtime.groovy">
-    		<property name="projectRuntimeDir" location="${buildDirectory}"/>
-    	</antcall>
-    	<antcall target="runtime.productdataservice.common">
-    		<property name="projectRuntimeDir" location="${buildDirectory}"/>
-    	</antcall>
-    	<antcall target="runtime.productdataservice">
-    		<property name="projectRuntimeDir" location="${buildDirectory}"/>
-    	</antcall>
-       	<antcall target="runtime.productdataprovider.ejbclient">
-       		<property name="projectRuntimeDir" location="${buildDirectory}"/>
-       	</antcall>
+		<property name="projectRuntimeDir" location="${buildDirectory}"/>
+    	<antcall target="runtime.groovy" />
+    	<antcall target="runtime.productdataservice.common" />
+    	<antcall target="runtime.productdataservice"/>
+       	<antcall target="runtime.productdataprovider.ejbclient"/>
     	
         <antcall inheritall="true" target="-publish.release.runtimeAddons"></antcall>
     </target>
