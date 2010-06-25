@@ -72,7 +72,7 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
         values.add(association.getTargetRoleSingular());
         values.add(association.getTargetRolePlural());
         values.add(Integer.toString(association.getMinCardinality()));
-        values.add(Integer.toString(association.getMaxCardinality()));
+        values.add(getMaxCardinalityString(association.getMaxCardinality()));
         values.add(association.isDerivedUnion() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         values.add(association.isSubsetOfADerivedUnion() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         values.add(association.isQualified() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -87,6 +87,13 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
         }
 
         addSubElement(new TableRowPageElement(elements));
+    }
+
+    private String getMaxCardinalityString(int maxCardinality) {
+        if (maxCardinality == Integer.MAX_VALUE) {
+            return "*"; //$NON-NLS-1$
+        }
+        return Integer.toString(maxCardinality);
     }
 
     /*

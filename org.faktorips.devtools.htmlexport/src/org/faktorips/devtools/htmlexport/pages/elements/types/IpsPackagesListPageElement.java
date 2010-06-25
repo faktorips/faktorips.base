@@ -11,6 +11,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
@@ -100,7 +101,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
 
             linkedPackagesNames.add(packageFragment.getName());
             packageLinks.add(PageElementUtils.createLinkPageElement(getConfig(), packageFragment, getLinkTarget(),
-                    DocumentorUtil.getIpsPackageName(packageFragment), true));
+                    IpsUIPlugin.getLabel(packageFragment), true));
         }
 
         return packageLinks;

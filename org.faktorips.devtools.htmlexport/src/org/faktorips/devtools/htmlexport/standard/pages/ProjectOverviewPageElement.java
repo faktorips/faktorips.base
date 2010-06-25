@@ -131,18 +131,23 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-        if (referencingProjectLeavesOrSelf.length == 0) {
+
+        List<String> referencingIpsProjectsName = new ArrayList<String>();
+        for (IIpsProject ipsProject : referencingProjectLeavesOrSelf) {
+            if (getProject().equals(ipsProject)) {
+                continue;
+            }
+            referencingIpsProjectsName.add(ipsProject.getName());
+        }
+
+        if (referencingIpsProjectsName.size() == 0) {
             return wrapper.addPageElements(new TextPageElement(
                     Messages.ProjectOverviewPageElement_noReferencingProjects));
         }
 
-        List<String> referencedIpsProjectsName = new ArrayList<String>(referencingProjectLeavesOrSelf.length);
-        for (IIpsProject ipsProject : referencingProjectLeavesOrSelf) {
-            referencedIpsProjectsName.add(ipsProject.getName());
-        }
-        ListPageElement referencedProjects = new ListPageElement(Arrays.asList(PageElementUtils
-                .createTextPageElements(referencedIpsProjectsName)));
-        return wrapper.addPageElements(referencedProjects);
+        ListPageElement referencingProjects = new ListPageElement(Arrays.asList(PageElementUtils
+                .createTextPageElements(referencingIpsProjectsName)));
+        return wrapper.addPageElements(referencingProjects);
     }
 
     private PageElement createSourceFolders(IIpsObjectPath objectPath) {

@@ -1,56 +1,35 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import org.eclipse.swt.graphics.ImageData;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
-/**
- * A {@link PageElement} representing an image for an {@link IIpsElement}.
- * 
- * @author dicker
- * 
- */
 public class ImagePageElement extends AbstractPageElement {
 
     protected ImageData imageData;
     protected String title;
     protected String fileName;
 
-    /**
-     * @param element
-     * @param title
-     * @param path
-     */
-    public ImagePageElement(IIpsElement element, String title, String path) {
-        imageData = createImageDataByIpsElement(element);
+    public ImagePageElement() {
+        super();
+    }
+
+    public ImagePageElement(ImageData imageData, String title, String path) {
+        this.imageData = imageData;
         this.title = title;
         this.fileName = path;
-    }
-
-    /**
-     * @param element
-     */
-    public ImagePageElement(IIpsElement element) {
-        this(element, element.getName(), getIpsElementImageName(element));
-    }
-
-    private ImageData createImageDataByIpsElement(IIpsElement element) {
-        return IpsUIPlugin.getImageHandling().getImage(element, true).getImageData();
-    }
-
-    private static String getIpsElementImageName(IIpsElement element) {
-        if (element instanceof IIpsPackageFragment) {
-            return "ipspackage"; //$NON-NLS-1$
-        }
-        if (element instanceof IIpsObject) {
-            IIpsObject object = (IIpsObject)element;
-            return object.getIpsObjectType().getFileExtension();
-        }
-
-        return element.getName();
     }
 
     @Override
@@ -78,4 +57,5 @@ public class ImagePageElement extends AbstractPageElement {
     public String getFileName() {
         return fileName;
     }
+
 }

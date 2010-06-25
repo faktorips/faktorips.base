@@ -3,9 +3,9 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
@@ -61,8 +61,8 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
                                 + " " + getConfig().getIpsProject().getName()))); //$NON-NLS-1$
 
         addPageElements(PageElementUtils.createLinkPageElement(config,
-                getDocumentedIpsObject().getIpsPackageFragment(), "classes", DocumentorUtil //$NON-NLS-1$
-                        .getIpsPackageName(getDocumentedIpsObject().getIpsPackageFragment()), true));
+                getDocumentedIpsObject().getIpsPackageFragment(),
+                "classes", IpsUIPlugin.getLabel(getDocumentedIpsObject().getIpsPackageFragment()), true)); //$NON-NLS-1$
         addPageElements(new TextPageElement(getDocumentedIpsObject().getIpsObjectType().getDisplayName() + " " //$NON-NLS-1$
                 + getDocumentedIpsObject().getName(), TextType.HEADING_1));
 

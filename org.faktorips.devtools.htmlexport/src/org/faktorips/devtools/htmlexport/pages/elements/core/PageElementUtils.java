@@ -106,7 +106,7 @@ public class PageElementUtils {
      */
     private static PageElement createInnerLinkPageElement(IIpsElement to, String text, boolean useImage) {
         if (useImage) {
-            return new WrapperPageElement(WrapperType.NONE).addPageElements(new ImagePageElement(to)).addPageElements(
+            return new WrapperPageElement(WrapperType.NONE).addPageElements(new IpsObjectImagePageElement(to)).addPageElements(
                     new TextPageElement('\u00A0' + text));
         }
         return new TextPageElement(text);

@@ -1,6 +1,7 @@
 package org.faktorips.devtools.htmlexport.helper.path;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 
 /**
@@ -51,7 +52,11 @@ public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsP
      */
     @Override
     public String getLinkText(boolean withImage) {
-        return DocumentorUtil.getIpsPackageName(getIpsElement());
+        return IpsUIPlugin.getLabel(getIpsElement());
+        /*
+         * if (ipsPackageFragment.isDefaultPackage()) { return DEFAULT_PACKAGE_NAME; } return
+         * ipsPackageFragment.getName();
+         */
     }
 
     /*

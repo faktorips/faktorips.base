@@ -45,11 +45,12 @@ public class StandardDocumentorScript implements IDocumentorScript {
         writeBaseFrameDefinition(config, new SubProgressMonitor(monitor, 1));
         writeAllClassesPage(config, objects, new SubProgressMonitor(monitor, 1));
         writeProjectOverviewPage(config, new SubProgressMonitor(monitor, 1));
-        writeResources(config, new SubProgressMonitor(monitor, 1));
 
         writePackagesClassesPages(config, objects, relatedPackageFragments, new SubProgressMonitor(monitor,
                 relatedPackageFragments.size()));
         writeClassesContentPages(config, objects, new SubProgressMonitor(monitor, objects.size()));
+
+        writeResources(config, new SubProgressMonitor(monitor, 1));
 
         monitor.done();
     }
@@ -58,6 +59,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         ILayouter layouter = config.getLayouter();
         Set<LayoutResource> resources = layouter.getLayoutResources();
         for (LayoutResource layoutResource : resources) {
+            System.out.println(layoutResource.getName() + ": " + layoutResource.getContent().length);
             FileHandler.writeFile(config, STANDARD_PATH + layoutResource.getName(), layoutResource.getContent());
         }
     }

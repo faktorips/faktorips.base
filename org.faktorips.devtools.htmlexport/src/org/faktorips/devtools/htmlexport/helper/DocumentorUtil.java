@@ -9,7 +9,6 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
  * 
@@ -19,22 +18,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  * 
  */
 public class DocumentorUtil {
-
-    private static final String DEFAULT_PACKAGE_NAME = Messages.DocumentorUtil_defaultPackageName;
-
-    /**
-     * returns the name of the given ipsPackageFragment. If the ipsPackageFragment is the default
-     * package then the DEFAULT_PACKAGE_NAME is returned
-     * 
-     * @param ipsPackageFragment
-     * @return name of the ipsPckageFragment
-     */
-    public static String getIpsPackageName(IIpsPackageFragment ipsPackageFragment) {
-        if (ipsPackageFragment.isDefaultPackage()) {
-            return DEFAULT_PACKAGE_NAME;
-        }
-        return ipsPackageFragment.getName();
-    }
 
     /**
      * returns the {@link IIpsObject} of the given {@link IIpsSrcFile}
