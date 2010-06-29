@@ -80,6 +80,9 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      * </pre>
      */
     protected void generateAttributeNameConstant(JavaCodeFragmentBuilder builder) {
+        if (getAttribute().isOverwrite()) {
+            return;
+        }
         appendLocalizedJavaDoc("FIELD_PROPERTY_NAME", getAttribute().getName(), builder);
         builder.append("public final static ");
         builder.appendClassName(String.class);
