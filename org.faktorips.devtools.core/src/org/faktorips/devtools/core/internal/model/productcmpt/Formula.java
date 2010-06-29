@@ -81,81 +81,51 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         addTagToIgnore(TAG_NAME_FOR_EXPRESSION);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return formulaSignature;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyName() {
         return formulaSignature;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findFormulaSignature(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ProdDefPropertyType getPropertyType() {
         return ProdDefPropertyType.FORMULA;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyValue() {
         return expression;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return getProductCmptGeneration().getProductCmpt().findProductCmptType(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getFormulaSignature() {
         return formulaSignature;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFormulaSignature(String newName) {
         String oldName = formulaSignature;
@@ -163,9 +133,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         valueChanged(oldName, newName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeMethod findFormulaSignature(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(formulaSignature)) {
@@ -178,9 +145,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         return type.findFormulaSignature(formulaSignature, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
         IMethod signature = findFormulaSignature(ipsProject);
@@ -193,17 +157,11 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getExpression() {
         return expression;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setExpression(String newExpression) {
         String oldExpr = expression;
@@ -211,17 +169,11 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         valueChanged(oldExpr, newExpression);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ExprCompiler newExprCompiler(IIpsProject ipsProject) throws CoreException {
         return newExprCompiler(ipsProject, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ExtendedExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException {
         ExtendedExprCompiler compiler = ipsProject.newExpressionCompiler();
@@ -250,9 +202,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         return compiler;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumDatatype[] getEnumDatatypesAllowedInFormula() throws CoreException {
         HashMap<String, EnumDatatype> enumtypes = new HashMap<String, EnumDatatype>();
@@ -319,9 +268,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getParameterIdentifiersUsedInFormula(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(expression)) {
@@ -376,49 +322,31 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         return filteredIdentifiers;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormulaTestCase newFormulaTestCase() {
         return testcases.newPart();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormulaTestCase getFormulaTestCase(String name) {
         return testcases.getPartByName(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormulaTestCase[] getFormulaTestCases() {
         return testcases.toArray(new IFormulaTestCase[testcases.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int[] moveFormulaTestCases(int[] indexes, boolean up) {
         return testcases.moveParts(indexes, up);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeFormulaTestCase(IFormulaTestCase formulaTest) {
         testcases.removePart(formulaTest);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -426,9 +354,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         expression = ValueToXmlHelper.getValueFromElement(element, TAG_NAME_FOR_EXPRESSION);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -436,9 +361,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         ValueToXmlHelper.addValueToElement(expression, element, TAG_NAME_FOR_EXPRESSION);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -482,6 +404,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     class EnumDatatypesCollector extends PolicyCmptTypeHierarchyVisitor {
 
         private IIpsProject project;
+
         private Map<String, EnumDatatype> enumtypes;
 
         public EnumDatatypesCollector(IIpsProject project, Map<String, EnumDatatype> enumtypes) {

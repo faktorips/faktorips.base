@@ -297,8 +297,6 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Returns <tt>false</tt>.
      */
     @Override
@@ -318,8 +316,6 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Returns <tt>true</tt> if the referenced base <tt>IEnumType</tt> can be found and if this
      * <tt>IEnumContent</tt> is consistent with this base <tt>IEnumType</tt>.
      */

@@ -50,8 +50,6 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * This implementation validates the element's new name and returns a <tt>RefactoringStatus</tt>
      * as result of the validation. It checks that the name is not empty and that the name does not
      * equal the element's original name.

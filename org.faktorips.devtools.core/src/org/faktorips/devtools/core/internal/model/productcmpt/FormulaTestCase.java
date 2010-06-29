@@ -48,7 +48,6 @@ import org.w3c.dom.Element;
 
 public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
 
-    /** Tags */
     final static String TAG_NAME = "FormulaTestCase"; //$NON-NLS-1$
 
     private String expectedResult = ""; //$NON-NLS-1$
@@ -59,41 +58,26 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         super(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormula getFormula() {
         return (IFormula)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void reinitPartCollections() {
         formulaTestInputValues.clear();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element partEl, String id) {
         String xmlTagName = partEl.getNodeName();
@@ -106,9 +90,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         if (part instanceof IFormulaTestInputValue) {
@@ -118,9 +99,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof IFormulaTestInputValue) {
@@ -130,17 +108,11 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() {
         return formulaTestInputValues.toArray(new IIpsElement[formulaTestInputValues.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -149,9 +121,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
                 .getValueFromElement(element, StringUtils.capitalize(PROPERTY_EXPECTED_RESULT));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -159,7 +128,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         ValueToXmlHelper.addValueToElement(expectedResult, element, StringUtils.capitalize(PROPERTY_EXPECTED_RESULT));
     }
 
-    /*
+    /**
      * Returns the expression compiler used to compile the formula preview result.
      */
     private ExprCompiler getPreviewExprCompiler(IIpsProject ipsProject) throws CoreException {
@@ -193,7 +162,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         return compiler;
     }
 
-    /*
+    /**
      * Add all identifier for enum values
      */
     private void compileAndAddAllEnumDatatypeValueIdentifier(DefaultIdentifierResolver resolver) {
@@ -216,9 +185,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object execute(IIpsProject ipsProject) throws Exception {
         ExprEvaluator processor = getExprEvaluatorInternal(ipsProject.getClassLoaderForJavaProject(), ipsProject);
@@ -230,19 +196,18 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      */
     public Object execute(JavaCodeFragment javaCodeFragment, ClassLoader classLoader, IIpsProject ipsProject)
             throws Exception {
+
         ExprEvaluator processor = getExprEvaluatorInternal(classLoader, ipsProject);
         return processor.evaluate(javaCodeFragment);
     }
 
     private ExprEvaluator getExprEvaluatorInternal(ClassLoader classLoader, IIpsProject ipsProject)
             throws CoreException {
+
         ExprCompiler compiler = getPreviewExprCompiler(ipsProject);
         return new ExprEvaluator(compiler, classLoader);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setName(String name) {
         String oldName = this.name;
@@ -250,9 +215,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         valueChanged(oldName, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormulaTestInputValue getFormulaTestInputValue(String identifier) {
         for (IFormulaTestInputValue v : formulaTestInputValues) {
@@ -263,17 +225,11 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormulaTestInputValue[] getFormulaTestInputValues() {
         return formulaTestInputValues.toArray(new IFormulaTestInputValue[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormulaTestInputValue newFormulaTestInputValue() {
         IFormulaTestInputValue v = newFormulaTestInputValueInternal(getNextPartId());
@@ -281,7 +237,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         return v;
     }
 
-    /*
+    /**
      * Creates a new formula test input value without updating the source file.
      */
     private IFormulaTestInputValue newFormulaTestInputValueInternal(String nextPartId) {
@@ -290,17 +246,11 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         return v;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getExpectedResult() {
         return expectedResult;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setExpectedResult(String expectedResult) {
         String oldExpectedResult = this.expectedResult;
@@ -308,9 +258,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         valueChanged(oldExpectedResult, expectedResult);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifiers, IIpsProject ipsProject) {
         boolean changed = false;
@@ -335,6 +282,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     private boolean updateWithAllIdentifiers(String[] newIdentifiers,
             List<IFormulaTestInputValue> newListOfInputValues,
             IIpsProject ipsProject) {
+
         List<IFormulaTestInputValue> oldInputValues = new ArrayList<IFormulaTestInputValue>();
         oldInputValues.addAll(formulaTestInputValues);
 
@@ -350,6 +298,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     }
 
     private class FormulaUpdater implements IWorkspaceRunnable {
+
         private boolean formulaTestCaseChanged;
         private String[] newIdentifiers;
         private List<IFormulaTestInputValue> oldInputValues;
@@ -377,12 +326,15 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
                         if (datatype != null) {
                             inputValue.setValue(((ValueDatatype)datatype).getDefaultValue());
                         }
-                        // ignore if the datatype is not value datatype
-                        // this is a validation error see FormulaTestInputValue#validateThis method
+                        /*
+                         * ignore if the datatype is not value datatype this is a validation error
+                         * see FormulaTestInputValue#validateThis method
+                         */
                     } catch (CoreException e) {
-                        // ignore exception if the datatype wasn't found, this error will be handled
-                        // as validation error
-                        // see FormulaTestInputValue#validateThis method
+                        /*
+                         * ignore exception if the datatype wasn't found, this error will be handled
+                         * as validation error see FormulaTestInputValue#validateThis method
+                         */
                     }
                     formulaTestCaseChanged = true;
                 } else {
@@ -407,9 +359,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isFormulaTestCaseEmpty() {
         if (formulaTestInputValues.size() == 0) {
@@ -423,9 +372,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String generateUniqueNameForFormulaTestCase(String nameProposal) {
         String uniqueName = nameProposal;
@@ -441,9 +387,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         return uniqueName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);

@@ -54,13 +54,8 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
     private String roleName;
     private IIpsProject ipsProject;
 
-    /**
-     *
-     */
-    public TableFunctionFormulaTestFlFunctionAdapter(
-
-    ITableContents tableContents, ITableAccessFunction fct, IFormulaTestCase formulaTestCase, String roleName,
-            IIpsProject ipsProject) {
+    public TableFunctionFormulaTestFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
+            IFormulaTestCase formulaTestCase, String roleName, IIpsProject ipsProject) {
 
         ArgumentCheck.notNull(fct);
         ArgumentCheck.notNull(tableContents);
@@ -73,9 +68,6 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
         this.ipsProject = ipsProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult compile(CompilationResult[] argResults) {
         try {
@@ -103,41 +95,26 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setCompiler(ExprCompiler compiler) {
         this.compiler = compiler;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ExprCompiler getCompiler() {
         return compiler;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         return fct.getDescription();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDescription(String description) {
         throw new RuntimeException("The adpater does not support setDescription()!"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getType() {
         try {
@@ -147,17 +124,11 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return StringUtils.capitalize(roleName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype[] getArgTypes() {
         IIpsProject project = fct.getIpsProject();
@@ -173,27 +144,18 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
         return types;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSame(FunctionSignature fctSignature) {
         FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
         return thisFct.isSame(fctSignature);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean match(String name, Datatype[] argTypes) {
         FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
         return thisFct.match(name, argTypes);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean matchUsingConversion(String name, Datatype[] argTypes, ConversionMatrix matrix) {
         FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
@@ -201,25 +163,28 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
     }
 
     /**
-     * {@inheritDoc} Returns <code>false</code>;
+     * Returns <code>false</code>;
      */
     @Override
     public boolean hasVarArgs() {
         return false;
     }
 
-    /*
+    /**
      * Returns the corresponding table content.
      */
     private Object getTableContentValue(CompilationResult[] argResults, IIpsProject ipsProject) throws Exception {
-        // create the classloader to run the table access function with and to create the runtime
-        // repository
+        /*
+         * create the classloader to run the table access function with and to create the runtime
+         * repository
+         */
         ClassLoader classLoaderForJavaProject = ipsProject.getClassLoaderForJavaProject();
-        // accumulate the runtime classes from the current jvm, thus if a class exists in the
-        // projects classpath and in the current jvm then the class from the current jvm will be
-        // choosen,
-        // otherwise a ClassCastException will be thrown if the repository tries to instantiate the
-        // class
+        /*
+         * accumulate the runtime classes from the current jvm, thus if a class exists in the
+         * projects classpath and in the current jvm then the class from the current jvm will be
+         * choosen, otherwise a ClassCastException will be thrown if the repository tries to
+         * instantiate the class
+         */
         ClassLoader classLoader = URLClassLoader.newInstance(((URLClassLoader)classLoaderForJavaProject).getURLs(),
                 getClass().getClassLoader());
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsProject.getIpsArtefactBuilderSet();
@@ -252,4 +217,5 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
                 "get" + StringUtils.capitalize(fct.getAccessedColumn()), new Class[0]); //$NON-NLS-1$
         return getColumnMethod.invoke(runtimeRow, new Object[0]);
     }
+
 }

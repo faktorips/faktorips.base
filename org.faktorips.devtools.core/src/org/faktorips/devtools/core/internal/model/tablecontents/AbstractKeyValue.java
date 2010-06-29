@@ -29,13 +29,17 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
  * row.
  */
 public abstract class AbstractKeyValue {
-    // reference to the table structure and unique key this key value belongs to
+
+    /** reference to the table structure this key value belongs to */
     protected ITableStructure structure;
+
+    /** reference to the unique key this key value belongs to */
     protected IUniqueKey uniqueKey;
-    // reference to the row this key value belongs to
+
+    /** reference to the row this key value belongs to */
     protected Row row;
 
-    /*
+    /**
      * Helper method, returns all non two column range key items: column key items or column range
      * key items with type ONE_COLUMN_RANGE_FROM or ONE_COLUMN_RANGE_TO
      */
@@ -53,7 +57,7 @@ public abstract class AbstractKeyValue {
         return result;
     }
 
-    /*
+    /**
      * Helper method, returns a list of all two column ranges inside the given unique key
      */
     protected static List<ColumnRange> getTwoColumnRanges(IUniqueKey uniqueKey) {

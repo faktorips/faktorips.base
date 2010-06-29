@@ -140,41 +140,26 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         entries.add(newEntry);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return generation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptType getProductCmptType() {
         return productCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEmpty() {
         return entries.size() == 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IDeltaEntry[] getEntries() {
         return entries.toArray(new IDeltaEntry[entries.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IDeltaEntry[] getEntries(DeltaType type) {
         List<IDeltaEntry> result = new ArrayList<IDeltaEntry>(entries.size());
@@ -186,9 +171,6 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         return result.toArray(new IDeltaEntry[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void fix() {
         for (IDeltaEntry entry : entries) {

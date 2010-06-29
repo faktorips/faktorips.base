@@ -113,12 +113,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * The file extension for ips projects.
      */
-    public final static String PROPERTY_FILE_EXTENSION = "ipsproject";
+    public final static String PROPERTY_FILE_EXTENSION = "ipsproject"; //$NON-NLS-1$
 
     /**
      * The file extension for ips projects but with a dot added before.
      */
-    public final static String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION;
+    public final static String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION; //$NON-NLS-1$
 
     /** The underlying plattform project */
     private IProject project;
@@ -132,7 +132,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @see #setProject(IProject)
      */
     public IpsProject() {
-
+        // Provides default constructor
     }
 
     public IpsProject(IIpsModel model, String name) {
@@ -149,40 +149,28 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return project;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isReferencing(IIpsProject otherProject) throws CoreException {
         return otherProject.isReferencedBy(this, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProjectProperties getReadOnlyProperties() {
         return new IpsProjectPropertiesReadOnlyProxy(getPropertiesInternal());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProjectProperties getProperties() {
         return new IpsProjectProperties(this, getPropertiesInternal());
     }
 
-    /*
+    /**
      * Returns the properties from the model.
      */
     private IpsProjectProperties getPropertiesInternal() {
         return ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setProperties(IIpsProjectProperties properties) throws CoreException {
         IpsProjectProperties newProjectProperties = new IpsProjectProperties(this, (IpsProjectProperties)properties);
@@ -190,9 +178,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         saveProjectProperties(newProjectProperties);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ExtendedExprCompiler newExpressionCompiler() {
         ExtendedExprCompiler compiler = new ExtendedExprCompiler();
@@ -201,7 +186,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             try {
                 compiler.add(resolver.newFunctionResolver(getExpressionLanguageFunctionsLanguage()));
             } catch (Exception e) {
-                IpsPlugin.log(new IpsStatus("Unable the function resolver for the following factory: "
+                IpsPlugin.log(new IpsStatus("Unable the function resolver for the following factory: " //$NON-NLS-1$
                         + resolver.getClass(), e));
             }
         }
@@ -260,27 +245,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return newText.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFile getIpsProjectPropertiesFile() {
         return getProject().getFile(PROPERTY_FILE_EXTENSION_INCL_DOT);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IJavaProject getJavaProject() {
         return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProject(getName());
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws CoreException
-     */
     @Override
     public ClassLoader getClassLoaderForJavaProject() throws CoreException {
         // creates always a new classloader,
@@ -289,17 +263,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return classLoaderProvider.getClassLoader();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Boolean isJavaProjectErrorFree(boolean checkReferencedJavaProjects) throws CoreException {
         return isJavaProjectErrorFree(getJavaProject(), checkReferencedJavaProjects);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     private Boolean isJavaProjectErrorFree(IJavaProject javaProject, boolean checkReferencedJavaProjects)
             throws CoreException {
         IProject project = javaProject.getProject();
@@ -360,17 +328,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject[] getReferencedIpsProjects() throws CoreException {
         return getIpsObjectPathInternal().getReferencedIpsProjects();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect) throws CoreException {
         if (otherProject == null || otherProject == this) {
@@ -402,9 +364,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject[] findReferencingProjects(boolean includeIndirect) throws CoreException {
         IIpsProject[] projects = getIpsModel().getIpsProjects();
@@ -418,9 +377,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IIpsProject[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject[] findReferencingProjectLeavesOrSelf() throws CoreException {
         IIpsProject[] projects = getIpsModel().getIpsProjects();
@@ -448,9 +404,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IIpsProject[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canBeBuild() {
         try {
@@ -461,57 +414,36 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getXmlFileCharset() {
         return "UTF-8"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPlainTextFileCharset() {
         return "UTF-8"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isModelProject() {
         return getPropertiesInternal().isModelProject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isProductDefinitionProject() {
         return getPropertiesInternal().isProductDefinitionProject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPath getIpsObjectPath() throws CoreException {
         return getProperties().getIpsObjectPath();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder[] getOutputFolders() throws CoreException {
         return getIpsObjectPathInternal().getOutputFolders();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAccessibleViaIpsObjectPath(IIpsObject ipsObject) throws CoreException {
         if (ipsObject == null) {
@@ -530,13 +462,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Returns a <strong>reference</strong> to the ips object path, in contrast to the
      * getIpsObjectPath() method that returns a copy.
      */
-    public IpsObjectPath getIpsObjectPathInternal() throws CoreException {
+    public IpsObjectPath getIpsObjectPathInternal() {
         return (IpsObjectPath)getPropertiesInternal().getIpsObjectPath();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setCurrentArtefactBuilderSet(String id) throws CoreException {
         IIpsProjectProperties properties = getProperties();
@@ -544,18 +473,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         saveProjectProperties(properties);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValueDatatypes(String[] ids) throws CoreException {
         IIpsProjectProperties properties = getProperties();
         properties.setPredefinedDatatypesUsed(ids);
         saveProjectProperties(properties);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValueDatatypes(ValueDatatype[] types) throws CoreException {
         String[] ids = new String[types.length];
@@ -565,9 +488,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         setValueDatatypes(ids);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setIpsObjectPath(IIpsObjectPath newPath) throws CoreException {
         IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
@@ -575,9 +495,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         saveProjectProperties(properties);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(String name) {
         try {
@@ -591,9 +508,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() throws CoreException {
         List<IIpsPackageFragmentRoot> roots = new ArrayList<IIpsPackageFragmentRoot>();
@@ -608,9 +522,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return roots.toArray(new IIpsPackageFragmentRoot[roots.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(String name) {
         try {
@@ -627,9 +538,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();
@@ -654,9 +562,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * to a classpath entry of the javaproject. Returns true if the given resource corresponds to a
      * folder that is either the javaprojects default output location or the output location of one
      * of the projects classpathentries. False otherwise.
-     * 
-     * @param resource
-     * @return
      */
     private boolean isJavaFolder(IResource resource) {
         try {
@@ -695,9 +600,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean exists() {
         if (!getCorrespondingResource().exists()) {
@@ -720,17 +622,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Locale getExpressionLanguageFunctionsLanguage() {
         return Locale.GERMAN;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
         IpsProjectProperties properties = getPropertiesInternal();
@@ -738,33 +634,21 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 properties.getChangesOverTimeNamingConventionIdForGeneratedCode());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IResource getCorrespondingResource() {
         return getProject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() throws CoreException {
         return getIpsPackageFragmentRoots();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject getIpsProject() {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void configure() throws CoreException {
         IProjectDescription description = getProject().getDescription();
@@ -777,16 +661,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void deconfigure() throws CoreException {
+        // Nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setProject(IProject project) {
         name = project.getName();
@@ -806,11 +685,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    /*
+    /**
      * Adds the command to the build spec
      */
     private void addCommandAtFirstPosition(IProjectDescription description, ICommand newCommand) throws CoreException {
-
         ICommand[] oldCommands = description.getBuildSpec();
         ICommand[] newCommands = new ICommand[oldCommands.length + 1];
         System.arraycopy(oldCommands, 0, newCommands, 1, oldCommands.length);
@@ -824,9 +702,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     // Find methods with single result
     //
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
         IIpsSrcFile file = findIpsSrcFile(type, qualifiedName);
@@ -837,9 +712,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return file.getIpsObject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
         IIpsSrcFile file = findIpsSrcFile(nameType.getIpsObjectType(), nameType.getName());
@@ -850,41 +722,26 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return file.getIpsObject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPolicyCmptType findPolicyCmptType(String qualifiedName) throws CoreException {
         return (IPolicyCmptType)findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException {
         return (IProductCmptType)findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException {
         return (IProductCmpt)findIpsObject(IpsObjectType.PRODUCT_CMPT, qualifiedName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IEnumType findEnumType(String qualifiedName) throws CoreException {
         return (IEnumType)findIpsObject(IpsObjectType.ENUM_TYPE, qualifiedName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues)
             throws CoreException {
@@ -909,9 +766,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return filteredList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreException {
         if (runtimeId == null) {
@@ -927,9 +781,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     // TODO cd: maybe remove this method and use findAllTableContentsSrcFiles instead
     @Override
     public void findTableContents(ITableStructure structure, List<ITableContents> tableContents) throws CoreException {
@@ -952,26 +803,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return (ITableStructure)findIpsObject(IpsObjectType.TABLE_STRUCTURE, tableContetnsQName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) throws CoreException {
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         return (getIpsObjectPathInternal()).findIpsSrcFile(qNameType, visitedEntries);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName) throws CoreException {
         return findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
             throws CoreException {
@@ -981,9 +823,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return filesToIpsObjects(files).toArray(new IIpsObject[files.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile[] findIpsSrcFilesStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
             throws CoreException {
@@ -993,7 +832,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-    /*
+    /**
      * Searches all objects of the given type starting with the given prefix found on the project's
      * path and adds them to the given result list.
      * 
@@ -1009,8 +848,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * @deprecated use this{@link #findIpsSrcFiles(IpsObjectType)} instead
      */
     @Override
@@ -1022,14 +859,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * Returns all IpsObjects within this IpsProject and the IpsProjects this one depends on.
      * 
-     * @throws CoreException
-     * 
      * @deprecated use this{@link #findAllIpsSrcFiles(List)} instead
      */
     @Override
     @Deprecated
     public void findAllIpsObjects(List<IIpsObject> result) throws CoreException {
-        // this is not the most effizient implementation, however, you should use
+        // this is not the most efficient implementation, however, you should use
         // findIpsSrcFiles anyway!
         List<IIpsSrcFile> files = new ArrayList<IIpsSrcFile>();
         findAllIpsSrcFiles(files);
@@ -1092,44 +927,30 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return objects;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result) throws CoreException {
         getIpsObjectPathInternal().collectAllIpsSrcFilesOfSrcFolderEntries(result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws CoreException {
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         return (getIpsObjectPathInternal()).findIpsSrcFiles(type, visitedEntries);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws CoreException {
         findAllIpsSrcFiles(result, getIpsModel().getIpsObjectTypes());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment)
             throws CoreException {
+
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, packageFragment, result, visitedEntries);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IEnumContent findEnumContent(IEnumType enumType) throws CoreException {
         ArgumentCheck.notNull(enumType, this);
@@ -1149,9 +970,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] ipsObjectTypes) throws CoreException {
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
@@ -1161,17 +979,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid) throws CoreException {
         return findDatatypes(valuetypesOnly, includeVoid, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives)
             throws CoreException {
@@ -1236,6 +1048,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             boolean includeVoid,
             boolean includePrimitives,
             Set<Datatype> result) throws CoreException {
+
         if (includeVoid) {
             result.add(Datatype.VOID);
         }
@@ -1249,6 +1062,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             boolean includePrimitives,
             Set<IIpsProject> visitedProjects,
             Set<Datatype> result) throws CoreException {
+
         ((IpsModel)getIpsModel()).getDatatypesDefinedInProjectProperties(ipsProject, valuetypesOnly, includePrimitives,
                 result);
         IIpsProject[] projects = ipsProject.getIpsObjectPathInternal().getReferencedIpsProjects();
@@ -1276,9 +1090,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumDatatype[] findEnumDatatypes() throws CoreException {
         // TODO this implementation can be improved and instanceof can be avoided. Therefore the
@@ -1296,9 +1107,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return enumDatatypeList.toArray(new EnumDatatype[enumDatatypeList.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype findDatatype(String qualifiedName) throws CoreException {
         if (qualifiedName.equals(Datatype.VOID.getQualifiedName())) {
@@ -1329,13 +1137,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 return new ArrayOfValueDatatype(type, arrayDimension);
             }
             throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
-                    "\" specifies an array of a non value datatype. This is currently not supported.");
+                    "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
         }
         return getEnumTypeDatatypeAdapter(qualifiedName, this);
     }
 
     private EnumTypeDatatypeAdapter getEnumTypeDatatypeAdapter(String qualifiedName, IIpsProject ipsProject)
             throws CoreException {
+
         IIpsSrcFile enumTypeSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
         if (enumTypeSrcFile != null && enumTypeSrcFile.exists()) {
             IEnumType enumType = (IEnumType)enumTypeSrcFile.getIpsObject();
@@ -1348,9 +1157,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException {
         if (qualifiedName == null) {
@@ -1369,7 +1175,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
-                "\" specifies an array of a non value datatype. This is currently not supported.");
+                "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
     private ValueDatatype findValueDatatype(IpsProject ipsProject,
@@ -1419,7 +1225,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
-                "\" specifies an array of a non value datatype. This is currently not supported.");
+                "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
     private Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(IpsProject ipsProject,
@@ -1445,9 +1251,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
         if (!(datatype instanceof ValueDatatype)) {
@@ -1464,33 +1267,23 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return helper;
         }
 
-        try {
-            IIpsProject[] projects = getIpsObjectPathInternal().getReferencedIpsProjects();
-            for (IIpsProject project2 : projects) {
-                helper = project2.getDatatypeHelper(datatype);
-                if (helper != null) {
-                    return helper;
-                }
+        IIpsProject[] projects = getIpsObjectPathInternal().getReferencedIpsProjects();
+        for (IIpsProject project2 : projects) {
+            helper = project2.getDatatypeHelper(datatype);
+            if (helper != null) {
+                return helper;
             }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
         }
 
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DatatypeHelper findDatatypeHelper(String qName) throws CoreException {
         Datatype datatype = findDatatype(qName);
         return getDatatypeHelper(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<ValueSetType> getValueSetTypes(ValueDatatype datatype) {
         List<ValueSetType> types = new ArrayList<ValueSetType>();
@@ -1513,9 +1306,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return types;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType) throws CoreException {
         if (valueSetType == null) {
@@ -1530,9 +1320,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes)
             throws CoreException {
@@ -1542,9 +1329,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IProductCmpt[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeCmptsForSubtypes)
             throws CoreException {
@@ -1608,9 +1392,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile[] findAllTableContentsSrcFiles(ITableStructure structure) throws CoreException {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
@@ -1627,9 +1408,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots() throws CoreException {
         List<IIpsPackageFragmentRoot> result = new ArrayList<IIpsPackageFragmentRoot>();
@@ -1648,25 +1426,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsArtefactBuilderSet getIpsArtefactBuilderSet() {
         return ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void reinitializeIpsArtefactBuilderSet() throws CoreException {
         ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this, true);
     }
 
     /**
-     * {@inheritDoc} Find all product cmpt generations which refer to other procuct coponents and
-     * table contents.
+     * Find all product cmpt generations which refer to other procuct coponents and table contents.
      */
     @Override
     public IProductCmptGeneration[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType)
@@ -1691,13 +1462,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return resultArray;
     }
 
-    /*
+    /**
      * + Finds all product cmpt generations of the given product cmpt which refers to the given
      * product cmpt. The result will be added to the given set.
      */
     private void findReferencingProductCmptGenerationsToProductCmpts(IProductCmpt toBeSearched,
             String qualifiedProductCmptName,
-            Set<IProductCmptGeneration> result) throws CoreException {
+            Set<IProductCmptGeneration> result) {
 
         int max = toBeSearched.getNumOfGenerations();
         for (int i = 0; i < max; i++) {
@@ -1718,7 +1489,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     private void findReferencingProductCmptGenerationsToTableContents(IProductCmpt toBeSearched,
             String qualifiedTableContentsName,
-            Set<IProductCmptGeneration> result) throws CoreException {
+            Set<IProductCmptGeneration> result) {
 
         int max = toBeSearched.getNumOfGenerations();
         for (int i = 0; i < max; i++) {
@@ -1761,7 +1532,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         String superType = pcType.getSupertype();
-        if (!superType.equals("")) {
+        if (!(superType.length() == 0)) {
             IIpsObject ipsObject = findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, superType);
             if (ipsObject != null) {
                 list.add(ipsObject);
@@ -1813,9 +1584,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         validateRequiredFeatures(result, props);
-        validateMigration(result, props);
-        validateDuplicateTocFilePath(result, props);
-        validateIpsObjectPathCycle(result, props);
+        validateMigration(result);
+        validateDuplicateTocFilePath(result);
+        validateIpsObjectPathCycle(result);
 
         return result;
     }
@@ -1855,14 +1626,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return severity;
     }
 
-    private void validateIpsObjectPathCycle(MessageList result, IpsProjectProperties props) throws CoreException {
+    private void validateIpsObjectPathCycle(MessageList result) throws CoreException {
         if (getIpsObjectPathInternal().detectCycle()) {
             String msg = Messages.IpsProject_msgCycleInIpsObjectPath;
             result.add(new Message(MSGCODE_CYCLE_IN_IPS_OBJECT_PATH, msg, Message.ERROR, this));
         }
     }
 
-    private void validateMigration(MessageList result, IpsProjectProperties props) {
+    private void validateMigration(MessageList result) {
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
         for (IIpsFeatureVersionManager manager : managers) {
             try {
@@ -1903,7 +1674,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * Validates for duplicate base package generated entries inside the referenced project
      */
-    private void validateDuplicateTocFilePath(MessageList result, IpsProjectProperties props) throws CoreException {
+    private void validateDuplicateTocFilePath(MessageList result) throws CoreException {
         // check for same toc file path in referenced projects (only product definition projects)
         List<IPath> tocPaths = collectTocPaths(getIpsArtefactBuilderSet(), this);
 
@@ -2070,7 +1841,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         String projectPath = getProject().getLocation().toString();
         String resourcePath = resource.getLocation().toString();
         if (!resourcePath.startsWith(projectPath)) {
-            throw new RuntimeException("Invalid project path " + projectPath + " of resource: " + resourcePath);
+            throw new RuntimeException("Invalid project path " + projectPath + " of resource: " + resourcePath); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (resourcePath.length() <= projectPath.length()) {
             return false;

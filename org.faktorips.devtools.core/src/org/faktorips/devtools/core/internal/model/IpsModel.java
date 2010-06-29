@@ -123,47 +123,52 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 .booleanValue();
     }
 
-    // resource delta visitor used to generate ips sourcefile contents changed events and trigger a
-    // build after
-    // changes to the ips project properties file.
+    /**
+     * resource delta visitor used to generate ips sourcefile contents changed events and trigger a
+     * build after changes to the ips project properties file.
+     */
     private ResourceDeltaVisitor resourceDeltaVisitor;
 
-    // set of model change listeners that are notified about model changes
+    /** set of model change listeners that are notified about model changes */
     private Set<ContentsChangeListener> changeListeners = new HashSet<ContentsChangeListener>(100);
 
-    // set of modification status change listeners
+    /** set of modification status change listeners */
     private Set<IModificationStatusChangeListener> modificationStatusChangeListeners = new HashSet<IModificationStatusChangeListener>(
             100);
 
-    // a map that contains per thread if changes should be broadcasted to the registered listeners
-    // or squeezed.
+    /**
+     * a map that contains per thread if changes should be broadcasted to the registered listeners
+     * or squeezed.
+     */
     private Map<Thread, Integer> listenerNoticicationLevelMap = new HashMap<Thread, Integer>();
 
-    /*
+    /**
      * A map containing the dataypes (value) by id (key).
      */
     private Map<String, Datatype> datatypes = null; // lazy load
 
-    /*
+    /**
      * A map containing a code generation helper (value) per datatype (key)
      */
     private Map<Datatype, DatatypeHelper> datatypeHelpersMap = null;
 
-    /*
+    /**
      * A map containing the data for each ips project. The name of the project is used as the key
      * and the value is an instance of IpsProjectData.
      */
     private Map<String, IpsProjectProperties> projectPropertiesMap = Collections
             .synchronizedMap(new HashMap<String, IpsProjectProperties>());
 
-    // a map containing a set of datatypes per ips project. The map's key is the
-    // project name.
+    /**
+     * a map containing a set of datatypes per ips project. The map's key is the project name.
+     */
     private Map<String, LinkedHashMap<String, Datatype>> projectDatatypesMap = Collections
             .synchronizedMap(new HashMap<String, LinkedHashMap<String, Datatype>>());
 
-    // a map containing a map per ips project. The map's key is the project name.
-    // The maps contained in the map, contain the datatypes as keys and the
-    // datatype helper as values.
+    /**
+     * a map containing a map per ips project. The map's key is the project name. The maps contained
+     * in the map, contain the datatypes as keys and the datatype helper as values.
+     */
     private Map<String, Map<ValueDatatype, DatatypeHelper>> projectDatatypeHelpersMap = Collections
             .synchronizedMap(new HashMap<String, Map<ValueDatatype, DatatypeHelper>>());
 
@@ -172,26 +177,26 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private List<IIpsArtefactBuilderSetInfo> builderSetInfoList = null;
 
-    // extension properties (as list) per ips object (or part) type, e.g. IAttribute.
+    /** extension properties (as list) per ips object (or part) type, e.g. IAttribute. */
     private Map<Class<?>, List<IExtensionPropertyDefinition>> typeExtensionPropertiesMap = null;
 
-    // map containing all changes in time naming conventions by id.
+    /** map containing all changes in time naming conventions by id. */
     private Map<String, IChangesOverTimeNamingConvention> changesOverTimeNamingConventionMap = null;
 
     private Map<IIpsProject, DependencyGraph> dependencyGraphForProjectsMap = new HashMap<IIpsProject, DependencyGraph>();
 
-    // map containing ClassLoaderProviders per IpsProject
+    /** map containing ClassLoaderProviders per IpsProject */
     private Map<IIpsProject, ClassLoaderProvider> classLoaderProviderMap = new HashMap<IIpsProject, ClassLoaderProvider>();
 
-    // map containing IpsSrcFileContents as values and IpsSrcFiles as keys.
+    /** map containing IpsSrcFileContents as values and IpsSrcFiles as keys. */
     private HashMap<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new HashMap<IIpsSrcFile, IpsSrcFileContent>(1000);
 
-    // validation result cache
+    /** validation result cache */
     private ValidationResultCache validationResultCache = new ValidationResultCache();
 
     private IpsObjectType[] ipsObjectTypes;
 
-    // cache sort order
+    /** cache sort order */
     private Map<IIpsPackageFragment, IIpsPackageFragmentSortDefinition> sortOrderCache = new HashMap<IIpsPackageFragment, IIpsPackageFragmentSortDefinition>();
 
     private Map<IIpsPackageFragmentSortDefinition, Long> lastIpsSortOrderModifications = new HashMap<IIpsPackageFragmentSortDefinition, Long>();
@@ -1069,9 +1074,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return null;
     }
 
-    /*
-     * Same as above but with collection parameter result.
-     */
     private void getIpsObjectExtensionProperties(Class<?> type,
             boolean includeSupertypesAndInterfaces,
             Set<IExtensionPropertyDefinition> result) {
@@ -1266,7 +1268,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention(String id) {
-
         initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention convention = changesOverTimeNamingConventionMap.get(id);
         if (convention != null) {

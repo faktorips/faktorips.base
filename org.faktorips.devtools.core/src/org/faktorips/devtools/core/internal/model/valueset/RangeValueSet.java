@@ -166,9 +166,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             if (datatype.isNull(value)) {
                 return containsNull;
             }
-            /*
-             * An abstract valueset is considered containing all values. See #isAbstract()
-             */
+            // An abstract valueset is considered containing all values. See #isAbstract()
             if (isAbstract()) {
                 return true;
             }
@@ -189,9 +187,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
         String diff = value;
 
-        // if the lower bound is set, the value to check is not the real value but
-        // the value reduced by the lower bound! In a range from 1-5, Step 2 the
-        // values 1, 3 and 5 are valid, not 2 and 4.
+        /*
+         * if the lower bound is set, the value to check is not the real value but the value reduced
+         * by the lower bound! In a range from 1-5, Step 2 the values 1, 3 and 5 are valid, not 2
+         * and 4.
+         */
         if (!StringUtils.isEmpty(getLowerBound())) {
             diff = numDatatype.subtract(value, getLowerBound());
         }
@@ -324,8 +324,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
 
         if (datatype == null) {
-            return true; // no datatype, so we can not decide if matching or not - return true in
-            // this case.
+            // no datatype, so we can not decide if matching or not - return true in this case.
+            return true;
         }
 
         if (isSetAndParsable(subStep, datatype) && isSetAndParsable(step, datatype)) {
@@ -481,7 +481,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     @Override
     public String toString() {
         if (isAbstract()) {
-            return super.toString() + "(abstract)";
+            return super.toString() + "(abstract)"; //$NON-NLS-1$
         }
         return super.toString() + ":" + toShortString(); //$NON-NLS-1$
     }

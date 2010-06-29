@@ -197,7 +197,7 @@ public class TestRule extends TestObject implements ITestRule {
 
     @Override
     protected void reinitPartCollections() {
-
+        // Nothing to do
     }
 
     @Override

@@ -19,11 +19,11 @@ import org.w3c.dom.Element;
 
 /**
  * Strategy for deriving table column names from Strings.
- * <p/>
+ * <p>
  * This strategy converts CamelCased Strings to uppercase with an underscore in between where a
  * lowercase character is followed by an uppercased character.
- * <p/>
- * Example:<br/>
+ * <p>
+ * Example:<br />
  * CamelCasedIdentifier42 -> CAMEL_CASED_IDENTIFIER42
  * 
  * @author Roman Grutza
@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 public class CamelCaseToUpperUnderscoreColumnNamingStrategy extends CamelCaseToUpperUnderscoreTableNamingStrategy
         implements ITableColumnNamingStrategy {
 
-    public final static String EXTENSION_ID = "org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy";
+    public final static String EXTENSION_ID = "org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy"; //$NON-NLS-1$
 
     @Override
     public String getTableColumnName(String baseName) {
@@ -49,4 +49,5 @@ public class CamelCaseToUpperUnderscoreColumnNamingStrategy extends CamelCaseToU
         strategyEl.setAttribute("id", EXTENSION_ID); //$NON-NLS-1$
         return strategyEl;
     }
+
 }

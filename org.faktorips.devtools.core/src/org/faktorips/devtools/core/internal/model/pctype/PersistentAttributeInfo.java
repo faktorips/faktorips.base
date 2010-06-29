@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
 /**
  * Section to display the persistence properties of the attributes specific to an
  * {@link IPolicyCmptType}).
- * <p/>
+ * <p>
  * The properties are Attibute Name, Table Column Name, Size amongst others.
  * 
  * @author Roman Grutza
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
 public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPersistentAttributeInfo {
 
     private boolean transientAttribute = false;
-    private String tableColumnName = "";
+    private String tableColumnName = ""; //$NON-NLS-1$
 
     private boolean tableColumnNullable = true;
     private boolean tableColumnUnique;
@@ -51,17 +51,13 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     private int tableColumnPrecision = 16;
     private int tableColumnScale = 2;
 
-    private String converterQualifiedClassName = "";
-    private String sqlColumnDefinition = "";
+    private String converterQualifiedClassName = ""; //$NON-NLS-1$
+    private String sqlColumnDefinition = ""; //$NON-NLS-1$
 
     private DateTimeMapping temporalMapping = DateTimeMapping.DATE_ONLY;
 
     private IIpsObjectPart policyComponentTypeAttribute;
 
-    /**
-     * @param policyComponentTypeAttribute
-     * @throws CoreException
-     */
     public PersistentAttributeInfo(IIpsObjectPart ipsObject, String id) {
         super(ipsObject, id);
         policyComponentTypeAttribute = ipsObject;
@@ -248,6 +244,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         element.setAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME, "" + converterQualifiedClassName); //$NON-NLS-1$
     }
 
+    // TODO Internationalize messages
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (!isPersistentAttribute() || isTransient()
@@ -277,9 +274,11 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE));
         }
 
-        // to get the max length we use the ips project which belongs to this object not the given
-        // project, therefore it is not possible to overwrite this settings by using a different
-        // project
+        /*
+         * to get the max length we use the ips project which belongs to this object not the given
+         * project, therefore it is not possible to overwrite this settings by using a different
+         * project
+         */
         int maxColumnNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxColumnNameLenght();
         if (StringUtils.isNotBlank(tableColumnName) && tableColumnName.length() > maxColumnNameLenght) {
             msgList

@@ -37,13 +37,6 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
         super(table, id);
     }
 
-    /**
-     * Constructor for testing purposes.
-     */
-    Column() {
-
-    }
-
     @Override
     public void setName(String newName) {
         name = newName;

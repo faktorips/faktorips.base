@@ -26,17 +26,11 @@ public abstract class AbstractDeltaEntryForProperty extends AbstractDeltaEntry i
         super(delta);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         return getPropertyName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return getDeltaType() + ": " + getPropertyName() + "(" + getPropertyType().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

@@ -47,30 +47,36 @@ import org.w3c.dom.Element;
  */
 public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersistentTypeInfo {
 
-    private String tableName = "";
+    private String tableName = ""; //$NON-NLS-1$
 
-    // the strategy which should be used to store the hierarchy objects
-    // the strategy must only be defined on the root entity, the subclasses will adopt the
-    // same strategy that is specified in the root entity superclass.
-    // the JPA default is single table
+    /**
+     * the strategy which should be used to store the hierarchy objects the strategy must only be
+     * defined on the root entity, the subclasses will adopt the same strategy that is specified in
+     * the root entity superclass. the JPA default is single table
+     */
     private InheritanceStrategy inheritanceStrategy = InheritanceStrategy.SINGLE_TABLE;
 
-    // class indicator
-    // the discriminator should used in single table and join subclass strategy
-    // some vendors offer implementations of joined inheritance without the use of a discriminator
-    // column but the discriminator columns should be used to ensure the portability
-    private String discriminatorValue = "";
-    private DiscriminatorDatatype discriminatorDatatype = DiscriminatorDatatype.STRING;
-    private String discriminatorColumnName = "";
+    /**
+     * class indicator the discriminator should used in single table and join subclass strategy some
+     * vendors offer implementations of joined inheritance without the use of a discriminator column
+     * but the discriminator columns should be used to ensure the portability
+     */
+    private String discriminatorValue = ""; //$NON-NLS-1$
 
-    // per default the persistent is disabled
+    private DiscriminatorDatatype discriminatorDatatype = DiscriminatorDatatype.STRING;
+
+    private String discriminatorColumnName = ""; //$NON-NLS-1$
+
+    /** per default the persistent is disabled */
     private PersistentType persistentType = PersistentType.NONE;
 
-    // specifies if the associate type defines the discriminator or not
-    // note that only the root entity (root entity) can define the discriminator
+    /**
+     * specifies if the associate type defines the discriminator or not note that only the root
+     * entity (root entity) can define the discriminator
+     */
     private boolean definesDiscriminatorColumn = false;
 
-    // if true the table name of the supertype will be used
+    /** if true the table name of the supertype will be used */
     private boolean useTableDefinedInSupertype = false;
 
     public PersistentTypeInfo(IPolicyCmptType pcType, String id) {
@@ -95,9 +101,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     @Override
     public void setPersistentType(PersistentType persistentType) {
         if (persistentType != PersistentType.ENTITY) {
-            setTableName("");
+            setTableName(""); //$NON-NLS-1$
             setDefinesDiscriminatorColumn(false);
-            setDiscriminatorValue("");
+            setDiscriminatorValue(""); //$NON-NLS-1$
         }
         PersistentType oldValue = this.persistentType;
         this.persistentType = persistentType;
@@ -107,7 +113,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     @Override
     public void setDefinesDiscriminatorColumn(boolean definesDiscriminatorColumn) {
         if (!definesDiscriminatorColumn) {
-            setDiscriminatorColumnName("");
+            setDiscriminatorColumnName(""); //$NON-NLS-1$
         }
         boolean oldValue = this.definesDiscriminatorColumn;
         this.definesDiscriminatorColumn = definesDiscriminatorColumn;
@@ -117,7 +123,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     @Override
     public void setUseTableDefinedInSupertype(boolean useTableDefinedInSupertype) {
         if (useTableDefinedInSupertype) {
-            setTableName("");
+            setTableName(""); //$NON-NLS-1$
         }
         boolean oldValue = this.useTableDefinedInSupertype;
         this.useTableDefinedInSupertype = useTableDefinedInSupertype;
@@ -201,7 +207,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     public boolean isSecondaryTableNameRequired() {
         return false;
-        // return inheritanceStrategy == InheritanceStrategy.MIXED;
     }
 
     @Override
@@ -230,6 +235,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         new InheritanceStrategyMismatchVisitor(this, msgList).start(pcType);
     }
 
+    // TODO Internationalize messages
     private void validateTableName(MessageList msgList, IPolicyCmptType rootEntity) {
         if (getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
             // in case of mapped superclass the table names must be empty
@@ -316,6 +322,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return rooEntityFinder.rooEntity;
     }
 
+    // TODO internationalize messages
     private void validateDisriminator(MessageList msgList, IPolicyCmptType rootEntity) throws CoreException {
         if (getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
             if (isDefinesDiscriminatorColumn()) {
@@ -461,7 +468,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         useTableDefinedInSupertype = Boolean.valueOf(element.getAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
     }
 
-    /*
+    /**
      * Read persistent type, note that this method is downwardly compatible to v 3.0.0.ms1. In the
      * older version the persistent could only be enabled or disabled using the 'enabled' attribute.
      */
@@ -483,7 +490,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
      * inheritance strategy.
      */
     private final class InheritanceStrategyMismatchVisitor extends PolicyCmptTypeHierarchyVisitor {
+
         private final MessageList msgList;
+
         private final PersistentTypeInfo persistentTypeInfo;
 
         private InheritanceStrategyMismatchVisitor(PersistentTypeInfo persistentTypeInfo, MessageList msgList) {
@@ -491,6 +500,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             this.msgList = msgList;
         }
 
+        // TODO internationalize messages
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             InheritanceStrategy supertypeStrategy = currentType.getPersistenceTypeInfo().getInheritanceStrategy();
@@ -514,6 +524,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private final static class DiscriminatorValidator extends PolicyCmptTypeHierarchyVisitor {
+
         private final InheritanceStrategy inheritanceStrategy;
         private final List<String> discriminatorValues = new ArrayList<String>();
 
@@ -553,11 +564,12 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
-    /*
+    /**
      * The root entity is the entity which can define the discriminator. A root entity has no
      * supertype and must be an JPA entity.
      */
     private class RooEntityFinder extends PolicyCmptTypeHierarchyVisitor {
+
         private IPolicyCmptType rooEntity = null;
 
         @Override
@@ -589,12 +601,14 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
+    // TODO internationalize messages
     @SuppressWarnings("unchecked")
     // suppressed because we use either a object which holds the column name or a list of objects
     // with the same column name
     private void addMessagesDuplicateColumnName(MessageList msgList,
             String columnName,
             Object objectOrObjectsUseSameColumnName) {
+
         if (objectOrObjectsUseSameColumnName instanceof List<?>) {
             List<ObjectProperty> objectsUseSameColumnName = (List<ObjectProperty>)objectOrObjectsUseSameColumnName;
             String objectsAsString = "";
@@ -703,4 +717,5 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             }
         }
     }
+
 }

@@ -37,25 +37,16 @@ public class LinkWithoutAssociationEntry extends AbstractDeltaEntry {
         return link;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void fix() {
         link.delete();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DeltaType getDeltaType() {
         return DeltaType.LINK_WITHOUT_ASSOCIATION;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         return getDeltaType() + ": " + link.getAssociation(); //$NON-NLS-1$

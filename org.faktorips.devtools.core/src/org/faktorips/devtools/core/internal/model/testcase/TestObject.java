@@ -59,9 +59,11 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
             }
             if (param != null) {
-                return testCase.isTypeOrDefault(param, TestParameterType.INPUT, DEFAULT_TYPE);
+                return testCase.isTypeOrDefault(param, TestParameterType.INPUT);
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
+            // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
         return testCase.isTypeOrDefault(root.getTestParameterName(), TestParameterType.INPUT, DEFAULT_TYPE);
@@ -81,9 +83,11 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
             }
 
             if (param != null) {
-                return testCase.isTypeOrDefault(param, TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
+                return testCase.isTypeOrDefault(param, TestParameterType.EXPECTED_RESULT);
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
+            // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
         return testCase.isTypeOrDefault(root.getTestParameterName(), TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
@@ -102,9 +106,11 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
             }
 
             if (param != null) {
-                return testCase.isTypeOrDefault(param, TestParameterType.COMBINED, DEFAULT_TYPE);
+                return testCase.isTypeOrDefault(param, TestParameterType.COMBINED);
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
+            // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
         return testCase.isTypeOrDefault(root.getTestParameterName(), TestParameterType.COMBINED, DEFAULT_TYPE);

@@ -51,6 +51,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
     public final static IpsObjectDependency create(QualifiedNameType source,
             QualifiedNameType target,
             DependencyType dependencyType) {
+
         return new IpsObjectDependency(source, target, dependencyType);
     }
 
@@ -93,24 +94,15 @@ public class IpsObjectDependency implements IDependency, Serializable {
         return new IpsObjectDependency(source, target, DependencyType.INSTANCEOF);
     }
 
-    /**
-     * The source object
-     */
     @Override
     public QualifiedNameType getSource() {
         return source;
     }
 
-    /**
-     * The target object
-     */
     public QualifiedNameType getTargetAsQNameType() {
         return target;
     }
 
-    /**
-     * The target object
-     */
     @Override
     public Object getTarget() {
         return target;

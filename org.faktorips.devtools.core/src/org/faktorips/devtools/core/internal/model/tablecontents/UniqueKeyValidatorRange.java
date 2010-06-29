@@ -43,16 +43,18 @@ import org.faktorips.util.message.MessageList;
  * @author Joerg Ortmann
  */
 public class UniqueKeyValidatorRange {
+
     private static final int MAX_NO_OF_UNIQUE_KEY_VALIDATION_ERRORS = 10;
 
     private UniqueKeyValidator uniqueKeyValidator;
 
-    // the unique key this validator is for
+    /** the unique key this validator is for */
     private IUniqueKey uniqueKey;
 
-    // cache contains for each key value a map of column ranges (key) and sorted maps (value)
-    // each map contains the KeyValueRange ('from'-value) and the rows which matches this key value
-    // range
+    /**
+     * cache contains for each key value a map of column ranges (key) and sorted maps (value) each
+     * map contains the KeyValueRange ('from'-value) and the rows which matches this key value range
+     */
     private Map<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Object>>> keyValueRanges = new HashMap<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Object>>>();
 
     public UniqueKeyValidatorRange(UniqueKeyValidator uniqueKeyValidator, IUniqueKey uniqueKey) {
@@ -86,7 +88,7 @@ public class UniqueKeyValidatorRange {
         }
     }
 
-    /*
+    /**
      * Update the key value range of the given row and column range in the given sorted map
      */
     private void updateUniqueKeysColumnRange(ITableStructure tableStructure,
@@ -97,9 +99,10 @@ public class UniqueKeyValidatorRange {
 
         KeyValueRange keyValueRange = KeyValueRange.createKeyValue(tableStructure, uniqueKeyValidator
                 .getCachedValueDatatypes(), uniqueKey, row, columnRange);
-        // add the key value range
-        // if the value is not parsable then the key value are not added to the cache,
-        // otherwise the sorted map can not work correctly (compareTo method fails)
+        /*
+         * add the key value range, if the value is not parsable then the key value are not added to
+         * the cache, otherwise the sorted map can not work correctly (compareTo method fails)
+         */
         if (keyValueRange.isParsable()) {
             UniqueKeyValidator.updateKeyValueInMap(keyValueRangeMap, keyValueRange, row, operation);
         }
@@ -134,7 +137,7 @@ public class UniqueKeyValidatorRange {
         removeInvalidKeyValues(invalidKeyValues);
     }
 
-    /*
+    /**
      * Validate all two column ranges, the given map contains all column ranges with their key value
      * range objects and the related row (rows), the given key value contains the key value of all
      * non two column range key items. The sorted list contains only entries with the same key value
@@ -143,6 +146,7 @@ public class UniqueKeyValidatorRange {
     private void validateAllRanges(MessageList list,
             KeyValue keyValue,
             Map<ColumnRange, SortedMap<AbstractKeyValue, Object>> columnRangeMaps) {
+
         Set<Row> rowsUniqueKeyViolation = new HashSet<Row>();
         Map<KeyValueRange, Set<Row>> allRangesRowsSameFromValue = null;
         for (Entry<ColumnRange, SortedMap<AbstractKeyValue, Object>> entry2 : columnRangeMaps.entrySet()) {
@@ -152,10 +156,12 @@ public class UniqueKeyValidatorRange {
                     keyValueRangeMap);
             list.add(uniqueKeyValidationErrors);
 
-            // store entries with same 'from'-value, these entries must be handled separately,
-            // because the sorted map couldn't take care of those key value ranges
-            // note that these could be a performance bottleneck if there are many column ranges
-            // with same from values
+            /*
+             * store entries with same 'from'-value, these entries must be handled separately,
+             * because the sorted map couldn't take care of those key value ranges note that these
+             * could be a performance bottleneck if there are many column ranges with same from
+             * values
+             */
             allRangesRowsSameFromValue = mergeRowsInMap(allRangesRowsSameFromValue, rowsSameFromValue);
         }
 
@@ -165,12 +171,12 @@ public class UniqueKeyValidatorRange {
             }
         }
 
-        // create errors for all rows with the same 'from'-value
-        // the set allRangesRowsSameFromValue contains all rows with the same from value in all
-        // ranges
-        // note that the validation above doesn't find these kind of errors, because only one key
-        // value range
-        // object ('from'-value) are exists in the sorted list with a list of rows
+        /*
+         * create errors for all rows with the same 'from'-value the set allRangesRowsSameFromValue
+         * contains all rows with the same from value in all ranges note that the validation above
+         * doesn't find these kind of errors, because only one key value range object ('from'-value)
+         * are exists in the sorted list with a list of rows
+         */
         MessageList uniqueKeyValidationErrors = new MessageList();
         for (Row row : rowsUniqueKeyViolation) {
             uniqueKeyValidator.createValidationErrorUniqueKeyViolation(uniqueKeyValidationErrors, keyValue
@@ -182,16 +188,17 @@ public class UniqueKeyValidatorRange {
         list.add(uniqueKeyValidationErrors);
     }
 
-    /*
+    /**
      * Returns a map of key value range objects with rows from the first map which exists at least
      * two times in the second map. The map are grouped by key value objects.
-     * 
+     * <p>
      * This method is used to cleanup the sets of rows with same 'from'-values in several column
      * ranges. As result we get a map with rows which have an unique key violation, because these
      * rows exists multiple times in different column ranges.
      */
     private Map<KeyValueRange, Set<Row>> mergeRowsInMap(Map<KeyValueRange, Set<Row>> prevRangesRowsSameFromValue,
             Map<KeyValueRange, Set<Row>> rowsSameFromValue) {
+
         if (prevRangesRowsSameFromValue == null) {
             return rowsSameFromValue;
         } else {
@@ -214,13 +221,14 @@ public class UniqueKeyValidatorRange {
         }
     }
 
-    /*
+    /**
      * Check all row to each other if there are overlapping rows
      */
     private void addOverlappingRows(Set<Row> rowsViolation,
             KeyValueRange keyValue,
             Set<Row> rows,
             Set<Row> rowsInSecondSet) {
+
         for (Row row : rows) {
             boolean collision = false;
             for (Row rowSecond : rowsInSecondSet) {
@@ -245,7 +253,7 @@ public class UniqueKeyValidatorRange {
         }
     }
 
-    /*
+    /**
      * Validates all unique key maps in the given map (cache). For each unique key there is separate
      * map of key value range objects. This method validates the key value ranges for key value
      * ranges (two column key value objects) only
@@ -254,6 +262,7 @@ public class UniqueKeyValidatorRange {
     private Map<KeyValueRange, Set<Row>> validateUniqueKeysRange(Set<Row> rowsUniqueKeyViolation,
             KeyValue keyValue,
             SortedMap<AbstractKeyValue, Object> keyValueRangeMap) {
+
         List<AbstractKeyValue> invalidkeyValues = new ArrayList<AbstractKeyValue>();
         Map<KeyValueRange, Set<Row>> mapRowsSameFrom = new HashMap<KeyValueRange, Set<Row>>();
 
@@ -269,15 +278,18 @@ public class UniqueKeyValidatorRange {
             KeyValueRange keyValueFrom = (KeyValueRange)entry.getKey();
             Object keyValueObject = entry.getValue();
 
-            // check if the key value object is valid, if one key item column has changed then the
-            // current key value object could be invalid
-            // ignore invalid key values
+            /*
+             * check if the key value object is valid, if one key item column has changed then the
+             * current key value object could be invalid ignore invalid key values
+             */
             if (!keyValueFrom.isValid()) {
                 continue;
             }
 
-            // check if the KeyValueRange row is valid for the given key value (non two column range
-            // key value)
+            /*
+             * check if the KeyValueRange row is valid for the given key value (non two column range
+             * key value)
+             */
             if (!keyValue.isValid(keyValueFrom.getRow())) {
                 continue;
             }
@@ -345,18 +357,17 @@ public class UniqueKeyValidatorRange {
         return false;
     }
 
-    /*
+    /**
      * Validates the given key value range object entry against the given 'from'- and 'to'-value key
      * value range objects. The key value entry (cache entry) contains the key value and either the
      * row or a list of rows which matches (are greater or less) the key value range. Each matched
      * key value range object must checked against the given 'to' or 'from' key value range object.
-     * 
+     * <p>
      * Additional the key value range object will be checked if the stored value is up to date for
      * the stored row, otherwise the key value range object is invalid and must be removed from the
      * list if no more rows are left then the key value range object is invalid.
      */
-    @SuppressWarnings("unchecked")
-    private List validateKeyValueRange(Set<Row> rowsUniqueKeyViolation,
+    private List<Row> validateKeyValueRange(Set<Row> rowsUniqueKeyViolation,
             IUniqueKey uniqueKey,
             KeyValueRange prevFrom,
             KeyValueRange keyValue,
@@ -380,16 +391,18 @@ public class UniqueKeyValidatorRange {
 
             validateKeyValueRangeFor(rowsUniqueKeyViolation, uniqueKey, prevFrom, keyValue, currentRow);
         } else if (keyValueObject instanceof List) {
+            // TODO AW: Refactor, provide 2 methods instead of parameter instanceof switching
             List<Row> rows = (List)keyValueObject;
             List<Row> rowsChecked = new ArrayList<Row>();
 
             // first check if all rows are 'valid' for the key value
             for (Row currentRow : rows) {
                 if (!keyValue.isValid(currentRow)) {
-                    // note that the key value cannot be removed
-                    // because there is at least one other row
-                    // with the same from value
-                    // (the hashcode of the keyValue range object is only the from value)
+                    /*
+                     * note that the key value cannot be removed because there is at least one other
+                     * row with the same from value (the hashcode of the keyValue range object is
+                     * only the from value)
+                     */
                     continue;
                 }
                 rowsChecked.add(currentRow);
@@ -420,10 +433,10 @@ public class UniqueKeyValidatorRange {
         return null;
     }
 
-    /*
+    /**
      * Validates the given key value entry. Check if the range doesn't overlap with the given range
      * ('from' and 'to' key value range)
-     * 
+     * <p>
      * The row could be an other as stored in the key value range
      */
     private void validateKeyValueRangeFor(Set<Row> rowsUniqueKeyViolation,
@@ -431,6 +444,7 @@ public class UniqueKeyValidatorRange {
             KeyValueRange prevFrom,
             KeyValueRange currKeyValue,
             Row currentRow) {
+
         Row prevRow = prevFrom.getRow();
         if (currentRow == prevRow) {
             return;
@@ -465,6 +479,7 @@ public class UniqueKeyValidatorRange {
     private void createValidationErrorToManyUniqueKeyViolations(MessageList list,
             IUniqueKey uniqueKey,
             int numberOfValidationErrors) {
+
         String text = NLS.bind(Messages.UniqueKeyValidatorRange_msgToManyUniqueKeyViolations, numberOfValidationErrors,
                 uniqueKey);
         list.add(new Message(ITableContents.MSGCODE_TO_MANY_UNIQUE_KEY_VIOLATIONS, text, Message.ERROR));
@@ -518,4 +533,5 @@ public class UniqueKeyValidatorRange {
         }
         return result.replaceAll(",$", ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
+
 }

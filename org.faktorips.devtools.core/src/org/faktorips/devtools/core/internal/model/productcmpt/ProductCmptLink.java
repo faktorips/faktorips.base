@@ -35,14 +35,15 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     /**
      * @param target The product component that will be used as target for the new relation.
-     * @param relationType The type of the new relation.
      * @param ipsProject The ips project which ips object path is used.
      * @return <code>true</code> if it is possible to create a valid relation with the given
      *         parameters at this time, <code>false</code> otherwise.
+     * 
      * @throws CoreException if an error occurs during supertype-evaluation
      */
     public static boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
             throws CoreException {
+
         if (target == null || association == null) {
             return false;
         }
@@ -53,7 +54,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return actualTargetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject);
     }
 
-    // the name of the association this link is an instance of
+    /** the name of the association this link is an instance of */
     private String association = ""; //$NON-NLS-1$
 
     private String target = ""; //$NON-NLS-1$
@@ -70,17 +71,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmpt getProductCmpt() {
         return (IProductCmpt)getParent().getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
@@ -91,17 +86,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return target;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getAssociation() {
         return association;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException {
         IProductCmptType productCmptType = getProductCmpt().findProductCmptType(ipsProject);
@@ -118,25 +107,16 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         valueChanged(oldAsso, association);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTarget() {
         return target;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmpt findTarget(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findProductCmpt(target);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setTarget(String newTarget) {
         String oldTarget = target;
@@ -144,17 +124,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         valueChanged(oldTarget, target);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getMinCardinality() {
         return minCardinality;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMinCardinality(int newValue) {
         int oldValue = minCardinality;
@@ -163,17 +137,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getMaxCardinality() {
         return maxCardinality;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMaxCardinality(int newValue) {
         int oldValue = maxCardinality;
@@ -208,7 +176,6 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                     .getTargetRoleSingular());
             list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, this, PROPERTY_TARGET));
         }
-
     }
 
     private void validateCardinality(MessageList list, IPolicyCmptTypeAssociation associationObj) {
@@ -225,8 +192,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             if (associationObj.getMaxCardinality() != IProductCmptTypeAssociation.CARDINALITY_MANY) {
                 int maxType = associationObj.getMaxCardinality();
                 if (maxCardinality > maxType) {
-                    String text = NLS.bind(Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax, ""
-                            + (maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : "" + maxCardinality),
+                    String text = NLS.bind(Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax, "" //$NON-NLS-1$
+                            + (maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : "" + maxCardinality), //$NON-NLS-1$ //$NON-NLS-2$
                             "" + associationObj.getMaxCardinality()); //$NON-NLS-1$ 
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
@@ -235,17 +202,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);

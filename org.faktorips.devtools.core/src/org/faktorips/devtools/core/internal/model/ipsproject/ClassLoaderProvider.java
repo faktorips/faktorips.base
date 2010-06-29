@@ -50,22 +50,25 @@ public class ClassLoaderProvider {
     private IJavaProject javaProject;
     private URLClassLoader classLoader;
 
-    // <code>true</code> if the jars should be copied as temporary jars
+    /** <code>true</code> if the jars should be copied as temporary jars */
     private boolean copyJars = false;
 
-    // The directory where the jar files are copies to (if copyJars = true).
+    /** The directory where the jar files are copies to (if copyJars = true). */
     private File tempFileDir = null;
 
-    // a list of IPaths that contain the class files, either a path to a file if it's a Jar-File or
-    // to a directory
-    // if it's a directory containing class files.
+    /**
+     * a list of IPaths that contain the class files, either a path to a file if it's a Jar-File or
+     * to a directory if it's a directory containing class files.
+     */
     private List<IPath> classfileContainers = new ArrayList<IPath>();
 
-    // listeners that are informed if the contents of the classpath changes
+    /** listeners that are informed if the contents of the classpath changes */
     private List<IClasspathContentsChangeListener> classpathContentsChangeListeners = new ArrayList<IClasspathContentsChangeListener>();
 
-    // resource change listener that is used to test for changes of the classpath elements (jars and
-    // class directories)
+    /**
+     * resource change listener that is used to test for changes of the classpath elements (jars and
+     * class directories)
+     */
     private IResourceChangeListener resourceChangeListener;
 
     public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation, boolean copyJars) {
@@ -155,11 +158,12 @@ public class ClassLoaderProvider {
         for (IClasspathEntry element : entry) {
             if (element.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                 IPath jarPath;
-                // evaluate the correct path of the classpath entry;
-                // if the entry path contains no device
-                // then the root path will be added in front of the path,
-                // otherwise the path is already an absolute path (e.g. external libraries)
-                // Remark: IPath#isAbsolute didn't work in this case
+                /*
+                 * evaluate the correct path of the classpath entry; if the entry path contains no
+                 * device then the root path will be added in front of the path, otherwise the path
+                 * is already an absolute path (e.g. external libraries) Remark: IPath#isAbsolute
+                 * didn't work in this case
+                 */
                 if (StringUtils.isEmpty(element.getPath().getDevice())) {
                     jarPath = root.append(element.getPath());
                 } else {
@@ -190,7 +194,7 @@ public class ClassLoaderProvider {
         }
     }
 
-    /*
+    /**
      * Creates a temporary directory to store temporary jars in the plugin state location. (The
      * plug-in state area is a file directory within the platform's metadata area where a plug-in is
      * free to create files (see Plugin#getStateLocation()). Each project gets its own temporary

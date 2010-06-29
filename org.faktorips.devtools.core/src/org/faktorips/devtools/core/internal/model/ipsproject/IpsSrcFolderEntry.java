@@ -59,7 +59,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    sourceFolder=\"model\"            Folder in the project that contains the Faktor-IPS model and product definition files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    outputFolderMergable=\"src\"      Folder in the project where the generator puts the java source files which content will be merged with " + //$NON-NLS-1$
-                "the newly generated content during each build cycle."
+                "the newly generated content during each build cycle." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
                 + "    basePackageMergable=\"org.foo\"   The package prefix for all generated but mergable java files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    tocPath=\"motor/motor-reposiory-toc.xml\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -67,7 +67,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 + "                                      The full path is derived from the basePackageMergeable by adding this partial path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "                                      The file is not part of the published interface so it is places in the internal package." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    outputFolderDerived=\"\"          Folder within the project where the generator puts java source files that will be overridden during each build cycle and delete and " + //$NON-NLS-1$
-                "regenerated during a clean build cycle."
+                "regenerated during a clean build cycle." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
                 + "                                      Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "                                      If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -75,22 +75,24 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    // the folder containig the ips objects
+    /** the folder containig the ips objects */
     private IFolder sourceFolder;
 
-    // the output folder containing the generated but mergable Java files.
+    /** the output folder containing the generated but mergable Java files. */
     private IFolder outputFolderMergable;
 
-    // the name of the base package containing the generated but mergable Java files.
+    /** the name of the base package containing the generated but mergable Java files. */
     private String basePackageMergable = ""; //$NON-NLS-1$
 
     private String tocPath = DEFAULT_TOC_PATH;
 
-    // the output folder containing the Java files that are generated and derived.
+    /** the output folder containing the Java files that are generated and derived. */
     private IFolder outputFolderDerived;
 
-    // the name of the base package containing the Java files where the developer adds it's own
-    // code.
+    /**
+     * the name of the base package containing the Java files where the developer adds it's own
+     * code.
+     */
     private String basePackageDerived = ""; //$NON-NLS-1$
 
     private IIpsPackageFragmentRoot root;
@@ -111,41 +113,26 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 getIpsPackageFragmentRootName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getType() {
         return TYPE_SRC_FOLDER;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder getSourceFolder() {
         return sourceFolder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getIpsPackageFragmentRootName() {
         return sourceFolder.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
         return getIpsProject().getIpsPackageFragmentRoot(getIpsPackageFragmentRootName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder getOutputFolderForMergableJavaFiles() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -154,25 +141,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return getIpsObjectPath().getOutputFolderForMergableSources();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder getSpecificOutputFolderForMergableJavaFiles() {
         return outputFolderMergable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setSpecificOutputFolderForMergableJavaFiles(IFolder outputFolder) {
         outputFolderMergable = outputFolder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBasePackageNameForMergableJavaClasses() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -181,25 +159,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return getIpsObjectPath().getBasePackageNameForMergableJavaClasses();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getSpecificBasePackageNameForMergableJavaClasses() {
         return basePackageMergable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setSpecificBasePackageNameForMergableJavaClasses(String name) {
         basePackageMergable = name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder getOutputFolderForDerivedJavaFiles() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -208,25 +177,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return getIpsObjectPath().getOutputFolderForDerivedSources();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder getSpecificOutputFolderForDerivedJavaFiles() {
         return outputFolderDerived;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setSpecificOutputFolderForDerivedJavaFiles(IFolder outputFolder) {
         outputFolderDerived = outputFolder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBasePackageNameForDerivedJavaClasses() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -235,25 +195,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return getIpsObjectPath().getBasePackageNameForDerivedJavaClasses();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getSpecificBasePackageNameForDerivedJavaClasses() {
         return basePackageDerived;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setSpecificBasePackageNameForDerivedJavaClasses(String name) {
         basePackageDerived = name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean exists(QualifiedNameType qnt) throws CoreException {
         if (sourceFolder == null) {
@@ -262,23 +213,19 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return sourceFolder.getFile(qnt.toPath()).exists();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findIpsSrcFilesInternal(IpsObjectType type,
             String packageFragment,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+
         ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
+
         IIpsPackageFragment pack = root.getIpsPackageFragment(qnt.getPackageName());
         if (pack == null) {
             return null;
@@ -290,9 +237,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return file;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
             String prefix,
@@ -303,9 +247,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 ignoreCase, result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(Element element, IProject project) {
         String sourceFolderPath = element.getAttribute("sourceFolder"); //$NON-NLS-1$
@@ -324,9 +265,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         basePackageDerived = element.getAttribute("basePackageDerived"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Element toXml(Document doc) {
         Element element = doc.createElement(IpsObjectPathEntry.XML_ELEMENT);
@@ -342,9 +280,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
@@ -381,7 +316,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return result;
     }
 
-    /*
+    /**
      * Validate that the given folder exists.
      */
     private MessageList validateIfFolderExists(IFolder folder) {
@@ -394,33 +329,21 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "SrcFolderEntry[" + sourceFolder.getProjectRelativePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setBasePackageRelativeTocPath(String newPath) {
         tocPath = newPath;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBasePackageRelativeTocPath() {
         return tocPath;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getFullTocPath() {
         String path = QNameUtil.toPath(getBasePackageNameForMergableJavaClasses()).toString();
         if (StringUtils.isEmpty(path)) {
@@ -430,8 +353,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Interprets the given path as relative to the referenced sourcefolder.
      */
     @Override
@@ -442,4 +363,5 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         }
         return null;
     }
+
 }

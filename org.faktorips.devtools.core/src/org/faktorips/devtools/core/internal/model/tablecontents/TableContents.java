@@ -114,11 +114,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return numOfColumns;
     }
 
-    /**
-     * Sets the number of columns
-     * 
-     * @param numOfColumns
-     */
     public void setNumOfColumnsInternal(int numOfColumns) {
         this.numOfColumns = numOfColumns;
     }
@@ -164,9 +159,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return new IDependency[] { dependency };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
@@ -252,7 +244,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      */
     @Override
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
-
+        // Nothing to do at the moment
     }
 
     @Override

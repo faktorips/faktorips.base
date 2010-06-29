@@ -11,9 +11,6 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-/**
- * 
- */
 package org.faktorips.devtools.core.internal.migration;
 
 import java.io.ByteArrayInputStream;
@@ -46,25 +43,16 @@ public class Migration_2_1_0_ms2 extends AbstractIpsProjectMigrationOperation {
         super(projectToMigrate, featureId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         return "The structure of the .ipsproject file has changed and must be converted. All other Faktor-IPS files remain unchanged."; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTargetVersion() {
         return "2.1.0.rfinal"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEmpty() {
         return false;
@@ -75,7 +63,7 @@ public class Migration_2_1_0_ms2 extends AbstractIpsProjectMigrationOperation {
         InputStream is = null;
         try {
             is = propertiesFile.getContents();
-            Document doc = XmlUtil.getDocument(is);
+            Document doc = XmlUtil.parseDocument(is);
 
             // Deleting the Tag <GeneratedSourcecode>
             // <GeneratedSourcecode docLanguage="en" changesInTimeNamingConvention="VAA"/>
@@ -170,9 +158,6 @@ public class Migration_2_1_0_ms2 extends AbstractIpsProjectMigrationOperation {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException {
         migrateIpsProjectProperties(monitor);

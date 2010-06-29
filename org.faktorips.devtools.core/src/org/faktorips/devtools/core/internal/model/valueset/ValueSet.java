@@ -63,6 +63,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * @param type The type for the new valueset.
      * @param parent The parent this valueset belongs to. Must implement IValueDatatypeProvider.
      * @param partId The id this valueset is known by the parent.
+     * 
      * @throws IllegalArgumentException if the parent does not implement the interface
      *             <code>IValueDatatypeProvider</code>.
      */
@@ -81,17 +82,11 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         return type.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueSetType getValueSetType() {
         return type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);
@@ -152,9 +147,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         return ((IValueSetOwner)parent).findValueDatatype(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void setValuesOf(IValueSet source) {
         if (source == null) {
@@ -173,24 +165,18 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     @Override
     public void setAbstract(boolean isAbstract) {
         if (isUnrestricted() && isAbstract) {
-            throw new RuntimeException("Can't set an unrestricted value set to abstract!");
+            throw new RuntimeException("Can't set an unrestricted value set to abstract!"); //$NON-NLS-1$
         }
         boolean abstractOld = isAbstract();
         abstractFlag = isAbstract;
         valueChanged(abstractOld, isAbstract());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAbstract() {
         return abstractFlag;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDetailedSpecificationOf(IValueSet otherValueSet) {
         if (otherValueSet.isUnrestricted()) {
@@ -205,9 +191,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         return otherValueSet.containsValueSet(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSameTypeOfValueSet(IValueSet other) {
         if (other == null) {
@@ -216,57 +199,36 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         return getValueSetType().equals(other.getValueSetType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isUnrestricted() {
         return getValueSetType() == ValueSetType.UNRESTRICTED;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEnum() {
         return getValueSetType() == ValueSetType.ENUM;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canBeUsedAsSupersetForAnotherEnumValueSet() {
         return isEnum() && !isAbstract();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isRange() {
         return getValueSetType() == ValueSetType.RANGE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAbstractAndNotUnrestricted() {
         return !isUnrestricted() && isAbstract();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean containsValue(String value) {
         return containsValue(value, new MessageList(), null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
         try {
@@ -276,9 +238,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
         return containsValue(value, new MessageList(), null, null, ipsProject);
@@ -314,8 +273,8 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
             String text,
             Object invalidObject,
             String invalidProperty) {
-        Message msg;
 
+        Message msg;
         if (invalidObject == null) {
             msg = new Message(id, text, severity);
         } else if (invalidProperty == null) {

@@ -36,81 +36,51 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getExtensionId() {
         return EXTENSION_ID;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean supportsVersionId() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getKindId(String productCmptName) {
         return productCmptName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersionId(String productCmptName) {
         return ""; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getNextVersionId(IProductCmpt productCmpt) {
         return ""; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getNextName(IProductCmpt productCmpt) {
         return productCmpt.getName() + "1"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validateVersionId(String versionId) {
         return new MessageList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initSubclassFromXml(Element el) {
         setVersionIdSeparator(""); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Element toXmlSubclass(Document doc) {
         return doc.createElement(XML_TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
         String id = project.getRuntimeIdPrefix() + productCmptName;
@@ -124,4 +94,5 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
 
         return uniqueId;
     }
+
 }

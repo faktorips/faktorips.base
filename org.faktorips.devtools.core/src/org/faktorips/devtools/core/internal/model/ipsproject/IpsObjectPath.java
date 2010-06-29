@@ -99,21 +99,25 @@ public class IpsObjectPath implements IIpsObjectPath {
     private IIpsObjectPathEntry[] entries = new IIpsObjectPathEntry[0];
     private boolean outputDefinedPerSourceFolder = false;
 
-    // output folder and base package for the generated Java files
+    /** output folder for the generated Java files */
     private IFolder outputFolderMergableSources;
+
+    /** base package for the generated Java files */
     private String basePackageMergable = ""; //$NON-NLS-1$
 
-    // output folder for generated sources that are marked as derived, more precise this output
-    // folder will be marked as derived and hence all members of it will be derived
-    // derived resources will not be managed by the resource management system and will
-    // output folder and base package for the extension Java files
+    /**
+     * output folder for generated sources that are marked as derived, more precise this output
+     * folder will be marked as derived and hence all members of it will be derived resources.
+     * Derived resources will not be managed by the resource management system and will use the
+     * output folder and base package for the extension Java files
+     */
     private IFolder outputFolderDerivedSources;
 
     private String basePackageDerived = ""; //$NON-NLS-1$
 
     private IIpsProject ipsProject;
 
-    // map with QualifiedNameTypes as keys and cached IpsSrcFiles as values.
+    /** map with QualifiedNameTypes as keys and cached IpsSrcFiles as values. */
     private Map<QualifiedNameType, CachedSrcFile> lookupCache = new HashMap<QualifiedNameType, CachedSrcFile>(1000);
 
     public IpsObjectPath(IIpsProject ipsProject) {
@@ -121,9 +125,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         this.ipsProject = ipsProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject getIpsProject() {
         return ipsProject;
@@ -141,9 +142,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         throw new IllegalArgumentException("Can't find entry " + entry + " in path " + this); //$NON-NLS-1$  //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProjectRefEntry[] getProjectRefEntries() {
         List<IIpsProjectRefEntry> projectRefEntries = new ArrayList<IIpsProjectRefEntry>();
@@ -155,9 +153,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return projectRefEntries.toArray(new IIpsProjectRefEntry[projectRefEntries.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFolderEntry[] getSourceFolderEntries() {
         List<IIpsSrcFolderEntry> srcEntries = new ArrayList<IIpsSrcFolderEntry>();
@@ -169,10 +164,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return srcEntries.toArray(new IIpsSrcFolderEntry[srcEntries.size()]);
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     @Override
     public IIpsArchiveEntry[] getArchiveEntries() {
         List<IIpsArchiveEntry> archiveEntries = new ArrayList<IIpsArchiveEntry>();
@@ -184,9 +175,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return archiveEntries.toArray(new IIpsArchiveEntry[archiveEntries.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPathEntry getEntry(String rootName) {
         if (rootName == null) {
@@ -200,9 +188,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPathEntry[] getEntries() {
         IIpsObjectPathEntry[] copy = new IIpsObjectPathEntry[entries.length];
@@ -210,18 +195,12 @@ public class IpsObjectPath implements IIpsObjectPath {
         return copy;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setEntries(IIpsObjectPathEntry[] newEntries) {
         entries = new IIpsObjectPathEntry[newEntries.length];
         System.arraycopy(newEntries, 0, entries, 0, newEntries.length);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject[] getReferencedIpsProjects() {
         List<IIpsProject> projects = new ArrayList<IIpsProject>();
@@ -233,9 +212,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return projects.toArray(new IIpsProject[projects.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder) {
         IIpsSrcFolderEntry newEntry = new IpsSrcFolderEntry(this, srcFolder);
@@ -246,9 +222,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return newEntry;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException {
         IIpsArchiveEntry newEntry = new IpsArchiveEntry(this);
@@ -260,9 +233,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return newEntry;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject referencedIpsProject) {
         if (containsProjectRefEntry(referencedIpsProject)) {
@@ -283,9 +253,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return newEntry;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsProjectRefEntry(IIpsProject ipsProject) {
         for (IIpsObjectPathEntry entry : entries) {
@@ -299,9 +266,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeProjectRefEntry(IIpsProject ipsProject) {
         for (int i = 0; i < entries.length; i++) {
@@ -318,9 +282,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsArchiveEntry(IIpsArchive ipsArchive) {
         for (IIpsObjectPathEntry entry : entries) {
@@ -334,9 +295,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeArchiveEntry(IIpsArchive ipsArchive) {
         for (int i = 0; i < entries.length; i++) {
@@ -353,9 +311,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsSrcFolderEntry(IFolder folder) {
         for (IIpsObjectPathEntry entry : entries) {
@@ -369,9 +324,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeSrcFolderEntry(IFolder srcFolder) {
         for (int i = 0; i < entries.length; i++) {
@@ -388,41 +340,26 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isOutputDefinedPerSrcFolder() {
         return outputDefinedPerSourceFolder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setOutputDefinedPerSrcFolder(boolean newValue) {
         outputDefinedPerSourceFolder = newValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder getOutputFolderForMergableSources() {
         return outputFolderMergableSources;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setOutputFolderForMergableSources(IFolder outputFolder) {
         outputFolderMergableSources = outputFolder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder[] getOutputFolders() {
         if (!outputDefinedPerSourceFolder) {
@@ -445,49 +382,31 @@ public class IpsObjectPath implements IIpsObjectPath {
         return result.toArray(new IFolder[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBasePackageNameForMergableJavaClasses() {
         return basePackageMergable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setBasePackageNameForMergableJavaClasses(String name) {
         basePackageMergable = name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder getOutputFolderForDerivedSources() {
         return outputFolderDerivedSources;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setOutputFolderForDerivedSources(IFolder outputFolder) {
         outputFolderDerivedSources = outputFolder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBasePackageNameForDerivedJavaClasses() {
         return basePackageDerived;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setBasePackageNameForDerivedJavaClasses(String name) {
         basePackageDerived = name;
@@ -499,6 +418,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
+
         int maxEntriesToSearch = entries.length;
         CachedSrcFile cachedSrcFile = lookupCache.get(nameType);
         if (cachedSrcFile != null) {
@@ -507,9 +427,11 @@ public class IpsObjectPath implements IIpsObjectPath {
                 cachedSrcFile = null;
             } else {
                 if (cachedSrcFile.entryIndex == 0) {
-                    // if the file was found via the first entry, it is not possible that a file
-                    // with the same name
-                    // has been added to another entry that now shadows the found file.
+                    /*
+                     * if the file was found via the first entry, it is not possible that a file
+                     * with the same name has been added to another entry that now shadows the found
+                     * file.
+                     */
                     return cachedSrcFile.file;
                 } else {
                     maxEntriesToSearch = cachedSrcFile.entryIndex;
@@ -579,13 +501,13 @@ public class IpsObjectPath implements IIpsObjectPath {
      * result. If productCmptType is <code>null</code>, returns all product components found in the
      * fragment root.
      * 
-     * @param pcTypeName The product component type product components are searched for.
+     * @param productCmptType The product component type product components are searched for.
      * @param includeSubtypes If <code>true</code> is passed also product component that are based
-     *            on subtypes of the given policy component are returned, otherwise only product
+     *            on sub types of the given policy component are returned, otherwise only product
      *            components that are directly based on the given type are returned.
      * @param result List in which the product components being found are stored in.
      */
-    public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubytpes, List<IProductCmpt> result)
+    public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes, List<IProductCmpt> result)
             throws CoreException {
 
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
@@ -609,7 +531,7 @@ public class IpsObjectPath implements IIpsObjectPath {
             if (productCmptType.getIpsSrcFile().equals(typeFoundFile)) {
                 result.add((IProductCmpt)productCmptFile.getIpsObject());
             } else {
-                if (includeSubytpes) {
+                if (includeSubtypes) {
                     IProductCmptType typeFound = (IProductCmptType)typeFoundFile.getIpsObject();
                     if (typeFound.isSubtypeOf(productCmptType, ipsProject)) {
                         result.add((IProductCmpt)productCmptFile.getIpsObject());
@@ -694,9 +616,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return path;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validate() throws CoreException {
         MessageList list = new MessageList();
@@ -728,7 +647,7 @@ public class IpsObjectPath implements IIpsObjectPath {
         return list;
     }
 
-    /*
+    /**
      * Validate that the given folder exists.
      */
     private MessageList validateFolder(IFolder folder) {
@@ -773,25 +692,8 @@ public class IpsObjectPath implements IIpsObjectPath {
         return false;
     }
 
-    private static class CachedSrcFile {
-
-        IIpsSrcFile file;
-        int entryIndex;
-
-        public CachedSrcFile(IIpsSrcFile file, int entryIndex) {
-            super();
-            this.file = file;
-            this.entryIndex = entryIndex;
-        }
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int[] moveEntries(int[] indices, boolean up) {
-
         ArgumentCheck.notNull(indices, this);
 
         ArrayElementMover mover = new ArrayElementMover(entries);
@@ -806,9 +708,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return newSelection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public InputStream getResourceAsStream(String path) {
         for (IIpsObjectPathEntry entry : entries) {
@@ -825,4 +724,18 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
         return null;
     }
+
+    private static class CachedSrcFile {
+
+        IIpsSrcFile file;
+        int entryIndex;
+
+        public CachedSrcFile(IIpsSrcFile file, int entryIndex) {
+            super();
+            this.file = file;
+            this.entryIndex = entryIndex;
+        }
+
+    }
+
 }

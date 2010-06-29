@@ -38,9 +38,6 @@ public class TableFunctionsFormulaTestResolver extends TableUsageFunctionsResolv
         this.formulaTestCase = formulaTestCase;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected FlFunction createFlFunctionAdapter(ITableContents tableContents,
             ITableAccessFunction function,
@@ -49,4 +46,5 @@ public class TableFunctionsFormulaTestResolver extends TableUsageFunctionsResolv
         return new TableFunctionFormulaTestFlFunctionAdapter(tableContents, function, formulaTestCase, roleName,
                 getIpsProject());
     }
+
 }

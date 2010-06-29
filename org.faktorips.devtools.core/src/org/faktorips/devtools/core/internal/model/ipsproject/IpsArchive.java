@@ -68,21 +68,18 @@ public class IpsArchive implements IIpsArchive {
     private long modificationStamp;
     private ArchiveIpsPackageFragmentRoot root;
 
-    // package name as key, content as value. content stored as a set of qNameTypes
+    /** package name as key, content as value. content stored as a set of qNameTypes */
     private HashMap<String, Set<QualifiedNameType>> packs = null;
 
-    // map with qNameTypes as keys and IpsObjectProperties as values.
+    /** map with qNameTypes as keys and IpsObjectProperties as values. */
     private LinkedHashMap<QualifiedNameType, IpsObjectProperties> qNameTypes = null;
 
     public IpsArchive(IIpsProject ipsProject, IPath path) {
-        ArgumentCheck.notNull(ipsProject, "The parameter ipsproject cannot be null.");
+        ArgumentCheck.notNull(ipsProject, "The parameter ipsproject cannot be null."); //$NON-NLS-1$
         archivePath = path;
         root = new ArchiveIpsPackageFragmentRoot(ipsProject, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPath getLocation() {
         if (archivePath == null) {
@@ -109,17 +106,11 @@ public class IpsArchive implements IIpsArchive {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPath getArchivePath() {
         return archivePath;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean exists() {
         IResource resource = getCorrespondingResource();
@@ -131,9 +122,6 @@ public class IpsArchive implements IIpsArchive {
         return resource.exists();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getNonEmptyPackages() throws CoreException {
         readArchiveContentIfNecessary();
@@ -146,9 +134,6 @@ public class IpsArchive implements IIpsArchive {
         return packNames;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsPackage(String name) throws CoreException {
         if (name == null) {
@@ -170,9 +155,6 @@ public class IpsArchive implements IIpsArchive {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getNonEmptySubpackages(String parentPack) throws CoreException {
         if (parentPack == null) {
@@ -208,27 +190,18 @@ public class IpsArchive implements IIpsArchive {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean contains(QualifiedNameType qnt) throws CoreException {
         readArchiveContentIfNecessary();
         return qNameTypes.containsKey(qnt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Set<QualifiedNameType> getQNameTypes() throws CoreException {
         readArchiveContentIfNecessary();
         return qNameTypes.keySet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreException {
         readArchiveContentIfNecessary();
@@ -257,9 +230,6 @@ public class IpsArchive implements IIpsArchive {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public InputStream getContent(QualifiedNameType qnt) throws CoreException {
         if (qnt == null) {
@@ -333,13 +303,13 @@ public class IpsArchive implements IIpsArchive {
                     IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE);
             if (basePackageMergable == null) {
                 // for archives created with versions up to 2.2.5
-                basePackageMergable = getPropertyValue(ipsObjectProperties, qNameType, "basePackage");
+                basePackageMergable = getPropertyValue(ipsObjectProperties, qNameType, "basePackage"); //$NON-NLS-1$
             }
             String basePackageDerived = getPropertyValue(ipsObjectProperties, qNameType,
                     IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_DERIVED);
             if (basePackageDerived == null) {
                 // for archives created with versions up to 2.2.5
-                basePackageDerived = getPropertyValue(ipsObjectProperties, qNameType, "extensionPackage");
+                basePackageDerived = getPropertyValue(ipsObjectProperties, qNameType, "extensionPackage"); //$NON-NLS-1$
             }
 
             IpsObjectProperties props = new IpsObjectProperties(basePackageMergable, basePackageDerived);
@@ -383,10 +353,7 @@ public class IpsArchive implements IIpsArchive {
     private QualifiedNameType getQualifiedNameType(JarEntry jarEntry) {
         try {
             String path = jarEntry.getName().substring(IPSOBJECT_FOLDER_NAME_LENGTH + 1); // qName
-            // path
-            // begins
-            // after
-            // "ipsobject/"
+            // path begins after "ipsobject/"
             return QualifiedNameType.newQualifedNameType(path);
         } catch (Exception e) {
             return null; // the entry does not contain an ips object
@@ -420,9 +387,6 @@ public class IpsArchive implements IIpsArchive {
         getParentPackages(parentPack, result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException {
         readArchiveContentIfNecessary();
@@ -433,9 +397,6 @@ public class IpsArchive implements IIpsArchive {
         return props.basePackageMergable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException {
         readArchiveContentIfNecessary();
@@ -460,10 +421,11 @@ public class IpsArchive implements IIpsArchive {
             if (archivePath.segmentCount() == 0) {
                 return null;
             }
-            // on Unix, absolute paths always start with a slash (/).
-            // It is not possible to distinguish between workspace absolut paths and absolute path
-            // to locations outside the workspace
-            // So we check, if the first segment identifies a project.
+            /*
+             * on Unix, absolute paths always start with a slash (/). It is not possible to
+             * distinguish between workspace absolut paths and absolute path to locations outside
+             * the workspace so we check, if the first segment identifies a project.
+             */
             if (!wsRoot.getProject(archivePath.segment(0)).exists()) {
                 return null;
                 // the archive is not located in the workspace

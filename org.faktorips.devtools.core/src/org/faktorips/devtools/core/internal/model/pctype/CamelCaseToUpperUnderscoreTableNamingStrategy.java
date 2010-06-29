@@ -21,25 +21,25 @@ import org.w3c.dom.Element;
 
 /**
  * Strategy for deriving table names from Strings.
- * <p/>
+ * <p>
  * This strategy converts CamelCased Strings to uppercase with an underscore in between where a
  * lowercase character is followed by an uppercased character.
- * <p/>
- * Example:<br/>
+ * <p>
+ * Example:<br />
  * CamelCasedIdentifier42 -> CAMEL_CASED_IDENTIFIER42
  * 
  * @author Roman Grutza
  */
 public class CamelCaseToUpperUnderscoreTableNamingStrategy implements ITableNamingStrategy {
 
-    public final static String EXTENSION_ID = "org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy";
+    public final static String EXTENSION_ID = "org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy"; //$NON-NLS-1$
 
     private IIpsProject ipsProject;
 
     @Override
     public String getTableName(String baseName) {
         if (baseName == null) {
-            throw new NullPointerException("Cannot derive a table identifier from null.");
+            throw new NullPointerException("Cannot derive a table identifier from null."); //$NON-NLS-1$
         }
         return toUnderscoreUppercase(baseName);
     }
@@ -47,10 +47,10 @@ public class CamelCaseToUpperUnderscoreTableNamingStrategy implements ITableNami
     @Override
     public String getTableName(String baseName, int maxLength) {
         if (baseName == null) {
-            throw new NullPointerException("Cannot derive a table identifier from null.");
+            throw new NullPointerException("Cannot derive a table identifier from null."); //$NON-NLS-1$
         }
         if (maxLength <= 0) {
-            throw new RuntimeException("Maximum length must be positive.");
+            throw new RuntimeException("Maximum length must be positive."); //$NON-NLS-1$
         }
         String derivedName = toUnderscoreUppercase(baseName);
         return derivedName.substring(0, Math.min(derivedName.length(), maxLength));
@@ -90,4 +90,5 @@ public class CamelCaseToUpperUnderscoreTableNamingStrategy implements ITableNami
         String underscoredName = StringUtil.camelCaseToUnderscore(baseName, false);
         return underscoredName.toUpperCase();
     }
+
 }

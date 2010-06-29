@@ -84,6 +84,7 @@ import org.faktorips.util.message.MessageList;
  * @author Joerg Ortmann
  */
 public class IpsTestRunner implements IIpsTestRunner {
+
     public static final String ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE = "org.faktorips.devtools.core.ipsTestLaunchConfigurationType"; //$NON-NLS-1$
     public static final String ATTR_PACKAGEFRAGMENTROOT = IpsPlugin.PLUGIN_ID + ".ATTR_PACKAGEFRAGMENTROOT"; //$NON-NLS-1$
     public static final String ATTR_TESTCASES = IpsPlugin.PLUGIN_ID + ".ATTR_TESTCASES"; //$NON-NLS-1$
@@ -91,7 +92,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     public static String INVALID_NAME = IIpsProjectNamingConventions.INVALID_NAME;
 
-    /*
+    /**
      * Characters which are used within the test runner protocol and therfore forbidden to use
      * inside a test case name
      */
@@ -100,10 +101,11 @@ public class IpsTestRunner implements IIpsTestRunner {
     private static DateFormat DEBUG_FORMAT;
     private static final int ACCEPT_TIMEOUT = 5000;
 
-    // time in ms to check for active test runner,
-    // if this time is reached then the test runner will always started
-    // this avoids dead test runner (a state where the test runner didn't returned from his running
-    // state)
+    /**
+     * time in ms to check for active test runner, if this time is reached then the test runner will
+     * always started this avoids dead test runner (a state where the test runner didn't returned
+     * from his running state)
+     */
     private static final int MAX_START_TIME_INTERVAL = 5000;
 
     public final static boolean TRACE_IPS_TEST_RUNNER;
@@ -136,82 +138,41 @@ public class IpsTestRunner implements IIpsTestRunner {
     private String classpathRepositories;
     private String testsuites;
 
-    // List storing the registered ips test run listeners
+    /** List storing the registered ips test run listeners */
     private List<IIpsTestRunListener> fIpsTestRunListeners = new ArrayList<IIpsTestRunListener>();
 
-    // Shared instance of the test runner
+    /** Shared instance of the test runner */
     private static IpsTestRunner ipsTestRunner;
 
-    // Error details in case multiline errors
+    /** Error details in case multiline errors */
     private ArrayList<String> errorDetailList;
 
-    // The qualified test name in case of an error, necessary to store the name between two socket
-    // receives
-    // the stack trace of the error will be send in several lines
+    /**
+     * The qualified test name in case of an error, necessary to store the name between two socket
+     * receives the stack trace of the error will be send in several lines
+     */
     private String qualifiedTestName;
 
-    // Laucher for the test runner process
+    /** Laucher for the test runner process */
     private ILaunch launch;
 
-    // Indicates if the test runner was terminated
+    /** Indicates if the test runner was terminated */
     private boolean terminated;
 
-    // Dummy time to calculate the elapsed time which will be used if the test was terminated
+    /** Dummy time to calculate the elapsed time which will be used if the test was terminated */
     private long testStartTime;
 
-    // Contains the progress monitor
+    /** Contains the progress monitor */
     private IProgressMonitor testRunnerMonitor;
 
-    // The job to run the test
+    /** The job to run the test */
     private TestRunnerJob job;
 
-    // timestamps to check an active test runner (either active delegate test runner state or active
-    // test runner)
-    private long launchStartTime;
-
-    /*
-     * Job class to run the selected tests.
+    /**
+     * timestamps to check an active test runner (either active delegate test runner state or active
+     * test runner)
      */
-    private class TestRunnerJob extends WorkspaceJob {
-        private IpsTestRunner testRunner;
-        private String classpathRepository;
-        private String testsuite;
-        private String mode;
-        private ILaunch launch;
-
-        public TestRunnerJob(IpsTestRunner testRunner, String classpathRepository, String testsuite, String mode,
-                ILaunch launch) {
-            super(Messages.IpsTestRunner_Job_Name);
-            this.testRunner = testRunner;
-            this.classpathRepository = classpathRepository;
-            this.testsuite = testsuite;
-            this.mode = mode;
-            this.launch = launch;
-        }
-
-        @Override
-        public IStatus runInWorkspace(IProgressMonitor monitor) {
-            try {
-                testRunnerMonitor = monitor;
-
-                if (!monitor.isCanceled()) {
-                    if (mode != null) {
-                        testRunner.run(classpathRepository, testsuite, mode, launch);
-                    } else {
-                        testRunner.run(classpathRepository, testsuite, ILaunchManager.RUN_MODE, launch);
-                    }
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-            return Status.OK_STATUS;
-        }
-
-    }
-
-    // avoid creating new instances (use getDefault instead)
-    private IpsTestRunner() {
-    }
+    private long launchStartTime;
 
     /**
      * Returns the shared instance.
@@ -224,22 +185,6 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setIpsProject(IIpsProject ipsProject) {
-        this.ipsProject = ipsProject;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IIpsProject getIpsProject() {
-        return ipsProject;
-    }
-
-    /*
      * Gets the package name from the given ips package fragment root.
      */
     public static String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
@@ -265,8 +210,64 @@ public class IpsTestRunner implements IIpsTestRunner {
         return null;
     }
 
-    /*
-     * Run the test with the given launch.
+    /**
+     * Job class to run the selected tests.
+     */
+    private class TestRunnerJob extends WorkspaceJob {
+
+        private IpsTestRunner testRunner;
+        private String classpathRepository;
+        private String testsuite;
+        private String mode;
+        private ILaunch jobLaunch;
+
+        public TestRunnerJob(IpsTestRunner testRunner, String classpathRepository, String testsuite, String mode,
+                ILaunch launch) {
+
+            super(Messages.IpsTestRunner_Job_Name);
+            this.testRunner = testRunner;
+            this.classpathRepository = classpathRepository;
+            this.testsuite = testsuite;
+            this.mode = mode;
+            this.jobLaunch = launch;
+        }
+
+        @Override
+        public IStatus runInWorkspace(IProgressMonitor monitor) {
+            try {
+                testRunnerMonitor = monitor;
+
+                if (!monitor.isCanceled()) {
+                    if (mode != null) {
+                        testRunner.run(classpathRepository, testsuite, mode, jobLaunch);
+                    } else {
+                        testRunner.run(classpathRepository, testsuite, ILaunchManager.RUN_MODE, jobLaunch);
+                    }
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+            return Status.OK_STATUS;
+        }
+
+    }
+
+    private IpsTestRunner() {
+        // avoid creating new instances (use getDefault() instead)
+    }
+
+    @Override
+    public void setIpsProject(IIpsProject ipsProject) {
+        this.ipsProject = ipsProject;
+    }
+
+    @Override
+    public IIpsProject getIpsProject() {
+        return ipsProject;
+    }
+
+    /**
+     * Run the test with the given jobLaunch.
      */
     private void run(String classpathRepositories, String testsuites, String mode, ILaunch launch) throws CoreException {
         trace("IpsTestRunner.run()"); //$NON-NLS-1$
@@ -278,10 +279,10 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         // if the classpathRepository or the testsuite are not enclosed in "{...}" then
         // enclosed it, therefore the strings will be correctly interpreted as one entry
-        if (!(classpathRepositories.indexOf("{") >= 0)) {
+        if (!(classpathRepositories.indexOf("{") >= 0)) { //$NON-NLS-1$
             classpathRepositories = "{" + classpathRepositories + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        if (!(testsuites.indexOf("{") >= 0)) {
+        if (!(testsuites.indexOf("{") >= 0)) { //$NON-NLS-1$
             testsuites = "{" + testsuites + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
@@ -298,8 +299,8 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
-        // if no launch is given first create a new lauch
-        // the run method will be called later by using a new UI Job and a given launch
+        // if no jobLaunch is given first create a new lauch
+        // the run method will be called later by using a new UI Job and a given jobLaunch
         if (launch == null) {
             ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 
@@ -313,14 +314,8 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
-        // store launch , so it can be terminated later
+        // store jobLaunch , so it can be terminated later
         this.launch = launch;
-
-        if (launch == null) {
-            trace("Cancel test run, no lauch found."); //$NON-NLS-1$
-            resetLauchAndTestRun();
-            return;
-        }
 
         // sets the lauch start time
         launchStartTime = System.currentTimeMillis();
@@ -400,10 +395,11 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     /**
-     * Set the additional vm argurments specified in the launch configuration
+     * Set the additional vm argurments specified in the jobLaunch configuration
      */
     private void setAdditionalVmArguments(VMRunnerConfiguration vmConfig, ILaunchConfiguration launchConfiguration)
             throws CoreException {
+
         String vmArgsInConfig = launchConfiguration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
                 (String)null);
         if (StringUtils.isNotEmpty(vmArgsInConfig)) {
@@ -430,9 +426,9 @@ public class IpsTestRunner implements IIpsTestRunner {
         vmConfig.setVMArguments(new String[] { testRunnerMaxHeapSizeArg });
     }
 
-    /*
+    /**
      * Launch the given configuration in an ui thread if no active workbench window is available,
-     * otherwise launch in current thread.
+     * otherwise jobLaunch in current thread.
      */
     private void lauchInUiThreadIfNecessary(final ILaunchConfiguration launchConfiguration, final String mode) {
         if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() == null) {
@@ -458,12 +454,13 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
     }
 
-    /*
+    /**
      * Creates a dummy non persistent lauch configuration
      */
     private ILaunchConfiguration createConfiguration(String classpathRepositories,
             String testsuites,
             ILaunchManager manager) throws CoreException {
+
         String confName = Messages.IpsTestRunner_lauchConfigurationDefaultName;
         List<String> tests = AbstractIpsTestRunner.extractListFromString(testsuites);
         if (tests.size() == 1) {
@@ -475,14 +472,14 @@ public class IpsTestRunner implements IIpsTestRunner {
         confName = manager.generateUniqueLaunchConfigurationNameFrom(confName);
 
         ILaunchConfigurationType configType = getLaunchConfigType();
-        trace("Create launch configuration: " + confName); //$NON-NLS-1$
+        trace("Create jobLaunch configuration: " + confName); //$NON-NLS-1$
         ILaunchConfigurationWorkingCopy wc = createNewLaunchConfiguration(configType, confName, classpathRepositories,
                 testsuites);
         ILaunchConfiguration[] confs = manager.getLaunchConfigurations(configType);
         for (ILaunchConfiguration conf : confs) {
             if (checkLaunchConfigurationSameAttributes(conf, wc)) {
                 // reuse existing configuration
-                trace("Existing launch configuration found, reuse: " + conf.getName()); //$NON-NLS-1$
+                trace("Existing jobLaunch configuration found, reuse: " + conf.getName()); //$NON-NLS-1$
                 wc = createNewLaunchConfiguration(configType, conf.getName(), classpathRepositories, testsuites);
                 wc.setAttributes(conf.getAttributes());
                 break;
@@ -493,6 +490,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private boolean checkLaunchConfigurationSameAttributes(ILaunchConfiguration configuration,
             ILaunchConfigurationWorkingCopy wc) throws CoreException {
+
         if (configuration
                 .getAttribute(ATTR_PACKAGEFRAGMENTROOT, "").equals(wc.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "")) && //$NON-NLS-1$ //$NON-NLS-2$
                 configuration.getAttribute(ATTR_TESTCASES, "").equals(wc.getAttribute(ATTR_TESTCASES, ""))) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -505,6 +503,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             String name,
             String classpathRepositories,
             String testsuites) throws CoreException {
+
         ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, name);
         wc.setAttribute(ATTR_PACKAGEFRAGMENTROOT, classpathRepositories);
         wc.setAttribute(ATTR_TESTCASES, testsuites);
@@ -513,7 +512,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         return wc;
     }
 
-    /*
+    /**
      * Returns the config type of the lauch configuration
      */
     private ILaunchConfigurationType getLaunchConfigType() {
@@ -526,13 +525,14 @@ public class IpsTestRunner implements IIpsTestRunner {
         return launchConfigurationType;
     }
 
-    /*
+    /**
      * Sets the default source locator. The source container will evaluated as follows: a) all
      * source container from the given project b) all source container from the workspace c) all
      * sources attached to the libraries in the classpath
      */
     private void setDefaultSourceLocatorInternal(ILaunch launch, ILaunchConfiguration configuration)
             throws CoreException {
+
         ISourceLocator locator = getLaunchManager().newSourceLocator(configuration.getType().getSourceLocatorId());
         AbstractSourceLookupDirector sld = (AbstractSourceLookupDirector)locator;
         sld.initializeDefaults(configuration);
@@ -561,9 +561,9 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     /**
-     * Convenience method to get the launch manager.
+     * Convenience method to get the jobLaunch manager.
      * 
-     * @return the launch manager
+     * @return the jobLaunch manager
      */
     protected ILaunchManager getLaunchManager() {
         return DebugPlugin.getDefault().getLaunchManager();
@@ -584,9 +584,6 @@ public class IpsTestRunner implements IIpsTestRunner {
         return ""; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void terminate() throws CoreException {
         try {
@@ -607,7 +604,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
     }
 
-    /*
+    /**
      * Establish socket connection to the socket test runner
      */
     private boolean connect() {
@@ -627,9 +624,11 @@ public class IpsTestRunner implements IIpsTestRunner {
                 server.close();
             }
         } catch (Exception e) {
-            // error durring socket listening
-            // notify the listener itself, because there is no connection to a runner (connection
-            // failed)
+            // TODO catch Exception needs to be documented properly or specialized
+            /*
+             * error durring socket listening notify the listener itself, because there is no
+             * connection to a runner (connection failed)
+             */
             if (!terminated) {
                 IpsPlugin.log(e);
                 notifyTestRunStarted(1, classpathRepositories, testsuites);
@@ -656,7 +655,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
     }
 
-    /*
+    /**
      * Parse the incomming message and fire the messages events to the registered listener.
      */
     private void parseMessage(String line) {
@@ -781,7 +780,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             while (errorDetails.indexOf("}") >= 0) { //$NON-NLS-1$
                 String stackElem = errorDetails.substring(errorDetails.indexOf("{") + 1, errorDetails.indexOf("}")); //$NON-NLS-1$ //$NON-NLS-2$
                 errorDetailList.add(stackElem);
-                if (errorDetails.indexOf("{") >= 0) {
+                if (errorDetails.indexOf("{") >= 0) { //$NON-NLS-1$
                     errorDetails = errorDetails.substring(errorDetails.indexOf("}") + 1); //$NON-NLS-1$
                 }
             }
@@ -800,7 +799,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         return vmInstall;
     }
 
-    /*
+    /**
      * Return all classpath enties from the given project
      */
     private String[] computeClasspath(IJavaProject project) throws CoreException {
@@ -825,7 +824,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         return repositoryPackages;
     }
 
-    /*
+    /**
      * Adds all repository packages of the given ips project to the given list. Add the repository
      * package only if the toc file exists.
      */
@@ -942,9 +941,6 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void startTestRunnerJob(String classpathRepository, String testsuite) throws CoreException {
         startTestRunnerJob(classpathRepository, testsuite, null, null);
@@ -958,22 +954,24 @@ public class IpsTestRunner implements IIpsTestRunner {
             String testsuite,
             String mode,
             ILaunch launch) throws CoreException {
+
         trace("Start test runner Job"); //$NON-NLS-1$
 
         if (isRunningTestRunner()) {
             MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
                     Messages.IpsTestRunner_InfoDialogTestAlreadyRunning_Text);
             trace("Cancel test runner start because a test run is already started."); //$NON-NLS-1$
-            // terminate the given launch if possible
+            // terminate the given jobLaunch if possible
             terminateLaunch(launch);
             return;
         }
 
         if (ipsProject == null) {
-            // if no project is given, try to extract and find the project from the given classpath
-            // repository, this could be happen if the test case are started directly by using the
-            // run history
-            // without further project information
+            /*
+             * if no project is given, try to extract and find the project from the given classpath
+             * repository, this could be happen if the test case are started directly by using the
+             * run history without further project information
+             */
             ipsProject = getIpsProjectFromTocPath(classpathRepository);
         }
 
@@ -981,7 +979,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
                     Messages.IpsTestRunner_Error_ProjectTheTestBelongsToNotFound);
             trace("Cancel test run, no project found."); //$NON-NLS-1$
-            // terminate the given launch if possible
+            // terminate the given jobLaunch if possible
             terminateLaunch(launch);
             return;
         }
@@ -1004,9 +1002,11 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
-        // first check the heap size, to display an error if there is a wrong value,
-        // this is the last chance to display the error, otherwise the error will only be logged in
-        // the background
+        /*
+         * first check the heap size, to display an error if there is a wrong value, this is the
+         * last chance to display the error, otherwise the error will only be logged in the
+         * background
+         */
         testRunnerMaxHeapSize = IpsPlugin.getDefault().getIpsPreferences().getIpsTestRunnerMaxHeapSize();
         if (!StringUtils.isNumeric(testRunnerMaxHeapSize)) {
             throw new CoreException(new IpsStatus(NLS.bind(Messages.IpsTestRunner_Error_WrongHeapSize,
@@ -1016,15 +1016,17 @@ public class IpsTestRunner implements IIpsTestRunner {
         job = new TestRunnerJob(this, classpathRepository, testsuite, mode, launch);
 
         job.setSystem(false);
-        // we don't need to specify a rule here, because the ips test runner
-        // didn't depend on a rule, there will be no blocking events (e.g. builder could be depend
-        // on job finishing or something else)
-        // IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        // job.setRule(workspace.getRoot());
+        /*
+         * we don't need to specify a rule here, because the ips test runner didn't depend on a
+         * rule, there will be no blocking events (e.g. builder could be depend on job finishing or
+         * something else) IWorkspace workspace = ResourcesPlugin.getWorkspace();
+         * job.setRule(workspace.getRoot());
+         */
         try {
-            // wait until the build has finished
-            // the join invocation will block until the auto-build job completes,
-            // or until the join is interrupted or canceled.
+            /*
+             * wait until the build has finished, the join invocation will block until the
+             * auto-build job completes, or until the join is interrupted or canceled.
+             */
             Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
         } catch (OperationCanceledException ignored) {
         } catch (InterruptedException ignored) {
@@ -1038,9 +1040,6 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isRunningTestRunner() {
         trace("Check if a new test runner can start."); //$NON-NLS-1$
@@ -1051,7 +1050,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         return false;
     }
 
-    /*
+    /**
      * Check is the current system time is greater than the last start time plus a specific
      * intervall.
      */
@@ -1066,4 +1065,5 @@ public class IpsTestRunner implements IIpsTestRunner {
     public String[] getEnvironment(ILaunchConfiguration configuration) throws CoreException {
         return DebugPlugin.getDefault().getLaunchManager().getEnvironment(configuration);
     }
+
 }

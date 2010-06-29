@@ -43,7 +43,6 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
      * Create a new IpsSrcFileImmutable with a content based on the provided InputStream. The
      * content of this IpsSrcFile cannot be changed.
      * 
-     * @param project the IIpsProject this IpsSrcFile relates to
      * @param name the name of this IpsSrcFile
      * @param content the content of this IpsSrcFile
      */
@@ -54,8 +53,6 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 
     /**
      * Returns <code>true</code> as the file is constructed from an existing input stream.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public boolean exists() {

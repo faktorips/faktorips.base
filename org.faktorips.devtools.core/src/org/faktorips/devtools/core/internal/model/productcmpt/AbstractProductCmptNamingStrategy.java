@@ -66,9 +66,6 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         putSpecialCharReplacement(' ', "___"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setIpsProject(IIpsProject project) {
         if (project == null) {
@@ -77,9 +74,6 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         ipsProject = project;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject getIpsProject() {
         return ipsProject;
@@ -141,17 +135,11 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         return chars;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getProductCmptName(String constantPart, String versionId) {
         return constantPart + separator + versionId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getKindId(String productCmptName) {
         int index = productCmptName.indexOf(separator);
@@ -162,9 +150,6 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         return productCmptName.substring(0, index);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersionId(String productCmptName) {
         int index = productCmptName.indexOf(separator);
@@ -175,18 +160,12 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         return productCmptName.substring(index + separator.length());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getNextName(IProductCmpt productCmpt) {
         String part = getKindId(productCmpt.getName());
         return part + separator + getNextVersionId(productCmpt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validate(String name) {
         MessageList list = new MessageList();
@@ -204,9 +183,6 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validateKindId(String kindId) {
         MessageList list = new MessageList();
@@ -226,9 +202,6 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getJavaClassIdentifier(String name) {
         StringBuffer buffer = new StringBuffer();
@@ -252,9 +225,6 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         return specialCharReplacements.containsKey(new Character(c));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void initFromXml(Element el) {
         Element subEl = XmlUtil.getFirstElement(el);
@@ -280,7 +250,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     /**
      * Subclasses must init their state from the given element.
      * 
-     * @param The xml element containing the data specific for the subclass.
+     * @param el The xml element containing the data specific for the subclass.
      */
     protected abstract void initSubclassFromXml(Element el);
 
@@ -317,17 +287,13 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
      */
     protected abstract Element toXmlSubclass(Document doc);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean sameRuntimeId(String runtimeId1, String runtimeId2) {
         return runtimeId1.equals(runtimeId2);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // TODO AW: This seems to be a pretty odd equals method to me, is this really necessary /
+    // correct?
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -339,9 +305,6 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         return obj.getClass().isAssignableFrom(this.getClass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validateRuntimeId(String runtimeId) {
         MessageList result = new MessageList();
@@ -351,4 +314,5 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         }
         return result;
     }
+
 }

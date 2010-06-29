@@ -42,25 +42,16 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         super(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getFormulaName() {
         return formulaName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFormulaName(String newName) {
         String oldName = formulaName;
@@ -68,17 +59,11 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         valueChanged(oldName, newName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isFormulaSignatureDefinition() {
         return formulaSignatureDefinition;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFormulaSignatureDefinition(boolean newValue) {
         boolean oldValue = formulaSignatureDefinition;
@@ -92,9 +77,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setOverloadsFormula(boolean enabled) {
         boolean oldValue = overloadsFormula;
@@ -102,17 +84,11 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         valueChanged(oldValue, enabled);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isOverloadsFormula() {
         return overloadsFormula;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject) throws CoreException {
         if (!isOverloadsFormula()) {
@@ -123,9 +99,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         return finder.method;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultMethodName() {
         if (isFormulaSignatureDefinition()) {
@@ -151,9 +124,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
     }
 
-    /**
-     * {@inheritDoc} Implementation of IProdDefProperty.
-     */
     @Override
     public String getPropertyName() {
         if (formulaSignatureDefinition) {
@@ -162,25 +132,16 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         return ""; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc} Implementation of IProdDefProperty.
-     */
     @Override
     public ProdDefPropertyType getProdDefPropertyType() {
         return ProdDefPropertyType.FORMULA;
     }
 
-    /**
-     * {@inheritDoc} Implementation of IProdDefProperty.
-     */
     @Override
     public String getPropertyDatatype() {
         return getDatatype();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
@@ -217,7 +178,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
     }
 
-    /*
+    /**
      * Looks for a formula in the supertype hierarchy with the same name than the formula name of
      * this formula. It stops looking when the first formula method is found that meets this
      * condition or if the super type hierarchy ends.
@@ -234,9 +195,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             return method != null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             if (StringUtils.isEmpty(formulaName) || currentType == null) {

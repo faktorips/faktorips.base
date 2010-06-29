@@ -26,14 +26,10 @@ import org.faktorips.util.message.MessageList;
  */
 public class Migration_2_2_5_rfinal extends AbstractIpsProjectMigrationOperation {
 
-    /** Creates <code>Migration_2_2_5_rfinal</code>. */
     public Migration_2_2_5_rfinal(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         return "New Faktor-IPS object types" //$NON-NLS-1$
@@ -43,25 +39,16 @@ public class Migration_2_2_5_rfinal extends AbstractIpsProjectMigrationOperation
                 + " table contents will also be replaced with new enumeration type objects containing the enumeration values."; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTargetVersion() {
         return "2.3.0.rc1"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEmpty() {
         return false;
     }
 
-    /**
-     * {@inhSeritDoc}
-     */
     @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException {
         Migration2_2_to2_3.migrate(getIpsProject(), monitor);

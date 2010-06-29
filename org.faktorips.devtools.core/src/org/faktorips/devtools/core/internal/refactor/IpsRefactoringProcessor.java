@@ -55,8 +55,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     private final Set<String> ignoredValidationMessageCodes;
 
     /**
-     * Creates a <tt>IpsRefactoringProcessor</tt>.
-     * 
      * @param ipsElement The <tt>IIpsElement</tt> to be refactored.
      * 
      * @throws NullPointerException If <tt>ipsElement</tt> is <tt>null</tt>.
@@ -70,8 +68,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * This implementation checks that the <tt>IIpsElement</tt> to be renamed exists and calls the
      * subclass implementation.
      */
@@ -88,8 +84,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * This implementation triggers the user input validation, checks if all registered source files
      * are synchronized and calls a subclass implementation that may extend the final condition
      * checking.
@@ -177,8 +171,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * This implementation triggers the refactoring of the Faktor-IPS model. The registered IPS
      * source files will be saved after all modifications are complete. Always returns a
      * <tt>NullChange</tt>.
@@ -255,8 +247,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * This implementation always returns <tt>true</tt>, may be overwritten by subclasses if
      * necessary.
      */

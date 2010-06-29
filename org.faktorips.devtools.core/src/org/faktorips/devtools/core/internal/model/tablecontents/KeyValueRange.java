@@ -27,19 +27,22 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
  * unique key must contain at least one two column range key item.
  */
 public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyValueRange> {
-    // reference to the column range this key value is created for
+
+    /** reference to the column range this key value is created for */
     private ColumnRange columnRange;
 
-    // contains the value datatype (cached) of the 'from' and 'to' column
+    /** contains the value datatype (cached) of the 'from' and 'to' column */
     private ValueDatatype valueDatatype;
 
-    // only the 'from' value is stored, because this value is used as key within the sorted map
-    // the 'to'-value will be evaluated (using the range and row object) if necessary (see
-    // evalToValue)
+    /**
+     * only the 'from' value is stored, because this value is used as key within the sorted map the
+     * 'to'-value will be evaluated (using the range and row object) if necessary (see evalToValue)
+     */
     private String valueFrom;
 
     private KeyValueRange(ITableStructure structure, ValueDatatype[] datatypes, IUniqueKey uniqueKey,
             ColumnRange columnRange, Row row) {
+
         super(structure, uniqueKey, row);
         this.columnRange = columnRange;
         this.valueDatatype = getValueDatatypeOfColumnRange(structure, datatypes, columnRange);
@@ -56,22 +59,19 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
             IUniqueKey uniqueKey,
             Row row,
             ColumnRange columnRange) {
+
         KeyValueRange keyValue = new KeyValueRange(structure, datatypes, uniqueKey, columnRange, row);
         return keyValue;
     }
 
     /**
      * Returns the key value. The key value of a key value range object is the 'from'-column-value.
-     * {@inheritDoc}
      */
     @Override
     protected String getKeyValue() {
         return getValueFrom();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValid(Row row) {
         return isValid(valueFrom, evalValueFrom(row, columnRange)) && isToGreaterOrEqualFrom();
@@ -128,7 +128,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
         return value1.equals(value2);
     }
 
-    /*
+    /**
      * Returns the value of the 'from' column of the range this key value range object belongs to.
      * The 'from' value will be read using the given row and column range. Note that if a row has
      * changed the evalValueFrom() method can return a different value as getKeyValue() method. (see
@@ -138,7 +138,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
         return evalValue(structure, row, columnRange.getFromColumn());
     }
 
-    /*
+    /**
      * Returns the value of the 'from' column of the range this key value range object belongs to.
      * The 'to' value will be read using the given row and column range.
      */
@@ -148,8 +148,6 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
 
     /**
      * Compares the two key value range objects. Note that a compare uses only the 'from'-value.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public int compareTo(KeyValueRange keyValueRange) {
@@ -171,12 +169,13 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
         return valueDatatype.compare(value1, value2);
     }
 
-    /*
+    /**
      * Returns the value datatype of the column range this key value range belongs to
      */
     private static ValueDatatype getValueDatatypeOfColumnRange(ITableStructure structure,
             ValueDatatype[] datatypes,
             ColumnRange columnRange) {
+
         IColumn column = structure.getColumn(columnRange.getFromColumn());
         if (column == null) {
             IpsPlugin.log(new IpsStatus("Column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -206,6 +205,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
             ColumnRange otherColumnRange,
             Row row,
             Row otherRow) {
+
         String fromColumnName = otherColumnRange.getFromColumn();
         String from = evalValue(tableStructure, row, fromColumnName);
 

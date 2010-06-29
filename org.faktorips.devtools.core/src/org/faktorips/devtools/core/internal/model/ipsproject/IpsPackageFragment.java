@@ -511,7 +511,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase, result, false);
     }
 
-    @SuppressWarnings("unchecked")
     public void findIpsSourceFilesStartingWithInternal(IpsObjectType type,
             String prefix,
             boolean ignoreCase,

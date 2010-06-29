@@ -81,7 +81,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
      * Constructor for testing purposes.
      */
     public ValidationRule() {
-
+        // Provides default constructor for testing purposes.
     }
 
     @Override
@@ -314,10 +314,10 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
             if (nl.item(i) instanceof Element) {
                 Element subElement = (Element)nl.item(i);
                 if (subElement.getNodeName().equals("BusinessFunction")) { //$NON-NLS-1$
-                    functions.add(subElement.getAttribute("name"));
+                    functions.add(subElement.getAttribute("name")); //$NON-NLS-1$
                 }
                 if (subElement.getNodeName().equals("ValidatedAttribute")) { //$NON-NLS-1$
-                    validatedAttributes.add(subElement.getAttribute("name"));
+                    validatedAttributes.add(subElement.getAttribute("name")); //$NON-NLS-1$
                 }
             }
         }
@@ -338,7 +338,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         Document doc = newElement.getOwnerDocument();
         for (int i = 0; i < functions.size(); i++) {
             Element fctElement = doc.createElement("BusinessFunction"); //$NON-NLS-1$
-            fctElement.setAttribute("name", functions.get(i));
+            fctElement.setAttribute("name", functions.get(i)); //$NON-NLS-1$
             newElement.appendChild(fctElement);
         }
         for (int i = 0; i < validatedAttributes.size(); i++) {

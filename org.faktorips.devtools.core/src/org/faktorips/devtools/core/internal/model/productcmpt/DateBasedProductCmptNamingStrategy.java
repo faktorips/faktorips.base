@@ -42,8 +42,9 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     public final static String XML_TAG_NAME = "DateBasedProductCmptNamingStrategy"; //$NON-NLS-1$
 
     private String dateFormatPattern; // the pattern has to be kept in order to save the state to
-    // xml
+
     private DateFormat dateFormat;
+
     private boolean postfixAllowed;
 
     /**
@@ -54,23 +55,16 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     }
 
     public DateBasedProductCmptNamingStrategy(String separator, String dateFormatPattern, boolean allowPostfix) {
-
         super(separator);
         setDateFormatPattern(dateFormatPattern);
         this.postfixAllowed = allowPostfix;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getExtensionId() {
         return EXTENSION_ID;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean supportsVersionId() {
         return true;
@@ -95,8 +89,6 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
      * Returns the date format pattern used for the version id.
      * 
      * @return Format patter according to SimpleDateFormat.
-     * 
-     * @see java.textSimpleDateFormat
      */
     public String getDateFormatPattern() {
         return dateFormatPattern;
@@ -118,14 +110,11 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
         return postfixAllowed;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validateVersionId(String versionId) {
         MessageList list = new MessageList();
         if (versionId.length() < dateFormatPattern.length()) {
-            list.add(newInvalidVersionIdMsg(versionId));
+            list.add(newInvalidVersionIdMsg());
             return list;
         }
         if (postfixAllowed) {
@@ -137,12 +126,12 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
                 throw new RuntimeException();
             }
         } catch (Exception e) {
-            list.add(newInvalidVersionIdMsg(versionId));
+            list.add(newInvalidVersionIdMsg());
         }
         return list;
     }
 
-    private Message newInvalidVersionIdMsg(String versionId) {
+    private Message newInvalidVersionIdMsg() {
         String versionConcept = getIpsProject().getChangesInTimeNamingConventionForGeneratedCode()
                 .getVersionConceptNameSingular();
         String text = NLS.bind(Messages.DateBasedProductCmptNamingStrategy_msgWrongFormat, versionConcept,
@@ -150,27 +139,18 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
         return Message.newError(MSGCODE_ILLEGAL_VERSION_ID, text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getNextVersionId(IProductCmpt pc) {
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         return dateFormat.format(date.getTime());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initSubclassFromXml(Element el) {
         setDateFormatPattern(el.getAttribute("dateFormatPattern")); //$NON-NLS-1$
         postfixAllowed = Boolean.valueOf(el.getAttribute("postfixAllowed")).booleanValue(); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Element toXmlSubclass(Document doc) {
         Element el = doc.createElement(XML_TAG_NAME);
@@ -179,9 +159,6 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
         return el;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
         String id = project.getRuntimeIdPrefix() + productCmptName;
@@ -197,4 +174,5 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
 
         return uniqueId;
     }
+
 }

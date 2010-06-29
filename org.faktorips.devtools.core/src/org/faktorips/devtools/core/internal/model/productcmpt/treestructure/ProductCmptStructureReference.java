@@ -39,40 +39,27 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
 
     public ProductCmptStructureReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent)
             throws CycleInProductStructureException {
+
         this.structure = structure;
         this.parent = parent;
         children = new ProductCmptStructureReference[0];
         detectCycle(new ArrayList<IIpsElement>());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTreeStructure getStructure() {
         return structure;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptStructureReference getParent() {
         return parent;
     }
 
-    /**
-     * @return The children of this reference
-     */
     ProductCmptStructureReference[] getChildren() {
         return children;
     }
 
-    /**
-     * Set the children for this reference.
-     * 
-     * @param children The new children.
-     */
     void setChildren(ProductCmptStructureReference[] children) {
         this.children = children;
     }
@@ -88,19 +75,6 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         if (parent != null) {
             parent.detectCycle(seenElements);
         }
-        //        
-        //        
-        // if (!(getWrapped() instanceof IProductCmptTypeAssociation) &&
-        // seenElements.contains(getWrapped())) {
-        // seenElements.add(getWrapped());
-        // throw new CycleInProductStructureException(seenElements.toArray(new
-        // IIpsElement[seenElements.size()]));
-        // } else {
-        // seenElements.add(getWrapped());
-        // if (parent != null) {
-        // parent.detectCycle(seenElements);
-        // }
-        // }
     }
 
     /**

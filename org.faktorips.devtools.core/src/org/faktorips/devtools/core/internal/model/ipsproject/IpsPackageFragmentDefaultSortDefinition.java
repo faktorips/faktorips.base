@@ -24,33 +24,21 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefin
  */
 public class IpsPackageFragmentDefaultSortDefinition implements IIpsPackageFragmentSortDefinition {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compare(String segment1, String segment2) {
         return segment1.compareTo(segment2);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragmentSortDefinition copy() {
         return new IpsPackageFragmentDefaultSortDefinition();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initPersistenceContent(String content) throws CoreException {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toPersistenceContent() {
         return ""; //$NON-NLS-1$

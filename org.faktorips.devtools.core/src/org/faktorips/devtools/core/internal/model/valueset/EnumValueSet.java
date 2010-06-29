@@ -50,16 +50,19 @@ import org.w3c.dom.NodeList;
  */
 public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
-    public static final String XML_TAG = "Enum"; //$NON-NLS-1$    
+    public static final String XML_TAG = "Enum"; //$NON-NLS-1$
+
     private static final String XML_VALUE = "Value"; //$NON-NLS-1$
 
-    // The values in the set as list
+    /** The values in the set as list */
     private ArrayList<String> values = new ArrayList<String>();
 
-    // A map with the values as keys and the index positions of the occurences of a value as
-    // "map value". If a value occurs once, the "map value" the index is stored as single Integer.
-    // If a value occurs more than once, the "map value" is a list containing the indexes of the
-    // occurrences.
+    /**
+     * A map with the values as keys and the index positions of the occurences of a value as
+     * "map value". If a value occurs once, the "map value" the index is stored as single Integer.
+     * If a value occurs more than once, the "map value" is a list containing the indexes of the
+     * occurrences.
+     */
     private Map<String, Object> valuesToIndexMap = new HashMap<String, Object>();
 
     public EnumValueSet(IIpsObjectPart parent, String partId) {
@@ -72,7 +75,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Integer> getPositions(String value) {
         List<Integer> positions = new ArrayList<Integer>();
         Object o = valuesToIndexMap.get(value);
@@ -107,9 +109,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (value == null && getContainsNull()) {
             return true;
         }
-        /*
-         * An abstract value set is considered containing all values. See #isAbstract()
-         */
+        // An abstract value set is considered containing all values. See #isAbstract()
         if (isAbstract()) {
             return true;
         }
@@ -137,7 +137,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
-            throw new NullPointerException("MessageList required");
+            throw new NullPointerException("MessageList required"); //$NON-NLS-1$
         }
 
         ValueDatatype datatype = getValueDatatype();
@@ -207,7 +207,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         setValueWithoutTriggeringChangeEvent(newValue, newIndex);
     }
 
-    @SuppressWarnings("unchecked")
     private void setValueWithoutTriggeringChangeEvent(String newValue, Integer newIndex) {
         Object o = valuesToIndexMap.get(newValue);
         if (o == null) {
@@ -278,7 +277,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void setValue(int index, String value) {
         String oldValue = values.get(index);
         values.set(index, value);
@@ -364,7 +362,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void checkForDuplicates(MessageList list) {
         for (String value : valuesToIndexMap.keySet()) {
             Object o = valuesToIndexMap.get(value);
@@ -414,9 +411,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public String toString() {
         if (isAbstract()) {
-            return super.toString() + "(abstract)";
+            return super.toString() + "(abstract)"; //$NON-NLS-1$
         }
-        return super.toString() + ":" + values.toString();
+        return super.toString() + ":" + values.toString(); //$NON-NLS-1$
     }
 
     @Override

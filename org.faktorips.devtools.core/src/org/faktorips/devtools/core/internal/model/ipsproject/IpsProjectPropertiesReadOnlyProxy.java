@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -44,9 +43,6 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     private IIpsProjectProperties propertiesInternal;
 
-    /**
-     * @param propertiesInternal
-     */
     public IpsProjectPropertiesReadOnlyProxy(IIpsProjectProperties propertiesInternal) {
         ArgumentCheck.notNull(propertiesInternal, this);
         this.propertiesInternal = propertiesInternal;
@@ -57,7 +53,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void addDefinedDatatype(DynamicValueDatatype datatype) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -196,7 +192,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -204,7 +200,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setBuilderSetId(String id) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -212,7 +208,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setChangesOverTimeNamingConventionIdForGeneratedCode(String changesInTimeConventionIdForGeneratedCode) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -220,7 +216,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setDefinedDatatypes(DynamicValueDatatype[] datatypes) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -228,7 +224,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void addDefinedDatatype(Datatype datatype) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -236,7 +232,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setDefinedDatatypes(Datatype[] datatypes) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -244,7 +240,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setDerivedUnionIsImplementedRuleEnabled(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -252,7 +248,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setIpsObjectPath(IIpsObjectPath path) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -260,21 +256,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setJavaProjectContainsClassesForDynamicDatatypes(boolean newValue) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
-    }
-
-    /**
-     * Throws a runtime exceptions since manipulation of this object is disallowed.
-     */
-    public void setJavaSrcLanguage(Locale javaSrcLanguage) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
-    }
-
-    /**
-     * Throws a runtime exceptions since manipulation of this object is disallowed.
-     */
-    public void setLoggingFrameworkConnectorId(String loggingFrameworkConnectorId) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -282,7 +264,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setMinRequiredVersionNumber(String featureId, String version) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -290,7 +272,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setModelProject(boolean modelProject) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -298,7 +280,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setPredefinedDatatypesUsed(String[] datatypes) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -306,7 +288,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setPredefinedDatatypesUsed(ValueDatatype[] datatypes) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -314,7 +296,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -322,7 +304,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setProductDefinitionProject(boolean productDefinitionProject) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -330,7 +312,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -338,7 +320,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setRulesWithoutReferencesAllowedEnabled(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -346,7 +328,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setRuntimeIdPrefix(String runtimeIdPrefix) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     /**
@@ -370,79 +352,51 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setLastPersistentModificationTimestamp(Long timestamp) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumType getQuestionAssignedUserGroup() {
         return propertiesInternal.getQuestionAssignedUserGroup();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumType getQuestionStatus() {
         return propertiesInternal.getQuestionStatus();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPersistenceOptions getPersistenceOptions() {
         return propertiesInternal.getPersistenceOptions();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableColumnNamingStrategy getTableColumnNamingStrategy() {
         return propertiesInternal.getTableColumnNamingStrategy();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableNamingStrategy getTableNamingStrategy() {
         return propertiesInternal.getTableNamingStrategy();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPersistenceSupportEnabled() {
         return propertiesInternal.isPersistenceSupportEnabled();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setPersistenceSupport(boolean persistentProject) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setTableNamingStrategy(ITableNamingStrategy newStrategy) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
 }

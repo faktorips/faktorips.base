@@ -60,9 +60,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
 
     private IIpsArchive archive;
 
-    /**
-     * @param path
-     */
     public IpsArchiveEntry(IpsObjectPath path) {
         super(path);
     }
@@ -120,12 +117,14 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
             String packageFragment,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+
         ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
     }
 
     @Override
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
+
         IIpsSrcFile file = getIpsSrcFile(qnt);
         if (file.exists()) {
             return file;

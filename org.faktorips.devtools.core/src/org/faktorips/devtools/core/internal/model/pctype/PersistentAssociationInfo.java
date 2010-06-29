@@ -36,18 +36,23 @@ import org.w3c.dom.Element;
  * @author Roman Grutza
  */
 public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IPersistentAssociationInfo {
+
     private boolean transientAssociation = false;
+
     private boolean ownerOfManyToManyAssociation = false;
-    private String joinTableName = "";
-    private String targetColumnName = "";
-    private String sourceColumnName = "";
-    private String joinColumnName = "";
+
+    private String joinTableName = ""; //$NON-NLS-1$
+
+    private String targetColumnName = ""; //$NON-NLS-1$
+
+    private String sourceColumnName = ""; //$NON-NLS-1$
+
+    private String joinColumnName = ""; //$NON-NLS-1$
+
     private FetchType fetchType = FetchType.LAZY;
 
     private IIpsObjectPart policyComponentTypeAssociation;
 
-    /**
-     */
     public PersistentAssociationInfo(IIpsObjectPart ipsObject, String id) {
         super(ipsObject, id);
         policyComponentTypeAssociation = ipsObject;
@@ -113,9 +118,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public boolean isJoinTableRequired(IPolicyCmptTypeAssociation inverseAssociation) {
         boolean isOneToManyAssociation = getPolicyComponentTypeAssociation().is1ToMany();
         if (isUnidirectional()) {
-            // force no need of join table if unidirectional on-to-many association
-            // if we add the attribute joinColumn then the column will be created on the target side
-            // without corresponding field on the target side
+            /*
+             * force no need of join table if unidirectional on-to-many association if we add the
+             * attribute joinColumn then the column will be created on the target side without
+             * corresponding field on the target side
+             */
             return false;
         }
 
@@ -192,11 +199,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setOwnerOfManyToManyAssociation(boolean ownerOfManyToManyAssociation) {
         // clear other columns to hold a consistent state
         if (!ownerOfManyToManyAssociation) {
-            setJoinTableName("");
-            setTargetColumnName("");
-            setSourceColumnName("");
+            setJoinTableName(""); //$NON-NLS-1$
+            setTargetColumnName(""); //$NON-NLS-1$
+            setSourceColumnName(""); //$NON-NLS-1$
         } else {
-            setJoinColumnName("");
+            setJoinColumnName(""); //$NON-NLS-1$
         }
         boolean oldValue = this.ownerOfManyToManyAssociation;
         this.ownerOfManyToManyAssociation = ownerOfManyToManyAssociation;
@@ -224,8 +231,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             return false;
         }
 
-        // special case in one-to-one association the side if the join column is given on the target
-        // side then the foreign key column is not necessary
+        /*
+         * special case in one-to-one association the side if the join column is given on the target
+         * side then the foreign key column is not necessary
+         */
         if (getPolicyComponentTypeAssociation().isAssoziation() && inverseAssociation.is1To1()
                 && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
             return true;
@@ -345,7 +354,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (relType == RelationshipType.MANY_TO_ONE) {
             return true;
         }
-        throw new RuntimeException("'Unsupported relationship type: " + relType.toString());
+        throw new RuntimeException("'Unsupported relationship type: " + relType.toString()); //$NON-NLS-1$
     }
 
     @Override
@@ -413,14 +422,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TRANSIENT, "" + Boolean.toString(transientAssociation));
-        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, ""
+        element.setAttribute(PROPERTY_TRANSIENT, "" + Boolean.toString(transientAssociation)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, "" //$NON-NLS-1$
                 + Boolean.toString(ownerOfManyToManyAssociation));
-        element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, "" + sourceColumnName);
-        element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName);
-        element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);
-        element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);
-        element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName);
+        element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, "" + sourceColumnName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName); //$NON-NLS-1$
     }
 
     @Override
@@ -458,7 +467,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if ((relationshipType == RelationshipType.MANY_TO_ONE || relationshipType == RelationshipType.ONE_TO_ONE)
                 && FetchType.LAZY == getFetchType()) {
             msgList.add(new Message(MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED,
-                    "The lazy fetch type is not supported on single valued associations sides.", Message.ERROR, this,
+                    "The lazy fetch type is not supported on single valued associations sides.", Message.ERROR, this, //$NON-NLS-1$
                     IPersistentAssociationInfo.PROPERTY_FETCH_TYPE));
         }
     }
@@ -499,7 +508,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             msgList
                     .add(new Message(
                             MSGCODE_TRANSIENT_MISMATCH,
-                            "If the association is marked as transient or if the persistent type is not entity, then target side must also be marked as transient and vise versa.",
+                            "If the association is marked as transient or if the persistent type is not entity, then target side must also be marked as transient and vise versa.", //$NON-NLS-1$
                             Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
             return;
         }
@@ -520,7 +529,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             msgList
                     .add(new Message(
                             MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN,
-                            "Must not be marked as owning side of many-to-many association because an join table is not required.",
+                            "Must not be marked as owning side of many-to-many association because an join table is not required.", //$NON-NLS-1$
                             Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
             return;
         }
@@ -539,12 +548,12 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (isJoinTableRequired(inverseAssociation) && !isOwnerOfManyToManyAssociation()
                 && !inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
             msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
-                    "At least one assocition must be marked as the owning side of the relationship.", Message.ERROR,
+                    "At least one assocition must be marked as the owning side of the relationship.", Message.ERROR, //$NON-NLS-1$
                     this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         } else if (isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()
                 && inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
             msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
-                    "The owning side of the relationship is marked on both sides.", Message.ERROR, this,
+                    "The owning side of the relationship is marked on both sides.", Message.ERROR, this, //$NON-NLS-1$
                     IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         }
     }
@@ -552,10 +561,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private void validateJoinColumn(MessageList msgList, boolean mustBeEmpty) {
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_COLUMN_NAME_EMPTY,
                 MSGCODE_JOIN_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME, joinColumnName,
-                "join column name");
+                "join column name"); //$NON-NLS-1$
         if (!mustBeEmpty) {
             // validate max join column name length
-            validateMaxColumnNameLength(msgList, joinColumnName, "join column name", MSGCODE_JOIN_COLUMN_NAME_INVALID,
+            validateMaxColumnNameLength(msgList, joinColumnName, "join column name", MSGCODE_JOIN_COLUMN_NAME_INVALID, //$NON-NLS-1$
                     PROPERTY_JOIN_COLUMN_NAME);
         }
     }
@@ -563,19 +572,19 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private void validateJoinTableDetails(MessageList msgList, boolean mustBeEmpty) {
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_TABLE_NAME_EMPTY,
                 MSGCODE_JOIN_TABLE_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME, joinTableName,
-                "join table name");
+                "join table name"); //$NON-NLS-1$
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_SOURCE_COLUMN_NAME_EMPTY,
                 MSGCODE_SOURCE_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
-                sourceColumnName, "source column name");
+                sourceColumnName, "source column name"); //$NON-NLS-1$
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_TARGET_COLUMN_NAME_EMPTY,
                 MSGCODE_TARGET_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
-                targetColumnName, "target column name");
+                targetColumnName, "target column name"); //$NON-NLS-1$
 
         // validate max join table columns name source and target length
         if (!mustBeEmpty) {
-            validateMaxColumnNameLength(msgList, sourceColumnName, "source column name",
+            validateMaxColumnNameLength(msgList, sourceColumnName, "source column name", //$NON-NLS-1$
                     MSGCODE_SOURCE_COLUMN_NAME_INVALID, PROPERTY_SOURCE_COLUMN_NAME);
-            validateMaxColumnNameLength(msgList, targetColumnName, "target column name",
+            validateMaxColumnNameLength(msgList, targetColumnName, "target column name", //$NON-NLS-1$
                     MSGCODE_TARGET_COLUMN_NAME_INVALID, PROPERTY_TARGET_COLUMN_NAME);
         }
 
@@ -588,7 +597,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
                                 MSGCODE_JOIN_TABLE_NAME_INVALID,
                                 NLS
                                         .bind(
-                                                "The join table name length exceeds the maximum length defined in the persistence options. The join table name length is {0} and the maximum length is {1}.",
+                                                "The join table name length exceeds the maximum length defined in the persistence options. The join table name length is {0} and the maximum length is {1}.", //$NON-NLS-1$
                                                 joinTableName.length(), maxTableNameLenght), Message.ERROR, this,
                                 IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
             }
@@ -600,6 +609,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String propertyName,
             String messageCode,
             String property) {
+
         int maxColumnNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxColumnNameLenght();
         if (columnName.length() > maxColumnNameLenght) {
             msgList
@@ -607,7 +617,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
                             messageCode,
                             NLS
                                     .bind(
-                                            "The {0} length exceeds the maximum length defined in the persistence options. The length is {1} and the maximum column length is {2}.",
+                                            "The {0} length exceeds the maximum length defined in the persistence options. The length is {1} and the maximum column length is {2}.", //$NON-NLS-1$
                                             new Object[] { propertyName, columnName.length(), maxColumnNameLenght }),
                             Message.ERROR, this, property));
         }
@@ -620,12 +630,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String property,
             String value,
             String propertyName) {
-        String emptyText = "The " + propertyName + " must" + (mustBeEmpty ? "" : " not") + " be empty";
-        String invalidText = propertyName + " is invalid.";
+
+        String emptyText = "The " + propertyName + " must" + (mustBeEmpty ? "" : " not") + " be empty"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        String invalidText = propertyName + " is invalid."; //$NON-NLS-1$
         if (mustBeEmpty && !StringUtils.isEmpty(value) || !mustBeEmpty && StringUtils.isEmpty(value)) {
             msgList.add(new Message(msgCodeEmpty, emptyText, Message.ERROR, this, property));
         } else if (!mustBeEmpty && !PersistenceUtil.isValidDatabaseIdentifier(value)) {
             msgList.add(new Message(msgCodeInValid, invalidText, Message.ERROR, this, property));
         }
     }
+
 }

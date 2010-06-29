@@ -47,13 +47,14 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     public static final char[] INVALID_RESOURCE_CHARACTERS;
 
     static {
-        // setup the invalid names; @see OS
-        // valid names and characters taken from
-        // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/naming_a_file.asp
-        // and from http://www.faqs.org/faqs/unix-faq/faq/part2/section-2.html
-        // remark: wo don't differ between linux and windows because both could be used in
-        // together (e.g. client and server installation), thus we use resriction for windows and
-        // linux
+        /*
+         * setup the invalid names; @see OS valid names and characters taken from
+         * http://msdn.microsoft
+         * .com/library/default.asp?url=/library/en-us/fileio/fs/naming_a_file.asp and from
+         * http://www.faqs.org/faqs/unix-faq/faq/part2/section-2.html remark: wo don't differ
+         * between linux and windows because both could be used in together (e.g. client and server
+         * installation), thus we use resriction for windows and linux
+         */
         INVALID_RESOURCE_CHARACTERS = new char[] { '\\', '/', ':', '*', '?', '"', '<', '>', '|', '/', '\0' };
     }
 
@@ -83,17 +84,11 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         return text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
         return validateIpsObjectNameInternal(type, name, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
         ArgumentCheck.notNull(type);
@@ -102,6 +97,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
 
     private MessageList validateIpsObjectNameInternal(IpsObjectType type, String name, boolean qualifiedCheck)
             throws CoreException {
+
         MessageList result = new MessageList();
 
         // common check for all ips object types
@@ -195,7 +191,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         return validateJavaTypeName(name, qualifiedCheck);
     }
 
-    /*
+    /**
      * Validate if the name is a valid os name
      */
     private MessageList validateValidOsName(String name, boolean qualifiedCheck) {
@@ -211,7 +207,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         return ml;
     }
 
-    /*
+    /**
      * Validate if the name is a valid java type identifier
      */
     @Override
@@ -220,7 +216,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
                 Messages.DefaultIpsProjectNamingConventions_msgNameIdDiscouraged);
     }
 
-    /*
+    /**
      * Special validation for product cmpt, the validation will be delegated to the
      * IProductCmptNamingStrategy
      */
@@ -238,6 +234,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             boolean qualifiedCheck,
             String msgNameNotValidError,
             String msgNameNotValidWarning) {
+
         MessageList ml = new MessageList();
         if (!qualifiedCheck) {
             String sourceLevel = getCompilerSourceLevel(ipsProject);
@@ -261,8 +258,6 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
      * A valid IPS package fragment name is either the empty String for the default package fragment
      * or a valid package package fragment name according to
      * <code>JavaConventions.validatePackageName</code>.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public MessageList validateIpsPackageName(String name) {
@@ -292,17 +287,11 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         return ml;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validateIpsPackageRootName(String name) throws CoreException {
         return new MessageList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Message validateIfValidJavaIdentifier(String name,
             String text,

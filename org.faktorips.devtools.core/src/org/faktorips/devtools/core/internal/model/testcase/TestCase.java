@@ -70,10 +70,10 @@ import org.w3c.dom.Element;
  */
 public class TestCase extends IpsObject implements ITestCase {
 
-    /* Name of corresponding test case type */
+    /** Name of corresponding test case type */
     private String testCaseType = ""; //$NON-NLS-1$
 
-    /* Children */
+    /** Children */
     private List<IIpsObjectPart> testObjects = new ArrayList<IIpsObjectPart>();
 
     public TestCase(IIpsSrcFile file) {
@@ -347,6 +347,7 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     public ITestPolicyCmpt addRootTestPolicyCmpt(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter)
             throws CoreException {
+
         String name = testPolicyCmptTypeParameter.getName();
         ITestPolicyCmpt testPolicyCpmt = newTestPolicyCmpt();
         testPolicyCpmt.setTestPolicyCmptTypeParameter(name);
@@ -946,8 +947,9 @@ public class TestCase extends IpsObject implements ITestCase {
             if (testParameter == null) {
                 return type.equals(defaultType);
             }
-            return isTypeOrDefault(testParameter, type, defaultType);
+            return isTypeOrDefault(testParameter, type);
         } catch (CoreException e) {
+            // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exceptions
         }
         return false;
@@ -958,7 +960,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * Return <code>false</code> if an error occurs.<br>
      * (Packageprivate helper method.)
      */
-    boolean isTypeOrDefault(ITestParameter testParameter, TestParameterType type, TestParameterType defaultType) {
+    boolean isTypeOrDefault(ITestParameter testParameter, TestParameterType type) {
         // TODO Joerg: aufraeumen, Verwendung von TestParameterType.isTypeMatching
         try {
             // compare the parameters type and return if the type matches the given type
@@ -972,6 +974,8 @@ public class TestCase extends IpsObject implements ITestCase {
                 return true;
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
+            // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exceptions
         }
         return false;
@@ -1016,12 +1020,12 @@ public class TestCase extends IpsObject implements ITestCase {
 
     private void clearAllInputTestValues() throws CoreException {
         clearTestValues(getInputTestValues());
-        clearTestAttributeValues(getInputTestPolicyCmpts(), true);
+        clearTestAttributeValues(true);
     }
 
     private void clearAllExpectedTestValues() throws CoreException {
         clearTestValues(getExpectedResultTestValues());
-        clearTestAttributeValues(getExpectedResultTestPolicyCmpts(), false);
+        clearTestAttributeValues(false);
     }
 
     private void clearTestValues(ITestValue[] testValues) throws CoreException {
@@ -1030,7 +1034,7 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    private void clearTestAttributeValues(ITestPolicyCmpt[] inputTestPolicyCmpts, boolean input) throws CoreException {
+    private void clearTestAttributeValues(boolean input) throws CoreException {
         ITestPolicyCmpt[] testPolicyCmpt = getAllTestPolicyCmpt();
         for (ITestPolicyCmpt element : testPolicyCmpt) {
             ITestAttributeValue[] testAttributeValues = element.getTestAttributeValues();

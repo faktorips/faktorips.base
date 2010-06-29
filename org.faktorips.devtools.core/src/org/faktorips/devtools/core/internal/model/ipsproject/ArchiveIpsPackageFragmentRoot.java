@@ -27,21 +27,16 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot implements IIpsPackageFragmentRoot {
+public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
     private IpsArchive archive;
 
-    /**
-     * @param ipsProject IPS project
-     * @param archivePath Path to an IPS archive
-     */
     public ArchiveIpsPackageFragmentRoot(IIpsProject ipsProject, IpsArchive archive) {
         super(ipsProject, archive.getArchivePath().lastSegment());
         this.archive = archive;
@@ -66,26 +61,17 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return archive.exists();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFolder getArtefactDestination(boolean derived) throws CoreException {
         throw newExceptionMethodNotAvailableForArchvies();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
         List<IIpsPackageFragment> list = getIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
         // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME

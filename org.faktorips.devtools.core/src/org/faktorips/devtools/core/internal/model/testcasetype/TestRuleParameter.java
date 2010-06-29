@@ -107,7 +107,7 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
 
     @Override
     protected void reinitPartCollections() {
-
+        // Nothing to do
     }
 
     @Override

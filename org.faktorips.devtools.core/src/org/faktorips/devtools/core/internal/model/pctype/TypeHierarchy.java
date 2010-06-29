@@ -32,8 +32,6 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.ArgumentCheck;
 
-/**
- */
 public class TypeHierarchy implements ITypeHierarchy {
 
     private IPolicyCmptType pcType;
@@ -41,7 +39,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     private boolean containsCycle = false;
 
     /**
-     * Creates a new type hierachy containing all the given type's supertypes. Subtypes are not
+     * Creates a new type hierarchy containing all the given type's supertypes. Subtypes are not
      * resolved.
      */
     public final static TypeHierarchy getSupertypeHierarchy(IPolicyCmptType pcType) throws CoreException {
@@ -77,6 +75,7 @@ public class TypeHierarchy implements ITypeHierarchy {
 
     private final static void addSubtypes(TypeHierarchy hierarchie, IPolicyCmptType pcType, IPolicyCmptType superType)
             throws CoreException {
+
         List<IPolicyCmptType> subtypes = findDirectSubtypes(pcType, hierarchie);
         Node node = new Node(pcType, superType, subtypes.toArray(new IPolicyCmptType[subtypes.size()]));
         hierarchie.add(node);
@@ -87,6 +86,7 @@ public class TypeHierarchy implements ITypeHierarchy {
 
     private final static List<IPolicyCmptType> findDirectSubtypes(IPolicyCmptType pcType, TypeHierarchy hierarchy)
             throws CoreException {
+
         List<IPolicyCmptType> subtypes = new ArrayList<IPolicyCmptType>();
         IIpsProject project = pcType.getIpsProject();
         IIpsProject[] projects = pcType.getIpsModel().getIpsProjects();
@@ -121,9 +121,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         this.pcType = pcType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsCycle() {
         return containsCycle;
@@ -142,17 +139,11 @@ public class TypeHierarchy implements ITypeHierarchy {
         return nodes.containsKey(type);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPolicyCmptType getType() {
         return pcType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPolicyCmptType getSupertype(IPolicyCmptType type) {
         Node node = nodes.get(type);
@@ -173,9 +164,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         return result.toArray(new IPolicyCmptType[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPolicyCmptType[] getAllSupertypesInclSelf(IPolicyCmptType type) {
         List<IPolicyCmptType> result = new ArrayList<IPolicyCmptType>();
@@ -192,9 +180,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSupertypeOf(IPolicyCmptType candidate, IPolicyCmptType subtype) {
         IPolicyCmptType currSupertype = getSupertype(subtype);
@@ -207,9 +192,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         return isSupertypeOf(candidate, currSupertype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSubtypeOf(IPolicyCmptType candidate, IPolicyCmptType supertype) {
         IPolicyCmptType[] subtypes = getSubtypes(supertype);
@@ -270,9 +252,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPolicyCmptTypeAttribute[] getAllAttributes(IPolicyCmptType type) {
         List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
@@ -286,9 +265,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         return attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPolicyCmptTypeAttribute[] getAllAttributesRespectingOverride(IPolicyCmptType type) {
         List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
@@ -310,9 +286,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         return attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IMethod[] getAllMethods(IPolicyCmptType type) {
         List<IMethod> methods = new ArrayList<IMethod>();
@@ -326,9 +299,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         return methods.toArray(new IMethod[methods.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IValidationRule[] getAllRules(IPolicyCmptType type) {
         List<IValidationRule> rules = new ArrayList<IValidationRule>();
@@ -342,9 +312,6 @@ public class TypeHierarchy implements ITypeHierarchy {
         return rules.toArray(new IValidationRule[rules.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPolicyCmptTypeAttribute findAttribute(IPolicyCmptType type, String attributeName) {
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);

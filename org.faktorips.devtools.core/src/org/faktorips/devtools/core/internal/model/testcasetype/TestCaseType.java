@@ -56,7 +56,6 @@ import org.w3c.dom.Element;
  */
 public class TestCaseType extends IpsObject implements ITestCaseType {
 
-    /* Children */
     private List<ITestParameter> testParameters = new ArrayList<ITestParameter>();
 
     public TestCaseType(IIpsSrcFile file) {
@@ -125,8 +124,6 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * Adds the qualified names for all test policy cmpt type parameters (root and childs) to the
      * given list
-     * 
-     * @param details
      */
     private void addDependenciesForTestPolicyCmptTypeParams(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details,

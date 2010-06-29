@@ -102,6 +102,7 @@ public class MoveOperation implements IRunnableWithProgress {
      * 
      * @param source The product to rename.
      * @param target The new location/name.
+     * 
      * @throws CoreException If the source does not exist or is modified (if a product component) or
      *             if the target already exists.
      */
@@ -152,8 +153,8 @@ public class MoveOperation implements IRunnableWithProgress {
      * returned, all references of other products to the moved/renamed one are updated to refer to
      * the new name.
      * 
-     * @param source The product to rename.
      * @param target The new location/name.
+     * 
      * @throws CoreException If the source does not exist or is modified or if the target already
      *             exists.
      */
@@ -472,7 +473,7 @@ public class MoveOperation implements IRunnableWithProgress {
             if (targetPackage.getParentIpsPackageFragment().equals(pack)) {
                 createSubPackage = true;
             }
-            
+
             if (!targetPackage.exists()) {
                 currTargetRoot.createPackageFragment(targetPackage.getName(), true, monitor);
             }
@@ -675,7 +676,7 @@ public class MoveOperation implements IRunnableWithProgress {
 
             // third b), update references to test cases
             for (ITestCase iTestCase : testCaseRefs) {
-                fixRelations(iTestCase, source.getQualifiedName(), qualifiedTargetName, monitor);
+                fixRelations(iTestCase, source.getQualifiedName(), qualifiedTargetName);
             }
 
             // fourth, delete the source
@@ -769,12 +770,8 @@ public class MoveOperation implements IRunnableWithProgress {
     /**
      * Resets the product component of all test policy components of the given test case, if the
      * product component equals the old name, to the new name.
-     * 
-     * @throws CoreException
      */
-    private void fixRelations(ITestCase testCase, String oldName, String newName, IProgressMonitor monitor)
-            throws CoreException {
-
+    private void fixRelations(ITestCase testCase, String oldName, String newName) throws CoreException {
         ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
         for (ITestPolicyCmpt element : allTestPolicyCmpt) {
             if (oldName.equals(element.getProductCmpt())) {
@@ -789,6 +786,7 @@ public class MoveOperation implements IRunnableWithProgress {
      * 
      * @param sources The array of source objects. Used to get the type for the target.
      * @param targets The qualified names of the targets to test.
+     * 
      * @throws CoreException if a target exists.
      */
     private void checkTargets(Object[] sources, String[] targets) throws CoreException {

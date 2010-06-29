@@ -36,13 +36,36 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertEquals("2005-10-10", XmlUtil.gregorianCalendarToXmlDateString(date)); //$NON-NLS-1$
     }
 
-    public void testParse() {
+    @SuppressWarnings("deprecation")
+    // Test of deprecated method
+    public void testParseXmlDateStringToGregorianCalendar() {
         assertNull(XmlUtil.parseXmlDateStringToGregorianCalendar("")); //$NON-NLS-1$
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
         assertEquals(date, XmlUtil.parseXmlDateStringToGregorianCalendar("2005-09-09")); //$NON-NLS-1$
         assertEquals(date, XmlUtil.parseXmlDateStringToGregorianCalendar("2005-9-9")); //$NON-NLS-1$
         date = new GregorianCalendar(2005, 9, 10);
         assertEquals(date, XmlUtil.parseXmlDateStringToGregorianCalendar("2005-10-10")); //$NON-NLS-1$
+        try {
+            XmlUtil.parseXmlDateStringToGregorianCalendar("200d-10-22"); //$NON-NLS-1$
+            fail();
+        } catch (IllegalArgumentException e) {
+            // Expected exception.
+        }
+    }
+
+    public void testParseGregorianCalendar() throws XmlParseException {
+        assertNull(XmlUtil.parseGregorianCalendar("")); //$NON-NLS-1$
+        GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
+        assertEquals(date, XmlUtil.parseGregorianCalendar("2005-09-09")); //$NON-NLS-1$
+        assertEquals(date, XmlUtil.parseGregorianCalendar("2005-9-9")); //$NON-NLS-1$
+        date = new GregorianCalendar(2005, 9, 10);
+        assertEquals(date, XmlUtil.parseGregorianCalendar("2005-10-10")); //$NON-NLS-1$
+        try {
+            XmlUtil.parseGregorianCalendar("200d-10-22"); //$NON-NLS-1$
+            fail();
+        } catch (XmlParseException e) {
+            // Expected exception.
+        }
     }
 
     public void testNodeToString() throws TransformerException {

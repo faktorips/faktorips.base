@@ -93,8 +93,6 @@ public abstract class BaseIpsObject extends IpsObject {
                 return;
             }
         }
-
-        return;
     }
 
     @Override

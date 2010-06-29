@@ -11,9 +11,6 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-/**
- * 
- */
 package org.faktorips.devtools.core.internal.migration;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,7 +21,6 @@ import org.faktorips.util.message.MessageList;
 
 /**
  * Empty Migration
- * 
  */
 public class Migration_2_3_1_rfinal extends AbstractIpsProjectMigrationOperation {
 
@@ -32,33 +28,21 @@ public class Migration_2_3_1_rfinal extends AbstractIpsProjectMigrationOperation
         super(projectToMigrate, featureId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         return "Some bugs fixed."; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTargetVersion() {
         return "2.3.2.rfinal"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEmpty() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException {
         return new MessageList();

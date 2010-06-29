@@ -150,8 +150,6 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Not supported by <tt>IEnumLiteralNameAttribute</tt>s.
      * 
      * @throws UnsupportedOperationException If the operation is called.
@@ -162,8 +160,6 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Not supported by <tt>IEnumLiteralNameAttribute</tt>s.
      * 
      * @throws UnsupportedOperationException If the operation is called.
@@ -174,8 +170,6 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Not supported by <tt>IEnumLiteralNameAttribute</tt>s.
      * 
      * @throws UnsupportedOperationException If the operation is called.

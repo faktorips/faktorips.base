@@ -44,7 +44,6 @@ import org.w3c.dom.Element;
  */
 public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute {
 
-    /* Tags */
     static final String TAG_NAME = "TestAttribute"; //$NON-NLS-1$
 
     private String attribute = ""; //$NON-NLS-1$
@@ -90,14 +89,13 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
         attribute = policyCmptTypeAttribute.getName();
 
-        // set the policy cmpt type only if the given attribute belongs to a different type the test
-        // policy
-        // cmpt type parameter belongs to. Because only in this case it is necessary, in all other
-        // cases
-        // it is better to leave the policy cmpt type property empty to get a minimum dependency to
-        // the
-        // model objects (e.g. if the attribute will be moved to a other type in the hierarchy later
-        // on).
+        /*
+         * set the policy cmpt type only if the given attribute belongs to a different type the test
+         * policy cmpt type parameter belongs to. Because only in this case it is necessary, in all
+         * other cases it is better to leave the policy cmpt type property empty to get a minimum
+         * dependency to the model objects (e.g. if the attribute will be moved to a other type in
+         * the hierarchy later on).
+         */
         String policyCmptTypeNameOfAttribute = policyCmptTypeAttribute.getPolicyCmptType().getQualifiedName();
         if (!policyCmptTypeNameOfAttribute.equals(getTestPolicyCmptTypeParameter().getPolicyCmptType())) {
             policyCmptType = policyCmptTypeNameOfAttribute;
@@ -240,6 +238,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     @Override
     public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject)
             throws CoreException {
+
         boolean reqProductCmpt = ((ITestPolicyCmptTypeParameter)getParent()).isRequiresProductCmpt();
         if (!reqProductCmpt) {
             return true;
@@ -348,9 +347,10 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         if (isBasedOnModelAttribute()) {
             return;
         }
-        // the name of extension attributes must be a valid java name,
-        // because for this type of attributes a constant will be generated
-        // inside the test case java class
+        /*
+         * the name of extension attributes must be a valid java name, because for this type of
+         * attributes a constant will be generated inside the test case java class
+         */
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
             messageList.add(new Message(MSGCODE_INVALID_TEST_ATTRIBUTE_NAME, NLS.bind(

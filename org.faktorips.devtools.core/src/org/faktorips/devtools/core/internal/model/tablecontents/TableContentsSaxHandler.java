@@ -33,6 +33,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Joerg Ortmann
  */
 public class TableContentsSaxHandler extends DefaultHandler {
+
     private static final String TABLECONTENTS = IpsObjectType.TABLE_CONTENTS.getXmlElementName();
     private static final String VALUE = Row.VALUE_TAG_NAME;
     private static final String ROW = Row.TAG_NAME;
@@ -48,31 +49,31 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private static final String EXTENSIONPROPERTIES_ID = TableContentsGeneration.getXmlAttributeExtpropertyid();
     private static final String EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL = TableContentsGeneration.getXmlAttributeIsnull();
 
-    // the table which will be filled
+    /** the table which will be filled */
     private ITableContents tableContents;
 
-    // contains all column values,
+    /** contains all column values */
     private List<String> columns = new ArrayList<String>(20);
 
-    // buffer to store the characters inside the value node
+    /** buffer to store the characters inside the value node */
     private StringBuffer textBuffer = null;
 
-    // true if the parser is inside the row node
+    /** true if the parser is inside the row node */
     private boolean insideRowNode;
 
-    // true if the parser is inside the extension properties node
+    /** true if the parser is inside the extension properties node */
     private boolean insideExtensionPropertiesNode;
 
-    // true if the parser is inside the value node
+    /** true if the parser is inside the value node */
     private boolean insideValueNode;
 
-    // true if the parser is inside the description node
+    /** true if the parser is inside the description node */
     private boolean insideDescriptionNode;
 
-    // true if the current value node represents the null value
+    /** true if the current value node represents the null value */
     private boolean nullValue;
 
-    // contains the id of the value node
+    /** contains the id of the value node */
     private String idValue;
 
     private TableContentsGeneration currentGeneration;
@@ -81,9 +82,6 @@ public class TableContentsSaxHandler extends DefaultHandler {
         this.tableContents = tableContents;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (ROW.equals(qName)) {
@@ -114,9 +112,6 @@ public class TableContentsSaxHandler extends DefaultHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (TABLECONTENTS.equals(qName)) {
@@ -143,9 +138,6 @@ public class TableContentsSaxHandler extends DefaultHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void characters(char[] buf, int offset, int len) throws SAXException {
         if (insideDescriptionNode || insideValueNode) {
@@ -158,7 +150,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
         }
     }
 
-    /*
+    /**
      * Returns <code>true</code> if the given node is the column value node otherwise
      * <code>false</code>
      */
@@ -166,11 +158,12 @@ public class TableContentsSaxHandler extends DefaultHandler {
         return VALUE.equals(nodeName) && insideRowNode;
     }
 
-    /*
+    /**
      * Returns <code>true</code> if the given node is the extension properties value node otherwise
      * <code>false</code>
      */
     private boolean isExtensionPropertiesValueNode(String nodeName) {
         return EXTENSIONPROPERTIES_VALUE.equals(nodeName) && insideExtensionPropertiesNode;
     }
+
 }

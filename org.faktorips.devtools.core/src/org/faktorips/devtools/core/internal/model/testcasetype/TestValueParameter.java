@@ -136,7 +136,7 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
 
     @Override
     protected void reinitPartCollections() {
-
+        // Nothing to do
     }
 
     @Override

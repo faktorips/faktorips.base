@@ -24,18 +24,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.util.ArgumentCheck;
 
-public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot implements IIpsPackageFragmentRoot {
+public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
     /**
      * Creates a new ips package fragment root with the indicated parent and name.
@@ -70,18 +68,13 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         if (!getCorrespondingResource().exists()) {
             return false;
         }
-        try {
-            IIpsObjectPath path = ((IpsProject)getIpsProject()).getIpsObjectPathInternal();
-            return path.getEntry(getName()) != null;
-        } catch (CoreException e1) {
-            IpsPlugin.log(e1);
-            return false;
-        }
+        IIpsObjectPath path = ((IpsProject)getIpsProject()).getIpsObjectPathInternal();
+        return path.getEntry(getName()) != null;
     }
 
     /**
-     * {@inheritDoc} IpsPackageFragments are always returned, whether they are output locations of
-     * the javaproject corresponding to this roots IpsProject or not.
+     * IpsPackageFragments are always returned, whether they are output locations of the javaproject
+     * corresponding to this roots IpsProject or not.
      */
     @Override
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
@@ -89,10 +82,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
         IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
@@ -105,7 +94,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * Get all IIpsPackageFragments of a IpsRootPackageFragment as List.
      * 
      * @return List List of IIpsPackageFragments
-     * @throws CoreException
      */
     private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
@@ -116,9 +104,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();

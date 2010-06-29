@@ -83,40 +83,28 @@ public class ProductCmptType extends Type implements IProductCmptType {
         super(file);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectPartCollection<? extends IAttribute> createCollectionForAttributes() {
         return new IpsObjectPartCollection<IProductCmptTypeAttribute>(this, ProductCmptTypeAttribute.class,
                 IProductCmptTypeAttribute.class, ProductCmptTypeAttribute.TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectPartCollection<? extends IMethod> createCollectionForMethods() {
         return new IpsObjectPartCollection<IProductCmptTypeMethod>(this, ProductCmptTypeMethod.class,
-                IProductCmptTypeMethod.class, "Method");
+                IProductCmptTypeMethod.class, "Method"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectPartCollection<? extends IAssociation> createCollectionForAssociations() {
         return new IpsObjectPartCollection<IProductCmptTypeAssociation>(this, ProductCmptTypeAssociation.class,
-                IProductCmptTypeAssociation.class, "Association");
+                IProductCmptTypeAssociation.class, "Association"); //$NON-NLS-1$
     }
 
     protected Iterator<ITableStructureUsage> getIteratorForTableStructureUsages() {
         return tableStructureUsages.iterator();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IType findSupertype(IIpsProject project) throws CoreException {
         if (!hasSupertype()) {
@@ -129,25 +117,16 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.PRODUCT_CMPT_TYPE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPolicyCmptType() {
         return policyCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setPolicyCmptType(String newType) {
         String oldType = policyCmptType;
@@ -155,30 +134,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
         valueChanged(oldType, newType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isConfigurationForPolicyCmptType() {
         return configurationForPolicyCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setConfigurationForPolicyCmptType(boolean newValue) {
         boolean oldValue = configurationForPolicyCmptType;
         configurationForPolicyCmptType = newValue;
         if (!newValue && oldValue) {
-            policyCmptType = "";
+            policyCmptType = ""; //$NON-NLS-1$
         }
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
         if (!configurationForPolicyCmptType) {
@@ -187,17 +157,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return ipsProject.findPolicyCmptType(policyCmptType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptType findSuperProductCmptType(IIpsProject project) throws CoreException {
         return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getSupertype());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProdDefProperty[] findProdDefProperties(IIpsProject ipsProject) throws CoreException {
         ProdDefPropertyCollector collector = new ProdDefPropertyCollector(null, ipsProject);
@@ -216,14 +180,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     public LinkedHashMap<String, IProdDefProperty> getProdDefPropertiesMap(ProdDefPropertyType propertyType,
             IIpsProject ipsProject) throws CoreException {
+
         ProdDefPropertyCollector collector = new ProdDefPropertyCollector(propertyType, ipsProject);
         collector.start(this);
         return collector.getPropertyMap();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException {
         ProdDefPropertyType[] types = ProdDefPropertyType.values();
@@ -236,9 +198,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject)
             throws CoreException {
@@ -252,7 +211,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return findTableStructureUsage(propName, ipsProject);
         }
         if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET != type) {
-            throw new RuntimeException("Unknown type " + type);
+            throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
         if (policyCmptType == null) {
@@ -265,17 +224,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAttribute newProductCmptTypeAttribute() {
         return (IProductCmptTypeAttribute)newAttribute();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAttribute newProductCmptTypeAttribute(String name) {
         IProductCmptTypeAttribute newAttribute = newProductCmptTypeAttribute();
@@ -283,34 +236,23 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return newAttribute;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAttribute getProductCmptTypeAttribute(String name) {
         return (IProductCmptTypeAttribute)attributes.getPartByName(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject)
             throws CoreException {
+
         return (IProductCmptTypeAttribute)findAttribute(name, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAttribute[] getProductCmptTypeAttributes() {
         return (IProductCmptTypeAttribute[])attributes.toArray(new IProductCmptTypeAttribute[attributes.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -320,9 +262,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         instancesIconPath = element.getAttribute(PROPERTY_ICON_FOR_INSTANCES);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -333,17 +272,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         element.setAttribute(PROPERTY_ICON_FOR_INSTANCES, instancesIconPath);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAssociation newProductCmptTypeAssociation() {
         return (IProductCmptTypeAssociation)newAssociation();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project) throws CoreException {
         TableStructureUsageFinder finder = new TableStructureUsageFinder(project, roleName);
@@ -351,69 +284,44 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return finder.tsu;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getNumOfTableStructureUsages() {
         return tableStructureUsages.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableStructureUsage getTableStructureUsage(String roleName) {
         return tableStructureUsages.getPartByName(roleName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableStructureUsage[] getTableStructureUsages() {
         return tableStructureUsages.toArray(new ITableStructureUsage[tableStructureUsages.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int[] moveTableStructureUsage(int[] indexes, boolean up) {
         return tableStructureUsages.moveParts(indexes, up);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableStructureUsage newTableStructureUsage() {
         return tableStructureUsages.newPart();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeMethod[] getProductCmptTypeMethods() {
         return (IProductCmptTypeMethod[])methods.toArray(new IProductCmptTypeMethod[methods.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAssociation[] getProductCmptTypeAssociations() {
         return (IProductCmptTypeAssociation[])associations
                 .toArray(new IProductCmptTypeAssociation[associations.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeMethod[] getNonFormulaProductCmptTypeMethods() {
-
         ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
         for (IMethod method : methods) {
             if (!((IProductCmptTypeMethod)method).isFormulaSignatureDefinition()) {
@@ -423,17 +331,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return result.toArray(new IProductCmptTypeMethod[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeMethod newProductCmptTypeMethod() {
         return (IProductCmptTypeMethod)methods.newPart();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeMethod newFormulaSignature(String formulaName) {
         IProductCmptTypeMethod signature = newProductCmptTypeMethod();
@@ -443,9 +345,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return signature;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeMethod[] findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException {
         ArrayList<IProductCmptTypeMethod> overloadedMethods = new ArrayList<IProductCmptTypeMethod>();
@@ -461,9 +360,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return overloadedMethods.toArray(new IProductCmptTypeMethod[overloadedMethods.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeMethod getFormulaSignature(String formulaName) throws CoreException {
         if (StringUtils.isEmpty(formulaName)) {
@@ -491,9 +387,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return result.toArray(new IProductCmptTypeMethod[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException {
         FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName, true);
@@ -501,12 +394,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return (IProductCmptTypeMethod)(finder.getMethods().size() != 0 ? finder.getMethods().get(0) : null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
             throws CoreException {
+
         IMethod[] candidates = super.findOverrideMethodCandidates(onlyNotImplementedAbstractMethods, ipsProject);
         List<IProductCmptTypeMethod> overloadedMethods = Arrays.asList(findSignaturesOfOverloadedFormulas(ipsProject));
         ArrayList<IMethod> result = new ArrayList<IMethod>(candidates.length);
@@ -519,9 +410,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return result.toArray(new IMethod[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -546,6 +434,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     // TODO pk: write test case
     private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject)
             throws CoreException {
+
         ArrayList<IProductCmptTypeMethod> overloadedSupertypeFormulaSignatures = new ArrayList<IProductCmptTypeMethod>();
         IProductCmptTypeMethod[] formulaSignatures = getFormulaSignatures();
         for (IProductCmptTypeMethod formulaSignature : formulaSignatures) {
@@ -570,6 +459,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
+    // TODO internationalize messages
     private void validateIconPath(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (isUseCustomInstanceIcon()) {
             InputStream stream = ipsProject.getResourceAsStream(getInstancesIcon());
@@ -587,9 +477,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
         return new ProductCmptTypeDuplicatePropertyNameValidator(ipsProject);
@@ -597,6 +484,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private void validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(MessageList msgList, IIpsProject ipsProject)
             throws CoreException {
+
         if (StringUtils.isEmpty(getPolicyCmptType())) {
             return;
         }
@@ -609,6 +497,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list)
             throws CoreException {
+
         IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
         if (policyCmptTypeObj == null) {
             String text = NLS.bind(Messages.ProductCmptType_PolicyCmptTypeDoesNotExist, policyCmptType);
@@ -641,9 +530,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();

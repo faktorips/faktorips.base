@@ -106,9 +106,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private IPersistenceOptions persistenceOptions = new PersistenceOptions();
 
-    /**
-     * Default constructor.
-     */
     public IpsProjectProperties() {
         super();
     }
@@ -185,7 +182,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return true;
     }
 
-    /*
+    /**
      * Validate the ips object path entry.
      */
     private void validateIpsObjectPath(MessageList list) throws CoreException {
@@ -208,125 +205,80 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createdFromParsableFileContents = flag;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBuilderSetId() {
         return builderSetId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setBuilderSetId(String id) {
         ArgumentCheck.notNull(id);
         builderSetId = id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPath getIpsObjectPath() {
         return path;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isModelProject() {
         return modelProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setModelProject(boolean modelProject) {
         this.modelProject = modelProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isProductDefinitionProject() {
         return productDefinitionProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setProductDefinitionProject(boolean productDefinitionProject) {
         this.productDefinitionProject = productDefinitionProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
         return productCmptNamingStrategy;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy) {
         ArgumentCheck.notNull(newStrategy);
         productCmptNamingStrategy = newStrategy;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setChangesOverTimeNamingConventionIdForGeneratedCode(String changesInTimeConventionIdForGeneratedCode) {
         this.changesInTimeConventionIdForGeneratedCode = changesInTimeConventionIdForGeneratedCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getChangesOverTimeNamingConventionIdForGeneratedCode() {
         return changesInTimeConventionIdForGeneratedCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setIpsObjectPath(IIpsObjectPath path) {
         ArgumentCheck.notNull(path);
         this.path = path;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getPredefinedDatatypesUsed() {
         return predefinedDatatypesUsed;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setPredefinedDatatypesUsed(String[] datatypes) {
         ArgumentCheck.notNull(datatypes);
         predefinedDatatypesUsed = datatypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setPredefinedDatatypesUsed(ValueDatatype[] datatypes) {
         ArgumentCheck.notNull(datatypes);
@@ -336,17 +288,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Datatype> getDefinedDatatypes() {
         return definedDatatypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DynamicValueDatatype[] getDefinedValueDatatypes() {
         List<DynamicValueDatatype> valuetypes = new ArrayList<DynamicValueDatatype>(definedDatatypes.size());
@@ -358,9 +304,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return valuetypes.toArray(new DynamicValueDatatype[valuetypes.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDefinedDatatypes(DynamicValueDatatype[] datatypes) {
         definedDatatypes = new ArrayList<Datatype>(datatypes.length);
@@ -369,9 +312,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDefinedDatatypes(Datatype[] datatypes) {
         definedDatatypes = new ArrayList<Datatype>(datatypes.length);
@@ -467,18 +407,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME, String
                 .valueOf(getPersistenceOptions().getMaxColumnNameLenght()));
         projectEl.appendChild(persistenceOptionsEl);
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, ""
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, "" //$NON-NLS-1$
                 + Boolean.valueOf(getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()));
         projectEl.appendChild(persistenceOptionsEl);
 
-        //        Element tableNamingEl = doc.createElement("TableNamingStrategy"); //$NON-NLS-1$
-        //        Element tableColumnNamingEl = doc.createElement("TableColumnNamingStrategy"); //$NON-NLS-1$
-
         ITableNamingStrategy tableNamingStrategy = getPersistenceOptions().getTableNamingStrategy();
         ITableColumnNamingStrategy tableColumnNamingStrategy = getPersistenceOptions().getTableColumnNamingStrategy();
-
-        //        tableNamingEl.setAttribute("id", tableNamingStrategy.toString()); //$NON-NLS-1$
-        //        tableColumnNamingEl.setAttribute("id", tableColumnNamingStrategy.toString()); //$NON-NLS-1$
 
         persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
         persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
@@ -542,9 +476,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initPersistenceOptions(element);
     }
 
-    /**
-     * @param firstElement
-     */
     private void initRequiredFeatures(Element el) {
         requiredFeatures = new HashMap<String, String>();
 
@@ -692,17 +623,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addDefinedDatatype(DynamicValueDatatype newDatatype) {
         addDefinedDatatype((Datatype)newDatatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addDefinedDatatype(Datatype newDatatype) {
         /* replace, if Datatype already registered */
@@ -716,17 +641,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         definedDatatypes.add(newDatatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getRuntimeIdPrefix() {
         return runtimeIdPrefix;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setRuntimeIdPrefix(String runtimeIdPrefix) {
         if (runtimeIdPrefix == null) {
@@ -735,64 +654,40 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         this.runtimeIdPrefix = runtimeIdPrefix;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isJavaProjectContainsClassesForDynamicDatatypes() {
         return javaProjectContainsClassesForDynamicDatatypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setJavaProjectContainsClassesForDynamicDatatypes(boolean newValue) {
         javaProjectContainsClassesForDynamicDatatypes = newValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDerivedUnionIsImplementedRuleEnabled() {
         return derivedUnionIsImplementedRuleEnabled;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDerivedUnionIsImplementedRuleEnabled(boolean enabled) {
         derivedUnionIsImplementedRuleEnabled = enabled;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled() {
         return referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isRulesWithoutReferencesAllowedEnabled() {
         return rulesWithoutReferencesAllowed;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setRulesWithoutReferencesAllowedEnabled(boolean enabled) {
         rulesWithoutReferencesAllowed = enabled;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled) {
         referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enabled;
@@ -975,7 +870,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "The table and column naming strategies define how identifier names are transformed into" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "database table and column names. The attributes maxTableNameLength and maxColumnNameLength" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "constrain the maximum possible length of a table or column name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "The attribute " + IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS + " defines if is is allowed to use lazy fetching " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "The attribute " + IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS + " defines if is is allowed to use lazy fetching " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "on the association side which holds a single value (to-one relationship side)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1012,42 +907,27 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         parent.appendChild(comment);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsArtefactBuilderSetConfigModel getBuilderSetConfig() {
         return builderSetConfig;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config) {
         ArgumentCheck.notNull(config);
         builderSetConfig = config;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getRequiredIpsFeatureIds() {
         return requiredFeatures.keySet().toArray(new String[requiredFeatures.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getMinRequiredVersionNumber(String featureId) {
         return requiredFeatures.get(featureId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMinRequiredVersionNumber(String featureId, String version) {
         requiredFeatures.put(featureId, version);
@@ -1069,25 +949,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return resourcesPathExcludedFromTheProductDefiniton.contains(location);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Long getLastPersistentModificationTimestamp() {
         return lastPersistentModificationTimestamp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setLastPersistentModificationTimestamp(Long timestamp) {
         lastPersistentModificationTimestamp = timestamp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumType getQuestionAssignedUserGroup() {
         DefaultEnumType type = new DefaultEnumType("QuestionAssignedUserGroup", QuestionAssignedUserGroup.class); //$NON-NLS-1$
@@ -1102,9 +973,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumType getQuestionStatus() {
         DefaultEnumType type = new DefaultEnumType("QuestionStatus", QuestionStatus.class); //$NON-NLS-1$
@@ -1152,4 +1020,5 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void setPersistenceOptions(IPersistenceOptions persistenceOptions) {
         this.persistenceOptions = persistenceOptions;
     }
+
 }

@@ -83,7 +83,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     @Override
     public String getName() {
-        return "" + rowNumber;
+        return "" + rowNumber; //$NON-NLS-1$
     }
 
     @Override
@@ -94,8 +94,6 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     /**
      * Sets the row number of this row. To keep row numbers up to date the tableContents object
      * calls this method every time the list of rows changes.
-     * 
-     * @param rowNumber
      */
     void setRowNumber(int rowNumber) {
         this.rowNumber = rowNumber;
@@ -189,6 +187,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             ITableStructure tableStructure,
             ValueDatatype[] datatypes,
             boolean uniqueKeyCheck) throws CoreException {
+
         IUniqueKey[] uniqueKeys = tableStructure.getUniqueKeys();
         validateMissingAndInvalidUniqueKeyValue(result, datatypes, tableStructure, uniqueKeys);
         validateRowValue(result, tableStructure, datatypes);
@@ -208,11 +207,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     private void validateMissingAndInvalidUniqueKeyValue(MessageList list,
             ValueDatatype[] datatypes,
             ITableStructure structure,
-            IUniqueKey[] uniqueKeys) throws CoreException {
+            IUniqueKey[] uniqueKeys) {
 
-        // this validation can only be applied if the colum sizes of the structure and content are
-        // consistent.
-        // there must be a different rule that validates this consistency
+        /*
+         * this validation can only be applied if the colum sizes of the structure and content are
+         * consistent. there must be a different rule that validates this consistency
+         */
         if (structure.getNumOfColumns() != getTableContents().getNumOfColumns()) {
             return;
         }
@@ -247,6 +247,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             IColumnRange columnRange,
             IColumn fromColumn,
             IColumn toColumn) {
+
         if (fromColumn == null || toColumn == null) {
             // ignored, will be another validation error
             return;

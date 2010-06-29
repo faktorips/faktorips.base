@@ -46,171 +46,111 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
         this.locStringSet = locStringSet;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getId() {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName(Locale locale) {
         return locStringSet.getString("name", locale); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGenerationConceptNameAbbreviation(Locale locale) {
         return locStringSet.getString("generationConceptAbbreviation", locale); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersionConceptNameSingular(Locale locale) {
         return locStringSet.getString("versionConceptNameSingular", locale); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersionConceptNamePlural(Locale locale) {
         return locStringSet.getString("versionConceptNamePlural", locale); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersionConceptNameAbbreviation(Locale locale) {
         return locStringSet.getString("versionConceptAbbreviation", locale); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getEffectiveDateConceptName(Locale locale) {
         return locStringSet.getString("effectiveDateConceptName", locale); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getEffectiveDateConceptName() {
         return getEffectiveDateConceptName(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGenerationConceptNameAbbreviation() {
         return getGenerationConceptNameAbbreviation(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGenerationConceptNameSingular(Locale locale) {
         return getGenerationConceptNameSingular(locale, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGenerationConceptNamePlural(Locale locale) {
         return getGenerationConceptNamePlural(locale, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGenerationConceptNamePlural() {
         return getGenerationConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale(), false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGenerationConceptNameSingular() {
         return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale(), false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGenerationConceptNamePlural(boolean usageInsideSentence) {
         return getGenerationConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale(), usageInsideSentence);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGenerationConceptNameSingular(boolean usageInsideSentence) {
         return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale(), usageInsideSentence);
     }
 
     private String getGenerationConceptNamePlural(Locale usedLanguagePackLocale, boolean usageInsideSentence) {
-        return locStringSet.getString(!usageInsideSentence ? "generationConceptNamePlural"
-                : "generationConceptNamePluralInsideSentence", usedLanguagePackLocale);
+        return locStringSet.getString(!usageInsideSentence ? "generationConceptNamePlural" //$NON-NLS-1$
+                : "generationConceptNamePluralInsideSentence", usedLanguagePackLocale); //$NON-NLS-1$
     }
 
     private String getGenerationConceptNameSingular(Locale usedLanguagePackLocale, boolean usageInsideSentence) {
-        return locStringSet.getString(!usageInsideSentence ? "generationConceptNameSingular"
-                : "generationConceptNameSingularInsideSentence", usedLanguagePackLocale);
+        return locStringSet.getString(!usageInsideSentence ? "generationConceptNameSingular" //$NON-NLS-1$
+                : "generationConceptNameSingularInsideSentence", usedLanguagePackLocale); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return getName(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersionConceptNameAbbreviation() {
         return getVersionConceptNameAbbreviation(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersionConceptNamePlural() {
         return getVersionConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersionConceptNameSingular() {
         return getVersionConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale());

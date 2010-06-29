@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -77,17 +76,14 @@ public class IpsObjectPartState {
      */
     public IpsObjectPartState(String part) {
         try {
-            state = XmlUtil.getDocument(new ByteArrayInputStream(part.getBytes()));
+            state = XmlUtil.parseDocument(new ByteArrayInputStream(part.getBytes()));
         } catch (SAXException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
         }
 
         NodeList nodes = state.getDocumentElement().getElementsByTagName(ELEMENT_TYPE);
-
         if (nodes.getLength() != 1) {
             throw new RuntimeException(
                     "Illegal String - expected exactly ONE node with tagname " + ELEMENT_TYPE + ", but found " + nodes.getLength()); //$NON-NLS-1$ //$NON-NLS-2$

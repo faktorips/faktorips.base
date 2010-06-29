@@ -122,7 +122,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
             }
             root.appendChild(prop);
             prop.setAttribute("name", key); //$NON-NLS-1$
-            prop.setAttribute("value", value);
+            prop.setAttribute("value", value); //$NON-NLS-1$
         }
         return root;
     }
@@ -138,8 +138,8 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         for (String name : this.properties.keySet()) {
             IIpsBuilderSetPropertyDef propertyDef = builderSetInfo.getPropertyDefinition(name);
             if (propertyDef == null) {
-                throw new IllegalStateException("The property: " + name
-                        + " of this builder set configuration is not defined in the provided for the builder set: "
+                throw new IllegalStateException("The property: " + name //$NON-NLS-1$
+                        + " of this builder set configuration is not defined in the provided for the builder set: " //$NON-NLS-1$
                         + builderSetInfo.getBuilderSetId());
             }
             String valueAsString = this.properties.get(name);

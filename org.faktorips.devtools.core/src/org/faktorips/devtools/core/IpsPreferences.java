@@ -164,7 +164,7 @@ public class IpsPreferences {
     public final GregorianCalendar getWorkingDate() {
         String date = IpsPlugin.getDefault().getIpsPreferences().prefStore.getString(WORKING_DATE);
         try {
-            return XmlUtil.parseGregorianCalendarFromXmlDateString(date);
+            return XmlUtil.parseGregorianCalendar(date);
         } catch (XmlParseException e) {
             return new GregorianCalendar();
         }

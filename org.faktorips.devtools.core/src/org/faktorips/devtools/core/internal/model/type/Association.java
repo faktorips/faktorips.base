@@ -64,33 +64,21 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         super(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IType getType() {
         return (IType)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public AggregationKind getAggregationKind() {
         return getAssociationType().getAggregationKind();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public AssociationType getAssociationType() {
         return type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setAssociationType(AssociationType newType) {
         ArgumentCheck.notNull(newType);
@@ -99,41 +87,26 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         valueChanged(oldType, newType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAssoziation() {
         return type.isAssoziation();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return targetRoleSingular;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDerived() {
         return isDerivedUnion();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDerivedUnion() {
         return derivedUnion;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDerivedUnion(boolean flag) {
         boolean oldValue = derivedUnion;
@@ -141,17 +114,11 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         valueChanged(oldValue, derivedUnion);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTarget() {
         return target;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setTarget(String newTarget) {
         String oldTarget = target;
@@ -159,33 +126,21 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         valueChanged(oldTarget, newTarget);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IType findTarget(IIpsProject ipsProject) throws CoreException {
         return (IType)ipsProject.findIpsObject(getIpsObject().getIpsObjectType(), target);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTargetRoleSingular() {
         return targetRoleSingular;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultTargetRoleSingular() {
         return StringUtils.capitalize(QNameUtil.getUnqualifiedName(target));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setTargetRoleSingular(String newRole) {
         String oldRole = targetRoleSingular;
@@ -193,25 +148,16 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         valueChanged(oldRole, newRole);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTargetRolePlural() {
         return targetRolePlural;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultTargetRolePlural() {
         return targetRoleSingular;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setTargetRolePlural(String newRole) {
         String oldRole = targetRolePlural;
@@ -219,25 +165,16 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         valueChanged(oldRole, newRole);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isTargetRolePluralRequired() {
         return is1ToMany() || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getMinCardinality() {
         return minCardinality;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMinCardinality(int newValue) {
         int oldValue = minCardinality;
@@ -245,41 +182,26 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getMaxCardinality() {
         return maxCardinality;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean is1ToMany() {
         return isQualified() || maxCardinality > 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean is1ToManyIgnoringQualifier() {
         return maxCardinality > 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean is1To1() {
         return maxCardinality == 1 && !isQualified();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMaxCardinality(int newValue) {
         int oldValue = maxCardinality;
@@ -287,9 +209,6 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setSubsettedDerivedUnion(String newRelation) {
         String oldValue = subsettedDerivedUnion;
@@ -297,33 +216,21 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         valueChanged(oldValue, newRelation);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getSubsettedDerivedUnion() {
         return subsettedDerivedUnion;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSubsetOfADerivedUnion() {
         return StringUtils.isNotEmpty(subsettedDerivedUnion);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException {
         return getType().findAssociation(subsettedDerivedUnion, project);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException {
         IType targetType = findTarget(ipsProject);
@@ -335,9 +242,6 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         return finder.candidates.toArray(new IAssociation[finder.candidates.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject project) throws CoreException {
         if (derivedUnion == null) {
@@ -346,17 +250,11 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         return derivedUnion.equals(findSubsettedDerivedUnion(project));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -386,9 +284,6 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
@@ -408,9 +303,6 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -502,9 +394,6 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
             this.targetType = targetType;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean visit(IType currentType) throws CoreException {
             IAssociation[] associations = currentType.getAssociations();
@@ -557,7 +446,7 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
 
     @Override
     protected void removePart(IIpsObjectPart part) {
-        throw new UnsupportedOperationException("This implementation is atomic, no part to remove.");
+        throw new UnsupportedOperationException("This implementation is atomic, no part to remove."); //$NON-NLS-1$
     }
 
 }

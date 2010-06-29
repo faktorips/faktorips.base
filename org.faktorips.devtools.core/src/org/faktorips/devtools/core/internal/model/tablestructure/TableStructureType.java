@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.enums.EnumType;
  * @author Thorsten Guenther
  */
 public class TableStructureType extends DefaultEnumValue {
+
     /**
      * Single content - for this table structure only on table content is allowed.
      */
@@ -64,7 +65,9 @@ public class TableStructureType extends DefaultEnumValue {
 
     /**
      * @param index The index of the type.
+     * 
      * @return The type defined for the given index.
+     * 
      * @throws IndexOutOfBoundsException If the index is out of bounds.
      */
     public TableStructureType getType(int index) throws IndexOutOfBoundsException {

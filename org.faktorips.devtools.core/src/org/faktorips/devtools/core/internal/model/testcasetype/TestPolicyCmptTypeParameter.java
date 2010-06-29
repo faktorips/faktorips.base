@@ -330,9 +330,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return p;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParamChild(String name) {
         for (ITestPolicyCmptTypeParameter p : testPolicyCmptTypeChilds) {
@@ -352,25 +349,16 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return p;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITestPolicyCmptTypeParameter getParentTestPolicyCmptTypeParam() {
         return (ITestPolicyCmptTypeParameter)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeTestPolicyCmptTypeParamChild(TestPolicyCmptTypeParameter testPolicyCmptTypeParamChildName) {
         testPolicyCmptTypeChilds.remove(testPolicyCmptTypeParamChildName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITestParameter getRootParameter() {
         ITestParameter current = this;
@@ -421,9 +409,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return (!(getParent() instanceof TestPolicyCmptTypeParameter));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int[] moveTestAttributes(int[] indexes, boolean up) {
         ListElementMover<ITestAttribute> mover = new ListElementMover<ITestAttribute>(testAttributes);
@@ -432,9 +417,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return newIdxs;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int[] moveTestPolicyCmptTypeChild(int[] indexes, boolean up) {
         ListElementMover<ITestPolicyCmptTypeParameter> mover = new ListElementMover<ITestPolicyCmptTypeParameter>(
@@ -444,9 +426,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return newIdxs;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt)
             throws CoreException {
@@ -497,16 +476,19 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                     IPolicyCmptType pcType = findPolicyCmptType(ipsProjectToSearch);
                     IPolicyCmptType pcTypeOfProduct = productCmptFound.findPolicyCmptType(ipsProjectToSearch);
                     if (pcType != null && pcTypeOfProduct != null) {
-                        // check if the specified policy cmpt type is the same or a supertype
-                        // of the found product cmpt policy cmpt type
+                        /*
+                         * check if the specified policy cmpt type is the same or a supertype of the
+                         * found product cmpt policy cmpt type
+                         */
                         if (!pcTypeOfProduct.isSubtypeOrSameType(pcType, getIpsProject())) {
                             continue;
                         }
                     }
                     if (pcType == null || pcTypeOfProduct == null) {
-                        // in case of product cmpt types with a missing or not configurated poliy
-                        // cmpt type
-                        // the product cmpt couldn't be used
+                        /*
+                         * in case of product cmpt types with a missing or not configurated poliy
+                         * cmpt type the product cmpt couldn't be used
+                         */
                         continue;
                     }
                     result.add(productCmptFoundSrc);
@@ -517,9 +499,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -562,8 +541,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             }
         }
 
-        // check if the association exists
-        // if the parameter is root, no association is defined
+        // check if the association exists if the parameter is root, no association is defined
         if (!isRoot()) {
             IPolicyCmptTypeAssociation associationFound = findAssociation(ipsProject);
             if (associationFound == null) {
@@ -636,13 +614,13 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             }
         } // check association end
 
-        // check if this is a root parameter and the related policy cmpt is abstract, that the
-        // required product cmpt flag
-        // is true, otherwise it is not possible to select a derived class of the abstract policy
-        // cmpt.
-        // for none root parameters this check is not necessary, because in this case a dialog will
-        // be displayed to select
-        // the target of a association (childs are always defined by using a association)
+        /*
+         * check if this is a root parameter and the related policy cmpt is abstract, that the
+         * required product cmpt flag is true, otherwise it is not possible to select a derived
+         * class of the abstract policy cmpt. for none root parameters this check is not necessary,
+         * because in this case a dialog will be displayed to select the target of a association
+         * (childs are always defined by using a association)
+         */
         if (isRoot() && policyCmptTypeFound != null) {
             if (!isRequiresProductCmpt() && policyCmptTypeFound.isAbstract()) {
                 String text = NLS.bind(
@@ -654,8 +632,10 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             }
         }
 
-        // check if the requires product flag is only true if the related test policy cmpt is
-        // configurable by product cmpt type
+        /*
+         * check if the requires product flag is only true if the related test policy cmpt is
+         * configurable by product cmpt type
+         */
         if (policyCmptTypeFound != null && requiresProductCmpt
                 && !policyCmptTypeFound.isConfigurableByProductCmptType()) {
             String text = NLS

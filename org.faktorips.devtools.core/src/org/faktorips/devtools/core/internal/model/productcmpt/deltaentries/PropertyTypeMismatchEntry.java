@@ -35,33 +35,21 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
         this.value = value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ProdDefPropertyType getPropertyType() {
         return value.getPropertyType();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyName() {
         return property.getPropertyName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DeltaType getDeltaType() {
         return DeltaType.PROPERTY_TYPE_MISMATCH;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         String desc = Messages.PropertyTypeMismatchEntry_desc;
@@ -69,9 +57,6 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
                 value.getPropertyType().getName() });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void fix() {
         value.delete();

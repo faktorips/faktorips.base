@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -33,7 +32,7 @@ import org.w3c.dom.Document;
  * 
  * @author Jan Ortmann
  */
-public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
+public class IpsSrcFile extends AbstractIpsSrcFile {
 
     public IpsSrcFile(IIpsElement parent, String name) {
         super(parent, name);

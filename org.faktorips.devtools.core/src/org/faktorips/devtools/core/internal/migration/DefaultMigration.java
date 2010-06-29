@@ -53,17 +53,11 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         super(projectToMigrate, featureId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEmpty() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
         MessageList messages = new MessageList();

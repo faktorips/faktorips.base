@@ -59,9 +59,6 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
         this.roleName = roleName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult compile(CompilationResult[] argResults) {
         try {

@@ -221,6 +221,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     @Override
     public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
             throws CoreException {
+
         AssociationFinderPlural finder = new AssociationFinderPlural(ipsProject, roleNamePlural);
         finder.start(this);
         return finder.association;
@@ -231,6 +232,7 @@ public abstract class Type extends BaseIpsObject implements IType {
             AssociationType associationType,
             IIpsProject project,
             boolean includeSupertypes) throws CoreException {
+
         if (target == null || associationType == null) {
             return new IAssociation[0];
         }
@@ -383,6 +385,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     @Override
     public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
             throws CoreException {
+
         MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject,
                 onlyNotImplementedAbstractMethods);
         finder.start(findSupertype(ipsProject));
@@ -572,6 +575,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     private void addAttributeDatatypeDependencies(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details) {
+
         IAttribute[] attributes = getAttributes();
         for (IAttribute attribute : attributes) {
             String datatype = attribute.getDatatype();
@@ -583,12 +587,15 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     private void addQualifiedNameTypesForRelationTargets(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details) {
+
         IAssociation[] relations = getAssociations();
         for (IAssociation relation : relations) {
             String targetQName = relation.getTarget();
-            // an additional condition "&& this.isAggregateRoot()" will _not_ be helpful, because
-            // this method is called recursively for the detail and so on. But this detail is not an
-            // aggregate root and the recursion will terminate too early.
+            /*
+             * an additional condition "&& this.isAggregateRoot()" will _not_ be helpful, because
+             * this method is called recursively for the detail and so on. But this detail is not an
+             * aggregate root and the recursion will terminate too early.
+             */
             if (relation.getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
                 IDependency dependency = IpsObjectDependency.createCompostionMasterDetailDependency(
                         getQualifiedNameType(), new QualifiedNameType(targetQName, getIpsObjectType()));
@@ -924,17 +931,21 @@ public abstract class Type extends BaseIpsObject implements IType {
                                 Type.this, IType.PROPERTY_ABSTRACT));
                     }
                 } else if (associations[i] instanceof IPolicyCmptTypeAssociation) {
-                    // special check for policy component type associations
-                    // with type detail to master, if this association is a inverse of a derived
-                    // union then we need to check either the class is abstract or an inverse
-                    // implementation of the derived union exists
+                    /*
+                     * special check for policy component type associations with type detail to
+                     * master, if this association is a inverse of a derived union then we need to
+                     * check either the class is abstract or an inverse implementation of the
+                     * derived union exists
+                     */
                     IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)associations[i];
                     if (!policyCmptTypeAssociation.isInverseOfDerivedUnion()) {
                         continue;
                     }
 
-                    // now check if there is another detail to master
-                    // which is the inverse of a subset derived union
+                    /*
+                     * now check if there is another detail to master which is the inverse of a
+                     * subset derived union
+                     */
                     if (!isInverseSubsetted(policyCmptTypeAssociation)) {
                         String text = NLS.bind(Messages.Type_msg_MustImplementInverseDerivedUnion, associations[i]
                                 .getName(), associations[i].getType().getQualifiedName());
@@ -961,8 +972,10 @@ public abstract class Type extends BaseIpsObject implements IType {
                 // must be an error
                 return false;
             }
-            // now check if one of the candidate is the inverse of the implementation of the derived
-            // union
+            /*
+             * now check if one of the candidate is the inverse of the implementation of the derived
+             * union
+             */
             for (IAssociation candidate : candidateSubsets) {
                 if (!(candidate instanceof IPolicyCmptTypeAssociation)) {
                     continue;
@@ -1038,6 +1051,6 @@ public abstract class Type extends BaseIpsObject implements IType {
             return true;
         }
 
-    };
+    }
 
 }

@@ -84,25 +84,16 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         // default constructor
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmpt getProductCmpt() {
         return (IProductCmpt)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return getProductCmpt().findProductCmptType(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() {
         int numOfChildren = getNumOfAttributeValues() + getNumOfConfigElements() + getNumOfLinks()
@@ -116,22 +107,18 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
-    /**
-     * 
-     * @throws CoreException in case of exception throws core exception
-     */
-    public void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details)
-            throws CoreException {
+    void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
         addRelatedProductCmptQualifiedNameTypes(dependencies, details);
         addRelatedTableContentsQualifiedNameTypes(dependencies, details);
     }
 
-    /*
+    /**
      * Add the qualified name types of all related table contents inside the given generation to the
      * given set
      */
     private void addRelatedTableContentsQualifiedNameTypes(Set<IDependency> qaTypes,
             Map<IDependency, List<IDependencyDetail>> details) {
+
         ITableContentUsage[] tableContentUsages = getTableContentUsages();
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
@@ -142,12 +129,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
     }
 
-    /*
+    /**
      * Add the qualified name types of all related product cmpt's inside the given generation to the
      * given set
      */
     private void addRelatedProductCmptQualifiedNameTypes(Set<IDependency> qaTypes,
             Map<IDependency, List<IDependencyDetail>> details) {
+
         IProductCmptLink[] relations = getLinks();
         for (IProductCmptLink relation : relations) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
@@ -157,9 +145,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPropertyValue getPropertyValue(IProdDefProperty property) {
         if (property == null) {
@@ -181,9 +166,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         throw new RuntimeException("Unknown property type " + type); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPropertyValue getPropertyValue(String propertyName) {
         if (propertyName == null) {
@@ -204,9 +186,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return getConfigElement(propertyName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPropertyValue[] getPropertyValues(ProdDefPropertyType type) {
         if (type == null) {
@@ -227,9 +206,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPropertyValue newPropertyValue(IProdDefProperty property) {
         ProdDefPropertyType type = property.getProdDefPropertyType();
@@ -248,17 +224,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
         return new GenerationToTypeDelta(this, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException {
         IProductCmptType type = findProductCmptType(ipsProject);
@@ -274,17 +244,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         Collections.sort(formulas, comparator);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IAttributeValue[] getAttributeValues() {
         return attributeValues.toArray(new IAttributeValue[attributeValues.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IAttributeValue getAttributeValue(String attribute) {
         if (attribute == null) {
@@ -298,25 +262,16 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getNumOfAttributeValues() {
         return attributeValues.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IAttributeValue newAttributeValue() {
         return newAttributeValue(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute) {
         IAttributeValue newValue = newAttributeValueInternal(getNextPartId(), attribute,
@@ -325,9 +280,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value) {
         IAttributeValue newValue = newAttributeValueInternal(getNextPartId(), attribute, value);
@@ -335,7 +287,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newValue;
     }
 
-    /*
+    /**
      * Creates a new attribute value without updating the src file.
      */
     private AttributeValue newAttributeValueInternal(String id) {
@@ -344,7 +296,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return av;
     }
 
-    /*
+    /**
      * Creates a new attribute value without updating the src file.
      */
     private AttributeValue newAttributeValueInternal(String id, IProductCmptTypeAttribute attr, String value) {
@@ -353,17 +305,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return av;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IConfigElement[] getConfigElements() {
         return configElements.toArray(new IConfigElement[configElements.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IConfigElement getConfigElement(String attributeName) {
         for (IConfigElement each : configElements) {
@@ -374,40 +320,31 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getNumOfConfigElements() {
         return configElements.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IConfigElement newConfigElement() {
         return newConfigElement(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IConfigElement newConfigElement(IPolicyCmptTypeAttribute attribute) {
         IConfigElement newElement = newConfigElementInternal(getNextPartId(), attribute);
-        // this is necessary because though broadcasting has been stopped the modified status will
-        // still be changed.
-        // To enable the triggering of the modification event in the objectHasChanged() method it is
-        // necessary to clear
-        // the modification status first
+        /*
+         * this is necessary because though broadcasting has been stopped the modified status will
+         * still be changed. To enable the triggering of the modification event in the
+         * objectHasChanged() method it is necessary to clear the modification status first
+         */
         // TODO pk possible better solution: send a modification event after resuming broadcasting
         getIpsSrcFile().markAsClean();
         objectHasChanged();
         return newElement;
     }
 
-    /*
+    /**
      * Creates a new attribute without updating the src file.
      */
     private ConfigElement newConfigElementInternal(String id, IPolicyCmptTypeAttribute attribute) {
@@ -426,17 +363,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return e;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptLink[] getLinks() {
         return links.toArray(new ProductCmptLink[links.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptLink[] getLinks(String typeLink) {
         List<IProductCmptLink> result = new ArrayList<IProductCmptLink>();
@@ -448,25 +379,16 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return result.toArray(new ProductCmptLink[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getNumOfLinks() {
         return links.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptLink newLink(IProductCmptTypeAssociation association) {
         return newLink(association.getName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptLink newLink(String associationName) {
         ProductCmptLink newRelation = newLinkInternal(getNextPartId());
@@ -487,12 +409,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newLinkInternal(getNextPartId());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
             throws CoreException {
+
         if (association == null || target == null || !getIpsSrcFile().isMutable()) {
             return false;
         }
@@ -519,6 +439,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     private boolean isFirstRelationOfThisType(IAssociation association, IProductCmpt target, IIpsProject ipsProject)
             throws CoreException {
+
         for (IProductCmptLink link : links) {
             if (link.findAssociation(ipsProject).equals(association)
                     && link.getTarget().equals(target.getQualifiedName())) {
@@ -573,17 +494,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableContentUsage newTableContentUsage() {
         return newTableContentUsage(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableContentUsage newTableContentUsage(ITableStructureUsage structureUsage) {
         ITableContentUsage newUsage = newTableContentUsageInternal(getNextPartId(), structureUsage);
@@ -591,17 +506,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newUsage;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getNumOfTableContentUsages() {
         return getTableContentUsages().length;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableContentUsage[] getTableContentUsages() {
         return tableContentUsages.toArray(new ITableContentUsage[tableContentUsages.size()]);
@@ -621,25 +530,16 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return formulas.size() > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getNumOfFormulas() {
         return formulas.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormula[] getFormulas() {
         return formulas.toArray(new IFormula[formulas.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormula getFormula(String formulaName) {
         if (formulaName == null) {
@@ -653,17 +553,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormula newFormula() {
         return newFormula(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IFormula newFormula(IProductCmptTypeMethod signature) {
         IFormula newFormula = newFormulaInternal(getNextPartId(), signature);
@@ -677,9 +571,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newFormula;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         if (partType.equals(IAttributeValue.class)) {
@@ -697,9 +588,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
@@ -717,9 +605,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         throw new RuntimeException("Could not create part for tag " + xmlTagName); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         if (part instanceof IAttributeValue) {
@@ -741,9 +626,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof IAttributeValue) {
@@ -765,9 +647,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void reinitPartCollections() {
         attributeValues.clear();
@@ -777,9 +656,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         formulas.clear();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -811,6 +687,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     protected void validateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate(MessageList msgList,
             IIpsProject ipsProject) throws CoreException {
+
         IProductCmptLink[] links = getLinks();
         for (IProductCmptLink link : links) {
             IAssociation association = link.findAssociation(ipsProject);
@@ -836,9 +713,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableContentUsage getTableContentUsage(String rolename) {
         if (rolename == null) {

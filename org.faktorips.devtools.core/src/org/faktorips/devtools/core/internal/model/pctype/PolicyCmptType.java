@@ -460,6 +460,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             this.msgList = msgList;
         }
 
+        // TODO internationalize messages
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
             for (IValidationRule validationRule : currentType.getRules()) {
@@ -505,24 +506,23 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
         ArgumentCheck.notNull(xmlTag);
         if (xmlTag.getTagName().equals(IPersistentTypeInfo.XML_TAG)) {
-            return newPersistentTypeInfoInternal(this, id);
+            return newPersistentTypeInfoInternal(id);
         }
         return super.newPart(xmlTag, id);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public IIpsObjectPart newPart(Class partType) {
         if (partType == PersistentTypeInfo.class) {
-            return newPersistentTypeInfoInternal(this, getNextPartId());
+            return newPersistentTypeInfoInternal(getNextPartId());
         }
         return super.newPart(partType);
     }
 
-    /*
+    /**
      * Creates a new persistent type info for this policy component type
      */
-    private IIpsObjectPart newPersistentTypeInfoInternal(PolicyCmptType policyCmptType, String id) {
+    private IIpsObjectPart newPersistentTypeInfoInternal(String id) {
         persistenceTypeInfo = new PersistentTypeInfo(this, id);
         return persistenceTypeInfo;
     }
@@ -565,7 +565,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     public void initPersistentTypeInfo() throws CoreException {
         if (!getIpsProject().isPersistenceSupportEnabled()) {
             throw new CoreException(new IpsStatus(
-                    "Cannot initialize persistence information because the IPS Project is not persistent."));
+                    "Cannot initialize persistence information because the IPS Project is not persistent.")); //$NON-NLS-1$
         }
 
         IPersistentTypeInfo persistenceTypeInfo = getPersistenceTypeInfo();
@@ -602,4 +602,5 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
         newPart(PersistentTypeInfo.class);
     }
+
 }

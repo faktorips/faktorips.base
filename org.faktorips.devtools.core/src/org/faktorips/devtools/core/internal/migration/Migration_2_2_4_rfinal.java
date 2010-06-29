@@ -26,38 +26,25 @@ import org.faktorips.util.message.MessageList;
  */
 public class Migration_2_2_4_rfinal extends AbstractIpsProjectMigrationOperation {
 
-    /** Creates <code>Migration_2_2_4_rfinal</code>. */
     public Migration_2_2_4_rfinal(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         return "Some bugs fixed."; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTargetVersion() {
         return "2.2.5.rfinal"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEmpty() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException {
         return new MessageList();

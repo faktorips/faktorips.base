@@ -35,29 +35,21 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
     public ProductCmptStructureTblUsageReference(IProductCmptTreeStructure structure,
             ProductCmptStructureReference parent, ITableContentUsage tableContentUsage)
             throws CycleInProductStructureException {
+
         super(structure, parent);
         this.tableContentUsage = tableContentUsage;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPartContainer getWrapped() {
         return tableContentUsage;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITableContentUsage getTableContentUsage() {
         return tableContentUsage;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObject getWrappedIpsObject() {
         try {
@@ -71,4 +63,5 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
         }
         return null;
     }
+
 }

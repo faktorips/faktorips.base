@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.XmlParseException;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -39,7 +40,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
     protected IpsObjectGeneration() {
-
+        // Provides default constructor to sub classes.
     }
 
     @Override
@@ -95,10 +96,12 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
             return null;
         }
         GregorianCalendar now = new GregorianCalendar();
-        // because now contains the current time incliding hour, minute and second, but
-        // validFrom does not, we have to set the fields for hour, minute, second and millisecond
-        // to 0 to get an editable generation which is valid from today. The field AM_PM has to be
-        // set to AM, too.
+        /*
+         * because now contains the current time incliding hour, minute and second, but validFrom
+         * does not, we have to set the fields for hour, minute, second and millisecond to 0 to get
+         * an editable generation which is valid from today. The field AM_PM has to be set to AM,
+         * too.
+         */
         now.set(Calendar.HOUR, 0);
         now.set(Calendar.AM_PM, Calendar.AM);
         now.set(Calendar.MINUTE, 0);
@@ -115,7 +118,11 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        validFrom = XmlUtil.parseXmlDateStringToGregorianCalendar(element.getAttribute(PROPERTY_VALID_FROM));
+        try {
+            validFrom = XmlUtil.parseGregorianCalendar(element.getAttribute(PROPERTY_VALID_FROM));
+        } catch (XmlParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -145,13 +152,14 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
             if (generations[i].getGenerationNo() == getGenerationNo() + 1) {
                 GregorianCalendar date = generations[i].getValidFrom();
                 if (date != null) {
-                    // make a copy to not modify the validfrom-date of the generation
+                    // make a copy to not modify the valid-from date of the generation
                     date = (GregorianCalendar)date.clone();
 
-                    // reduce the valid-from date of the follow-up generation
-                    // by one millisecond to avoid that two generations are valid
-                    // at the same time. This generation is not valid at the time
-                    // the follow-up generation is valid from.
+                    /*
+                     * reduce the valid-from date of the follow-up generation by one millisecond to
+                     * avoid that two generations are valid at the same time. This generation is not
+                     * valid at the time the follow-up generation is valid from.
+                     */
                     date.setTimeInMillis(date.getTimeInMillis() - 1);
                 }
                 validTo = date;

@@ -60,9 +60,12 @@ public class ProductCmptTypeValidations {
         return null;
     }
 
+    // TODO internationalize messages
     public static Message validateSupertypeMustBeInHierarchy(IIpsProject ipsProject,
             IProductCmptType superType,
             IPolicyCmptType superPcType) throws CoreException {
+
+        // FIXME AW: This method is completely broken!
 
         IProductCmptType productCmptTypeOfPolicyCmptSupertype = null;
         if (superPcType != null) {
@@ -99,6 +102,7 @@ public class ProductCmptTypeValidations {
         return null;
     }
 
+    // TODO internationalize messages
     public static Message validatePolicyCmptSuperTypeNeedsToBeX(IIpsProject ipsProject,
             String productCmptSuperType,
             String policyCmptSupertype) throws CoreException {

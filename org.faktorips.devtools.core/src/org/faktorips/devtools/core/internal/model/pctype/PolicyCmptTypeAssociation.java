@@ -226,15 +226,16 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return null;
     }
 
-    /*
+    /**
      * Returns the target site association with inverse set to this association. The inverse of the
      * target association must be the name of this association and the target of the inverse must be
      * the policy component type this association belongs to.
      * 
-     * "public" to enable testing in the test plugin
      */
+    // public to enable testing in the test plugin
     public IPolicyCmptTypeAssociation findTargetAssociationWithCorrespondingInverse(IIpsProject ipsProject)
             throws CoreException {
+
         IPolicyCmptType target = findTargetPolicyCmptType(ipsProject);
         if (target == null) {
             return null;
@@ -308,6 +309,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     private void checkForDerivedUnionInverseAssociationMismatch(IPolicyCmptTypeAssociation derivedUnion,
             MessageList list,
             IIpsProject ipsProject) throws CoreException {
+
         IPolicyCmptTypeAssociation inverseAss = findInverseAssociation(ipsProject);
         if (inverseAss == null) {
             return; // not found => error will be reported in validateInverseRelation
@@ -485,7 +487,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         } catch (Exception e) {
             IpsPlugin.log(e);
         }
-        throw new IllegalArgumentException("Unsupported part type: " + partType);
+        throw new IllegalArgumentException("Unsupported part type: " + partType); //$NON-NLS-1$
     }
 
     @Override

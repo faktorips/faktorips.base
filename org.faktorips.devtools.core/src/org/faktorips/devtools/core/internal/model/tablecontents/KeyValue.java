@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
  * items.
  */
 public class KeyValue extends AbstractKeyValue {
+
     protected String value;
 
     public KeyValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
@@ -46,18 +47,12 @@ public class KeyValue extends AbstractKeyValue {
     /**
      * The key value is the string representation of all key items columns in the table contents
      * row.
-     * 
-     * {@inheritDoc}
      */
     @Override
     protected String getKeyValue() {
         return value;
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValid(Row row) {
         String valueNew = evalValue(row);

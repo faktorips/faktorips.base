@@ -45,7 +45,6 @@ import org.faktorips.util.ArgumentCheck;
  * @author Thorsten Guenther
  */
 public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
-    private static final IProductCmptStructureReference[] EMPTY_PRODUCTCMPTSTRUCTUREREFERENCES = new IProductCmptStructureReference[0];
 
     private IIpsProject ipsProject;
     private ProductCmptReference root;
@@ -56,6 +55,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * working date this constructor uses the latest adjustment (generation).
      * 
      * @param root The product component to create a structure for.
+     * 
      * @throws CycleInProductStructureException if a cycle is detected.
      * @throws NullPointerException if the given product component is <code>null</code>.
      */
@@ -77,6 +77,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      */
     public ProductCmptTreeStructure(IProductCmpt root, GregorianCalendar date, IIpsProject project)
             throws CycleInProductStructureException {
+
         ArgumentCheck.notNull(root);
         ArgumentCheck.notNull(project);
 
@@ -85,33 +86,21 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         this.root = buildNode(root, null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public GregorianCalendar getValidAt() {
         return workingDate;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptReference getRoot() {
         return root;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void refresh() throws CycleInProductStructureException {
         root = buildNode(root.getProductCmpt(), null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptStructureReference[] toArray(boolean productCmptOnly) {
         List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
@@ -131,6 +120,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     private void addChildrenToList(IProductCmptStructureReference parent,
             List<IProductCmptStructureReference> list,
             boolean productCmptOnly) {
+
         if (!productCmptOnly) {
             addChildrenToList(getChildProductCmptTypeAssociationReferences(parent), list, productCmptOnly);
         }
@@ -158,14 +148,11 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     /**
      * Creates a new node for the given element and links it to the given parent-node.
-     * 
-     * @param element The IpsElement to be wrapped by the new node.
-     * @param parent The parent-node for the new one.
-     * @throws CycleInProductStructureException
      */
     private ProductCmptReference buildNode(IProductCmpt cmpt,
             IProductCmptLink link,
             ProductCmptStructureReference parent) throws CycleInProductStructureException {
+
         ProductCmptReference node = new ProductCmptReference(this, parent, cmpt, link);
         node.setChildren(buildChildNodes(cmpt, node));
         return node;
@@ -177,8 +164,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * 
      * @param links The relations to create nodes for.
      * @param parent The parent for the new nodes
-     * @return
-     * @throws CycleInProductStructureException
      */
     private ProductCmptStructureReference[] buildChildNodes(IProductCmptLink[] links,
             ProductCmptStructureReference parent,
@@ -208,10 +193,10 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * 
      * @param element The element the new children can be found in as relation-targets.
      * @param parent The parent node for the new children.
-     * @throws CycleInProductStructureException
      */
     private ProductCmptStructureReference[] buildChildNodes(IIpsElement element, ProductCmptStructureReference parent)
             throws CycleInProductStructureException {
+
         List<IProductCmptStructureReference> children = new ArrayList<IProductCmptStructureReference>();
 
         if (element instanceof IProductCmpt) {
@@ -291,9 +276,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         return children.toArray(result);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptReference getParentProductCmptReference(IProductCmptStructureReference child) {
         ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
@@ -306,9 +288,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAssociationReference getParentProductCmptTypeRelationReference(IProductCmptStructureReference child) {
         ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
@@ -321,9 +300,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptReference[] getChildProductCmptReferences(IProductCmptStructureReference parent) {
         if (parent instanceof IProductCmptTypeAssociationReference) {
@@ -347,9 +323,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent) {
         return getChildProductCmptTypeAssociationReferences(parent, true);
@@ -358,6 +331,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     @Override
     public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent,
             boolean includeEmptyAssociations) {
+
         if (parent instanceof IProductCmptReference) {
             List<IProductCmptTypeAssociationReference> associationReferences = new ArrayList<IProductCmptTypeAssociationReference>();
             IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
@@ -385,9 +359,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(IProductCmptStructureReference parent) {
         List<ProductCmptStructureTblUsageReference> tblUsageReferences = new ArrayList<ProductCmptStructureTblUsageReference>();
@@ -406,10 +377,9 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     private IProductCmptStructureReference[] getChildren(IProductCmptStructureReference parent) {
         if (parent instanceof IProductCmptReference) {
             return ((ProductCmptReference)parent).getChildren();
-        } else if (parent instanceof IProductCmptStructureReference) {
-            return ((ProductCmptStructureReference)parent).getChildren();
         } else {
-            return EMPTY_PRODUCTCMPTSTRUCTUREREFERENCES;
+            return ((ProductCmptStructureReference)parent).getChildren();
         }
     }
+
 }

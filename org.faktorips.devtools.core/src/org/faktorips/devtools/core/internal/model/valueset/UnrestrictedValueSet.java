@@ -41,6 +41,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
      * 
      * @param parent The parent this valueset belongs to.
      * @param partId The id this part is knwon by by the parent.
+     * 
      * @throws IllegalArgumentException if the parent does not implement the interface
      *             <code>IValueDatatypeProvider</code>.
      */
@@ -154,8 +155,6 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
      * Because this is an <strong>All</strong>Values valueset, this method throws an
      * UnsupportedOperationException if the underlying datatype is non-primitive and this method is
      * called with <code>false</code> for containsNull, too.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public void setContainsNull(boolean containsNull) {

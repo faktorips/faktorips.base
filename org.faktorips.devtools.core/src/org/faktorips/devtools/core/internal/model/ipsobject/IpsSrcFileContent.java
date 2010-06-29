@@ -127,9 +127,6 @@ public class IpsSrcFileContent {
         return initialized;
     }
 
-    /**
-     * @return Returns the modified.
-     */
     public boolean isModified() {
         return modified;
     }
@@ -171,30 +168,18 @@ public class IpsSrcFileContent {
         ((IpsModel)ipsObject.getIpsModel()).ipsSrcFileContentHasChanged(event);
     }
 
-    /**
-     * @return Returns the modStamp.
-     */
     public long getModificationStamp() {
         return modificationStamp;
     }
 
-    /**
-     * @param modStamp The modStamp to set.
-     */
     public void setModificationStamp(long modStamp) {
         modificationStamp = modStamp;
     }
 
-    /**
-     * @return Returns the parsable.
-     */
     public boolean isParsable() {
         return parsable;
     }
 
-    /**
-     * @param parsable The parsable to set.
-     */
     public void setParsable(boolean parsable) {
         this.parsable = parsable;
     }
@@ -260,7 +245,7 @@ public class IpsSrcFileContent {
         rootProperties = null;
     }
 
-    /*
+    /**
      * Indicates that the initialization was finished.
      */
     private void initializedFinished() {
@@ -377,9 +362,6 @@ public class IpsSrcFileContent {
         return rc;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "IpsSrcFileContent " + getIpsSrcFile(); //$NON-NLS-1$

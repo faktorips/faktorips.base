@@ -56,6 +56,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
 
     private IpsArtefactBuilderSetInfo(String namespace, String builderSetClassName, String builderSetId,
             String builderSetLabel, Map<String, IIpsBuilderSetPropertyDef> propertyDefinitions) {
+
         super();
         this.namespace = namespace;
         this.builderSetClassName = builderSetClassName;
@@ -91,9 +92,6 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         return new EmptyBuilderSet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsArtefactBuilderSetConfigModel createDefaultConfiguration(IIpsProject ipsProject) {
         IpsArtefactBuilderSetConfigModel configModel = new IpsArtefactBuilderSetConfigModel();
@@ -104,7 +102,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         return configModel;
     }
 
-    /*
+    /**
      * Returns the class of the IIpsArtefactBuilderSet implementation class.
      */
     private Class<?> getBuilderSetClass() {
@@ -204,6 +202,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             IIpsModel ipsModel,
             IConfigurationElement element,
             ILog logger) {
+
         IConfigurationElement[] builderSetPropertyDefElements = element.getChildren("builderSetPropertyDef");
         Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = new HashMap<String, IIpsBuilderSetPropertyDef>();
         for (IConfigurationElement builderSetPropertyDefElement : builderSetPropertyDefElements) {

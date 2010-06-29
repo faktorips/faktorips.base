@@ -76,6 +76,7 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
             ITableStructure table,
             ITableContents tableContents,
             String contentUsage) throws CoreException {
+
         ITableAccessFunction[] fcts = table.getAccessFunctions();
         for (int j = 0; j < fcts.length; j++) {
             if (!fcts[j].validate(table.getIpsProject()).containsErrorMsg()) {
@@ -90,6 +91,8 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
     protected FlFunction createFlFunctionAdapter(ITableContents tableContents,
             ITableAccessFunction function,
             String roleName) {
+
         return new TableUsageAccessFunctionFlFunctionAdapter(tableContents, function, roleName);
     }
+
 }

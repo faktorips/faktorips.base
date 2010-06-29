@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefin
  * 
  * @author Jan Ortmann
  */
-public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implements IIpsPackageFragment {
+public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
 
     public ArchiveIpsPackageFragment(ArchiveIpsPackageFragmentRoot root, String name) {
         super(root, name);
@@ -191,18 +191,12 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
         // TODO the sort definition for archives needs to be implemented
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
         // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
@@ -212,9 +206,6 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
 
     /**
      * Get all children of type IIpsPackageFragment.
-     * 
-     * @return IpsPackageFragments as List.
-     * @throws CoreException
      */
     private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();

@@ -53,9 +53,22 @@ public class ContentChangeEvent {
         return new ContentChangeEvent(file, parts);
     }
 
+    /**
+     * @deprecated Use {@link #newPartsChangedPositionsChangedEvent(List)} instead as the IPS source
+     *             file is not relevant in this case.
+     */
+    @Deprecated
+    // Deprecated since 3.0
+    @SuppressWarnings("unused")
+    // OK to suppress because the method is deprecated
     public final static ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file,
             List<? extends IIpsObjectPart> parts) {
-        return new ContentChangeEvent(file, parts);
+
+        return newPartsChangedPositionsChangedEvent(parts);
+    }
+
+    public final static ContentChangeEvent newPartsChangedPositionsChangedEvent(List<? extends IIpsObjectPart> parts) {
+        return new ContentChangeEvent(parts);
     }
 
     public final static ContentChangeEvent newWholeContentChangedEvent(IIpsSrcFile file) {
@@ -91,7 +104,7 @@ public class ContentChangeEvent {
         type = TYPE_PARTS_CHANGED_POSITIONS;
     }
 
-    private ContentChangeEvent(IIpsSrcFile file, List<? extends IIpsObjectPart> parts) {
+    private ContentChangeEvent(List<? extends IIpsObjectPart> parts) {
         movedParts = Collections.unmodifiableList(parts);
     }
 

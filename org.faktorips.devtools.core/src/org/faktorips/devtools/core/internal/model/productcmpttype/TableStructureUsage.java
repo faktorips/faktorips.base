@@ -48,7 +48,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
 
     private boolean mandatoryTableContent = false;
 
-    // Contains the related table structures identified by the full qualified name
+    /** Contains the related table structures identified by the full qualified name */
     private List<TableStructureReference> tableStructures = new ArrayList<TableStructureReference>();
 
     public TableStructureUsage(IProductCmptType pcType, String id) {
@@ -59,7 +59,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      * Constructor for testing purposes.
      */
     public TableStructureUsage() {
-
+        // Default constructor provided for testing purposes.
     }
 
     IProductCmptType getProductCmptType() {
@@ -174,9 +174,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         objectHasChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isUsed(String tableStructure) {
         if (tableStructure == null) {
@@ -205,9 +202,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return tsr;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeTableStructure(String tableStructure) {
         TableStructureReference toBeDeleted = getTableStructureReference(tableStructure);

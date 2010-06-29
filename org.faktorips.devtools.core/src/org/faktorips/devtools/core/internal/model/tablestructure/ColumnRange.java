@@ -187,9 +187,6 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         return parameterName;
     }
 
-    /**
-     * @param parameterName Sets the parameterName
-     */
     public void setParameterName(String parameterName) {
         ArgumentCheck.notNull(parameterName);
         String oldParameterName = this.parameterName;

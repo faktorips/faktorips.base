@@ -28,6 +28,7 @@ import org.w3c.dom.NodeList;
  * @author Roman Grutza
  */
 public class PersistenceOptions implements IPersistenceOptions {
+
     private ITableColumnNamingStrategy tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreColumnNamingStrategy();
     private ITableNamingStrategy tableNamingStrategy = new CamelCaseToUpperUnderscoreTableNamingStrategy();
 
@@ -52,7 +53,7 @@ public class PersistenceOptions implements IPersistenceOptions {
      * </pre>
      */
     public PersistenceOptions(Element element) {
-        if (element == null || !element.getTagName().equals("PersistenceOptions")) {
+        if (element == null || !element.getTagName().equals("PersistenceOptions")) { //$NON-NLS-1$
             return;
         }
         maxColumnNameLength = Integer.valueOf(element.getAttribute(MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME));
@@ -62,7 +63,7 @@ public class PersistenceOptions implements IPersistenceOptions {
 
         NodeList elementsByTagName = element.getElementsByTagName(ITableNamingStrategy.XML_TAG_NAME);
         if (elementsByTagName.getLength() > 0) {
-            String id = ((Element)elementsByTagName.item(0)).getAttribute("id");
+            String id = ((Element)elementsByTagName.item(0)).getAttribute("id"); //$NON-NLS-1$
             if (id.equals(CamelCaseToUpperUnderscoreTableNamingStrategy.EXTENSION_ID)) {
                 tableNamingStrategy = new CamelCaseToUpperUnderscoreTableNamingStrategy();
             }
@@ -70,7 +71,7 @@ public class PersistenceOptions implements IPersistenceOptions {
 
         elementsByTagName = element.getElementsByTagName(ITableColumnNamingStrategy.XML_TAG_NAME);
         if (elementsByTagName.getLength() > 0) {
-            String id = ((Element)elementsByTagName.item(0)).getAttribute("id");
+            String id = ((Element)elementsByTagName.item(0)).getAttribute("id"); //$NON-NLS-1$
             if (id.equals(CamelCaseToUpperUnderscoreColumnNamingStrategy.EXTENSION_ID)) {
                 tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreColumnNamingStrategy();
             }
@@ -130,4 +131,5 @@ public class PersistenceOptions implements IPersistenceOptions {
     public void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations) {
         this.allowLazyFetchForSingleValuedAssociations = allowLazyFetchForSingleValuedAssociations;
     }
+
 }

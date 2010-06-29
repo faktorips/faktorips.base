@@ -41,8 +41,6 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
     private IIpsPackageFragment originalIpsPackageFragment;
 
     /**
-     * Creates an <tt>IpsMoveProcessor</tt>.
-     * 
      * @param ipsObject The <tt>IIpsObject</tt> to be moved.
      */
     protected IpsMoveProcessor(IIpsObject ipsObject) {
@@ -52,8 +50,6 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * This implementation validates the target <tt>IIpsPackageFragment</tt> and returns a
      * <tt>RefactoringStatus</tt> as result of the validation. It checks that it does not equal the
      * <tt>IIpsObject</tt>'s original <tt>IIpsPackageFragment</tt>.

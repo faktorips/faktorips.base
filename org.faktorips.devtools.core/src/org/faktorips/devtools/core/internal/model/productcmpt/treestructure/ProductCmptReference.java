@@ -34,45 +34,29 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
     private IProductCmpt cmpt;
     private final IProductCmptLink link;
 
-    /**
-     * @param structure
-     * @param parent
-     * @throws CycleInProductStructureException
-     */
     public ProductCmptReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
             IProductCmpt cmpt, IProductCmptLink link) throws CycleInProductStructureException {
+
         super(structure, parent);
         this.cmpt = cmpt;
         this.link = link;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmpt getProductCmpt() {
         return cmpt;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPartContainer getWrapped() {
         return link;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObject getWrappedIpsObject() {
         return cmpt;
     }
 
-    /**
-     * @return Returns the link.
-     */
     @Override
     public IProductCmptLink getLink() {
         return link;

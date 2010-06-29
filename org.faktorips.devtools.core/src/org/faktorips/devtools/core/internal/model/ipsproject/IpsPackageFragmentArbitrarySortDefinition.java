@@ -35,20 +35,13 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
     private List<String> sortOrder = new ArrayList<String>(20);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getSegmentNames() {
         return sortOrder.toArray(new String[sortOrder.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setSegmentNames(String[] segments) {
-
         sortOrderLookup.clear();
         sortOrder.clear();
 
@@ -63,9 +56,6 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compare(String segment1, String segment2) {
 
@@ -88,9 +78,6 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toPersistenceContent() {
         String content = null;
@@ -103,15 +90,13 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         return content;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initPersistenceContent(String content) throws CoreException {
-
-        // do not use system line seperator here because the file could be transfered from another
-        // system. This regext splits the content at \r\n (windows), \n (unix) or \r (old mac)
-        String[] segments = content.split("[\r\n]++");
+        /*
+         * do not use system line seperator here because the file could be transfered from another
+         * system. This regext splits the content at \r\n (windows), \n (unix) or \r (old mac)
+         */
+        String[] segments = content.split("[\r\n]++"); //$NON-NLS-1$
 
         int pos = 0;
         sortOrderLookup.clear();
@@ -141,9 +126,6 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragmentSortDefinition copy() {
 
@@ -154,4 +136,5 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
         return sortDef;
     }
+
 }

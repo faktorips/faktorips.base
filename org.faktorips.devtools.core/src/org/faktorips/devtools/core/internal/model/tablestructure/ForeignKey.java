@@ -32,10 +32,10 @@ public class ForeignKey extends Key implements IForeignKey {
 
     final static String TAG_NAME = "ForeignKey"; //$NON-NLS-1$
 
-    // the table structure referenced by this fk.
+    /** the table structure referenced by this fk. */
     private String refTableStructure = ""; //$NON-NLS-1$
 
-    // the unique key referenced by this fk.
+    /** the unique key referenced by this fk. */
     private String refUniqueKey = ""; //$NON-NLS-1$
 
     public ForeignKey(TableStructure tableStructure, String id) {
@@ -120,6 +120,7 @@ public class ForeignKey extends Key implements IForeignKey {
             IIpsProject ipsProject,
             String refItem,
             MessageList list) throws CoreException {
+
         IColumnRange range = getTableStructure().getRange(fkItem);
         if (range != null) {
             validateRangeItem(range, refStructure, ipsProject, refItem, list);
@@ -140,6 +141,7 @@ public class ForeignKey extends Key implements IForeignKey {
             IIpsProject ipsProject,
             String refItem,
             MessageList list) throws CoreException {
+
         IColumn column = refStructure.getColumn(refItem);
         if (column != null) {
             String text = Messages.ForeignKey_msgKeyItemMissmatch;
@@ -179,8 +181,7 @@ public class ForeignKey extends Key implements IForeignKey {
         }
     }
 
-    private void validateColumnItem(IColumn item, ITableStructure refStructure, String refItem, MessageList list)
-            throws CoreException {
+    private void validateColumnItem(IColumn item, ITableStructure refStructure, String refItem, MessageList list) {
         IColumnRange range = refStructure.getRange(refItem);
         if (range != null) {
             String text = Messages.ForeignKey_msgKeyMissmatch;

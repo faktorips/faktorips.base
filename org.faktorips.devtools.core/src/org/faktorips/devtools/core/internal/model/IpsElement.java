@@ -201,9 +201,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * The default implementation always returns <tt>null</tt>.
+     * Default implementation always returning <tt>null</tt>.
      */
     @Override
     public ProcessorBasedRefactoring getRenameRefactoring() {
@@ -211,9 +209,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * The default implementation always returns <tt>null</tt>.
+     * Default implementation always returning <tt>null</tt>.
      */
     @Override
     public ProcessorBasedRefactoring getMoveRefactoring() {

@@ -126,6 +126,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * @see IEnumLiteralNameAttributeValue#setValue(String)
      */
     @Deprecated
+    // Deprecated since 3.0
     public void setValueAsLiteralName(String value);
 
     /**

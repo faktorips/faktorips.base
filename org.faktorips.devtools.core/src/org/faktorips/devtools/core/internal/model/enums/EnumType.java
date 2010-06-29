@@ -938,8 +938,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Returns <tt>true</tt> if this <tt>IEnumType</tt> is not abstract and is configured to contain
      * values.
      */

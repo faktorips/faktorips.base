@@ -70,9 +70,6 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return description;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDisableValue(IIpsProject ipsProject) {
         return disableValue;
@@ -143,7 +140,6 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
     @Override
     public Message validateValue(String value) {
-
         if (value == null) {
             return null;
         }
@@ -168,11 +164,10 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return null;
     }
 
-    // TODO internationalize message
+    // TODO internationalize messages
     protected Message getStandardValidationMessage(String value) {
-        return new Message(MSGCODE_NON_PARSABLE_VALUE,
-                "The value \"" + value + "\" is not supported for the type \"" + type //$NON-NLS-1$ //$NON-NLS-2$
-                        + "\" of this property \"" + getName() + "\"", Message.ERROR); //$NON-NLS-1$ //$NON-NLS-2$
+        return new Message(MSGCODE_NON_PARSABLE_VALUE, "The value \"" + value + "\" is not supported for the type \""
+                + type + "\" of this property \"" + getName() + "\"", Message.ERROR);
     }
 
     @Override
@@ -186,7 +181,6 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     }
 
     private final static void retrieveEnumValues(String type, List<String> discreteValues, IConfigurationElement element) {
-
         if (!StringUtils.isEmpty(type) && type.equals("enum") && element.getName().equals("discreteValues")) { //$NON-NLS-1$ //$NON-NLS-2$
             IConfigurationElement[] values = element.getChildren();
             for (IConfigurationElement value2 : values) {
@@ -321,7 +315,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         }
         if ("enum".equals(type) && discreteValues.isEmpty()) { //$NON-NLS-1$
             logger.log(new IpsStatus("If the type attribute of the builder set property " + element.getName() //$NON-NLS-1$
-                    + " of the builder set " + builderSetId
+                    + " of the builder set " + builderSetId //$NON-NLS-1$
                     + " has the value \"enum\" then discrete values have to be specified.")); //$NON-NLS-1$
         }
         properties.put("discreteValues", discreteValues); //$NON-NLS-1$

@@ -71,25 +71,16 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.PRODUCT_CMPT;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptGeneration getProductCmptGeneration(int index) {
         return (IProductCmptGeneration)getGeneration(index);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptKind findProductCmptKind() throws CoreException {
         IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStrategy();
@@ -97,13 +88,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             String kindName = stratgey.getKindId(getName());
             return new ProductCmptKind(kindName, getIpsProject().getRuntimeIdPrefix() + kindName);
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             return null; // error in parsing the name results in a "not found" for the client
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getVersionId() throws CoreException {
         try {
@@ -113,9 +102,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
         IProductCmptType productCmptType = findProductCmptType(ipsProject);
@@ -125,17 +111,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return productCmptType.findPolicyCmptType(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getProductCmptType() {
         return productCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setProductCmptType(String newType) {
         String oldType = productCmptType;
@@ -143,18 +123,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         valueChanged(oldType, newType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findProductCmptType(productCmptType);
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     @Override
     public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException {
         int max = getNumOfGenerations();
@@ -164,17 +137,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectGeneration createNewGeneration(String id) {
         return new ProductCmptGeneration(this, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -209,9 +176,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         list.add(list2);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsFormula() {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
@@ -223,29 +187,20 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsFormulaTest() {
-        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            IProductCmptGeneration gen = getProductCmptGeneration(0);
-            if (gen.getNumOfFormulas() > 0) {
-                IFormula[] formulas = gen.getFormulas();
-                for (IFormula formula : formulas) {
-                    if (formula.getFormulaTestCases().length > 0) {
-                        return true;
-                    }
+        IProductCmptGeneration gen = getProductCmptGeneration(0);
+        if (gen.getNumOfFormulas() > 0) {
+            IFormula[] formulas = gen.getFormulas();
+            for (IFormula formula : formulas) {
+                if (formula.getFormulaTestCases().length > 0) {
+                    return true;
                 }
             }
         }
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IDependency> dependencySet = new HashSet<IDependency>();
@@ -266,9 +221,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return dependencySet.toArray(new IDependency[dependencySet.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -276,9 +228,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -291,34 +240,22 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTreeStructure getStructure(IIpsProject ipsProject) throws CycleInProductStructureException {
         return new ProductCmptTreeStructure(this, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTreeStructure getStructure(GregorianCalendar date, IIpsProject ipsProject)
             throws CycleInProductStructureException {
         return new ProductCmptTreeStructure(this, date, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getRuntimeId() {
         return runtimeId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setRuntimeId(String runtimeId) {
         String oldId = this.runtimeId;
@@ -326,9 +263,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         valueChanged(oldId, runtimeId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
@@ -343,9 +277,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         int max = getNumOfGenerations();
@@ -356,9 +287,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isReferencingProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
         int numOfGenerations = getNumOfGenerations();
@@ -374,37 +302,16 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
         return isReferencingProductCmpt(ipsProjectToSearch, productCmptCandidate);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.core.model.IIpsMetaObject#findMetaClass(org.faktorips.devtools.core
-     * .model.ipsproject.IIpsProject)
-     */
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE, getProductCmptType());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsMetaObject#getMetaClass()
-     */
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getMetaClass() {
         return getProductCmptType();

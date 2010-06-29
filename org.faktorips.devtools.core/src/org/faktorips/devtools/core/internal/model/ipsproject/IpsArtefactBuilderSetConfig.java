@@ -35,41 +35,26 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
         this.properties = properties;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getPropertyValue(String propertyName) {
         return properties.get(propertyName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getPropertyNames() {
         return properties.keySet().toArray(new String[properties.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Boolean getPropertyValueAsBoolean(String propertyName) {
         return (Boolean)getPropertyValue(propertyName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Integer getPropertyValueAsInteger(String propertyName) {
         return (Integer)getPropertyValue(propertyName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyValueAsString(String propertyName) {
         return (String)getPropertyValue(propertyName);

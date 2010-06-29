@@ -41,7 +41,6 @@ import org.w3c.dom.Element;
  */
 public class TestValue extends TestObject implements ITestValue {
 
-    /** Tags */
     final static String TAG_NAME = "ValueObject"; //$NON-NLS-1$
 
     private String testValueParameter = ""; //$NON-NLS-1$
@@ -189,7 +188,7 @@ public class TestValue extends TestObject implements ITestValue {
 
     @Override
     protected void reinitPartCollections() {
-
+        // Nothing to do
     }
 
     @Override

@@ -31,33 +31,21 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
         this.property = property;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ProdDefPropertyType getPropertyType() {
         return property.getProdDefPropertyType();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyName() {
         return property.getPropertyName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DeltaType getDeltaType() {
         return DeltaType.MISSING_PROPERTY_VALUE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void fix() {
         generation.newPropertyValue(property);

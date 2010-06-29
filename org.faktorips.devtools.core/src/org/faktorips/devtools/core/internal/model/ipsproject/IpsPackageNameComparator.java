@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.Comparator;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -46,9 +45,7 @@ public class IpsPackageNameComparator implements Comparator<IIpsPackageFragment>
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * @note <i>Natural ordering</i> is <i>inconsistent with equals</i>.
+     * <i>Natural ordering</i> is <i>inconsistent with equals</i>.
      */
     @Override
     public int compare(IIpsPackageFragment pack1, IIpsPackageFragment pack2) {
@@ -89,7 +86,6 @@ public class IpsPackageNameComparator implements Comparator<IIpsPackageFragment>
      * @param pack current <code>IIpsPackageFragment</code> .
      * @param parentName Full qualified parent package name.
      * @return SortDefinition An IIpsPackageFragmentSortDefinition implementation.
-     * @throws CoreException
      */
     private IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment pack, String parentName) {
         IIpsPackageFragment parentPackage = pack.getRoot().getIpsPackageFragment(parentName);
@@ -132,8 +128,8 @@ public class IpsPackageNameComparator implements Comparator<IIpsPackageFragment>
      * Compare two IpsPackage segments by sort order.
      * 
      * @param pack1 The 1st IpsPackageFragment.
-     * @param name1 The current segment to check of IpsPackageFragment 1.
-     * @param name2 The current segment to check of IpsPackageFragment 2.
+     * @param segmentName1 The current segment to check of IpsPackageFragment 1.
+     * @param segmentName2 The current segment to check of IpsPackageFragment 2.
      * @param segmentNr The current segment number.
      * @return a negative integer, zero, or a positive integer as the first argument is less than,
      *         equal to, or greater than the second
@@ -142,6 +138,7 @@ public class IpsPackageNameComparator implements Comparator<IIpsPackageFragment>
             String segmentName1,
             String segmentName2,
             int segmentNr) {
+
         IIpsPackageFragmentSortDefinition sortDef = getSortDefinition(pack1, getParentNameOfSegment(pack1.getName(),
                 segmentNr));
 

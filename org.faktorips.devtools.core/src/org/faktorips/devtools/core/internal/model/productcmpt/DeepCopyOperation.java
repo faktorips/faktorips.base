@@ -81,9 +81,6 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         this.createEmptyTableContents = createEmptyTableContents;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         if (monitor == null) {
@@ -162,6 +159,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     private IIpsObject createNewIpsObjectIfNecessary(final IProductCmptStructureReference toCopyProductCmptStructureReference,
             Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld,
             IProgressMonitor monitor) throws CoreException {
+
         IIpsObject templateObject = toCopyProductCmptStructureReference.getWrappedIpsObject();
         IIpsSrcFile file = handleMap.get(toCopyProductCmptStructureReference);
 
@@ -209,6 +207,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     private void storeTableUsageToNewTableContents(IProductCmptStructureTblUsageReference productCmptStructureReference,
             String newTableContentsQName,
             HashMap<TblContentUsageData, String> tblContentData2newTableContentQName) {
+
         ITableContentUsage tblContentUsageOld = productCmptStructureReference.getTableContentUsage();
         tblContentData2newTableContentQName.put(new TblContentUsageData(tblContentUsageOld), newTableContentsQName);
     }
@@ -216,6 +215,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     private void storeLinkToNewNewProductCmpt(IProductCmptReference productCmptStructureReference,
             String newProductCmptQName,
             HashMap<LinkData, String> linkData2newProductCmptQName) {
+
         IProductCmptStructureReference parent = productCmptStructureReference.getParent();
         IProductCmpt productCmpt = (productCmptStructureReference).getProductCmpt();
         if (parent instanceof IProductCmptTypeAssociationReference) {
@@ -236,15 +236,16 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 final IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)productCmptStructureReference;
                 IProductCmptStructureReference parent = productCmptStructureTblUsageReference.getParent();
                 if (toReferList.contains(parent)) {
-                    // the tableContents should be linked, check if the productCmpt for this
-                    // tableContentUsage is also a link
-                    // and if true, don't store this table because the parent productCmpt must not
-                    // be fixed
+                    /*
+                     * the tableContents should be linked, check if the productCmpt for this
+                     * tableContentUsage is also a link and if true, don't store this table because
+                     * the parent productCmpt must not be fixed
+                     */
                     continue;
                 }
                 tblContentUsageAndLinkDataRefer.add(new TblContentUsageData((productCmptStructureTblUsageReference)
                         .getTableContentUsage()));
-            } else if (productCmptStructureReference instanceof IProductCmptStructureReference) {
+            } else {
                 IProductCmptTypeAssociationReference parentTypeRel = (IProductCmptTypeAssociationReference)productCmptStructureReference
                         .getParent();
                 IProductCmptStructureReference parent = parentTypeRel.getParent();
@@ -256,23 +257,22 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         return tblContentUsageAndLinkDataRefer;
     }
 
-    /*
+    /**
      * Fix all tableContentUsages
      * 
      * @param productCmptNew the new productCmpt which will be fixed
-     * 
      * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
-     * productCmpt
-     * 
+     *            productCmpt
      * @param tblContentData2newTableContentQName A map containing the tableContentUsage-identifier
-     * as key and the new created tableContent which was initiated by the key tableContentUsage
-     * 
+     *            as key and the new created tableContent which was initiated by the key
+     *            tableContentUsage
      * @param objectsToRefer A set containing the not copied objects
      */
     private void fixRelationsToTableContents(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
             HashMap<TblContentUsageData, String> tblContentData2newTableContentQName,
             Set<Object> objectsToRefer) {
+
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
         ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
@@ -288,23 +288,21 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         }
     }
 
-    /*
+    /**
      * Fix all links
      * 
      * @param productCmptNew the new productCmpt which will be fixed
-     * 
      * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
-     * productCmpt
-     * 
+     *            productCmpt
      * @param linkData2newProductCmptQName A map containing the link-identifier as key and the new
-     * created productCmpt which was initiated by the key link
-     * 
+     *            created productCmpt which was initiated by the key link
      * @param objectsToRefer A set containing the not copied objects
      */
     private void fixRelationsToProductCmpt(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
             HashMap<LinkData, String> linkData2newProductCmptQName,
             Set<Object> objectsToRefer) {
+
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
         IProductCmptLink[] links = generation.getLinks();
         for (IProductCmptLink link : links) {
@@ -356,18 +354,22 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         return copiedRoot;
     }
 
-    /*
+    /**
      * Represents a productCmptLink, which is defined as a link object between two product cmpts
      * (sourceProductCmpt and targetProductCmpt) and a productCmptTypeAssociation on which the link
      * is based on.
      */
     private class LinkData {
+
         private IProductCmpt sourceProductCmpt;
+
         private IProductCmpt targetProductCmpt;
+
         private IProductCmptTypeAssociation productCmptTypeAssociation;
 
         public LinkData(IProductCmpt sourceProductCmpt, IProductCmpt targetProductCmpt,
                 IProductCmptTypeAssociation productCmptTypeAssociation) {
+
             this.sourceProductCmpt = sourceProductCmpt;
             this.targetProductCmpt = targetProductCmpt;
             this.productCmptTypeAssociation = productCmptTypeAssociation;
@@ -429,12 +431,14 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         }
     }
 
-    /*
+    /**
      * Represents a tblContentUsage object, which is defined by productCmpt and the table usage name
      * (role of the table contents) inside the productCmpt.
      */
     private class TblContentUsageData {
+
         private IProductCmpt productCmpt;
+
         private String tableUsageName;
 
         public TblContentUsageData(ITableContentUsage tblContentUsage) {
@@ -477,6 +481,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             result = 37 * result + tableUsageName.hashCode();
             return result;
         }
+
     }
 
 }

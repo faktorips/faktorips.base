@@ -157,16 +157,4 @@ public class UniqueKey extends Key implements IUniqueKey {
         return doc.createElement(TAG_NAME);
     }
 
-    @Override
-    protected void initPropertiesFromXml(Element element, String id) {
-        super.initPropertiesFromXml(element, id);
-        // nothing else to do
-    }
-
-    @Override
-    protected void propertiesToXml(Element element) {
-        super.propertiesToXml(element);
-        // nothing else to do
-    }
-
 }

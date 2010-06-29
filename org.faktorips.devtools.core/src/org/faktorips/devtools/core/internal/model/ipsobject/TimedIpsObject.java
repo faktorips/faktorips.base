@@ -29,15 +29,13 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.XmlParseException;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObject {
 
     private List<IIpsObjectGeneration> generations = new ArrayList<IIpsObjectGeneration>();
@@ -51,9 +49,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean changesOn(GregorianCalendar date) {
         for (IIpsObjectGeneration gen : generations) {
@@ -64,9 +59,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectGeneration getFirstGeneration() {
         if (generations.size() > 0) {
@@ -75,9 +67,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectGeneration getGeneration(int index) {
         return generations.get(index);
@@ -88,9 +77,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return new ArrayList<IIpsObjectGeneration>(generations);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectGeneration[] getGenerationsOrderedByValidDate() {
         IIpsObjectGeneration[] gens = generations.toArray(new IIpsObjectGeneration[generations.size()]);
@@ -108,9 +94,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return gens;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date) {
         if (date == null) {
@@ -138,9 +121,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return generation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
         if (date == null) {
@@ -154,9 +134,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectGeneration newGeneration() {
         IpsObjectGeneration generation = newGenerationInternal(getNextPartId());
@@ -164,9 +141,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return generation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectGeneration newGeneration(GregorianCalendar validFrom) {
         IIpsObjectGeneration oldGen = findGenerationEffectiveOn(validFrom);
@@ -197,9 +171,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return generation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof IIpsObjectGeneration) {
@@ -217,29 +188,22 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     /**
      * Returns the object's generations.
-     * 
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
      */
     @Override
     public IIpsElement[] getChildren() {
         return getGenerationsOrderedByValidDate();
     }
 
-    /**
-     * Overridden.
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        validTo = XmlUtil.parseXmlDateStringToGregorianCalendar(ValueToXmlHelper.getValueFromElement(element,
-                PROPERTY_VALID_TO));
+        try {
+            validTo = XmlUtil.parseGregorianCalendar(ValueToXmlHelper.getValueFromElement(element, PROPERTY_VALID_TO));
+        } catch (XmlParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    /**
-     * Overridden.
-     */
     @Override
     protected final IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
@@ -250,9 +214,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return null;
     }
 
-    /**
-     * Overridden.
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -264,9 +225,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         }
     }
 
-    /**
-     * Overridden.
-     */
     @Override
     protected final void addPart(IIpsObjectPart part) {
         if (part instanceof IIpsObjectGeneration) {
@@ -276,25 +234,16 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * Overridden.
-     */
     @Override
     protected final void reinitPartCollections() {
         generations.clear();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public GregorianCalendar getValidTo() {
         return validTo;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValidTo(GregorianCalendar validTo) {
         GregorianCalendar oldId = this.validTo;
@@ -302,9 +251,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         valueChanged(oldId, validTo);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);

@@ -95,8 +95,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * Creates a new row and inserts it into the list of rows. The rownumber of the new row is its
      * index in the list (respectively the number of rows before the insertion).
-     * 
-     * @param id
      */
     private Row newRowInternal(String id) {
         int nextRowNumber = getNumOfRows();
@@ -121,24 +119,12 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     @Override
-    protected void initPropertiesFromXml(Element element, String id) {
-        super.initPropertiesFromXml(element, id);
-        // nothing else to do
-    }
-
-    @Override
-    protected void propertiesToXml(Element element) {
-        super.propertiesToXml(element);
-        // nothing else to do
-    }
-
-    @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(Row.TAG_NAME)) {
             return newRowInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName);
+        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
 
     @Override
@@ -147,12 +133,11 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             rows.add((Row)part);
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass());
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
     /**
      * Removes the given row from the list of rows and updates the rownumbers of all following rows.
-     * {@inheritDoc}
      */
     @Override
     protected void removePart(IIpsObjectPart part) {
@@ -170,7 +155,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             }
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass());
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
     @Override
@@ -178,21 +163,15 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         rows.clear();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         if (partType.equals(IRow.class)) {
             return newRowInternal(getNextPartId());
         }
 
-        throw new IllegalArgumentException("Unknown part type" + partType);
+        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void clear() {
         rows.clear();
@@ -204,9 +183,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         return (ITableContents)parent;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -219,9 +195,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IRow insertRowAfter(int rowIndex) {
         int newRowIndex = (rowIndex + 1) > getNumOfRows() ? getNumOfRows() : rowIndex + 1;
@@ -243,9 +216,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
         ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);
@@ -310,8 +280,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * Validates the unique keys of all rows.
      */
-    public void validateUniqueKeys(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes)
-            throws CoreException {
+    public void validateUniqueKeys(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
         if (isUniqueKeyValidationEnabled()) {
             // check if the unique key cache needs to be updated
             if (uniqueKeyValidator.isEmtpy() || uniqueKeyValidator.isInvalidUniqueKeyCache(tableStructure)) {

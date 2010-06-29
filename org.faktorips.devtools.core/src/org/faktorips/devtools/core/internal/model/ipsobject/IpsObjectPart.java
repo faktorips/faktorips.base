@@ -26,9 +26,6 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.w3c.dom.Element;
 
-/**
- * 
- */
 public abstract class IpsObjectPart extends IpsObjectPartContainer implements IIpsObjectPart {
 
     private String description = ""; //$NON-NLS-1$
@@ -45,20 +42,14 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      * Constructor for testing purposes.
      */
     protected IpsObjectPart() {
-
+        // Provides default constructor for testing purposes
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getId() {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObject getIpsObject() {
         IpsObjectPartContainer container = getContainer();
@@ -73,9 +64,6 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         return (IpsObjectPartContainer)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void delete() {
         if (isDeleted()) {
@@ -91,33 +79,21 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         objectHasChanged(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDeleted() {
         return deleted;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         return description;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDescriptionChangable() {
         return descriptionChangable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDescription(String newDescription) {
         ArgumentCheck.notNull(description, this);
@@ -130,9 +106,6 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         valueChanged(oldDescription, newDescription);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void objectHasChanged() {
         IpsModel model = (IpsModel)getIpsModel();
@@ -140,33 +113,21 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         model.getIpsSrcFileContent(getIpsSrcFile()).ipsObjectChanged(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IResource getCorrespondingResource() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValid() throws CoreException {
         return getValidationResultSeverity() != Message.ERROR;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getValidationResultSeverity() throws CoreException {
         return validate(getIpsProject()).getSeverity();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         if (id != null) {
@@ -183,9 +144,6 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         element.setAttribute(PROPERTY_ID, "" + id); //$NON-NLS-1$
@@ -204,7 +162,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
 
     /**
-     * {@inheritDoc} Two parts are equal if they have the same parent and the same id.
+     * Two parts are equal if they have the same parent and the same id.
      */
     @Override
     public boolean equals(Object obj) {

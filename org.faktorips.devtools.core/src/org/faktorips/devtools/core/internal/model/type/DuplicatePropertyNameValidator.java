@@ -33,10 +33,11 @@ import org.faktorips.util.message.ObjectProperty;
 
 public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
 
-    // Map with property names as keys. For a unqiue property name, the map contains the object
-    // (with the name) as value.
-    // If there are multiple properties with a name, the value is a list containing all the objects
-    // with the same name.
+    /*
+     * Map with property names as keys. For a unqiue property name, the map contains the object
+     * (with the name) as value. If there are multiple properties with a name, the value is a list
+     * containing all the objects with the same name.
+     */
     private Map<String, Object> properties = new HashMap<String, Object>();
     private List<String> duplicateProperties = new ArrayList<String>();
 
@@ -49,7 +50,6 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
     }
 
-    @SuppressWarnings("unchecked")
     public void addMessagesForDuplicates(MessageList messages) {
         for (String propertyName : duplicateProperties) {
             List<ObjectProperty> objects = (List<ObjectProperty>)properties.get(propertyName);
@@ -58,9 +58,6 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean visit(IType currentType) throws CoreException {
         Type currType = (Type)currentType;

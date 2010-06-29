@@ -37,7 +37,6 @@ import org.w3c.dom.Element;
 
 public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormulaTestInputValue {
 
-    /** Tags */
     final static String TAG_NAME = "FormulaTestInputValue"; //$NON-NLS-1$
 
     private String identifier = ""; //$NON-NLS-1$
@@ -47,17 +46,11 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         super(parent, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -65,9 +58,6 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         value = ValueToXmlHelper.getValueFromElement(element, StringUtils.capitalize(PROPERTY_VALUE));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -75,17 +65,11 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         ValueToXmlHelper.addValueToElement(value, element, StringUtils.capitalize(PROPERTY_VALUE));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getIdentifier() {
         return identifier;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IParameter findFormulaParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(identifier)) {
@@ -116,17 +100,11 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getValue() {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setIdentifier(String identifier) {
         String oldIdentifier = this.identifier;
@@ -134,9 +112,6 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         valueChanged(oldIdentifier, identifier);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(String value) {
         String oldValue = this.value;
@@ -144,9 +119,6 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         valueChanged(oldValue, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueDatatype findDatatypeOfFormulaParameter(IIpsProject ipsProject) throws CoreException {
         IParameter param = findFormulaParameter(ipsProject);
@@ -155,16 +127,18 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         }
         Datatype datatype = getIpsProject().findDatatype(param.getDatatype());
         if (datatype instanceof IType) {
-            // if the datatype specifies an IType get the datatype of the attribute
-            // identified by the formula test input value identifier
-            // e.g. "policy.attribute" id specified in the formula input and policy is specified in
-            // the parameter
-            // thus policy is the policy cmpt type datatype and attribute is the attribute inside
-            // policy
+            /*
+             * if the datatype specifies an IType get the datatype of the attribute identified by
+             * the formula test input value identifier e.g. "policy.attribute" id specified in the
+             * formula input and policy is specified in the parameter thus policy is the policy cmpt
+             * type datatype and attribute is the attribute inside policy
+             */
             String parameterName = param.getName();
             if (!identifier.startsWith(parameterName)) {
-                // error because the PolicyCmptType datatype was found with an invalid identifier,
-                // this should never happen
+                /*
+                 * error because the PolicyCmptType datatype was found with an invalid identifier,
+                 * this should never happen
+                 */
                 throw new CoreException(new IpsStatus(NLS.bind(
                         Messages.FormulaTestInputValue_CoreException_WrongIdentifierForParameter, parameterName,
                         identifier)));
@@ -173,8 +147,10 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
             IType type = (IType)datatype;
             IAttribute attribute = type.findAttribute(attributeName, ipsProject);
             if (attribute == null) {
-                // attribute not found, therfore the datatype couldn't be determined,
-                // remark this inconsistence will be reported in the vaildate method
+                /*
+                 * attribute not found, therfore the datatype couldn't be determined, remark this
+                 * inconsistence will be reported in the vaildate method
+                 */
                 return null;
             }
             return attribute.findDatatype(ipsProject);

@@ -272,6 +272,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
 
     private void createIpsObjectsPropertiesEntry(JarOutputStream os, Properties ipsObjectsProperties)
             throws CoreException {
+
         JarEntry newEntry = new JarEntry(IIpsArchive.JAVA_MAPPING_ENTRY_NAME);
         try {
             os.putNextEntry(newEntry);
@@ -283,6 +284,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
 
     private void addJavaFiles(IIpsPackageFragmentRoot root, JarOutputStream os, IProgressMonitor monitor)
             throws CoreException {
+
         IFolder javaSrcFolder = root.getArtefactDestination(false);
         IPackageFragmentRoot javaRoot = root.getIpsProject().getJavaProject().findPackageFragmentRoot(
                 javaSrcFolder.getFullPath());
@@ -318,16 +320,14 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         IResource[] members = folder.members();
         for (IResource member : members) {
             if (member instanceof IFile) {
-                addFiles(rootFolder, (IFile)member, os, monitor);
+                addFiles(rootFolder, (IFile)member, os);
             } else if (member instanceof IFolder) {
                 addFiles(rootFolder, (IFolder)member, os, monitor);
             }
         }
     }
 
-    private void addFiles(IFolder rootFolder, IFile fileToAdd, JarOutputStream os, IProgressMonitor monitor)
-            throws CoreException {
-
+    private void addFiles(IFolder rootFolder, IFile fileToAdd, JarOutputStream os) throws CoreException {
         String name = fileToAdd.getFullPath().removeFirstSegments(rootFolder.getFullPath().segmentCount()).toString();
         if (isDuplicateEntry(name)) {
             return;

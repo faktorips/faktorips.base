@@ -46,25 +46,16 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         this.path = path;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPath getIpsObjectPath() {
         return path;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject getIpsProject() {
         return path.getIpsProject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getIndex() {
         return path.getIndex(this);
@@ -73,14 +64,9 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     /**
      * Returns <code>true</code> if the entry contains a source file with the indicated qualified
      * name type, otherwise <code>false</code>.
-     * 
-     * @throws CoreException
      */
     abstract public boolean exists(QualifiedNameType qnt) throws CoreException;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
         IIpsSrcFile file = findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
@@ -97,6 +83,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
 
     public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
+
         if (visitedEntries != null) {
             if (visitedEntries.contains(this)) {
                 return null;
@@ -112,6 +99,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     public final void findIpsSrcFiles(IpsObjectType type,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+
         if (visitedEntries != null) {
             if (visitedEntries.contains(this)) {
                 return;
@@ -125,6 +113,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
             String packageFragment,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+
         if (visitedEntries != null) {
             if (visitedEntries.contains(this)) {
                 return;
@@ -219,4 +208,5 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         }
         throw new RuntimeException("Unknown entry type " + type); //$NON-NLS-1$
     }
+
 }

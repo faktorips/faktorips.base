@@ -51,9 +51,6 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         this.projectToMigrate = projectToMigrate;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject getIpsProject() {
         return projectToMigrate;
@@ -63,9 +60,6 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         operations.addAll(Arrays.asList(path));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected final void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
@@ -85,6 +79,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
 
     private void executeInternal(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
+
         try {
             monitor.worked(10);
             result = new MessageList();
@@ -171,17 +166,11 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         projectToMigrate.setProperties(props);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList getMessageList() {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDescription() {
         StringBuffer description = new StringBuffer();
@@ -193,9 +182,6 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         return description.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEmpty() {
         boolean empty = true;
@@ -206,4 +192,5 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         }
         return empty;
     }
+
 }

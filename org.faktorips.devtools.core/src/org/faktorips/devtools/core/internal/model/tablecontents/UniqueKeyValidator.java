@@ -42,10 +42,10 @@ import org.faktorips.util.message.ObjectProperty;
  * key value is the value of an unique key for specific row. If there are more than one row with the
  * same key value then a list of rows (with the same key value) will be stored in the cache. During
  * the validation all cached key values will be checked if there are more than one row.
- * 
+ * <p>
  * If an unique key contains at least one two column range key item, then a further cache will be
  * used to check if there are unique key violations inside the range(s).
- * 
+ * <p>
  * The table contents (which uses this unique key validator) is responsible to call the methods
  * handleRowChanged and handleRowRemoved to keep the cache up to date. If the table structure has
  * changed (e.g. if the unique key definition changes) then the clearUniqueKeyCache method must be
@@ -56,6 +56,7 @@ import org.faktorips.util.message.ObjectProperty;
  * @author Joerg Ortmann
  */
 public class UniqueKeyValidator {
+
     public static final int HANDLE_UNIQUEKEY_ROW_REMOVED = 1;
     public static final int HANDLE_UNIQUEKEY_ROW_CHANGED = 2;
 
@@ -66,15 +67,15 @@ public class UniqueKeyValidator {
                 Platform.getDebugOption("org.faktorips.devtools.core/trace/tablecontentvalidation")).booleanValue(); //$NON-NLS-1$
     }
 
-    // cache to validate simple column unique keys
+    /** cache to validate simple column unique keys */
     private Map<IUniqueKey, Map<AbstractKeyValue, Object>> uniqueKeyMapColumn = new HashMap<IUniqueKey, Map<AbstractKeyValue, Object>>();
 
-    // caches to validate column ranges of type TWO_COLUMN_RANGE
-    // note that the unique key validation of one column ranges (ONE_COLUMN_RANGE_FROM and
-    // ONE_COLUMN_RANGE_TO) are not necessary,
-    // because the nature of this type of range is to return always one row
-    // this map contains a special UniqueKeyValidatorRange object for each unique key with at least
-    // one two column range
+    /**
+     * caches to validate column ranges of type TWO_COLUMN_RANGE note that the unique key validation
+     * of one column ranges (ONE_COLUMN_RANGE_FROM and ONE_COLUMN_RANGE_TO) are not necessary,
+     * because the nature of this type of range is to return always one row this map contains a
+     * special UniqueKeyValidatorRange object for each unique key with at least one two column range
+     */
     private Map<IUniqueKey, UniqueKeyValidatorRange> uniqueKeyValidatorForTwoColumnRange = new HashMap<IUniqueKey, UniqueKeyValidatorRange>();
 
     // cached TableStructure and ValueDatatypes (cached because of performance reasons)
@@ -144,7 +145,7 @@ public class UniqueKeyValidator {
         updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_REMOVED);
     }
 
-    /*
+    /**
      * Updates the given row depending on the given operation in all unique key caches with the new
      * calculated key value of the given row.
      */
@@ -164,7 +165,7 @@ public class UniqueKeyValidator {
         }
     }
 
-    /*
+    /**
      * Updates the unique key cache for the given row. This method handles the update of non two
      * column range keys.
      */
@@ -180,7 +181,7 @@ public class UniqueKeyValidator {
         updateKeyValueInMap(keyValueMap, KeyValue.createKeyValue(cachedTableStructure, uniqueKey, row), row, operation);
     }
 
-    /*
+    /**
      * Updates the unique key cache for the given row. This method handles the update of all two
      * column range keys.
      */
@@ -193,7 +194,7 @@ public class UniqueKeyValidator {
         uniqueKeyValidatorRange.updateUniqueKeysCache(row, operation);
     }
 
-    /*
+    /**
      * Updates the key value and the given row in the given map (cache)
      */
     @SuppressWarnings("unchecked")
@@ -201,6 +202,7 @@ public class UniqueKeyValidator {
             AbstractKeyValue keyValue,
             Row row,
             int operation) {
+
         Object rowOrRowsForKeyValue = keyValueMap.get(keyValue);
 
         // key value dosn't exists in cache
@@ -227,7 +229,7 @@ public class UniqueKeyValidator {
         throw new RuntimeException("Unsupported key value found !" + rowOrRowsForKeyValue.getClass().getName()); //$NON-NLS-1$
     }
 
-    /*
+    /**
      * Update the row of for given key value in the map of cached key values 1) operation=update: a)
      * if the row found is the current row then nothing to do b) if the row found is another row add
      * a new list containing the two rows 2) operation=remove: remove the key value from the map of
@@ -238,6 +240,7 @@ public class UniqueKeyValidator {
             Row row,
             int operation,
             Row rowOrRowsForKeyValue) {
+
         if (operation == HANDLE_UNIQUEKEY_ROW_CHANGED) {
             if (row == rowOrRowsForKeyValue) {
                 // same row nothing to to
@@ -262,7 +265,7 @@ public class UniqueKeyValidator {
         }
     }
 
-    /*
+    /**
      * Update the list of rows for the give key value in the map of cached key values 1)
      * operation=update: add the row to the list of rows 2) operation=remove: removes the row from
      * the list of rows, if there is only one row left, add the row directly without a list
@@ -272,6 +275,7 @@ public class UniqueKeyValidator {
             Row row,
             int operation,
             List<Row> rows) {
+
         if (operation == HANDLE_UNIQUEKEY_ROW_CHANGED) {
             if (!rows.contains(row)) {
                 // new row
@@ -315,13 +319,14 @@ public class UniqueKeyValidator {
 
     private void validateUniqueKeysRange(MessageList list,
             Map<IUniqueKey, UniqueKeyValidatorRange> uniqueKeyValidatorForTwoColumnRange) {
+
         for (UniqueKeyValidatorRange uniqueKeyValidatorRange : uniqueKeyValidatorForTwoColumnRange.values()) {
             uniqueKeyValidatorRange.validate(list);
         }
 
     }
 
-    /*
+    /**
      * Validates all unique key maps in the given map (cache). For each unique key there is separate
      * map of key value objects. This method validates the key values for column key values only -
      * not key value ranges (two column key value objects)
@@ -343,7 +348,7 @@ public class UniqueKeyValidator {
         }
     }
 
-    /*
+    /**
      * Validates the given key value entry. The key value entry (cache entry) contains the key value
      * and either the row or a list of rows which matches the key value. If there is a list of rows,
      * then there is a unique key violation and a validation error will be created and added to the
@@ -357,20 +362,21 @@ public class UniqueKeyValidator {
     void validateKeyValue(MessageList list,
             Entry<AbstractKeyValue, Object> keyValueEntry,
             List<AbstractKeyValue> invalidkeyValues) {
+
         AbstractKeyValue keyValue = keyValueEntry.getKey();
 
         if (keyValueEntry.getValue() instanceof List) {
             List<Row> rows = (List<Row>)keyValueEntry.getValue();
             List<Row> rowsChecked = new ArrayList<Row>(rows.size());
 
-            // auto-fix invalid rows
-            // check if the row value matches the key value, if not remove the row
-            // this could be happen, because a row change triggers only the creation of new
-            // key values, the old key value will not be updated
-            // e.g. rowA has a key value 1, and rowB has key value 1
-            // rowA changed to key value 2, then a new key value 2 is created and related to rowA
-            // but key value 1 still contains a relation to rowA and rowB
-            // so key value 1 must be fixed: isValid(rowA) returns false
+            /*
+             * auto-fix invalid rows check if the row value matches the key value, if not remove the
+             * row this could be happen, because a row change triggers only the creation of new key
+             * values, the old key value will not be updated e.g. rowA has a key value 1, and rowB
+             * has key value 1 rowA changed to key value 2, then a new key value 2 is created and
+             * related to rowA but key value 1 still contains a relation to rowA and rowB so key
+             * value 1 must be fixed: isValid(rowA) returns false
+             */
             for (Row currentRow : rows) {
                 if (keyValue.isValid(currentRow)) {
                     rowsChecked.add(currentRow);
@@ -398,7 +404,7 @@ public class UniqueKeyValidator {
         }
     }
 
-    /*
+    /**
      * Store (cache) the table structure and value datatype's of all columns
      */
     void cacheTableStructureAndValueDatatypes(ITableContentsGeneration tableContentsGeneration) {
@@ -459,7 +465,7 @@ public class UniqueKeyValidator {
         return tableStructure.getIpsSrcFile().getEnclosingResource().getModificationStamp();
     }
 
-    /*
+    /**
      * Creates a unique key validation error and adds it to the give message list.
      */
     void createValidationErrorUniqueKeyViolation(MessageList list, IUniqueKey uniqueKey, Row row) {

@@ -48,13 +48,12 @@ import org.w3c.dom.Element;
  */
 public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttributeValue {
 
-    /*
+    /**
      * Specifies the default type, will be used if the corresponding test case type parameter is not
      * specified or not found
      */
     private static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
 
-    /* Tags */
     static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
     private String testAttribute = ""; //$NON-NLS-1$
@@ -222,8 +221,6 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
      * Updates the default for the test attribute value. The default will be retrieved from the
      * product cmpt or if no product cmpt is available or the attribute isn't configurated by
      * product then from the policy cmpt. Don't update the value if not default is specified.
-     * 
-     * @param ipsProject The ips project which object path is used to search.
      */
     void setDefaultTestAttributeValueInternal(IProductCmptGeneration generation) throws CoreException {
         IIpsProject ipsProject = getIpsProject();
@@ -276,13 +273,13 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         } else {
             if (testAttr.isBasedOnModelAttribute()) {
                 IAttribute attribute = findAttribute(ipsProject);
-                // create a warning only if the attribute wasn't found and the value is set,
-                // otherwise the attribute value object is disabled (not relevant for the test
-                // policy cmpt),
-                // because the policy cmpt could be a subclass of the policy cmpt which is defined
-                // in the test case type,
-                // and the attribute should be only relevant for other policy cmpts which defines
-                // this subclass attribute
+                /*
+                 * create a warning only if the attribute wasn't found and the value is set,
+                 * otherwise the attribute value object is disabled (not relevant for the test
+                 * policy cmpt), because the policy cmpt could be a subclass of the policy cmpt
+                 * which is defined in the test case type, and the attribute should be only relevant
+                 * for other policy cmpts which defines this subclass attribute
+                 */
                 if (attribute == null && !StringUtils.isEmpty(value)) {
                     String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, testAttr
                             .getAttribute());

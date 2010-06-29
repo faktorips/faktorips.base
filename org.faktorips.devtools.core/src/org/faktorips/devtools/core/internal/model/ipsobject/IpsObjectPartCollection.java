@@ -53,6 +53,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
     public IpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends T> partsClazz, Class<T> publishedInterface,
             String xmlTag) {
+
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObject);
         this.parent = ipsObject;
@@ -61,6 +62,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
     public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class<? extends T> partsClazz,
             Class<T> publishedInterface, String xmlTag) {
+
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObjectPart);
         this.parent = ipsObjectPart;
@@ -86,9 +88,11 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
             if (params[1].equals(String.class)) {
                 if (IIpsObjectPartContainer.class.isAssignableFrom(params[0])) {
                     @SuppressWarnings("unchecked")
-                    // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
-                    // while returning Contructor<T>[]
-                    // The Javaoc Class.getDeclaredConstructors() for more information
+                    /*
+                     * necessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
+                     * while returning Contructor<T>[] The Javaoc Class.getDeclaredConstructors()
+                     * for more information
+                     */
                     Constructor<T> castedConstructor = (Constructor<T>)constructor;
                     return castedConstructor;
                 }
@@ -210,8 +214,6 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * <p>
      * This operation can be used if you want to create an <tt>IpsObjectPartCollection</tt> of a
      * certain type and you also want to store subclasses of that type in the collection.
-     * 
-     * @param clazz
      */
     @SuppressWarnings("unchecked")
     public T newPart(Class<?> clazz) {
@@ -226,7 +228,6 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * The part is added to the collection if the type is assignable form the partsBaseClass. Return
      * true if the part is of correct type or fals if it is not.
      * 
-     * @param part
      * @return Return true if the type of the part is supported by this collection
      */
     @SuppressWarnings("unchecked")
@@ -296,5 +297,6 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
          * Initializes the provided IpsObjectPart.
          */
         public void initialize(T part);
+
     }
 }

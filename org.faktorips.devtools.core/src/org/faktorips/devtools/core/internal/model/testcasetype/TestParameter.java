@@ -59,17 +59,11 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         valueChanged(oldName, newName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObjectPart newPart(Class<?> partType) {
         throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
@@ -89,47 +83,29 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         element.setAttribute(PROPERTY_TEST_PARAMETER_TYPE, type.getId());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isInputOrCombinedParameter() {
         return type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.COMBINED);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isExpextedResultOrCombinedParameter() {
         return type.equals(TestParameterType.EXPECTED_RESULT) || type.equals(TestParameterType.COMBINED);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isCombinedParameter() {
         return type.equals(TestParameterType.COMBINED);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TestParameterType getTestParameterType() {
         return type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public abstract void setTestParameterType(TestParameterType testParameterType);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);

@@ -30,11 +30,6 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
 
     private IProductCmptTypeAssociation association;
 
-    /**
-     * @param structure
-     * @param parent
-     * @throws CycleInProductStructureException
-     */
     public ProductCmptTypeAssociationReference(IProductCmptTreeStructure structure,
             ProductCmptStructureReference parent, IProductCmptTypeAssociation association)
             throws CycleInProductStructureException {
@@ -42,25 +37,16 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
         this.association = association;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAssociation getAssociation() {
         return association;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsObjectPartContainer getWrapped() {
         return association;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsObject getWrappedIpsObject() {
         if (association == null) {
@@ -68,4 +54,5 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
         }
         return association.getIpsObject();
     }
+
 }

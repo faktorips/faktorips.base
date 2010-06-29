@@ -216,6 +216,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return valueDatatype;
     }
 
+    // TODO internationalize messages
     private void validateValueSetVsAttributeValueSet(IPolicyCmptTypeAttribute attribute,
             IIpsProject ipsProject,
             MessageList list) throws CoreException {
@@ -227,8 +228,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return;
         }
         if (valueSet.isAbstract()) {
-            String text = "Must specify a concrete set of values!";
-            list.add(new Message("", text, Message.ERROR, this, IConfigElement.PROPERTY_VALUE_SET));
+            String text = "Must specify a concrete set of values!"; //$NON-NLS-1$
+            list.add(new Message("", text, Message.ERROR, this, IConfigElement.PROPERTY_VALUE_SET)); //$NON-NLS-1$
             return;
         }
         if (valueSet.isDetailedSpecificationOf(modelValueSet)) {
@@ -278,24 +279,18 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         String valueInMsg = value;
         if (value == null) {
             valueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        } else if (value.equals("")) {
+        } else if (value.length() == 0) {
             valueInMsg = Messages.ConfigElement_msgValueIsEmptyString;
         }
         String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, valueInMsg, valueDatatype.getName());
         msgList.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_VALUE));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IValueSet getValueSet() {
         return valueSet;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
@@ -312,9 +307,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return types;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValueSetType(ValueSetType type) {
         IValueSet oldset = valueSet;
@@ -322,18 +314,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         valueChanged(oldset, valueSet);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IValueSet changeValueSetType(ValueSetType newType) {
         setValueSetType(newType);
         return valueSet;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValueSetCopy(IValueSet source) {
         IValueSet oldset = valueSet;
@@ -341,80 +327,57 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         valueChanged(oldset, valueSet);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void reinitPartCollections() {
+        // Nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass());
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = null;
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass());
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
 
         value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
 
-        pcTypeAttribute = element.getAttribute("attribute");
+        pcTypeAttribute = element.getAttribute("attribute"); //$NON-NLS-1$
         name = pcTypeAttribute;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute("attribute", pcTypeAttribute); //$NON-NLS-1$
-        ValueToXmlHelper.addValueToElement(value, element, "Value");
+        ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public IIpsObjectPart newPart(Class partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType);
+        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsElement[] getChildren() {
         List<IIpsElement> childrenList = new ArrayList<IIpsElement>(1);
@@ -434,7 +397,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             // ignore value nodes, will be parsed in the this#initPropertiesFromXml method
             return null;
         }
-        throw new RuntimeException("Could not create part for tag name: " + xmlTagName);
+        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
     public ValueDatatype getValueDatatype() {

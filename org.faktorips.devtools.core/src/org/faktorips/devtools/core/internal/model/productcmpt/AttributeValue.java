@@ -57,33 +57,21 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         this.value = value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getAttribute() {
         return attribute;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setAttribute(String newAttribute) {
         String oldAttr = attribute;
@@ -92,17 +80,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         valueChanged(oldAttr, attribute);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getValue() {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(String newValue) {
         String oldValue = value;
@@ -110,41 +92,26 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyName() {
         return attribute;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findAttribute(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ProdDefPropertyType getPropertyType() {
         return ProdDefPropertyType.VALUE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyValue() {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
         IProductCmptType type = getProductCmptGeneration().findProductCmptType(ipsProject);
@@ -154,9 +121,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         return type.findProductCmptTypeAttribute(attribute, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -164,9 +128,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -174,9 +135,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -210,4 +168,5 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public String toString() {
         return attribute + "=" + value; //$NON-NLS-1$
     }
+
 }

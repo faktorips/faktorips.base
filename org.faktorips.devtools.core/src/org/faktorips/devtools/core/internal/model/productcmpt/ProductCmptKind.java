@@ -24,6 +24,7 @@ import org.faktorips.util.ArgumentCheck;
 public class ProductCmptKind implements IProductCmptKind {
 
     private String name;
+
     private String runtimeId;
 
     public ProductCmptKind(String name, String runtimeId) {
@@ -33,17 +34,11 @@ public class ProductCmptKind implements IProductCmptKind {
         this.runtimeId = runtimeId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getRuntimeId() {
         return runtimeId;

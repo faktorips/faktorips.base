@@ -53,7 +53,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
                 + "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    // the ips project referenced by this entry
+    /** the ips project referenced by this entry */
     private IIpsProject referencedIpsProject;
 
     public IpsProjectRefEntry(IpsObjectPath path) {
@@ -65,41 +65,26 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         this.referencedIpsProject = referencedIpsProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject getReferencedIpsProject() {
         return referencedIpsProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getType() {
         return TYPE_PROJECT_REFERENCE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getIpsPackageFragmentRootName() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean exists(QualifiedNameType qnt) throws CoreException {
         if (referencedIpsProject == null) {
@@ -108,9 +93,6 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         return referencedIpsProject.findIpsSrcFile(qnt) != null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findIpsSrcFilesInternal(IpsObjectType type,
             String packageFragment,
@@ -122,9 +104,6 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
@@ -134,9 +113,6 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, visitedEntries);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
             String prefix,
@@ -150,9 +126,6 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(Element element, IProject project) {
         String projectName = element.getAttribute("referencedIpsProject"); //$NON-NLS-1$
@@ -161,9 +134,6 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);
@@ -174,9 +144,6 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
@@ -195,16 +162,13 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "ProjectRefEntry[" + (referencedIpsProject == null ? "null" : referencedIpsProject.getName()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
-     * Interprets the given path as project-relative path. {@inheritDoc}
+     * Interprets the given path as project-relative path.
      */
     @Override
     public InputStream getRessourceAsStream(String path) throws CoreException {

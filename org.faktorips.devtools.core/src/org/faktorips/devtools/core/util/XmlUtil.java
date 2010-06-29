@@ -105,19 +105,19 @@ public class XmlUtil {
      * @throws IllegalArgumentException If the given string cannot be parsed to a Gregorian
      *             calendar.
      * 
-     * @deprecated Use {@link #parseGregorianCalendarFromXmlDateString(String)} instead.
+     * @deprecated Use {@link #parseGregorianCalendar(String)} instead.
      */
     @Deprecated
     // Deprecated since 3.0
     public final static GregorianCalendar parseXmlDateStringToGregorianCalendar(String s) {
         try {
-            return parseGregorianCalendarFromXmlDateString(s);
+            return parseGregorianCalendar(s);
         } catch (XmlParseException e) {
             throw new IllegalArgumentException("Can't parse " + s + " to a date!"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
-    public final static GregorianCalendar parseGregorianCalendarFromXmlDateString(String s) throws XmlParseException {
+    public final static GregorianCalendar parseGregorianCalendar(String s) throws XmlParseException {
         if (StringUtils.isEmpty(s)) {
             return null;
         }
@@ -170,9 +170,20 @@ public class XmlUtil {
         transformer.transform(source, result);
     }
 
+    /**
+     * @deprecated Use {@link #parseDocument(InputStream)} instead.
+     */
+    @Deprecated
+    // Deprecated since 3.0
+    @SuppressWarnings("unused")
+    // Unused exception suppressed because of deprecation.
     public final static Document getDocument(InputStream is) throws SAXException, IOException,
             ParserConfigurationException {
 
+        return getDefaultDocumentBuilder().parse(is);
+    }
+
+    public final static Document parseDocument(InputStream is) throws SAXException, IOException {
         return getDefaultDocumentBuilder().parse(is);
     }
 

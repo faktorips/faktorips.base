@@ -68,6 +68,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     @Override
     public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject)
             throws CoreException {
+
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
         if (policyCmptType == null) {
             return null;

@@ -236,6 +236,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         valueChanged(oldName, newMethodName);
     }
 
+    // TODO internationalize messages
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
@@ -278,7 +279,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             } else {
                 if (!valueSet.isDetailedSpecificationOf(superAttr.getValueSet())) {
                     String text = "The value set defined in this attribute must be a more detailed specification of the value set in the overridden attribute (but it is not).";
-                    result.add(new Message("", text, Message.ERROR, this));
+                    result.add(new Message("", text, Message.ERROR, this)); //$NON-NLS-1$
                 }
                 if (!attributeType.equals(superAttr.getAttributeType())) {
                     String text = Messages.PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
@@ -349,9 +350,10 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             IIpsObjectPart result = constructor.newInstance(this, getNextPartId());
             return result;
         } catch (Exception e) {
+            // TODO needs to be documented properly or specialized
             IpsPlugin.log(e);
         }
-        throw new IllegalArgumentException("Unsupported part type: " + partType);
+        throw new IllegalArgumentException("Unsupported part type: " + partType); //$NON-NLS-1$
     }
 
     @Override
