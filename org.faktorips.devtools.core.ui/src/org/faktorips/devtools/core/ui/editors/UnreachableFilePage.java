@@ -29,16 +29,10 @@ public class UnreachableFilePage extends IpsObjectEditorPage {
 
     public final static String PAGE_ID = "UnreachableFile"; //$NON-NLS-1$
 
-    /**
-     * @param editor
-     */
     public UnreachableFilePage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, "UnreachableFile"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createFormContent(IManagedForm managedForm) {
         ScrolledForm form = managedForm.getForm();

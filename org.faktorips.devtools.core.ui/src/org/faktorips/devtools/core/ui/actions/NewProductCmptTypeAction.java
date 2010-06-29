@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmpt
  * @author Joerg Ortmann
  */
 public class NewProductCmptTypeAction extends Action {
+
     private IWorkbenchWindow window;
 
     public NewProductCmptTypeAction(IWorkbenchWindow window) {

@@ -29,9 +29,6 @@ import org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportW
  */
 public class CreateIpsArchiveAction extends IpsAction {
 
-    /**
-     * @param selectionProvider
-     */
     public CreateIpsArchiveAction(ISelectionProvider selectionProvider) {
         super(selectionProvider);
         super.setText(Messages.CreateIpsArchiveAction_Name);
@@ -40,9 +37,6 @@ public class CreateIpsArchiveAction extends IpsAction {
         super.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ExportIpsArchive.gif")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         if (selection == null) {

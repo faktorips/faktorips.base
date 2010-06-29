@@ -50,7 +50,7 @@ public class ComboFieldEditor extends FieldEditor {
         createControl(parent);
     }
 
-    /*
+    /**
      * Checks whether given <code>String[][]</code> is of "type" <code>String[][2]</code>.
      * 
      * @return <code>true</code> if it is ok, and <code>false</code> otherwise
@@ -67,22 +67,17 @@ public class ComboFieldEditor extends FieldEditor {
         return true;
     }
 
-    /*
-     * @see FieldEditor#adjustForNumColumns(int)
-     */
     @Override
     protected void adjustForNumColumns(int numColumns) {
         GridData gd = (GridData)this.combo.getLayoutData();
         gd.horizontalSpan = numColumns - 1;
-        // We only grab excess space if we have to
-        // If another field editor has more columns then
-        // we assume it is setting the width.
+        /*
+         * We only grab excess space if we have to If another field editor has more columns then we
+         * assume it is setting the width.
+         */
         gd.grabExcessHorizontalSpace = gd.horizontalSpan == 1;
     }
 
-    /*
-     * @see FieldEditor#doFillIntoGrid(Composite, int)
-     */
     @Override
     protected void doFillIntoGrid(Composite parent, int numColumns) {
         getLabelControl(parent);
@@ -94,44 +89,31 @@ public class ComboFieldEditor extends FieldEditor {
         combo.setLayoutData(gd);
     }
 
-    /*
-     * @see FieldEditor#doLoad()
-     */
     @Override
     protected void doLoad() {
         updateComboForValue(getPreferenceStore().getString(getPreferenceName()));
     }
 
-    /*
-     * @see FieldEditor#doLoadDefault()
-     */
     @Override
     protected void doLoadDefault() {
         updateComboForValue(getPreferenceStore().getDefaultString(getPreferenceName()));
     }
 
-    /*
-     * @see FieldEditor#doStore()
-     */
     @Override
     protected void doStore() {
         if (valueString == null) {
             getPreferenceStore().setToDefault(getPreferenceName());
             return;
         }
-
         getPreferenceStore().setValue(getPreferenceName(), valueString);
     }
 
-    /*
-     * @see FieldEditor#getNumberOfControls()
-     */
     @Override
     public int getNumberOfControls() {
         return 2;
     }
 
-    /*
+    /**
      * Lazily create and return the Combo control.
      */
     public Combo getComboBoxControl(Composite parent) {
@@ -155,7 +137,7 @@ public class ComboFieldEditor extends FieldEditor {
         return combo;
     }
 
-    /*
+    /**
      * Given the name (label) of an entry, return the corresponding value.
      */
     protected String getValueForName(String name) {
@@ -167,7 +149,7 @@ public class ComboFieldEditor extends FieldEditor {
         return entryNamesAndValues[0][0];
     }
 
-    /*
+    /**
      * Set the name in the combo widget to match the specified value.
      */
     protected void updateComboForValue(String value) {
@@ -183,4 +165,5 @@ public class ComboFieldEditor extends FieldEditor {
             combo.setText(entryNamesAndValues[0][0]);
         }
     }
+
 }

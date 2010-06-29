@@ -94,13 +94,13 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
 
     private TableViewer fTableViewer;
 
-    // the label text above the table
+    /** the label text above the table */
     private String label;
 
     // the buttons
     private Button fUpButton;
     private Button fDownButton;
-    // private Button fEditButton;
+
     private Button fAddButton;
     private Button fRemoveButton;
 
@@ -228,7 +228,6 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         fTableViewer.setContentProvider(new ParameterInfoContentProvider());
         fTableViewer.setLabelProvider(new ParameterInfoLabelProvider());
         new TableMessageHoverService(fTableViewer) {
-
             @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 return validate((IParameter)element);
@@ -766,27 +765,21 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             } else if (property.equals(PROPERTIES[TYPE_PROP])) {
                 param.setDatatype((String)value);
             }
-            // it is necessary to update all parameters at this point since there can be
-            // dependencies between the parameters.
-            // e.g. if the parameter name of two parameters is the same then an error is to display
-            // for both parameters.
+            /*
+             * it is necessary to update all parameters at this point since there can be
+             * dependencies between the parameters. e.g. if the parameter name of two parameters is
+             * the same then an error is to display for both parameters.
+             */
             fTableViewer.update(paramContainer.getParameters(), new String[] { property });
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
-
         updateButtonsEnabledState();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;

@@ -64,6 +64,7 @@ import org.faktorips.values.DateUtil;
  * @author Thorsten Guenther
  */
 public class GenerationSelectionDialog extends TitleAreaDialog {
+
     private static final String STORED_CHOICE_ID = IpsPlugin.PLUGIN_ID + ".generationSelectionDialogChoice"; //$NON-NLS-1$
 
     private UIToolkit toolkit = new UIToolkit(null);
@@ -84,15 +85,19 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     private int generationIndex;
 
     private Map<Integer, Button> allButtons = new HashMap<Integer, Button>(3);
+
     private Hashtable<Button, Integer> choices = new Hashtable<Button, Integer>(3);
-    /* User's choice was to browse the generation effective at the current effective date. */
+
+    /** User's choice was to browse the generation effective at the current effective date. */
     public static final int CHOICE_BROWSE = 0;
-    /*
+
+    /**
      * User's choice was to switch the effective date to the effective from of one of the
      * generations.
      */
     public static final int CHOICE_SWITCH = 1;
-    /* User's choice was to create a new generation */
+
+    /** User's choice was to create a new generation */
     public static final int CHOICE_CREATE = 2;
 
     private String formatedWorkingDate;
@@ -122,6 +127,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             GregorianCalendar workingDate, String generationConceptNameSingular,
             String generationConceptNameSingularInsideSentence, String generationConceptNamePlural,
             String generationConceptNamePluralInsideSentence, boolean canEditRecentGenerations, boolean editWorkingMode) {
+
         super(parentShell);
 
         init(cmpt, formatedWorkingDate, workingDate, generationConceptNameSingular,
@@ -161,6 +167,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             String generationConceptNamePluralInsideSentence,
             boolean canEditRecentGenerations,
             boolean editWorkingMode) {
+
         this.cmpt = cmpt;
         this.formatedWorkingDate = formatedWorkingDate;
         this.workingDate = workingDate;
@@ -175,9 +182,6 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         setHelpAvailable(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite workArea = (Composite)super.createDialogArea(parent);
@@ -214,7 +218,6 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     }
 
     public void createChoiceControls(Composite selectPane) {
-
         createChoiceForShowGenerationReadOnly(selectPane);
         createChoiceForSwitchWorkingDate(selectPane);
         createChoiceForCreateNewGeneration(selectPane);
@@ -246,9 +249,6 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         bindingContext.bindContent(checkbox, new WorkingDatePmo(), WorkingDatePmo.CAN_EDIT_RECENT_GENERATION);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         // create OK and Cancel buttons by default
@@ -284,6 +284,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             Button button,
             List<String> generations,
             boolean forReadOnlyCombo) {
+
         Combo validFromDates = new Combo(switchPane, SWT.DROP_DOWN | SWT.READ_ONLY);
         SelectionListenerForCombo listenerForCombo = new SelectionListenerForCombo(validFromDates, button);
         validFromDates.addSelectionListener(listenerForCombo);
@@ -397,9 +398,6 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == Window.OK) {
@@ -447,7 +445,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             validate();
         }
 
-        /*
+        /**
          * Returns the current selected radio button
          */
         private Button getCurrentSelectedButton() {
@@ -457,7 +455,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
                     return button;
                 }
             }
-            throw new RuntimeException("Radiobutton has no selection.");
+            throw new RuntimeException("Radiobutton has no selection."); //$NON-NLS-1$
         }
 
         @Override
@@ -468,6 +466,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     }
 
     private class SelectionListenerForCombo implements SelectionListener, FocusListener {
+
         private Combo combo;
         private Button button;
 
@@ -493,6 +492,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 
         @Override
         public void focusLost(FocusEvent e) {
+            // Nothing to do
         }
 
         private void handleButtonStates() {
@@ -557,7 +557,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         int messageType = IMessageProvider.NONE;
 
         if (!editWorkingMode) {
-            message = "";
+            message = ""; //$NON-NLS-1$
             messageType = IMessageProvider.INFORMATION;
         }
 
@@ -596,7 +596,6 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         }
     }
 
-    // test methods
     public List<Integer> getAllButtons() {
         List<Integer> createdChoices = new ArrayList<Integer>(4);
         createdChoices.addAll(allButtons.keySet());

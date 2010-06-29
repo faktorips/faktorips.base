@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This operation enables to execute a refactoring. The status of the condition checking phase is
- * evaluated. If any warning or error is detected, an appropriate dialog is displayed to the user
- * who may then choose either to cancel the refactoring or to proceed.
+ * This operation enables the client to execute a refactoring. The status of the condition checking
+ * phase is evaluated. If any warning or error is detected, an appropriate dialog is displayed to
+ * the user who may then choose either to cancel the refactoring or to proceed.
  * 
  * @author Alexander Weickmann
  */

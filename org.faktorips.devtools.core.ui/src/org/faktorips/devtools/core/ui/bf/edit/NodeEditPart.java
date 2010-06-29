@@ -73,9 +73,6 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
         return (IBFElement)getModel();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final IFigure createFigure() {
         nameLabel = new Label();
@@ -89,9 +86,6 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
      */
     protected abstract IFigure createFigureInternal();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void refreshVisuals() {
         Point loc = getBFElement().getLocation();
@@ -108,7 +102,7 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
      * Is called by refreshVisuals(). It requests the display string of the {@link IBFElement} and
      * displays it on the name label. It calls the validate method of the element and delegates the
      * message list to the showError(MessageList) method.
-     * <p/>
+     * <p>
      * Subclass can override this method to do more model updating.
      */
     protected void refreshVisualsFromModel() {
@@ -125,49 +119,42 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
 
     /**
      * Empty implementation. Subclasses implement the error display with this method.
+     * 
+     * @param msgList The message list containing error messages.
      */
     protected void showError(MessageList msgList) {
+        // Empty default implementation
     }
 
     @Override
     @SuppressWarnings("unchecked")
+    // Eclipse API uses unchecked return type
     protected List getModelSourceConnections() {
         return getBFElement().getOutgoingControlFlow();
     }
 
     @Override
     @SuppressWarnings("unchecked")
+    // Eclipse API uses unchecked return type
     protected List getModelTargetConnections() {
         return getBFElement().getIncomingControlFlow();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         return sourceConnectionAnchor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         return sourceConnectionAnchor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         return targetConnectionAnchor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         return targetConnectionAnchor;

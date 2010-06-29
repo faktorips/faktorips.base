@@ -43,8 +43,10 @@ public class InverseAssociationPage extends WizardPage {
     private Button noInverseAssociation;
     private Button prevSelection;
 
-    // stores if this page shows the detail to master state
-    // means only use existing association is visible
+    /**
+     * stores if this page shows the detail to master state means only use existing association is
+     * visible
+     */
     private boolean detailToMasterState = false;
 
     public InverseAssociationPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {

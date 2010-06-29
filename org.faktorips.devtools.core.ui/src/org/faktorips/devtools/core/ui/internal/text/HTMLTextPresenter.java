@@ -52,7 +52,6 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
     }
 
     protected void adaptTextPresentation(TextPresentation presentation, int offset, int insertLength) {
-
         int yoursStart = offset;
         int yoursEnd = offset + insertLength - 1;
         yoursEnd = Math.max(yoursStart, yoursEnd);
@@ -79,7 +78,6 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
     }
 
     private void append(StringBuffer buffer, String string, TextPresentation presentation) {
-
         int length = string.length();
         buffer.append(string);
 
@@ -101,10 +99,6 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
         return (i == length ? line : line.substring(0, i)) + " "; //$NON-NLS-1$
     }
 
-    /*
-     * @see IHoverInformationPresenter#updatePresentation(Display display, String, TextPresentation,
-     * int, int)
-     */
     @Override
     public String updatePresentation(Display display,
             String hoverInfo,
@@ -114,12 +108,6 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
         return updatePresentation((Drawable)display, hoverInfo, presentation, maxWidth, maxHeight);
     }
 
-    /*
-     * @see IHoverInformationPresenterExtension#updatePresentation(Drawable drawable, String,
-     * TextPresentation, int, int)
-     * 
-     * @since 3.2
-     */
     @Override
     public String updatePresentation(Drawable drawable,
             String hoverInfo,
@@ -133,7 +121,6 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 
         GC gc = new GC(drawable);
         try {
-
             StringBuffer buffer = new StringBuffer();
             int maxNumberOfLines = Math.round(maxHeight / gc.getFontMetrics().getHeight());
 
@@ -148,7 +135,6 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
             boolean firstLineProcessed = false;
 
             while (line != null) {
-
                 if (fEnforceUpperLineLimit && maxNumberOfLines <= 0) {
                     break;
                 }
@@ -196,7 +182,6 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
     }
 
     private String trim(StringBuffer buffer, TextPresentation presentation) {
-
         int length = buffer.length();
 
         int end = length - 1;
@@ -223,4 +208,5 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
         presentation.setResultWindow(new Region(start, buffer.length()));
         return buffer.toString();
     }
+
 }

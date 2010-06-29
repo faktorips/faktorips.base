@@ -19,9 +19,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
-/**
- *
- */
 public class StructurePage extends IpsObjectEditorPage {
 
     final static String PAGE_ID = "Structure"; //$NON-NLS-1$
@@ -38,12 +35,6 @@ public class StructurePage extends IpsObjectEditorPage {
         return getTableEditor().getTableStructure();
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage#createPageContent(org.eclipse.swt.widgets.Composite,
-     *      org.faktorips.devtools.core.ui.UIToolkit)
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));

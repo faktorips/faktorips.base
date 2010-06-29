@@ -27,9 +27,6 @@ public class DescriptionPage extends IpsObjectEditorPage {
         super(editor, PAGEID, Messages.DescriptionPage_description);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.EnumTypeRefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.wizards.enumtype.EnumTypePage;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -45,7 +46,7 @@ import org.faktorips.util.ArgumentCheck;
  * It is part of the <tt>EnumTypeStructurePage</tt>.
  * 
  * @see EnumTypeEditor
- * @see EnumTypeStructurePage
+ * @see EnumTypePage
  * 
  * @author Alexander Weickmann
  * 
@@ -157,7 +158,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             switch (event.getEventType()) {
                 case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
                     wholeContentChanged();
-                    // Here is no "break;" by intention!
+                    //$FALL-THROUGH$
 
                 case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
                     propertyChanged();

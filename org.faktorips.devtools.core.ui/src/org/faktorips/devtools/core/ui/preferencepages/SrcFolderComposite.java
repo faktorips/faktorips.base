@@ -169,7 +169,6 @@ public class SrcFolderComposite extends Composite {
         treeViewer.addSelectionChangedListener(srcFolderAdapter);
         treeViewer.setLabelProvider(new DecoratingLabelProvider(new IpsObjectPathLabelProvider(), IpsPlugin
                 .getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()));
-
         return treeViewer;
     }
 
@@ -192,11 +191,8 @@ public class SrcFolderComposite extends Composite {
 
     /**
      * Initializes the composite with the given Ips object path
-     * 
-     * @param ipsObjectPath, must not be null
      */
     public void init(IIpsObjectPath ipsObjectPath) {
-
         this.ipsObjectPath = ipsObjectPath;
 
         IpsObjectPathContentProvider contentProvider = new IpsObjectPathContentProvider();
@@ -222,7 +218,6 @@ public class SrcFolderComposite extends Composite {
         mergableSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForMergableSources());
 
         try {
-
             IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsObjectPath.getIpsProject()
                     .getIpsPackageFragmentRoots();
             if (ipsPackageFragmentRoots.length > 0) {
@@ -239,7 +234,6 @@ public class SrcFolderComposite extends Composite {
                         .getIpsPackageFragment(ipsObjectPath.getBasePackageNameForDerivedJavaClasses());
                 basePackageDerivedControl.setIpsPackageFragment(ipsPackageFragmentDerived);
             }
-
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -266,9 +260,7 @@ public class SrcFolderComposite extends Composite {
     }
 
     private void updateWidgetEnabledStates() {
-
         boolean multipleOutputFolders = (ipsObjectPath != null) && ipsObjectPath.isOutputDefinedPerSrcFolder();
-
         multipleOutputCheckBoxField.getCheckbox().setChecked(multipleOutputFolders);
 
         if (treeViewer.getSelection().isEmpty()) {
@@ -315,15 +307,11 @@ public class SrcFolderComposite extends Composite {
     }
 
     private void addSrcFolders() {
-
         final ElementTreeSelectionDialog selectFolderDialog = createSelectFolderDialog();
-
         if (selectFolderDialog.open() == Window.OK) {
-
             // add new selected source folders to IPS object path
             Object[] selectedFolders = selectFolderDialog.getResult();
             for (Object selectedFolder : selectedFolders) {
-
                 IFolder folder = (IFolder)selectedFolder;
                 ipsObjectPath.newSourceFolderEntry(folder);
                 treeViewer.refresh(false);
@@ -350,7 +338,6 @@ public class SrcFolderComposite extends Composite {
                 IIpsObjectPathEntryAttribute attribute = (IIpsObjectPathEntryAttribute)selectedElement;
 
                 if (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources()) {
-
                     OutputFolderEditDialog editDialog = new OutputFolderEditDialog(getShell(), srcFolderEntry,
                             attribute);
                     if (editDialog.open() == Window.OK) {
@@ -380,10 +367,8 @@ public class SrcFolderComposite extends Composite {
                         dataChanged = true;
                     }
                 } else if (attribute.isTocPath()) {
-
                     String tocPath = srcFolderEntry.getBasePackageRelativeTocPath();
                     IInputValidator inputValidator = new IInputValidator() {
-
                         @Override
                         public String isValid(String newText) {
                             if (newText == null || newText.length() < 1) {
@@ -409,12 +394,12 @@ public class SrcFolderComposite extends Composite {
     private ElementTreeSelectionDialog createSelectFolderDialog() {
         final IProject project = ipsObjectPath.getIpsProject().getProject();
 
-        // According to the validation rules for IpsSrcFolderEntry objects, a source (model) folder
-        // must be a
-        // direct child of the project root directory. Thus the generic WorkbenchContentProvider is
-        // modified
-        // to restrict the depth of the shown directory tree to one.
-
+        /*
+         * According to the validation rules for IpsSrcFolderEntry objects, a source (model) folder
+         * must be a direct child of the project root directory. Thus the generic
+         * WorkbenchContentProvider is modified to restrict the depth of the shown directory tree to
+         * one.
+         */
         WorkbenchContentProvider workbenchContentProvider = new WorkbenchContentProvider() {
             @Override
             public boolean hasChildren(Object element) {
@@ -444,9 +429,7 @@ public class SrcFolderComposite extends Composite {
                 newSrcFolderButton.addSelectionListener(new SelectionAdapter() {
                     @Override
                     public void widgetSelected(SelectionEvent event) {
-
                         IInputValidator validator = new IInputValidator() {
-
                             @Override
                             public String isValid(String folderName) {
                                 if (folderName == null || folderName.length() == 0) {
@@ -467,9 +450,7 @@ public class SrcFolderComposite extends Composite {
                         if (dialog.open() == Window.OK) {
                             IFolder newFolder = ipsObjectPath.getIpsProject().getProject().getFolder(dialog.getValue());
                             try {
-
                                 newFolder.create(true, false, null);
-
                             } catch (CoreException e) {
                                 IpsPlugin.logAndShowErrorDialog(e);
                             }
@@ -524,13 +505,13 @@ public class SrcFolderComposite extends Composite {
             return;
         }
 
-        // Folder field text can temporarily contain invalid values, because it is updated on each
-        // keystroke
-        // when typed in with keyboard. That's why exceptions are ignored here.
+        /*
+         * Folder field text can temporarily contain invalid values, because it is updated on each
+         * keystroke when typed in with keyboard. That's why exceptions are ignored here.
+         */
         try {
             IPath path = new Path(IPath.SEPARATOR + folderName);
             IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
-
             if (mergable) {
                 ipsObjectPath.setOutputFolderForMergableSources(folder);
             } else {
@@ -543,7 +524,6 @@ public class SrcFolderComposite extends Composite {
     }
 
     private void handleOutputDefinedPerSrcFolderChanged(boolean multipleEnabled) {
-
         ipsObjectPath.setOutputDefinedPerSrcFolder(multipleEnabled);
         treeViewer.refresh();
 
@@ -557,7 +537,6 @@ public class SrcFolderComposite extends Composite {
      *            name
      */
     private void handleBasePackageNameChanged(boolean mergable) {
-
         if (mergable) {
             String packageName = basePackageMergableField.getText();
             ipsObjectPath.setBasePackageNameForMergableJavaClasses(packageName);
@@ -571,17 +550,11 @@ public class SrcFolderComposite extends Composite {
 
     private class IpsSrcFolderAdapter implements ISelectionChangedListener, SelectionListener, ValueChangeListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
             updateWidgetEnabledStates();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetSelected(SelectionEvent e) {
             if (e.getSource() == addSrcFolderButton) {
@@ -596,19 +569,13 @@ public class SrcFolderComposite extends Composite {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
-        public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // nothing to do
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
-
             if (e.field == mergableSrcFolderField) {
                 handleDefaultOutputFolderChanged(true);
 

@@ -52,9 +52,6 @@ public class IpsObjectPartPmo extends PresentationModelObject implements Content
         return "PMO for " + part; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(part)) {
@@ -64,7 +61,7 @@ public class IpsObjectPartPmo extends PresentationModelObject implements Content
     }
 
     protected void partHasChanged() {
-
+        // Empty default implementation
     }
 
 }

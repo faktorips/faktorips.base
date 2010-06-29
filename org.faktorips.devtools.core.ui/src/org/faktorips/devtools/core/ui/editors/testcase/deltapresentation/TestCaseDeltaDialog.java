@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDia
  */
 public class TestCaseDeltaDialog extends AbstractDeltaDialog {
 
-    // The displayed delta in the dialog
+    /** The displayed delta in the dialog */
     private ITestCaseTestCaseTypeDelta delta;
 
     /**
@@ -46,9 +46,6 @@ public class TestCaseDeltaDialog extends AbstractDeltaDialog {
         this.toolkit = new UIToolkit(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createDialogArea(Composite parent) {
         getShell().setText(Messages.TestCaseDeltaDialog_Title);

@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.ui.wizards.tablestructure.OpenNewTableStructu
  * @author Joerg Ortmann
  */
 public class NewTableStructureAction extends Action {
+
     private IWorkbenchWindow window;
 
     public NewTableStructureAction(IWorkbenchWindow window) {

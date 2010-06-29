@@ -80,6 +80,7 @@ import org.faktorips.util.message.MessageList;
  * @author Joerg Ortmann
  */
 public class FormulaTestCaseControl extends Composite implements ColumnChangeListener, IDataChangeableReadWriteAccess {
+
     private static final int IDX_COLUMN_IMAGE = 0;
     private static final int IDX_COLUMN_NAME = 1;
     private static final int IDX_COLUMN_EXPECTED_RESULT = 2;
@@ -94,52 +95,50 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
     private UIToolkit uiToolkit;
 
-    /* Controller of the dependent ips object part */
+    /** Controller of the dependent ips object part */
     private IpsObjectUIController uiController;
 
-    /*
+    /**
      * Composite controler contains the dependent object part ui controller and the dummy contoler
      * to update the ui for this composite e.g. the actual value will be set afer executing the
      * formula
      */
     private CompositeUIController compositeUiController;
 
-    /* The formula test cases which are displayed in the table */
+    /** The formula test cases which are displayed in the table */
     private List<ExtDataForFormulaTestCase> formulaTestCases = new ArrayList<ExtDataForFormulaTestCase>();
 
-    /* The config element the displayed formula test cases belongs to */
+    /** The config element the displayed formula test cases belongs to */
     private IFormula formula;
 
     private IIpsProject ipsProject;
 
-    /* Contains the table viewer to display and edit the formula test cases */
+    /** Contains the table viewer to display and edit the formula test cases */
     private TableViewer formulaTestCaseTableViewer;
 
-    /*
+    /**
      * Contains the table to display the details of the currently selected formula test case which
      * is selected in the formula test case table
      */
     private FormulaTestInputValuesControl formulaTestInputValuesControl;
 
-    /* The status bar which contains the corresponding color of the last test run */
+    /** The status bar which contains the corresponding color of the last test run */
     private Control testStatusBar;
 
-    /* Buttons */
     private Button btnNewFormulaTestCase;
     private Button btnDeleteFormulaTestCase;
     private Button btnUpdateFormulaTestCase;
     private Button btnMoveFormulaTestCaseUp;
     private Button btnMoveFormulaTestCaseDown;
 
-    /* Contains the colors for the test status */
     private Color failureColor;
     private Color okColor;
 
-    /* Indicates errors or failures during the calculation */
+    // Indicates errors or failures during the calculation
     private boolean isCalculationErrorOrFailure;
     private boolean dataChangeable;
 
-    /*
+    /**
      * Extended data which is displayed beside the model data in the table
      */
     public class ExtDataForFormulaTestCase {
@@ -218,7 +217,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
     }
 
-    /*
+    /**
      * Returns the status error, failure, or ok of the given formula test case
      */
     private int getFormulaTestCaseTestStatus(ExtDataForFormulaTestCase formulaTestCase) {
@@ -252,7 +251,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         try {
             ValueDatatype datatype = formula.findValueDatatype(ipsProject);
             if (datatype == null) {
-                throw new CoreException(new IpsStatus("Result datatype not found for formula: " + formula.getName()));
+                throw new CoreException(new IpsStatus("Result datatype not found for formula: " + formula.getName())); //$NON-NLS-1$
             }
             return datatype.areValuesEqual(actualResult, expectedResult);
         } catch (CoreException e) {
@@ -262,7 +261,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
     }
 
-    /*
+    /**
      * Label provider for the formula test input value.
      */
     private class FormulaTestCaseTblLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -270,7 +269,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         private ResourceManager resourceManager;
 
         private ImageDescriptor testImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "obj16/test.gif");
+                "obj16/test.gif"); //$NON-NLS-1$
 
         public FormulaTestCaseTblLabelProvider() {
             resourceManager = new LocalResourceManager(JFaceResources.getResources());
@@ -362,9 +361,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         okColor = new Color(getDisplay(), 95, 191, 95);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         failureColor.dispose();
@@ -435,6 +431,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -453,6 +450,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
                 @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
+                    // Nothing to do
                 }
             });
         }
@@ -468,6 +466,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -482,6 +481,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -496,6 +496,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -512,6 +513,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
         btnUpdateFormulaTestCase.setToolTipText(Messages.FormulaTestCaseControl_ToolTip_BtnUpdate);
@@ -530,7 +532,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         formulaTestInputValuesControl.initControl();
     }
 
-    /*
+    /**
      * Creates a new formula test case.
      */
     private void newClicked() {
@@ -551,11 +553,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
             formulaTestCaseTableViewer.setSelection(new StructuredSelection(newFormulaTestCase));
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 
-    /*
+    /**
      * Moves the given formula test case up or down
      */
     private void moveFormulaTestInputValues(ExtDataForFormulaTestCase formulaTestCase, boolean up) {
@@ -574,7 +577,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
     }
 
-    /*
+    /**
      * Update the currently selected formula test case store new formula test input values and
      * delete unnecessary parameters
      */
@@ -595,11 +598,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             repackAndResfreshForumlaTestCaseTable();
             uiController.updateUI();
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 
-    /*
+    /**
      * Generates and returns the message which informs about the new and deleted parameters
      */
     private String buildMessageForUpdateInformation(ExtDataForFormulaTestCase selElement) throws CoreException {
@@ -643,7 +647,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         return messageForChangeInfoDialog;
     }
 
-    /*
+    /**
      * Execute the formula for all formula test cases
      */
     protected void executeClicked() {
@@ -675,8 +679,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                             element.setMessage(mlformula.getFirstMessage(Message.ERROR).getText());
                         }
                         formula.findValueDatatype(ipsProject);
-                        element.setActualResult(result == null ? "" : result.toString());
+                        element.setActualResult(result == null ? "" : result.toString()); //$NON-NLS-1$
                     } catch (Exception e) {
+                        // TODO catch Exception needs to be documented properly or specialized
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
                     int testResultStatus = getFormulaTestCaseTestStatus(element);
@@ -696,7 +701,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
     }
 
-    /*
+    /**
      * The delete button was clicked
      */
     private void deleteClicked() {
@@ -728,7 +733,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         uiController.updateUI();
     }
 
-    /*
+    /**
      * Returns the first selected formula test case or <code>null</code> if nothing is selected.
      */
     private ExtDataForFormulaTestCase getSelectedFormulaTestCase() {
@@ -741,7 +746,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         return null;
     }
 
-    /*
+    /**
      * Creates the table to dipsplay and editing the formula test case.
      */
     private void createFormulaTestCaseTable(Composite c, UIToolkit uiToolkit) {
@@ -791,7 +796,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         tableCellModifier.addListener(this);
     }
 
-    /*
+    /**
      * Adds the listener to the formula test case table
      */
     private void hookFormulaTestCaseTableListener() {
@@ -866,7 +871,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         return expectedResult;
     }
 
-    /*
+    /**
      * Method to indicate that the selection in the formula test case table has changed
      */
     protected void selectionFormulaTestCaseChanged(ExtDataForFormulaTestCase selectedFormulaTestCase) {
@@ -893,7 +898,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
     }
 
-    /*
+    /**
      * Updates the status of the update button to enabled or disabled. Enable the button if there is
      * an mismatch between the formulas and the formula test case parameters
      */
@@ -917,7 +922,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
     }
 
-    /*
+    /**
      * Repacks the columns in the table
      */
     private void repackAndResfreshForumlaTestCaseTable() {
@@ -937,7 +942,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         testStatusBar.setBackground(getBackground());
     }
 
-    /*
+    /**
      * Performs and returns validation messages on the given element.
      */
     private MessageList validateElement(Object element) throws CoreException {
@@ -966,9 +971,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
@@ -980,9 +982,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         formulaTestInputValuesControl.setDataChangeable(changeable);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;

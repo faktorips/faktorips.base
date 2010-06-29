@@ -17,30 +17,30 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 public interface OverlayIcons {
 
-    public final static String ERROR_OVR = "ovr16/error_ovr.gif";
+    public final static String ERROR_OVR = "ovr16/error_ovr.gif"; //$NON-NLS-1$
 
-    public final static String WARNING_OVR = "ovr16/warning_co.gif";
+    public final static String WARNING_OVR = "ovr16/warning_co.gif"; //$NON-NLS-1$
 
     // TODO eigenes INFO Bild!
-    public final static String INFO_OVR = "ovr16/warning_co.gif";
+    public final static String INFO_OVR = "ovr16/warning_co.gif"; //$NON-NLS-1$
 
-    public final static String FAILURE_OVR = "ovr16/failed_ovr.gif";
+    public final static String FAILURE_OVR = "ovr16/failed_ovr.gif"; //$NON-NLS-1$
 
-    public final static String SUCCESS_OVR = "ovr16/success_ovr.gif";
+    public final static String SUCCESS_OVR = "ovr16/success_ovr.gif"; //$NON-NLS-1$
 
-    public final static String OVERRIDE_OVR = "OverrideIndicator.gif";
+    public final static String OVERRIDE_OVR = "OverrideIndicator.gif"; //$NON-NLS-1$
 
-    public final static String PRODUCT_OVR = "ProductRelevantOverlay.gif";
+    public final static String PRODUCT_OVR = "ProductRelevantOverlay.gif"; //$NON-NLS-1$
 
-    public final static String ABSTRACT_OVR = "AbstractIndicator.gif";
+    public final static String ABSTRACT_OVR = "AbstractIndicator.gif"; //$NON-NLS-1$
 
-    public final static String KEY_OVR = "KeyOverlay.gif";
+    public final static String KEY_OVR = "KeyOverlay.gif"; //$NON-NLS-1$
 
-    public final static String DELETED_OVR = "DeleteOverlay.gif";
+    public final static String DELETED_OVR = "DeleteOverlay.gif"; //$NON-NLS-1$
 
-    public final static String ADDED_OVR = "AddOverlay.gif";
+    public final static String ADDED_OVR = "AddOverlay.gif"; //$NON-NLS-1$
 
-    public final static String MODIFIED_OVR = "ModifyOverlay.gif";
+    public final static String MODIFIED_OVR = "ModifyOverlay.gif"; //$NON-NLS-1$
 
     public final static ImageDescriptor ERROR_OVR_DESC = IpsUIPlugin.getImageHandling()
             .createImageDescriptor(ERROR_OVR);

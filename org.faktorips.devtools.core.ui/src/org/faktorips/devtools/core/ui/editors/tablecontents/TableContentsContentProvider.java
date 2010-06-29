@@ -20,9 +20,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 
 public class TableContentsContentProvider implements IStructuredContentProvider {
 
-    public TableContentsContentProvider() {
-    }
-
     @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof ITableContents) {
@@ -32,18 +29,14 @@ public class TableContentsContentProvider implements IStructuredContentProvider 
         return new Object[0];
     }
 
-    /**
-     * Empty implementation. {@inheritDoc}
-     */
     @Override
     public void dispose() {
+        // Nothing to do
     }
 
-    /**
-     * Empty implementation. {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        // Nothing to do
     }
 
 }

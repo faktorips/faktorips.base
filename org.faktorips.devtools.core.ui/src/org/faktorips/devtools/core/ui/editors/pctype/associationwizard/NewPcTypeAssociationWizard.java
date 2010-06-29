@@ -51,6 +51,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 public class NewPcTypeAssociationWizard extends Wizard implements ContentsChangeListener {
+
     private static final ArrayList<IAssociation> EMPTY_ASSOCIATION_ARRAY_LIST = new ArrayList<IAssociation>(0);
     final static int NEW_INVERSE_ASSOCIATION = 0;
     final static int USE_EXISTING_INVERSE_ASSOCIATION = 1;
@@ -58,22 +59,19 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
     private UIToolkit toolkit = new UIToolkit(null);
 
-    // indicates that there was an error
+    /** indicates that there was an error */
     private boolean isError;
 
-    protected BindingContext bindingContext = new BindingContext();;
+    protected BindingContext bindingContext = new BindingContext();
     private ExtensionPropertyControlFactory extFactoryAssociation;
     private ExtensionPropertyControlFactory extFactoryInverseAssociation;
     private ExtensionPropertyControlFactory extFactoryProductCmptTypeAssociation;
 
     // model objects
     private IIpsProject ipsProject;
-
     private IPolicyCmptTypeAssociation association;
     private IPolicyCmptTypeAssociation inverseAssociation;
-
     private IPolicyCmptType targetPolicyCmptType;
-
     private IAssociation productCmptTypeAssociation;
 
     // model objects states
@@ -109,8 +107,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     HashMap<IWizardPage, Integer> suppressedEventForPages = new HashMap<IWizardPage, Integer>();
 
     // stores the last inverse association, to indicate changes of this property
-    private String prevInverseAssociationRoleName = "";
-    private String prevAssociationRoleName = "";
+    private String prevInverseAssociationRoleName = ""; //$NON-NLS-1$
+    private String prevAssociationRoleName = ""; //$NON-NLS-1$
     private IPolicyCmptTypeAssociation prevInverseAssociation;
     private String prevInverseAssociationName;
 
@@ -126,9 +124,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         associationTargetPage = new AssociationTargetPage(this, association, toolkit, bindingContext);
@@ -155,9 +150,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         initSuppressedEventsForPages();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPage(IWizardPage page) {
         pages.add(page);
@@ -188,9 +180,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         IWizardPage currentPage = getContainer().getCurrentPage();
@@ -207,9 +196,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
 
     private void handleInverseAssociationRoleNameChange(ContentChangeEvent event) {
-        // if the target role singular name has changed
-        // then we have to update the inverse association definition in the corresponding inverse
-        // association
+        /*
+         * if the target role singular name has changed then we have to update the inverse
+         * association definition in the corresponding inverse association
+         */
         if (event.isAffected(inverseAssociation)
                 && !prevInverseAssociationRoleName.equals(inverseAssociation.getTargetRoleSingular())) {
             storeInverseAssociation(inverseAssociation);
@@ -224,8 +214,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      */
     public void contentsChanged(IWizardPage currentPage) {
         if (!association.getTarget().equals(previousTarget)) {
-            // target has changed
-            // find new derived union candidates
+            // target has changed, find new derived union candidates
             previousTarget = association.getTarget();
             try {
                 storeTargetPolicyCmptType((IPolicyCmptType)association.findTarget(ipsProject));
@@ -258,7 +247,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         getContainer().updateButtons();
     }
 
-    /*
+    /**
      * Validates the given page and updates the message and page complete state. If the given page
      * contains a validation error then show an error message and sets the page completion to
      * <code>false</code> .
@@ -285,7 +274,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return valid;
     }
 
-    /*
+    /**
      * Validates the given page
      */
     private boolean validatePageAndDisplayError(IBlockedValidationWizardPage page) {
@@ -301,9 +290,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         MessageList list;
         try {
             if (association instanceof IPolicyCmptTypeAssociation) {
-                // in case of policy component type associations we must
-                // validate using the parent, because the check for duplicate
-                // attributes/associations is implemented in type#validateThis() method
+                /*
+                 * in case of policy component type associations we must validate using the parent,
+                 * because the check for duplicate attributes/associations is implemented in
+                 * type#validateThis() method
+                 */
                 list = ((IPolicyCmptTypeAssociation)association).getPolicyCmptType().validate(ipsProject);
             } else {
                 list = association.validate(ipsProject);
@@ -325,7 +316,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return true;
     }
 
-    /*
+    /**
      * Check if the validation for the given page is disabled.
      */
     private boolean isValidationDisabledFor(IBlockedValidationWizardPage page) {
@@ -338,7 +329,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return false;
     }
 
-    /*
+    /**
      * Returns the association which could be edit by the give page
      */
     private IAssociation getAssociationFor(IBlockedValidationWizardPage page) {
@@ -352,9 +343,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IWizardPage getNextPage(final IWizardPage page) {
         // in case of an error no next page will be displayed
@@ -409,9 +397,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 return null;
             }
 
-            // display information in special case "no existing inverse association"
-            // if an existing inverse association should be used but no corresponding association
-            // exists
+            /*
+             * display information in special case "no existing inverse association" if an existing
+             * inverse association should be used but no corresponding association exists
+             */
             if (nextPage instanceof InverseAssociationPropertyPage) {
                 ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
                 if (isExistingInverseAssociation()) {
@@ -438,13 +427,13 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return pages.get(index + 1);
     }
 
-    /*
+    /**
      * Returns the visibility of the given page.
      * 
      * @param page the page to check the visibility state
      * 
      * @return <code>true</code> if the given page is visible, <code>false</code> if the page should
-     * be hidden
+     *         be hidden
      */
     private boolean isPageVisible(IWizardPage page) {
         // if a detail to master association should be created then hide all pages which are not
@@ -471,7 +460,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                     .getCorrespondingTargetAssociations(getAssociation(), targetPolicyCmptType);
         } catch (CoreException e) {
             showAndLogError(e);
-        };
+        }
         return null;
     }
 
@@ -547,7 +536,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         inverseAssociationPropertyPage.refreshControls();
     }
 
-    /*
+    /**
      * Create a new inverse association, i.e. create a new association on the target policy
      * component type object.
      */
@@ -560,7 +549,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         storeInverseAssociation(newInverseAssociation);
     }
 
-    /*
+    /**
      * Creates a new association on the product component type.
      */
     private void createNewProductCmptTypeAssociation() {
@@ -589,8 +578,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * <li>the target association type is the corresponding association type of the source
      * </ul>
      * If no association is found on the target then an empty (not null) ArrayList is returned.
-     * 
-     * @throws CoreException
      */
     // TODO pk 30-09-2008 shouldn't this method be a method of IPolicyCmptTypeAssociation?
     public static List<IAssociation> getCorrespondingTargetAssociations(IPolicyCmptTypeAssociation sourceAssociation,
@@ -627,9 +614,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return extFactoryProductCmptTypeAssociation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {
@@ -694,10 +678,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         inverseAssociation.getPersistenceAssociatonInfo().initDefaults();
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     @Override
     public boolean performCancel() {
         restoreMementoTargetBeforeChange();
@@ -723,7 +703,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         if (targetPolicyCmptType == null) {
             return;
         }
-
         mementoTargetBeforeNewAssociation = targetPolicyCmptType.newMemento();
     }
 
@@ -745,7 +724,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         // the role names are used as definition for the corresponding inverse association
 
         prevAssociationRoleName = association.getTargetRoleSingular();
-        prevInverseAssociationRoleName = inverseAssociation == null ? "" : inverseAssociation.getTargetRoleSingular();
+        prevInverseAssociationRoleName = inverseAssociation == null ? "" : inverseAssociation.getTargetRoleSingular(); //$NON-NLS-1$
         prevInverseAssociation = inverseAssociation;
     }
 
@@ -851,8 +830,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
 
     /**
-     * @see this
-     *      {@link #isProductCmptTypeAvailable(IIpsProject, IPolicyCmptType, IPolicyCmptTypeAssociation)}
+     * @see #isProductCmptTypeAvailable(IIpsProject, IPolicyCmptType, IPolicyCmptType)
      */
     public boolean isProductCmptTypeAvailable() {
         try {
@@ -958,9 +936,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return composite;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);

@@ -43,28 +43,31 @@ import org.faktorips.util.memento.Memento;
  * @see AnyValueSetEditDialog
  * 
  * @author Thorsten Guenther
- * @auhtor Jan Ortmann
+ * @author Jan Ortmann
  */
 public class AnyValueSetControl extends TextButtonControl implements IDataChangeableReadWriteAccess {
 
-    // The config element that owns the value set being shown and edited
+    /** The config element that owns the value set being shown and edited */
     private IConfigElement configElement;
 
-    // The shell to details dialog within.
+    /** The shell to details dialog within. */
     private Shell shell;
 
-    // The controller
     private IpsObjectUIController controller;
 
-    // The state of the config element before opening the detail edit dialog. Used to handle the
-    // cancel button properly
+    /**
+     * The state of the config element before opening the detail edit dialog. Used to handle the
+     * cancel button properly
+     */
     private Memento state;
 
-    // The state of the ips source file before opening the detail edit dialog. Used to handle the
-    // cancel button properly
+    /**
+     * The state of the ips source file before opening the detail edit dialog. Used to handle the
+     * cancel button properly
+     */
     private boolean dirty;
 
-    // true if the value set can be edited, false if it read-only.
+    /** true if the value set can be edited, false if it read-only. */
     private boolean dataChangeable;
 
     /**
@@ -78,6 +81,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
      */
     public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell,
             IpsObjectUIController controller) {
+
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
         this.configElement = configElement;
         this.shell = shell;
@@ -85,9 +89,6 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         getTextControl().setEditable(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonClicked() {
         preserveState();
@@ -171,18 +172,12 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
         getTextControl().setEnabled(dataChangeable);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;

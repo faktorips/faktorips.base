@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.ui.wizards.migration.OpenMigrationWizardActio
  * @author Thorsten Guenther
  */
 public class MigrateProjectAction extends Action {
+
     private IWorkbenchWindow window;
     private IStructuredSelection selection;
 

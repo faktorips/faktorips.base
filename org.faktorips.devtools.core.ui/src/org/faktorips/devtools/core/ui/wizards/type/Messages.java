@@ -19,17 +19,16 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.type.messages"; //$NON-NLS-1$
 
-    public static String TypePage_msgNameConflicts;
-    public static String TypePage_msgSupertypeDoesNotExist;
-    public static String TypePage_superclass;
-
     static {
-        // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages() {
-
+        // Messages bundles shall not be initialized.
     }
+
+    public static String TypePage_msgNameConflicts;
+    public static String TypePage_msgSupertypeDoesNotExist;
+    public static String TypePage_superclass;
 
 }

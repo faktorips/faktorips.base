@@ -43,7 +43,6 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
 
     private ExtensionPropertyControlFactory extFactory;
 
-    // edit fields
     private TextButtonField targetField;
     private CardinalityField minCardinalityField;
     private CardinalityField maxCardinalityField;
@@ -57,9 +56,6 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         extFactory = new ExtensionPropertyControlFactory(link.getClass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -130,4 +126,5 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
             this.toExclude = toExclude;
         }
     }
+
 }

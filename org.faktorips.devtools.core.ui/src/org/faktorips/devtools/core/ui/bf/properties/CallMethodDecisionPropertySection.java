@@ -23,8 +23,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 public class CallMethodDecisionPropertySection extends CallMethodPropertySection {
 
@@ -37,7 +35,7 @@ public class CallMethodDecisionPropertySection extends CallMethodPropertySection
     }
 
     @Override
-    protected void extendControlArea(Composite area, UIToolkit uiToolkit, BindingContext bindingContext) {
+    protected void extendControlArea(Composite area) {
         uiToolkit.createLabel(area, Messages.CallMethodDecisionPropertySection_labelDatatype);
         valueLabel = uiToolkit.createLabel(area, ""); //$NON-NLS-1$
     }

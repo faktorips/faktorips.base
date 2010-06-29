@@ -56,6 +56,7 @@ public class WrapperAction extends IpsAction {
      */
     public WrapperAction(ISelectionProvider selectionProvider, String label, String tooltip, String actionSetId,
             String actionId) {
+
         super(selectionProvider);
         setText(label);
         setToolTipText(tooltip);
@@ -79,6 +80,7 @@ public class WrapperAction extends IpsAction {
      */
     public WrapperAction(ISelectionProvider selectionProvider, String label, String tooltip, String imageName,
             String actionSetId, String actionId) {
+
         this(selectionProvider, label, tooltip, actionSetId, actionId);
         if (imageName != null) {
             ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(imageName);

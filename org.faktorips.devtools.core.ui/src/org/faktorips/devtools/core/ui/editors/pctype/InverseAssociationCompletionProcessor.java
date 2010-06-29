@@ -23,16 +23,13 @@ import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
-/**
- *
- */
 public class InverseAssociationCompletionProcessor extends AbstractCompletionProcessor {
 
     private IPolicyCmptType pcType;
     private IPolicyCmptTypeAssociation association;
 
     public InverseAssociationCompletionProcessor() {
-
+        // Default constructor
     }
 
     public InverseAssociationCompletionProcessor(IPolicyCmptTypeAssociation association) {
@@ -42,12 +39,10 @@ public class InverseAssociationCompletionProcessor extends AbstractCompletionPro
         setIpsProject(pcType.getIpsProject());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {
+
         prefix = prefix.toLowerCase();
         IPolicyCmptType target = association.findTargetPolicyCmptType(ipsProject);
         if (target == null) {

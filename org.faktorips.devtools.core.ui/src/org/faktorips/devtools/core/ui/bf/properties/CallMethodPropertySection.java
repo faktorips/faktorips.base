@@ -83,15 +83,20 @@ public class CallMethodPropertySection extends AbstractPropertySection implement
         data.grabExcessHorizontalSpace = false;
         data.widthHint = 300;
         methodSelectionField.setLayoutData(data);
-        extendControlArea(content, uiToolkit, bindingContext);
+        extendControlArea(content);
         processor = new ParameterCompletionProcessor();
         processor.setComputeProposalForEmptyPrefix(true);
         SubjectControlContentAssistant assistant = CompletionUtil.createContentAssistant(processor);
         ContentAssistHandler.createHandlerForText(parameterSelectionControl, assistant);
     }
 
-    protected void extendControlArea(Composite area, UIToolkit uiToolkit, BindingContext bindingContext) {
-
+    /**
+     * Template method to allow subclasses extending the control area
+     * 
+     * @param area The control area to be extended
+     */
+    protected void extendControlArea(Composite area) {
+        // Empty default implementation
     }
 
     @Override

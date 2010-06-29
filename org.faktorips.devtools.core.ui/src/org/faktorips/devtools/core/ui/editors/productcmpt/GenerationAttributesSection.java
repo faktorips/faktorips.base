@@ -85,17 +85,13 @@ public class GenerationAttributesSection extends IpsSection {
      * @param parent The parent to link the ui-items to.
      * @param toolkit The toolkit to use for easier ui-handling
      */
-    public GenerationAttributesSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit,
-            ProductCmptEditor editor) {
+    public GenerationAttributesSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
         super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.generation = generation;
         initControls();
         setText(Messages.ProductAttributesSection_attribute);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         this.toolkit = toolkit;
@@ -140,9 +136,6 @@ public class GenerationAttributesSection extends IpsSection {
         setText(generationConceptName + ": " + validRange); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         if (uiMasterController != null) {
@@ -165,9 +158,6 @@ public class GenerationAttributesSection extends IpsSection {
         rootPane.redraw();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setEnabled(boolean enabled) {
         if (isEnabled() == enabled) {

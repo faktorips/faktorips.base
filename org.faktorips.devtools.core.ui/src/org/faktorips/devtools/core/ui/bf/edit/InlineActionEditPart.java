@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 public class InlineActionEditPart extends ActionEditPart {
 
     public InlineActionEditPart() {
-        super(IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/OpaqueAction.gif"));
+        super(IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/OpaqueAction.gif")); //$NON-NLS-1$
     }
+
 }

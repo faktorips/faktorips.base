@@ -13,23 +13,20 @@
 
 package org.faktorips.devtools.core.ui.wizards.bf;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import org.eclipse.osgi.util.NLS;
 
-public class Messages {
+public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.bf.messages"; //$NON-NLS-1$
 
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
     private Messages() {
-        // do not instatiate
+        // Messages bundles shall not be initialized.
     }
 
-    public static String getString(String key) {
-        try {
-            return RESOURCE_BUNDLE.getString(key);
-        } catch (MissingResourceException e) {
-            return '!' + key + '!';
-        }
-    }
+    public static String BFPage_Title;
+
 }

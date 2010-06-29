@@ -35,9 +35,6 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
-/**
- *
- */
 public class MethodEditDialog extends IpsPartEditDialog2 {
 
     protected IMethod method;
@@ -54,9 +51,6 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         this.method = method;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -121,9 +115,6 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         return new Point(800, 650);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String buildTitle() {
         StringBuffer buffer = new StringBuffer();
@@ -147,9 +138,6 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);

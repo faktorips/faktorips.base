@@ -20,9 +20,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.ui.controller.EditField;
 
-/**
- *
- */
 public abstract class ColumnInfo {
 
     public String columnName;
@@ -31,9 +28,6 @@ public abstract class ColumnInfo {
     public boolean modifiable = false;
     public Comparator<Object> comparator = DEFAULT_COMPARATOR;
 
-    /**
-     * 
-     */
     public ColumnInfo(String columnName, int style, int initialWidth, boolean modifiable) {
         this.columnName = columnName;
         this.style = style;

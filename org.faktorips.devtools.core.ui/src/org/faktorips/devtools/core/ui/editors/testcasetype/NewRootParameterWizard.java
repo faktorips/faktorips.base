@@ -17,7 +17,6 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -35,6 +34,7 @@ import org.faktorips.util.memento.Memento;
  * @author Joerg Ortmann
  */
 public class NewRootParameterWizard extends Wizard implements IBlockedValidationWizard {
+
     private UIToolkit uiToolkit = new UIToolkit(null);
 
     // Wizard pages
@@ -46,17 +46,19 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     private ITestCaseType testCaseType;
     private ITestParameter newTestParameter;
 
-    // Contains a specific state of the test case type
+    /** Contains a specific state of the test case type */
     private Memento memento;
 
-    // The maximum wizard page number which was displayed
+    /** The maximum wizard page number which was displayed */
     private int pageDisplayedMax = 0;
 
-    // Controller to connect the model with the ui
+    /** Controller to connect the model with the ui */
     private IpsObjectUIController controller;
 
-    // Indicates if a test policy cmpt type parameter is created by the wizard (true) or a test
-    // value parameter (false)
+    /**
+     * Indicates if a test policy cmpt type parameter is created by the wizard (true) or a test
+     * value parameter (false)
+     */
     private boolean isTestPolicyCmptTypeParam = false;
 
     public static final int TEST_POLICY_CMPT_TYPE_PARAMETER = 0;
@@ -70,9 +72,6 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         this.testCaseType = testCaseType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         super.addPages();
@@ -88,17 +87,11 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         addPage(rootParamDetailWizardPage);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IpsObjectUIController getController() {
         return controller;
@@ -167,7 +160,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         return newTestParameter;
     }
 
-    /*
+    /**
      * Connects the new test parameter to the model controller
      */
     private void connectNewParameterToModel() {
@@ -181,7 +174,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         getContainer().updateButtons();
     }
 
-    /*
+    /**
      * Creates a new memento for the test case type
      */
     private void createMemento() {
@@ -195,8 +188,6 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      * Returns the last wizard page to specify the details of a test policy cmpt type param, only if
      * the selected datatype is kind of a policy cmpt and the current page is the first wizard page.
      * Otherwise return <code>null</code> (=no next page).
-     * 
-     * {@inheritDoc}
      */
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
@@ -210,9 +201,6 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPageValid(int pageNo) {
         // special check for the last page, valid if no new test policy cmpt type param is chosen,
@@ -234,9 +222,6 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void postAsyncRunnable(Runnable r) {
         if (!getShell().isDisposed()) {
@@ -244,9 +229,6 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMaxPageShown(int pageNumber) {
         pageDisplayedMax = pageNumber;

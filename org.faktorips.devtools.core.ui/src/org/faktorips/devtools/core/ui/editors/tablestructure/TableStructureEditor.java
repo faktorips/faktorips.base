@@ -23,29 +23,16 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
  */
 public class TableStructureEditor extends IpsObjectEditor {
 
-    /**
-     * 
-     */
-    public TableStructureEditor() {
-        super();
-    }
-
     protected ITableStructure getTableStructure() {
         return (ITableStructure)getIpsObject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPagesForParsableSrcFile() throws PartInitException {
         addPage(new StructurePage(this));
         addPage(new DescriptionPage(this));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getUniformPageTitle() {
         return Messages.TableStructureEditor_title + getIpsObject().getName();

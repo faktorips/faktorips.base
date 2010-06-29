@@ -33,12 +33,8 @@ import org.faktorips.util.message.MessageList;
  */
 public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void decorate(Object element, IDecoration decoration) {
-
         MessageList ml = null;
         try {
             if (element instanceof IIpsObjectPathEntry) {
@@ -71,7 +67,7 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
         }
     }
 
-    /*
+    /**
      * @param errorCode as defined in IIpsArchiveEntry
      * 
      * @return short error description or an empty String if not available
@@ -91,7 +87,7 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
         return decoratedShortMessage;
     }
 
-    /*
+    /**
      * @param errorCode as defined in IIpsProjectRefEntry
      * 
      * @return short error description or an empty String if not available
@@ -107,7 +103,7 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
         return decoratedShortMessage;
     }
 
-    /*
+    /**
      * @param errorCode as defined in IIpsSrcFolderEntry
      * 
      * @return short error description or an empty String if not available
@@ -131,33 +127,24 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
         return decoratedShortMessage;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void addListener(ILabelProviderListener listener) { /* nothing to do */
+    public void addListener(ILabelProviderListener listener) {
+        // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void dispose() { /* nothing to do */
+    public void dispose() {
+        // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void removeListener(ILabelProviderListener listener) { /* nothing to do */
+    public void removeListener(ILabelProviderListener listener) {
+        // nothing to do
     }
 
 }

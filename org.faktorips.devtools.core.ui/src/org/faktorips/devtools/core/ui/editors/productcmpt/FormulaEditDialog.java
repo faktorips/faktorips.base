@@ -49,36 +49,33 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
-/**
- *
- */
 public class FormulaEditDialog extends IpsPartEditDialog {
+
     private static final String UI_FORMULA_TEST_CASE_NAME = "UIFormulaTest"; //$NON-NLS-1$
 
-    // the formula configuration element being edited
+    /** the formula configuration element being edited */
     private IFormula formula;
 
-    // the formulas method signature
+    /** the formulas method signature */
     private IMethod signature;
 
     private IIpsProject ipsProject;
 
-    // control to display & edit the formula parameters
+    /** control to display & edit the formula parameters */
     private ChangeParametersControl parametersControl;
 
-    // edit fields
+    /** edit fields */
     private TextField formulaField;
 
-    // the formula test cases composite displayed on the formula test case page
+    /** the formula test cases composite displayed on the formula test case page */
     private FormulaTestCaseControl formulaTestCaseControl;
 
-    // the table to display the formula test case, to preview the result of the editing formula
+    /** the table to display the formula test case, to preview the result of the editing formula */
     private FormulaTestInputValuesControl formulaDummyTestInputValuesControl;
 
     /**
      * Creates a new dialog which allows to edit a formula.
      * 
-     * @param configElement The config element the formula is for.
      * @param parentShell The shell as parent for the dialog.
      * 
      * @throws CoreException if the config element is invalid (e.g. no datatype can be found for
@@ -92,9 +89,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         signature = formula.findFormulaSignature(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectUIController createUIController(IIpsObjectPart part) {
         IpsObjectUIController controller = new IpsObjectUIController(part) {
@@ -108,7 +102,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         return controller;
     }
 
-    /*
+    /**
      * Validates and updates the dialog
      */
     private MessageList validateAndUpdateDialogUI(MessageList messages) {
@@ -160,14 +154,14 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         return true;
     }
 
-    /*
+    /**
      * Updates the formula test case tab.
      */
     private void updateUiFormulaTestCaseTab() {
         formulaTestCaseControl.storeFormulaTestCases(getPersistentFormulaTestCases());
     }
 
-    /*
+    /**
      * Returns all relevant formula test cases which will be displayed in the formula test case tab.
      * Note the formula test case displayed on the first page (used as preview the formula result),
      * is a none persistent formula test case, because it will be deleted if closing this dialog and
@@ -185,7 +179,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         return persitentFormulaTestCases;
     }
 
-    /*
+    /**
      * Returns the transient formula test case which is used to preview the formula result on the
      * first page.
      */
@@ -193,9 +187,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         return formula.getFormulaTestCase(UI_FORMULA_TEST_CASE_NAME);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -258,7 +249,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         return c;
     }
 
-    /*
+    /**
      * If necessary updates the ui formula test case to calculate a preview result and execute it if
      * the formula is valid.
      */
@@ -308,9 +299,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         return IMessageProvider.NONE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void connectToModel() {
         super.connectToModel();
@@ -328,7 +316,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      */
     @Override
     protected String buildTitle() {
-        return formula.getFormulaSignature() + (signature != null ? " - " + signature.getDatatype() : ""); //$NON-NLS-1$
+        return formula.getFormulaSignature() + (signature != null ? " - " + signature.getDatatype() : ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
@@ -341,7 +329,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         super.okPressed();
     }
 
-    /*
+    /**
      * Create the tab to displaying and editing all formula test cases for the config items formula.
      */
     private void createFormulaTestCasesTab(TabFolder folder) {

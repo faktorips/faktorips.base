@@ -88,12 +88,12 @@ public class ComponentPropertiesSection extends IpsSection {
     /**
      * Creates a new attributes section.
      * 
-     * @param generation The generation to get all informations to display from.
      * @param parent The parent to link the ui-items to.
      * @param toolkit The toolkit to use for easier ui-handling
      */
     public ComponentPropertiesSection(IProductCmpt product, Composite parent, UIToolkit toolkit,
             ProductCmptEditor editor) {
+
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.product = product;
         extFactory = new ExtensionPropertyControlFactory(product.getClass());
@@ -102,9 +102,6 @@ public class ComponentPropertiesSection extends IpsSection {
         setText(Messages.ProductAttributesSection_attribute);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         GridLayout layout = new GridLayout(1, true);
@@ -118,9 +115,10 @@ public class ComponentPropertiesSection extends IpsSection {
         workAreaLayout.marginHeight = 5;
         workAreaLayout.marginWidth = 5;
 
-        // following line forces the paint listener to draw a light grey border around
-        // the text control. Can only be understood by looking at the
-        // FormToolkit.PaintBorder class.
+        /*
+         * following line forces the paint listener to draw a light grey border around the text
+         * control. Can only be understood by looking at the FormToolkit.PaintBorder class.
+         */
         rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
         toolkit.getFormToolkit().paintBordersFor(rootPane);
 
@@ -141,6 +139,7 @@ public class ComponentPropertiesSection extends IpsSection {
                             IpsUIPlugin.getDefault().openEditor(productCmptType);
                         }
                     } catch (Exception e) {
+                        // TODO catch Exception needs to be documented properly or specialized
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
                 }
@@ -223,9 +222,6 @@ public class ComponentPropertiesSection extends IpsSection {
         extFactory.bind(bindingContext);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         if (uiMasterController != null) {
@@ -235,9 +231,6 @@ public class ComponentPropertiesSection extends IpsSection {
         bindingContext.updateUI();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);

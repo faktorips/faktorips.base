@@ -27,9 +27,6 @@ import org.faktorips.devtools.core.model.bf.IControlFlow;
  */
 public class BusinessFunctionEditPartFactory implements EditPartFactory {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EditPart createEditPart(EditPart context, Object model) {
         EditPart child = null;
@@ -38,7 +35,6 @@ public class BusinessFunctionEditPartFactory implements EditPartFactory {
             child = new BusinessFunctionEditPart();
 
         } else if (model instanceof IBFElement) {
-
             IBFElement element = (IBFElement)model;
             if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 child = new CallBusinessFunctionActionEditPart();
@@ -61,7 +57,8 @@ public class BusinessFunctionEditPartFactory implements EditPartFactory {
             }
         } else if (model instanceof IControlFlow) {
             child = new ControlFlowEditPart();
-        } else {
+        }
+        if (child == null) {
             throw new IllegalArgumentException("No EditPart can be created for the provided model object: " + model); //$NON-NLS-1$
         }
         child.setModel(model);

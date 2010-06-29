@@ -42,12 +42,6 @@ public class RulesSection extends SimpleIpsPartsSection {
         return (IPolicyCmptType)getIpsObject();
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite,
-     *      org.faktorips.devtools.core.ui.UIToolkit)
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new RulesComposite(getIpsObject(), parent, toolkit);
@@ -63,32 +57,16 @@ public class RulesSection extends SimpleIpsPartsSection {
             super(pdObject, parent, toolkit);
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
-         */
         @Override
         protected IIpsObjectPart newIpsPart() {
             return getPcType().newRule();
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart,
-         *      org.eclipse.swt.widgets.Shell)
-         */
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             IValidationRule rule = (IValidationRule)part;
@@ -117,6 +95,7 @@ public class RulesSection extends SimpleIpsPartsSection {
         }
 
         private class ContentProvider implements IStructuredContentProvider {
+
             @Override
             public Object[] getElements(Object inputElement) {
                 return getPcType().getRules();
@@ -131,8 +110,9 @@ public class RulesSection extends SimpleIpsPartsSection {
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
                 // nothing todo
             }
+
         }
 
-    } // class RulesComposite
+    }
 
 }

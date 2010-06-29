@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  * @author Joerg Ortmann
  */
 public class NewChildParamWizardPage extends WizardPage implements ValueChangeListener {
+
     private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
     protected static final int PAGE_NUMBER = 1;
 
@@ -64,9 +65,6 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         this.wizard = wizard;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
@@ -106,9 +104,6 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         controller.add(editFieldParamType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == editFieldAssociation) {
@@ -167,11 +162,6 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         });
     }
 
-    /**
-     * Validate the page.
-     * 
-     * @throws CoreException
-     */
     private boolean validatePage() throws CoreException {
         setErrorMessage(null);
         if (association == null) {
@@ -208,8 +198,6 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
 
     /**
      * Informs the wizard that this page was displayed.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public IWizardPage getNextPage() {

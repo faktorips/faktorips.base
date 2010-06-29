@@ -48,7 +48,6 @@ public class MessageCueLabelProvider extends LabelProvider {
      * Creates a new <code>MessageCueLabelProvider</code>.
      * 
      * @param baseProvider The label provider to decorate the image for.
-     * @param ipsProject
      * 
      * @throws NullPointerException If baseProvider or ipsProject is <code>null</code>.
      */
@@ -61,9 +60,6 @@ public class MessageCueLabelProvider extends LabelProvider {
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage(Object element) {
         MessageList list = null;
@@ -97,7 +93,6 @@ public class MessageCueLabelProvider extends LabelProvider {
             MessageList msgList = part.getIpsObject().validate(ipsProject);
             collectMessagesForIpsObjectPartContainer(result, msgList, part);
         }
-
         return result;
     }
 
@@ -114,9 +109,6 @@ public class MessageCueLabelProvider extends LabelProvider {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         return baseProvider.getText(element);
@@ -130,4 +122,5 @@ public class MessageCueLabelProvider extends LabelProvider {
         resourceManager.dispose();
         super.dispose();
     }
+
 }

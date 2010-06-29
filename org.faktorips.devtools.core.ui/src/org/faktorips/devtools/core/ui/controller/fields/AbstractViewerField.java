@@ -26,51 +26,33 @@ public abstract class AbstractViewerField extends DefaultEditField {
 
     private final Viewer viewer;
 
-    /**
-     * 
-     */
     public AbstractViewerField(Viewer viewer) {
         this.viewer = viewer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return viewer.getControl();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String text) {
         // viewer.setSelection(new StructuredSelection(text));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         // viewer.setSelection(new StructuredSelection(viewer.getInput()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 notifyChangeListeners(new FieldValueChangedEvent(AbstractViewerField.this));
             }
-
         });
-
     }
 
 }

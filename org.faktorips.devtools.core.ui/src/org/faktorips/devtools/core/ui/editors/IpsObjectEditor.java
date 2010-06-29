@@ -98,31 +98,30 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     public final static boolean TRACE = IpsPlugin.TRACE_UI;
 
-    /*
+    /**
      * Setting key for user's decision not to fix the differences between the product definition
      * structure and the model structure
      */
     private final static String SETTING_DONT_FIX_DIFFERENCES = "dontFixDifferences"; //$NON-NLS-1$
 
-    // The file that's being edited (if any)
+    /** The file that's being edited (if any) */
     private IIpsSrcFile ipsSrcFile;
 
-    // Dirty flag
     private boolean dirty = false;
 
     private Boolean contentChangeable = null;
 
-    // The editor's ISelectionProvider
+    /** The editor's ISelectionProvider */
     private SelectionProviderDispatcher selectionProviderDispatcher;
 
-    /*
+    /**
      * Storage for the user's decision not to load the changes made directly in the file system.
      */
     private boolean dontLoadChanges = false;
 
     private boolean isCheckingForChangesMadeOutsideEclipse = false;
 
-    /*
+    /**
      * True if the editor contains the pages that are shown for a parsable ips source file, false if
      * an error page is shown.
      */
@@ -132,7 +131,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     private ActivationListener activationListener;
 
-    /* Updates the title image if there are ips marker changes on the editor's input */
+    /** Updates the title image if there are ips marker changes on the editor's input */
     private IpsObjectEditorErrorMarkerUpdater errorTickupdater;
 
     private IContentOutlinePage outlinePage;
@@ -220,7 +219,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
         }
 
-        /*
+        /**
          * Check if the ips src file is valid and could be edited in the editor, if the ips src file
          * doesn't exists (e.g. ips src file outside ips package) close the editor and open the
          * current file in the default text editor.
@@ -261,6 +260,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         } catch (CoreException e) {
             throw new PartInitException(e.getStatus());
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.log(e);
             throw new PartInitException(e.getMessage());
         }
@@ -325,6 +325,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
 
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.log(e);
         }
     }
@@ -332,9 +333,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * This method extends the <code>addPages()</code> operation and must be implemented by
      * subclasses by adding the pages to edit the ips object with.
-     * 
-     * @throws PartInitException
-     * @throws CoreException
      */
     protected abstract void addPagesForParsableSrcFile() throws PartInitException, CoreException;
 
@@ -401,7 +399,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (page instanceof IpsObjectEditorPage) {
             return (IpsObjectEditorPage)getActivePageInstance();
         }
-
         return null;
     }
 
@@ -559,9 +556,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
         if (!ipsSrcFile.equals(event.getIpsSrcFile())) {
@@ -854,7 +848,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * Empty. Can be overridden by subclasses for dispose purposes.
      */
     protected void disposeInternal() {
-
+        // Default implementation does nothing, may be overridden by subclasses
     }
 
     @Override
@@ -978,7 +972,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         @Override
         public void partBroughtToTop(IWorkbenchPart part) {
-
+            // Nothing to do
         }
 
         @Override
@@ -998,7 +992,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         @Override
         public void partDeactivated(IWorkbenchPart part) {
-
+            // Nothing to do
         }
 
         private void removeListeners() {
@@ -1009,7 +1003,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         @Override
         public void partOpened(IWorkbenchPart part) {
-
+            // Nothing to do
         }
 
         @Override
@@ -1021,22 +1015,22 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         @Override
         public void windowDeactivated(IWorkbenchWindow window) {
-
+            // Nothing to do
         }
 
         @Override
         public void windowClosed(IWorkbenchWindow window) {
-
+            // Nothing to do
         }
 
         @Override
         public void windowOpened(IWorkbenchWindow window) {
-
+            // Nothing to do
         }
 
     }
 
-    /*
+    /**
      * The <code>IpsObjectEditorErrorMarkerUpdater</code> will register as a
      * IIpsProblemChangedListener to listen on ips problem changes that correspond to the editor's
      * input. It updates the title images and refreshes the editor if it is active.
@@ -1054,9 +1048,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             IpsUIPlugin.getDefault().getIpsProblemMarkerManager().addListener(this);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void problemsChanged(IResource[] changedResources) {
             if (ipsObjectEditor.getIpsSrcFile() == null) {

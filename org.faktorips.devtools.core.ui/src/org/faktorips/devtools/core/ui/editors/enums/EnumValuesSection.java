@@ -753,8 +753,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Initiates in-place fixing of the <tt>enumValuesTable</tt> if the <tt>IEnumValueContainer</tt>
      * to be edited is an <tt>IEnumType</tt>.
      * <p>

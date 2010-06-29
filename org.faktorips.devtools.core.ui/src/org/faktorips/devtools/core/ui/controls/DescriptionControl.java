@@ -23,9 +23,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.Described;
 
-/**
- *
- */
 public class DescriptionControl extends Composite implements ModifyListener {
 
     private Described describedObject;
@@ -54,11 +51,6 @@ public class DescriptionControl extends Composite implements ModifyListener {
         descriptionText.addModifyListener(this);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-     */
     @Override
     public void modifyText(ModifyEvent e) {
         describedObject.setDescription(descriptionText.getText());

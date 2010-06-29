@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
  * @author Joerg Ortmann
  */
 public class ToggleWorkingModeAction extends Action implements IPropertyChangeListener {
+
     public static String ID = "org.faktorips.devtools.actions.ToggleWorkingModeAction"; //$NON-NLS-1$
 
     private boolean propertyChangedByThisAction = false;
@@ -44,9 +45,6 @@ public class ToggleWorkingModeAction extends Action implements IPropertyChangeLi
         return IpsPlugin.getDefault().getIpsPreferences();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         if (!propertyChangedByThisAction && event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
@@ -58,9 +56,6 @@ public class ToggleWorkingModeAction extends Action implements IPropertyChangeLi
         IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         runInternal();
@@ -77,4 +72,5 @@ public class ToggleWorkingModeAction extends Action implements IPropertyChangeLi
         update();
         setEnabled(editor instanceof IpsObjectEditor);
     }
+
 }

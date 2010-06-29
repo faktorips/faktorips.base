@@ -109,7 +109,7 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
     }
 
     /**
-     * Disabled this action if no copyable IpsElement is selected. {@inheritDoc}
+     * Disabled this action if no copyable IpsElement is selected.
      */
     @Override
     public void selectionChanged(SelectionChangedEvent event) {
@@ -127,4 +127,5 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
             setEnabled(false);
         }
     }
+
 }

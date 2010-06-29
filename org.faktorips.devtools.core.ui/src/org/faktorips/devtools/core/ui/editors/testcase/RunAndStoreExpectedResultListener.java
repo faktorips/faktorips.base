@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
  * @author Joerg Ortmann
  */
 public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
+
     private TestCaseSection testCaseSection;
 
     private List<String[]> failureDetailsList;
@@ -36,8 +37,6 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
 
     /**
      * A faiure will be used to fetch the expected result and stores it in the test case editor.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public void testFailureOccured(String testFailureOccured, String[] failureDetails) {
@@ -46,9 +45,6 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testFinished(String qualifiedTestName) {
         // inform the test case editor about the end of the test run
@@ -56,59 +52,39 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
         testCaseSection.testRunEndedToStoreExpResult(qualifiedTestName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testRunStarted(int testCount, String classpathRepository, String testPackage) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testStarted(String qualifiedTestName) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testTableEntry(String qualifiedName, String fullPath) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testTableEntries(String[] qualifiedName, String[] fullPath) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testErrorOccured(String qualifiedTestName, String[] errorDetails) {
         testCaseSection.testErrorOccured(qualifiedTestName, errorDetails);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testRunEnded(String elapsedTime) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canNavigateToFailure() {
         return false;
     }
+
 }

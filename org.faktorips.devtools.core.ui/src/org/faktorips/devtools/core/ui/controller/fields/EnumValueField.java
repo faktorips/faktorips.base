@@ -17,17 +17,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.enums.EnumValue;
 
-/**
- *
- */
 public class EnumValueField extends ComboField {
 
-    // array that contains all values used in the the combo box in the same order
+    /** array that contains all values used in the the combo box in the same order */
     private EnumValue[] usedEnumValues;
 
-    /**
-     * @param combo
-     */
     public EnumValueField(Combo combo, EnumType enumType) {
         super(combo);
         String[] items = combo.getItems();
@@ -58,21 +52,15 @@ public class EnumValueField extends ComboField {
         return usedEnumValues[index];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         return getEnumValue();
     }
 
     public void setEnumValue(EnumValue newValue) {
-        getCombo().setText(newValue == null ? "" : newValue.getName());
+        getCombo().setText(newValue == null ? "" : newValue.getName()); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         setEnumValue((EnumValue)newValue);

@@ -32,12 +32,8 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         super(method, parentShell);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
-
         Composite c = super.createWorkArea(parent);
 
         nameText.addFocusListener(new FocusAdapter() {
@@ -56,9 +52,6 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         return (IProductCmptTypeMethod)method;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createAdditionalControlsOnGeneralPage(Composite parent, UIToolkit toolkit) {
         Composite group = toolkit.createGroup(parent, Messages.ProductCmptTypeMethodEditDialog_formulaGroup);
@@ -74,7 +67,6 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_formulaNameLabel);
         Text formulaNameText = toolkit.createText(area);
         bindingContext.bindContent(formulaNameText, method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
-
     }
 
     @Override

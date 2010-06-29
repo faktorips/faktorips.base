@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * @author Joerg Ortmann
  */
 public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
+
     private UIToolkit toolkit;
 
     private TreeViewer treeViewer;
@@ -69,6 +70,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 
     public TestPolicyCmptSelectionDialog(Shell parentShell, UIToolkit toolkit, ITestCase testCase, int contentType,
             String policyCmptType) {
+
         super(parentShell);
 
         this.toolkit = toolkit;
@@ -86,9 +88,6 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         setShellStyle(shellStyle | SWT.MAX | SWT.RESIZE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int open() {
         isEmpty = evaluateIfTreeEmpty(testCase);
@@ -96,9 +95,6 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         return getReturnCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createContents(Composite parent) {
         Control ctrl = super.createContents(parent);
@@ -108,9 +104,6 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         return ctrl;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite)super.createDialogArea(parent);
@@ -229,9 +222,6 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void computeResult() {
         ArrayList<Object> result = new ArrayList<Object>(1);
@@ -246,9 +236,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
      * Inner class of filter implementation.
      */
     private class TestPolicyCmptFilter extends ViewerFilter {
-        /**
-         * {@inheritDoc}
-         */
+
         @Override
         public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
             int size = elements.length;
@@ -264,17 +252,12 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 
         /**
          * The filter is always active.
-         * 
-         * {@inheritDoc}
          */
         @Override
         public boolean isFilterProperty(Object element, String property) {
             return true;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             try {

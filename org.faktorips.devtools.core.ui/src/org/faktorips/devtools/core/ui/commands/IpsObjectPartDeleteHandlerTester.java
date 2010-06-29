@@ -41,7 +41,6 @@ public class IpsObjectPartDeleteHandlerTester extends PropertyTester {
              * refactoring dialog for deleting IpsObjectParts. We could activate this feature if
              * there is a dialog to confirm the deletion.
              */
-            // return IpsUIPlugin.isEditable(ipsObjectPart.getIpsSrcFile());
             return false;
         } else {
             return false;

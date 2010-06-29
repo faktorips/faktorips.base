@@ -48,7 +48,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Section to display the persistence properties of the associations specific to an
  * {@link IPolicyCmptType}.
- * <p/>
+ * <p>
  * The editable properties are Join Table Name and Fetch Type amongst others.
  * 
  * @author Roman Grutza
@@ -60,16 +60,16 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
     private static final Map<Integer, AttrPropertyAndLabel> columnProperties = new HashMap<Integer, AttrPropertyAndLabel>();
 
     static {
-        columnProperties.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET, "Association Target"));
+        columnProperties.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET, "Association Target")); //$NON-NLS-1$
         columnProperties.put(1, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME,
-                "Join Table Name"));
+                "Join Table Name")); //$NON-NLS-1$
         columnProperties.put(2, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
-                "Source Column Name"));
+                "Source Column Name")); //$NON-NLS-1$
         columnProperties.put(3, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
-                "Target Column Name"));
+                "Target Column Name")); //$NON-NLS-1$
         columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME,
-                "Join Column Name"));
-        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE, "Fetch Type"));
+                "Join Column Name")); //$NON-NLS-1$
+        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE, "Fetch Type")); //$NON-NLS-1$
     }
 
     private static class AttrPropertyAndLabel {
@@ -83,7 +83,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
     }
 
     public PersistentAssociationSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
-        super(ipsObject, parent, "Associations", toolkit);
+        super(ipsObject, parent, "Associations", toolkit); //$NON-NLS-1$
     }
 
     @Override
@@ -206,7 +206,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 IPersistentAssociationInfo jpaAssociationInfo = association.getPersistenceAssociatonInfo();
 
                 String property = columnProperties.get(columnIndex).property;
-                String result = "";
+                String result = ""; //$NON-NLS-1$
 
                 boolean joinTableReq = false;
                 boolean foreignKeyColumnReq = false;
@@ -238,7 +238,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 } else if (IPersistentAssociationInfo.PROPERTY_FETCH_TYPE.equals(property)) {
                     result = jpaAssociationInfo.getFetchType().toString();
                 }
-                return (result == null ? "" : result);
+                return (result == null ? "" : result); //$NON-NLS-1$
             }
         }
 
@@ -248,4 +248,5 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         }
 
     }
+
 }

@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * @author Joerg Ortmann
  */
 public class NewTestAttributeWizard extends Wizard {
+
     private UIToolkit uiToolkit = new UIToolkit(null);
 
     // Wizard pages
@@ -50,6 +51,7 @@ public class NewTestAttributeWizard extends Wizard {
 
     public NewTestAttributeWizard(ITestCaseType testCaseType,
             ITestPolicyCmptTypeParameter parentTestPolicyCmptTypeParameter, boolean showSubtypeAttributes) {
+
         super.setWindowTitle(Messages.NewTestAttributeWizard_wizardTitle);
 
         this.testCaseType = testCaseType;
@@ -57,9 +59,6 @@ public class NewTestAttributeWizard extends Wizard {
         this.showSubtypeAttributes = showSubtypeAttributes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         super.addPages();
@@ -74,9 +73,6 @@ public class NewTestAttributeWizard extends Wizard {
         addPage(testAttributeDefinitionWizardPage);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {
@@ -104,6 +100,7 @@ public class NewTestAttributeWizard extends Wizard {
 
     private void addTestAttributes(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam,
             IPolicyCmptTypeAttribute[] attributesSelected) {
+
         ITestAttribute testAttribute = null;
         for (IPolicyCmptTypeAttribute modelAttribute : attributesSelected) {
             try {
@@ -153,17 +150,10 @@ public class NewTestAttributeWizard extends Wizard {
         return uiToolkit;
     }
 
-    public void setModelTestAttribute(boolean modelTestAttribute) {
-
-    }
-
     public IIpsProject getIpsProjekt() {
         return testCaseType.getIpsProject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
         if (page instanceof NewTestAttributeWizardPage) {
@@ -191,9 +181,6 @@ public class NewTestAttributeWizard extends Wizard {
         return firstCreatedTestAttribute;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canFinish() {
         if (!isBasedOnPolicyCmptTypeAttributes() && !testAttributeDefinitionWizardPage.isValid()) {

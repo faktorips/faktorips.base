@@ -69,51 +69,33 @@ public class RuleFunctionsControl extends EditTableControl {
         return rule;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IStructuredContentProvider createContentProvider() {
         return new ContentProvider();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ILabelProvider createLabelProvider() {
         return new TableLabelProvider();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createTableColumns(Table table) {
         new TableColumn(table, SWT.NONE).setResizable(false);
         new TableColumn(table, SWT.NONE).setResizable(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String[] getColumnPropertyNames() {
         return new String[] { Messages.RuleFunctionsControl_titleColum1, Messages.RuleFunctionsControl_titleColumn2 };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
         layouter.addColumnData(new ColumnPixelData(20, false)); // message image
         layouter.addColumnData(new ColumnWeightData(100, true));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected UnfocusableTextCellEditor[] createCellEditors() {
         UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
@@ -129,17 +111,11 @@ public class RuleFunctionsControl extends EditTableControl {
         return editors;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ICellModifier createCellModifier() {
         return new CellModifier();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object addElement() {
         String newFct = ""; //$NON-NLS-1$
@@ -147,9 +123,6 @@ public class RuleFunctionsControl extends EditTableControl {
         return newFct;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeElement(int index) {
         getRule().removeBusinessFunction(index);
@@ -204,9 +177,6 @@ public class RuleFunctionsControl extends EditTableControl {
             return element.toString();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean isLabelProperty(Object element, String property) {
             if (IMAGE_COLUMN_VIEWER_PROPERTY.equals(property)) {
@@ -215,7 +185,6 @@ public class RuleFunctionsControl extends EditTableControl {
             if (VALUE_COLUMN_VIEWER_PROPERTY.equals(property)) {
                 return true;
             }
-
             return false;
         }
 
@@ -235,10 +204,12 @@ public class RuleFunctionsControl extends EditTableControl {
 
         @Override
         public void dispose() {
+            // Nothing to do
         }
 
         @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // Nothing to do
         }
 
     }
@@ -268,6 +239,7 @@ public class RuleFunctionsControl extends EditTableControl {
     }
 
     private class IndexFctNameWrapper {
+
         private int index;
 
         IndexFctNameWrapper(int index) {
@@ -299,6 +271,7 @@ public class RuleFunctionsControl extends EditTableControl {
             }
             return index == ((IndexFctNameWrapper)o).index;
         }
+
     }
 
     private class MessageService extends TableMessageHoverService {

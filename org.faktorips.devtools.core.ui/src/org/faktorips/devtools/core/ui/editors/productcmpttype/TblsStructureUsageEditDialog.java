@@ -78,9 +78,6 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
         this.tblStructureUsage = tblStructureUsage;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -147,7 +144,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
         repackTable(viewer);
     }
 
-    /*
+    /**
      * Repacks the columns in the test attribute table
      */
     private void repackTable(TableViewer tableViewer) {
@@ -175,12 +172,14 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 try {
                     addClicked();
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
         btnRemove.addSelectionListener(new SelectionListener() {
@@ -189,12 +188,14 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 try {
                     removedClicked();
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
         btnUp.addSelectionListener(new SelectionListener() {
@@ -203,12 +204,14 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 try {
                     moveClicked(true);
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
         btnDown.addSelectionListener(new SelectionListener() {
@@ -217,12 +220,14 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 try {
                     moveClicked(false);
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
     }
@@ -315,7 +320,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
         uiController.add(mandatoryTableContentField, ITableStructureUsage.PROPERTY_MANDATORY_TABLE_CONTENT);
     }
 
-    /*
+    /**
      * Displays a dialog to select a table structure. Returns the selected table structure or
      * <code>null</code> if the user select nothing.
      */
@@ -342,9 +347,6 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
         updateTitleInTitleArea();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void updateTitleInTitleArea() {
         try {
@@ -359,14 +361,12 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
         }
     }
 
-    /*
+    /**
      * Simple array content provider to provide all table stucture references inside a table
      * structure usage object as String array
      */
     private class TableStructureContentProvider extends ArrayContentProvider {
-        /**
-         * {@inheritDoc}
-         */
+
         @Override
         public Object[] getElements(Object inputElement) {
             ArgumentCheck.isInstanceOf(inputElement, ITableStructureUsage.class);

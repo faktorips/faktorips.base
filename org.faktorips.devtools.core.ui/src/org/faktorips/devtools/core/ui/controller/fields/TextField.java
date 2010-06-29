@@ -34,9 +34,6 @@ public class TextField extends DefaultEditField {
         this.text = text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return text;
@@ -49,33 +46,21 @@ public class TextField extends DefaultEditField {
         return text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         return super.prepareObjectForGet(text.getText());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         setText((String)super.prepareObjectForSet(newValue));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         return text.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newText) {
         immediatelyNotifyListener = true;
@@ -86,34 +71,23 @@ public class TextField extends DefaultEditField {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String insertText) {
         text.insert(insertText);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         text.selectAll();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         text.addModifyListener(new ModifyListener() {
-
             @Override
             public void modifyText(ModifyEvent e) {
                 notifyChangeListeners(new FieldValueChangedEvent(TextField.this), immediatelyNotifyListener);
             }
-
         });
     }
 

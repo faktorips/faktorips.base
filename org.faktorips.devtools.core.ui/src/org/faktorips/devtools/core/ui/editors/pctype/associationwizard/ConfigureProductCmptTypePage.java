@@ -93,9 +93,6 @@ public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenW
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPageVisible() {
         return wizard.isProductCmptTypeAvailable();

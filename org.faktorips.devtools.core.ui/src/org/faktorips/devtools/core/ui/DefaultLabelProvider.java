@@ -28,18 +28,10 @@ import org.faktorips.fl.FlFunction;
 /**
  * Label provider that provides default images and labels (texts) for ips elements.
  * <p>
- * The default label provider known until version 2.4 is deprecated. Most of the implementation
- * could be found in
- * {@link org.faktorips.devtools.core.ui.workbenchadapters.DefaultPresentationObject}.
- * <p>
- * This label provider uses the {@link IPresentationObject} provided by the {@link IpsUIPlugin} to
- * return icons and text labels. For {@link IIpsSrcFile}s you could specify whether to use icon and
- * label from the source file itself or to look for the {@link IIpsObject} enclosed in the source
- * file.
+ * For {@link IIpsSrcFile}s you could specify whether to use icon and label from the source file
+ * itself or to look for the {@link IIpsObject} enclosed in the source file.
  * 
  * @author Cornelius Dirmeier
- * 
- * 
  */
 public class DefaultLabelProvider extends LabelProvider {
 
@@ -55,9 +47,6 @@ public class DefaultLabelProvider extends LabelProvider {
         return new DefaultLabelProvider();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage(Object element) {
         if (element instanceof IAdaptable) {
@@ -73,18 +62,15 @@ public class DefaultLabelProvider extends LabelProvider {
             }
         }
         if (element instanceof Datatype) {
-            return IpsUIPlugin.getImageHandling().getSharedImage("Datatype.gif", true);
+            return IpsUIPlugin.getImageHandling().getSharedImage("Datatype.gif", true); //$NON-NLS-1$
         } else if (element instanceof FlFunction) {
-            return IpsUIPlugin.getImageHandling().getSharedImage("Function.gif", true);
+            return IpsUIPlugin.getImageHandling().getSharedImage("Function.gif", true); //$NON-NLS-1$
         } else if (element instanceof EnumTypeDatatypeAdapter) {
             return getImage(((EnumTypeDatatypeAdapter)element).getEnumType());
         }
         return super.getImage(element);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         if (element == null) {
@@ -106,4 +92,5 @@ public class DefaultLabelProvider extends LabelProvider {
     public void dispose() {
         super.dispose();
     }
+
 }

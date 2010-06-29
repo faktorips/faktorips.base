@@ -59,6 +59,7 @@ import org.faktorips.util.message.Message;
  * A toolkit to create controls with a common look and feel.
  */
 public class UIToolkit {
+
     private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR"; //$NON-NLS-1$
     private static final String READONLY_BACKGROUND_COLOR = "READONLY_BACKGROUND_COLOR"; //$NON-NLS-1$
 
@@ -512,6 +513,7 @@ public class UIToolkit {
     public ProductCmptType2RefControl createProductCmptTypeRefControl(IIpsProject project,
             Composite parent,
             boolean excludeAbstractTypes) {
+
         return new ProductCmptType2RefControl(project, parent, this, excludeAbstractTypes);
     }
 
@@ -524,6 +526,7 @@ public class UIToolkit {
             String controlDescription,
             IpsObjectType[] applicableTypes,
             boolean excludeAbstractTypes) {
+
         return new FilteredIpsObjectTypeRefControl(project, parent, this, controlTitle, controlDescription,
                 applicableTypes, excludeAbstractTypes);
     }
@@ -618,7 +621,6 @@ public class UIToolkit {
      * Creates a combo containing the given <code>EnumDatatype</code>'s values as items. The
      * formatting is done based on the user's preferences.
      * 
-     * @see org.faktorips.devtools.core.IpsPreferences#formatValue(EnumDatatype, String)
      * @see org.faktorips.devtools.core.IpsPreferences#getEnumTypeDisplay()
      */
     public Combo createCombo(Composite parent, EnumDatatype datatype) {
@@ -668,9 +670,10 @@ public class UIToolkit {
      * @param combo The combo to set the values.
      * @param values The values to set.
      */
-    // pk 26-05-2009: this code needs to be refactored. the provided parameter array mustn't not be
-    // modified
-    // within this method.
+    /*
+     * TODO pk 26-05-2009: this code needs to be refactored. the provided parameter array mustn't
+     * not be modified within this method.
+     */
     private void setComboValues(Combo combo, String[] values) {
         for (int i = 0; i < values.length; i++) {
             if (values[i] == null) {
@@ -771,7 +774,6 @@ public class UIToolkit {
      */
     // TODO move to Message when the class is moved to the core project
     public int convertToJFaceSeverity(int severity) {
-
         switch (severity) {
             case Message.ERROR:
                 return IMessageProvider.ERROR;
@@ -813,4 +815,5 @@ public class UIToolkit {
             ((GridData)control.getLayoutData()).widthHint = width;
         }
     }
+
 }

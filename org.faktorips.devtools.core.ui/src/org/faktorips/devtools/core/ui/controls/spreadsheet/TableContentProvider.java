@@ -15,9 +15,6 @@ package org.faktorips.devtools.core.ui.controls.spreadsheet;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 
-/**
- *
- */
 public interface TableContentProvider extends IStructuredContentProvider {
 
     /**
@@ -35,8 +32,7 @@ public interface TableContentProvider extends IStructuredContentProvider {
      * appended. If the method returns false, the row is automatically deleted from the model and
      * the table is refreshed.
      * 
-     * @param input, the table input object
-     * @param row, the row object to validate
+     * @param row the row object to validate
      * @return true, if the row is valid, false otherwise.
      */
     public boolean deletePendingRow(Object row);

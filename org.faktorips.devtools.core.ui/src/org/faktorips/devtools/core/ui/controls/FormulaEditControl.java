@@ -43,6 +43,7 @@ public class FormulaEditControl extends TextButtonControl implements IDataChange
 
     public FormulaEditControl(Composite parent, UIToolkit toolkit, IFormula formula, Shell shell,
             IpsSection parentSection) {
+
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
         this.formula = formula;
         this.shell = shell;
@@ -60,37 +61,29 @@ public class FormulaEditControl extends TextButtonControl implements IDataChange
                     parentSection.refresh();
                 }
             }
-
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setEnabled(boolean enabled) {
         super.getTextControl().setEnabled(enabled);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
-        // set changeable for the text control,
-        // the button control will be always enabled, because formula tests
-        // could be executes if changeable or not changeable
+        /*
+         * set changeable for the text control, the button control will be always enabled, because
+         * formula tests could be executes if changeable or not changeable
+         */
         this.dataChangeable = changeable;
         uiToolkit.setDataChangeable(getTextControl(), changeable);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
+
 }

@@ -83,7 +83,6 @@ public abstract class ActionEditPart extends NodeEditPart {
     }
 
     private Figure createActionFigure() {
-
         RoundedRectangle shape = new RoundedRectangle();
         shape.setCornerDimensions(new Dimension(16, 16));
         shape.setLayoutManager(new BorderLayout());

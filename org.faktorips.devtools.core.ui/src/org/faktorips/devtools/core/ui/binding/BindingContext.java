@@ -62,13 +62,10 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * <p>
  * A <code>BindingContext</code> provides binding between the user interface and a (domain or
  * presentation) model.
- * </p>
  * <p>
  * Currently the context provides the following types of binding methods:
- * </p>
  * <ul>
  * <li><strong>bindContent</strong> Binds the content shown in a control to a model object property.
  * </li>
@@ -82,17 +79,21 @@ import org.faktorips.util.message.MessageList;
  */
 public class BindingContext {
 
-    // listener for changes and focus losts. Instance of an inner class is used to avoid poluting
-    // this class' interface.
+    /**
+     * listener for changes and focus losts. Instance of an inner class is used to avoid poluting
+     * this class' interface.
+     */
     private Listener listener = new Listener();
 
-    // list of mappings between edit fields and properties of model objects.
+    /** list of mappings between edit fields and properties of model objects. */
     private List<FieldPropertyMapping> mappings = new ArrayList<FieldPropertyMapping>();
 
-    // a list of the ips objects containing at least one binded ips part container
-    // each container is contained in the list only once, so it is actually used as a set, not
-    // we still use the list, because once binded, we need to access all binded containers, and
-    // this is faster with a list, than a hashset or treeset.
+    /**
+     * a list of the ips objects containing at least one binded ips part container each container is
+     * contained in the list only once, so it is actually used as a set, not we still use the list,
+     * because once binded, we need to access all binded containers, and this is faster with a list,
+     * than a hashset or treeset.
+     */
     private List<IIpsObject> ipsObjects = new ArrayList<IIpsObject>(1);
 
     private List<ControlPropertyBinding> controlBindings = new ArrayList<ControlPropertyBinding>(2);
@@ -352,7 +353,9 @@ public class BindingContext {
         }
     }
 
-    /** Removes all bindings. */
+    /**
+     * Removes all bindings.
+     */
     public void clear() {
         controlBindings.clear();
         for (FieldPropertyMapping mapping : mappings) {
@@ -372,9 +375,7 @@ public class BindingContext {
         // exceptions
         Set<Object> disposedPmos = new HashSet<Object>();
         for (FieldPropertyMapping mapping : mappingsCopy) {
-            if (mapping.getField().removeChangeListener(listener)) {
-                ;
-            }
+            mapping.getField().removeChangeListener(listener);
             if (!mapping.getField().getControl().isDisposed()) {
                 mapping.getField().getControl().removeFocusListener(listener);
             }
@@ -403,7 +404,6 @@ public class BindingContext {
      * Validates all binded the part containers and updates the fields that are associated with
      * properties of the IpsPartContainer. It returns the MessageList which is the result of the
      * validation. This return value can be evaluated when overriding this method.
-     * 
      */
     protected void showValidationStatus(List<FieldPropertyMapping> propertyMappings) {
         ArrayList<IIpsObject> copy = new ArrayList<IIpsObject>(ipsObjects);
@@ -454,6 +454,7 @@ public class BindingContext {
             try {
                 binding.updateUI();
             } catch (Exception e) {
+                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding)); //$NON-NLS-1$
             }
         }
@@ -514,9 +515,6 @@ public class BindingContext {
             applyControlBindings();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             // defensive copy to avoid concurrent modification
@@ -539,9 +537,6 @@ public class BindingContext {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("Ctx["); //$NON-NLS-1$

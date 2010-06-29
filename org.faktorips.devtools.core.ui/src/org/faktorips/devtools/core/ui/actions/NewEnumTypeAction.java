@@ -15,32 +15,31 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction;
 
 /**
- * Opens the wizard for creating a new <tt>IEnumType</tt>.
+ * Opens the wizard for creating a new {@link IEnumType}.
  * 
  * @author Alexander Weickmann
  */
 public class NewEnumTypeAction extends Action {
 
-    /** The image for the action. */
-    private final String IMAGE = "NewEnumType.gif"; //$NON-NLS-1$
+    /** The file name of the image for this action. */
+    private final String IMAGE_FILENAME = "NewEnumType.gif"; //$NON-NLS-1$
 
     private IWorkbenchWindow window;
 
     /**
      * Creates a new <code>NewEnumTypeAction</code>.
-     * 
-     * @param window
      */
     public NewEnumTypeAction(IWorkbenchWindow window) {
         super();
 
         this.window = window;
         setText(Messages.NewEnumTypeAction_title);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_FILENAME));
     }
 
     @Override

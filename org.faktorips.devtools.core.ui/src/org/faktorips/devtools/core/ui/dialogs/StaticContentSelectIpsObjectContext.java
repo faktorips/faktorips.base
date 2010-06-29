@@ -36,8 +36,6 @@ public class StaticContentSelectIpsObjectContext implements ISelectIpsObjectCont
      * Setting the content of this context. You have to make sure that setting the elements is
      * called before open the dialog. If you want to implement an asynchrony content selection you
      * have to implement your own {@link ISelectIpsObjectContext}
-     * 
-     * @param iIpsSrcFiles
      */
     public void setElements(IIpsSrcFile[] iIpsSrcFiles) {
         ipsSrcFiles = Arrays.asList(iIpsSrcFiles);

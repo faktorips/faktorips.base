@@ -30,18 +30,12 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
-/**
- *
- */
 public class ColumnsSection extends SimpleIpsPartsSection {
 
     public ColumnsSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
         super(table, parent, Messages.ColumnsSection_title, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new ColumnsComposite(getIpsObject(), parent, toolkit);
@@ -57,41 +51,26 @@ public class ColumnsSection extends SimpleIpsPartsSection {
             return (ITableStructure)getIpsObject();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected ILabelProvider createLabelProvider() {
             return new ColumnLabelProvider();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IIpsObjectPart newIpsPart() {
             return getTable().newColumn();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
             return new ColumnEditDialog((IColumn)part, shell);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getTable().moveColumns(indexes, up);

@@ -29,6 +29,7 @@ class HTMLMessages {
     private static ResourceBundle fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
     private HTMLMessages() {
+        // Utility class not to be instantiated.
     }
 
     /**

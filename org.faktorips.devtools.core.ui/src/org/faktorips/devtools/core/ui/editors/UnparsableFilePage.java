@@ -28,16 +28,10 @@ public class UnparsableFilePage extends IpsObjectEditorPage {
 
     public final static String PAGE_ID = "UnparsableFile"; //$NON-NLS-1$
 
-    /**
-     * @param editor
-     */
     public UnparsableFilePage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, "UnparsableFileContents"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
@@ -49,9 +43,9 @@ public class UnparsableFilePage extends IpsObjectEditorPage {
                     .getContentFromEnclosingResource(), charSet);
             xmlText.setText(text);
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.log(e);
         }
-
     }
 
 }

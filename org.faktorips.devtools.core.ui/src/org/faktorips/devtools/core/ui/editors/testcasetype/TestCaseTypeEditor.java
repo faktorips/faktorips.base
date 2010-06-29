@@ -30,21 +30,11 @@ public class TestCaseTypeEditor extends IpsObjectEditor {
 
     TestCaseTypeEditorPage editorPage;
 
-    public TestCaseTypeEditor() {
-        super();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doSave(IProgressMonitor monitor) {
         super.doSave(monitor);
     }
 
-    /**
-     * (@inheritDoc)
-     */
     @Override
     protected void addPagesForParsableSrcFile() throws PartInitException {
         editorPage = new TestCaseTypeEditorPage(this, Messages.TestCaseTypeEditor_PageName,
@@ -61,14 +51,12 @@ public class TestCaseTypeEditor extends IpsObjectEditor {
         try {
             return (ITestCaseType)getIpsSrcFile().getIpsObject();
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getUniformPageTitle() {
         return NLS.bind(Messages.TestCaseTypeEditor_EditorTitle, getTestCaseType().getName());

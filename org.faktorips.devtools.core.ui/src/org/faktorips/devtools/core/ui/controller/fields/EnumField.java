@@ -62,7 +62,7 @@ public class EnumField extends ComboField {
     }
 
     public void setEnumValue(Enum newValue) {
-        getCombo().setText(newValue == null ? "" : newValue.toString());
+        getCombo().setText(newValue == null ? "" : newValue.toString()); //$NON-NLS-1$
     }
 
     @Override

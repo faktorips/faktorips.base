@@ -171,22 +171,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private IpsElementWorkbenchAdapterAdapterFactory ipsElementWorkbenchAdapterAdapterFactory;
 
     /**
-     * The constructor.
-     */
-    public IpsUIPlugin() {
-
-    }
-
-    /**
      * This method is public for test purposes only.
      */
     public static void setExtensionRegistry(IExtensionRegistry registry) {
         IpsUIPlugin.registry = registry;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
@@ -204,9 +194,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void stop(BundleContext context) throws Exception {
         plugin = null;
@@ -216,8 +203,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the shared instance
-     * 
-     * @return the shared instance
      */
     public static IpsUIPlugin getDefault() {
         return plugin;
@@ -232,8 +217,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the settings for ips object editors.
-     * 
-     * @return
      */
     public IIpsObjectEditorSettings getIpsEditorSettings() {
         return ipsEditorSettings;
@@ -242,7 +225,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /**
      * Return true if this IpsSrcFile file is editable. This includes checking the ipsSrcFile
      * mutable state and the state of the workbench
-     * 
      */
     public static boolean isEditable(IIpsSrcFile ipsSrcFile) {
         if (ipsSrcFile == null) {
@@ -292,40 +274,36 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat)
             throws CoreException {
+
         ArgumentCheck.notNull(tableFormat);
 
         Map<ITableFormat, TableFormatConfigurationCompositeFactory> tableFormatToPropertiesCompositeMap = null;
-        if (tableFormatToPropertiesCompositeMap == null) {
-            tableFormatToPropertiesCompositeMap = new HashMap<ITableFormat, TableFormatConfigurationCompositeFactory>();
-            ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsPlugin.PLUGIN_ID);
-            IExtension[] extensions = extensionPoints.getExtension("externalTableFormat"); //$NON-NLS-1$
-            for (IExtension extension : extensions) {
-                IConfigurationElement[] configElements = extension.getConfigurationElements();
-                for (IConfigurationElement configElement : configElements) {
-                    String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
-                    if (StringUtils.isEmpty(configElClass)) {
-                        throw new CoreException(new IpsStatus(IStatus.ERROR,
-                                "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                        + extension.getExtensionPointUniqueIdentifier()
-                                        + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
-                    }
-                    if (tableFormat.getClass().getName().equals(configElClass)) {
-                        // the current configuration element corresponds to the given table format
-                        String configElGuiClass = configElement.getAttribute("guiClass"); //$NON-NLS-1$
-                        if (!StringUtils.isEmpty(configElGuiClass)) {
-                            TableFormatConfigurationCompositeFactory factory = ExtensionPoints
-                                    .createExecutableExtension(extension, configElement, "guiClass", //$NON-NLS-1$
-                                            TableFormatConfigurationCompositeFactory.class);
+        tableFormatToPropertiesCompositeMap = new HashMap<ITableFormat, TableFormatConfigurationCompositeFactory>();
+        ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsPlugin.PLUGIN_ID);
+        IExtension[] extensions = extensionPoints.getExtension("externalTableFormat"); //$NON-NLS-1$
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configElements = extension.getConfigurationElements();
+            for (IConfigurationElement configElement : configElements) {
+                String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
+                if (StringUtils.isEmpty(configElClass)) {
+                    throw new CoreException(new IpsStatus(IStatus.ERROR,
+                            "A problem occured while trying to load the extension: " //$NON-NLS-1$
+                                    + extension.getExtensionPointUniqueIdentifier()
+                                    + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
+                }
+                if (tableFormat.getClass().getName().equals(configElClass)) {
+                    // the current configuration element corresponds to the given table format
+                    String configElGuiClass = configElement.getAttribute("guiClass"); //$NON-NLS-1$
+                    if (!StringUtils.isEmpty(configElGuiClass)) {
+                        TableFormatConfigurationCompositeFactory factory = ExtensionPoints.createExecutableExtension(
+                                extension, configElement, "guiClass", //$NON-NLS-1$
+                                TableFormatConfigurationCompositeFactory.class);
 
-                            // assign the given table format to the created factory
-                            factory.setTableFormat(tableFormat);
-
-                            if (factory != null) {
-                                tableFormatToPropertiesCompositeMap.put(tableFormat, factory);
-                            }
-                        }
-                        break;
+                        // assign the given table format to the created factory
+                        factory.setTableFormat(tableFormat);
+                        tableFormatToPropertiesCompositeMap.put(tableFormat, factory);
                     }
+                    break;
                 }
             }
         }
@@ -355,8 +333,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Opens the given IpsObject in its editor.<br>
      * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was
      * opened.
-     * 
-     * @param ipsObject
      */
     public IEditorPart openEditor(IIpsObject ipsObject) {
         if (ipsObject == null) {
@@ -369,8 +345,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Opens an editor for the IpsObject contained in the given IpsSrcFile.<br>
      * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was
      * opened.
-     * 
-     * @param srcFile
      */
     public IEditorPart openEditor(IIpsSrcFile srcFile) {
         if (srcFile == null) {
@@ -409,7 +383,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * opened.
      * 
      * @see IDE#openEditor(org.eclipse.ui.IWorkbenchPage, org.eclipse.core.resources.IFile)
-     * @param fileToEdit
      */
     public IEditorPart openEditor(IFile fileToEdit) {
         if (fileToEdit == null) {
@@ -437,13 +410,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Opens an editor for the given file editor input.<br>
+     * Opens an editor for the given file editor input.
+     * <p>
      * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was
      * opened.
-     * 
-     * @see IpsPlugin#openEditor(IFile)
-     * 
-     * @param fileEditorInput
      */
     public IEditorPart openEditor(IFileEditorInput editorInput) {
         try {
@@ -456,7 +426,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
              * (which might be the default editor for the given file).
              */
             IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(file.getName());
-            if (editor != null & editorInput != null) {
+            if (editor != null) {
                 return workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
             } else {
                 /*
@@ -472,7 +442,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return null;
     }
 
-    /*
+    /**
      * Open the given file with the default text editor. And show an information message in the
      * editors status bar to inform the user about using the text editor instead of the IPS object
      * editor.
@@ -543,10 +513,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * 
      * @param propertyId the id that identifies an extension property. For it the edit field factory
      *            will be returned.
-     * @throws CoreException
      */
     public IExtensionPropertyEditFieldFactory getExtensionPropertyEditFieldFactory(String propertyId)
             throws CoreException {
+
         if (extensionPropertyEditFieldFactoryMap == null) {
             extensionPropertyEditFieldFactoryMap = new HashMap<String, IExtensionPropertyEditFieldFactory>();
             ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
@@ -740,7 +710,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return PlatformUI.getWorkbench().saveAllEditors(false);
     }
 
-    /*
+    /**
      * Collect dirtyParts. Note this code is based on the "collect dirtyParts" part of the eclipse
      * method PlatformUI.getWorkbench().saveAllEditors(), because there is no API method we can use
      * instead.
@@ -809,7 +779,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
 
         private ResourceManager createResourceManager() {
-
             // If we are in the UI Thread use that
             if (Display.getCurrent() != null) {
                 return new LocalResourceManager(JFaceResources.getResources(Display.getCurrent()));
@@ -852,7 +821,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * @see ImageHandling
          * 
          * @param name the name of the image equal to the filename in the subfolder icons
-         * @param createIfAbsent
+         * 
          * @return the shared image descriptor
          */
         public ImageDescriptor getSharedImageDescriptor(String name, boolean createIfAbsent) {
@@ -868,9 +837,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * To register an image descriptor in the image registry. The name of the image is the
          * filename in the subfolder <i>icons</i> that means the path to the image is
          * IpsUIPlugin/icons/name
-         * 
-         * @param name
-         * @return
          */
         public void registerSharedImageDescriptor(String name, ImageDescriptor descriptor) {
             if (descriptor != null && descriptor != ImageDescriptor.getMissingImageDescriptor()) {
@@ -880,9 +846,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
         /**
          * Get the disabled version of a shared image for an ips element
-         * 
-         * @param ipsElement
-         * @return
          */
         public Image getDisabledImage(IAdaptable adaptable) {
             return getImage(getDisabledImageDescriptor(adaptable));
@@ -890,9 +853,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
         /**
          * Get the shared descriptor for disable image with the descriptor of an enabled image
-         * 
-         * @param enabledImageDescriptor
-         * @return
          */
         public ImageDescriptor getDisabledImageDescriptor(IAdaptable adaptable) {
             ImageDescriptor enabledImageDescriptor = getImageDescriptor(adaptable);
@@ -905,9 +865,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
         /**
          * Return a shared image which is the disabled version of the given image descriptor
-         * 
-         * @param enabledImage
-         * @return
          */
         public Image getDisabledSharedImage(ImageDescriptor enabledImage) {
             ImageDescriptor disabledID = createDisabledImageDescriptor(enabledImage);
@@ -916,9 +873,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
         /**
          * Create the disabled version of a shared image descriptor
-         * 
-         * @param enabledImageDescriptor
-         * @return
          */
         public ImageDescriptor createDisabledImageDescriptor(ImageDescriptor enabledImageDescriptor) {
             ImageDescriptor disabledImageDesc = ImageDescriptor.createWithFlags(enabledImageDescriptor,
@@ -934,7 +888,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * Use this method when you only want to have an image descriptor for any eclipse object
          * e.g. an Action or a Wizard Normally eclipse does instantiate and dispose the image
          * 
-         * @param name
          * @return the new created image descriptor
          */
         public ImageDescriptor createImageDescriptor(String name) {
@@ -950,9 +903,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * {@link #disposeImage(ImageDescriptor)} or even better use your own LocalResourceManager.
          * <p/>
          * If descriptor is null, the missing image is returned
-         * 
-         * @param descriptor
-         * @return
          */
         public Image getImage(ImageDescriptor descriptor) {
             return getImage(descriptor, true);
@@ -965,9 +915,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * use the methods {@link #createImage(ImageDescriptor)} and
          * {@link #disposeImage(ImageDescriptor)} or even better use your own LocalResourceManager.
          * 
-         * @param descriptor
          * @param returnMissingImage if true, the MissingImage is returned instead of null
-         * @return
          */
         public Image getImage(ImageDescriptor descriptor, boolean returnMissingImage) {
             if (descriptor != null) {
@@ -986,9 +934,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * descriptor is already registered as a shared image, the descriptor is not registered
          * twice. You do not have to worry about calling the disposeImage method because a shared
          * image also would not be disposed
-         * 
-         * @param descriptor
-         * @param image
          */
         public Image createImage(ImageDescriptor descriptor) {
             if (descriptor != null) {
@@ -1013,7 +958,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * If there is no registered adapter this method returns null. If the registered adapter has
          * no image, this method returns the missing image
          * 
-         * @param adaptable
          * @return the image descriptor or null if there is no image or no registered adapter
          */
         public ImageDescriptor getImageDescriptor(IAdaptable adaptable) {
@@ -1038,9 +982,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * the corresponding image descriptor) or a not shared one if no one registered the image
          * before. If it is a no shared image, someone (maybe you - normally the workbench adapter)
          * have dispose the image.
-         * 
-         * @param ipsElement
-         * @return
          */
         public Image getImage(IAdaptable adaptable) {
             return getImage(getImageDescriptor(adaptable), false);
@@ -1050,10 +991,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * Get the enabled or disabled image for the given element.
          * 
          * @see #getImage(IAdaptable) and @see {@link #getDisabledImage(IAdaptable)}
-         * 
-         * @param ipsElement
-         * @param enabled
-         * @return
          */
         public Image getImage(IAdaptable adaptable, boolean enabled) {
             if (enabled) {
@@ -1066,9 +1003,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         /**
          * Get the default image descriptor for an ips element class. May return null. Note: The
          * workbench adapters are registered for concrete implementations not for interfaces
-         * 
-         * @param ipsElementClass
-         * @return
          */
         public ImageDescriptor getDefaultImageDescriptor(Class<? extends IpsElement> ipsElementClass) {
             IpsElementWorkbenchAdapter adapter = getDefault().ipsElementWorkbenchAdapterAdapterFactory
@@ -1084,9 +1018,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         /**
          * Get the default image for an ips element class. May return null. Note: The workbench
          * adapters are registered for concrete implementations not for interfaces
-         * 
-         * @param ipsElementClass
-         * @return
          */
         public Image getDefaultImage(Class<? extends IpsElement> ipsElementClass) {
             ImageDescriptor descriptor = getDefaultImageDescriptor(ipsElementClass);
@@ -1101,7 +1032,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * Returns the image with the indicated name from the <code>icons</code> folder and overlays
          * it with the specified overlay image. If the given image is not found return the missing
          * image overlaid with the product relevant image.
-         * 
          * 
          * @param baseImageName The name of the image which will be overlaid with the overlay image.
          * @param overlayImageName The name of the overlay image

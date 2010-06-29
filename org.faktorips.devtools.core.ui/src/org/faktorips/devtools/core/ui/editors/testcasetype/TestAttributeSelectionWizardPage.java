@@ -51,6 +51,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
  * @author Joerg Ortmann
  */
 public class TestAttributeSelectionWizardPage extends WizardPage {
+
     private static final String PAGE_ID = "TestAttributeSelectionWizardPage"; //$NON-NLS-1$
 
     private NewTestAttributeWizard wizard;
@@ -98,10 +99,6 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
         Composite group = uiToolkit.createGridComposite(parent, 1, true, true);
-        // GridLayout layout = new GridLayout();
-        // layout.marginHeight = 10;
-        // layout.marginWidth = 10;
-        // group.setLayout(layout);
 
         fFilterText = createFilterText(group);
         fFilteredList = createFilteredList(group);
@@ -166,16 +163,13 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         return attributesInDialog.toArray(new IPolicyCmptTypeAttribute[attributesInDialog.size()]);
     }
 
-    /*
+    /**
      * Only changeable or derived or computed attributes are allowed
      */
     private boolean isAllowedAttribute(IPolicyCmptTypeAttribute attribute) {
         return attribute.isChangeable() || attribute.isDerived();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected void setListElements(Object[] elements) {
         Assert.isNotNull(fFilteredList);
         // init the label provider
@@ -252,6 +246,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                // Nothing to do
             }
         });
 

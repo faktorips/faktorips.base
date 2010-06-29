@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -30,9 +29,7 @@ import org.faktorips.util.StringUtil;
  * @author Joerg Ortmann
  */
 public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public Image getImage(Object element) {
         if (element instanceof ITestParameter) {
@@ -49,8 +46,6 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
      * If the element is a test policy cmpt type param return the name of the param and if a
      * association is specified and the target name is not equal the param name return
      * "name : association".
-     * 
-     * {@inheritDoc}
      */
     @Override
     public String getText(Object element) {
@@ -96,32 +91,14 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
         return " - " + type.getName(); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
+        // Nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void removeListener(ILabelProviderListener listener) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addListener(ILabelProviderListener listener) {
-    }
 }

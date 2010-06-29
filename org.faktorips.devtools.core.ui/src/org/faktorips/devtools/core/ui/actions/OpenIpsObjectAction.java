@@ -86,8 +86,6 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
         return IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();
     }
 
-    // ---- IWorkbenchWindowActionDelegate ------------------------------------------------
-
     @Override
     public void run(IAction action) {
         run();
@@ -107,4 +105,5 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
     public void selectionChanged(IAction action, ISelection selection) {
         // do nothing. Action doesn't depend on selection.
     }
+
 }

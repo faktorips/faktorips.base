@@ -34,9 +34,6 @@ public abstract class ViewerButtonSection extends IpsSection {
         super(parent, style, GridData.FILL_BOTH, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         GridLayout clientLayout = new GridLayout(2, false);
@@ -89,14 +86,11 @@ public abstract class ViewerButtonSection extends IpsSection {
         return selection.getFirstElement();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         if (viewer.getInput() == null) {
             viewer.setInput(this); // if viewer's input is null, it's content provider is not asked
-                                   // for the contents!
+            // for the contents!
         }
         viewer.refresh();
         updateButtonEnabledStates();

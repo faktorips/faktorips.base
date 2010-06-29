@@ -24,9 +24,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-/**
- *
- */
 public class ProductCmptRefControl extends IpsObjectRefControl {
 
     private boolean includeCmptsForSubtypes = true;
@@ -39,7 +36,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     }
 
     /**
-     * @param qPcTypeNmae The product component type for which product components should be
+     * @param productCmptType The product component type for which product components should be
      *            selectable.
      * @param includeCmptsForSubtypes <code>true</code> if also product components for subtypes
      *            should be selectable.
@@ -49,9 +46,6 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
         this.includeCmptsForSubtypes = includeCmptsForSubtypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject() == null) {

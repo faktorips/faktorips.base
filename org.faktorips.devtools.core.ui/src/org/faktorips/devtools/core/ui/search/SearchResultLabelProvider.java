@@ -26,41 +26,31 @@ public class SearchResultLabelProvider implements ILabelProvider {
 
     private List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
 
-    /**
-     * Overridden
-     */
     @Override
     public void addListener(ILabelProviderListener listener) {
         listeners.add(listener);
     }
 
-    /**
-     * Overridden
-     */
     @Override
     public void dispose() {
         listeners = null;
     }
 
-    /**
-     * Overridden
-     */
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
     /**
-     * Overridden
+     * {@inheritDoc}
+     * <p>
+     * test
      */
     @Override
     public void removeListener(ILabelProviderListener listener) {
         listeners.remove(listener);
     }
 
-    /**
-     * Overridden
-     */
     @Override
     public Image getImage(Object element) {
         if (element instanceof Object[]) {
@@ -70,9 +60,6 @@ public class SearchResultLabelProvider implements ILabelProvider {
         }
     }
 
-    /**
-     * Overridden
-     */
     @Override
     public String getText(Object element) {
         if (element instanceof Object[]) {

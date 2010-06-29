@@ -44,7 +44,7 @@ public class SingleTypeSelectIpsObjectContext implements ISelectIpsObjectContext
 
     @Override
     public List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
-        progressMonitor.beginTask("Selecting files...", 4);
+        progressMonitor.beginTask("Selecting files...", 4); //$NON-NLS-1$
         progressMonitor.worked(1);
         IIpsSrcFile[] srcFiles = project.findIpsSrcFiles(ipsObjectType);
         progressMonitor.worked(2);

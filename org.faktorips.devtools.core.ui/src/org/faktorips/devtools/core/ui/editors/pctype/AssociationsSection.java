@@ -61,35 +61,27 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         return (IPolicyCmptType)getIpsObject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new AssociationsComposite(getIpsObject(), parent, toolkit);
     }
 
-    /*
+    /**
      * Action to open the selected target in a new editor window
      */
     private class OpenTargetPcTypeInEditorAction extends IpsAction {
+
         public OpenTargetPcTypeInEditorAction(ISelectionProvider selectionProvider) {
             super(selectionProvider);
             setText(Messages.AssociationsSection_menuOpenTargetInNewEditor);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             return (selected instanceof IPolicyCmptTypeAssociation);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
@@ -99,6 +91,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
                     IType target = policyCmptTypeAssociation.findTarget(getPcType().getIpsProject());
                     IpsUIPlugin.getDefault().openEditor(target);
                 } catch (Exception e) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
@@ -110,6 +103,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
      * associations in a dialog, create new associations and delete associations.
      */
     private class AssociationsComposite extends IpsPartsComposite {
+
         private Button wizardNewButton;
         private OpenTargetPcTypeInEditorAction openAction;
 
@@ -140,58 +134,37 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             getViewer().getControl().setMenu(menu);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new RelationContentProvider();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected ILabelProvider createLabelProvider() {
             return new AssociationsLabelProvider();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IIpsObjectPart newIpsPart() {
             return getPcType().newPolicyCmptTypeAssociation();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void setDataChangeable(boolean flag) {
             super.setDataChangeable(flag);
             getUiToolkit().setDataChangeable(wizardNewButton, flag);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new AssociationEditDialog((IPolicyCmptTypeAssociation)part, shell);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getPcType().moveAssociations(indexes, up);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
             createNewWizardButton(buttons, toolkit);
@@ -212,6 +185,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
                     try {
                         newWizardClicked();
                     } catch (Exception ex) {
+                        // TODO catch Exception needs to be documented properly or specialized
                         IpsPlugin.logAndShowErrorDialog(ex);
                     }
                 }
@@ -243,9 +217,6 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             refresh();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void openLink() {
             openAction.run();

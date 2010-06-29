@@ -26,21 +26,14 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 
-/**
- * 
- */
 public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     public FaktorIpsPreferencePage() {
         super(FieldEditorPreferencePage.GRID);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createFieldEditors() {
-
         StringFieldEditor workingDateField = new StringFieldEditor(IpsPreferences.WORKING_DATE,
                 Messages.FaktorIpsPreferencePage_labelWorkingDate, getFieldEditorParent());
         addField(workingDateField);
@@ -126,12 +119,8 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                         { Messages.FaktorIpsPreferencePage_label_fourSections,
                                 IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE } }, getFieldEditorParent(), true);
         addField(sectionsInTypeEditors);
-
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench) {
         setPreferenceStore(IpsPlugin.getDefault().getPreferenceStore());

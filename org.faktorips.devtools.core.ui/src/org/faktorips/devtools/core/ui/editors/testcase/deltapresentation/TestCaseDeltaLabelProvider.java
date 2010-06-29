@@ -38,7 +38,8 @@ import org.faktorips.devtools.core.ui.editors.testcase.TestCaseLabelProvider;
  * @author Joerg Ortmann
  */
 final class TestCaseDeltaLabelProvider implements ILabelProvider {
-    // The test case label provider, to display objetcs in the context of the test case tree
+
+    /** The test case label provider, to display objetcs in the context of the test case tree */
     private TestCaseLabelProvider testCaseLabelProvider;
 
     private ArrayList<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
@@ -50,34 +51,22 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeListener(ILabelProviderListener listener) {
         listeners.remove(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         listeners = null;
         resourceManager.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addListener(ILabelProviderListener listener) {
         if (listeners.contains(listener)) {
@@ -86,9 +75,6 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
         listeners.add(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         if (element instanceof TestCaseDeltaType) {
@@ -105,9 +91,6 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
         return Messages.TestCaseDeltaLabelProvider_Undefined;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage(Object element) {
         ImageDescriptor descriptor = ImageDescriptor.getMissingImageDescriptor();

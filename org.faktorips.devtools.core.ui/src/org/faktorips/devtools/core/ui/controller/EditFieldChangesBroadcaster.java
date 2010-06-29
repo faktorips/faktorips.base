@@ -39,38 +39,36 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  * @author Jan Ortmann
  */
 public class EditFieldChangesBroadcaster {
+
     private static DateFormat DEBUG_FORMAT;
     private static int DELAY_TIME = 200;
 
-    // last event data
     private FieldValueChangedEvent lastEvent;
     private ValueChangeListener[] lastListeners;
     private long lastEventTime = 0;
 
-    // contains the current broadcast event
+    /** contains the current broadcast event */
     private FieldValueChangedEvent currentEvent = null;
 
-    // mutex for synchronize reason
+    /** mutex for synchronize reason */
     private Boolean mutex = Boolean.TRUE;
 
-    // indicates if the internal delay job is running
+    /** indicates if the internal delay job is running */
     private boolean running = false;
 
-    // debug counter for accrued events
+    /** debug counter for accrued events */
     private int eventCounter = 0;
 
-    /*
+    /**
      * Internal system ui job to check when it is time to broadcast the delayed event.
      */
     private class BroadcastDelayedUIJob extends UIJob {
+
         public BroadcastDelayedUIJob() {
             super("BroadcastDelayedUIJob"); //$NON-NLS-1$
             setSystem(true);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public IStatus runInUIThread(IProgressMonitor monitor) {
             synchronized (mutex) {
@@ -91,9 +89,6 @@ public class EditFieldChangesBroadcaster {
             return Status.OK_STATUS;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean shouldSchedule() {
             return running;
@@ -160,7 +155,7 @@ public class EditFieldChangesBroadcaster {
         logTrace("Finished broadcast"); //$NON-NLS-1$
     }
 
-    /*
+    /**
      * Start the delay broadcast job if the job is currently not running. The job stops
      * automatically after broadcasting the last occurred event.
      */
@@ -177,7 +172,7 @@ public class EditFieldChangesBroadcaster {
     // Methods for debugging (tracing)
     //
 
-    /*
+    /**
      * Trace the given log message if <code>IpsModel.TRACE_MODEL_CHANGE_LISTENERS</code> is
      * <code>true</code>
      */

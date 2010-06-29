@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public abstract class TextButtonControl extends ControlComposite {
 
-    // text and button controls
+    /** text and button controls */
     protected Text text;
 
     private Button button;
@@ -50,6 +50,7 @@ public abstract class TextButtonControl extends ControlComposite {
      */
     public TextButtonControl(Composite parent, UIToolkit toolkit, String buttonText, boolean smallMargins,
             int buttonHeightHint) {
+
         super(parent, SWT.NONE);
         setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         GridLayout layout = new GridLayout(2, false);
@@ -104,9 +105,6 @@ public abstract class TextButtonControl extends ControlComposite {
 
     protected abstract void buttonClicked();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setEnabled(boolean value) {
         text.setEnabled(value);
@@ -143,9 +141,6 @@ public abstract class TextButtonControl extends ControlComposite {
         return text.setFocus();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);

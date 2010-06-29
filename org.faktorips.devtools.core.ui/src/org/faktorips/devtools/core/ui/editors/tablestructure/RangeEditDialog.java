@@ -65,20 +65,11 @@ public class RangeEditDialog extends IpsPartEditDialog {
     private Label fromLabel;
     private Label toLabel;
 
-    /**
-     * @param parentShell
-     * @param title
-     */
     public RangeEditDialog(IColumnRange range, Shell parentShell) {
         super(range, parentShell, Messages.RangeEditDialog_title, true);
         this.range = range;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -144,9 +135,6 @@ public class RangeEditDialog extends IpsPartEditDialog {
         return c;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createContents(Composite parent) {
         Control control = super.createContents(parent);
@@ -203,6 +191,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -210,7 +199,6 @@ public class RangeEditDialog extends IpsPartEditDialog {
         toRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         toRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
         toRight.addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetSelected(SelectionEvent e) {
                 clearColumn(fromField);
@@ -218,6 +206,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -227,7 +216,6 @@ public class RangeEditDialog extends IpsPartEditDialog {
         toLeft2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         toLeft2.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
         toLeft2.addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetSelected(SelectionEvent e) {
                 selectColumn(toField);
@@ -235,6 +223,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -250,6 +239,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -267,7 +257,6 @@ public class RangeEditDialog extends IpsPartEditDialog {
         columnViewer = new TableViewer(table);
         columnViewer.setLabelProvider(new DefaultLabelProvider());
         columnViewer.setContentProvider(new IStructuredContentProvider() {
-
             @Override
             public Object[] getElements(Object inputElement) {
                 IColumn[] columns = range.getTableStructure().getColumns();
@@ -282,21 +271,17 @@ public class RangeEditDialog extends IpsPartEditDialog {
 
             @Override
             public void dispose() {
+                // Nothing to do
             }
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // Nothing to do
             }
-
         });
         columnViewer.setInput(this);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
-     */
     @Override
     protected void connectToModel() {
         super.connectToModel();

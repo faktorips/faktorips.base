@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
  * An Action to show a selected element in instance explorer
  * 
  * @author Cornelius Dirmeier
- * 
  */
 public class ShowInstanceAction extends IpsAction {
 
@@ -39,7 +38,6 @@ public class ShowInstanceAction extends IpsAction {
      * selectionProvider
      * 
      * @param selectionProvider the selection provider for this action
-     * 
      */
     public ShowInstanceAction(ISelectionProvider selectionProvider) {
         super(selectionProvider);
@@ -76,9 +74,6 @@ public class ShowInstanceAction extends IpsAction {
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(InstanceExplorer.IMAGE));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         IIpsObject ipsObject = getIpsObjectForSelection(selection);

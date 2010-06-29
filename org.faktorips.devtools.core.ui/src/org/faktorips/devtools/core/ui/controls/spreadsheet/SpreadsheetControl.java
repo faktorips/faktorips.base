@@ -44,47 +44,44 @@ import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-/**
- */
 public class SpreadsheetControl extends Composite {
 
-    // the underlying table control and it's viewer
+    /** the underlying table control */
     private Table table;
     private TableViewer viewer;
 
     private TableContentProvider contentProvider;
     private ColumnInfo[] columnInfos;
 
-    // cell cursor
     private TableCursor cursor;
 
     private TableEditor tableEditor;
 
-    // if a row is being added by tabbing over the last cell, the new row is stored here.
-    // If the user leaves the row without entering any values. The row is automatically
-    // removed again.
+    /**
+     * if a row is being added by tabbing over the last cell, the new row is stored here. If the
+     * user leaves the row without entering any values. The row is automatically removed again.
+     */
     private Object pendingRow = null;
 
-    // array of cell editors, one for each column. The cell editors are
-    // generated during initColumns.
+    /**
+     * array of cell editors, one for each column. The cell editors are generated during
+     * initColumns.
+     */
     private TableCellEditor[] editors_ = null;
 
-    // Popup menu of the table cursor.
+    /** Popup menu of the table cursor. */
     private Menu popupMenu_ = null;
 
-    // the required row height.
+    /** the required row height. */
     private int rowHeight = 12;
 
-    // the editor generates an image of the required column height that
-    // will be inserted into the last column to size the column.
+    /**
+     * the editor generates an image of the required column height that will be inserted into the
+     * last column to size the column.
+     */
     private Image rowHeightImage = null;
 
-    /**
-     * @param parent
-     * @param style
-     */
     public SpreadsheetControl(Composite parent, int style, TableContentProvider contentProvider) {
-
         super(parent, SWT.NONE);
         this.contentProvider = contentProvider;
         columnInfos = contentProvider.getColumnInfos();
@@ -210,10 +207,11 @@ public class SpreadsheetControl extends Composite {
         cursor.setMenu(popupMenu_);
         table.setMenu(popupMenu_);
 
-        // add a mouse listener that is attached to the table control
-        // and resends event triggered by the right mouse button
-        // to the table cursor. Otherwise the popupmenu won't work
-        // on non-selected cells.
+        /*
+         * add a mouse listener that is attached to the table control and resends event triggered by
+         * the right mouse button to the table cursor. Otherwise the popupmenu won't work on
+         * non-selected cells.
+         */
         PopupMenuListener popupMenuListener = new PopupMenuListener();
 
         popupMenu_.addListener(SWT.Show, popupMenuListener);
@@ -277,8 +275,6 @@ public class SpreadsheetControl extends Composite {
 
     /**
      * Create the cell editors of the table.
-     * 
-     * @param columnInfos, an array of column infos to create editors for.
      */
     private void createCellEditors() {
         // if there are already cell editors dispose them and recreate them
@@ -386,8 +382,6 @@ public class SpreadsheetControl extends Composite {
      * Create the viewer object. The viewer object is created once at the first call to
      * createTableViewer. Each additional call will reinitalize the viewer to reflect the changes of
      * the table.
-     * 
-     * @param input, the contents of the table
      */
     private void initTableViewer() {
         viewer = new TableViewer(table);
@@ -399,8 +393,7 @@ public class SpreadsheetControl extends Composite {
     /**
      * Get the value for the given cell.
      * 
-     * @param item, the item to retrieve the value from
-     * @param column, the column to get the value from
+     * @param item the item to retrieve the value from
      * @return Object, the value, may be null.
      */
     Object getCellValue(TableItem item, int externalColumnIndex) {
@@ -410,8 +403,7 @@ public class SpreadsheetControl extends Composite {
     /**
      * Get the value for the given cell.
      * 
-     * @param item, the item to retrieve the value from
-     * @param externalColumnIndex, the column to get the value from
+     * @param externalColumnIndex the column to get the value from
      * @return Object, the value, may be null.
      */
     Object getCellValue(Object row, int externalColumnIndex) {
@@ -427,8 +419,6 @@ public class SpreadsheetControl extends Composite {
 
     /**
      * Sorts the given column in the table.
-     * 
-     * @param externalColumnIndex
      */
     public void sortColumn(int externalColumnIndex) {
         Sorter sorter = (Sorter)viewer.getSorter();
@@ -555,7 +545,7 @@ public class SpreadsheetControl extends Composite {
     /**
      * This method is called whenever the user presses the tab key.
      * 
-     * @param forward, if true, the cursor is moved forward, otherwise it is set to the previous
+     * @param forward if true, the cursor is moved forward, otherwise it is set to the previous
      *            cell.
      */
     protected void processTabEvent(boolean forward) {
@@ -585,7 +575,7 @@ public class SpreadsheetControl extends Composite {
     /**
      * Begin editing the currently selected cell.
      * 
-     * @param event, may be null.
+     * @param event may be null.
      */
     protected void beginCellEdit(KeyEvent event) {
         if (!cursor.isEnabled() || !cursor.isVisible()) {
@@ -647,10 +637,12 @@ public class SpreadsheetControl extends Composite {
 
         @Override
         public void addListener(ILabelProviderListener listener) {
+            // Nothing to do
         }
 
         @Override
         public void dispose() {
+            // Nothing to do
         }
 
         @Override
@@ -660,6 +652,7 @@ public class SpreadsheetControl extends Composite {
 
         @Override
         public void removeListener(ILabelProviderListener listener) {
+            // Nothing to do
         }
 
     }
@@ -669,6 +662,7 @@ public class SpreadsheetControl extends Composite {
      * purpose is to provide handling of the tab key.
      */
     private class TableTraverseListener implements TraverseListener {
+
         @Override
         public void keyTraversed(TraverseEvent e) {
             switch (e.detail) {
@@ -715,6 +709,7 @@ public class SpreadsheetControl extends Composite {
      * Selection listener to process sort requests.
      */
     private class SortListener implements SelectionListener {
+
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
@@ -735,12 +730,10 @@ public class SpreadsheetControl extends Composite {
     }
 
     private class PopupMenuListener extends MouseAdapter implements Listener {
+
         private boolean tableEvent_ = false;
         private TableItem item_ = null;
 
-        /**
-         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-         */
         @Override
         public void handleEvent(Event event) {
             switch (event.type) {
@@ -760,9 +753,6 @@ public class SpreadsheetControl extends Composite {
             }
         }
 
-        /**
-         * @see org.eclipse.swt.events.MouseListener#mouseDown(org.eclipse.swt.events.MouseEvent)
-         */
         @Override
         public void mouseDown(MouseEvent e) {
             if (e.widget == table && e.button == 3) {

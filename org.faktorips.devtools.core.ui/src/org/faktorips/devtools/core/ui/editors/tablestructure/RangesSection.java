@@ -35,12 +35,6 @@ public class RangesSection extends SimpleIpsPartsSection {
         super(table, parent, Messages.RangesSection_title, toolkit);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite,
-     *      org.faktorips.devtools.core.ui.UIToolkit)
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new RangesComposite(getIpsObject(), parent, toolkit);
@@ -56,48 +50,28 @@ public class RangesSection extends SimpleIpsPartsSection {
             return (ITableStructure)getIpsObject();
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
-         */
         @Override
         protected IIpsObjectPart newIpsPart() {
             return getTableStructure().newRange();
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart,
-         *      org.eclipse.swt.widgets.Shell)
-         */
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new RangeEditDialog((IColumnRange)part, shell);
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#moveParts(int[], boolean)
-         */
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getTableStructure().moveRanges(indexes, up);
         }
 
         private class ContentProvider implements IStructuredContentProvider {
+
             @Override
             public Object[] getElements(Object inputElement) {
                 return getTableStructure().getRanges();
@@ -114,6 +88,6 @@ public class RangesSection extends SimpleIpsPartsSection {
             }
         }
 
-    } // class RangesComposite
+    }
 
 }

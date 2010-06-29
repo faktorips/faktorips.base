@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard;
  * @author Daniel Hohenberger
  */
 public class NewIpsPacketAction extends IpsAction {
+
     private Shell shell;
 
     public NewIpsPacketAction(Shell shell, ISelectionProvider selectionProvider) {
@@ -40,9 +41,6 @@ public class NewIpsPacketAction extends IpsAction {
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewIpsPackageFragment.gif")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         NewIpsPackageWizard wizard = new NewIpsPackageWizard();

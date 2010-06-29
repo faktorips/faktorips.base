@@ -34,13 +34,11 @@ public class NewProductComponentAction extends Action {
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductCmptWizard.gif")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         OpenNewProductCmptWizardAction o = new OpenNewProductCmptWizardAction();
         o.init(window);
         o.run(this);
     }
+
 }

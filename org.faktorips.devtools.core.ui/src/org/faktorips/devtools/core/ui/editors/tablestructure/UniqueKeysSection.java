@@ -26,21 +26,12 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
-/**
- *
- */
 public class UniqueKeysSection extends SimpleIpsPartsSection {
 
     public UniqueKeysSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
         super(table, parent, Messages.UniqueKeysSection_title, toolkit);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite,
-     *      org.faktorips.devtools.core.ui.UIToolkit)
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new UniqueKeysComposite(getIpsObject(), parent, toolkit);
@@ -56,42 +47,21 @@ public class UniqueKeysSection extends SimpleIpsPartsSection {
             return (ITableStructure)getIpsObject();
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
-         */
         @Override
         protected IIpsObjectPart newIpsPart() {
             return getTableStructure().newUniqueKey();
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart,
-         *      org.eclipse.swt.widgets.Shell)
-         */
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new KeyEditDialog((IUniqueKey)part, shell);
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#moveParts(int[], boolean)
-         */
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getTableStructure().moveUniqueKeys(indexes, up);
@@ -114,6 +84,6 @@ public class UniqueKeysSection extends SimpleIpsPartsSection {
             }
         }
 
-    } // class UniqueKeysComposite
+    }
 
 }

@@ -37,9 +37,6 @@ public class RadiobuttonGroup implements ValueChangeListener {
      * Creates a <code>org.eclipse.swt.widgets.Group</code> and controls
      * <code>org.faktorips.devtools.core.ui.controls.Radiobutton</code>s added to it via the
      * <code>RadiobuttonGroup#addRadiobutton</code> method.
-     * 
-     * @param parent
-     * @param style
      */
     public RadiobuttonGroup(Composite parent, int style, UIToolkit toolkit) {
         group = new Group(parent, style);
@@ -68,9 +65,6 @@ public class RadiobuttonGroup implements ValueChangeListener {
         }
     }
 
-    /**
-     * @return the group
-     */
     public Group getGroup() {
         return group;
     }

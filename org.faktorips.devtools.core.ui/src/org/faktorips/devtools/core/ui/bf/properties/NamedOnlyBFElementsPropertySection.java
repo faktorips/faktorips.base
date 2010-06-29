@@ -60,8 +60,12 @@ public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection 
 
     /**
      * This method can be overridden by subclasses to add additional editing field to this section.
+     * 
+     * @param parent The composite to extend
+     * @param tabbedPropertySheetPage The tabbed property sheet page
      */
     protected void createControlsInternal(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+        // Empty default implementation
     }
 
     @Override

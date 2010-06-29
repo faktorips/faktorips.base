@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class IpsPckFragmentRootRefControl extends TextButtonControl {
 
-    // true if only package fragment roots contains sourcecode are allowed.
+    /** true if only package fragment roots contains sourcecode are allowed. */
     private boolean onlySourceRoots;
 
     public IpsPckFragmentRootRefControl(Composite parent, boolean onlySourceRoots, UIToolkit toolkit) {
@@ -64,11 +64,6 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
         return null;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.TextButtonControl#buttonClicked()
-     */
     @Override
     protected void buttonClicked() {
         try {
@@ -79,6 +74,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
                 setPdPckFragmentRoot(root);
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

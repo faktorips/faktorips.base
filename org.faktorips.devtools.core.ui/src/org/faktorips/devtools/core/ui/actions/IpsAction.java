@@ -58,7 +58,7 @@ public abstract class IpsAction extends Action {
 
     private final static IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];
 
-    // The source of objects to modify by this action.
+    /** The source of objects to modify by this action. */
     protected ISelectionProvider selectionProvider;
 
     private ISelection selection = null;
@@ -70,10 +70,7 @@ public abstract class IpsAction extends Action {
     /**
      * Creates a new action. If the action is started, the given selection-provider is asked for its
      * selection and the modifications are done to the selection.
-     * 
-     * @param selectionProvider
      */
-    // TODO AW: The possibility to give null as selection provider would be good ...
     public IpsAction(ISelectionProvider selectionProvider) {
         this.selectionProvider = selectionProvider;
         if (selectionProvider != null) {
@@ -87,9 +84,6 @@ public abstract class IpsAction extends Action {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         ISelection sel = selectionProvider.getSelection();
@@ -102,7 +96,7 @@ public abstract class IpsAction extends Action {
         }
     }
 
-    /*
+    /**
      * Returns a list of selected objects, map all selected ips source files to the corresponding
      * ips object.
      */
@@ -269,6 +263,7 @@ public abstract class IpsAction extends Action {
     protected Transfer[] getTypeArray(List<String> stringItems,
             List<IResource> resourceItems,
             List<String> copiedResourceLinks) {
+
         List<Transfer> resultList = new ArrayList<Transfer>();
         if (resourceItems.size() > 0) {
             resultList.add(ResourceTransfer.getInstance());
@@ -433,7 +428,9 @@ public abstract class IpsAction extends Action {
 
     /**
      * Returns <code>true</code> if the action is enabled based on the given selection, otherwise
-     * <code>false</code>. Defaultimplementation always returns <code>true</code>.
+     * <code>false</code>. The default implementation always returns <code>true</code>.
+     * 
+     * @param selection The user selection to check for enabled state of this action.
      */
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
         return true;
@@ -449,6 +446,7 @@ public abstract class IpsAction extends Action {
      * Extracted as protected method to get along with one suppress warnings annotation.
      */
     @SuppressWarnings("unchecked")
+    // Eclipse API uses unchecked iterator
     protected Iterator<Object> getSelectionIterator(IStructuredSelection selection) {
         return selection.iterator();
     }

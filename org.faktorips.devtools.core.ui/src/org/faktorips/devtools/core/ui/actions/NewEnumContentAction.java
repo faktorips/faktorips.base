@@ -15,37 +15,33 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction;
 
 /**
- * Opens the wizard for creating a new enum content.
+ * Opens the wizard for creating a new {@link IEnumContent}.
  * 
  * @author Alexander Weickmann
  */
 public class NewEnumContentAction extends Action {
 
-    // The image for the action
-    private final String IMAGE = "NewEnumContent.gif"; //$NON-NLS-1$
+    /** The file name of the image for this action */
+    private final String IMAGE_FILENAME = "NewEnumContent.gif"; //$NON-NLS-1$
 
     private IWorkbenchWindow window;
 
     /**
      * Creates a new <code>NewEnumContentAction</code>.
-     * 
-     * @param window
      */
     public NewEnumContentAction(IWorkbenchWindow window) {
         super();
 
         this.window = window;
         setText(Messages.NewEnumContentAction_title);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_FILENAME));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         OpenNewEnumContentWizardAction action = new OpenNewEnumContentWizardAction();

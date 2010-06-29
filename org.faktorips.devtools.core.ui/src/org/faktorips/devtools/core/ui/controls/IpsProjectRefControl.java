@@ -46,11 +46,6 @@ public class IpsProjectRefControl extends TextButtonControl {
         return null;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.TextButtonControl#buttonClicked()
-     */
     @Override
     protected void buttonClicked() {
         try {
@@ -66,6 +61,7 @@ public class IpsProjectRefControl extends TextButtonControl {
                 setIpsProject(selectedProject);
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

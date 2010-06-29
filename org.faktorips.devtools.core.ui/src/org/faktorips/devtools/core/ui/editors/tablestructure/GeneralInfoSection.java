@@ -50,9 +50,6 @@ public class GeneralInfoSection extends IpsSection {
         setText(Messages.GeneralInfoSection_labelGeneralInfoSection);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         client.setLayout(new GridLayout(1, false));
@@ -67,9 +64,6 @@ public class GeneralInfoSection extends IpsSection {
         uiController.add(typeField, ITableStructure.PROPERTY_TYPE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         uiController.updateUI();

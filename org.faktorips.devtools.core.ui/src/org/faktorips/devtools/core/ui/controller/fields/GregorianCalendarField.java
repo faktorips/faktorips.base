@@ -39,17 +39,11 @@ public class GregorianCalendarField extends DefaultEditField {
         this.text = text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() throws Exception {
         String text = getText();
@@ -64,9 +58,6 @@ public class GregorianCalendarField extends DefaultEditField {
         return gc;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         ArgumentCheck.isInstanceOf(newValue, GregorianCalendar.class);
@@ -79,50 +70,33 @@ public class GregorianCalendarField extends DefaultEditField {
         text.setText(newValue.toString());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         return text.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newText) {
         text.setText(newText);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String s) {
         text.insert(s);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         text.selectAll();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         text.addModifyListener(new ModifyListener() {
-
             @Override
             public void modifyText(ModifyEvent e) {
                 notifyChangeListeners(new FieldValueChangedEvent(GregorianCalendarField.this));
             }
-
         });
 
     }

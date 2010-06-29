@@ -162,6 +162,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
                 @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
+                    // Nothing to do
                 }
             });
             updateOverrideButtonEnabledState();

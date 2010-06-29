@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
  * @author Joerg Ortmann
  */
 public class TestAttributeDefinitionWizardPage extends WizardPage {
+
     private static final String PAGE_ID = "TestAttributeDefinitionWizardPage"; //$NON-NLS-1$
     private NewTestAttributeWizard wizard;
     private Text testAttributeNameText;
@@ -50,6 +51,7 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
      * @author Joerg Ortmann
      */
     public class PmoTestAttribute {
+
         public static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
         public static final String PROPERTY_TEST_PARAMETER_TYPE = "testParameterType"; //$NON-NLS-1$
         public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
@@ -99,9 +101,6 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
         this.testAttribute = new PmoTestAttribute();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();

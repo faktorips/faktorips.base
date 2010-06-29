@@ -47,9 +47,6 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
         if (datatype == null) {
@@ -58,15 +55,13 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         return datatype.isEnum() && !(datatype instanceof EnumTypeDatatypeAdapter);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EditField createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
+
         Combo combo = toolkit.createCombo(parent);
         AbstractEnumDatatypeBasedField enumField = null;
 
@@ -79,9 +74,6 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         return enumField;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control createControl(UIToolkit toolkit,
             Composite parent,
@@ -156,6 +148,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             Composite parent) {
+
         Combo comboControl;
         if (valueSet instanceof IEnumValueSet) {
             comboControl = toolkit.createCombo(parent, (IEnumValueSet)valueSet, (EnumDatatype)datatype);

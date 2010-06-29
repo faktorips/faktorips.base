@@ -89,9 +89,6 @@ public class DefaultsAndRangesSection extends IpsSection {
         setText(Messages.PolicyAttributesSection_defaultsAndRanges);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         GridLayout layout = new GridLayout(1, true);
@@ -166,8 +163,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         }
     }
 
-    private void createConfigElementNameLabel(IConfigElement element, IPolicyCmptTypeAttribute attribute)
-            throws CoreException {
+    private void createConfigElementNameLabel(IConfigElement element, IPolicyCmptTypeAttribute attribute) {
         Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(element.getName()));
         // use the description of the attribute as tooltip
         if (attribute != null) {
@@ -177,7 +173,7 @@ public class DefaultsAndRangesSection extends IpsSection {
 
     private void createEditControlForDefaultValue(IConfigElement element,
             ValueDatatype datatype,
-            IpsObjectUIController controller) throws CoreException {
+            IpsObjectUIController controller) {
 
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
         EditField field = createEditField(element, datatype);
@@ -191,9 +187,7 @@ public class DefaultsAndRangesSection extends IpsSection {
      * 
      * @return <code>true</code> if the control(s) have bean created, otherwise <code>false</code>.
      */
-    private boolean createEditControlForValueSet(IConfigElement element, IpsObjectUIController controller)
-            throws CoreException {
-
+    private boolean createEditControlForValueSet(IConfigElement element, IpsObjectUIController controller) {
         IValueSet valueSet = element.getValueSet();
         if (valueSet == null) {
             return false;
@@ -269,9 +263,6 @@ public class DefaultsAndRangesSection extends IpsSection {
         editControls.add(text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         uiMasterController.updateUI();

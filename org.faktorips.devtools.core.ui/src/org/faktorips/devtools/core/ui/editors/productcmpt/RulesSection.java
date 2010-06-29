@@ -62,9 +62,6 @@ public class RulesSection extends SimpleIpsPartsSection {
         this.page = page;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new RulesComposite((IProductCmpt)getIpsObject(), parent, toolkit);
@@ -81,9 +78,6 @@ public class RulesSection extends SimpleIpsPartsSection {
             super(product, parent, false, false, false, false, false, toolkit);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void initControls(UIToolkit toolkit) {
             super.initControls(toolkit);
@@ -121,25 +115,16 @@ public class RulesSection extends SimpleIpsPartsSection {
             });
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IIpsObjectPart newIpsPart() {
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return null;

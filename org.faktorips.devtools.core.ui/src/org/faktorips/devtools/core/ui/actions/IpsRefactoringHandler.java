@@ -53,7 +53,7 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
         RefactoringStatus status = refactoring.checkInitialConditions(new NullProgressMonitor());
         if (!(status.isOK())) {
             MessageDialog.openInformation(shell, refactoring.getName(),
-                    Messages.IpsRefactoringAction_refactoringCurrentlyNotApplicable + "\n\n      - "
+                    Messages.IpsRefactoringAction_refactoringCurrentlyNotApplicable + "\n\n      - " //$NON-NLS-1$
                             + status.getEntryWithHighestSeverity().getMessage());
             return false;
         }

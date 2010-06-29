@@ -52,7 +52,7 @@ public class MessageCueController {
      * hover box above the control.
      * 
      * @param control the control on which to install or uninstall the cue
-     * @param Message List the message list or <code>null</code> to uninstall the cue
+     * @param list the message list or <code>null</code> to uninstall the cue
      * 
      * @throws NullPointerException if control is null
      */
@@ -73,7 +73,7 @@ public class MessageCueController {
     private static String fgPlatform = SWT.getPlatform();
     private static boolean fgCarbon = "carbon".equals(fgPlatform); //$NON-NLS-1$
 
-    // the shell the controller is attached to
+    /** the shell the controller is attached to */
     private Shell shell;
 
     private MessageCueController(Shell initShell) {
@@ -105,25 +105,25 @@ public class MessageCueController {
      */
     class FieldController implements DisposeListener {
 
-        // The controlled control. The cue image is placed relative to this control.
+        /** The controlled control. The cue image is placed relative to this control. */
         private Control fControl;
 
-        // the messages shown in the hover and the list's severity shown as cue.
+        /** the messages shown in the hover and the list's severity shown as cue. */
         private MessageList messageList = null;
 
-        // The icon's horizontal screen distance from top-left corner of control (in pixels).
+        /** The icon's horizontal screen distance from top-left corner of control (in pixels). */
         private int fDx;
 
-        // The icon's vertical screen distance from top-left corner of control (in pixels).
+        /** The icon's vertical screen distance from top-left corner of control (in pixels). */
         private int fDy;
 
-        // The HoverController (only when control has focus).
+        /** The HoverController (only when control has focus). */
         private HoverController fHoverController;
 
-        // the hover containing the message text.
+        /** the hover containing the message text. */
         private Hover fHover;
 
-        // Shell resize/move and deactivation listener
+        /** Shell resize/move and deactivation listener */
         private Listener shellListener;
 
         /**
@@ -258,28 +258,17 @@ public class MessageCueController {
             }
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
-         */
         @Override
         public void widgetDisposed(DisposeEvent e) {
             uninstall();
         }
 
-        /**
-         * Hide hover.
-         */
         private void hideHover() {
             if (fHover != null) {
                 fHover.setVisible(false);
             }
         }
 
-        /**
-         * Show hover.
-         */
         private void showHover() {
             if (fHover == null) {
                 fHover = new Hover(fControl);
@@ -342,20 +331,6 @@ public class MessageCueController {
             fDy = 8;
             fDx = -9; // image size is 8
 
-            // fDy= 1;
-            // if (fgCarbon) {
-            // if (control instanceof Text) {
-            // fDy+= 3;
-            // } else if (control instanceof Combo) {
-            // fDx-= 4;
-            // }
-            // } else if (fgWin32) {
-            // if (control instanceof Text) {
-            // fDx-= 2;
-            // fDy-= 2;
-            // }
-            // }
-
             Point global = fControl.toDisplay(fDx, fDy);
             Point local = ((Control)e.widget).toControl(global);
             e.gc.drawImage(image, local.x, local.y);
@@ -379,6 +354,7 @@ public class MessageCueController {
      * hover events to show/hide the info hover.
      */
     class HoverController extends MouseTrackAdapter {
+
         /**
          * The managing FieldController.
          */
@@ -386,8 +362,6 @@ public class MessageCueController {
 
         /**
          * Create a new HoverController.
-         * 
-         * @param fieldFocusListener the field focus listener
          */
         HoverController(FieldController controller) {
             fieldController = controller;
@@ -405,6 +379,9 @@ public class MessageCueController {
             }
         }
 
+        /**
+         * @param e The mouse event to handle.
+         */
         void handleMouseEvent(MouseEvent e) {
             fieldController.showHover();
         }
@@ -422,8 +399,6 @@ public class MessageCueController {
 
         /**
          * Create a new MessageCuePainter.
-         * 
-         * @param fieldController the field focus listener
          */
         MessageCuePainter(FieldController controller) {
             super(controller);
@@ -449,18 +424,22 @@ public class MessageCueController {
      * An info Hover to display a message next to a {@link Control}.
      */
     class Hover {
+
         /**
          * Distance of info hover arrow from left side.
          */
         private int HD = 10;
+
         /**
          * Width of info hover arrow.
          */
         private int HW = 8;
+
         /**
          * Height of info hover arrow.
          */
         private int HH = 10;
+
         /**
          * Margin around info hover text.
          */
@@ -473,7 +452,7 @@ public class MessageCueController {
          */
         Shell fHoverShell;
 
-        // the control the hover belongs to.
+        /** the control the hover belongs to. */
         Control control;
 
         /**
@@ -537,7 +516,7 @@ public class MessageCueController {
 
         void setText(String t) {
             if (t == null) {
-                t = "";
+                t = ""; //$NON-NLS-1$
             }
             if (!t.equals(fText)) {
                 Point oldSize = getExtent();

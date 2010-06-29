@@ -151,9 +151,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         setText(Messages.PropertiesPage_relations);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         Composite relationRootPane = toolkit.createComposite(client);
@@ -221,7 +218,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         toolkit.getFormToolkit().paintBordersFor(relationRootPane);
     }
 
-    /*
+    /**
      * If mouse down and the CTRL key is pressed then the selected object will be opened in a new
      * edior
      */
@@ -260,7 +257,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         openAction.run();
     }
 
-    /*
+    /**
      * Register a double click listener to open the referenced product component in a new editor
      */
     private void registerDoubleClickListener() {
@@ -276,7 +273,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * Creates the context menu for the treeview.
      */
     private void buildContextMenu() {
-
         MenuManager menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(false);
 
@@ -300,17 +296,10 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
         treeViewer.getControl().setMenu(treePopup);
 
-        // Dont register context menu to avoid population with debug etc.
-        // site.registerContextMenu("productCmptEditor.relations", menumanager,
-        // treeViewer); //$NON-NLS-1$
-
         // create empty menu for later use
         emptyMenu = new MenuManager().createContextMenu(treeViewer.getControl());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         if (generationDirty && treeViewer != null) {
@@ -458,8 +447,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     /**
      * To get access to the informations which depend on the selections that can be made in this
      * section, only some parts can be disabled, other parts need special handling.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public void setEnabled(boolean enabled) {
@@ -491,9 +478,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             setText(Messages.RelationsSection_ContextMenu_Properties);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
@@ -503,9 +487,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
@@ -521,18 +502,12 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             setText(Messages.RelationsSection_ContextMenu_OpenInNewEditor);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             return (selected instanceof IProductCmptLink);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
@@ -542,6 +517,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
                     IProductCmpt target = relation.findTarget(generation.getIpsProject());
                     IpsUIPlugin.getDefault().openEditor(target);
                 } catch (Exception e) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
@@ -605,23 +581,21 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
                     return;
                 }
                 treeViewer.getTree().setSelection(new TreeItem[] { possibleSelection });
-                // this additional sending of an event is necessary due to a bug in swt. The problem
-                // is
-                // that dispite of the new selection no event is triggered
+                /*
+                 * this additional sending of an event is necessary due to a bug in swt. The problem
+                 * is that dispite of the new selection no event is triggered
+                 */
                 treeViewer.getTree().notifyListeners(SWT.Selection, null);
                 return;
             }
         }
 
-        /**
-         * Empty implementation
-         */
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             // empty implementation
         }
 
-        /*
+        /**
          * Calculates the path within the tree that points to the provided TreeItem. The path is a
          * list of indices. The first index in the list is meant to be the index of the TreeItem
          * starting from the root of the tree, the second is the index of the TreeItem starting from
@@ -637,13 +611,12 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             path.add(new Integer(parent.indexOf(item)));
         }
 
-        /*
+        /**
          * Calculates the next possible selection for the provided path. The assumption is that the
          * item the path is targeting at might not exist anymore therefor an item has to be
          * determined that is preferably near to it.
          */
         private TreeItem getNextPossibleItem(Tree tree, List<Integer> pathList) {
-
             if (pathList == null || tree.getItemCount() == 0 || pathList.size() == 0) {
                 return null;
             }
@@ -678,7 +651,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
          */
         @Override
         public void widgetSelected(SelectionEvent e) {
-
             if (e.item != null) {
                 TreeItem item = (TreeItem)e.item;
                 lastSelectionPath = new ArrayList<Integer>();
@@ -687,17 +659,11 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ISelectionProvider getSelectionProvider() {
         return treeViewer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isActivated() {
         if (treeViewer == null) {

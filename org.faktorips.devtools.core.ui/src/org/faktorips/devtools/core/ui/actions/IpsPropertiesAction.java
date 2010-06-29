@@ -39,7 +39,7 @@ public class IpsPropertiesAction extends IpsAction {
     }
 
     /**
-     * Opens the Properties dialog for the selected Project. {@inheritDoc}
+     * Opens the Properties dialog for the selected Project.
      */
     @Override
     public void run(IStructuredSelection selection) {
@@ -58,10 +58,11 @@ public class IpsPropertiesAction extends IpsAction {
         action.run();
     }
 
-    /*
+    /**
      * Helper class to simulate a selection provider
      */
     private static final class SelProvider implements ISelectionProvider {
+
         private IStructuredSelection projectSelection = StructuredSelection.EMPTY;
 
         protected SelProvider(IStructuredSelection selection) {
@@ -98,4 +99,5 @@ public class IpsPropertiesAction extends IpsAction {
         }
         return true;
     }
+
 }

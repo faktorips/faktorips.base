@@ -51,9 +51,6 @@ public class SetTemplateDialog extends EditDialog {
         this.testCase = testCase;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
@@ -87,18 +84,12 @@ public class SetTemplateDialog extends EditDialog {
         return workArea;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         super.createButtonsForButtonBar(parent);
         super.getButton(OK).setEnabled(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == OK) {
@@ -110,4 +101,5 @@ public class SetTemplateDialog extends EditDialog {
     private String getTestCaseType() {
         return template.getText();
     }
+
 }

@@ -16,7 +16,17 @@ package org.faktorips.devtools.core.ui.bf.properties;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.bf.properties.messages"; //$NON-NLS-1$
+
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String BusinessFunctionRefControl_dialogMessage;
     public static String BusinessFunctionRefControl_title;
     public static String CallBusinessFunctionActionPropertySection_bfLabel;
@@ -33,11 +43,5 @@ public class Messages extends NLS {
     public static String ParametersEditControl_datatypeLabel;
     public static String ParametersEditControl_parameterNameLabel;
     public static String ParametersEditControl_RemoveLabel;
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
 
-    private Messages() {
-    }
 }

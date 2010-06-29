@@ -15,18 +15,16 @@ package org.faktorips.devtools.core.ui.wizards.ipsimport;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * @author Roman Grutza
- */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.ipsimport.messages"; //$NON-NLS-1$
 
-    private Messages() {
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String SelectFileAndImportMethodPage_title;
@@ -48,4 +46,5 @@ public class Messages extends NLS {
     public static String ImportPreviewPage_pageTitle;
     public static String ImportPreviewPage_validationWarningInvalidFile;
     public static String ImportPreviewPage_warnFileInvalid;
+
 }

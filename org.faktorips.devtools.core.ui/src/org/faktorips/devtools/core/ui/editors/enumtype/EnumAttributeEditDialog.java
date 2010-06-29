@@ -94,7 +94,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
      * Creates a new <tt>EnumAttributeEditDialog</tt> for the user to edit the given
      * <tt>IEnumAttribute</tt> with.
      * 
-     * @param part The <tt>IEnumAttribute</tt> to edit with the dialog.
+     * @param enumAttribute The <tt>IEnumAttribute</tt> to edit with the dialog.
      * @param parentShell The parent UI shell.
      */
     public EnumAttributeEditDialog(IEnumAttribute enumAttribute, Shell parentShell) {
@@ -287,7 +287,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         try {
             IIpsProject ipsProject = enumAttribute.getIpsProject();
             Datatype datatype = enumAttribute.findDatatype(ipsProject);
-            String datatypeName = (datatype == null) ? "" : datatype.getName();
+            String datatypeName = (datatype == null) ? "" : datatype.getName(); //$NON-NLS-1$
             datatypeControl.setText(datatypeName);
             uniqueCheckbox.setChecked(EnumUtil.findEnumAttributeIsUnique(enumAttribute, ipsProject));
             identifierCheckbox.setChecked(EnumUtil.findEnumAttributeIsIdentifier(enumAttribute, ipsProject));

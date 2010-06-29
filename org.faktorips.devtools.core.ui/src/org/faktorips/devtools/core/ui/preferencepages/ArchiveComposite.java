@@ -76,7 +76,6 @@ public class ArchiveComposite extends Composite {
     }
 
     /**
-     * 
      * @param parent Composite
      */
     public ArchiveComposite(Composite parent) {
@@ -149,11 +148,8 @@ public class ArchiveComposite extends Composite {
 
     /**
      * Initializes the composite using the given IPS object path
-     * 
-     * @throws CoreException
      */
     public void init(final IIpsObjectPath ipsObjectPath) {
-
         this.ipsObjectPath = ipsObjectPath;
         dataChanged = false;
 
@@ -172,7 +168,6 @@ public class ArchiveComposite extends Composite {
     }
 
     private void addIpsArchives() {
-
         ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(null, new WorkbenchLabelProvider(),
                 new WorkbenchContentProvider());
         dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
@@ -285,7 +280,8 @@ public class ArchiveComposite extends Composite {
         }
 
         @Override
-        public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // nothing to do
         }
     }
 

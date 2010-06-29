@@ -68,89 +68,62 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
             return;
         }
         if (value == null) {
-            MessageDialog.openWarning(null, "ERROR", "ERROR");
-            throw new IllegalArgumentException("value == null !");
+            MessageDialog.openWarning(null, "ERROR", "ERROR"); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("value == null !"); //$NON-NLS-1$
         }
         throw new IllegalArgumentException(
                 "Attribute type must be one of the constants defined in IIpsObjectPathEntryAttribute"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue() {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object value) {
         // DEBUG
         if (value == null) {
-            MessageDialog.openWarning(null, "ERROR", "ERROR");
-            throw new IllegalArgumentException("value == null !");
+            MessageDialog.openWarning(null, "ERROR", "ERROR"); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("value == null !"); //$NON-NLS-1$
         }
         this.value = value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getType() {
         return type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isFolderForDerivedSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type) || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES
                 .equals(type));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isFolderForMergableSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type) || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES
                 .equals(type));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isTocPath() {
         return (IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH.equals(type));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPackageNameForDerivedSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED.equals(type) || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED
                 .equals(type)));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPackageNameForMergableSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE.equals(type) || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE
                 .equals(type)));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
@@ -160,7 +133,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
 
             // FIXME: workaround for NPE, find root cause!!
             if (sourceFolder == null) {
-                result.add(new Message("Folder invalid", "Folder invalid", Message.ERROR, this));
+                result.add(new Message("Folder invalid", "Folder invalid", Message.ERROR, this)); //$NON-NLS-1$ //$NON-NLS-2$
                 return result;
             }
 
@@ -178,7 +151,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
         return result;
     }
 
-    /*
+    /**
      * Validate that the given folder exists.
      */
     private MessageList validateIfFolderExists(IFolder folder) {

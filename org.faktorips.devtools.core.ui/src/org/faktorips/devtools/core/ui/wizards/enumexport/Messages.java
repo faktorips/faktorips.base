@@ -19,6 +19,14 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.enumexport.messages"; //$NON-NLS-1$
 
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String EnumExportPage_enum_label;
     public static String EnumExportPage_messagearea_title;
     public static String EnumExportPage_msgAbstractEnumType;
@@ -34,12 +42,4 @@ public class Messages extends NLS {
     public static String EnumExportPage_msgEnumNotValid;
     public static String EnumExportPage_msgEnumTypeNotValid;
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
-
-    private Messages() {
-
-    }
 }

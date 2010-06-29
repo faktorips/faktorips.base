@@ -33,8 +33,6 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
 
     /**
      * Only classes contained in the given list are returned or null.
-     * 
-     * @param list of classes
      */
     public void setIncludedClasses(Class<? extends IIpsObjectPathEntry> includedClasses) {
         this.includedClasses = includedClasses;
@@ -44,19 +42,14 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
         includedClasses = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
-
         Object[] result = null;
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)parentElement;
         IIpsObjectPath objectPath = entry.getIpsObjectPath();
 
         // handling attributes of IIpsSrcFolderEntries
         if (parentElement instanceof IIpsSrcFolderEntry) {
-
             ArrayList<IIpsObjectPathEntryAttribute> attributes = new ArrayList<IIpsObjectPathEntryAttribute>();
 
             // tocPath is always configurable
@@ -84,7 +77,6 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     }
 
     private boolean passesFilter(IIpsObjectPathEntry o) {
-
         if (includedClasses == null) {
             return true;
         } else {
@@ -92,9 +84,6 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
         if (element instanceof IIpsObjectPathEntry) {
@@ -103,9 +92,6 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildren(Object element) {
         if (element instanceof IIpsObjectPathEntry) {
@@ -114,15 +100,10 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getElements(Object inputElement) {
-
         Object[] returnedElements = null;
         if (inputElement instanceof IIpsObjectPath) {
-
             // must preserve the order of elements even if some types of entries are filtered
             IIpsObjectPath ipsObjectPath = (IIpsObjectPath)inputElement;
             IIpsObjectPathEntry[] entries = ipsObjectPath.getEntries();
@@ -140,37 +121,29 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
                 returnedElements = passedEntries.toArray();
             }
         }
-
         return returnedElements;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void dispose() { /* nothing to do */
+    public void dispose() {
+        // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { /* nothing to do */
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        // nothing to do
     }
 
     private IIpsObjectPathEntryAttribute newTocPath(IIpsSrcFolderEntry entry) {
         IIpsObjectPathEntryAttribute attribute = null;
-
         if (entry.getBasePackageRelativeTocPath() != null) {
             attribute = new IpsObjectPathEntryAttribute(IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH, entry
                     .getBasePackageRelativeTocPath());
         }
-
         return attribute;
     }
 
     private IIpsObjectPathEntryAttribute newOutputFolderForMergableJavaFiles(IIpsSrcFolderEntry entry) {
-
         IIpsObjectPathEntryAttribute attribute = new IpsObjectPathEntryAttribute(
                 IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES, entry
                         .getSpecificOutputFolderForMergableJavaFiles());
@@ -179,19 +152,16 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     }
 
     private IIpsObjectPathEntryAttribute newOutputFolderForDerivedJavaFiles(IIpsSrcFolderEntry entry) {
-
         IIpsObjectPathEntryAttribute attribute = new IpsObjectPathEntryAttribute(
                 IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES, entry
                         .getSpecificOutputFolderForDerivedJavaFiles());
-
         return attribute;
     }
 
     private IIpsObjectPathEntryAttribute newBasePackageNameForDerivedJavaFiles(IIpsSrcFolderEntry entry) {
         IIpsObjectPathEntryAttribute attribute;
-
         if (entry.getSpecificBasePackageNameForDerivedJavaClasses() == null
-                || entry.getSpecificBasePackageNameForDerivedJavaClasses().equals("")) {
+                || entry.getSpecificBasePackageNameForDerivedJavaClasses().length() == 0) {
             attribute = new IpsObjectPathEntryAttribute(IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED,
                     entry.getIpsObjectPath().getBasePackageNameForDerivedJavaClasses());
         } else {
@@ -203,9 +173,8 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
 
     private IIpsObjectPathEntryAttribute newBasePackageNameForMergableJavaFiles(IIpsSrcFolderEntry entry) {
         IIpsObjectPathEntryAttribute attribute;
-
         if (entry.getSpecificBasePackageNameForMergableJavaClasses() == null
-                || entry.getSpecificBasePackageNameForMergableJavaClasses().equals("")) {
+                || entry.getSpecificBasePackageNameForMergableJavaClasses().length() == 0) {
             attribute = new IpsObjectPathEntryAttribute(IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE,
                     entry.getIpsObjectPath().getBasePackageNameForMergableJavaClasses());
         } else {

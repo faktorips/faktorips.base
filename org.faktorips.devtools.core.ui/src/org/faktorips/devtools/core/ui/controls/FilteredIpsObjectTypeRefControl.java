@@ -34,36 +34,20 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
     private IpsObjectType[] applicableObjectTypes;
     private boolean excludeAbstractTypes;
 
-    /**
-     * Constructor
-     * 
-     * @param project
-     * @param parent
-     * @param toolkit
-     * @param controlTitle
-     * @param controlDescription
-     * @param applicableTypes
-     * @param excludeAbstractTypes
-     */
     public FilteredIpsObjectTypeRefControl(IIpsProject project, Composite parent, UIToolkit toolkit,
             String controlTitle, String controlDescription, IpsObjectType[] applicableTypes,
             boolean excludeAbstractTypes) {
+
         super(project, parent, toolkit, controlTitle, controlDescription);
         applicableObjectTypes = applicableTypes;
         this.excludeAbstractTypes = excludeAbstractTypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getDefaultDialogFilterExpression() {
         return selectedIpsObject == null ? "?" : selectedIpsObject.getName(); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void updateTextControlAfterDialogOK(List<IIpsSrcFile> ipsSrcFiles) {
         setSelectedIpsSrcFile(ipsSrcFiles.get(0));
@@ -71,8 +55,6 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
 
     /**
      * Store the QualifiedNameType of the selected object.
-     * 
-     * @param ipsSrcFile
      */
     public void setSelectedIpsSrcFile(IIpsSrcFile ipsSrcFile) {
         selectedIpsObject = ipsSrcFile.getQualifiedNameType();
@@ -80,9 +62,6 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
         setText(text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject() == null) {

@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
  * @author Thorsten Guenther
  */
 public class SearchResultContentProvider implements ITreeContentProvider {
+
     private ReferenceSearchResultPage page;
     private ReferenceSearchResult searchResult;
 
@@ -44,9 +45,6 @@ public class SearchResultContentProvider implements ITreeContentProvider {
         searchResult.setActiveMatchedFilterFor(page.isFilterTestCase(), page.isFilterProductCmpt());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof Object[]) {
@@ -60,25 +58,19 @@ public class SearchResultContentProvider implements ITreeContentProvider {
         return new IIpsElement[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
         if (element instanceof IIpsElement) {
             if (element instanceof IProductCmptGeneration) {
                 return ((IProductCmptGeneration)element).getProductCmpt();
             } else {
-                // was ist parent von PCType? supertype? kann man den ohne Suche finden?
+                // TODO was ist parent von PCType? supertype? kann man den ohne Suche finden?
                 return ((IIpsElement)element).getParent();
             }
         }
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildren(Object element) {
         if (element instanceof Object[]) {
@@ -87,17 +79,11 @@ public class SearchResultContentProvider implements ITreeContentProvider {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         // nothing to do.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof ReferenceSearchResult) {
@@ -109,9 +95,6 @@ public class SearchResultContentProvider implements ITreeContentProvider {
         return new Object[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         initialize((ReferenceSearchResult)newInput);

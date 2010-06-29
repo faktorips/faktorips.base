@@ -57,6 +57,5 @@ public class IpsCutAction extends IpsAction {
             clipboard.setContents(getDataArray(removedObjects, emptyList, null), getTypeArray(removedObjects,
                     emptyList, null));
         }
-        // throw new RuntimeException("Forced exception to test feature requested by #326. 3");
     }
 }

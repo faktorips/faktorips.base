@@ -89,7 +89,7 @@ public class CustomIconSection extends IpsSection {
         layout.marginWidth = 1;
         client.setLayout(layout);
         if (type instanceof IProductCmptType) {
-            createDescriptionLabel(client, toolkit);
+            createDescriptionLabel(client);
             createEnabledIconControls(client, toolkit);
             performRefresh();
         } else {
@@ -100,7 +100,7 @@ public class CustomIconSection extends IpsSection {
         }
     }
 
-    private void createDescriptionLabel(Composite parent, UIToolkit toolkit) {
+    private void createDescriptionLabel(Composite parent) {
         Label iconDescriptionLabel = new Label(parent, SWT.WRAP);
         iconDescriptionLabel.setText(Messages.CustomIconSection_ConfigurationDescription);
         GridData gd = new GridData(GridData.BEGINNING, GridData.CENTER, true, false, 3, 1);
@@ -164,6 +164,7 @@ public class CustomIconSection extends IpsSection {
     }
 
     private class BrowseIconsListener implements SelectionListener {
+
         private IProductCmptType type;
 
         public BrowseIconsListener(IProductCmptType type) {
@@ -172,6 +173,7 @@ public class CustomIconSection extends IpsSection {
 
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
+            // Nothing to do
         }
 
         @Override
@@ -255,9 +257,6 @@ public class CustomIconSection extends IpsSection {
          * Returns <code>true</code> if the given folder is an IPS SourceFolder
          * (PackageFragmentRoot) or a sub folder of an IPS SourceFolder (PackageFragment) and thus
          * part of the {@link IpsObjectPath}.
-         * 
-         * @param folder
-         * @return
          */
         private boolean isIpsSrcFolder(IFolder folder) {
             IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(folder.getProject());
@@ -280,9 +279,6 @@ public class CustomIconSection extends IpsSection {
          * Returns <code>true</code> for all {@link IIpsProject}s from which the edited
          * {@link ProductCmptType} can load its custom icons, including the IpsProject it is
          * contained in. <code>false</code> for all other projects.
-         * 
-         * @param project
-         * @return
          */
         private boolean selectIpsProjectsInPath(IProject project) {
             try {
@@ -307,9 +303,6 @@ public class CustomIconSection extends IpsSection {
         /**
          * Returns <code>true</code> for files with one of the defined Extensions,
          * <code>false</code> otherwise.
-         * 
-         * @param file
-         * @return
          */
         private boolean selectFile(IFile file) {
             for (String extension : targetExtensions) {

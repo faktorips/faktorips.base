@@ -64,7 +64,6 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     private Label tableLabel;
 
     public EditTableControl(Object modelObject, Composite parent, int style, String label) {
-
         super(parent, style);
         initModelObject(modelObject);
         setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -163,7 +162,6 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     }
 
     private void addListenersToEditor(final UnfocusableTextCellEditor editor, final int editorColumn) {
-
         Control control = editor.getControl();
         control.addTraverseListener(new TraverseListener() {
             @Override
@@ -498,6 +496,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     protected abstract void swapElements(int index1, int index2);
 
     public class UnfocusableTextCellEditor extends TextCellEditor {
+
         private Object fOriginalValue;
         SubjectControlContentAssistant fContentAssistant;
         private boolean fSaveNextModification;
@@ -549,9 +548,6 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
@@ -565,9 +561,6 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;

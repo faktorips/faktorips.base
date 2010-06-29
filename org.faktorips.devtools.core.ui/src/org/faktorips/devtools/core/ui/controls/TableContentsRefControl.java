@@ -44,9 +44,6 @@ public class TableContentsRefControl extends IpsObjectRefControl {
         return (ITableContents)getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, getText());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject() == null) {

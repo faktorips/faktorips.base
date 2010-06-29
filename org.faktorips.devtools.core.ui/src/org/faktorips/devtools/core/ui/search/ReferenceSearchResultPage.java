@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
 public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
+
     private static final String FALSE = "false"; //$NON-NLS-1$
     private static final String TRUE = "true"; //$NON-NLS-1$
     private static final String KEY_FILTER_TEST_CASE = "org.faktorips.devtools.core.ui.search.referencesearchresultpage.filtertestcase"; //$NON-NLS-1$
@@ -52,9 +53,7 @@ public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
      * @author Joerg Ortmann
      */
     public class ReferenceViewerSorter extends ViewerSorter {
-        /**
-         * {@inheritDoc}
-         */
+
         @Override
         public int compare(Viewer viewer, Object e1, Object e2) {
             IIpsSrcFile src1 = getCorrespondingIpsSrcFile(e1);
@@ -91,9 +90,6 @@ public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
         return super.getViewer();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected synchronized void elementsChanged(Object[] objects) {
         contentProvider.elementsChanged(objects);
@@ -153,9 +149,6 @@ public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void restoreState(IMemento memento) {
         super.restoreState(memento);
@@ -168,9 +161,6 @@ public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveState(IMemento memento) {
         super.saveState(memento);

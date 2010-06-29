@@ -17,15 +17,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-/**
- *
- */
 public class Radiobutton extends AbstractCheckbox {
 
-    /**
-     * @param parent
-     * @param toolkit
-     */
     public Radiobutton(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, SWT.RADIO);
     }

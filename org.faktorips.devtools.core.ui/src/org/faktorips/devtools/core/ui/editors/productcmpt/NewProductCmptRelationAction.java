@@ -44,9 +44,6 @@ public class NewProductCmptRelationAction extends IpsAction {
         setText(Messages.NewProductCmptRelationAction_name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
         if (selection.isEmpty()) {
@@ -56,9 +53,6 @@ public class NewProductCmptRelationAction extends IpsAction {
         return (selected instanceof String);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();

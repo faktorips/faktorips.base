@@ -44,9 +44,6 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         this.productCmptType = productCmptType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         tblsStructureUsageComposite = new TblsStructureUsageComposite((IProductCmptType)getIpsObject(), parent, toolkit);
@@ -58,9 +55,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
      * if more than one table structure is related.
      */
     private class TblStructureLabelProvider extends DefaultLabelProvider {
-        /**
-         * {@inheritDoc}
-         */
+
         @Override
         public String getText(Object element) {
             StringBuffer sb = new StringBuffer(super.getText(element));
@@ -107,42 +102,27 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
             super(productCmptType, parent, toolkit);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected ILabelProvider createLabelProvider() {
             return new TblStructureLabelProvider();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new TblsStructureUsageContentProvider();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
             ArgumentCheck.isInstanceOf(part, ITableStructureUsage.class);
             return new TblsStructureUsageEditDialog((ITableStructureUsage)part, shell);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return productCmptType.moveTableStructureUsage(indexes, up);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IIpsObjectPart newIpsPart() {
             ITableStructureUsage tsu = productCmptType.newTableStructureUsage();

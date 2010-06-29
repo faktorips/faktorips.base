@@ -11,17 +11,6 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-/*
- * Copyright der Gesellschaften der KarstadtQuelle Versicherungen Projekt: Dateiname:
- * EnableBinding.java Erzeugt: 07.03.2007
- * 
- * Beschreibung:
- * 
- * 
- * *********************************************************************** Modification History:
- * 
- * ***********************************************************************
- */
 package org.faktorips.devtools.core.ui.binding;
 
 import org.eclipse.swt.widgets.Control;
@@ -44,6 +33,7 @@ public class VisibleBinding extends ControlPropertyBinding {
             Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
             getControl().setVisible(value.booleanValue());
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException(e);
         }
     }

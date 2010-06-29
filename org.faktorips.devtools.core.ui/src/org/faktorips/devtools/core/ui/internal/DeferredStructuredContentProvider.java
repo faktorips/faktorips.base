@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * you do not override {@link #getWaitingElements()} you have to make sure that your label provider
  * and any selection handler are able to handle the string element. After the job have finished the
  * viewer is refreshed and all registered listeners are notified.
- * 
+ * <p>
  * Note that do not reference any content of your context class because it could change during
  * operation. To be sure either implement your deferred content provider in a separate class or in a
  * private static inner class.
@@ -45,7 +45,7 @@ public abstract class DeferredStructuredContentProvider extends Observable imple
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
-    // the elements collected by the job
+    /** the elements collected by the job */
     private volatile Object[] elements;
 
     private Job collector;

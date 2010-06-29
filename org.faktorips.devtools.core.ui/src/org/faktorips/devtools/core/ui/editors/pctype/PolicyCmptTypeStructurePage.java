@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
 
     public PolicyCmptTypeStructurePage(PolicyCmptTypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
-        super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_title, "PolicyCmptTypeStructurePage");
+        super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_title, "PolicyCmptTypeStructurePage"); //$NON-NLS-1$
     }
 
     @Override

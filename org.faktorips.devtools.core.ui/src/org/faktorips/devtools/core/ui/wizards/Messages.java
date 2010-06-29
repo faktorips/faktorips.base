@@ -16,15 +16,15 @@ package org.faktorips.devtools.core.ui.wizards;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.messages"; //$NON-NLS-1$
 
-    private Messages() {
-        // do not instantiate
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String IpsObjectPage_msgIpsObjectAlreadyExists1;
@@ -52,4 +52,5 @@ public class Messages extends NLS {
     public static String ResultDisplayer_reasonText;
     public static String ResultDisplayer_titleResults;
     public static String ResultDisplayer_Warnings;
+
 }

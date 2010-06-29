@@ -20,7 +20,7 @@ import java.text.BreakIterator;
 
 import org.eclipse.swt.graphics.GC;
 
-/*
+/**
  * NOTE: This class is a copy of the corresponding internal Eclipse class. It is copied as the
  * class' package has changed from Eclipse version 3.2 to 3.3.
  * 
@@ -61,9 +61,6 @@ public class LineBreakingReader {
 
     /**
      * Reads the next line. The lengths of the line will not exceed the given maximum width.
-     * 
-     * @return the next line
-     * @throws IOException
      */
     public String readLine() throws IOException {
         if (fLine == null) {

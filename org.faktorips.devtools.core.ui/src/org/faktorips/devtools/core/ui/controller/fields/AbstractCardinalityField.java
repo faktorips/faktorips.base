@@ -23,9 +23,6 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractCardinalityField extends DefaultEditField {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         String text = getText();
@@ -36,9 +33,6 @@ public abstract class AbstractCardinalityField extends DefaultEditField {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         ArgumentCheck.isInstanceOf(newValue, Integer.class);
@@ -57,9 +51,6 @@ public abstract class AbstractCardinalityField extends DefaultEditField {
      */
     abstract void setTextInternal(String newText);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newText) {
         try {

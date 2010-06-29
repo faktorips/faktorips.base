@@ -17,9 +17,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.TwoPaneElementSelector;
 import org.faktorips.datatype.Datatype;
 
-/**
- *
- */
 public class DatatypeSelectionDialog extends TwoPaneElementSelector {
 
     /**

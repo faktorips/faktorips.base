@@ -95,7 +95,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class AttributeEditDialog extends IpsPartEditDialog2 {
 
-    // the attribute beeing edited.
+    /** the attribute beeing edited. */
     private IPolicyCmptTypeAttribute attribute;
 
     private IIpsProject ipsProject;
@@ -158,8 +158,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private AttributeType currentAttributeType;
 
-    // placeholder for the default edit field, the edit field for the default value depends on
-    // the attributes datatype
+    /**
+     * placeholder for the default edit field, the edit field for the default value depends on the
+     * attributes datatype
+     */
     private Composite defaultEditFieldPlaceholder;
 
     private Group ruleGroup;
@@ -192,9 +194,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         tabFolder = (TabFolder)parent;
@@ -292,7 +291,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             configGroup = uiToolkit.createGroup(c, Messages.AttributeEditDialog_ConfigurationGroup);
             createConfigGroupContent();
         }
-
         return c;
     }
 
@@ -310,7 +308,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         EditField overwrittenField = bindingContext.bindContent(cb, attribute,
                 IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
         overwrittenField.addChangeListener(new ValueChangeListener() {
-
             @Override
             public void valueChanged(FieldValueChangedEvent event) {
                 if (cb.isChecked()) {
@@ -329,7 +326,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 }
 
             }
-
         });
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatype);
@@ -351,7 +347,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         extFactory.bind(bindingContext);
     }
 
-    private void recreateConfigGroupContent(Group group, AttributeType attrType) {
+    private void recreateConfigGroupContent() {
         if (configGroup == null) {
             return;
         }
@@ -390,7 +386,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Link label = new Link(temp, SWT.NONE);
         label.setText(Messages.AttributeEditDialog_methodLink);
         label.addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
@@ -412,7 +407,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Link link = new Link(area, SWT.NONE);
         link.setText(Messages.AttributeEditDialog_createNewMethod);
         link.addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
@@ -422,9 +416,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             public void widgetSelected(SelectionEvent e) {
                 createMethodAndOpenDialog();
             }
-
         });
-
     }
 
     private IProductCmptType getProductCmptType() {
@@ -486,6 +478,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private int openEditMethodDialog(IProductCmptTypeMethod method,
             Memento memento,
             boolean productCmptTypeDirtyBeforeDialog) {
+
         IProductCmptType productCmptType = method.getProductCmptType();
         IIpsSrcFile file = productCmptType.getIpsSrcFile();
         ProductCmptTypeMethodEditDialog dialog = new ProductCmptTypeMethodEditDialog(method, getShell());
@@ -539,7 +532,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         createDefaultValueEditField();
 
         IpsObjectUIController uiController = new IpsObjectUIController(attribute);
-        List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());;
+        List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
         valueSetSpecificationControl = new ValueSetSpecificationControl(pageControl, uiToolkit, uiController,
                 attribute, valueSetTypes, ValueSetControlEditMode.ALL_KIND_OF_SETS);
         updateAllowedValueSetTypes();
@@ -560,10 +553,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (valueSetSpecificationControl == null) {
             return;
         }
-        // sets the label width of the value set control label, so the control will be horizontal
-        // aligned to the default value text
-        // the offset of 7 is calculated by the corresponding composites horizontal spacing and
-        // margins
+        /*
+         * sets the label width of the value set control label, so the control will be horizontal
+         * aligned to the default value text the offset of 7 is calculated by the corresponding
+         * composites horizontal spacing and margins
+         */
         int widthDefaultLabel = labelDefaultValue.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
         int widthValueSetTypeLabel = valueSetSpecificationControl.getPreferredLabelWidth();
         if (widthDefaultLabel > widthValueSetTypeLabel) {
@@ -598,7 +592,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         super.contentsChanged(event);
         if (attribute.getAttributeType() != currentAttributeType) {
             currentAttributeType = attribute.getAttributeType();
-            recreateConfigGroupContent(configGroup, currentAttributeType);
+            recreateConfigGroupContent();
         }
         ValueDatatype newDatatype = null;
         try {
@@ -654,7 +648,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 Messages.AttributeEditDialog_labelActivateValidationRule);
         validationRuleAdded.setToolTipText(Messages.AttributeEditDialog_tooltipActivateValidationRule);
         validationRuleAdded.getButton().addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
@@ -664,7 +657,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             public void widgetSelected(SelectionEvent e) {
                 enableCheckValueAgainstValueSetRule(((Button)e.getSource()).getSelection());
             }
-
         });
 
         ruleGroup = uiToolkit.createGroup(checkComposite, Messages.AttributeEditDialog_ruleTitle);
@@ -690,7 +682,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         ruleNameField = new TextField(nameText);
         msgCodeField = new TextField(codeText);
         msgTextField = new TextField(msgText);
-        msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());;
+        msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());
 
         if (rule != null) {
             validationRuleAdded.setChecked(true);
@@ -750,62 +742,62 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             return;
         }
         final TabItem persistencePage = new TabItem(tabFolder, SWT.NONE);
-        persistencePage.setText("Persistence");
+        persistencePage.setText("Persistence"); //$NON-NLS-1$
 
         Composite c = createTabItemComposite(tabFolder, 1, false);
         persistencePage.setControl(c);
 
         Composite checkComposite = uiToolkit.createGridComposite(c, 1, true, false);
-        Checkbox checkTransient = uiToolkit.createCheckbox(checkComposite, "The attribute is transient");
+        Checkbox checkTransient = uiToolkit.createCheckbox(checkComposite, "The attribute is transient"); //$NON-NLS-1$
         bindingContext.bindContent(checkTransient, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TRANSIENT);
 
-        final Group group = uiToolkit.createGroup(checkComposite, "Persistent Properties");
+        final Group group = uiToolkit.createGroup(checkComposite, "Persistent Properties"); //$NON-NLS-1$
         Composite workArea = uiToolkit.createLabelEditColumnComposite(group);
 
-        uiToolkit.createFormLabel(workArea, "Column name:");
+        uiToolkit.createFormLabel(workArea, "Column name:"); //$NON-NLS-1$
         Text columnNameText = uiToolkit.createText(workArea);
         bindingContext.bindContent(columnNameText, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME);
 
-        uiToolkit.createFormLabel(workArea, "Unique:");
+        uiToolkit.createFormLabel(workArea, "Unique:"); //$NON-NLS-1$
         uniqueCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(uniqueCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE);
 
-        uiToolkit.createFormLabel(workArea, "Nullable:");
+        uiToolkit.createFormLabel(workArea, "Nullable:"); //$NON-NLS-1$
         nullableCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(nullableCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
 
-        uiToolkit.createFormLabel(workArea, "Column size:");
+        uiToolkit.createFormLabel(workArea, "Column size:"); //$NON-NLS-1$
         sizeField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(sizeField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE);
 
-        uiToolkit.createFormLabel(workArea, "Column precision:");
+        uiToolkit.createFormLabel(workArea, "Column precision:"); //$NON-NLS-1$
         precisionField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(precisionField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION);
 
-        uiToolkit.createFormLabel(workArea, "Column scale:");
+        uiToolkit.createFormLabel(workArea, "Column scale:"); //$NON-NLS-1$
         scaleField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(scaleField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE);
 
-        uiToolkit.createFormLabel(workArea, "Temporal type:");
+        uiToolkit.createFormLabel(workArea, "Temporal type:"); //$NON-NLS-1$
         Combo temporalMappingCombo = uiToolkit.createCombo(workArea);
         setComboItemsForEnum(temporalMappingCombo, DateTimeMapping.class);
         temporalMappingField = new EnumField(temporalMappingCombo, DateTimeMapping.class);
         bindingContext.bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
 
-        uiToolkit.createFormLabel(workArea, "SQL column definition:");
+        uiToolkit.createFormLabel(workArea, "SQL column definition:"); //$NON-NLS-1$
         sqlColumnDefinition = uiToolkit.createText(workArea);
         bindingContext.bindContent(sqlColumnDefinition, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION);
 
-        uiToolkit.createFormLabel(workArea, "Datatype converter class:");
+        uiToolkit.createFormLabel(workArea, "Datatype converter class:"); //$NON-NLS-1$
         if (ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportConverter()) {
             final Text converterQualifiedName = uiToolkit.createText(workArea);
             bindingContext.bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
@@ -813,7 +805,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         } else {
             final Text converterQualifiedName = uiToolkit.createText(workArea);
             converterQualifiedName.setEnabled(false);
-            converterQualifiedName.setText("Not supported by persistence provider.");
+            converterQualifiedName.setText("Not supported by persistence provider."); //$NON-NLS-1$
         }
 
         // disable all tab page controls if policy component type shouldn't persist
@@ -919,9 +911,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             setComputeProposalForEmptyPrefix(true);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
                 throws Exception {

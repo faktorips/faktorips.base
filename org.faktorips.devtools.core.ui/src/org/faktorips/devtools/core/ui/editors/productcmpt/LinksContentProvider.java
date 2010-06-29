@@ -40,9 +40,6 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     private IProductCmptGeneration generation;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getElements(Object inputElement) {
         if (!(inputElement instanceof IProductCmptGeneration)) {
@@ -82,16 +79,11 @@ public class LinksContentProvider implements ITreeContentProvider {
         return collector.associations.toArray(new String[collector.associations.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
+        // Nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput instanceof IProductCmptGeneration) {
@@ -101,9 +93,6 @@ public class LinksContentProvider implements ITreeContentProvider {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
         if (!(parentElement instanceof String) || generation == null) {
@@ -112,9 +101,6 @@ public class LinksContentProvider implements ITreeContentProvider {
         return generation.getLinks((String)parentElement);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
         if (element instanceof String) {
@@ -127,9 +113,6 @@ public class LinksContentProvider implements ITreeContentProvider {
         throw new RuntimeException("Unknown element type " + element); //$NON-NLS-1$ 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildren(Object element) {
         Object[] children = getChildren(element);

@@ -59,7 +59,6 @@ public class BusinessFunctionRefControl extends IpsObjectRefControl {
             }
         }
         return remaining.toArray(new IIpsSrcFile[remaining.size()]);
-
     }
 
 }

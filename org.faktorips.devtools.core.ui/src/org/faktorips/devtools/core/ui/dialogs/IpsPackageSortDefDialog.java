@@ -90,9 +90,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         loadDialogSettings();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createDialogArea(Composite parent) {
         getShell().setText(title);
@@ -117,8 +114,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         Dialog.applyDialogFont(parent);
 
-        // LayoutDebugUtil.colorize(container);
-
         return container;
     }
 
@@ -139,11 +134,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         toolkit.createLabel(headline, project.getName());
     }
 
-    /**
-     * @param parent
-     */
     private void createRestoreButton(Composite parent) {
-
         Composite restoreComposite = toolkit.createComposite(parent);
 
         GridLayout layout = new GridLayout();
@@ -165,7 +156,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Create component for shifting IpsPackageFragments
      */
     private void createSortArea(Composite parent) {
-
         Composite sortComposite = toolkit.createComposite(parent);
 
         sortComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -262,9 +252,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void okPressed() {
         // write changes to filesystem.
@@ -277,12 +264,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         super.okPressed();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean close() {
-
         saveDialogSettings();
 
         if (toolkit != null) {
@@ -296,7 +279,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * save dialog settings to file.
      */
     private void saveDialogSettings() {
-
         Point size = container.getSize();
         settings.put(SETTINGS_SIZE_X, size.x);
         settings.put(SETTINGS_SIZE_Y, size.y);

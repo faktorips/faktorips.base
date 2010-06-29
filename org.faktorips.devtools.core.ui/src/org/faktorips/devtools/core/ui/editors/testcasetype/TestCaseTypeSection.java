@@ -135,22 +135,24 @@ public class TestCaseTypeSection extends IpsSection {
 
     private ResourceManager resourceManager;
 
-    // The editing test case type
+    /** The editing test case type */
     private ITestCaseType testCaseType;
 
-    // The label provider for the test case type
+    /** The label provider for the test case type */
     private TestCaseTypeLabelProvider labelProvider;
 
-    // UI toolkit for creating the controls
+    /** UI toolkit for creating the controls */
     private UIToolkit toolkit;
 
-    // The treeview which displays all test policy cmpt type params which are available in this test
+    /**
+     * The treeview which displays all test policy cmpt type params which are available in this test
+     */
     private TreeViewer treeViewer;
 
-    // Title of the test case type tree structure section
+    /** Title of the test case type tree structure section */
     private String sectionTreeStructureTitle;
 
-    // Title of the test case type details section
+    /** Title of the test case type details section */
     private String sectionDetailsTitle;
 
     // Buttons
@@ -160,31 +162,32 @@ public class TestCaseTypeSection extends IpsSection {
     private Button moveUpButton;
     private Button moveDownButton;
 
-    // The form which contains this section
+    /** The form which contains this section */
     private ScrolledForm form;
 
     // The detail area will be used to render the dynamically created detail controls
     private Composite parentOfdetailsArea;
     private Composite detailsArea;
 
-    // The previous selected parameter
+    /** The previous selected parameter */
     private ITestParameter prevSelectedTestParam;
 
     private boolean showAll = false;
 
-    // Indicates that the tree is refreshing
+    /** Indicates that the tree is refreshing */
     private boolean isTreeRefreshing = false;
 
-    // Contains the currently selected object in the detail area
+    /** Contains the currently selected object in the detail area */
     private IIpsObjectPart currSelectedDetailObject;
 
-    // Container for the attribute ui controllers
-    // used to update the attribute edit fields if the test case type changed,
-    // thus if the type of a test policy cmpt type param changed the attribute will
-    // show the correct validation result
+    /**
+     * Container for the attribute ui controllers used to update the attribute edit fields if the
+     * test case type changed, thus if the type of a test policy cmpt type param changed the
+     * attribute will show the correct validation result
+     */
     private List<UIController> attributeControllers = new ArrayList<UIController>();
 
-    // Object cache for the detail area
+    /** Object cache for the detail area */
     private SectionDetailObjectCache objectCache;
 
     private boolean showSubtypeAttributes;
@@ -192,6 +195,7 @@ public class TestCaseTypeSection extends IpsSection {
     private OpenInNewEditorAction openInNewEditorAction;
 
     private class AttributeDetails {
+
         private Composite attributesDetails;
         private Text attributesPolicyCmptType;
         private Text attributesDescription;
@@ -219,6 +223,7 @@ public class TestCaseTypeSection extends IpsSection {
 
                 @Override
                 public void expansionStateChanging(ExpansionEvent e) {
+                    // Nothing to do
                 }
             });
 
@@ -242,7 +247,7 @@ public class TestCaseTypeSection extends IpsSection {
             attributesDescriptionField = new TextField(attributesDescription);
         }
 
-        /*
+        /**
          * Update the attributes deatailed area.
          */
         public void updateDetailAttributeArea(ITestAttribute selectedAttribute) {
@@ -273,10 +278,11 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Object cache to store several object to render the ui
      */
     private class SectionDetailObjectCache {
+
         // Containers for all sections and their objects
         private HashMap<Integer, Section> sections = new HashMap<Integer, Section>();
         private HashMap<Integer, IIpsObjectPart> sectionObjects = new HashMap<Integer, IIpsObjectPart>();
@@ -286,14 +292,14 @@ public class TestCaseTypeSection extends IpsSection {
         private HashMap<Integer, TableViewer> attributeTableViewers = new HashMap<Integer, TableViewer>();
         private HashMap<Integer, AttributeDetails> attributeDetailsMap = new HashMap<Integer, AttributeDetails>();
 
-        /*
+        /**
          * Returns the key identifier for the given object
          */
         private Integer getKeyFor(IIpsObjectPart object) {
             return new Integer(System.identityHashCode(object));
         }
 
-        /*
+        /**
          * Clear all container
          */
         public void clear() {
@@ -332,7 +338,6 @@ public class TestCaseTypeSection extends IpsSection {
             if (mainSectionObject instanceof ITestAttribute) {
                 mainSectionObject = (IIpsObjectPart)((ITestAttribute)mainSectionObject).getParent();
             }
-
             return sections.get(getKeyFor(mainSectionObject));
         }
 
@@ -402,7 +407,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * State class contains the enable state of all actions (for buttons and context menu)
      */
     private class TreeActionEnableState {
@@ -412,7 +417,7 @@ public class TestCaseTypeSection extends IpsSection {
         boolean downEnable = false;
     }
 
-    /*
+    /**
      * Class used to store button objects for each section
      */
     private class SectionButtons {
@@ -424,12 +429,14 @@ public class TestCaseTypeSection extends IpsSection {
         private TableViewer attributeTableViewer;
         private ITestPolicyCmptTypeParameter testParameter;
 
-        /*
+        /**
          * Helper class to handle common button functionality
          */
         private class ButtonSelectionListener implements SelectionListener {
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
 
             @Override
@@ -445,17 +452,24 @@ public class TestCaseTypeSection extends IpsSection {
                         clickedEvent(e);
                     }
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
+            /**
+             * @param e The selection event
+             */
             protected void clickedEvent(SelectionEvent e) {
+                // Empty default implementation
             }
+
         }
 
         public void createButtons(Composite structureComposite,
                 ITestPolicyCmptTypeParameter testParameter,
                 TableViewer attributeTableViewer) {
+
             this.testParameter = testParameter;
             this.attributeTableViewer = attributeTableViewer;
 
@@ -541,10 +555,11 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Mouse listener class to select the section if the mouse button is clicked
      */
     private class SectionSelectMouseListener implements MouseListener {
+
         private Section section;
         private IIpsObjectPart object;
 
@@ -575,21 +590,20 @@ public class TestCaseTypeSection extends IpsSection {
         public void mouseUp(MouseEvent e) {
             // nothing to do
         }
+
     }
 
-    /*
+    /**
      * Cell Modifier for the test attribute table
      */
     private class TestAttributeCellModifier implements ICellModifier {
+
         private TableViewer viewer;
 
         public TestAttributeCellModifier(TableViewer viewer) {
             this.viewer = viewer;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean canModify(Object element, String property) {
             ITestAttribute testAttributeFromObject = getTestAttributeFromObject(element);
@@ -602,9 +616,6 @@ public class TestCaseTypeSection extends IpsSection {
             return isDataChangeable();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Object getValue(Object element, String property) {
             if (property.equals(ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE)) {
@@ -617,9 +628,6 @@ public class TestCaseTypeSection extends IpsSection {
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void modify(Object element, String property, Object value) {
             TableItem tableItem = (TableItem)element;
@@ -644,9 +652,10 @@ public class TestCaseTypeSection extends IpsSection {
             ArgumentCheck.isInstanceOf(obj, ITestAttribute.class);
             return (ITestAttribute)obj;
         }
+
     }
 
-    /*
+    /**
      * Label provider for the attribute table
      */
     private class TestAttributeTblLabelProvider extends DefaultLabelProvider implements ITableLabelProvider {
@@ -684,10 +693,10 @@ public class TestCaseTypeSection extends IpsSection {
                         // type input or expected
                         if (testAttribute.getTestAttributeType() == TestParameterType.EXPECTED_RESULT) {
                             baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling()
-                                    .createImageDescriptor("TestCaseExpResult.gif"));
+                                    .createImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
                         } else {
                             baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling()
-                                    .createImageDescriptor("TestCaseInput.gif"));
+                                    .createImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
                         }
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
                         break;
@@ -759,15 +768,16 @@ public class TestCaseTypeSection extends IpsSection {
             return null;
         }
 
-        private Image getImageForAttribute(Object element) throws CoreException {
+        private Image getImageForAttribute(Object element) {
             return IpsUIPlugin.getImageHandling().getImage((ITestAttribute)element);
         }
     }
 
-    /*
+    /**
      * Expansion section listener class to select the section if expand or collapsed
      */
     private class SectionExpandListern implements IExpansionListener {
+
         private Section section;
         private IIpsObjectPart object;
 
@@ -803,6 +813,7 @@ public class TestCaseTypeSection extends IpsSection {
                 }
 
             } catch (Exception e1) {
+                // TODO catch Exception needs to be documented properly or specialized
                 throw new RuntimeException(e1);
             }
         }
@@ -813,58 +824,49 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Action to add an element
      */
     private class AddAction extends IpsAction {
+
         public AddAction() {
             super(treeViewer);
             setText(Messages.TestCaseTypeSection_Button_NewRootParameter);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
             return actionEnableState.addEnable;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             try {
                 addParameterClicked();
             } catch (Exception e) {
+                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     }
 
-    /*
+    /**
      * Action to remove an element
      */
     private class RemoveAction extends IpsAction {
+
         public RemoveAction() {
             super(treeViewer);
             setText(Messages.TestCaseTypeSection_Button_Remove);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
             return actionEnableState.removeEnable;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             try {
@@ -875,77 +877,67 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Action to move up an element
      */
     private class MoveUpAction extends IpsAction {
+
         public MoveUpAction() {
             super(treeViewer);
             setText(Messages.TestCaseTypeSection_Button_Up);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
             return actionEnableState.upEnable;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             try {
                 moveUpClicked(selection);
             } catch (Exception e) {
+                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     }
 
-    /*
+    /**
      * Action to move down an element
      */
     private class MoveDownAction extends IpsAction {
+
         public MoveDownAction() {
             super(treeViewer);
             setText(Messages.TestCaseTypeSection_Button_Down);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
             return actionEnableState.downEnable;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             try {
                 moveDownClicked(selection);
             } catch (Exception e) {
+                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     }
 
     private class OpenInNewEditorAction extends IpsAction {
+
         public OpenInNewEditorAction() {
             super(treeViewer);
             setText(""); //$NON-NLS-1$
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             Object firstElement = selection.getFirstElement();
@@ -966,6 +958,7 @@ public class TestCaseTypeSection extends IpsSection {
 
     public TestCaseTypeSection(Composite parent, UIToolkit toolkit, final ITestCaseType testCaseType,
             final String title, String detailTitle, ScrolledForm form) {
+
         super(parent, ExpandableComposite.NO_TITLE, GridData.FILL_BOTH, toolkit);
 
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
@@ -981,24 +974,18 @@ public class TestCaseTypeSection extends IpsSection {
         setText(title);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         resourceManager.dispose();
         super.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         postRefreshAll();
     }
 
-    /*
+    /**
      * Post the given runnable to the async executable list of the display
      */
     private void postAsyncRunnable(Runnable r) {
@@ -1007,9 +994,6 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         this.toolkit = toolkit;
@@ -1103,7 +1087,7 @@ public class TestCaseTypeSection extends IpsSection {
         section.setTextClient(toolbar);
     }
 
-    /*
+    /**
      * Configuration of toolbar
      */
     private void configureToolBar(Section detailsSection) {
@@ -1124,7 +1108,7 @@ public class TestCaseTypeSection extends IpsSection {
         detailsSection.setTextClient(toolbar);
     }
 
-    /*
+    /**
      * Show all test parameter elements
      */
     private void showAllClicked() {
@@ -1136,7 +1120,7 @@ public class TestCaseTypeSection extends IpsSection {
         setDataChangeable(isDataChangeable());
     }
 
-    /*
+    /**
      * Creates the test case type details area depending on the given object.
      */
     private void createDetailsArea(ITestParameter testParam) {
@@ -1178,7 +1162,7 @@ public class TestCaseTypeSection extends IpsSection {
         selectSection(firstSection);
     }
 
-    /*
+    /**
      * Creates the details all given test parameter
      */
     private void createDetailsForAllTestParams(ITestParameter[] testParams) {
@@ -1191,7 +1175,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Creates the details for the given test parameter
      */
     private Section createDetailsForTestParam(ITestParameter testParam) {
@@ -1242,13 +1226,13 @@ public class TestCaseTypeSection extends IpsSection {
                     Image baseImage = IpsUIPlugin.getImageHandling().getImage(pcType);
                     ImageDescriptor overlayedImage = IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList
                             .getSeverity());
-                    formText.setImage("imagepccmpttype", (Image)resourceManager.get(overlayedImage));
+                    formText.setImage("imagepccmpttype", (Image)resourceManager.get(overlayedImage)); //$NON-NLS-1$
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
             }
             Image baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "Association.gif"));
+                    "Association.gif")); //$NON-NLS-1$
             ImageDescriptor imageassociationDescriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList
                     .getSeverity());
             formText.setImage("imageassociation", (Image)resourceManager.get(imageassociationDescriptor)); //$NON-NLS-1$
@@ -1289,7 +1273,7 @@ public class TestCaseTypeSection extends IpsSection {
                 composite.setLayout(structureLayout);
 
                 // create the attribute table
-                final TableViewer attributeTableViewer = createTestAttributeTable(composite, testPolicyCmptTypeParam);
+                final TableViewer attributeTableViewer = createTestAttributeTable(composite);
                 objectCache.putAttributeTable(testParam, attributeTableViewer);
 
                 // stores the index of the test attributes for faster move up/down
@@ -1326,7 +1310,7 @@ public class TestCaseTypeSection extends IpsSection {
         } else if (testParam instanceof ITestValueParameter) {
             createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
         } else if (testParam instanceof ITestRuleParameter) {
-            createTestRuleParamDetails(editFieldsComposite, (ITestRuleParameter)testParam, uiController);
+            createTestRuleParamDetails(editFieldsComposite, uiController);
         }
 
         uiController.updateUI();
@@ -1334,9 +1318,6 @@ public class TestCaseTypeSection extends IpsSection {
         return section;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);
@@ -1347,7 +1328,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Repacks the columns in the test attribute table
      */
     private void repackAttributeTable(TableViewer attributeTableViewer) {
@@ -1358,11 +1339,10 @@ public class TestCaseTypeSection extends IpsSection {
 
     ICompletionProposal proposal = null;
 
-    /*
+    /**
      * Create the test attribute table
      */
-    private TableViewer createTestAttributeTable(Composite details,
-            final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
+    private TableViewer createTestAttributeTable(Composite details) {
         final Table table = new Table(details, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
         table.setHeaderVisible(true);
@@ -1454,11 +1434,7 @@ public class TestCaseTypeSection extends IpsSection {
         // wich is related by the given test policy cmpt type param
         // or define a new test attribite without a policy cmpt type
         // attribute
-        try {
-            newTestAttributesByWizard(testPolicyCmptTypeParam);
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        newTestAttributesByWizard(testPolicyCmptTypeParam);
     }
 
     /**
@@ -1475,7 +1451,6 @@ public class TestCaseTypeSection extends IpsSection {
         for (ITestAttribute iTestAttribute : getSelectedAttributes(testAttribute)) {
             iTestAttribute.delete();
         }
-
         redrawDetailArea((ITestPolicyCmptTypeParameter)param, (ITestPolicyCmptTypeParameter)param);
     }
 
@@ -1501,7 +1476,7 @@ public class TestCaseTypeSection extends IpsSection {
         moveTestAttribute((ITestAttribute)object, false);
     }
 
-    /*
+    /**
      * Creates the edit fields for the test parameter
      */
     private void createTestParamDetails(Composite editFieldsComposite,
@@ -1545,7 +1520,7 @@ public class TestCaseTypeSection extends IpsSection {
         return false;
     }
 
-    /*
+    /**
      * Adds a listener to mark the section as selected if the given edit field gets the focus
      */
     private void addSectionSelectionListeners(EditField editField, Control label, final IIpsObjectPart object) {
@@ -1567,7 +1542,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Select the given section, means change the color of the section and store the current object.
      * And select the corresponding tree item if withFocusChange is <code>true</code>. If the given
      * section is <code>null</code> do nothing.
@@ -1587,7 +1562,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Select the given section, means change the color of the section and store the current object.
      * And select the corresponding tree item. If the given section is <code>null</code> do nothing.
      */
@@ -1595,7 +1570,7 @@ public class TestCaseTypeSection extends IpsSection {
         selectSection(section, true);
     }
 
-    /*
+    /**
      * Update the enable status of the detail buttons
      */
     private void updateDetailButtonStatus(IIpsObjectPart currSelectedDetailObject) {
@@ -1604,7 +1579,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Returns the object which is the root of a section, the returned object is the object in the
      * tree
      */
@@ -1619,7 +1594,7 @@ public class TestCaseTypeSection extends IpsSection {
         return (ITestParameter)partInMainSection;
     }
 
-    /*
+    /**
      * Reset the selection color of all sections
      */
     private void resetSectionSelectedColor() {
@@ -1628,12 +1603,13 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Creates the edit fields for the test value parameter
      */
     private void createTestValueParamDetails(Composite editFieldsComposite,
             ITestValueParameter parameter,
             IpsObjectUIController uiController) {
+
         Label label = toolkit
                 .createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Datatype);
         EditField editFieldDatatype = new TextField(toolkit.createText(editFieldsComposite));
@@ -1654,12 +1630,10 @@ public class TestCaseTypeSection extends IpsSection {
         uiController.add(descriptionField, IIpsObjectPart.PROPERTY_DESCRIPTION);
     }
 
-    /*
+    /**
      * Creates the edit fields for the test rule parameter
      */
-    private void createTestRuleParamDetails(Composite editFieldsComposite,
-            ITestRuleParameter parameter,
-            IpsObjectUIController uiController) {
+    private void createTestRuleParamDetails(Composite editFieldsComposite, IpsObjectUIController uiController) {
         toolkit.createLabel(editFieldsComposite, Messages.TestCaseTypeSection_labelDescription);
         toolkit.createVerticalSpacer(editFieldsComposite, 1);
         Text description = toolkit.createMultilineText(editFieldsComposite);
@@ -1670,12 +1644,13 @@ public class TestCaseTypeSection extends IpsSection {
         uiController.add(descriptionField, IIpsObjectPart.PROPERTY_DESCRIPTION);
     }
 
-    /*
+    /**
      * Creates the edit fields for the test policy cmpt type parameter
      */
     private void createTestPolicyCmptTypeParamDetails(Composite editFieldsComposite,
             ITestPolicyCmptTypeParameter parameter,
             IpsObjectUIController uiController) {
+
         Label label = null;
         if (!(parameter != null && isAssociation(parameter))) {
             label = toolkit.createFormLabel(editFieldsComposite,
@@ -1725,7 +1700,7 @@ public class TestCaseTypeSection extends IpsSection {
         detailsArea.setLayout(detailLayout);
     }
 
-    /*
+    /**
      * Performs and returns validation messages on the given element.
      */
     private MessageList validateElement(Object element) throws CoreException {
@@ -1738,7 +1713,7 @@ public class TestCaseTypeSection extends IpsSection {
         return messageList;
     }
 
-    /*
+    /**
      * Store the given section and the object which is displayed in the section
      */
     private void storeSection(Section section, IIpsObjectPart object) {
@@ -1750,7 +1725,7 @@ public class TestCaseTypeSection extends IpsSection {
         section.addExpansionListener(new SectionExpandListern(section, object));
     }
 
-    /*
+    /**
      * Add the tree listener to the tree.
      */
     private void hookTreeListeners() {
@@ -1800,6 +1775,7 @@ public class TestCaseTypeSection extends IpsSection {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                // Nothing to do
             }
         });
         MouseAdapter adapter = new MouseAdapter() {
@@ -1824,7 +1800,7 @@ public class TestCaseTypeSection extends IpsSection {
         treeViewer.getControl().setMenu(contextMenu);
     }
 
-    /*
+    /**
      * Selects the first edit field in the section contains the given object
      */
     private void selectFirstEditFieldInSection(Object selected) {
@@ -1835,7 +1811,7 @@ public class TestCaseTypeSection extends IpsSection {
         editFieldName.getControl().setFocus();
     }
 
-    /*
+    /**
      * Adds the button listener for the tree area.
      */
     private void hookButtonListeners() {
@@ -1845,12 +1821,14 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     removeClicked();
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
         addParameterButton.addSelectionListener(new SelectionListener() {
@@ -1859,12 +1837,14 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     addParameterClicked();
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
         moveUpButton.addSelectionListener(new SelectionListener() {
@@ -1873,12 +1853,14 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     moveUpClicked(getSelectedObjectInTree());
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
         moveDownButton.addSelectionListener(new SelectionListener() {
@@ -1887,17 +1869,19 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     moveDownClicked(getSelectedObjectInTree());
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
     }
 
-    /*
+    /**
      * Redraws the form.
      */
     private void redrawForm() {
@@ -1912,7 +1896,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Add root or child parameter.
      */
     private void addParameterClicked() {
@@ -1969,7 +1953,7 @@ public class TestCaseTypeSection extends IpsSection {
         refreshTreeAndDetails(newParam);
     }
 
-    /*
+    /**
      * Remove button was clicked.
      */
     private void removeClicked() {
@@ -1993,7 +1977,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Move the selected test parameter up
      */
     private void moveUpClicked(Object selectedObjInTree) {
@@ -2002,7 +1986,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Move the selected test parameter down
      */
     private void moveDownClicked(Object selectedObjInTree) {
@@ -2028,7 +2012,7 @@ public class TestCaseTypeSection extends IpsSection {
         return null;
     }
 
-    /*
+    /**
      * Gets the currently selected test parameter or null if no test parameter is selected in the
      * tree
      */
@@ -2044,7 +2028,7 @@ public class TestCaseTypeSection extends IpsSection {
         return selectedElem;
     }
 
-    /*
+    /**
      * Return the selected attributes in the attribute table
      */
     private Set<ITestAttribute> getSelectedAttributes(ITestAttribute object) {
@@ -2068,7 +2052,7 @@ public class TestCaseTypeSection extends IpsSection {
         return testAttributesSelected;
     }
 
-    /*
+    /**
      * Moves the give test attribute up or down
      */
     private void moveTestAttribute(ITestAttribute testAttribute, boolean up) {
@@ -2100,7 +2084,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Moves the give test attribute up or down
      */
     private void moveTestParameter(ITestParameter testParameter, boolean up) {
@@ -2144,10 +2128,8 @@ public class TestCaseTypeSection extends IpsSection {
         postSelectedTestParameterInTree(testParameter);
     }
 
-    /*
+    /**
      * The selection in the tree changed the given object is selected.
-     * 
-     * @throws CoreException
      */
     private void selectionInTreeChanged(IStructuredSelection selection) {
         // skip if this method was called while the tree is refreshing
@@ -2179,7 +2161,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Updates the enable state of the buttons which belongs to the tree
      */
     private void updateTreeButtonStatus(Object object) {
@@ -2195,7 +2177,6 @@ public class TestCaseTypeSection extends IpsSection {
         addParameterButton.setEnabled(treeActionEnableState.addEnable);
         moveUpButton.setEnabled(treeActionEnableState.upEnable);
         moveDownButton.setEnabled(treeActionEnableState.downEnable);
-
     }
 
     private TreeActionEnableState evaluateTreeActionEnableState(Object object) {
@@ -2232,7 +2213,7 @@ public class TestCaseTypeSection extends IpsSection {
         return treeActionEnableState;
     }
 
-    /*
+    /**
      * Refreshs the tree and details
      */
     private void refreshTreeAndDetails(ITestParameter param) {
@@ -2248,7 +2229,7 @@ public class TestCaseTypeSection extends IpsSection {
         selectFirstEditFieldInSection(param);
     }
 
-    /*
+    /**
      * Refresh the attribute table
      */
     private void refreshAttributeTable() {
@@ -2257,7 +2238,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Refresh the tree.
      */
     private void refreshTree() {
@@ -2266,22 +2247,14 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         try {
-            // isTreeRefreshing = true;
-            // treeViewer.getTree().setRedraw(false);
-            // TreeViewerExpandStateStorage treeexpandStorage = new
-            // TreeViewerExpandStateStorage(treeViewer);
-            // treeexpandStorage.storeExpandedStatus();
             treeViewer.refresh();
-            // treeViewer.expandAll();
-            // treeViewer.collapseAll();
-            // treeexpandStorage.restoreExpandedStatus();
         } finally {
             treeViewer.getTree().setRedraw(true);
             isTreeRefreshing = false;
         }
     }
 
-    /*
+    /**
      * Refreshs all section titles
      */
     private void refreshSectionTitles() {
@@ -2298,7 +2271,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Redraw and select the section of the new attribute
      */
     private void redrawDetailArea(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam, IIpsObjectPart selectedObject) {
@@ -2338,7 +2311,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Refresh the ui
      */
     private void postRefreshAll() {
@@ -2350,7 +2323,6 @@ public class TestCaseTypeSection extends IpsSection {
                 }
                 try {
                     setFormRedraw(false);
-                    // refreshTree();
                     refreshAttributeTable();
                     refreshSectionTitles();
                     // refresh attribute edit fields
@@ -2365,7 +2337,7 @@ public class TestCaseTypeSection extends IpsSection {
         });
     }
 
-    /*
+    /**
      * Select the given test parameter in the tree
      */
     private void postSelectedTestParameterInTree(final ITestParameter testParam) {
@@ -2377,7 +2349,7 @@ public class TestCaseTypeSection extends IpsSection {
         });
     }
 
-    /*
+    /**
      * Create a bordered composite
      */
     private Composite createBorderComposite(Composite parent) {
@@ -2398,7 +2370,7 @@ public class TestCaseTypeSection extends IpsSection {
         return c2;
     }
 
-    /*
+    /**
      * Sets the redraw state of the form
      */
     private void setFormRedraw(boolean redraw) {
@@ -2407,7 +2379,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
-    /*
+    /**
      * Creates a new ui controller for the given object.
      */
     private IpsObjectUIController createUIController(IIpsObjectPart part) {
@@ -2417,6 +2389,7 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     super.valueChanged(e);
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -2424,10 +2397,10 @@ public class TestCaseTypeSection extends IpsSection {
         return controller;
     }
 
-    /*
+    /**
      * Displays a dialog to select attributes of a policy component.
      */
-    private void newTestAttributesByWizard(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) throws CoreException {
+    private void newTestAttributesByWizard(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
         boolean dirty = testCaseType.getIpsSrcFile().isDirty();
 
         // open wizard to add new test attributes

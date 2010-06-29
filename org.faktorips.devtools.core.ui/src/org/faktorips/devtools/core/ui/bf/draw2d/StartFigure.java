@@ -11,9 +11,6 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-/**
- * 
- */
 package org.faktorips.devtools.core.ui.bf.draw2d;
 
 import org.eclipse.draw2d.ColorConstants;

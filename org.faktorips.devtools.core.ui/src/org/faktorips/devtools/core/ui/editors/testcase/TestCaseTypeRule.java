@@ -33,6 +33,7 @@ import org.faktorips.util.message.MessageList;
  * @author Joerg Ortmann
  */
 public class TestCaseTypeRule implements IDummyTestCaseObject {
+
     private ITestCase testCase;
     private ITestRuleParameter testRuleParameter;
 
@@ -64,25 +65,16 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
         return IpsUIPlugin.getImageHandling().getImageDescriptor(testRuleParameter);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getValidationResultSeverity() throws CoreException {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValid() throws CoreException {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         MessageList messageList = new MessageList();
@@ -112,9 +104,6 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITestParameter getTestParameter() {
         return getTestRuleParameter();

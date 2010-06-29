@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
  * @author Joerg Ortmann
  */
 public class AssociationTargetRefControl extends PcTypeRefControl {
+
     private IPolicyCmptType policyCmptTypeTarget;
 
     public AssociationTargetRefControl(IIpsProject project, Composite parent, UIToolkit toolkit,
@@ -41,25 +42,19 @@ public class AssociationTargetRefControl extends PcTypeRefControl {
         this.policyCmptTypeTarget = policyCmptTypeTarget;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected IIpsObject[] getIpsObjects() throws CoreException {
         if (policyCmptTypeTarget == null) {
             return new IIpsObject[0];
         }
 
-        // find all policy component of the given type (incl. subclasses) (the result could be
-        // candidates for the
-        // target policy cmpt type of the association)
-        // when defining the test case subclasses of the current policy cmpt target could be
-        // assigned
-        // as target for the associations target
-        // Remark: this is a operation in the ui, therefore it is acceptable if the operation takes
-        // a long
-        // time, because the user has triggered this operation to chose a policy cmpt from this
-        // selection
-        // of policy cmpt types
+        /*
+         * find all policy component of the given type (incl. subclasses) (the result could be
+         * candidates for the target policy cmpt type of the association) when defining the test
+         * case subclasses of the current policy cmpt target could be assigned as target for the
+         * associations target Remark: this is a operation in the ui, therefore it is acceptable if
+         * the operation takes a long time, because the user has triggered this operation to chose a
+         * policy cmpt from this selection of policy cmpt types
+         */
         ITypeHierarchy subTypeHierarchy = policyCmptTypeTarget.getSubtypeHierarchy();
         IPolicyCmptType[] subTypes = subTypeHierarchy.getAllSubtypes(policyCmptTypeTarget);
         if (subTypes == null) {

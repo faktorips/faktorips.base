@@ -29,9 +29,6 @@ public class BooleanComboField extends ComboField {
     private String trueRepresentation;
     private String falseRepresentation;
 
-    /**
-     * @param combo
-     */
     public BooleanComboField(Combo combo, String trueRepresentation, String falseRepresentation) {
         super(combo);
         ArgumentCheck.notNull(trueRepresentation);
@@ -40,9 +37,6 @@ public class BooleanComboField extends ComboField {
         this.falseRepresentation = falseRepresentation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         String s = (String)super.parseContent();
@@ -56,9 +50,6 @@ public class BooleanComboField extends ComboField {
         throw new RuntimeException("Unknown value " + s); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newValue) {
         if (super.prepareObjectForGet(newValue) == null) {

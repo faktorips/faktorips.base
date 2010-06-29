@@ -67,14 +67,16 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     private IPolicyCmptTypeAssociation prevInverseAssociation;
     private Text description;
 
-    // Composites to dispose an recreate the page content if the inverse association wil be
-    // recreated
-    // e.g. the target or the option from the previous page are changed
+    /**
+     * Composites to dispose an recreate the page content if the inverse association wil be
+     * recreated e.g. the target or the option from the previous page are changed
+     */
     private Composite pageComposite;
     private Composite dynamicComposite;
 
     public InverseAssociationPropertyPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit,
             BindingContext bindingContext) {
+
         super(Messages.InverseAssociationPropertyPage_pageName, Messages.InverseAssociationPropertyPage_pageTitle, null);
         setDescription(Messages.InverseAssociationPropertyPage_pageDescription);
         this.wizard = wizard;
@@ -304,17 +306,12 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<String> getProperties() {
         return visibleProperties;
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * @return <code>false</code> if no inverse association should be created or no existing
      *         association exists otherwise <code>true</code>.
      */
@@ -329,9 +326,6 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
@@ -340,17 +334,11 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         super.setVisible(visible);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canFlipToNextPage() {
         return wizard.canPageFlipToNextPage(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDefaultFocus() {
         updateDefaultTargetRoleSingular();

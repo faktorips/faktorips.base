@@ -16,7 +16,16 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.pctype.associationwizard.messages"; //$NON-NLS-1$
+
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
 
     public static String AssociationTargetPage_labelTarget;
 
@@ -124,11 +133,4 @@ public class Messages extends NLS {
 
     public static String PropertyPage_pageTitle;
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
-
-    private Messages() {
-    }
 }

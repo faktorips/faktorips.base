@@ -32,9 +32,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-/**
- * 
- */
 public abstract class MessageHoverService {
 
     private Hover hover;
@@ -46,12 +43,10 @@ public abstract class MessageHoverService {
         mouseTrackListener = new HoverServiceMouseTrackListener();
         viewerControl.addMouseTrackListener(mouseTrackListener);
         viewerControl.addDisposeListener(new DisposeListener() {
-
             @Override
             public void widgetDisposed(DisposeEvent e) {
                 dispose();
             }
-
         });
     }
 
@@ -72,8 +67,6 @@ public abstract class MessageHoverService {
 
     /**
      * Returns the messages that for the given element.
-     * 
-     * @throws CoreException
      */
     protected abstract MessageList getMessagesFor(Object element) throws CoreException;
 
@@ -97,6 +90,7 @@ public abstract class MessageHoverService {
     private class HoverServiceMouseTrackListener implements MouseTrackListener {
         @Override
         public void mouseEnter(MouseEvent e) {
+            // Nothing to do
         }
 
         @Override

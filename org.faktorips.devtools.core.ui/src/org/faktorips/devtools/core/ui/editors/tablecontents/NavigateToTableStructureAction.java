@@ -35,8 +35,6 @@ class NavigateToTableStructureAction extends Action {
 
     /**
      * Opens the editor for the table structure which these table contents are based on.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public void run() {
@@ -50,6 +48,7 @@ class NavigateToTableStructureAction extends Action {
                 IpsUIPlugin.getDefault().openEditor(tableStructure);
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

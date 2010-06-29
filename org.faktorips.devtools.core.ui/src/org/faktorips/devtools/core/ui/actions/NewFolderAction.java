@@ -56,9 +56,6 @@ public class NewFolderAction extends IpsAction {
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewFolder.gif")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
@@ -155,15 +152,13 @@ public class NewFolderAction extends IpsAction {
      * @author Stefan Widmaier
      */
     private class Validator implements IInputValidator {
+
         private IContainer parent;
 
         public Validator(IContainer parent) {
             this.parent = parent;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String isValid(String newText) {
             if (newText.indexOf(BLANK) != -1) {
@@ -185,4 +180,5 @@ public class NewFolderAction extends IpsAction {
             return null;
         }
     }
+
 }

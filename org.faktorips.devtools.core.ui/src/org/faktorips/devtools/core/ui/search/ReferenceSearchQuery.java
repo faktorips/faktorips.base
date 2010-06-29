@@ -82,8 +82,6 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
      * search in their object model, Exceptionhandling, progressmonitors etc. are handled by the
      * abstract superclass. If no objects are found an empty array is returned. This method throws a
      * CoreException which is handled by the calling run() method.
-     * 
-     * @throws CoreException
      */
     protected abstract IIpsElement[] findReferences() throws CoreException;
 
@@ -94,8 +92,6 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
      * contains at least one element, which is the IIpsElement itself. All following objects
      * represent its children. This method throws a CoreException which is handled by the calling
      * run() method.
-     * 
-     * @throws CoreException
      */
     protected abstract Object[] getDataForResult(IIpsElement object) throws CoreException;
 

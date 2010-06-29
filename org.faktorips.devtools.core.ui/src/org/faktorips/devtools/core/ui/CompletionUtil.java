@@ -44,18 +44,25 @@ public class CompletionUtil {
 
     /** Preference key for content assist auto activation. */
     private final static String AUTOACTIVATION = PreferenceConstants.CODEASSIST_AUTOACTIVATION;
+
     /** Preference key for content assist auto activation delay. */
     private final static String AUTOACTIVATION_DELAY = PreferenceConstants.CODEASSIST_AUTOACTIVATION_DELAY;
+
     /** Preference key for content assist proposal color. */
     private final static String PROPOSALS_FOREGROUND = PreferenceConstants.CODEASSIST_PROPOSALS_FOREGROUND;
+
     /** Preference key for content assist proposal color. */
     private final static String PROPOSALS_BACKGROUND = PreferenceConstants.CODEASSIST_PROPOSALS_BACKGROUND;
+
     /** Preference key for content assist parameters color. */
     private final static String PARAMETERS_FOREGROUND = PreferenceConstants.CODEASSIST_PARAMETERS_FOREGROUND;
+
     /** Preference key for content assist parameters color. */
     private final static String PARAMETERS_BACKGROUND = PreferenceConstants.CODEASSIST_PARAMETERS_BACKGROUND;
+
     /** Preference key for content assist auto insert. */
     private final static String AUTOINSERT = PreferenceConstants.CODEASSIST_AUTOINSERT;
+
     /** Preference key for prefix completion. */
     private static final String PREFIX_COMPLETION = PreferenceConstants.CODEASSIST_PREFIX_COMPLETION;
 
@@ -160,7 +167,7 @@ public class CompletionUtil {
     }
 
     private CompletionUtil() {
-
+        // Utility class not to be instantiated.
     }
 
 }

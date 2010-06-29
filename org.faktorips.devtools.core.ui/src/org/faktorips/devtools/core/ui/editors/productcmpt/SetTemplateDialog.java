@@ -39,7 +39,6 @@ public class SetTemplateDialog extends EditDialog {
     /**
      * Creates a new dialog to edit a product cmpt generation
      * 
-     * @param generation The generation to edit
      * @param parentShell The shell to be used as parent for the dialog
      * @param message The message to be displayed to the user if no error message is set.
      */
@@ -49,9 +48,6 @@ public class SetTemplateDialog extends EditDialog {
         this.productCmpt = cmpt;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
@@ -78,18 +74,12 @@ public class SetTemplateDialog extends EditDialog {
         return workArea;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         super.createButtonsForButtonBar(parent);
         super.getButton(OK).setEnabled(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == OK) {

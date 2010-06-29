@@ -52,9 +52,6 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         super(pdObject, parent, Messages.AssociationsSection_title, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new RelationsComposite(getIpsObject(), parent, toolkit);
@@ -64,27 +61,22 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         return (IProductCmptType)getIpsObject();
     }
 
-    /*
+    /**
      * Action to open the selected target in a new editor window
      */
     private class OpenTargetProductCmptTypeInEditorAction extends IpsAction {
+
         public OpenTargetProductCmptTypeInEditorAction(ISelectionProvider selectionProvider) {
             super(selectionProvider);
             setText(Messages.AssociationsSection_menuOpenTargetInNewEditor);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
             return (selected instanceof IProductCmptTypeAssociation);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
@@ -101,6 +93,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
     }
 
     private class RelationsComposite extends IpsPartsComposite {
+
         protected OpenTargetProductCmptTypeInEditorAction openAction;
 
         RelationsComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
@@ -128,9 +121,6 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             getViewer().getControl().setMenu(menu);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new IStructuredContentProvider() {
@@ -142,19 +132,17 @@ public class AssociationsSection extends SimpleIpsPartsSection {
 
                 @Override
                 public void dispose() {
-
+                    // Nothing to do
                 }
 
                 @Override
                 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                    // Nothing to do
                 }
 
             };
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected ILabelProvider createLabelProvider() {
             return new AssociationsLabelProvider();
@@ -170,20 +158,16 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             return getProductCmptType().newProductCmptTypeAssociation();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getProductCmptType().moveAssociations(indexes, up);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void openLink() {
             openAction.run();
         }
+
     }
+
 }

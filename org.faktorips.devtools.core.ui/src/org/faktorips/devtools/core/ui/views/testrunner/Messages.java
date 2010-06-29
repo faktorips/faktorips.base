@@ -16,14 +16,15 @@ package org.faktorips.devtools.core.ui.views.testrunner;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.views.testrunner.messages"; //$NON-NLS-1$
 
-    private Messages() {
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String FailurePane_MenuLabel_CopyInClipboard;
@@ -71,4 +72,5 @@ public class Messages extends NLS {
     public static String TestRunPane_Menu_GoToFile;
     public static String TestRunPane_Menu_Run;
     public static String TestRunPane_MenuDebug;
+
 }

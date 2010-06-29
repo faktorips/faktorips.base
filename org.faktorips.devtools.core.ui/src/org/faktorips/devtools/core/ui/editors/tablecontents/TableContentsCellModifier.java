@@ -38,7 +38,7 @@ public class TableContentsCellModifier implements ICellModifier {
     }
 
     /**
-     * Returns the page's data changeable property. {@inheritDoc}
+     * Returns the page's data changeable property.
      */
     @Override
     public boolean canModify(Object element, String property) {
@@ -46,7 +46,7 @@ public class TableContentsCellModifier implements ICellModifier {
     }
 
     /**
-     * Returns the value of the property of the given element. May return null. {@inheritDoc}
+     * Returns the value of the property of the given element. May return null.
      */
     @Override
     public String getValue(Object element, String property) {
@@ -61,7 +61,7 @@ public class TableContentsCellModifier implements ICellModifier {
     }
 
     /**
-     * Refreshes the given element in the table after the modification. {@inheritDoc}
+     * Refreshes the given element in the table after the modification.
      */
     @Override
     public void modify(Object element, String property, Object value) {

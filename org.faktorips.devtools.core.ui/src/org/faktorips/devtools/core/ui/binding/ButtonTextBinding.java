@@ -35,9 +35,6 @@ public class ButtonTextBinding extends ControlPropertyBinding {
         super(button, object, propertyName, String.class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void updateUiIfNotDisposed() {
         try {
@@ -48,6 +45,7 @@ public class ButtonTextBinding extends ControlPropertyBinding {
                 ((Button)getControl()).setText(value);
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException(e);
         }
     }

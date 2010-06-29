@@ -28,33 +28,21 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
         this.propertyId = extensionPropertyId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EditField getField() {
         return field;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getObject() {
         return object;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyName() {
         return propertyId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setPropertyValue() {
         if (field.getControl().isDisposed()) {
@@ -69,9 +57,6 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
         object.setExtPropertyValue(propertyId, field.getValue());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setControlValue() {
         if (field.getControl().isDisposed()) {

@@ -25,31 +25,34 @@ import org.faktorips.devtools.core.ui.editors.testcase.TestCaseLabelProvider;
  * @author Joerg Ortmann
  */
 public class TestCaseDeltaWrapperObject {
-    // The wrapped object from the test case content
+
+    /** The wrapped object from the test case content */
     private Object baseObject;
 
-    // The parent of this wrapper, same parent child structure like the test case content
+    /** The parent of this wrapper, same parent child structure like the test case content */
     private TestCaseDeltaWrapperObject parent;
 
-    // Flag to indicate that the test case object will be deleted
+    /** Flag to indicate that the test case object will be deleted */
     private boolean willBeDeleted;
 
-    // Flag to indicate that the test case object has test attributes which will be added if the
-    // delta will be accepted
+    /**
+     * Flag to indicate that the test case object has test attributes which will be added if the
+     * delta will be accepted
+     */
     private boolean hasNewTestAttributes;
 
-    // Flag to indicate that the test case object has test attribute values which will be removed if
-    // the delta will be accepted
+    /**
+     * Flag to indicate that the test case object has test attribute values which will be removed if
+     * the delta will be accepted
+     */
     private boolean hasToBeDeletedTestAttributes;
 
-    /*
+    /**
      * The delta type this wrapper object represents.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaType
      */
     private TestCaseDeltaType deltaType;
 
-    // The content provider of the test case used to get the children of the wrapped base object.
+    /** The content provider of the test case used to get the children of the wrapped base object. */
     private TestCaseContentProvider testCaseContentProvider;
 
     /**
@@ -59,6 +62,7 @@ public class TestCaseDeltaWrapperObject {
             TestCaseDeltaType deltaType,
             TestCaseDeltaWrapperObject parent,
             Object[] baseObjects) {
+
         TestCaseDeltaWrapperObject[] parts = new TestCaseDeltaWrapperObject[baseObjects.length];
         for (int i = 0; i < baseObjects.length; i++) {
             parts[i] = new TestCaseDeltaWrapperObject(testCaseContentProvider, deltaType, parent, baseObjects[i]);
@@ -68,6 +72,7 @@ public class TestCaseDeltaWrapperObject {
 
     private TestCaseDeltaWrapperObject(TestCaseContentProvider testCaseContentProvider, TestCaseDeltaType deltaType,
             TestCaseDeltaWrapperObject parent, Object baseObject) {
+
         this.testCaseContentProvider = testCaseContentProvider;
         this.baseObject = baseObject;
         this.parent = parent;
@@ -111,7 +116,7 @@ public class TestCaseDeltaWrapperObject {
         }
     }
 
-    /*
+    /**
      * Returns the to be delted image.
      */
     private ImageDescriptor getDeletedImage(Image base) {

@@ -20,18 +20,17 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 
 public class CustomIconPage extends IpsObjectEditorPage {
+
     final static String PAGE_ID = "CustomIconPage"; //$NON-NLS-1$
 
     public CustomIconPage(TypeEditor editor) {
         super(editor, PAGE_ID, Messages.CustomIconPage_Page_Tab_Label);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, true));
         new CustomIconSection((IType)getIpsObject(), formBody, toolkit);
     }
+
 }

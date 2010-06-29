@@ -43,7 +43,6 @@ public class StyledCellMessageCueLabelProvider extends StyledCellLabelProvider {
      * Creates a new <code>MessageCueLabelProvider</code>.
      * 
      * @param baseProvider The label provider to decorate the image for.
-     * @param ipsProject
      * 
      * @throws NullPointerException If baseProvider or ipsProject is <code>null</code>.
      */

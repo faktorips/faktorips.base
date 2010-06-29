@@ -24,9 +24,6 @@ import org.faktorips.devtools.core.ui.controls.TextButtonControl;
  */
 public class IpsObjectField extends TextButtonField {
 
-    /**
-     * @param control
-     */
     public IpsObjectField(TextButtonControl control) {
         super(control);
     }

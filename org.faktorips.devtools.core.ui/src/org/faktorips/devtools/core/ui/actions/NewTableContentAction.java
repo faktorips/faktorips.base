@@ -34,13 +34,11 @@ public class NewTableContentAction extends Action {
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTableContentsWizard.gif")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         OpenNewTableContentsWizardAction o = new OpenNewTableContentsWizardAction();
         o.init(window);
         o.run(this);
     }
+
 }

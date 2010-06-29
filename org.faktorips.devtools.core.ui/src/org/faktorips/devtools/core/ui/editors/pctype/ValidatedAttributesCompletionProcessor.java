@@ -26,9 +26,6 @@ import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
-/**
- * 
- */
 public class ValidatedAttributesCompletionProcessor extends AbstractCompletionProcessor {
 
     private IPolicyCmptType pcType;
@@ -42,12 +39,10 @@ public class ValidatedAttributesCompletionProcessor extends AbstractCompletionPr
         setIpsProject(pcType.getIpsProject());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {
+
         prefix = prefix.toLowerCase();
         IPolicyCmptTypeAttribute[] attributes = pcType.getSupertypeHierarchy().getAllAttributes(pcType);
         List<String> validatedAttributes = Arrays.asList(rule.getValidatedAttributes());

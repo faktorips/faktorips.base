@@ -16,7 +16,17 @@ package org.faktorips.devtools.core.ui.bf;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.bf.messages"; //$NON-NLS-1$
+
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String BusinessFunctionLabelProvider_bf;
     public static String BusinessFunctionLabelProvider_callBfAction;
     public static String BusinessFunctionLabelProvider_callMethodAction;
@@ -36,11 +46,5 @@ public class Messages extends NLS {
     public static String PaletteBuilder_methodCallActionDesc;
     public static String PaletteBuilder_methodCallDecisionDesc;
     public static String PaletteBuilder_startDec;
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
 
-    private Messages() {
-    }
 }

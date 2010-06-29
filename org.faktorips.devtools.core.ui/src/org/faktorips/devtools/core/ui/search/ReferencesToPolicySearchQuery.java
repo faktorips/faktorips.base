@@ -28,17 +28,11 @@ public class ReferencesToPolicySearchQuery extends ReferenceSearchQuery {
         super(referenced);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     protected IIpsElement[] findReferences() throws CoreException {
         return referenced.getIpsProject().findReferencingPolicyCmptTypes((PolicyCmptType)referenced);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     protected Object[] getDataForResult(IIpsElement object) throws CoreException {
         return new Object[] { object };

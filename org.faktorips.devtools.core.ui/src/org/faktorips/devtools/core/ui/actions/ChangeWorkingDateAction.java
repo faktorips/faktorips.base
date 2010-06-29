@@ -83,6 +83,7 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
     }
 
     private class WorkingDateInputDialog extends StatusDialog {
+
         private UIToolkit toolkit = new UIToolkit(null);
         private String workingDate;
         private boolean editRecentGeneration;
@@ -92,6 +93,7 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 
         public WorkingDateInputDialog(Shell parent, String dialogTitle, String message, String workingDate,
                 boolean editRecentGeneration) {
+
             super(parent);
             setTitle(dialogTitle);
             infoMessage = message;
@@ -101,9 +103,6 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
             setHelpAvailable(false);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected Control createDialogArea(Composite parent) {
             Composite composite = (Composite)super.createDialogArea(parent);
@@ -127,31 +126,19 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
             return composite;
         }
 
-        /**
-         * @return Returns the workingDate.
-         */
         public String getWorkingDate() {
             return workingDate;
         }
 
-        /**
-         * @param workingDate The workingDate to set.
-         */
         public void setWorkingDate(String workingDate) {
             this.workingDate = workingDate;
             validate();
         }
 
-        /**
-         * @return Returns the canEditRecentGeneration.
-         */
         public boolean isCanEditRecentGeneration() {
             return editRecentGeneration;
         }
 
-        /**
-         * @param canEditRecentGeneration The canEditRecentGeneration to set.
-         */
         public void setCanEditRecentGeneration(boolean editRecentGeneration) {
             this.editRecentGeneration = editRecentGeneration;
             validate();
@@ -208,25 +195,16 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbenchWindow window) {
         shell = window.getShell();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IAction action) {
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
@@ -253,9 +231,6 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectionChanged(IAction action, ISelection selection) {
         // nothing to do
@@ -273,9 +248,6 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
             format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String isValid(String newText) {
             try {
@@ -303,4 +275,5 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
             }
         }
     }
+
 }

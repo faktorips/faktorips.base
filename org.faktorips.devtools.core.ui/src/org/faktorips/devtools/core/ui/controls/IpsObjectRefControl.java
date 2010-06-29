@@ -45,6 +45,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
 
     public IpsObjectRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, String dialogTitle,
             String dialogMessage) {
+
         super(parent, toolkit, Messages.IpsObjectRefControl_title);
         this.dialogTitle = dialogTitle;
         this.dialogMessage = dialogMessage;
@@ -73,7 +74,6 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
          * choice use your own implementation of SelectIpsObjectContext for better performance and
          * correct progress monitoring
          */
-
         final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
         final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(getShell(), dialogTitle, context);
         dialog.setMessage(dialogMessage);
@@ -115,7 +115,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     /**
      * Called when the user closes the dialog by clicking OK.
      * 
-     * @param List of selected ips source files containing at least 1 element!
+     * @param ipsSrcFiles List of selected ips source files containing at least 1 element!
      */
     protected void updateTextControlAfterDialogOK(List<IIpsSrcFile> ipsSrcFiles) {
         setText(ipsSrcFiles.get(0).getQualifiedNameType().getName());
@@ -133,4 +133,5 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * Returns all ips source files that can be chosen by the user.
      */
     protected abstract IIpsSrcFile[] getIpsSrcFiles() throws CoreException;
+
 }

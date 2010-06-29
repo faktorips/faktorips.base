@@ -24,11 +24,9 @@ import org.eclipse.ui.actions.ActionDelegate;
  * Action delegate to run tests.
  */
 public class RunIpsTestAction extends ActionDelegate {
+
     private IStructuredSelection selection = StructuredSelection.EMPTY;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectionChanged(IAction action, ISelection newSelection) {
         if (newSelection instanceof IStructuredSelection) {
@@ -42,4 +40,5 @@ public class RunIpsTestAction extends ActionDelegate {
     public void runWithEvent(IAction action, Event event) {
         new IpsTestAction(null).run(selection);
     }
+
 }

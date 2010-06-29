@@ -41,9 +41,6 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
         super(referenced);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     protected IIpsElement[] findReferences() throws CoreException {
         IIpsElement[] refProductCmptGenerations = referenced.getIpsProject().findReferencingProductCmptGenerations(
@@ -56,9 +53,6 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
         return result.toArray(new IIpsElement[result.size()]);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     protected Object[] getDataForResult(IIpsElement object) {
         if (object instanceof IProductCmptGeneration) {
@@ -70,8 +64,6 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * Combines all generations of the same product cmpt to one match.
      */
     @Override
@@ -87,13 +79,13 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
                 List<?> foundElemList = (List<?>)foundElem;
                 if (foundElemList.size() == 0) {
                     throw new CoreException(new IpsStatus(
-                            "Expected at least one product cmpt generation in the combined references list!"));
+                            "Expected at least one product cmpt generation in the combined references list!")); //$NON-NLS-1$
                 }
                 sortGenerationsInList(foundElemList);
                 Object currentGeneration = foundElemList.get(0);
                 if (!(currentGeneration instanceof IProductCmptGeneration)) {
                     throw new CoreException(new IpsStatus(
-                            "Expected only product cmpt generation in the combined references list!"));
+                            "Expected only product cmpt generation in the combined references list!")); //$NON-NLS-1$
                 }
 
                 IProductCmpt productCmpt = ((IProductCmptGeneration)currentGeneration).getProductCmpt();
@@ -103,7 +95,7 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
                     combined[i + 1] = foundElemList.get(i);
                 }
             } else {
-                throw new CoreException(new IpsStatus("Unknown reference type: " + foundElem.getClass().getName()));
+                throw new CoreException(new IpsStatus("Unknown reference type: " + foundElem.getClass().getName())); //$NON-NLS-1$
             }
             resultMatches[idx++] = new Match(combined, 0, 0);
         }
@@ -127,7 +119,7 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
         });
     }
 
-    /*
+    /**
      * Combines the given elements: If more than one generation of the same product cmpt are given
      * in the input array then the generation will be combined inside a list and added to the result
      * list which will be returned. All other found elements will be added unchanged to the returned

@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.bf.properties;
 import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
@@ -37,8 +38,8 @@ public class ParameterCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
+            throws Exception {
 
         String match = prefix.toLowerCase();
         for (IParameterBFE parameter : businessFunction.getParameterBFEs()) {

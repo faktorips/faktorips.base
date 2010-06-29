@@ -87,9 +87,6 @@ public class ParameterMethodRefControl extends TextButtonControl {
         return methods.toArray(new IMethod[methods.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonClicked() {
         try {
@@ -122,6 +119,7 @@ public class ParameterMethodRefControl extends TextButtonControl {
                 }
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

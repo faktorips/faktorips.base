@@ -73,11 +73,12 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     }
 
     private void setText(String text) {
-        // since the label is added to the canvas of the viewer directly and hence doesn't fit into
-        // the
-        // framework the life cycle of the label is different than the one of the figure. Especially
-        // there can be scenarios where the label is already disposed but the deactivate() method
-        // has not been called
+        /*
+         * since the label is added to the canvas of the viewer directly and hence doesn't fit into
+         * the framework the life cycle of the label is different than the one of the figure.
+         * Especially there can be scenarios where the label is already disposed but the
+         * deactivate() method has not been called
+         */
         if (label.isDisposed()) {
             return;
         }
@@ -166,9 +167,6 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getControlFlow()) && event.getEventType() == ContentChangeEvent.TYPE_PROPERTY_CHANGED) {

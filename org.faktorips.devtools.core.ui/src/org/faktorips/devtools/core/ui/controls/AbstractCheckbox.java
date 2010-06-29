@@ -21,9 +21,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-/**
- *
- */
 public abstract class AbstractCheckbox extends ControlComposite {
 
     private Button button;
@@ -34,8 +31,6 @@ public abstract class AbstractCheckbox extends ControlComposite {
         this.invertValue = invertValue;
     }
 
-    /**
-     */
     protected AbstractCheckbox(Composite parent, UIToolkit toolkit, int checkboxStyle) {
         super(parent, SWT.NONE);
         GridData data = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL);
@@ -83,9 +78,6 @@ public abstract class AbstractCheckbox extends ControlComposite {
         return button.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);
@@ -94,17 +86,11 @@ public abstract class AbstractCheckbox extends ControlComposite {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean getEnabled() {
         return button.getEnabled();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);

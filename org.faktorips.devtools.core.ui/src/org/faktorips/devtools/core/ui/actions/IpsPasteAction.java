@@ -68,17 +68,17 @@ import org.faktorips.util.StringUtil;
  */
 public class IpsPasteAction extends IpsAction {
 
-    /*
+    /**
      * The clipboard used to transfer the data
      */
     private Clipboard clipboard;
 
-    /*
+    /**
      * The shell for this session
      */
     private Shell shell;
 
-    /*
+    /**
      * Indicates that the new name will be used without a dialog question, if the file already
      * exists
      */
@@ -104,9 +104,6 @@ public class IpsPasteAction extends IpsAction {
         this.forceUseNameSuggestionIfFileExists = forceUseNameSuggestionIfFileExists;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         Object selected = selection.getFirstElement();
@@ -123,7 +120,7 @@ public class IpsPasteAction extends IpsAction {
         }
     }
 
-    /*
+    /**
      * Try to paste an <code>IIpsObject</code> to an <code>IIpsObjectPartContainer</code>. If it is
      * not possible because the stored data does not support this (e.g. is a resource and not a
      * string) paste(IIpsPackageFragement) is called.
@@ -162,7 +159,7 @@ public class IpsPasteAction extends IpsAction {
         }
     }
 
-    /*
+    /**
      * Try to paste an <code>IFolder</code> or <code>IFile</code> stored in the clipboard into the
      * given <code>IContainer</code>.
      */
@@ -185,7 +182,7 @@ public class IpsPasteAction extends IpsAction {
         }
     }
 
-    /*
+    /**
      * Try to paste the <code>IResource</code> stored on the clipboard to the given parent.
      */
     private void paste(IIpsPackageFragment parent) {
@@ -236,7 +233,7 @@ public class IpsPasteAction extends IpsAction {
         operation.copyFiles(fileNames, parentFolder);
     }
 
-    /*
+    /**
      * Try to paste resource links, if the given text contains no such links do nothing. Rerurns
      * true if the text contains resource links otherwise return false.
      */
@@ -263,7 +260,7 @@ public class IpsPasteAction extends IpsAction {
         return result;
     }
 
-    /*
+    /**
      * Try to paste resource links, if the given text contains no such links do nothing. Rerurns
      * true if the text contains resource links otherwise return false.
      */
@@ -303,7 +300,7 @@ public class IpsPasteAction extends IpsAction {
         return contents;
     }
 
-    /*
+    /**
      * Creates a new file in the parent package fragment based on the given ips source object.
      */
     private void createFile(IIpsPackageFragment parent, IIpsObject ipsObject) throws CoreException {
@@ -316,7 +313,7 @@ public class IpsPasteAction extends IpsAction {
         parent.createIpsFile(ipsSrcFileName, contents, true, null);
     }
 
-    /*
+    /**
      * Creates a new file in the parent folder based on the given ips source object.
      */
     private void createFile(IFolder parent, IIpsObject ipsObject) throws CoreException {
@@ -337,12 +334,13 @@ public class IpsPasteAction extends IpsAction {
         file.create(is, true, null);
     }
 
-    /*
+    /**
      * Creates a new package fragment and childs in the parent package fragment based on the given
      * source package fragment.
      */
     private void createPackageFragmentAndChilds(IIpsPackageFragment parent, IIpsPackageFragment sourcePackageFragment)
             throws CoreException {
+
         String packageName = sourcePackageFragment.getLastSegmentName();
         IIpsPackageFragment destination = parent.createSubPackage(packageName, true, null);
         IIpsElement[] children = sourcePackageFragment.getChildren();
@@ -358,7 +356,7 @@ public class IpsPasteAction extends IpsAction {
         }
     }
 
-    /*
+    /**
      * Returns a new unique ips source file name, returns null if the user aborts the get new name
      * for duplicate souce file dialog.
      */
@@ -369,7 +367,7 @@ public class IpsPasteAction extends IpsAction {
         return getNewNameByDialogIfNecessary(IResource.FILE, targetPath, nameWithoutExtension, extension, false);
     }
 
-    /*
+    /**
      * Returns a new name for folder or files, returns null if the user aborts the get new name for
      * duplicate souce file dialog.
      */
@@ -378,6 +376,7 @@ public class IpsPasteAction extends IpsAction {
             String nameWithOrWithoutExtension,
             String extension,
             boolean showExtension) {
+
         boolean dialogWasDisplayed = false;
         Validator validator = new Validator(targetPath, resourceType, extension);
         String suggestedName = nameWithOrWithoutExtension;
@@ -418,12 +417,13 @@ public class IpsPasteAction extends IpsAction {
         }
     }
 
-    /*
+    /**
      * Create a new folder in the parent folder, based on the given source package fragment. Creates
      * all childs of the given source package fragment .
      */
     private void createFolderAndFiles(IFolder targetParentFolder, IIpsPackageFragment sourcePackageFragment)
             throws CoreException {
+
         String packageName = sourcePackageFragment.getLastSegmentName();
         IPath targetPath = targetParentFolder.getFullPath();
         packageName = getNewNameByDialogIfNecessary(IResource.FOLDER, targetPath, packageName, "", false); //$NON-NLS-1$
@@ -491,7 +491,7 @@ public class IpsPasteAction extends IpsAction {
         }
     }
 
-    private void copyProductCmptByWizard(IProductCmpt productCmpt, IResource target) throws CoreException {
+    private void copyProductCmptByWizard(IProductCmpt productCmpt, IResource target) {
         CopyProductCmptWizard wizard = new CopyProductCmptWizard(productCmpt);
         wizard.init(IpsPlugin.getDefault().getWorkbench(), new StructuredSelection(target));
         WizardDialog dialog = new WizardDialog(shell, wizard);
@@ -519,12 +519,13 @@ public class IpsPasteAction extends IpsAction {
         return false;
     }
 
-    /*
+    /**
      * Validator for new resource name.
      * 
      * @author Thorsten Guenther
      */
     private class Validator implements IInputValidator {
+
         IPath root;
         String extension;
         int resourceType;
@@ -535,9 +536,6 @@ public class IpsPasteAction extends IpsAction {
             this.resourceType = resourceType;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String isValid(String newText) {
             IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -555,9 +553,6 @@ public class IpsPasteAction extends IpsAction {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
         // disable action if the selection contains at least one ips object part
@@ -569,4 +564,5 @@ public class IpsPasteAction extends IpsAction {
         }
         return true;
     }
+
 }

@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.ui.wizards.testcase.OpenNewTestCaseWizardActi
  * @author Joerg Ortmann
  */
 public class NewTestCaseAction extends Action {
+
     private IWorkbenchWindow window;
 
     public NewTestCaseAction(IWorkbenchWindow window) {
@@ -39,4 +40,5 @@ public class NewTestCaseAction extends Action {
         openAction.init(window);
         openAction.run(this);
     }
+
 }

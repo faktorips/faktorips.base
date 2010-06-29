@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.ui.wizards.refactor.MoveRefactoringWizard;
  */
 public class MoveHandler extends IpsRefactoringHandler {
 
-    private static final String COMMAND_ID = "org.eclipse.ui.edit.move";
+    private static final String COMMAND_ID = "org.eclipse.ui.edit.move"; //$NON-NLS-1$
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);

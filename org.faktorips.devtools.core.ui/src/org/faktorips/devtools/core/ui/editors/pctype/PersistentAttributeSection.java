@@ -57,22 +57,22 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
     private static final Map<Integer, AttrPropertyAndLabel> columnProperties = new HashMap<Integer, AttrPropertyAndLabel>();
 
     static {
-        columnProperties.put(0, new AttrPropertyAndLabel(IIpsElement.PROPERTY_NAME, "Attribute Name"));
+        columnProperties.put(0, new AttrPropertyAndLabel(IIpsElement.PROPERTY_NAME, "Attribute Name")); //$NON-NLS-1$
         columnProperties.put(1, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME,
-                "Column Name"));
+                "Column Name")); //$NON-NLS-1$
         columnProperties.put(2,
-                new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE, "Unique"));
+                new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE, "Unique")); //$NON-NLS-1$
         columnProperties.put(3, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE,
-                "Nullable"));
-        columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE, "Size"));
+                "Nullable")); //$NON-NLS-1$
+        columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE, "Size")); //$NON-NLS-1$
         columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION,
-                "Precision"));
+                "Precision")); //$NON-NLS-1$
         columnProperties
-                .put(6, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE, "Scale"));
+                .put(6, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE, "Scale")); //$NON-NLS-1$
         columnProperties.put(7, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION,
-                "Column Definition"));
+                "Column Definition")); //$NON-NLS-1$
         columnProperties.put(8, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER,
-                "Converter"));
+                "Converter")); //$NON-NLS-1$
     }
 
     private static class AttrPropertyAndLabel {
@@ -86,7 +86,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
     }
 
     public PersistentAttributeSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
-        super(ipsObject, parent, "Attributes", toolkit);
+        super(ipsObject, parent, "Attributes", toolkit); //$NON-NLS-1$
     }
 
     @Override
@@ -220,7 +220,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 IPersistentAttributeInfo attributeInfo = attribute.getPersistenceAttributeInfo();
 
                 String property = columnProperties.get(columnIndex).property;
-                String result = "";
+                String result = ""; //$NON-NLS-1$
                 if (IIpsElement.PROPERTY_NAME.equals(property)) {
                     result = attribute.getName();
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME.equals(property)) {
@@ -250,7 +250,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER.equals(property)) {
                     result = StringUtil.unqualifiedName(attributeInfo.getConverterQualifiedClassName());
                 }
-                return (result == null ? "" : result);
+                return (result == null ? "" : result); //$NON-NLS-1$
             }
 
             private boolean isUseSqlDefinition(IPersistentAttributeInfo attributeInfo) {

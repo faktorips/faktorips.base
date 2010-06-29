@@ -32,33 +32,21 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
         this.property = property;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EditField getField() {
         return field;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getObject() {
         return object;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPropertyName() {
         return property.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setPropertyValue() {
         if (field.getControl().isDisposed()) {
@@ -74,13 +62,11 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
             Method setter = property.getWriteMethod();
             setter.invoke(object, new Object[] { field.getValue() });
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException("Error setting property value " + property.getName(), e); //$NON-NLS-1$
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setControlValue() {
         try {
@@ -96,11 +82,12 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
 
             if (field.isTextContentParsable() && ObjectUtils.equals(propertyValue, field.getValue())) {
                 if (field instanceof ComboField) {
-                    // special case: if the field is a combo field the getValue method returns null
-                    // if there is no selection and if the null value is selected,
-                    // therefore we must check here if the getValue is a valid selection or nothing
-                    // is selected.
-                    // If there is no valid selection set the new value (e.g. the null value)
+                    /*
+                     * special case: if the field is a combo field the getValue method returns null
+                     * if there is no selection and if the null value is selected, therefore we must
+                     * check here if the getValue is a valid selection or nothing is selected. If
+                     * there is no valid selection set the new value (e.g. the null value)
+                     */
                     if (((ComboField)field).getCombo().getSelectionIndex() != -1) {
                         // the selection in the combo is valid and equal to the property value,
                         // don't set the new value
@@ -113,6 +100,7 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
             field.setValue(propertyValue, false);
 
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException("Error setting value in control for property " + property.getName(), e); //$NON-NLS-1$
         }
     }
@@ -122,6 +110,7 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
             Method getter = property.getReadMethod();
             return getter.invoke(object, new Object[0]);
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException("Error getting property value " + property.getName()); //$NON-NLS-1$
         }
     }

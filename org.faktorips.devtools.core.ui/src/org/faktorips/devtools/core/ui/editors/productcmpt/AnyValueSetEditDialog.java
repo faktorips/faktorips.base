@@ -45,13 +45,13 @@ import org.faktorips.util.message.MessageList;
  */
 public class AnyValueSetEditDialog extends IpsPartEditDialog {
 
-    // The config element that owns the value set being shown/edited.
+    /** The config element that owns the value set being shown/edited. */
     private IConfigElement configElement;
 
-    // list of value set types the users can select
+    /** list of value set types the users can select */
     private List<ValueSetType> allowedValuesSetTypes;
 
-    // true if the dialog is used to just display the value set, no editing is possible
+    /** true if the dialog is used to just display the value set, no editing is possible */
     private boolean viewOnly;
 
     public AnyValueSetEditDialog(IConfigElement configElement, List<ValueSetType> allowedTypes, Shell parentShell) {
@@ -67,9 +67,6 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
         allowedValuesSetTypes = allowedTypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;

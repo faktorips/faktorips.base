@@ -152,7 +152,7 @@ public class BuilderSetContainer {
         builderSetComboField = new ComboField(builderSetCombo);
         builderSetComboField.addChangeListener(adapter);
 
-        List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos(ipsProject);
+        List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos();
         String[] builderSetLabels = new String[builderSetInfos.size()];
 
         // indices out of bounds are ignored in Combo.select()
@@ -274,7 +274,7 @@ public class BuilderSetContainer {
     }
 
     private IpsArtefactBuilderSetInfo getBuilderSetInfo(String builderSetId) {
-        List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos(ipsProject);
+        List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos();
         for (IIpsArtefactBuilderSetInfo iIpsArtefactBuilderSetInfo : builderSetInfos) {
             IpsArtefactBuilderSetInfo info = (IpsArtefactBuilderSetInfo)iIpsArtefactBuilderSetInfo;
             if (builderSetId.equals(info.getBuilderSetId())) {
@@ -301,7 +301,7 @@ public class BuilderSetContainer {
         updateBuilderSet();
     }
 
-    // Updates the page's widgets to reflect the model change
+    /** Updates the page's widgets to reflect the model change */
     private void updateBuilderSet() {
         columns[PROPERTY_VALUE_COLUMN_INDEX].setEditingSupport(new BuilderSetPropertyEditingSupport(tableViewer,
                 ipsProject, builderSetConfigModel, builderSetId));
@@ -346,7 +346,7 @@ public class BuilderSetContainer {
         return buf.toString();
     }
 
-    private List<IIpsArtefactBuilderSetInfo> getBuilderSetInfos(IIpsProject project) {
+    private List<IIpsArtefactBuilderSetInfo> getBuilderSetInfos() {
         List<IIpsArtefactBuilderSetInfo> builderSetInfos = new ArrayList<IIpsArtefactBuilderSetInfo>();
 
         IIpsModel ipsModel = ipsProject.getIpsModel();
@@ -432,8 +432,10 @@ public class BuilderSetContainer {
         }
     }
 
-    // save model for old builderSetId, since builderSetPropertyDefs could have been changed
-    // and we want to restore the values if this builderSet is selected again
+    /**
+     * save model for old builderSetId, since builderSetPropertyDefs could have been changed and we
+     * want to restore the values if this builderSet is selected again
+     */
     private void changeBuilderSet(String oldBuilderSetId, String newBuilderSetId) {
         if (oldBuilderSetId != null && builderSetConfigModel != null) {
             builderSetModels.put(oldBuilderSetId, builderSetConfigModel);
@@ -460,7 +462,7 @@ public class BuilderSetContainer {
         updateColumnWidths();
     }
 
-    // Widget action handling
+    /** Widget action handling */
     private final class BuilderSetAdapter implements ValueChangeListener, SelectionListener {
 
         @Override
@@ -478,12 +480,15 @@ public class BuilderSetContainer {
         }
 
         @Override
-        public void widgetDefaultSelected(SelectionEvent e) { /* ignore */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // ignore */
         }
     }
 
-    // Sorter for IIpsBuilderSetPropertyDef class. Note that only "Property name" is taken into
-    // account (value, description, ... are omitted).
+    /**
+     * Sorter for IIpsBuilderSetPropertyDef class. Note that only "Property name" is taken into
+     * account (value, description, ... are omitted).
+     */
     private final class BuilderSetPropertyDefSorter extends ViewerSorter {
 
         private IIpsProject ipsProject;
@@ -537,12 +542,15 @@ public class BuilderSetContainer {
      * @author Roman Grutza
      */
     private static class BuilderSetContentProvider implements IStructuredContentProvider {
+
         @Override
         public void dispose() {
+            // Nothing to do
         }
 
         @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // Nothing to do
         }
 
         @Override
@@ -562,11 +570,13 @@ public class BuilderSetContainer {
      * @author Roman Grutza
      */
     private class BuilderSetPropertyLabelProvider extends ColumnLabelProvider {
+
         private IIpsArtefactBuilderSetConfigModel model;
         private IIpsProject ipsProject;
 
         BuilderSetPropertyLabelProvider(IIpsProject ipsProject,
                 IIpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel) {
+
             this.ipsProject = ipsProject;
             this.model = ipsArtefactBuilderSetConfigModel;
         }

@@ -50,10 +50,12 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
      * Constructor for testing purposes.
      */
     protected TestCaseTypeAssociation() {
+        // Constructor for testing purposes
     }
 
     public TestCaseTypeAssociation(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter,
             ITestPolicyCmpt parentTestPolicyCmpt) {
+
         this.testPolicyCmptTypeParameter = testPolicyCmptTypeParameter;
         this.parentTestPolicyCmpt = parentTestPolicyCmpt;
     }
@@ -147,25 +149,16 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     // Methods for validation interface
     //
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getValidationResultSeverity() throws CoreException {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValid() throws CoreException {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         MessageList messageList = new MessageList();
@@ -182,10 +175,10 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
             return;
         }
 
-        // delegate the validation to the corresponding test policy component association
-        // validate all associations with the same name, because this associations are grouped to
-        // one
-        // element
+        /*
+         * delegate the validation to the corresponding test policy component association validate
+         * all associations with the same name, because this associations are grouped to one element
+         */
         ITestPolicyCmptLink[] associations = parentTestPolicyCmpt.getTestPolicyCmptLinks();
         HashMap<String, Message> messages = new HashMap<String, Message>();
         for (ITestPolicyCmptLink association : associations) {
@@ -225,16 +218,13 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
         }
     }
 
-    /*
+    /**
      * Returns true if the message is relevant for this association.
      */
     private boolean ifMessageRelevant(Message msg) {
         return (msg.getText().indexOf("\"" + getName() + "\"") >= 0); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ITestParameter getTestParameter() {
         return getTestPolicyCmptTypeParam();

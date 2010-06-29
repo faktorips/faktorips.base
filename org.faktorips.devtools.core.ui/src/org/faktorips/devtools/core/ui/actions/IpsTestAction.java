@@ -52,15 +52,13 @@ import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
  * @author Joerg Ortmann
  */
 public class IpsTestAction extends IpsAction {
+
     private static final String SEPARATOR = "#|#"; //$NON-NLS-1$
 
     private String mode;
 
     private ILaunch launch;
 
-    /**
-     * @param selectionProvider
-     */
     public IpsTestAction(ISelectionProvider selectionProvider) {
         super(selectionProvider);
         super.setText(Messages.IpsTestCaseAction_name);
@@ -74,11 +72,12 @@ public class IpsTestAction extends IpsAction {
         this.mode = mode;
     }
 
-    /*
+    /**
      * Adds all test path elements depending on the given object
      */
     private IIpsPackageFragmentRoot addPathElementFromObject(List<String> pathElements, Object object)
             throws CoreException {
+
         IIpsPackageFragmentRoot root = null;
         if (object instanceof IIpsPackageFragmentRoot) {
             root = (IIpsPackageFragmentRoot)object;
@@ -133,17 +132,16 @@ public class IpsTestAction extends IpsAction {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         try {
             List<String> selectedPathElements = new ArrayList<String>(1);
 
-            // Contains the root of the selected element, only one root is necessary to
-            // obtain the java project for the test runner, if more elements selected
-            // the root of the last selected entry will be used
+            /*
+             * Contains the root of the selected element, only one root is necessary to obtain the
+             * java project for the test runner, if more elements selected the root of the last
+             * selected entry will be used
+             */
             IIpsPackageFragmentRoot root = null;
 
             // evaluate the test path depending on the selection to run the test
@@ -167,12 +165,14 @@ public class IpsTestAction extends IpsAction {
                 MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
                         Messages.IpsTestAction_RunMessageDialogNoTestsFound_Title,
                         Messages.IpsTestAction_RunMessageDialogNoTestsFound_Text);
-            } else if (root != null) {
+            } else {
                 selectedPathElements = removeDuplicatEntries(selectedPathElements);
                 if (assertSelectedElemsInSameProject(selectedPathElements)) {
-                    // get the ips project from the first root, currently it is not possible
-                    // to select more than one root from different projects (means different java
-                    // projects)
+                    /*
+                     * get the ips project from the first root, currently it is not possible to
+                     * select more than one root from different projects (means different java
+                     * projects)
+                     */
                     runTest(selectedPathElements, root.getIpsProject());
                 }
             }
@@ -193,12 +193,13 @@ public class IpsTestAction extends IpsAction {
         }
     }
 
-    /*
+    /**
      * Add all package fragment roots of the selected IpsProject - including the project name - to
      * the given list.
      */
     private IIpsPackageFragmentRoot ipsProjectSelected(IIpsProject ipsProject, List<String> selectedPathElements)
             throws CoreException {
+
         IIpsPackageFragmentRoot root = null;
         IIpsPackageFragmentRoot[] rootsFromProject;
         rootsFromProject = ipsProject.getIpsPackageFragmentRoots();
@@ -213,12 +214,12 @@ public class IpsTestAction extends IpsAction {
         return root;
     }
 
-    /*
+    /**
      * Remove duplicate entries and already containing sub path elements from the given list.<br>
      * Example: 1) hp.Test 2) hp.Test.Test1 => entry 2) will be removed because it is implicit in
      * entry 1)
      */
-    private List<String> removeDuplicatEntries(List<String> selectedPathElements) throws CoreException {
+    private List<String> removeDuplicatEntries(List<String> selectedPathElements) {
         List<String> uniqueList = new ArrayList<String>(selectedPathElements.size());
         Collections.sort(selectedPathElements);
 
@@ -233,7 +234,7 @@ public class IpsTestAction extends IpsAction {
         return uniqueList;
     }
 
-    /*
+    /**
      * Assert that only one project ist selected. Return <code>true</code> is only one project was
      * selected. Return <code>false</code> if more than one project was selected. If more than one
      * project was selected show an error dialog to inform the user.
@@ -257,7 +258,7 @@ public class IpsTestAction extends IpsAction {
         return true;
     }
 
-    /*
+    /**
      * Gets the package name from the given ips package fragment root.
      */
     public static String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
@@ -265,7 +266,7 @@ public class IpsTestAction extends IpsAction {
         return builderSet.getRuntimeRepositoryTocResourceName(root);
     }
 
-    /*
+    /**
      * Run the test.
      */
     private void runTest(List<String> selectedPathElements, IIpsProject ipsProject) throws CoreException {
@@ -298,7 +299,7 @@ public class IpsTestAction extends IpsAction {
         }
     }
 
-    /*
+    /**
      * Displays the ips test run result view.
      */
     private void showTestCaseResultView(String viewId) throws PartInitException {
@@ -315,4 +316,5 @@ public class IpsTestAction extends IpsAction {
     public void setLauch(ILaunch launch) {
         this.launch = launch;
     }
+
 }

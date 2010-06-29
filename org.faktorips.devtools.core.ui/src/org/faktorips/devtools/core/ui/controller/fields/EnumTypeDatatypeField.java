@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
  * the display texts are requested by this field uses the enum display settings of the
  * {@link IpsPreferences}.
  * 
- * 
  * @author Peter Kuntz
  */
 public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {

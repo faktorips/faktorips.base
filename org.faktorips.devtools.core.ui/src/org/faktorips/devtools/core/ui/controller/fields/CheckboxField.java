@@ -18,9 +18,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 
-/**
- *
- */
 public class CheckboxField extends DefaultEditField {
 
     private AbstractCheckbox checkbox;
@@ -29,9 +26,6 @@ public class CheckboxField extends DefaultEditField {
         this.checkbox = checkbox;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return checkbox;
@@ -41,57 +35,36 @@ public class CheckboxField extends DefaultEditField {
         return checkbox;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         return new Boolean(checkbox.isChecked());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         checkbox.setChecked(((Boolean)newValue).booleanValue());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         return checkbox.isChecked() ? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newText) {
         checkbox.setChecked(Boolean.valueOf(newText).booleanValue());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String text) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         checkbox.getButton().addSelectionListener(new SelectionListener() {

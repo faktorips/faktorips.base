@@ -46,6 +46,7 @@ import org.faktorips.util.message.MessageList;
  * @author Joerg Ortmann
  */
 public class NewRootParamWizardPage extends WizardPage implements ValueChangeListener {
+
     private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
     protected static final int PAGE_NUMBER = 2;
 
@@ -67,9 +68,6 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         this.wizard = wizard;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         parentComposite = parent;
@@ -105,9 +103,6 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         controller.add(editFieldParamType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == editFieldDatatypeOrRule) {
@@ -148,18 +143,11 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
 
     /**
      * Finds and returns the datatype with the given name.
-     * 
-     * @throws CoreException
      */
     private Datatype findDatatype(String datatype) throws CoreException {
         return wizard.getTestCaseType().getIpsProject().findDatatype(datatype);
     }
 
-    /**
-     * Validate the page.
-     * 
-     * @throws CoreException
-     */
     private boolean validatePage() throws CoreException {
         setErrorMessage(null);
 
@@ -192,13 +180,13 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         }
 
         try {
-            // special case for test policy cmpty type params
-            // check errors only for displayed attributes,
-            // otherwise the next button is disabled if there is an error on the next page
-            // (e.g. if the policycmpt is abstract and prod rel is not checked.)
-            // In all other cases there is no validation association between the pages,
-            // and if the next page was displayed once then the next button on the prev page is
-            // always enable (see above)
+            /*
+             * special case for test policy cmpty type params check errors only for displayed
+             * attributes, otherwise the next button is disabled if there is an error on the next
+             * page (e.g. if the policycmpt is abstract and prod rel is not checked.) In all other
+             * cases there is no validation association between the pages, and if the next page was
+             * displayed once then the next button on the prev page is always enable (see above)
+             */
             MessageList messageList = newTestParameter.validate(newTestParameter.getIpsProject());
             MessageList relevantMessages = messageList.getMessagesFor(newTestParameter,
                     ITestParameter.PROPERTY_DATATYPE);
@@ -233,8 +221,6 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
 
     /**
      * Informs the wizard that this page was displayed.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public IWizardPage getNextPage() {
@@ -268,7 +254,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         setErrorMessage(null);
     }
 
-    /*
+    /**
      * Creates the datattyppe or rule browse control
      */
     private void createRefEditControl(Composite c) {
@@ -289,7 +275,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         editFieldDatatypeOrRule.addChangeListener(this);
     }
 
-    /*
+    /**
      * Creates the type edit drop down, after creating this edit field the selection is removed
      */
     private void createEditFieldParamType(Composite c) {

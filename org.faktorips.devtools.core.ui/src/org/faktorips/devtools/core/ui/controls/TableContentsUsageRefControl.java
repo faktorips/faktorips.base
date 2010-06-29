@@ -36,11 +36,6 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
 
     private ITableStructureUsage structureUsage;
 
-    /**
-     * @param project
-     * @param parent
-     * @param toolkit
-     */
     public TableContentsUsageRefControl(IIpsProject project, Composite parent, UIToolkit toolkit,
             ITableStructureUsage structureUsage) {
         super(project, parent, toolkit);

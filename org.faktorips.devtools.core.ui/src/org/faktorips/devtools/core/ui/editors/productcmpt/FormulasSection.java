@@ -60,22 +60,22 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class FormulasSection extends IpsSection {
 
-    // Generation which holds the informations to display
+    /** Generation which holds the informations to display */
     private IProductCmptGeneration generation;
 
-    // Pane which serves as parent for all controlls created inside this
+    /** Pane which serves as parent for all controlls created inside this */
     private Composite rootPane;
 
-    // Toolkit to handle common ui-operations
+    /** Toolkit to handle common ui-operations */
     private UIToolkit toolkit;
 
-    // List of controls displaying data (needed to enable/disable).
+    /** List of controls displaying data (needed to enable/disable). */
     private List<TextButtonControl> editControls = new ArrayList<TextButtonControl>();
 
-    // Controller to handle update of ui and model automatically.
+    /** Controller to handle update of ui and model automatically. */
     private CompositeUIController uiMasterController;
 
-    // Label which is displayed if no formulas are defined.
+    /** Label which is displayed if no formulas are defined. */
     private Label noFormulasLabel;
 
     public FormulasSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
@@ -87,9 +87,6 @@ public class FormulasSection extends IpsSection {
         setText(Messages.FormulasSection_calculationFormulas);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         GridLayout layout = new GridLayout(1, true);
@@ -110,9 +107,6 @@ public class FormulasSection extends IpsSection {
         createEditControls();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performRefresh() {
         uiMasterController.updateUI();
@@ -215,9 +209,6 @@ public class FormulasSection extends IpsSection {
         return type.findTableStructureUsage(rolename, ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setEnabled(boolean enabled) {
         // to get the disabled look, we have to disable all the input-fields

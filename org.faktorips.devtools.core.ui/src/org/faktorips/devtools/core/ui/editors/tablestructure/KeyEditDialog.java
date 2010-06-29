@@ -73,20 +73,20 @@ import org.faktorips.util.message.MessageList;
  */
 public class KeyEditDialog extends IpsPartEditDialog {
 
-    // the key being edited
+    /** the key being edited */
     private IKey key;
 
-    // table viewer to show the item candidates that can be added to the key.
+    /** table viewer to show the item candidates that can be added to the key. */
     private TableViewer candidatesViewer;
 
-    // table viewer to show the key's items.
+    /** table viewer to show the key's items. */
     private TableViewer itemsViewer;
 
-    // fields
     private TextButtonField tableStructureRefField;
+
     private TextField uniqueKeyRefField;
 
-    // completion processor for a table structure's unique keys.
+    /** completion processor for a table structure's unique keys. */
     UniqueKeyCompletionProcessor completionProcessor;
 
     // buttons
@@ -100,9 +100,6 @@ public class KeyEditDialog extends IpsPartEditDialog {
         this.key = key;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -165,14 +162,12 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             uniqueKeyRefField = new TextField(ukRefControl);
             uniqueKeyRefField.addChangeListener(new ValueChangeListener() {
-
                 @Override
                 public void valueChanged(FieldValueChangedEvent e) {
                     // see comment above
                     ((IForeignKey)key).setReferencedUniqueKey(uniqueKeyRefField.getText());
                     refreshUi();
                 }
-
             });
 
             uiToolkit.createHorizonzalLine(pageComposite);
@@ -211,13 +206,11 @@ public class KeyEditDialog extends IpsPartEditDialog {
         itemsViewer = new TableViewer(table);
         itemsViewer.setLabelProvider(new KeyItemLabelProvider());
         new TableMessageHoverService(itemsViewer) {
-
             @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 MessageList list = key.validate(key.getIpsProject());
                 return list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName((String)element));
             }
-
         };
         itemsViewer.setContentProvider(new IStructuredContentProvider() {
 
@@ -228,10 +221,12 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             @Override
             public void dispose() {
+                // Nothing to do
             }
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // Nothing to do
             }
 
         });
@@ -253,7 +248,6 @@ public class KeyEditDialog extends IpsPartEditDialog {
         addButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         addButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
         addButton.addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetSelected(SelectionEvent e) {
                 addSelectedItems();
@@ -261,6 +255,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -268,7 +263,6 @@ public class KeyEditDialog extends IpsPartEditDialog {
         removeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         removeButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
         removeButton.addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetSelected(SelectionEvent e) {
                 removeSelectedItems();
@@ -276,6 +270,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -285,7 +280,6 @@ public class KeyEditDialog extends IpsPartEditDialog {
         upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         upButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowUp.gif", true)); //$NON-NLS-1$
         upButton.addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetSelected(SelectionEvent e) {
                 moveSelectedItems(true);
@@ -293,6 +287,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -308,6 +303,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -323,21 +319,17 @@ public class KeyEditDialog extends IpsPartEditDialog {
         data.heightHint = 200;
         table.setLayoutData(data);
         table.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseDoubleClick(MouseEvent e) {
                 addSelectedItems();
             }
-
         });
         candidatesViewer = new TableViewer(table);
         candidatesViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtonEnabledState();
             }
-
         });
         candidatesViewer.setLabelProvider(new DefaultLabelProvider());
         candidatesViewer.setContentProvider(new IStructuredContentProvider() {
@@ -349,21 +341,18 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             @Override
             public void dispose() {
+                // Nothing to do
             }
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // Nothing to do
             }
 
         });
         candidatesViewer.setInput(this);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
-     */
     @Override
     protected void connectToModel() {
         super.connectToModel();
@@ -410,7 +399,6 @@ public class KeyEditDialog extends IpsPartEditDialog {
     }
 
     private void moveSelectedItems(boolean up) {
-
         Table table = itemsViewer.getTable();
         if (table.getSelectionCount() == 0) {
             return;
@@ -463,7 +451,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
         private ResourceManager resourceManager;
 
-        ImageDescriptor tableColumnDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("TableColumn.gif");
+        ImageDescriptor tableColumnDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("TableColumn.gif"); //$NON-NLS-1$
 
         public KeyItemLabelProvider() {
             super();

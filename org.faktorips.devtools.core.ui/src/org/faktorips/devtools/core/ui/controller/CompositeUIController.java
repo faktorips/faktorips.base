@@ -35,9 +35,6 @@ public class CompositeUIController implements UIController {
         controllers.remove(controller);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void updateModel() {
         for (UIController c : controllers) {
@@ -45,9 +42,6 @@ public class CompositeUIController implements UIController {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void updateUI() {
         for (UIController c : controllers) {

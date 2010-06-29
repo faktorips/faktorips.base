@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -52,9 +51,9 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
  * 
  * @author Jan Ortmann
  */
-public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsChangeListener {
+public class AttributeEditDialog extends IpsPartEditDialog2 {
 
-    /*
+    /**
      * Folder which contains the pages shown by this dialog. Used to modify which page is shown.
      */
     private TabFolder folder;
@@ -62,7 +61,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     private IIpsProject ipsProject;
     private IProductCmptTypeAttribute attribute;
 
-    /*
+    /**
      * placeholder for the default edit field, the edit field for the default value depends on the
      * attributes datatype
      */
@@ -76,10 +75,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
 
     private ExtensionPropertyControlFactory extFactory;
 
-    /**
-     * @param productCmptTypeAttribute
-     * @param parentShell
-     */
     public AttributeEditDialog(IProductCmptTypeAttribute productCmptTypeAttribute, Shell parentShell) {
         super(productCmptTypeAttribute, parentShell, Messages.AttributeEditDialog_title, true);
 
@@ -96,9 +91,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         folder = (TabFolder)parent;
@@ -165,7 +157,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         extFactory.bind(bindingContext);
 
         return c;
-
     }
 
     private void createDefaultValueEditField() {
@@ -183,9 +174,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         bindingContext.bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);

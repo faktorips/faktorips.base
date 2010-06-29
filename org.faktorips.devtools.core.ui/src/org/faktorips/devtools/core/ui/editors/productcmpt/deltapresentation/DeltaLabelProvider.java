@@ -38,9 +38,6 @@ public class DeltaLabelProvider extends LabelProvider {
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage(Object element) {
         ImageDescriptor descriptor = ImageDescriptor.getMissingImageDescriptor();
@@ -65,15 +62,15 @@ public class DeltaLabelProvider extends LabelProvider {
     private Image getBaseImage(ProdDefPropertyType propertyType) {
         if (propertyType == ProdDefPropertyType.VALUE) {
             return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "ProductAttribute.gif"));
+                    "ProductAttribute.gif")); //$NON-NLS-1$
         } else if (propertyType == ProdDefPropertyType.TABLE_CONTENT_USAGE) {
             return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "TableContentsUsage.gif"));
+                    "TableContentsUsage.gif")); //$NON-NLS-1$
         } else if (propertyType == ProdDefPropertyType.FORMULA) {
-            return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor("Formula.gif"));
+            return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor("Formula.gif")); //$NON-NLS-1$
         } else if (propertyType == ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET) {
             return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "PolicyAttribute.gif"));
+                    "PolicyAttribute.gif")); //$NON-NLS-1$
         } else {
             return null;
         }
@@ -81,23 +78,20 @@ public class DeltaLabelProvider extends LabelProvider {
 
     private ImageDescriptor getBaseImage(DeltaType deltaType) {
         if (deltaType == DeltaType.MISSING_PROPERTY_VALUE) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif");
+            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.VALUE_WITHOUT_PROPERTY) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueWithoutProperty.gif");
+            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.PROPERTY_TYPE_MISMATCH) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypePropertyTypeMismatch.gif");
+            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.VALUE_SET_MISMATCH) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif");
+            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.LINK_WITHOUT_ASSOCIATION) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif");
+            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
         } else {
             return null;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         if (element instanceof DeltaType) {
@@ -109,11 +103,9 @@ public class DeltaLabelProvider extends LabelProvider {
         return super.getText(element);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         resourceManager.dispose();
     }
+
 }

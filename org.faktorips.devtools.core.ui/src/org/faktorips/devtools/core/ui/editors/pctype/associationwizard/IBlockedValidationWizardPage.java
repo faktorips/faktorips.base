@@ -30,8 +30,6 @@ public interface IBlockedValidationWizardPage extends IWizardPage {
 
     /**
      * Returns all properties wich are edit by this page.
-     * 
-     * @return
      */
     public List<String> getProperties();
 

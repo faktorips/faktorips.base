@@ -34,6 +34,7 @@ public abstract class AbstractDecisionEditPart extends NodeEditPart {
     protected IFigure createFigureInternal() {
         figure = createNodeShape();
         createConnectionAnchor((Figure)figure);
+
         return figure;
     }
 

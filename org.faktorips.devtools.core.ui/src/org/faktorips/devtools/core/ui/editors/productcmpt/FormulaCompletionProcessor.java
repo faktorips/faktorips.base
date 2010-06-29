@@ -39,9 +39,6 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
 import org.faktorips.util.ArgumentCheck;
 
-/**
- * 
- */
 public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private IMethod signature;
@@ -56,17 +53,11 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         setComputeProposalForEmptyPrefix(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
         return new char[] { '.' };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {
@@ -90,6 +81,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private void addMatchingEnumTypes(List<ICompletionProposal> result, String enumTypePrefix, int replacementOffset)
             throws CoreException {
+
         EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
         for (EnumDatatype enumType : enumTypes) {
             if (enumType.getName().startsWith(enumTypePrefix)) {
@@ -105,6 +97,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             String enumTypeName,
             String enumValuePrefix,
             int replacementOffset) throws CoreException {
+
         EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
         for (EnumDatatype enumType : enumTypes) {
             if (enumType.getName().equals(enumTypeName)) {
@@ -124,6 +117,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             String enumValue,
             int replacementOffset,
             int replacementLength) {
+
         ICompletionProposal proposal = new CompletionProposal(enumValue, replacementOffset, replacementLength,
                 enumValue.length(), new DefaultLabelProvider().getImage(enumType), enumValue, null, null);
         result.add(proposal);
@@ -132,6 +126,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     private void addMatchingProductCmptTypeAttributes(List<ICompletionProposal> result,
             String prefix,
             int replacementOffset) throws CoreException {
+
         IIpsProject ipsProject = formula.getIpsProject();
         IProductCmptType productCmptType = formula.findProductCmptType(formula.getIpsProject());
         if (productCmptType != null) {
@@ -149,6 +144,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             String datatype,
             int replacementOffset,
             int replacementLength) {
+
         String name = part.getName();
         String displayText = name + " - " + datatype; //$NON-NLS-1$
         ICompletionProposal proposal = new CompletionProposal(name, replacementOffset, replacementLength,
@@ -167,6 +163,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private void addMatchingFunctions(List<ICompletionProposal> result, String prefix, int replacementOffset)
             throws CoreException {
+
         ExprCompiler compiler = formula.newExprCompiler(formula.getIpsProject());
         FlFunction[] functions = compiler.getFunctions();
         Arrays.sort(functions, new Comparator<FlFunction>() {
@@ -189,6 +186,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             FlFunction function,
             int replacementOffset,
             int replacementLength) {
+
         String name = function.getName();
         StringBuffer displayText = new StringBuffer(name);
         displayText.append('(');
@@ -229,7 +227,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         for (int i = 0; i < attributes.length; i++) {
             if (attributes[i].getName().startsWith(attributePrefix)) {
                 if (!attributeNames.contains(attributes[i].getName())) {
-                    addAttributeToResult(result, paramName, attributes[i], replacementOffset, attributePrefix.length());
+                    addAttributeToResult(result, attributes[i], replacementOffset, attributePrefix.length());
                     attributeNames.add(attributes[i].getName());
                 }
             }
@@ -237,10 +235,10 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     private void addAttributeToResult(List<ICompletionProposal> result,
-            String paramName,
             IAttribute attribute,
             int replacementOffset,
             int replacementLength) {
+
         String name = attribute.getName();
         String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
         ICompletionProposal proposal = new CompletionProposal(name, replacementOffset, replacementLength,
@@ -259,7 +257,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         return null;
     }
 
-    /*
+    /**
      * The characters that are checked within this method have to be in sych with the identifier
      * tokens defined in the ffl.jjt grammar
      */

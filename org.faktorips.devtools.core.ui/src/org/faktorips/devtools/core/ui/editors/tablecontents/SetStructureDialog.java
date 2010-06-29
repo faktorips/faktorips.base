@@ -49,9 +49,6 @@ public class SetStructureDialog extends EditDialog {
         this.contents = contents;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
@@ -78,18 +75,12 @@ public class SetStructureDialog extends EditDialog {
         return workArea;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         super.createButtonsForButtonBar(parent);
         super.getButton(OK).setEnabled(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == OK) {

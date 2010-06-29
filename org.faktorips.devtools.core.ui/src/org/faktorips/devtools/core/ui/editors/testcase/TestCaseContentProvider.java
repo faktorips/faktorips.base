@@ -46,6 +46,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author Joerg Ortmann
  */
 public class TestCaseContentProvider implements ITreeContentProvider {
+
     private static Object[] EMPTY_ARRAY = new Object[0];
 
     /**
@@ -57,22 +58,23 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     public static final int EXPECTED_RESULT = 2;
     private int contentType = COMBINED;
 
-    /** Sort functions */
     public static TestPolicyCmptSorter TESTPOLICYCMPT_SORTER = new TestPolicyCmptSorter();
     public static TestValueSorter TESTVALUE_SORTER = new TestValueSorter();
 
-    // Contains the test case for which the content will be provided
+    /** Contains the test case for which the content will be provided */
     private ITestCase testCase;
 
-    // Indicates if the structure should be displayed without association layer
+    /** Indicates if the structure should be displayed without association layer */
     private boolean withoutAssociations = false;
 
-    // Cache containing the dummy objects, to display the association and rules.
-    // This kind of objects are only used in the user interface to adapt the model objects to the
-    // correct content in the tree view
+    /**
+     * Cache containing the dummy objects, to display the association and rules. This kind of
+     * objects are only used in the user interface to adapt the model objects to the correct content
+     * in the tree view
+     */
     private HashMap<String, IDummyTestCaseObject> dummyObjects = new HashMap<String, IDummyTestCaseObject>();
 
-    // ips project used to search
+    /** ips project used to search */
     private IIpsProject ipsProject;
 
     public TestCaseContentProvider(int contentType, ITestCase testCase) {
@@ -199,9 +201,6 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         this.contentType = contentType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof ITestPolicyCmpt) {
@@ -216,9 +215,6 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         return EMPTY_ARRAY;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
         if (element instanceof ITestPolicyCmpt) {
@@ -232,9 +228,6 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildren(Object element) {
         Object[] children = getChildren(element);
@@ -251,9 +244,6 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         return getElements(testCase);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getElements(Object inputElement) {
         List<ITestObject> elements = new ArrayList<ITestObject>();
@@ -341,16 +331,11 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
+        // Nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to do
@@ -378,7 +363,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         return testCase.findTestPolicyCmpt(path);
     }
 
-    /*
+    /**
      * Returns all child of the given test case type association parameter (dummy association based
      * on the test case type definition)
      */
@@ -417,7 +402,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         return childs.toArray(new IIpsElement[0]);
     }
 
-    /*
+    /**
      * Returns all child of the given test case association.
      */
     private Object[] getChildsForTestPolicyCmptAssociation(ITestPolicyCmptLink testPcAssociation) {
@@ -434,7 +419,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         }
     }
 
-    /*
+    /**
      * Returns childs of the test policy component.
      */
     private Object[] getChildsForTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
@@ -442,11 +427,11 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         if (withoutAssociations) {
             return getChildsWithoutDummyAssociationLayer(links);
         } else {
-            return getChildsWithAssociationLayer(testPolicyCmpt, links);
+            return getChildsWithAssociationLayer(testPolicyCmpt);
         }
     }
 
-    private Object[] getChildsWithAssociationLayer(ITestPolicyCmpt testPolicyCmpt, ITestPolicyCmptLink[] links) {
+    private Object[] getChildsWithAssociationLayer(ITestPolicyCmpt testPolicyCmpt) {
         // group child's using the test policy component type
 
         // the result objects type could be IDummyTestCaseObject or ITestPolicyCpmtLink in case of
@@ -476,9 +461,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             }
             return childs.toArray(new Object[0]);
         } catch (CoreException e) {
-            // ignore model error, the model consitence between the test case type and the test
-            // case
-            // will be check when openening the editor, therefore it will be ignored is here
+            /*
+             * ignore model error, the model consitence between the test case type and the test case
+             * will be check when openening the editor, therefore it will be ignored is here
+             */
             return EMPTY_ARRAY;
         }
     }
@@ -495,11 +481,11 @@ public class TestCaseContentProvider implements ITreeContentProvider {
                 ITestPolicyCmpt target = null;
                 try {
                     target = link.findTarget();
+                    if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult())) {
+                        childTestPolicyCmpt.add(target);
+                    }
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
-                }
-                if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult())) {
-                    childTestPolicyCmpt.add(target);
                 }
             } else {
                 // the link is an association will be added
@@ -509,7 +495,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         return childTestPolicyCmpt.toArray(new IIpsElement[0]);
     }
 
-    /*
+    /**
      * Returns a cached dummy object. To adapt the model object to the corresponding object which
      * will be displayed in the user interface.
      */
@@ -543,7 +529,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         return id;
     }
 
-    /*
+    /**
      * Returns <code>true</code> if the given parameter matches the current type which the content
      * provider provides.
      */
@@ -552,24 +538,28 @@ public class TestCaseContentProvider implements ITreeContentProvider {
                 || (isInput() && parameter.isInputOrCombinedParameter());
     }
 
-    /*
+    /**
      * Helper class to sort test policy component objects.
      */
     private static class TestPolicyCmptSorter implements Comparator<ITestPolicyCmpt> {
+
         @Override
         public int compare(ITestPolicyCmpt testPolicyCmpt1, ITestPolicyCmpt testPolicyCmpt2) {
             return testPolicyCmpt1.getProductCmpt().compareTo(testPolicyCmpt2.getProductCmpt());
         }
+
     }
 
-    /*
+    /**
      * Helper class to sort test value objects.
      */
     private static class TestValueSorter implements Comparator<ITestValue> {
+
         @Override
         public int compare(ITestValue testValue1, ITestValue testValue2) {
             return testValue1.getTestValueParameter().compareTo(testValue2.getTestValueParameter());
         }
+
     }
 
     /**

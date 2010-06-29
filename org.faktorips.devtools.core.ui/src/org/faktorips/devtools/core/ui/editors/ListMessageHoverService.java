@@ -29,9 +29,6 @@ public abstract class ListMessageHoverService extends MessageHoverService {
         this.list = list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getElementAt(Point point) {
         int index = getIndexFor(point);
@@ -42,9 +39,6 @@ public abstract class ListMessageHoverService extends MessageHoverService {
         return list.getItem(index);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Rectangle getBoundsAt(Point point) {
         int index = getIndexFor(point);

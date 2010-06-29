@@ -9,6 +9,7 @@ import org.faktorips.util.ArgumentCheck;
  * Expands all elements in a tree viewer.
  */
 public class ExpandAllAction extends Action {
+
     private static final String EXPAND_ALL_ICON = "ExpandAll.gif"; //$NON-NLS-1$
 
     private final AbstractTreeViewer treeViewer;
@@ -27,9 +28,9 @@ public class ExpandAllAction extends Action {
         setToolTipText(Messages.ExpandAllAction_Description);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void run() {
         treeViewer.expandAll();
     }
+
 }

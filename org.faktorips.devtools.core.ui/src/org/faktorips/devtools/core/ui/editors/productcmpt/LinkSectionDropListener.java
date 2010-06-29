@@ -92,7 +92,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             if (draggedCmpts == null) {
                 return false;
             }
-            // Linux bug - @see comment of getTransferElements(..)
+            // Linux bug - see comment of getTransferElements(..)
             if (draggedCmpts.isEmpty()) {
                 return true;
             }
@@ -243,6 +243,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     private IProductCmptLink createLink(String droppedCmptQName, IProductCmptGeneration generation, Object target)
             throws CoreException {
+
         IAssociation association = getAssociation(target);
         if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
             IProductCmptLink newLink = null;
@@ -261,8 +262,6 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
      * Override the determineLocation method because we have only location after or location before
      * when moving an element. When D&N is not in moving mode, we do not have location feedback, but
      * we although return the normal determined location.
-     * 
-     * {@inheritDoc}
      */
     @Override
     protected int determineLocation(DropTargetEvent event) {
@@ -279,9 +278,6 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         if (item != null) {
             Rectangle bounds = getBounds(item);
             int offset = bounds.height / 2;
-            if (bounds == null) {
-                return LOCATION_NONE;
-            }
             if ((coordinates.y - bounds.y) < offset) {
                 return LOCATION_BEFORE;
             }
@@ -313,7 +309,6 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
      * @author Cornelius Dirmeier
      */
     public class MoveLinkDragListener implements DragSourceListener {
-
         ISelectionProvider selectionProvider;
 
         public MoveLinkDragListener(ISelectionProvider selectionProvider) {
@@ -327,13 +322,13 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             List<IProductCmptLink> selectedLinks = getSelectedLinks();
             setToMove(selectedLinks);
             event.doit = selectedLinks != null;
-            event.data = "local";
+            event.data = "local"; //$NON-NLS-1$
         }
 
         @Override
         public void dragSetData(DragSourceEvent event) {
             setToMove(getSelectedLinks());
-            event.data = "local";
+            event.data = "local"; //$NON-NLS-1$
         }
 
         private List<IProductCmptLink> getSelectedLinks() {

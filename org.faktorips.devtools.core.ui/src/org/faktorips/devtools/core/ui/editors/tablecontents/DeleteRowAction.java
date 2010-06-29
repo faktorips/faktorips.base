@@ -64,7 +64,7 @@ public class DeleteRowAction extends IpsAction {
         tableViewer.refresh(false);
     }
 
-    /*
+    /**
      * Selects the previous row or if the given row is the first row the new first row.
      */
     private void selectPreviousRow(int rowNumber) {

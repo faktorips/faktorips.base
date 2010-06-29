@@ -68,42 +68,45 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
  * @author Joerg Ortmann
  */
 public class TestCaseDetailArea {
-    // UI toolkit for creating the controls
+
+    /** UI toolkit for creating the controls */
     private UIToolkit toolkit;
 
-    // Contains the content provider of the test policy component object
+    /** Contains the content provider of the test policy component object */
     private TestCaseContentProvider contentProvider;
 
     private IIpsProject ipsProject;
 
-    // Contains all edit sections the key is the name of the correspondin test parameter
+    /** Contains all edit sections the key is the name of the correspondin test parameter */
     private HashMap<String, Section> sectionControls = new HashMap<String, Section>();
 
-    // Container holds all edit fields for test values and test attribute values
+    /** Container holds all edit fields for test values and test attribute values */
     private HashMap<String, EditField> allEditFieldsCache = new HashMap<String, EditField>();
 
-    // Contains the first edit field of each test policy component in the edit area
+    /** Contains the first edit field of each test policy component in the edit area */
     private HashMap<String, EditField> firstAttributeEditFields = new HashMap<String, EditField>();
 
-    // Contains the failures of the last test run
     private HashMap<String, String> failureMessageCache = new HashMap<String, String>();
     private HashMap<String, String[]> failureDetailCache = new HashMap<String, String[]>();
-    // Contains all fixed fields (actual value stored as expected value)
+
+    /** Contains all fixed fields (actual value stored as expected value) */
     private List<String> fixedFieldsCache = new ArrayList<String>();
 
-    // Contains the mapping between the edit field and model objects
+    /** Contains the mapping between the edit field and model objects */
     private HashMap<EditField, IIpsObjectPart> editField2ModelObject = new HashMap<EditField, IIpsObjectPart>();
 
-    // Contains all ui controller
+    /** Contains all ui controller */
     private List<Control> allBindedControls = new ArrayList<Control>();
 
-    // The section this details belongs to
+    /** The section this details belongs to */
     private TestCaseSection testCaseSection;
 
-    // Composites to change the UI
-    // area which contains the dynamic detail controls
+    /**
+     * Composites to change the UI area which contains the dynamic detail controls
+     */
     private Composite detailsArea;
-    // area which contains alls detail controls
+
+    /** area which contains alls detail controls */
     private Composite dynamicArea;
 
     private List<ITestCaseDetailAreaRedrawListener> testCaseDetailAreaRedrawListener = new ArrayList<ITestCaseDetailAreaRedrawListener>(
@@ -111,10 +114,11 @@ public class TestCaseDetailArea {
 
     private BindingContext bindingContext;
 
-    /*
+    /**
      * Mouse listener class to select the section if the mouse button is clicked
      */
     private class SectionSelectMouseListener implements MouseListener {
+
         private ITestPolicyCmpt testPolicyCmptType;
         private ITestPolicyCmptLink testPolicyCmptTypeLink;
         private ITestObject testObject;
@@ -160,6 +164,7 @@ public class TestCaseDetailArea {
 
     public TestCaseDetailArea(UIToolkit toolkit, TestCaseContentProvider contentProvider, TestCaseSection section,
             BindingContext bindingContext) {
+
         this.toolkit = toolkit;
         this.contentProvider = contentProvider;
         ipsProject = contentProvider.getTestCase().getIpsProject();
@@ -267,8 +272,6 @@ public class TestCaseDetailArea {
      * Creates the section with the test policy component object.<br>
      * If the element is a child then the link name could be given as input to display it in the
      * section title beside the test policy component.
-     * 
-     * @throws CoreException
      */
     private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details) throws CoreException {
         if (testPolicyCmpt == null || details.isDisposed()) {
@@ -327,6 +330,7 @@ public class TestCaseDetailArea {
             final ITestPolicyCmpt testPolicyCmptForSelection,
             Composite attributeComposite,
             final ITestAttributeValue attributeValue) throws CoreException {
+
         EditField editField = null;
 
         // get the ctrlFactory to create the edit field
@@ -370,6 +374,7 @@ public class TestCaseDetailArea {
         try {
             editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null, ipsProject);
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             // ignore exception
         }
 
@@ -405,16 +410,17 @@ public class TestCaseDetailArea {
         return editField;
     }
 
-    /*
+    /**
      * Marks the given edit field as expected result.
      */
     private void markAsExpected(final EditField editField) {
         editField.getControl().setBackground(testCaseSection.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
     }
 
-    /*
-     * Creates the section for a link of type association.<br> Create a hyperlink if the realtion
-     * exists is in the current test case or create a label with the test link target.
+    /**
+     * Creates the section for a link of type association.<br>
+     * Create a hyperlink if the realtion exists is in the current test case or create a label with
+     * the test link target.
      */
     private void createLinkSectionAssociation(final ITestPolicyCmptLink currLink, Composite details) {
         String uniquePath = testCaseSection.getUniqueKey(currLink);
@@ -460,6 +466,7 @@ public class TestCaseDetailArea {
 
                 @Override
                 public void focusLost(FocusEvent e) {
+                    // Nothing to do
                 }
             });
             String hyperLinkPath = " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "; //$NON-NLS-1$ //$NON-NLS-2$
@@ -484,11 +491,10 @@ public class TestCaseDetailArea {
 
     /**
      * Recursive create the sections for the links and all their childs.
-     * 
-     * @throws CoreException
      */
     private void createPolicyCmptAndLinkSection(ITestPolicyCmpt currTestPolicyCmpt, Composite details)
             throws CoreException {
+
         createPolicyCmptSection(currTestPolicyCmpt, details);
         ITestPolicyCmptLink[] links = currTestPolicyCmpt.getTestPolicyCmptLinks();
         for (ITestPolicyCmptLink currLink : links) {
@@ -515,7 +521,7 @@ public class TestCaseDetailArea {
         // Create the edit field only if the content provider provides the type of the test value
         // object
         String uniquePath = testCaseSection.getUniqueKey(testValue);
-        if (!isVisibleForContentFilter(testCaseSection.getContentProvider(), testValue)) {
+        if (!isVisibleForContentFilter(testValue)) {
             return;
         }
 
@@ -580,7 +586,7 @@ public class TestCaseDetailArea {
         // Create the edit field only if the content provider provides the type of the test value
         // object
         String uniqueKey = testCaseSection.getUniqueKey(rule);
-        if (!isVisibleForContentFilter(testCaseSection.getContentProvider(), rule)) {
+        if (!isVisibleForContentFilter(rule)) {
             return;
         }
 
@@ -625,10 +631,10 @@ public class TestCaseDetailArea {
         addBindingFor(editField, rule, ITestRule.PROPERTY_VIOLATED);
     }
 
-    /*
+    /**
      * Return <code>true</code> if the given test object is visible or not <code>false</code>.
      */
-    private boolean isVisibleForContentFilter(TestCaseContentProvider contentProvider, ITestObject testObject) {
+    private boolean isVisibleForContentFilter(ITestObject testObject) {
         try {
             if (!((testCaseSection.getContentProvider().isInput() && testObject.isInput()) || (testCaseSection
                     .getContentProvider().isExpectedResult() && testObject.isExpectedResult()))
@@ -636,6 +642,7 @@ public class TestCaseDetailArea {
                 return false;
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             // ignore exception, display the testObject
         }
         return true;
@@ -710,8 +717,6 @@ public class TestCaseDetailArea {
      * Mark the test attribute value field or test value field - which is identified by the given
      * key - as failure. Returns <code>true</code> if the field was found otherwise
      * <code>false</code>.
-     * 
-     * @param failureDetails2
      */
     boolean markEditFieldAsFailure(String editFieldUniqueKey, String failureMessage, String[] failureDetails2) {
         failureMessageCache.put(editFieldUniqueKey, failureMessage);
@@ -789,7 +794,7 @@ public class TestCaseDetailArea {
         }
     }
 
-    /*
+    /**
      * Adds a listener to mark the section as selected if the given edit field gets the focus
      */
     private void addSectionSelectionListeners(EditField editField, Control label, final IIpsObjectPart object) {
@@ -811,7 +816,7 @@ public class TestCaseDetailArea {
         }
     }
 
-    /*
+    /**
      * Remove binding of all controls
      */
     private void unbindControls() {
@@ -821,7 +826,7 @@ public class TestCaseDetailArea {
         allBindedControls.clear();
     }
 
-    /*
+    /**
      * Adds the given object to the binding context
      */
     private void addBindingFor(EditField editField, Object object, String property) {
@@ -829,7 +834,7 @@ public class TestCaseDetailArea {
         allBindedControls.add(editField.getControl());
     }
 
-    /*
+    /**
      * Stores the edit field which is identified by the given unique key.
      */
     private void putEditField(String key, EditField editField) {

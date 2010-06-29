@@ -51,11 +51,6 @@ public class DescriptionSection extends IpsSection {
         setText(Messages.DescriptionSection_description);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#initClientComposite(org.eclipse.swt.widgets.Composite)
-     */
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         GridLayout layout = new GridLayout(1, true);

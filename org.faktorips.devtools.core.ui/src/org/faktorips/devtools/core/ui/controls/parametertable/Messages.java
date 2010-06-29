@@ -15,22 +15,22 @@ package org.faktorips.devtools.core.ui.controls.parametertable;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Jan Ortmann
- */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.controls.parametertable.messages"; //$NON-NLS-1$
+
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String ChangeParametersControl_add;
     public static String ChangeParametersControl_down;
     public static String ChangeParametersControl_remove;
     public static String ChangeParametersControl_up;
     public static String ParameterInfo_1;
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
 
-    private Messages() {
-    }
 }

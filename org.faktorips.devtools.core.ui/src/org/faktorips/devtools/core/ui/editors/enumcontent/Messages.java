@@ -19,6 +19,14 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.enumcontent.messages"; //$NON-NLS-1$
 
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String EnumContentEditor_title;
     public static String EnumContentValuesPage_title;
     public static String EnumContentGeneralInfoSection_title;
@@ -44,9 +52,5 @@ public class Messages extends NLS {
 
     public static String EnumContentPage_labelOpenFixEnumTypeDialog;
     public static String EnumContentPage_tooltipOpenFixEnumTypeDialog;
-
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
 
 }

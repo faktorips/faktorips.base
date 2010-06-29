@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
  */
 public class GenerationEditDialog extends IpsPartEditDialog implements ModifyListener {
 
-    // edit fields
     private GregorianCalendarField dateField;
 
     private IProductCmptGeneration previous;
@@ -59,9 +58,6 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         this.next = (IProductCmptGeneration)generation.getNextByValidDate();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -87,23 +83,16 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         return c;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void connectToModel() {
         super.connectToModel();
         uiController.add(dateField, IProductCmptGeneration.PROPERTY_VALID_FROM);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void modifyText(ModifyEvent e) {
         // We need to validate here and "by hand" because this validation is not neccessary
         // to be done during normal validation of a generation.
-
         GregorianCalendar value = (GregorianCalendar)dateField.getValue();
         if (value == null) {
             SimpleDateFormat format = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM);

@@ -74,6 +74,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class FormulaTestInputValuesControl extends Composite implements ColumnChangeListener,
         IDataChangeableReadWriteAccess {
+
     private static final int IDX_IDENTIFIER = 1;
     private static final int IDX_VALUE_COLUMN = 2;
 
@@ -81,26 +82,25 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
     private UIToolkit uiToolkit;
 
-    /* Table contains the input values */
-    private TableViewer formulaInputTableViewer;;
+    /** Table contains the input values */
+    private TableViewer formulaInputTableViewer;
 
-    /* Label to display the result of the formula */
+    /** Label to display the result of the formula */
     private Label formulaResult;
 
     private IIpsProject ipsProject;
 
-    /* Buttons */
     private Button btnNewFormulaTestCase;
     private Button btnCalculate;
     private Button btnClearInputValues;
 
-    /* The formula test case which will be displayed and edit by this composite */
+    /** The formula test case which will be displayed and edit by this composite */
     private IFormulaTestCase formulaTestCase;
 
-    /* Controller of the dependent ips object part */
+    /** Controller of the dependent ips object part */
     private UIController uiController;
 
-    /*
+    /**
      * Indicates that the formula test case can be stored as a new one. For instance if the current
      * formula test case is used to execute the formula on the first page of the formula edit dialog
      * (fast preview executing of the currently editing formula), then the store button could be
@@ -110,31 +110,31 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      */
     private boolean canStoreFormulaTestCaseAsNewFormulaTestCase = false;
 
-    /*
+    /**
      * Indicates that the formula will be executed and the result will be displayed in the
      * corresponding control. If <code>false</code> the formula will not be executed by this
      * control.
      */
     private boolean canCalculateResult = false;
 
-    /* Indicates that the calculated result will be stored as expected result */
+    /** Indicates that the calculated result will be stored as expected result */
     private boolean storeExpectedResult = true;
 
-    /* Contains the last calculated result */
+    /** Contains the last calculated result */
     private Object lastCalculatedResult = null;
 
-    /* indicates that the object is self updating */
+    /** indicates that the object is self updating */
     private boolean isUpdatingSelf;
 
-    // Contains the cell modifier for the table
+    /** Contains the cell modifier for the table */
     private BeanTableCellModifier tableCellModifier;
 
-    // The column index of the delegate cell editor
+    /** The column index of the delegate cell editor */
     private int delegateCellEditorColumnIndex;
 
     private boolean dataChangeable;
 
-    /*
+    /**
      * Label provider for the formula test input value.
      */
     private class FormulaTestInputValueTblLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -185,10 +185,11 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         }
     }
 
-    /*
+    /**
      * Inner class to store (keep) a formula test case
      */
     private class StoreFormulaRunnable implements IWorkspaceRunnable {
+
         private String name;
 
         @Override
@@ -215,6 +216,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
     public FormulaTestInputValuesControl(Composite parent, UIToolkit uiToolkit, UIController uiController,
             IIpsProject ipsProject) {
+
         super(parent, SWT.NONE);
         ArgumentCheck.notNull(new Object[] { parent, uiToolkit, uiController });
 
@@ -224,9 +226,6 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         this.ipsProject = ipsProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         resourceManager.dispose();
@@ -321,6 +320,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -344,6 +344,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
                 @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
+                    // Nothing to do
                 }
             });
         }
@@ -358,6 +359,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -369,7 +371,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         formulaResult.setFont(JFaceResources.getBannerFont());
     }
 
-    /*
+    /**
      * Stores the current formula test case with all input values as new formula test case.
      */
     private void storeFormulaTestInputValuesAsNewFormulaTestCase() throws CoreException {
@@ -385,7 +387,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                                 .getName()));
     }
 
-    /*
+    /**
      * Clears all values in all corresponding formula test input value object parts. Setting all
      * values to an empty string.
      */
@@ -401,7 +403,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         }
     }
 
-    /*
+    /**
      * Creates the table
      */
     private void createFormulaInputTable(Composite parent) {
@@ -445,9 +447,10 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     }
 
     private void increaseHeightOfTableRow(Table table, final int numOfColumns) {
-        // add paint lister to increase the height of the table row,
-        // because @since 3.2 in edit mode the cell becomes a border and the bottom pixel of the
-        // text is hidden
+        /*
+         * add paint lister to increase the height of the table row, because since 3.2 in edit mode
+         * the cell becomes a border and the bottom pixel of the text is hidden
+         */
         Listener paintListener = new Listener() {
             @Override
             public void handleEvent(Event event) {
@@ -457,10 +460,12 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                             return;
                         }
                         TableItem item = (TableItem)event.item;
-                        // column 0 will be used to determine the height,
-                        // <code>event.index<code> couldn't be used because it is only available
-                        // @since 3.2, that's ok because the height is always the same, even if the
-                        // column contains no text, the height only depends on the font
+                        /*
+                         * column 0 will be used to determine the height, event.index couldn't be
+                         * used because it is only available since 3.2, that's ok because the height
+                         * is always the same, even if the column contains no text, the height only
+                         * depends on the font
+                         */
                         String text = getText(item, 0);
                         Point size = event.gc.textExtent(text);
                         // the height will be increased by 10 pixel
@@ -487,7 +492,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         tableCellModifier.addListener(this);
     }
 
-    /*
+    /**
      * Adds the listener to the formula test input value table
      */
     private void hookTableListener() {
@@ -503,7 +508,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         };
     }
 
-    /*
+    /**
      * Repacks the columns in the table
      */
     private void repackAndResfreshParamInputTable() {
@@ -524,7 +529,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         }
     }
 
-    /*
+    /**
      * Execute the formula and displays the result if the formula is valid and all values are given.
      */
     public Object calculateFormulaIfValid(IIpsProject ipsProject) {
@@ -587,6 +592,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             }
             return lastCalculatedResult;
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.log(e);
             showFormulaResult(Messages.FormulaTestInputValuesControl_Error_ExecutingFormula);
         }
@@ -659,7 +665,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         return false;
     }
 
-    /*
+    /**
      * Displays the result of the formula
      */
     private void showFormulaResult(Object result) {
@@ -680,7 +686,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         formulaResult.pack();
     }
 
-    /*
+    /**
      * Performs and returns validation messages on the given element.
      */
     private MessageList validateElement(Object element) throws CoreException {
@@ -692,9 +698,6 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         return messageList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(ColumnIdentifier columnIdentifier, Object value) {
         // the value in the table has changed
@@ -702,7 +705,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         uiController.updateUI();
     }
 
-    /*
+    /**
      * Returns true if this control is a preview control for formula test cases, returns false if
      * this control shows stored formula test cases.
      */
@@ -710,17 +713,11 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         return canStoreFormulaTestCaseAsNewFormulaTestCase;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         if (isPreviewOfFormulaTest()) {

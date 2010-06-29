@@ -16,7 +16,17 @@ package org.faktorips.devtools.core.ui.wizards.testcasecopy;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.testcasecopy.messages"; //$NON-NLS-1$
+
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String TestCaseCopyDesinationPage_ColumnReplaceWith;
     public static String TestCaseCopyDesinationPage_ColumnTitleToReplace;
     public static String TestCaseCopyDesinationPage_InfoMessage;
@@ -40,11 +50,5 @@ public class Messages extends NLS {
     public static String TestCaseStructurePage_LabelTestCaseStructure;
     public static String TestCaseStructurePage_Title;
     public static String TestCaseStructurePage_ValidationErrorNoElementSelected;
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
 
-    private Messages() {
-    }
 }

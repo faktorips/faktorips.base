@@ -15,21 +15,16 @@ package org.faktorips.devtools.core.ui.wizards.tableexport;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * 
- * @author Thorsten Waertel
- */
 public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.tableexport.messages"; //$NON-NLS-1$
 
-    private Messages() {
-
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String TableExport_title;
@@ -41,4 +36,5 @@ public class Messages extends NLS {
     public static String TableExportWizard_msgFileExists;
     public static String TableExportWizard_operationName;
     public static String TableExportPage_msgStructureNotValid;
+
 }

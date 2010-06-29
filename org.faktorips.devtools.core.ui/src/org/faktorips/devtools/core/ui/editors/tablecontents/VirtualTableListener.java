@@ -28,9 +28,6 @@ public class VirtualTableListener implements Listener {
 
     /**
      * Creates a listener for virtual Tables.
-     * 
-     * @param tableViewer
-     * @param tableContents
      */
     public VirtualTableListener(Table table, ITableContents tableContents) {
         this.table = table;

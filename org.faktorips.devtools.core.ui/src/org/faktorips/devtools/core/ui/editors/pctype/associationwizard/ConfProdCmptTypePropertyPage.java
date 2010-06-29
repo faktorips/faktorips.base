@@ -60,9 +60,10 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private Checkbox derivedUnion;
     private Checkbox subsetCheckbox;
 
-    // Composites to dispose an recreate the page content if the inverse association wil be
-    // recreated
-    // e.g. the target or the option from the previous page are changed
+    /**
+     * Composites to dispose an recreate the page content if the inverse association wil be
+     * recreated e.g. the target or the option from the previous page are changed
+     */
     private Composite pageComposite;
     private Composite groupGeneral;
     private Composite dynamicComposite;
@@ -71,6 +72,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
 
     protected ConfProdCmptTypePropertyPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit,
             BindingContext bindingContext) {
+
         super(Messages.ConfProdCmptTypePropertyPage_pageName, Messages.ConfProdCmptTypePropertyPage_pageTitle, null);
         super.setDescription(Messages.ConfProdCmptTypePropertyPage_pageDescription);
         this.wizard = wizard;
@@ -269,8 +271,6 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * @return <code>true</code> if the product component type is available.
      */
     @Override
@@ -278,17 +278,11 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         return wizard.isProductCmptTypeAvailable() && wizard.isConfigureProductCmptType();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<String> getProperties() {
         return visibleProperties;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
@@ -297,17 +291,11 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         super.setVisible(visible);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canFlipToNextPage() {
         return wizard.canPageFlipToNextPage(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDefaultFocus() {
         updateDefaultTargetRoleSingular();

@@ -75,9 +75,6 @@ public class IpsDeepCopyAction extends IpsAction {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         IIpsObject selected = getIpsObjectForSelection(selection);
@@ -140,4 +137,5 @@ public class IpsDeepCopyAction extends IpsAction {
             }
         }
     }
+
 }

@@ -36,8 +36,6 @@ public abstract class DefaultEditField implements EditField {
     /**
      * Returns the value shown in the edit field's underlying control. If the control's content
      * can't be parsed to an instance of the appropriate datatype, <code>null</code> is returned.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public final Object getValue() {
@@ -53,11 +51,9 @@ public abstract class DefaultEditField implements EditField {
      * 
      * @throws Exception if the content can't be parsed.
      */
+    // TODO Throws Exception?
     protected abstract Object parseContent() throws Exception;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isTextContentParsable() {
         try {
@@ -68,17 +64,11 @@ public abstract class DefaultEditField implements EditField {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMessages(MessageList list) {
         MessageCueController.setMessageCue(getControl(), list);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean addChangeListener(ValueChangeListener listener) {
         if (changeListeners == null) {
@@ -91,9 +81,6 @@ public abstract class DefaultEditField implements EditField {
         return added;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean removeChangeListener(ValueChangeListener listener) {
         if (changeListeners == null) {
@@ -108,9 +95,6 @@ public abstract class DefaultEditField implements EditField {
      */
     protected abstract void addListenerToControl();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue, boolean triggerValueChanged) {
         notifyChangeListeners = triggerValueChanged;

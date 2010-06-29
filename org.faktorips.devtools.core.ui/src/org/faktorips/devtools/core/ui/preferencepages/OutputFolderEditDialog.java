@@ -48,11 +48,12 @@ public class OutputFolderEditDialog extends StatusDialog {
 
     /**
      * @param parent Composite
-     * @param srcfolderEntry parent entry for which to alter an attribute
-     * @param the attribute to be changed
+     * @param srcFolderEntry parent entry for which to alter an attribute
+     * @param attribute the attribute to be changed
      */
     public OutputFolderEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry,
             IIpsObjectPathEntryAttribute attribute) {
+
         super(parent);
 
         Assert.isNotNull(attribute);
@@ -66,9 +67,6 @@ public class OutputFolderEditDialog extends StatusDialog {
         this.srcFolderEntry = srcFolderEntry;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite)super.createDialogArea(parent);
@@ -109,9 +107,9 @@ public class OutputFolderEditDialog extends StatusDialog {
         layout.verticalSpacing = 10;
 
         buttonDefaultFolderSelected.addSelectionListener(new SelectionListener() {
-
             @Override
-            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // nothing to do
             }
 
             @Override
@@ -122,9 +120,9 @@ public class OutputFolderEditDialog extends StatusDialog {
         });
 
         buttonCustomFolderSelected.addSelectionListener(new SelectionListener() {
-
             @Override
-            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // nothing to do
             }
 
             @Override
@@ -137,7 +135,6 @@ public class OutputFolderEditDialog extends StatusDialog {
         group.setLayout(layout);
 
         return composite;
-
     }
 
     /**
@@ -158,7 +155,6 @@ public class OutputFolderEditDialog extends StatusDialog {
     }
 
     private IFolder getDefaultOutputFolder() {
-
         IFolder outputFolder;
         if (attribute.isFolderForDerivedSources()) {
             outputFolder = srcFolderEntry.getIpsObjectPath().getOutputFolderForDerivedSources();

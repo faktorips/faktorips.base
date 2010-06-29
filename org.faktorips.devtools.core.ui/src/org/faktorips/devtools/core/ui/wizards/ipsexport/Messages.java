@@ -16,13 +16,16 @@ package org.faktorips.devtools.core.ui.wizards.ipsexport;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.ipsexport.messages"; //$NON-NLS-1$
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String IpsObjectExportPage_msgFileAlreadyExists;
@@ -39,4 +42,5 @@ public class Messages extends NLS {
     public static String IpsObjectExportPage_msgProjectEmpty;
     public static String TableFormatPropertiesPage_configGroupLabel;
     public static String TableFormatPropertiesPage_title;
+
 }

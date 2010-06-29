@@ -28,13 +28,14 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Joerg Ortmann
  */
 public class TreeViewerExpandStateStorage {
-    // Stores the expanded items
+
+    /** Stores the expanded items */
     private ArrayList<String> expandedItems = new ArrayList<String>();
 
-    // Tree viewer which will be analyzed and restored
+    /** Tree viewer which will be analyzed and restored */
     private TreeViewer treeViewer;
 
-    // contains all checked elements
+    /** contains all checked elements */
     private Object[] checkedElements;
 
     private String selectedItemPath;
@@ -133,6 +134,7 @@ public class TreeViewerExpandStateStorage {
             TreeItem childs[],
             String parent,
             TreeItemActionStrategy strategy) {
+
         for (TreeItem child : childs) {
             if (child.isDisposed()) {
                 continue;
@@ -180,6 +182,6 @@ public class TreeViewerExpandStateStorage {
             // use always the model object to identify the path
             obj = ((TestCaseTypeAssociation)obj).getTestParameter();
         }
-        return parent + "//" + System.identityHashCode(obj);
+        return parent + "//" + System.identityHashCode(obj); //$NON-NLS-1$
     }
 }

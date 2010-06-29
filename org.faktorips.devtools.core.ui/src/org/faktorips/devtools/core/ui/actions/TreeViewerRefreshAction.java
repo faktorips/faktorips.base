@@ -37,4 +37,5 @@ public class TreeViewerRefreshAction extends RefreshAction {
     public String getToolTipText() {
         return Messages.TreeViewerRefreshAction_TooltipText;
     }
+
 }

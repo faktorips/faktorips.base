@@ -50,38 +50,31 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
         this.preferences = preferences;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
         return Datatype.BOOLEAN.equals(datatype) || Datatype.PRIMITIVE_BOOLEAN.equals(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EditField createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
+
         return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet, ipsProject), preferences
                 .getDatatypeFormatter().getBooleanTrueDisplay(), preferences.getDatatypeFormatter()
                 .getBooleanFalseDisplay());
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control createControl(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
+
         return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), preferences.getDatatypeFormatter()
                 .getBooleanTrueDisplay(), preferences.getDatatypeFormatter().getBooleanFalseDisplay());
     }
@@ -99,12 +92,13 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         return createTableCellEditor(toolkit, dataType, valueSet, tableViewer, columnIndex, ipsProject);
     }
 
     /**
      * Creates a <code>ComboCellEditor</code> containig a <code>Combo</code> using
-     * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet)}. {@inheritDoc}
+     * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet, IIpsProject)}.
      */
     @Override
     public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
@@ -113,6 +107,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(),
                 ipsProject);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
@@ -123,7 +118,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
     /**
      * Creates a <code>ComboCellEditor</code> containig a <code>Combo</code> using
-     * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet)}. {@inheritDoc}
+     * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet, IIpsProject)}.
      */
     @Override
     public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
@@ -132,6 +127,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             GridTableViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
         cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
         return cellEditor;
@@ -142,6 +138,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             Composite parent,
             IIpsProject ipsProject) {
+
         Combo comboControl = (Combo)createControl(toolkit, parent, dataType, valueSet, ipsProject);
         IpsCellEditor tableCellEditor = new ComboCellEditor(comboControl);
         // stores the boolean datatype object as data object in the combo,
@@ -161,6 +158,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             GridTreeViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
         return cellEditor;
     }

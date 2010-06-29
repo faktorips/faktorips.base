@@ -34,17 +34,11 @@ public class IntegerField extends DefaultEditField {
         this.text = text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         String text = getText();
@@ -58,9 +52,6 @@ public class IntegerField extends DefaultEditField {
         return Integer.valueOf(text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         ArgumentCheck.isInstanceOf(newValue, Integer.class);
@@ -68,51 +59,34 @@ public class IntegerField extends DefaultEditField {
         text.setText(newValue.toString());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         return text.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newText) {
         text.setText(newText);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String s) {
         text.insert(s);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         text.selectAll();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         text.addModifyListener(new ModifyListener() {
-
             @Override
             public void modifyText(ModifyEvent e) {
                 notifyChangeListeners(new FieldValueChangedEvent(IntegerField.this));
             }
-
         });
-
     }
+
 }

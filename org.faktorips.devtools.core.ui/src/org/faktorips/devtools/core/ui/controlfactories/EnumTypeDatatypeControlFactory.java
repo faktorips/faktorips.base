@@ -47,17 +47,11 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
         return datatype instanceof EnumTypeDatatypeAdapter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EditField createEditField(UIToolkit toolkit,
             Composite parent,
@@ -74,8 +68,6 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * @deprecated use
      *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
      *             instead.
@@ -87,6 +79,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
+
         return createEditField(toolkit, parent, datatype, valueSet, ipsProject).getControl();
     }
 
@@ -103,6 +96,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         return createTableCellEditor(toolkit, datatype, valueSet, tableViewer, columnIndex, ipsProject);
     }
 
@@ -146,6 +140,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             GridTableViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         EditField editField = createEditField(toolkit, gridViewer.getGrid(), datatype, valueSet, ipsProject);
         editField.getControl().setData(editField);
         ComboCellEditor cellEditor = new ComboCellEditor((Combo)editField.getControl());
@@ -160,6 +155,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             GridTreeViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         EditField editField = createEditField(toolkit, gridViewer.getGrid(), datatype, valueSet, ipsProject);
         editField.getControl().setData(editField);
         return new ComboCellEditor((Combo)editField.getControl());

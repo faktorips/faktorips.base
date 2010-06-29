@@ -60,13 +60,14 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
             return;
         }
         super.activate();
-        // unfortunately this listener is neccessary to ensure that the parameter rectangle is
-        // always in
-        // the upper left corner while scrolling the viewport of the editor
+        /*
+         * unfortunately this listener is neccessary to ensure that the parameter rectangle is
+         * always in the upper left corner while scrolling the viewport of the editor
+         */
         viewportScolllistener = new SelectionListener() {
-
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do in this case
             }
 
             @Override
@@ -95,6 +96,7 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
      */
     @Override
     protected void createEditPolicies() {
+        // Empty implementation
     }
 
     @Override
@@ -154,9 +156,6 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getBusinessFunction())) {

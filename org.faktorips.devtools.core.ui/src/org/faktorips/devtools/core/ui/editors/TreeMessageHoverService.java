@@ -31,9 +31,6 @@ public abstract class TreeMessageHoverService extends MessageHoverService {
         this.tree = viewer.getTree();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getElementAt(Point point) {
         TreeItem item = tree.getItem(point);
@@ -43,9 +40,6 @@ public abstract class TreeMessageHoverService extends MessageHoverService {
         return item.getData();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Rectangle getBoundsAt(Point point) {
         TreeItem item = tree.getItem(point);

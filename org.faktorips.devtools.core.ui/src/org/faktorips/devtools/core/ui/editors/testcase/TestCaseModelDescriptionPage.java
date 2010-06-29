@@ -79,6 +79,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             ArrayList<DescriptionItem> desrList,
             Set<IIpsObjectPart> uniqueTestObjects,
             String parameterName) {
+
         String name = ipsObjectPart.getName();
         if (uniqueTestObjects.contains(ipsObjectPart)) {
             return;
@@ -93,6 +94,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             ITestPolicyCmpt cmpt,
             ArrayList<DescriptionItem> desrList,
             Set<IIpsObjectPart> uniqueTestObjects) throws CoreException {
+
         ITestParameter parameter = cmpt.findTestParameter(testCase.getIpsProject());
         String parameterName = ""; //$NON-NLS-1$
         if (parameter != null) {
@@ -119,17 +121,11 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void visibleTestObjectsChanges(List<ITestObject> visibleTestObjects) throws CoreException {
         updateDescriptionItems(visibleTestObjects);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         super.dispose();

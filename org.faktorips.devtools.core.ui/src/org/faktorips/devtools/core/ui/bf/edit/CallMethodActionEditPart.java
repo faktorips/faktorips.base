@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 public class CallMethodActionEditPart extends ActionEditPart {
 
     public CallMethodActionEditPart() {
-        super(IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/CallOperationAction.gif"));
+        super(IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/CallOperationAction.gif")); //$NON-NLS-1$
     }
 
 }

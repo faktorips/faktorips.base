@@ -29,20 +29,10 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
 
     private ContentPage contentsPage;
 
-    /**
-     *
-     */
-    public TableContentsEditor() {
-        super();
-    }
-
     protected ITableContents getTableContents() {
         return (ITableContents)getIpsObject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPagesForParsableSrcFile() throws PartInitException {
         contentsPage = new ContentPage(this);
@@ -63,24 +53,10 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
         contentsPage.refreshTable();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getUniformPageTitle() {
         return Messages.TableContentsEditor_TableContentsEditor_title2
                 + " " + getTableContents().getName() + " (" + getTableContents().getTableStructure() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        /*
-         * pk: We need a general concept for historical changes of table contents see flyspray entry
-         * 131 ITableContentsGeneration generation = (ITableContentsGeneration)
-         * getPreferredGeneration(); String gen = IpsPlugin.getDefault().getIpsPreferences()
-         * .getChangesOverTimeNamingConvention()
-         * .getGenerationConceptNameSingular(Locale.getDefault()); DateFormat format =
-         * DateFormat.getDateInstance(DateFormat.DEFAULT); String title = NLS .bind(
-         * Messages.TableContentsEditor_title, new Object[] { getTableContents().getName(), gen,
-         * generation == null ? "" : format.format(generation.getValidFrom().getTime()) });
-         * //$NON-NLS-1$ return title;
-         */
     }
 
     @Override

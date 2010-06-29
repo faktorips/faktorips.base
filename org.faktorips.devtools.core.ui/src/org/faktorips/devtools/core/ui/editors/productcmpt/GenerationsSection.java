@@ -70,9 +70,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         this.page = page;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new GenerationsComposite((ITimedIpsObject)getIpsObject(), parent, toolkit);
@@ -163,41 +160,26 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             return (ITimedIpsObject)getIpsObject();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected ILabelProvider createLabelProvider() {
             return new LabelProvider();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IIpsObjectPart newIpsPart() {
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new GenerationEditDialog((IProductCmptGeneration)part, shell);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean aboutToDelete(IIpsObjectPart part) {
             if (page.getProductCmpt().getGenerationsOrderedByValidDate().length == 2) {
@@ -206,9 +188,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             return true;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void deleted(IIpsObjectPart part) {
             page.getProductCmptEditor().setActiveGeneration(getSelectedGeneration(), true);
@@ -222,9 +201,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void updateButtonEnabledStates() {
             super.updateButtonEnabledStates();
@@ -303,9 +279,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void openLink() {
             openAction.run();
@@ -339,6 +312,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                         }
                     }
                 } catch (Exception e) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }

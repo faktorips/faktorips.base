@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
  * @author Joerg Ortmann
  */
 public class TestCaseTypeContentProvider implements ITreeContentProvider {
+
     private static Object[] EMPTY_ARRAY = new Object[0];
 
     private TestCaseTypeTreeRootElement rootElement;
@@ -32,9 +33,6 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
         this.rootElement = new TestCaseTypeTreeRootElement(testCaseType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof TestCaseTypeTreeRootElement) {
@@ -47,18 +45,12 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
         return EMPTY_ARRAY;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
         // only the objects above have parents, in other case no parent necessary
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildren(Object element) {
         Object[] children = getChildren(element);
@@ -68,24 +60,16 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
         return children.length > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getElements(Object inputElement) {
         return new Object[] { rootElement };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
+        // Nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to do

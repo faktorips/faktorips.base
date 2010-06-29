@@ -20,14 +20,15 @@ import org.eclipse.osgi.util.NLS;
  * @author Thorsten Guenther
  */
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.tablecontents.messages"; //$NON-NLS-1$
 
-    private Messages() {
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String ContentPage_title;
@@ -87,4 +88,5 @@ public class Messages extends NLS {
     public static String ContentPage_Column;
 
     public static String TableModelDescriptionPage_generalInformation;
+
 }

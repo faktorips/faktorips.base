@@ -36,7 +36,6 @@ public class DatatypeRefControl extends TextButtonControl {
     private DatatypeCompletionProcessor completionProcessor;
 
     public DatatypeRefControl(IIpsProject project, Composite parent, UIToolkit toolkit) {
-
         super(parent, toolkit, Messages.DatatypeRefControl_title);
 
         ipsProject = project;
@@ -91,9 +90,6 @@ public class DatatypeRefControl extends TextButtonControl {
         return completionProcessor.getExcludedDatatypes();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonClicked() {
         try {
@@ -114,6 +110,7 @@ public class DatatypeRefControl extends TextButtonControl {
                 }
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

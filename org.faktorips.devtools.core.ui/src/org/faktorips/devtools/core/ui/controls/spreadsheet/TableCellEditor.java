@@ -92,8 +92,8 @@ class TableCellEditor {
      * Activate the editControl. The editControl instance is the sizing parent of the editControl
      * control.
      * 
-     * @param item, the table item to edit.
-     * @param col, the column to edit.
+     * @param item the table item to edit.
+     * @param externalColumnIndex the column to edit.
      */
     void activate(TableItem item, int externalColumnIndex) {
         this.tableItem = item;
@@ -165,7 +165,7 @@ class TableCellEditor {
     /**
      * Processes a key event of the edit control. This implements the navigation control.
      * 
-     * @param evt, the traverse event to process
+     * @param evt the traverse event to process
      */
     private void processKeyEvent(TraverseEvent evt) {
         switch (evt.detail) {
@@ -217,7 +217,7 @@ class TableCellEditor {
     /**
      * Sends a traversal event to the table cursor.
      * 
-     * @param traversal, the <code>SWT.TRAVERSE_</code> value of the traversal event to trigger.
+     * @param traversal the <code>SWT.TRAVERSE_</code> value of the traversal event to trigger.
      */
     private void sendEvent(int traversal) {
         Event event = new Event();
@@ -227,7 +227,7 @@ class TableCellEditor {
 
     /**
      * If the editControl gets the focus, the whole text will be selected.
-     * 
+     * <p>
      * This works currently only for text controls. Other controls must be added to the method.
      */
     private void setSelection() {
@@ -254,7 +254,7 @@ class TableCellEditor {
     /**
      * Inserts a string at the given position.
      * 
-     * @param c, the char to process
+     * @param c the char to process
      */
     public void processChar(char c) {
         if (editControl == null) {

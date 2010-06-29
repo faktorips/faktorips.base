@@ -16,16 +16,19 @@ package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.team.compare.productcmpt.messages"; //$NON-NLS-1$
 
-    private Messages() {
-    }
-
     static {
-        // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String ProductCmptCompareItemCreator_StructureViewer_title;
     public static String ProductCmptCompareViewer_CompareViewer_title;
     public static String ProductCmptCompareItem_ProductComponent;
+
 }

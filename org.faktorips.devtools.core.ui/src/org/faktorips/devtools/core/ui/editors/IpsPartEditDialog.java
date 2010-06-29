@@ -32,9 +32,6 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
-/**
- *
- */
 public abstract class IpsPartEditDialog extends EditDialog {
 
     protected IpsObjectUIController uiController;

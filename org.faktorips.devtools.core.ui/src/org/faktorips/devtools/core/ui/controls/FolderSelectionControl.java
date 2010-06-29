@@ -74,6 +74,7 @@ public class FolderSelectionControl extends TextButtonControl {
      */
     public FolderSelectionControl(Composite parent, UIToolkit toolkit, String buttonText, IContainer root,
             IContainer folder) {
+
         super(parent, toolkit, buttonText);
         this.root = root;
         updateText(folder);
@@ -110,12 +111,8 @@ public class FolderSelectionControl extends TextButtonControl {
         return folder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonClicked() {
-
         if (root == null) {
             return;
         }
@@ -150,7 +147,7 @@ public class FolderSelectionControl extends TextButtonControl {
 
     }
 
-    // updates the text field with the given folder
+    /** updates the text field with the given folder */
     private void updateText(IContainer folder) {
         String text = ""; //$NON-NLS-1$
         if (root != null) {

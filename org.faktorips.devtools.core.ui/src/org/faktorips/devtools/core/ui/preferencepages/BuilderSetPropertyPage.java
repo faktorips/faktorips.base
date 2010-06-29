@@ -20,7 +20,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -31,39 +30,27 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Roman Grutza
  */
-public class BuilderSetPropertyPage extends PropertyPage implements IWorkbenchPropertyPage {
+public class BuilderSetPropertyPage extends PropertyPage {
 
     private IAdaptable element;
     private BuilderSetContainer builderSetContainer;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createContents(Composite parent) {
         builderSetContainer = new BuilderSetContainer(getIpsProject());
         return builderSetContainer.createContents(parent);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IAdaptable getElement() {
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setElement(IAdaptable element) {
         this.element = element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setVisible(boolean visible) {
         if (builderSetContainer != null) {
@@ -95,9 +82,6 @@ public class BuilderSetPropertyPage extends PropertyPage implements IWorkbenchPr
         super.setVisible(visible);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performOk() {
         if (builderSetContainer != null) {
@@ -108,9 +92,6 @@ public class BuilderSetPropertyPage extends PropertyPage implements IWorkbenchPr
         return super.performOk();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void performDefaults() {
         super.performDefaults();
@@ -123,12 +104,9 @@ public class BuilderSetPropertyPage extends PropertyPage implements IWorkbenchPr
      * Returns the IPS project instance the property page was invoked for
      */
     private IIpsProject getIpsProject() {
-
         IIpsProject ipsProject = null;
-
         if (element instanceof IProject) {
             ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject((IProject)element);
-
         } else {
             IJavaElement javaElement = (IJavaElement)element.getAdapter(IJavaElement.class);
             if (javaElement instanceof IJavaProject) {
@@ -136,7 +114,6 @@ public class BuilderSetPropertyPage extends PropertyPage implements IWorkbenchPr
                 ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
             }
         }
-
         return ipsProject;
     }
 

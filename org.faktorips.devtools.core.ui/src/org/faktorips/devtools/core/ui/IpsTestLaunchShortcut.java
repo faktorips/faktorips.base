@@ -28,9 +28,6 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
  */
 public class IpsTestLaunchShortcut implements ILaunchShortcut {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void launch(IEditorPart editor, String mode) {
         if (editor instanceof IpsObjectEditor) {
@@ -40,12 +37,10 @@ public class IpsTestLaunchShortcut implements ILaunchShortcut {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void launch(ISelection selection, String mode) {
         IpsTestAction runTestAction = new IpsTestAction(null, mode);
         runTestAction.run(new StructuredSelection(selection));
     }
+
 }

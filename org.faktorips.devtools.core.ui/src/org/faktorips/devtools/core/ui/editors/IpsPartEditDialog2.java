@@ -62,7 +62,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
      * Creates a new <code>IpsPartEditDialog2</code>.
      * 
      * @param part The ips object part to edit.
-     * @param parentShell
      * @param windowTitle The window title of the dialog.
      */
     public IpsPartEditDialog2(IIpsObjectPart part, Shell parentShell, String windowTitle) {
@@ -73,9 +72,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
      * Creates a new <code>IpsPartEditDialog2</code>.
      * 
      * @param part The ips object part to edit.
-     * @param parentShell
      * @param windowTitle The window title of the dialog.
-     * @param useTabFolder
      */
     public IpsPartEditDialog2(IIpsObjectPart part, Shell parentShell, String windowTitle, boolean useTabFolder) {
         super(parentShell, windowTitle, useTabFolder);
@@ -86,11 +83,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Overwritten to be sure to get the cancel-button as soon as possible ...
-     */
+    // Overwritten to be sure to get the cancel-button as soon as possible ...
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         super.createButtonsForButtonBar(parent);
@@ -144,8 +137,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
 
     /**
      * Creates the description tab.
-     * 
-     * @param folder
      */
     protected TabItem createDescriptionTabItem(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
@@ -244,9 +235,11 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
 
     /**
      * Method for sub classes to hook into the contents changed notification.
+     * 
+     * @param event The event that caused the content change
      */
     protected void contentsChangedInternal(ContentChangeEvent event) {
-
+        // Empty default implementation
     }
 
     // TODO: code duplication in PersistentTypeInfoSection

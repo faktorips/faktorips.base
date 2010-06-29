@@ -62,9 +62,6 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
         return rule;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         try {
@@ -78,9 +75,6 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
 
     public void runAsUserJob(String name, final Object jobFamiliy) {
         Job buildJob = new Job(name) {
-            /**
-             * {@inheritDoc}
-             */
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                 try {
@@ -109,4 +103,5 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
         buildJob.setUser(true);
         buildJob.schedule();
     }
+
 }

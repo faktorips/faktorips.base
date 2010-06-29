@@ -45,12 +45,6 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
         }
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.AbstractCompletionProcessor#doComputeCompletionProposals(java.lang.String,
-     *      int, java.util.List)
-     */
     @Override
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {

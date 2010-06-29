@@ -32,9 +32,6 @@ public abstract class IpsObjectEditorAction extends IpsAction {
         this.editor = editor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
         if (!editor.isDataChangeable().booleanValue()) {
@@ -45,4 +42,5 @@ public abstract class IpsObjectEditorAction extends IpsAction {
         }
         return true;
     }
+
 }

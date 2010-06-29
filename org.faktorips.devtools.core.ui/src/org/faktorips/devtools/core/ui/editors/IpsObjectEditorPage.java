@@ -120,7 +120,6 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
                 registerSelectionProviderActivation(child);
             }
         }
-
     }
 
     /**
@@ -130,7 +129,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * @param toolkit The layout conform toolkit to create widgets with.
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-
+        // Default implementation does nothing
     }
 
     /**
@@ -154,11 +153,8 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * Creates a grid composite for the inner page structure. The composite has no margins but the
      * default spacing settings.
      * 
-     * @param toolkit
-     * @param parent
      * @param numOfColumns Number of columns in the grid.
      * @param equalSize Set to <tt>true</tt> if the columns should have the same size.
-     * @param gridData
      */
     protected Composite createGridComposite(UIToolkit toolkit,
             Composite parent,
@@ -216,7 +212,6 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     }
 
     /**
-     * <p>
      * Evaluates the new data changeable state and updates it, if it has changed.
      * <p>
      * If the user can't change the data shown in the editor's at all, he also can't change the data
@@ -235,7 +230,6 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     }
 
     /**
-     * <p>
      * Evaluates whether the data shown on this page is changeable by the user. This method does not
      * consider the state of the IPS object editor.
      * <p>

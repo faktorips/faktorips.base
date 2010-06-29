@@ -27,9 +27,6 @@ public class CardinalityPaneEditField extends AbstractCardinalityField {
     private CardinalityPanel cp;
     private boolean min = false;
 
-    /**
-	 * 
-	 */
     public CardinalityPaneEditField(CardinalityPanel cp, boolean min) {
         this.cp = cp;
         this.min = min;
@@ -44,9 +41,6 @@ public class CardinalityPaneEditField extends AbstractCardinalityField {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     void setTextInternal(String newText) {
         if (min) {
@@ -56,24 +50,16 @@ public class CardinalityPaneEditField extends AbstractCardinalityField {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String text) {
         setTextInternal(text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
+        // Nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         if (min) {
@@ -93,9 +79,6 @@ public class CardinalityPaneEditField extends AbstractCardinalityField {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         if (min) {

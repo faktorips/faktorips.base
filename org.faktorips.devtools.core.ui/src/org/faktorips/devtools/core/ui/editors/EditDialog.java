@@ -62,13 +62,19 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
 
     @Override
     public void setDataChangeable(boolean changeable) {
-        if (dataChangeable = changeable) {
+        if (dataChangeable == changeable) {
             return;
         }
         dataChangeable = changeable;
         setDataChangeableThis(changeable);
     }
 
+    /**
+     * Template method that may be extended by sub classes. The default implementation sets the UI
+     * toolkit's changeable state.
+     * 
+     * @param changeable Flag indicating the changeable state.
+     */
     protected void setDataChangeableThis(boolean changeable) {
         uiToolkit.setDataChangeable(getDialogArea(), dataChangeable);
     }
@@ -123,8 +129,11 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
      */
     protected abstract Composite createWorkArea(Composite parent) throws CoreException;
 
+    /**
+     * Allows sub classes to change the title area's content during dialog creation.
+     */
     protected void updateTitleInTitleArea() {
-
+        // Empty default implementation
     }
 
     /**

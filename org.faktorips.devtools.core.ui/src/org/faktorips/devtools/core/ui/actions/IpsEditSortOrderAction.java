@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.dialogs.IpsPackageSortDefDialog;
 
 /**
- * 
  * Contribute the context menu for editing the package sort order.
  * 
  * @author Markus Blum
@@ -41,9 +40,6 @@ public class IpsEditSortOrderAction extends IpsAction {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         Object element = (selection).getFirstElement();

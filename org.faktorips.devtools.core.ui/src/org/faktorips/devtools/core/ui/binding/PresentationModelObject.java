@@ -31,12 +31,6 @@ public class PresentationModelObject {
 
     private Set<PropertyChangeListener> propertyChangeListeners = new HashSet<PropertyChangeListener>(1);
 
-    public PresentationModelObject() {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if (listener == null) {
             return;
@@ -44,9 +38,6 @@ public class PresentationModelObject {
         propertyChangeListeners.add(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeListeners.remove(listener);
     }
@@ -69,13 +60,12 @@ public class PresentationModelObject {
      */
     protected void notifyListeners(PropertyChangeEvent event) {
         List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>(propertyChangeListeners); // copy
-                                                                                                                 // to
-                                                                                                                 // be
-                                                                                                                 // thread-safe
+        // to be thread-safe
         for (PropertyChangeListener listener : listeners) {
             try {
                 listener.propertyChange(event);
             } catch (Exception e) {
+                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.log(e);
             }
         }

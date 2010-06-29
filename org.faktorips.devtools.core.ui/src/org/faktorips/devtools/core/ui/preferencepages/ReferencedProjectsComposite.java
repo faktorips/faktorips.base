@@ -54,18 +54,16 @@ public class ReferencedProjectsComposite extends Composite {
     private UIToolkit toolkit;
     private Table table;
 
-    // model for the table viewer
     private IIpsObjectPath ipsObjectPath;
 
     private Button addButton;
     private Button removeButton;
     private TableViewer tableViewer;
 
-    // flag to indicate changes in referenced IPS projects
+    /** flag to indicate changes in referenced IPS projects */
     private boolean dataChanged = false;
 
     public ReferencedProjectsComposite(Composite parent) {
-
         super(parent, SWT.NONE);
         toolkit = new UIToolkit(null);
 
@@ -82,7 +80,7 @@ public class ReferencedProjectsComposite extends Composite {
         gd.horizontalSpan = 2;
         tableViewerLabel.setLayoutData(gd);
 
-        tableViewer = createViewer(tableWithButtons, projectAdapter, toolkit);
+        tableViewer = createViewer(tableWithButtons, projectAdapter);
         tableViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         Composite buttons = toolkit.createComposite(tableWithButtons);
@@ -106,8 +104,7 @@ public class ReferencedProjectsComposite extends Composite {
         removeButton.setEnabled(false);
     }
 
-    private TableViewer createViewer(Composite parent, IpsProjectsAdapter projectAdapter, UIToolkit toolkit) {
-
+    private TableViewer createViewer(Composite parent, IpsProjectsAdapter projectAdapter) {
         table = new Table(parent, SWT.BORDER | SWT.MULTI);
         tableViewer = new TableViewer(table);
         tableViewer.addSelectionChangedListener(projectAdapter);
@@ -124,12 +121,8 @@ public class ReferencedProjectsComposite extends Composite {
 
     /**
      * Initializes the composite with the given Ips object path
-     * 
-     * @param ipsObjectPath, must not be null
-     * @throws CoreException
      */
     public void init(final IIpsObjectPath ipsObjectPath) {
-
         this.ipsObjectPath = ipsObjectPath;
         dataChanged = false;
 
@@ -156,9 +149,8 @@ public class ReferencedProjectsComposite extends Composite {
         return dataChanged;
     }
 
-    // add new project references to current IPS project, based on items selected in dialog
+    /** add new project references to current IPS project, based on items selected in dialog */
     private void addIpsProjects() {
-
         IIpsProject[] ipsProjects = null;
         try {
             ipsProjects = getSelectableIpsProjects();
@@ -173,7 +165,6 @@ public class ReferencedProjectsComposite extends Composite {
         dialog.setTitle(Messages.ReferencedProjectsComposite_select_projects_title);
         dialog.setInitialSelections(ipsObjectPath.getProjectRefEntries());
         if (dialog.open() == Window.OK) {
-
             Object[] selectedReferencedProjects = dialog.getResult();
             if (selectedReferencedProjects.length > 0) {
                 for (Object selectedReferencedProject : selectedReferencedProjects) {
@@ -186,7 +177,7 @@ public class ReferencedProjectsComposite extends Composite {
         }
     }
 
-    // remove selected list item(s) from model
+    /** remove selected list item(s) from model */
     private void removeIpsProjects() {
         IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
         if (selection.size() > 0) {
@@ -199,10 +190,11 @@ public class ReferencedProjectsComposite extends Composite {
         }
     }
 
-    // Get open IPS projects from the current workspace. Skip already referenced projects and the
-    // current project.
+    /**
+     * Get open IPS projects from the current workspace. Skip already referenced projects and the
+     * current project.
+     */
     private IIpsProject[] getSelectableIpsProjects() throws CoreException {
-
         ArrayList<IIpsProject> resultList = new ArrayList<IIpsProject>();
         IIpsProjectRefEntry[] projectRefEntries = ipsObjectPath.getProjectRefEntries();
         ArrayList<IIpsProject> references = new ArrayList<IIpsProject>();
@@ -260,7 +252,6 @@ public class ReferencedProjectsComposite extends Composite {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-
             if (e.getSource() == addButton) {
                 addIpsProjects();
             }
@@ -270,7 +261,8 @@ public class ReferencedProjectsComposite extends Composite {
         }
 
         @Override
-        public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // nothing to do
         }
     }
 

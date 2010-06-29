@@ -36,9 +36,6 @@ public class FixDifferencesAction extends Action {
         setEnabled(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         OpenFixDifferencesToModelWizardAction action = new OpenFixDifferencesToModelWizardAction();
@@ -46,4 +43,5 @@ public class FixDifferencesAction extends Action {
         action.selectionChanged(this, selection);
         action.run(this);
     }
+
 }

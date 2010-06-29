@@ -36,9 +36,9 @@ import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
  * Presentationmodel for {@link IpsPackageSortDefDialog}.
- * 
+ * <p>
  * Save the {@link IIpsPackageFragment} hierarchy in a Map: key = parent; value = Array of children
- * 
+ * <p>
  * The methods getChildIpsPackageFragments and getDefautlPackageFragments are used for the
  * {@link IpsPackageSortDefContentProvider}. The moveXXX methods are used for shifting a child
  * element (IIpsPackageFragment).
@@ -51,10 +51,10 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
     private IIpsProject project;
 
-    // Lookup table parent IIpsPackageFragment -> children sorted
+    /** Lookup table parent IIpsPackageFragment -> children sorted */
     private Map<IIpsPackageFragment, List<IIpsPackageFragment>> fragmentHierarchy = new HashMap<IIpsPackageFragment, List<IIpsPackageFragment>>();
 
-    // Set default sort order or not
+    /** Set default sort order or not */
     private boolean restoreDefault;
 
     public IpsProjectSortOrdersPM(IIpsProject project) {
@@ -140,7 +140,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      * 
      * @note IpsArchives are ignored!
      * @return IpsDefaultPackageFragments of the selected IpsProject.
-     * @throws CoreException
      */
     private Object[] getDefaultPackageFragments() throws CoreException {
 
@@ -160,9 +159,8 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      * Modelaction for ITreeContentProvider.getChildren. Get all children of the IIpsPackageFragment
      * <code>fragment</code>.
      * 
-     * @param fragment Parent IIpsPackageFragment.
+     * @param parent Parent IIpsPackageFragment.
      * @return All children of IIpsPackageFragment <code>fragment</code>.
-     * @throws CoreException
      */
     private Object[] getChildIpsPackageFragments(IIpsPackageFragment parent) throws CoreException {
         IIpsPackageFragment[] fragments;
@@ -194,8 +192,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
     /**
      * Modelaction for restorePressed. Sort the IIpsPackageFragments by default sort order.
-     * 
-     * @throws CoreException
      */
     public void restore() throws CoreException {
         restoreDefault = true;
@@ -207,13 +203,11 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      * Check the projects sort order for changes. The result is a delta between the cached sort
      * definitions and the dialog model.
      * 
-     * @param pack Current IIpsPackageFragment.
      * @param packagesList Add the IIpsPackageFragment <code>pack</code> to list if its sort order
      *            has changed.
      * @param sortDefOrderList Add the new sort order IIPsPackageFragmentSortDefinition for
      *            <code>pack</code>.
      * @param restore Create delta for restore default sort order.
-     * @throws CoreException
      */
     private void checkSortOrder(IIpsPackageFragment parent,
             List<IIpsPackageFragment> packagesList,
@@ -257,7 +251,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     /**
      * Create a new IIpsPackageFragmentSortDefinition object.
      * 
-     * @param fragment Sorted IIpsPackageFragments.
      * @return new IIpsPackageFragmentSortDefinition
      */
     private IIpsPackageFragmentSortDefinition toSortDefinition(List<IIpsPackageFragment> newSortDef) {
@@ -281,7 +274,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      * @return <code>true</code> if sort order is equal.
      */
     private boolean isEqualSortOrder(List<IIpsPackageFragment> sortDefNew, List<IIpsPackageFragment> sortDefOld) {
-
         if (sortDefOld.size() != sortDefNew.size()) {
             return false;
         }
@@ -297,24 +289,17 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         fragmentHierarchy.clear();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to implement
     }
 
     /**
-     * @throws CoreException
      * @note IpsArchives are ignored
      */
     public void saveSortDefDelta() throws CoreException {
@@ -337,9 +322,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof IIpsPackageFragment) {
@@ -356,24 +338,15 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         return EMPTY_ARRAY;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
-
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-
             return fragment.getParentIpsPackageFragment();
         }
-
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildren(Object element) {
         if (element instanceof IIpsPackageFragment) {
@@ -391,9 +364,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof IpsProjectSortOrdersPM) {

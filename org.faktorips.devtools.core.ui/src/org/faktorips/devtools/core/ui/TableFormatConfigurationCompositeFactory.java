@@ -82,9 +82,6 @@ public abstract class TableFormatConfigurationCompositeFactory implements ValueC
         listeners.remove(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         Iterator<ValueChangeListener> iterator = listeners.iterator();

@@ -22,26 +22,17 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
  */
 public class ProductCmptTypeEditor extends TypeEditor {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getUniformPageTitle() {
         return Messages.ProductCmptTypeEditor_title + getIpsObject().getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addAllInOneSinglePage() throws PartInitException {
         addPage(new ProductCmptTypeStructurePage(this, false));
         addPage(new CustomIconPage(this));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addSplittedInMorePages() throws PartInitException {
         addPage(new ProductCmptTypeStructurePage(this, true));

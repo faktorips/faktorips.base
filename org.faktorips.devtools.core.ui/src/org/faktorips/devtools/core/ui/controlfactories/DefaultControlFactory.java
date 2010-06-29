@@ -47,17 +47,11 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EditField createEditField(UIToolkit toolkit,
             Composite parent,
@@ -72,9 +66,6 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
         return new TextField(toolkit.createText(parent));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control createControl(UIToolkit toolkit,
             Composite parent,
@@ -101,6 +92,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         return createTableCellEditor(toolkit, dataType, valueSet, tableViewer, columnIndex, ipsProject);
     }
 
@@ -115,6 +107,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         Text textControl = toolkit.createText(tableViewer.getTable(), SWT.SINGLE);
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
@@ -134,6 +127,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             GridTableViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE);
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
@@ -147,6 +141,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             GridTreeViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
+
         Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE);
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         return cellEditor;

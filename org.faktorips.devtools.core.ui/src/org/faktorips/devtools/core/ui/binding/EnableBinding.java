@@ -37,6 +37,7 @@ public class EnableBinding extends ControlPropertyBinding {
             boolean enabled = value.booleanValue() == enabledIfObjectPropertyIsTrue;
             getControl().setEnabled(enabled);
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException(e);
         }
     }

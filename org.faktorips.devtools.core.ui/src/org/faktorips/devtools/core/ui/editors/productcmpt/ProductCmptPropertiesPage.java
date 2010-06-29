@@ -47,9 +47,6 @@ public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
         return getProductCmptEditor().getProductCmpt();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         GridLayout layout = new GridLayout(1, true);
@@ -62,24 +59,20 @@ public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
         new GenerationsSection(this, top, toolkit);
 
         /*
-         * SW 19.01.10: Boeser Hack als Workaround fuer FS#1717- Regel-Section soll nicht angezeigt
-         * werden, wenn die Analyzer-Perspektive offen/aktiv ist. Es ist geplant den Editor in
-         * kuerze umzugestalten, daher diese provisorische "Loesung".
+         * FIXME SW 19.01.10: Boeser Hack als Workaround fuer FS#1717- Regel-Section soll nicht
+         * angezeigt werden, wenn die Analyzer-Perspektive offen/aktiv ist. Es ist geplant den
+         * Editor in kuerze umzugestalten, daher diese provisorische "Loesung".
          */
         IPerspectiveDescriptor perspectiveDesc = getSite().getPage().getPerspective();
         if (perspectiveDesc != null
-                && !perspectiveDesc.getId().equals("org.faktorips.devtools.core.ui.productAnalyzerPerspective")) {
+                && !perspectiveDesc.getId().equals("org.faktorips.devtools.core.ui.productAnalyzerPerspective")) { //$NON-NLS-1$
             Composite bottom = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
             new RulesSection(this, bottom, toolkit);
         }
 
     }
 
-    /**
-     * Made public to get refresh from editor.
-     * 
-     * {@inheritDoc}
-     */
+    // Made public to get refresh from editor.
     @Override
     public void refresh() {
         super.refresh();

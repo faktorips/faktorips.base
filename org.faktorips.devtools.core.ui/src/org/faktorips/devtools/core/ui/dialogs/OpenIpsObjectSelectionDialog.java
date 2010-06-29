@@ -78,8 +78,6 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
      * Creates a list selection dialog.
      * 
      * @param parent the parent widget.
-     * @param onlyProductDefinitionOptions
-     * @throws CoreException
      */
     public OpenIpsObjectSelectionDialog(Shell parent, String title, ISelectIpsObjectContext context) {
         super(parent);
@@ -119,6 +117,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     protected void fillContentProvider(AbstractContentProvider contentProvider,
             ItemsFilter itemsFilter,
             IProgressMonitor progressMonitor) throws CoreException {
+
         if (progressMonitor == null) {
             progressMonitor = new NullProgressMonitor();
         }
@@ -200,7 +199,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     private class IpsSrcFileFilter extends ItemsFilter {
 
-        private static final String ALL_PATTERN = "?";
+        private static final String ALL_PATTERN = "?"; //$NON-NLS-1$
 
         public IpsSrcFileFilter() {
             // empty string should match all columns
@@ -255,9 +254,6 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             // }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getText(Object element) {
             String label = super.getText(element);
@@ -392,11 +388,13 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     public static class IpsObjectSelectionHistory extends SelectionHistory {
 
-        // In memento the path to the IpsSrcFile is stored with this tag
+        /** In memento the path to the IpsSrcFile is stored with this tag */
         private static final String TAG_PATH = "path"; //$NON-NLS-1$
 
-        // If the resource is an archive, the IpsSrcFile is stored in an Archive
-        // Store the qualified name type of the IpsSrcFile within the archive with this tag
+        /**
+         * If the resource is an archive, the IpsSrcFile is stored in an Archive Store the qualified
+         * name type of the IpsSrcFile within the archive with this tag
+         */
         private static final String TAG_NAMETYPE = "nameType"; //$NON-NLS-1$
 
         @Override

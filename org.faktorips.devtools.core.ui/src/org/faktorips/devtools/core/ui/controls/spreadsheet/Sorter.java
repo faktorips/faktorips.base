@@ -26,25 +26,23 @@ import org.faktorips.util.ArgumentCheck;
  * @author Jacobi
  */
 public class Sorter extends ViewerSorter {
+
     public static final int NATURAL = 0;
     public static final int ASCENDING = 1;
     public static final int DESCENDING = -1;
 
-    // the order ascending/descending or natural (= no sorting)
+    /** the order ascending/descending or natural (= no sorting) */
     private int order = ASCENDING;
 
-    // the currently sorted column.
+    /** the currently sorted column. */
     private int externalColumnIndex = -1;
 
-    // the table control we are sorting.
+    /** the table control we are sorting. */
     private SpreadsheetControl control = null;
 
-    // the active comparator.
+    /** the active comparator. */
     private Comparator<Object> comparator = null;
 
-    /**
-     * Constructor
-     */
     public Sorter(SpreadsheetControl control, int externalColumnIndex, Comparator<Object> comparator) {
         super();
         ArgumentCheck.notNull(control);
@@ -108,7 +106,6 @@ public class Sorter extends ViewerSorter {
                 order = ASCENDING;
                 break;
         }
-
         return order;
     }
 

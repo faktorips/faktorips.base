@@ -22,15 +22,9 @@ import java.io.Reader;
  */
 public abstract class SingleCharReader extends Reader {
 
-    /**
-     * @see Reader#read()
-     */
     @Override
     public abstract int read() throws IOException;
 
-    /**
-     * @see Reader#read(char[],int,int)
-     */
     @Override
     public int read(char cbuf[], int off, int len) throws IOException {
         int end = off + len;
@@ -47,9 +41,6 @@ public abstract class SingleCharReader extends Reader {
         return len;
     }
 
-    /**
-     * @see Reader#ready()
-     */
     @Override
     public boolean ready() throws IOException {
         return true;

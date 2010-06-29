@@ -17,9 +17,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-/**
- *
- */
 public class Checkbox extends AbstractCheckbox {
 
     public Checkbox(Composite parent, UIToolkit toolkit) {

@@ -64,7 +64,7 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
         if (element instanceof IIpsObjectPart) {
             return ((IIpsObjectPart)element).getParent();
         }
-        throw new RuntimeException("Unknown element " + element);
+        throw new RuntimeException("Unknown element " + element); //$NON-NLS-1$
     }
 
     @Override

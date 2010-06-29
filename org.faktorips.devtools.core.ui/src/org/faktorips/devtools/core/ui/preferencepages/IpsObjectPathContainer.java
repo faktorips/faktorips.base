@@ -44,16 +44,16 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 public class IpsObjectPathContainer {
 
     private static final ImageDescriptor packageFragmentRootImage = IpsUIPlugin.getImageHandling()
-            .createImageDescriptor("IpsPackageFragmentRoot.gif");
+            .createImageDescriptor("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
 
     private static final ImageDescriptor projectImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "IpsProject.gif");
+            "IpsProject.gif"); //$NON-NLS-1$
 
     private static final ImageDescriptor archiveImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "IpsAr.gif");
+            "IpsAr.gif"); //$NON-NLS-1$
 
     private static final ImageDescriptor objectPathImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "obj16/cp_order_obj.gif");
+            "obj16/cp_order_obj.gif"); //$NON-NLS-1$
 
     private IIpsProject currentIpsProject;
 
@@ -75,10 +75,8 @@ public class IpsObjectPathContainer {
 
     /**
      * @param ipsProject The IPS project to configure.
-     * @throws CoreException
      */
     public void init(IIpsProject ipsProject) throws CoreException {
-
         currentIpsProject = ipsProject;
         ipsObjectPath = ipsProject.getIpsObjectPath();
 
@@ -93,7 +91,6 @@ public class IpsObjectPathContainer {
      * @throws CoreException if the control could not be created
      */
     public Control createControl(Composite parent) throws CoreException {
-
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setFont(parent.getFont());
 
@@ -163,11 +160,9 @@ public class IpsObjectPathContainer {
      * @return true if changes made in the dialog could be committed successfully, false otherwise
      */
     public boolean saveToIpsProjectFile() {
-
         try {
             currentIpsProject.setIpsObjectPath(ipsObjectPath);
         } catch (CoreException e) {
-
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

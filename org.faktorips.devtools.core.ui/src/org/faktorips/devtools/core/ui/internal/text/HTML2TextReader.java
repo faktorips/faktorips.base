@@ -38,7 +38,6 @@ public class HTML2TextReader extends SubstitutionTextReader {
     private static final Set<String> fgTags;
 
     static {
-
         fgTags = new HashSet<String>();
         fgTags.add("b"); //$NON-NLS-1$
         fgTags.add("br"); //$NON-NLS-1$
@@ -126,12 +125,8 @@ public class HTML2TextReader extends SubstitutionTextReader {
         }
     }
 
-    /*
-     * @see org.eclipse.jdt.internal.ui.text.SubstitutionTextReader#computeSubstitution(int)
-     */
     @Override
     protected String computeSubstitution(int c) throws IOException {
-
         if (c == '<') {
             return processHTMLTag();
         } else if (fIgnore) {
@@ -141,12 +136,10 @@ public class HTML2TextReader extends SubstitutionTextReader {
         } else if (fIsPreformattedText) {
             return processPreformattedText(c);
         }
-
         return null;
     }
 
     private String html2Text(String html) {
-
         if (html == null || html.length() == 0) {
             return EMPTY_STRING;
         }
@@ -186,15 +179,15 @@ public class HTML2TextReader extends SubstitutionTextReader {
             return EMPTY_STRING;
         }
 
-        if ("dl".equals(html)) {
+        if ("dl".equals(html)) { //$NON-NLS-1$
             return LINE_DELIM;
         }
 
-        if ("dd".equals(html)) {
+        if ("dd".equals(html)) { //$NON-NLS-1$
             return "\t"; //$NON-NLS-1$
         }
 
-        if ("li".equals(html)) {
+        if ("li".equals(html)) { //$NON-NLS-1$
             // FIXME: this hard-coded prefix does not work for RTL languages, see
             // https://bugs.eclipse.org/bugs/show_bug.cgi?id=91682
             return LINE_DELIM + HTMLMessages.getString("HTML2TextReader.listItemPrefix"); //$NON-NLS-1$
@@ -210,7 +203,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
             return LINE_DELIM;
         }
 
-        if ("br".equals(html) || "br/".equals(html) || "div".equals(html)) {
+        if ("br".equals(html) || "br/".equals(html) || "div".equals(html)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return LINE_DELIM;
         }
 
@@ -225,7 +218,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
             return LINE_DELIM;
         }
 
-        if ("/dd".equals(html)) {
+        if ("/dd".equals(html)) { //$NON-NLS-1$
             return LINE_DELIM;
         }
 
@@ -243,7 +236,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
         return EMPTY_STRING;
     }
 
-    /*
+/**
      * A '<' has been read. Process a html tag
      */
     private String processHTMLTag() throws IOException {
@@ -251,9 +244,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
         StringBuffer buf = new StringBuffer();
         int ch;
         do {
-
             ch = nextChar();
-
             while (ch != -1 && ch != '>') {
                 buf.append(Character.toLowerCase((char)ch));
                 ch = nextChar();
@@ -321,7 +312,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
         return "&" + symbol; // not found //$NON-NLS-1$
     }
 
-    /*
+    /**
      * A '&' has been read. Process a entity
      */
     private String processEntity() throws IOException {

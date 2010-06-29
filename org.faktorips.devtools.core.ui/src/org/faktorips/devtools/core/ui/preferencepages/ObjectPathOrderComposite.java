@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -86,10 +85,8 @@ public class ObjectPathOrderComposite extends Composite {
      * Initializes the composite for an existing IPS Project
      * 
      * @param ipsObjectPath IPS object path used to initialize this composite, must not be null
-     * @throws CoreException
      */
     public void init(IIpsObjectPath ipsObjectPath) {
-
         this.ipsObjectPath = ipsObjectPath;
         dataChanged = false;
 
@@ -104,7 +101,6 @@ public class ObjectPathOrderComposite extends Composite {
                 .getWorkbench().getDecoratorManager().getLabelDecorator()));
 
         viewer.addSelectionChangedListener(projectAdapter);
-
         return viewer;
     }
 
@@ -136,9 +132,10 @@ public class ObjectPathOrderComposite extends Composite {
         moveUpButton.setEnabled(enabled);
     }
 
-    // enable all buttons, then selectively disable buttons not applicable for the current selection
+    /**
+     * enable all buttons, then selectively disable buttons not applicable for the current selection
+     */
     private void setButtonEnabledStates(int[] indices) {
-
         int numSelections = indices.length;
         setButtonEnabledStates(false);
         if (numSelections == 0) {
@@ -172,7 +169,6 @@ public class ObjectPathOrderComposite extends Composite {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-
             if (e.getSource() == moveUpButton) {
                 moveSelectedEntries(true);
             } else if (e.getSource() == moveDownButton) {
@@ -188,7 +184,8 @@ public class ObjectPathOrderComposite extends Composite {
         }
 
         @Override
-        public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // nothing to do
         }
     }
 
@@ -205,7 +202,7 @@ public class ObjectPathOrderComposite extends Composite {
     }
 
     /**
-     * @param top, if true selected elements will be moved to top, preserving the order of selected
+     * @param top if true selected elements will be moved to top, preserving the order of selected
      *            items. Otherwise the elements will be moved to the bottom.
      */
     private void moveEntriesTopBottom(boolean top) {

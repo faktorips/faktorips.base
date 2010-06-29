@@ -55,6 +55,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
 
     protected PropertyPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association,
             UIToolkit toolkit, BindingContext bindingContext) {
+
         super(Messages.PropertyPage_pageName, Messages.PropertyPage_pageTitle, null);
         super.setDescription(Messages.PropertyPage_pageDescription);
         this.wizard = wizard;
@@ -65,9 +66,6 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         setPageComplete(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         Composite pageComposite = wizard.createPageComposite(parent);
@@ -164,25 +162,16 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<String> getProperties() {
         return visibleProperties;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canFlipToNextPage() {
         return wizard.canPageFlipToNextPage(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDefaultFocus() {
         updateDefaultTargetRoleSingular();

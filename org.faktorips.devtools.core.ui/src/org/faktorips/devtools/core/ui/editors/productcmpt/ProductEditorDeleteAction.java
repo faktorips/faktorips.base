@@ -44,9 +44,6 @@ public class ProductEditorDeleteAction extends IpsAction {
         super.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
         if (!super.computeEnabledProperty(selection)) {
@@ -65,9 +62,6 @@ public class ProductEditorDeleteAction extends IpsAction {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IStructuredSelection selection) {
         Object[] items = selection.toArray();

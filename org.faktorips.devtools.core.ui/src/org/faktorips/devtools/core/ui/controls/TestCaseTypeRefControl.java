@@ -30,9 +30,6 @@ public class TestCaseTypeRefControl extends IpsObjectRefControl {
                 Messages.TestCaseTypeRefControl_description);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject() == null) {

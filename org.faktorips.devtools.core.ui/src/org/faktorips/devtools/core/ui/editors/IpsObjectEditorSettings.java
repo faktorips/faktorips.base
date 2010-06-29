@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * 
  * @author Jan Ortmann
  */
 public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveParticipant {
@@ -42,9 +41,6 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
 
     private HashMap<String, Map<String, String>> settings = new HashMap<String, Map<String, String>>();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void put(IIpsSrcFile file, String key, String value) {
         if (file == null) {
@@ -66,9 +62,6 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         keyValues.put(key, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String get(IIpsSrcFile file, String key) {
         if (file == null) {
@@ -81,17 +74,11 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         return keyValues.get(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void put(IIpsSrcFile file, String key, boolean value) {
         put(file, key, "" + value); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean getBoolean(IIpsSrcFile file, String key) {
         String s = get(file, key);
@@ -101,9 +88,6 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         return Boolean.valueOf(s).booleanValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void remove(IIpsSrcFile file) {
         if (file == null) {
@@ -116,9 +100,6 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         return file.getQualifiedNameType().toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void remove(IIpsSrcFile file, String key) {
         if (file == null) {
@@ -186,9 +167,6 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saving(ISaveContext context) throws CoreException {
         if (context.getKind() != ISaveContext.FULL_SAVE) {
@@ -212,7 +190,9 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
 
             }
         } finally {
-            out.close();
+            if (out != null) {
+                out.close();
+            }
         }
     }
 
@@ -223,25 +203,16 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doneSaving(ISaveContext context) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void prepareToSave(ISaveContext context) throws CoreException {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void rollback(ISaveContext context) {
         // nothing to do

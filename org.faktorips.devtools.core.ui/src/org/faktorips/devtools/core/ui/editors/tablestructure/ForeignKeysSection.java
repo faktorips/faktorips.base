@@ -27,26 +27,12 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
-/**
- *
- */
 public class ForeignKeysSection extends SimpleIpsPartsSection {
 
-    /**
-     * @param parent
-     * @param style
-     * @param toolkit
-     */
     public ForeignKeysSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
         super(table, parent, Messages.ForeignKeysSection_title, toolkit);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite,
-     *      org.faktorips.devtools.core.ui.UIToolkit)
-     */
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new ForeignKeysComposite(getIpsObject(), parent, toolkit);
@@ -62,11 +48,6 @@ public class ForeignKeysSection extends SimpleIpsPartsSection {
             return (ITableStructure)getIpsObject();
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
-         */
         @Override
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
@@ -82,11 +63,6 @@ public class ForeignKeysSection extends SimpleIpsPartsSection {
             return new KeyEditDialog((IForeignKey)part, shell);
         }
 
-        /**
-         * Overridden method.
-         * 
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#moveParts(int[], boolean)
-         */
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getTableStructure().moveForeignKeys(indexes, up);
@@ -109,6 +85,6 @@ public class ForeignKeysSection extends SimpleIpsPartsSection {
             }
         }
 
-    } // class ForeignKeysComposite
+    }
 
 }

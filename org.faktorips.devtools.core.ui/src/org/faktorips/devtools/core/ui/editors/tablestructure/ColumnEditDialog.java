@@ -28,29 +28,18 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 
-/**
- *
- */
 public class ColumnEditDialog extends IpsPartEditDialog {
 
     private IColumn column;
 
-    // edit fields
     private TextField nameField;
     private TextButtonField datatypeField;
 
-    /**
-     * @param parentShell
-     * @param title
-     */
     public ColumnEditDialog(IColumn column, Shell parentShell) {
         super(column, parentShell, Messages.ColumnEditDialog_title, true);
         this.column = column;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -64,7 +53,6 @@ public class ColumnEditDialog extends IpsPartEditDialog {
     }
 
     private Control createGeneralPage(TabFolder folder) {
-
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
 
@@ -85,11 +73,6 @@ public class ColumnEditDialog extends IpsPartEditDialog {
         return c;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
-     */
     @Override
     protected void connectToModel() {
         super.connectToModel();

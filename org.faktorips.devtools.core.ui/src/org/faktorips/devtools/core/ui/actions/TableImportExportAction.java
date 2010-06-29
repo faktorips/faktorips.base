@@ -51,6 +51,7 @@ public class TableImportExportAction extends IpsAction {
 
         @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
+            // Nothing to do
         }
 
         @Override
@@ -60,11 +61,14 @@ public class TableImportExportAction extends IpsAction {
 
         @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+            // Nothing to do
         }
 
         @Override
         public void setSelection(ISelection selection) {
+            // Nothing to do
         }
+
     }
 
     public static TableImportExportAction createTableImportAction(Shell shell, ISelectionProvider selectionProvider) {

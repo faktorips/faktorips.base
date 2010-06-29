@@ -37,47 +37,13 @@ import org.faktorips.devtools.core.ui.bf.edit.ParameterEditPart;
  */
 public class BusinessFunctionLabelProvider implements ILabelProvider {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage(Object element) {
         IStructuredSelection sel = (IStructuredSelection)element;
         EditPart editPart = (EditPart)sel.getFirstElement();
         return IpsUIPlugin.getImageHandling().getImage((IIpsElement)editPart.getModel());
-        // XXX TODO Test this
-        // if(editPart instanceof ParameterEditPart){
-        // return BFElementType.PARAMETER.getImage();
-        // }
-        // if(editPart instanceof CallMethodActionEditPart){
-        // return BFElementType.ACTION_METHODCALL.getImage();
-        // }
-        // if(editPart instanceof InlineActionEditPart){
-        // return BFElementType.ACTION_INLINE.getImage();
-        // }
-        // if(editPart instanceof CallBusinessFunctionActionEditPart){
-        // return BFElementType.ACTION_BUSINESSFUNCTIONCALL.getImage();
-        // }
-        // if(editPart instanceof MergeEditPart){
-        // return BFElementType.MERGE.getImage();
-        // }
-        // if(editPart instanceof DecisionEditPart){
-        // return BFElementType.DECISION.getImage();
-        // }
-        // if(editPart instanceof CallMethodDecisionEditPart){
-        // return BFElementType.DECISION_METHODCALL.getImage();
-        // }
-        // if(editPart instanceof ControlFlowEditPart){
-        // return IpsUIPlugin.getImageHandling().getImage(editPart.getModel());
-        // IpsPlugin.getDefault().getImage(ControlFlow.getImageDescriptor());
-        // }
-        // IIpsElement ipsElement = (IIpsElement)editPart.getModel();
-        // return ipsElement.getImage();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         IStructuredSelection sel = (IStructuredSelection)element;
@@ -118,18 +84,14 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
         return ""; //$NON-NLS-1$
     }
 
-    /**
-     * Empty implementation.
-     */
     @Override
     public void addListener(ILabelProviderListener listener) {
+        // Nothing to do
     }
 
-    /**
-     * Empty implementation.
-     */
     @Override
     public void dispose() {
+        // Nothing to do
     }
 
     /**
@@ -140,11 +102,9 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
         return false;
     }
 
-    /**
-     * Empty implementation.
-     */
     @Override
     public void removeListener(ILabelProviderListener listener) {
+        // Nothing to do
     }
 
 }

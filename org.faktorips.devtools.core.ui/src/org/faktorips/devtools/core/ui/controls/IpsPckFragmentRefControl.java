@@ -63,11 +63,6 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
         }
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.controls.TextButtonControl#buttonClicked()
-     */
     @Override
     protected void buttonClicked() {
         try {
@@ -83,6 +78,7 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
                 }
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

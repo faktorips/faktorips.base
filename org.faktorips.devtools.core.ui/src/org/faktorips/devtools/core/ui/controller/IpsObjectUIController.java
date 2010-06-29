@@ -72,18 +72,12 @@ public class IpsObjectUIController extends DefaultUIController {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void updateUI() {
         super.updateUI();
         validatePartContainerAndUpdateUI();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         super.valueChanged(e);

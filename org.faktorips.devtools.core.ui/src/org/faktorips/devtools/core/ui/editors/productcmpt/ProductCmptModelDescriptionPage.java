@@ -40,7 +40,6 @@ import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
  * 
  * @author Markus Blum
  */
-
 public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage implements
         IActiveGenerationChangedListener, ContentsChangeListener {
 
@@ -57,9 +56,6 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         setDescriptionData(editor.getActiveGeneration());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void activeGenerationChanged(IIpsObjectGeneration generation) {
         try {
@@ -79,7 +75,6 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
      * with range values
      * 
      * @param generation the active {@link ProductCmptGeneration}
-     * @throws CoreException
      */
     private void setDescriptionData(IIpsObjectGeneration generation) throws CoreException {
         IProductCmptGeneration prodCmptGen = (IProductCmptGeneration)generation;
@@ -87,7 +82,6 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
 
         List<DescriptionItem> items = new ArrayList<DescriptionItem>();
         for (ProdDefPropertyType type : ProdDefPropertyType.values()) {
-            DescriptionItem descItem = new DescriptionItem(type.getName(), null);
             createPropertyDescription(items, prodCmptGen, type);
         }
 
@@ -98,14 +92,13 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
     /**
      * Add description of used tables.
      * 
-     * @param descriptionsList List with the collected descriptions.
+     * @param descriptions List with the collected descriptions.
      * @param productCmptGen Get valid tables from {@link IProductCmptGeneration}.
-     * 
-     * @throws CoreException
      */
     private void createPropertyDescription(List<DescriptionItem> descriptions,
             IProductCmptGeneration productCmptGen,
             ProdDefPropertyType propertyType) throws CoreException {
+
         IPropertyValue[] values = productCmptGen.getPropertyValues(propertyType);
         Arrays.sort(values, valueComparator);
         for (IPropertyValue value : values) {
@@ -117,9 +110,6 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
@@ -127,9 +117,6 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         super.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         // TODO read new model description event != TYPE_PROPERTY_CHANGED

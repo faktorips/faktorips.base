@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 
 /**
- * 
  *@deprecated use {@link OpenIpsObjectSelectionDialog} instead
  */
 @Deprecated
@@ -35,11 +34,6 @@ public class IpsObjectSelectionDialog extends TwoPaneElementSelector {
         this(parent, title, message, DefaultLabelProvider.createWithIpsSourceFileMapping());
     }
 
-    /**
-     * @param parent
-     * @param elementRenderer
-     * @param qualifierRenderer
-     */
     public IpsObjectSelectionDialog(Shell parent, String title, String message, ILabelProvider labelProvider) {
         super(parent, labelProvider, new QualifierLabelProvider());
         setTitle(title);
@@ -65,8 +59,8 @@ public class IpsObjectSelectionDialog extends TwoPaneElementSelector {
     }
 
     /**
-     * {@inheritDoc} Set the selected elements of the upper pane as result if more than one element
-     * is select.<br>
+     * Set the selected elements of the upper pane as result if more than one element is select.
+     * <p>
      * Remark: The default implementation of TwoPaneElementSelector uses alays the lower pane as
      * result. If there is only one selected element in the upper pane then the lower pane selection
      * will be used, because maybe the same object (same name) could be exists in different
@@ -82,4 +76,5 @@ public class IpsObjectSelectionDialog extends TwoPaneElementSelector {
             super.computeResult();
         }
     }
+
 }

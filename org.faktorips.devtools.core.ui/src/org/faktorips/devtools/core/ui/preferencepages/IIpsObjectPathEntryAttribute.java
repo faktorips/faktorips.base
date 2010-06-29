@@ -21,7 +21,6 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Roman Grutza
  */
-
 public interface IIpsObjectPathEntryAttribute {
 
     public final static String DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "defaultOutputFolderMergable"; //$NON-NLS-1$
@@ -46,7 +45,7 @@ public interface IIpsObjectPathEntryAttribute {
     /**
      * Set the value object for this mapping
      * 
-     * @param value, an arbitrary object
+     * @param value an arbitrary object
      */
     public void setValue(Object value);
 

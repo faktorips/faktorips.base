@@ -55,10 +55,6 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
     /**
      * Returns <code>true</code> if the given row validation detects an error at the given
      * columnIndex, <code>false</code> otherwise.
-     * 
-     * @param row
-     * @param columnIndex
-     * @return
      */
     private boolean hasRowErrorsAt(IRow row, int columnIndex) {
         try {
@@ -91,33 +87,24 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
         return null;
     }
 
-    /**
-     * Empty implementation. {@inheritDoc}
-     */
     @Override
     public void addListener(ILabelProviderListener listener) {
+        // Nothing to do
     }
 
-    /**
-     * Empty implementation. {@inheritDoc}
-     */
     @Override
     public void dispose() {
+        // Nothing to do
     }
 
-    /**
-     * Empty implementation. {@inheritDoc}
-     */
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
-    /**
-     * Empty implementation. {@inheritDoc}
-     */
     @Override
     public void removeListener(ILabelProviderListener listener) {
+        // Nothing to do
     }
 
 }

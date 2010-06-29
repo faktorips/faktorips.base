@@ -28,17 +28,11 @@ import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
  * IpsSrcFileViewItems are adaptable to IIpsSrcFile
  * 
  * @author dirmeier
- * 
  */
 public abstract class IpsSrcFileViewItem extends PlatformObject implements IIpsSrcFileViewItem {
 
     private IIpsSrcFile ipsSrcFile;
 
-    /**
-     * Constructor
-     * 
-     * @param ipsSrcFile
-     */
     public IpsSrcFileViewItem(IIpsSrcFile ipsSrcFile) {
         this.ipsSrcFile = ipsSrcFile;
     }

@@ -58,4 +58,5 @@ public class ToggleAction extends Action {
         Object oldValue = value.getValue();
         value.setValue(oldValue == Boolean.TRUE ? Boolean.FALSE : Boolean.TRUE);
     }
+
 }

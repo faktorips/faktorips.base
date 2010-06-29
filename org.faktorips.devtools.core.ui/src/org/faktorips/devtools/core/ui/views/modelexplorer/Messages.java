@@ -16,14 +16,15 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.views.modelexplorer.messages"; //$NON-NLS-1$
 
-    private Messages() {
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    private Messages() {
+        // Messages bundles shall not be initialized.
     }
 
     public static String ModelExplorer_menuItemMove;
@@ -41,4 +42,5 @@ public class Messages extends NLS {
     public static String ModelExplorer_nonIpsProjectLabel;
     public static String ModelLabelProvider_noProductDefinitionProjectLabel;
     public static String OpenActionGroup_openWithMenuLabel;
+
 }

@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.ui.wizards.policycmpttype.OpenNewPcTypeWizard
  * @author Stefan Widmaier
  */
 public class NewPolicyComponentTypeAction extends Action {
+
     private IWorkbenchWindow window;
 
     public NewPolicyComponentTypeAction(IWorkbenchWindow window) {

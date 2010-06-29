@@ -44,50 +44,41 @@ public class IpsArchiveEditorInput extends PlatformObject implements IEditorInpu
         return srcFile;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean exists() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ImageDescriptor getImageDescriptor() {
         IEditorRegistry registry = PlatformUI.getWorkbench().getEditorRegistry();
         return registry.getImageDescriptor(StringUtil.getFileExtension(srcFile.getName()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return srcFile.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPersistableElement getPersistable() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getToolTipText() {
         return srcFile.getQualifiedNameType().getName();
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((srcFile == null) ? 0 : srcFile.hashCode());
+        return result;
+    }
+
     /**
-     * {@inheritDoc}
-     * 
      * returns the equality of the underlying <code>IpsSrcFile</code> resources. Note: the default
      * UI functionality uses this method to decide if a new editor should be opened or an already
      * open editor will be reactivated.
@@ -97,10 +88,21 @@ public class IpsArchiveEditorInput extends PlatformObject implements IEditorInpu
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof IpsArchiveEditorInput)) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
             return false;
         }
         IpsArchiveEditorInput other = (IpsArchiveEditorInput)obj;
-        return srcFile.equals(other.getIpsSrcFile());
+        if (srcFile == null) {
+            if (other.srcFile != null) {
+                return false;
+            }
+        } else if (!srcFile.equals(other.srcFile)) {
+            return false;
+        }
+        return true;
     }
+
 }

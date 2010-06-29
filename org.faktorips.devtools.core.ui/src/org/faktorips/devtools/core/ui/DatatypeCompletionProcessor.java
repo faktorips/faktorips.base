@@ -23,9 +23,6 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 
-/**
- *
- */
 public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
 
     private boolean includeVoid;
@@ -87,12 +84,10 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {
+
         prefix = prefix.toLowerCase();
         DefaultLabelProvider labelProvider = new DefaultLabelProvider();
         List<Datatype> foundTypes = new ArrayList<Datatype>();

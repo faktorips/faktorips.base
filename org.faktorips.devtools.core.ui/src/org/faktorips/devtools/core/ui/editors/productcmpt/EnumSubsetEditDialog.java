@@ -50,6 +50,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
 
     public EnumSubsetEditDialog(IEnumValueSet source, IConfigElement configEl, ValueDatatype datatype,
             Shell parentShell, boolean viewOnly) {
+
         super(configEl, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         configElement = configEl;
         this.source = source;
@@ -57,9 +58,6 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
         this.viewOnly = viewOnly;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;

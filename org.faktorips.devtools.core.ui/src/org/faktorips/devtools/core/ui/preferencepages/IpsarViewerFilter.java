@@ -35,21 +35,13 @@ public class IpsarViewerFilter extends ViewerFilter {
     private List<IPath> excluded;
     private boolean recursive;
 
-    /**
-     * @param alreadyRefArchives
-     * @param recursive
-     */
     public IpsarViewerFilter(List<IPath> excluded, boolean recursive) {
         this.excluded = excluded;
         this.recursive = recursive;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
-
         if (element instanceof IFile) {
             if (excluded != null && excluded.contains(element)) {
                 return false;
@@ -80,13 +72,9 @@ public class IpsarViewerFilter extends ViewerFilter {
     }
 
     private boolean isArchiveFile(IPath fullPath) {
-        boolean isArchive;
-
         String fileExtension = fullPath.getFileExtension();
-        isArchive = (fileExtension != null)
+        return (fileExtension != null)
                 && (fileExtension.equals("ipsar") || fileExtension.equals("jar") || fileExtension.equals("zip")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-        return isArchive;
     }
 
 }

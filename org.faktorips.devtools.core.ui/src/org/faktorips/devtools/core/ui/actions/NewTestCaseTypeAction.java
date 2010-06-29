@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.ui.wizards.testcasetype.OpenNewTestCaseTypeWi
  * @author Joerg Ortmann
  */
 public class NewTestCaseTypeAction extends Action {
+
     private IWorkbenchWindow window;
 
     public NewTestCaseTypeAction(IWorkbenchWindow window) {
@@ -40,4 +41,5 @@ public class NewTestCaseTypeAction extends Action {
         openAction.init(window);
         openAction.run(this);
     }
+
 }

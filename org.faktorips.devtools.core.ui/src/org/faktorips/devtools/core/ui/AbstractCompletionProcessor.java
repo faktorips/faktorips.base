@@ -60,33 +60,21 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
         computeProposalForEmptyPrefix = value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
         throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
         throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
         return new char[0];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public char[] getContextInformationAutoActivationCharacters() {
         return null;
@@ -104,29 +92,21 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
         errorMessage = errorMsg;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IContextInformationValidator getContextInformationValidator() {
         return null; // no context
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IContextInformation[] computeContextInformation(IContentAssistSubjectControl contentAssistSubjectControl,
             int documentOffset) {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl,
             int documentOffset) {
+
         if (contentAssistSubjectControl.getControl() instanceof Text) {
             // special check for text controls
             if (!((Text)contentAssistSubjectControl.getControl()).getEditable()) {
@@ -170,6 +150,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
             String prefix,
             int replacementLength,
             List<ICompletionProposal> result) {
+
         String lowerPrefix = prefix.toLowerCase();
         for (IIpsPackageFragment package1 : packages) {
             String name = package1.getName();
@@ -197,6 +178,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
         return packageName;
     }
 
+    // TODO Throws Exception?
     protected abstract void doComputeCompletionProposals(String prefix,
             int documentOffset,
             List<ICompletionProposal> result) throws Exception;

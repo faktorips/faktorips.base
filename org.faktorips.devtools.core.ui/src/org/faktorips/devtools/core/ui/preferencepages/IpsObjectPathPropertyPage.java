@@ -32,14 +32,10 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * <p>
  * Property page for configuring the IPS object path.
- * </p>
  * <p>
  * This class is derived from JDT's BuildPathsPropertyPage.
- * </p>
  * 
- * @see <div>org.eclipse.jdt.internal.ui.preferences.BuildPathsPropertyPage</div>
  * @author Roman Grutza
  */
 public class IpsObjectPathPropertyPage extends PropertyPage {
@@ -49,12 +45,8 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
 
     private IpsObjectPathContainer objectPathsContainer;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createContents(Composite parent) {
-
         // ensure the page has no special buttons
         noDefaultAndApplyButton();
 
@@ -99,7 +91,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         return objectPathsContainer.createControl(parent);
     }
 
-    /*
+    /**
      * Determine IPS project instance for which the property page has to be created
      */
     private IIpsProject getIpsProject() {
@@ -137,12 +129,8 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         return pageSettings;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setVisible(boolean visible) {
-
         if (objectPathsContainer != null) {
             if (!visible) {
                 if (objectPathsContainer.hasChangesInDialog()) {
@@ -173,9 +161,6 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         super.setVisible(visible);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performOk() {
         if (objectPathsContainer.hasChangesInDialog()) {

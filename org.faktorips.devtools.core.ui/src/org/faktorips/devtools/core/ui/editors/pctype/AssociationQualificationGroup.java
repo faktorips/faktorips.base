@@ -50,6 +50,7 @@ public class AssociationQualificationGroup extends Composite {
 
     public AssociationQualificationGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent,
             IAssociation association) {
+
         super(parent, SWT.NONE);
 
         GridLayout layout = new GridLayout(1, false);
@@ -96,6 +97,7 @@ public class AssociationQualificationGroup extends Composite {
             BindingContext bindingContext,
             Composite parent,
             IAssociation association) {
+
         Composite workArea = uiToolkit.createGridComposite(parent, 1, true, true);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -122,6 +124,7 @@ public class AssociationQualificationGroup extends Composite {
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {
+
         public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel"; //$NON-NLS-1$
         public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$
         public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$

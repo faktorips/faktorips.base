@@ -30,7 +30,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * The model description page to display when an <tt>EnumContentEditor</tt> is active.
  * 
- * @see EnumCopntentEditor
+ * @see EnumContentEditor
  * 
  * @author Alexander Weickmann
  * 
@@ -105,12 +105,10 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
             return;
         }
 
-        if (enumType != null) {
-            try {
-                setDescriptionData();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            setDescriptionData();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
     }
 

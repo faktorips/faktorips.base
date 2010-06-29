@@ -68,11 +68,9 @@ public class ModelExplorerDeleteAction extends IpsAction implements IShellProvid
         }
     }
 
-    /**
-     * Implementation of {@link IShellProvider#getShell()}.
-     */
     @Override
     public Shell getShell() {
         return shell;
     }
+
 }

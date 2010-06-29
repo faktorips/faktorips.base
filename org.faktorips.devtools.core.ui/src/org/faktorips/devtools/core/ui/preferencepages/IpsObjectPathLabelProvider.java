@@ -47,9 +47,6 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
         super.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         String text = super.getText(element);
@@ -66,7 +63,7 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
             IFile archiveFileInWorkspace = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(archivePath);
             boolean isExternal = (archiveFileInWorkspace == null);
 
-            text = archivePath.lastSegment() + " - "
+            text = archivePath.lastSegment() + " - " //$NON-NLS-1$
                     + (isExternal ? archivePath.toOSString() : archiveFileInWorkspace.getFullPath().toOSString());
         } else if (element instanceof IIpsObjectPathEntryAttribute) {
             IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute)element;
@@ -78,9 +75,6 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
         return text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage(Object element) {
         if (element instanceof IIpsSrcFolderEntry) {

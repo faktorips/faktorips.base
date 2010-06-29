@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
  * @author Joerg Ortmann
  */
 public class TestCaseTypeEditorPage extends IpsObjectEditorPage {
+
     public static final String PAGE_ID = "TestCaseTypeEditorPage"; //$NON-NLS-1$
 
     private String sectionTitle;
@@ -32,23 +33,18 @@ public class TestCaseTypeEditorPage extends IpsObjectEditorPage {
 
     public TestCaseTypeEditorPage(TestCaseTypeEditor editor, String title, String sectionTitle,
             String sectionDetailTitle) {
+
         super(editor, PAGE_ID, title);
         this.sectionTitle = sectionTitle;
         this.sectionDetailTitle = sectionDetailTitle;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         section.dispose();
         super.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));

@@ -35,8 +35,6 @@ public class ShowStructureAction extends IpsAction {
 
     /**
      * Constructor inherited from IpsAction
-     * 
-     * @param selectionProvider
      */
     public ShowStructureAction(ISelectionProvider selectionProvider) {
         super(selectionProvider);
@@ -65,4 +63,5 @@ public class ShowStructureAction extends IpsAction {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
+
 }

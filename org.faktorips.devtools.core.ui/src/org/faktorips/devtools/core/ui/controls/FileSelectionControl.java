@@ -42,9 +42,6 @@ public class FileSelectionControl extends TextButtonControl {
         this.dialogStyle = dialogStyle;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonClicked() {
         askForFilename();
@@ -63,16 +60,10 @@ public class FileSelectionControl extends TextButtonControl {
         return newFile;
     }
 
-    /**
-     * @return Returns the file.
-     */
     public String getFile() {
         return getText();
     }
 
-    /**
-     * @param file The file to set.
-     */
     public void setFile(String file) {
         setText(file);
     }

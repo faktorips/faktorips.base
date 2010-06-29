@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
  * Section to display and edit the persistence properties specific to an {@link IPolicyCmptType}.
- * <p/>
+ * <p>
  * The editable properties are Table Name, Inheritance Strategy amongst others.
  * 
  * @author Roman Grutza
@@ -54,7 +54,7 @@ public class PersistentTypeInfoSection extends IpsSection {
         this.ipsObject = ipsObject;
 
         initControls();
-        setText("JPA Entity Information");
+        setText("JPA Entity Information"); //$NON-NLS-1$
         setExpanded(false);
     }
 
@@ -94,12 +94,12 @@ public class PersistentTypeInfoSection extends IpsSection {
         client.setLayout(new GridLayout(1, false));
 
         Composite detailComposite = toolkit.createLabelEditColumnComposite(client);
-        toolkit.createLabel(detailComposite, "Persistent type");
+        toolkit.createLabel(detailComposite, "Persistent type"); //$NON-NLS-1$
         Combo persistentTypeCombo = toolkit.createCombo(detailComposite);
         setComboItems(persistentTypeCombo, PersistentType.class);
         ComboField persistentTypeField = new EnumField(persistentTypeCombo, PersistentType.class);
 
-        Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite, "Inheritance Strategy");
+        Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite, "Inheritance Strategy"); //$NON-NLS-1$
         Combo inheritanceStrategyCombo = toolkit.createCombo(detailComposite);
         setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
         ComboField inheritanceStrategyField = new EnumField(inheritanceStrategyCombo, InheritanceStrategy.class);
@@ -107,47 +107,47 @@ public class PersistentTypeInfoSection extends IpsSection {
         persistentComposites.add(inheritanceStrategyCombo);
 
         Checkbox checkboxTableDefinedInSuperclass = toolkit.createCheckbox(client);
-        checkboxTableDefinedInSuperclass.setText("Use table defined in supertype");
+        checkboxTableDefinedInSuperclass.setText("Use table defined in supertype"); //$NON-NLS-1$
         persistentComposites.add(checkboxTableDefinedInSuperclass);
 
         Composite tableNameComposite = toolkit.createLabelEditColumnComposite(client);
-        toolkit.createLabel(tableNameComposite, "Table Name");
+        toolkit.createLabel(tableNameComposite, "Table Name"); //$NON-NLS-1$
         Text tableNameText = toolkit.createText(tableNameComposite);
         persistentComposites.add(tableNameComposite);
 
-        Group discriminatorGroup = toolkit.createGroup(client, "Descriminator");
+        Group discriminatorGroup = toolkit.createGroup(client, "Descriminator"); //$NON-NLS-1$
         persistentComposites.add(discriminatorGroup);
 
         Checkbox defineDiscriminatorColumn = toolkit.createCheckbox(discriminatorGroup);
-        defineDiscriminatorColumn.setText("This type defines the dicriminator column");
+        defineDiscriminatorColumn.setText("This type defines the dicriminator column"); //$NON-NLS-1$
 
         Composite discriminatorDefComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
 
-        toolkit.createLabel(discriminatorDefComposite, "Descriminator Column Name");
+        toolkit.createLabel(discriminatorDefComposite, "Descriminator Column Name"); //$NON-NLS-1$
         Text descriminatorColumnNameText = toolkit.createText(discriminatorDefComposite);
 
-        toolkit.createLabel(discriminatorDefComposite, "Descriminator Datatype");
+        toolkit.createLabel(discriminatorDefComposite, "Descriminator Datatype"); //$NON-NLS-1$
         Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
         setComboItems(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
         ComboField descriminatorDatatypeField = new EnumField(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
 
-        toolkit.createLabel(discriminatorDefComposite, "Descriminator Column Value");
+        toolkit.createLabel(discriminatorDefComposite, "Descriminator Column Value"); //$NON-NLS-1$
         Text descriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
 
         if (ipsObject.getPersistenceTypeInfo() != null) {
             bindingContext.bindContent(persistentTypeField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_PERSISTENT_TYPE);
             bindingContext.add(new ControlPropertyBinding(persistentTypeField.getControl(), ipsObject
-                    .getPersistenceTypeInfo(), "enabled", Boolean.TYPE) {
-                @Override
-                public void updateUiIfNotDisposed() {
-                    IPersistentTypeInfo persTypeInfo = (IPersistentTypeInfo)getObject();
-                    boolean enabled = persTypeInfo.getPersistentType() == PersistentType.ENTITY;
-                    for (Control control2 : persistentComposites) {
-                        uiToolkit.setDataChangeable(control2, enabled);
-                    }
-                }
-            });
+                    .getPersistenceTypeInfo(), "enabled", Boolean.TYPE) { //$NON-NLS-1$
+                        @Override
+                        public void updateUiIfNotDisposed() {
+                            IPersistentTypeInfo persTypeInfo = (IPersistentTypeInfo)getObject();
+                            boolean enabled = persTypeInfo.getPersistentType() == PersistentType.ENTITY;
+                            for (Control control2 : persistentComposites) {
+                                uiToolkit.setDataChangeable(control2, enabled);
+                            }
+                        }
+                    });
 
             bindingContext.bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY);

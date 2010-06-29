@@ -145,6 +145,7 @@ public abstract class ChangeParametersControl extends Composite implements IData
     }
 
     private class ParametersCellModifier implements ICellModifier {
+
         @Override
         public boolean canModify(Object element, String property) {
             if (!isDataChangeable()) {
@@ -187,13 +188,13 @@ public abstract class ChangeParametersControl extends Composite implements IData
                 parameterInfo.setDefaultValue((String)value);
             } else if (property.equals(PROPERTIES[TYPE_PROP])) {
                 parameterInfo.setNewTypeName((String)value);
-            } else {
             }
             if (fListener != null) {
                 fListener.parameterChanged(parameterInfo);
             }
             fTableViewer.update(parameterInfo, new String[] { property });
         }
+
     }
 
     private static final String[] PROPERTIES = { "message", "type", "new", "default" }; //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -216,13 +217,12 @@ public abstract class ChangeParametersControl extends Composite implements IData
 
     private TableViewer fTableViewer;
 
-    // the label text above the table
+    /** the label text above the table */
     private String label;
 
     // the buttons
     private Button fUpButton;
     private Button fDownButton;
-    // private Button fEditButton;
     private Button fAddButton;
     private Button fRemoveButton;
 
@@ -231,11 +231,6 @@ public abstract class ChangeParametersControl extends Composite implements IData
 
     private boolean dataChangeable;
 
-    /**
-     * @param uiToolkit2
-     * @param label the label before the table or <code>null</code>
-     * @param typeContext the package in which to complete types
-     */
     public ChangeParametersControl(Composite parent, UIToolkit uiToolkit, int style, String label, IIpsProject project) {
         super(parent, style);
         this.uiToolkit = uiToolkit;
@@ -892,9 +887,6 @@ public abstract class ChangeParametersControl extends Composite implements IData
         return result;
     }
 
-    /**
-     * @param changeable
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
@@ -905,9 +897,6 @@ public abstract class ChangeParametersControl extends Composite implements IData
         uiToolkit.setDataChangeable(fRemoveButton, changeable);
     }
 
-    /**
-     * @return
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;

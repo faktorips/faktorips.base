@@ -47,9 +47,6 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
         this.generation = generation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList getMessages(Object element) throws CoreException {
         if (element instanceof String) {
@@ -57,9 +54,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
         }
         if (element instanceof IProductCmptLink) {
             IProductCmptLink link = (IProductCmptLink)element;
-            if (link != null) {
-                return super.getMessages(link);
-            }
+            return super.getMessages(link);
         }
         if (element instanceof String) {
             String elementName = (String)element;
@@ -76,9 +71,6 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             this.generation = generation;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getText(Object element) {
             if (element instanceof IProductCmptLink) {
@@ -88,9 +80,6 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             return element.toString();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Image getImage(Object element) {
             if (element instanceof IProductCmptLink) {
@@ -117,6 +106,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                         return IpsUIPlugin.getImageHandling().getImage(association);
                     }
                 } catch (Exception e) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.log(e);
                 }
                 return IpsUIPlugin.getImageHandling().getImage(

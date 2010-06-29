@@ -43,11 +43,13 @@ public class TwoColumnComposite extends Composite implements ModifyListener, Sel
 
     public TwoColumnComposite(Composite parent, int style, ModifyListener modifyListener,
             SelectionListener selectionListener) {
+
         this(parent, style, null, modifyListener, selectionListener);
     }
 
     public TwoColumnComposite(Composite parent, FormToolkit toolkit, ModifyListener modifyListener,
             SelectionListener selectionListener) {
+
         this(parent, SWT.NONE, toolkit, modifyListener, selectionListener);
     }
 
@@ -138,11 +140,6 @@ public class TwoColumnComposite extends Composite implements ModifyListener, Sel
         editControl.setLayoutData(data);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-     */
     @Override
     public void modifyText(ModifyEvent e) {
         if (modifyListener != null) {
@@ -150,11 +147,6 @@ public class TwoColumnComposite extends Composite implements ModifyListener, Sel
         }
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-     */
     @Override
     public void widgetSelected(SelectionEvent e) {
         if (selectionListener != null) {
@@ -162,11 +154,6 @@ public class TwoColumnComposite extends Composite implements ModifyListener, Sel
         }
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-     */
     @Override
     public void widgetDefaultSelected(SelectionEvent e) {
         if (selectionListener != null) {

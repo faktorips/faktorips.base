@@ -34,6 +34,7 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
     private Widget widget;
 
     public ContentsChangeListenerForWidget() {
+        // Default constructor
     }
 
     public ContentsChangeListenerForWidget(Widget widget) {
@@ -57,10 +58,6 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
         return widget;
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     @Override
     public final void contentsChanged(ContentChangeEvent event) {
         if (widget == null) {
@@ -73,7 +70,14 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
 
     public abstract void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event);
 
+    /**
+     * Template method that may be extended by subclasses to extend disposal behavior. The default
+     * implementation does nothing.
+     * 
+     * @param e The event that was the cause for the disposal
+     */
     public void disposedInternal(DisposeEvent e) {
+        // Empty default implementation
     }
 
     @Override

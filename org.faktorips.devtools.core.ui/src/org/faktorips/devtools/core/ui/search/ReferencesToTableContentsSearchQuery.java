@@ -30,17 +30,11 @@ public class ReferencesToTableContentsSearchQuery extends ReferenceSearchQuery {
         super(referenced);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     protected IIpsElement[] findReferences() throws CoreException {
         return referenced.getIpsProject().findReferencingProductCmptGenerations(referenced.getQualifiedNameType());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     protected Object[] getDataForResult(IIpsElement object) {
         if (object instanceof IProductCmptGeneration) {

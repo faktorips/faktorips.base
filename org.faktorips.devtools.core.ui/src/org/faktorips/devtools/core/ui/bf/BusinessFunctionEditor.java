@@ -74,7 +74,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     private IpsProblemsLabelDecorator decorator;
     private ScrollingGraphicalViewer viewer;
 
-    /*
+    /**
      * Storage for the user's decision not to load the changes made directly in the file system.
      */
     private boolean dontLoadChanges = false;
@@ -100,18 +100,13 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     /**
      * Returns the image of the ips object inside the ips object editor which is optional decorated
      * with an ips marker image if a marker exists.
-     * 
-     * @throws CoreException
      */
     // TODO duplicate code in IpsObjectEditor
-    private Image getDecoratedImage() throws CoreException {
+    private Image getDecoratedImage() {
         Image titleImage = IpsUIPlugin.getImageHandling().getImage(ipsSrcFile);
         return decorator.decorateImage(titleImage, ipsSrcFile);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     // TODO duplicate code in IpsObjectEditor
     @Override
     public void problemsChanged(IResource[] changedResources) {
@@ -139,14 +134,10 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
             shell.getDisplay().syncExec(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        if (isActive()) {
-                            refresh();
-                        }
-                        setTitleImage(getDecoratedImage());
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
+                    if (isActive()) {
+                        refresh();
                     }
+                    setTitleImage(getDecoratedImage());
                 }
             });
         }
@@ -268,6 +259,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     }
 
     @SuppressWarnings("unchecked")
+    // Eclipse API uses unchecked type
     @Override
     public Object getAdapter(Class adapter) {
         if (adapter == IPropertySheetPage.class) {
@@ -292,11 +284,11 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
             if (!ipsSrcFile.isContentParsable()) {
                 return;
             }
-            // here we have to request the ips object once, to make sure that
-            // it's state is is synchronized with the enclosing resource.
-            // otherwise if some part of the ui keeps a reference to the ips object, it won't
-            // contain
-            // the correct state.
+            /*
+             * here we have to request the ips object once, to make sure that it's state is is
+             * synchronized with the enclosing resource. otherwise if some part of the ui keeps a
+             * reference to the ips object, it won't contain the correct state.
+             */
             ipsSrcFile.getIpsObject();
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -343,8 +335,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
 
     /**
      * Internal part and shell activation listener.
-     * 
-     * 
+     * <p>
      * Copied from AbstractTextEditor.
      */
     private class ActivationListener implements IPartListener, IWindowListener {
@@ -355,6 +346,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
          * Creates this activation listener.
          * 
          * @param partService the part service on which to add the part listener
+         * 
          * @since 3.1
          */
         public ActivationListener(IPartService partService) {
@@ -384,6 +376,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
 
         @Override
         public void partBroughtToTop(IWorkbenchPart part) {
+            // Nothing to do
         }
 
         @Override
@@ -397,6 +390,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
 
         @Override
         public void partDeactivated(IWorkbenchPart part) {
+            // Nothing to do
         }
 
         private void removeListeners() {
@@ -405,6 +399,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
 
         @Override
         public void partOpened(IWorkbenchPart part) {
+            // Nothing to do
         }
 
         @Override
@@ -416,15 +411,19 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
 
         @Override
         public void windowDeactivated(IWorkbenchWindow window) {
+            // Nothing to do
         }
 
         @Override
         public void windowClosed(IWorkbenchWindow window) {
+            // Nothing to do
         }
 
         @Override
         public void windowOpened(IWorkbenchWindow window) {
+            // Nothing to do
         }
+
     }
 
 }

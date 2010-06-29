@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * @author Joerg Ortmann
  */
 public class ErrorPage extends WizardPage implements IHiddenWizardPage {
+
     private static final String PAGE_ID = "Error"; //$NON-NLS-1$
 
     private Label details;
@@ -38,9 +39,6 @@ public class ErrorPage extends WizardPage implements IHiddenWizardPage {
         setPageComplete(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         details = toolkit.createLabel(parent, ""); //$NON-NLS-1$
@@ -48,7 +46,7 @@ public class ErrorPage extends WizardPage implements IHiddenWizardPage {
     }
 
     /**
-     * If the current page this page then return false to disable the finish button. {@inheritDoc}
+     * If the current page this page then return false to disable the finish button.
      */
     @Override
     public boolean isPageComplete() {
@@ -56,7 +54,7 @@ public class ErrorPage extends WizardPage implements IHiddenWizardPage {
     }
 
     /**
-     * This method returns null to disable the next button. {@inheritDoc}
+     * This method returns null to disable the next button.
      */
     @Override
     public IWizardPage getPreviousPage() {
@@ -71,9 +69,6 @@ public class ErrorPage extends WizardPage implements IHiddenWizardPage {
         details.pack();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPageVisible() {
         return false;

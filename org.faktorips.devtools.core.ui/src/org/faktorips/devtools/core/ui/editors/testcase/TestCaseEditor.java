@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSu
  */
 public class TestCaseEditor extends IpsObjectEditor implements IModelDescriptionSupport {
 
-    /*
+    /**
      * Setting key for user's decision not to choose a new test case type, because the old can't be
      * found.
      */
@@ -41,21 +41,11 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
 
     TestCaseEditorPage editorPage;
 
-    public TestCaseEditor() {
-        super();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doSave(IProgressMonitor monitor) {
         super.doSave(monitor);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void disposeInternal() {
         if (editorPage != null) {
@@ -64,9 +54,6 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
         super.disposeInternal();
     }
 
-    /**
-     * (@inheritDoc)
-     */
     @Override
     protected void addPagesForParsableSrcFile() throws CoreException {
         IIpsObjectEditorSettings settings = getSettings();
@@ -99,30 +86,22 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
         try {
             return (ITestCase)getIpsSrcFile().getIpsObject();
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getUniformPageTitle() {
         return NLS.bind(Messages.TestCaseEditor_Title, getTestCase().getName(), getTestCase().getTestCaseType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
         return new TestCaseDeltaDialog(getTestCase().computeDeltaToTestCaseType(), getSite().getShell());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean computeDataChangeableState() {
         boolean datachangeable = true;
@@ -147,9 +126,6 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
         return super.computeDataChangeableState();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
         return new TestCaseModelDescriptionPage(this);

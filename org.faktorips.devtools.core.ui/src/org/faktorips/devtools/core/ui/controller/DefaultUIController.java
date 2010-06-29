@@ -30,20 +30,10 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
-/**
- * 
- */
 public class DefaultUIController implements ValueChangeListener, UIController, FocusListener {
 
-    // list of mappings between edit fields and properties of model objects.
+    /** list of mappings between edit fields and properties of model objects. */
     protected List<FieldPropertyMapping> mappings = new ArrayList<FieldPropertyMapping>();
-
-    /**
-	 * 
-	 */
-    public DefaultUIController() {
-        super();
-    }
 
     /**
      * Adds an edit-field to this controller. The property with the given name has to be get- and
@@ -103,16 +93,13 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
 
     @Override
     public void updateModel() {
-        List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive
-                                                                                         // copy to
-                                                                                         // avoid
-                                                                                         // concurrent
-                                                                                         // modification
-                                                                                         // exceptions
+        // defensive copy to avoid concurrent modification exceptions
+        List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
         for (FieldPropertyMapping mapping : copy) {
             try {
                 mapping.setPropertyValue();
             } catch (Exception e) {
+                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
                         + " of object " + mapping.getObject(), e)); //$NON-NLS-1$
             }
@@ -122,37 +109,28 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
     @Override
     public void updateUI() {
         List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive
-                                                                                         // copy to
-                                                                                         // avoid
-                                                                                         // concurrent
-                                                                                         // modification
-                                                                                         // exceptions
+        // copy to avoid concurrent modification exceptions
         for (FieldPropertyMapping mapping : copy) {
             try {
                 mapping.setControlValue();
             } catch (Exception e) {
+                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.log(new IpsStatus("Error updating control for property " + mapping.getPropertyName() //$NON-NLS-1$
                         + " of object " + mapping.getObject(), e)); //$NON-NLS-1$
             }
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive
-                                                                                         // copy to
-                                                                                         // avoid
-                                                                                         // concurrent
-                                                                                         // modification
-                                                                                         // exceptions
+        // copy to avoid concurrent modification exceptions
         for (FieldPropertyMapping mapping : copy) {
             if (e.field == mapping.getField()) {
                 try {
                     mapping.setPropertyValue();
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
                             + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
                 }
@@ -177,20 +155,15 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void focusGained(FocusEvent e) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void focusLost(FocusEvent e) {
         // broadcast outstanding change events
         IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastLastEvent();
     }
+
 }

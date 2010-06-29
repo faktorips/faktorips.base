@@ -47,6 +47,7 @@ public class AssociationDerivedUnionGroup extends Composite {
 
     public AssociationDerivedUnionGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent,
             IAssociation association) {
+
         super(parent, SWT.NONE);
 
         GridLayout layout = new GridLayout(1, false);
@@ -145,7 +146,9 @@ public class AssociationDerivedUnionGroup extends Composite {
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {
+
         public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
+
         public String previousTarget = ""; //$NON-NLS-1$
 
         private IAssociation association;
@@ -178,9 +181,6 @@ public class AssociationDerivedUnionGroup extends Composite {
             notifyListeners();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void partHasChanged() {
             initDerivedUnionCandidates(association);

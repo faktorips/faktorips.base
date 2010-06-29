@@ -17,9 +17,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.util.ArgumentCheck;
 
-/**
- *
- */
 public class LabelField extends DefaultEditField {
 
     private Label label;
@@ -30,17 +27,11 @@ public class LabelField extends DefaultEditField {
         this.label = label;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         // no change listeners for labels neccessary
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return label;
@@ -53,49 +44,31 @@ public class LabelField extends DefaultEditField {
         return label;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         return super.prepareObjectForGet(label.getText());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         label.setText((String)super.prepareObjectForSet(newValue));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         return label.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newText) {
         label.setText(newText);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String text) {
         label.setText(text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         // nothing to do

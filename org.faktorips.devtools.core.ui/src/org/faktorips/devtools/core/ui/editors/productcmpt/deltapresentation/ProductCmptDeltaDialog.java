@@ -51,15 +51,13 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
      */
     public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IGenerationToTypeDelta[] deltas,
             Shell parentShell) {
+
         super(parentShell);
         super.setShellStyle(getShellStyle() | SWT.RESIZE);
         this.generations = generations;
         this.deltas = deltas;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createDialogArea(Composite parent) {
         String genTextPlural = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
@@ -147,7 +145,7 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         return root;
     }
 
-    /*
+    /**
      * Returns <code>true</code> if the user can edit recent generations, if recent generations
      * couldn't be edit return <code>false</code>.
      */

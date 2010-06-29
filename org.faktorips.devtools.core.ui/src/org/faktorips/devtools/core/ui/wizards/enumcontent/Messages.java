@@ -19,6 +19,14 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.enumcontent.messages"; //$NON-NLS-1$
 
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
     public static String EnumContentPage_msgEnumContentAlreadyExists;
     public static String EnumContentPage_msgEnumContentExistsForNameExistsAlready;
     public static String EnumContentPage_msgEnumContentNameOfEnumTypeMissing;
@@ -36,9 +44,5 @@ public class Messages extends NLS {
     public static String SelectEnumContentsPage_buttonDeselectAll;
     public static String SelectEnumContentsPage_msgTargetSourceFolderNotSpecified;
     public static String SelectEnumContentsPage_msgTargetSourceFolderDoesNotExist;
-
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
 
 }

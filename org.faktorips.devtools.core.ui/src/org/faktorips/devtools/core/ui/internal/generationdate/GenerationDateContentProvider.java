@@ -80,14 +80,13 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             Set<IProductCmptGeneration> alreadyPassed,
             IIpsProject ipsProject,
             IProgressMonitor monitor) throws CoreException {
-        TreeSet<GregorianCalendar> result = new TreeSet<GregorianCalendar>(new Comparator<GregorianCalendar>() {
 
+        TreeSet<GregorianCalendar> result = new TreeSet<GregorianCalendar>(new Comparator<GregorianCalendar>() {
             @Override
             public int compare(GregorianCalendar o1, GregorianCalendar o2) {
                 // descending order
                 return o2.getTime().compareTo(o1.getTime());
             }
-
         });
         if (productCmpt == null) {
             return result;
@@ -111,8 +110,8 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             Set<IProductCmptGeneration> alreadyPassed,
             IIpsProject ipsProject,
             IProgressMonitor monitor) throws CoreException {
-        Set<GregorianCalendar> result = new HashSet<GregorianCalendar>();
 
+        Set<GregorianCalendar> result = new HashSet<GregorianCalendar>();
         if (monitor.isCanceled()) {
             return result;
         }
@@ -158,10 +157,11 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
         for (IIpsObjectGeneration aGeneration : target.getGenerations()) {
             if (aGeneration instanceof IProductCmptGeneration) {
                 IProductCmptGeneration prodGeneration = (IProductCmptGeneration)aGeneration;
-                // all generations with prodGeneration.validFrom have to be before or equal
-                // reference.validTo and
-                // prodGeneration.validTo have to be after or equal reference.validFrom.
-                // validTo == null is equal infinite
+                /*
+                 * all generations with prodGeneration.validFrom have to be before or equal
+                 * reference.validTo and prodGeneration.validTo have to be after or equal
+                 * reference.validFrom. validTo == null is equal infinite
+                 */
                 if (!prodGeneration.getValidFrom().after(reference.getValidTo())
                         && !reference.getValidFrom().after(prodGeneration.getValidTo())) {
                     result.add(prodGeneration);

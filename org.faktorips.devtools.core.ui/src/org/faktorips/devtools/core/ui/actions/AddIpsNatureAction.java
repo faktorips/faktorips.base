@@ -77,9 +77,6 @@ public class AddIpsNatureAction extends ActionDelegate {
 
     private IJavaProject javaProject = null;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectionChanged(IAction action, ISelection newSelection) {
         javaProject = null;
@@ -135,11 +132,12 @@ public class AddIpsNatureAction extends ActionDelegate {
             IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
             IIpsProject ipsProject = ipsModel.getIpsProject(javaProject.getProject());
             if (ipsProject.getIpsProjectPropertiesFile().exists()) {
-                // readd the IPS Nature. For example when using SAP-NWDS, the project file is
-                // created by NWDS when checking out the Development Component from the Design Time
-                // Repository (DTR).
-                // The .project file is not stored in the DTR. With this action, the user can re-add
-                // the IPS Nature after the check out.
+                /*
+                 * re-add the IPS Nature. For example when using SAP-NWDS, the project file is
+                 * created by NWDS when checking out the Development Component from the Design Time
+                 * Repository (DTR). The .project file is not stored in the DTR. With this action,
+                 * the user can re-add the IPS Nature after the check out.
+                 */
                 boolean answer = MessageDialog.openConfirm(getShell(),
                         Messages.AddIpsNatureAction_titleAddFaktorIpsNature, Messages.AddIpsNatureAction_readdNature);
                 if (answer) {
@@ -211,6 +209,7 @@ public class AddIpsNatureAction extends ActionDelegate {
     }
 
     private class AddIpsNatureDialog extends TitleAreaDialog {
+
         private Text errorMessageText;
         private String errorMessage;
 
@@ -245,24 +244,12 @@ public class AddIpsNatureAction extends ActionDelegate {
             super(parentShell);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
-         */
         @Override
         protected void configureShell(Shell shell) {
             super.configureShell(shell);
             shell.setText(Messages.AddIpsNatureAction_dialogTitle);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite
-         * )
-         */
         @Override
         protected void createButtonsForButtonBar(Composite parent) {
             // create OK and Cancel buttons by default
@@ -271,9 +258,6 @@ public class AddIpsNatureAction extends ActionDelegate {
             sourceFolderText.setFocus();
         }
 
-        /*
-         * (non-Javadoc) Method declared on Dialog.
-         */
         @Override
         protected Control createDialogArea(Composite parent) {
             Composite composite0 = (Composite)super.createDialogArea(parent);
@@ -435,6 +419,7 @@ public class AddIpsNatureAction extends ActionDelegate {
          * Sets or clears the error message. If not <code>null</code>, the OK button is disabled.
          * 
          * @param errorMessage the error message, or <code>null</code> to clear
+         * 
          * @since 3.0
          */
         @Override
@@ -452,9 +437,6 @@ public class AddIpsNatureAction extends ActionDelegate {
             }
         }
 
-        /*
-         * (non-Javadoc) Method declared on Dialog.
-         */
         @Override
         protected void buttonPressed(int buttonId) {
             if (buttonId == IDialogConstants.OK_ID) {
@@ -469,9 +451,6 @@ public class AddIpsNatureAction extends ActionDelegate {
             super.buttonPressed(buttonId);
         }
 
-        /*
-         * (non-Javadoc) Method declared in Window.
-         */
         @Override
         protected Control createContents(Composite parent) {
             Control contents = super.createContents(parent);

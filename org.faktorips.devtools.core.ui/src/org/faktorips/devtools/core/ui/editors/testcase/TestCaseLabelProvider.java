@@ -95,9 +95,6 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         fireLabelProviderChanged(new LabelProviderChangedEvent(this));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage(Object element) {
         if (element instanceof TestPolicyCmpt) {
@@ -115,7 +112,6 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
                 IpsPlugin.log(exception);
             }
         }
-
         return (Image)resourceManager.get(getImageDescriptor(element));
     }
 
@@ -146,9 +142,6 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ImageDescriptor getImageForRootPolicyCmptTypeParamNode(ITestPolicyCmptTypeParameter typeParam) {
         return IpsUIPlugin.getImageHandling().createImageDescriptor("TestParameterRootObject.gif"); //$NON-NLS-1$
     }
@@ -173,7 +166,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         cell.setImage(getImage(item));
     }
 
-    /*
+    /**
      * Returns the name of the object.
      */
     private String getName(Object object) {
@@ -188,9 +181,6 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         return getText(object);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         if (element instanceof ITestPolicyCmpt) {
@@ -249,7 +239,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         return canShowPolicyComponentType.getValue() != Boolean.TRUE;
     }
 
-    /*
+    /**
      * Returns the extension for the test rule: " - <policy cmpt type name>"
      */
     private String getLabelExtensionForTestRule(ITestRule testRule) {
@@ -320,18 +310,12 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         return target.replaceAll(TestCaseHierarchyPath.SEPARATOR, "/"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         resourceManager.dispose();
         defaultLabelProvider.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;

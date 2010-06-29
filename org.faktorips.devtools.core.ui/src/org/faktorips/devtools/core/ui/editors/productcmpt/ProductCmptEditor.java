@@ -45,19 +45,20 @@ import org.faktorips.values.DateUtil;
  * @author Thorsten Guenther
  */
 public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport {
-    /*
+
+    /**
      * Setting key for user's decision not to choose a new product component type, because the old
      * can't be found.
      */
     private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
-    /*
+    /**
      * Setting key for the working date used in the editor. This might differ from the one defined
      * in the preferences.
      */
     private final static String SETTING_WORKING_DATE = "workingDate"; //$NON-NLS-1$
 
-    /*
+    /**
      * Setting key for user's decision not to choose a new product component type, because the old
      * can't be found.
      */
@@ -75,9 +76,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
@@ -88,9 +86,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
         generationPropertiesPage = new GenerationPropertiesPage(this);
@@ -112,7 +107,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     /**
-     * Returns the product component for the sourcefile edited with this editor.
+     * Returns the product component for the source file edited with this editor.
      */
     IProductCmpt getProductCmpt() {
         try {
@@ -137,9 +132,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         getSettings().put(getIpsSrcFile(), SETTING_WORKING_DATE, DateUtil.gregorianCalendarToIsoDateString(date));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void editorActivated() {
         if (TRACE) {
@@ -152,11 +144,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * The method is overridden, to enable access from classes in same package.
-     */
+    // The method is overridden, to enable access from classes in same package.
     @Override
     protected void checkForInconsistenciesToModel() {
         if (TRACE) {
@@ -188,9 +176,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getUniformPageTitle() {
         if (!isSrcFileUsable()) {
@@ -255,9 +240,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         handleWorkingDateMissmatch();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         if (!isActive()) {
@@ -294,9 +276,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, manuallySet);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean computeDataChangeableState() {
         if (!couldDateBeChangedIfProductCmptTypeWasntMissing()) {
@@ -403,14 +382,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws CoreException
-     */
     @Override
     protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
-
         IIpsObjectGeneration[] gen = getProductCmpt().getGenerationsOrderedByValidDate();
         IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
         for (int i = 0; i < generations.length; i++) {
@@ -424,9 +397,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         return new ProductCmptDeltaDialog(generations, deltas, getSite().getShell());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contentsChanged(final ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(getIpsSrcFile())) {
@@ -438,9 +408,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         super.contentsChanged(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void refreshInclStructuralChanges() {
         try {
@@ -472,9 +439,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         return "ProductCmptEditor"; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
         return new ProductCmptModelDescriptionPage(this);

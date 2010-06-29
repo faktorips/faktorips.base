@@ -28,11 +28,10 @@ class ProductCmptTypeStructurePage extends ProductCmptTypeEditorPage {
      * Creates a new <code>PolicyCmptTypeStructurePage</code>.
      * 
      * @param editor The editor to which the new page belongs to.
-     * @param twoSectionsWhenTrueOtherwiseFour
      */
     public ProductCmptTypeStructurePage(ProductCmptTypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
         super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_structurePageTitle,
-                "ProductCmptTypeStructurePage");
+                "ProductCmptTypeStructurePage"); //$NON-NLS-1$
     }
 
     private IProductCmptType getProductCmptType() {

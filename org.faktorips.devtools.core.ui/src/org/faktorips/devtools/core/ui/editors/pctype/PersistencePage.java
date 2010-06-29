@@ -31,7 +31,7 @@ public class PersistencePage extends IpsObjectEditorPage {
     private final static String PAGE_ID = "PersistencePage"; //$NON-NLS-1$
 
     public PersistencePage(IpsObjectEditor editor) {
-        super(editor, PAGE_ID, "Persistence");
+        super(editor, PAGE_ID, "Persistence"); //$NON-NLS-1$
     }
 
     @Override

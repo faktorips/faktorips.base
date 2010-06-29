@@ -52,9 +52,7 @@ public class FindPolicyReferencesAction extends IpsAction {
                 NewSearchUI.activateSearchResultView();
                 NewSearchUI.runQueryInBackground(new ReferencesToPolicySearchQuery(referenced));
             }
-        } else {
-            return;
         }
-
     }
+
 }

@@ -46,19 +46,14 @@ public class IpsPckFragmenCompletionProcessor extends AbstractCompletionProcesso
         return super.computeCompletionProposals(contentAssistSubjectControl, documentOffset);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {
-        IIpsPackageFragmentRoot ipsPckFragmentRoot = control.getIpsPckFragmentRoot();
 
+        IIpsPackageFragmentRoot ipsPckFragmentRoot = control.getIpsPckFragmentRoot();
         if (ipsPckFragmentRoot == null) {
             return;
         }
-
         matchPackages(ipsPckFragmentRoot.getIpsPackageFragments(), prefix, documentOffset, result);
-
     }
 }

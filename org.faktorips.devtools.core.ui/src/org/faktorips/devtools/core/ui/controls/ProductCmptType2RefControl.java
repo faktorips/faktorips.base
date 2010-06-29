@@ -32,14 +32,12 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
 
     public ProductCmptType2RefControl(IIpsProject project, Composite parent, UIToolkit toolkit,
             boolean excludeAbstractTypes) {
+
         super(project, parent, toolkit, Messages.ProductCmptTypeRefControl_title,
                 Messages.ProductCmptTypeRefControl_description);
         this.excludeAbstractTypes = excludeAbstractTypes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject() == null) {

@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -37,6 +36,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
  * @author Joerg Ortmann
  */
 public class NewTestParamDetailWizardPage extends WizardPage implements ValueChangeListener {
+
     private static final String PAGE_ID = "RootParamDetailWizardPage"; //$NON-NLS-1$
 
     private IBlockedValidationWizard wizard;
@@ -57,9 +57,6 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
         this.pageNumber = pageNumber;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         Composite c = uiToolkit.createLabelEditColumnComposite(parent);
@@ -114,9 +111,6 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         wizard.postAsyncRunnable(new Runnable() {
@@ -127,12 +121,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
         });
     }
 
-    /**
-     * Validates the page.
-     * 
-     * @throws CoreException
-     */
-    private boolean validatePage() throws CoreException {
+    private boolean validatePage() {
         setErrorMessage(null);
         return wizard.isPageValid(pageNumber);
     }
@@ -142,18 +131,12 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
      */
     private void updateSetPageComplete() {
         boolean completeAllowed = false;
-        try {
-            completeAllowed = validatePage();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        completeAllowed = validatePage();
         super.setPageComplete(completeAllowed);
     }
 
     /**
      * Informs the wizard that this page was displayed.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public IWizardPage getNextPage() {

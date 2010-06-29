@@ -29,8 +29,6 @@ public class NewBusinessFunctionAction extends Action {
 
     /**
      * Creates a new <code>NewBusinessFunctionAction</code>.
-     * 
-     * @param window
      */
     public NewBusinessFunctionAction(IWorkbenchWindow window) {
         super();
@@ -40,9 +38,6 @@ public class NewBusinessFunctionAction extends Action {
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewBusinessFunction.gif")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         OpenNewBFWizardAction action = new OpenNewBFWizardAction();

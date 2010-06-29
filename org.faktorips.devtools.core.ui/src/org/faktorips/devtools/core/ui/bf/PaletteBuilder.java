@@ -40,9 +40,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  */
 public class PaletteBuilder {
 
-    public PaletteBuilder() {
-    }
-
     private List<PaletteContainer> createCategories(PaletteRoot root) {
         List<PaletteContainer> categories = new ArrayList<PaletteContainer>();
         categories.add(createControlGroup(root));
@@ -51,7 +48,6 @@ public class PaletteBuilder {
     }
 
     private PaletteContainer createComponentsDrawer() {
-
         List<ToolEntry> entries = new ArrayList<ToolEntry>();
 
         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
@@ -103,8 +99,6 @@ public class PaletteBuilder {
                 imageDescriptor);
         entries.add(mergeEntry);
 
-        // UMLElementTypes.ActivityParameterNode_3052
-
         imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/ControlFlow.gif"); //$NON-NLS-1$
         ToolEntry controlflowEntry = new ConnectionCreationToolEntry(Messages.PaletteBuilder_controlflow,
                 Messages.PaletteBuilder_controlFlowDesc, null, imageDescriptor, imageDescriptor);
@@ -146,6 +140,7 @@ public class PaletteBuilder {
     public PaletteRoot buildPalette() {
         PaletteRoot logicPalette = new PaletteRoot();
         logicPalette.addAll(createCategories(logicPalette));
+
         return logicPalette;
     }
 

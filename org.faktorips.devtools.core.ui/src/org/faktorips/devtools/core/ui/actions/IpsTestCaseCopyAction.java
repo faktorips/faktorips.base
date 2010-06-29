@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.testcasecopy.TestCaseCopyWizard;
 
 public class IpsTestCaseCopyAction extends IpsAction {
+
     private Shell shell;
 
     public IpsTestCaseCopyAction(Shell shell, ISelectionProvider selectionProvider) {
@@ -41,4 +42,5 @@ public class IpsTestCaseCopyAction extends IpsAction {
         wd.setBlockOnOpen(true);
         wd.open();
     }
+
 }

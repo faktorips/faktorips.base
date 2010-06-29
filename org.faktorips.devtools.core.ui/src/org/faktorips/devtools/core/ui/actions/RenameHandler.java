@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
  */
 public class RenameHandler extends IpsRefactoringHandler {
 
-    private static final String COMMAND_ID = "org.eclipse.ui.edit.rename";
+    private static final String COMMAND_ID = "org.eclipse.ui.edit.rename"; //$NON-NLS-1$
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);

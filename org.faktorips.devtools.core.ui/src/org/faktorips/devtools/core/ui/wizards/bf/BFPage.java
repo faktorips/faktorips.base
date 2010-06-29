@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 public class BFPage extends IpsObjectPage {
 
     public BFPage(IStructuredSelection selection) {
-        super(BusinessFunctionIpsObjectType.getInstance(), selection, Messages.getString("BFPage.Title")); //$NON-NLS-1$
+        super(BusinessFunctionIpsObjectType.getInstance(), selection, Messages.BFPage_Title);
         setImageDescriptor(IpsUIPlugin.getImageHandling()
                 .createImageDescriptor("wizards/NewBusinessFunctionWizard.png")); //$NON-NLS-1$
     }

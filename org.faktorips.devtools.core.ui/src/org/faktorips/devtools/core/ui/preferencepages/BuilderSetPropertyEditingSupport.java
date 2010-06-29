@@ -53,6 +53,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
      */
     public BuilderSetPropertyEditingSupport(TableViewer viewer, IIpsProject ipsProject,
             IIpsArtefactBuilderSetConfigModel builderSetConfigModel, String builderSetId) {
+
         super(viewer);
         ArgumentCheck.notNull(viewer);
         ArgumentCheck.notNull(ipsProject);
@@ -64,9 +65,6 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
         this.builderSetConfigModel = builderSetConfigModel;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean canEdit(Object element) {
         if (element instanceof IIpsBuilderSetPropertyDef) {
@@ -78,9 +76,6 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected CellEditor getCellEditor(Object element) {
         if (element instanceof IIpsBuilderSetPropertyDef) {
@@ -120,10 +115,11 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
         return null;
     }
 
-    // override traverse strategy in ComboCellEditor since we use Eclipse 3.3
-    // CellViewerEditorActivationStrategy
-    // this makes it possible to jump between editable cells and leave the tableViewer with CTRL-Tab
-    // or CTRL-Shift-Tab
+    /**
+     * override traverse strategy in ComboCellEditor since we use Eclipse 3.3
+     * CellViewerEditorActivationStrategy this makes it possible to jump between editable cells and
+     * leave the tableViewer with CTRL-Tab or CTRL-Shift-Tab
+     */
     private ComboCellEditor getCellEditorInternal(Combo combo) {
         ComboCellEditor cellEditor = new ComboCellEditor(combo);
         cellEditor.setTraversalStrategy(new AbstractTraversalStrategy(cellEditor) {
@@ -137,9 +133,6 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
         return cellEditor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Object getValue(Object element) {
         if (element instanceof IIpsBuilderSetPropertyDef) {
@@ -150,9 +143,6 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setValue(Object element, Object value) {
         if (element instanceof IIpsBuilderSetPropertyDef) {

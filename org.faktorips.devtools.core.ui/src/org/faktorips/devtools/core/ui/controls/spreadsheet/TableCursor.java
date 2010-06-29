@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.TypedListener;
 
 public class TableCursor extends Canvas {
+
     private Table table;
     private SpreadsheetControl tableControl;
     private int row_ = 0;
@@ -78,7 +79,7 @@ public class TableCursor extends Canvas {
                         tableMouseDown(event);
                         break;
                     case SWT.FocusIn:
-                        tableFocusIn(event);
+                        tableFocusIn();
                         break;
                 }
             }
@@ -141,7 +142,6 @@ public class TableCursor extends Canvas {
      * the reciever has <code>SWT.CHECK</code> style set and the check selection changes, the event
      * object detail field contains the value <code>SWT.CHECK</code>.
      * <code>widgetDefaultSelected</code> is typically called when an item is double-clicked.
-     * </p>
      * 
      * @param listener the listener which should be notified
      * 
@@ -149,9 +149,9 @@ public class TableCursor extends Canvas {
      *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
      *                </ul>
      * @exception SWTException <ul>
-     *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-     *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created
-     *                the receiver</li>
+     *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li> <li>
+     *                ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the
+     *                receiver</li>
      *                </ul>
      * 
      * @see SelectionListener
@@ -167,6 +167,9 @@ public class TableCursor extends Canvas {
         addListener(SWT.DefaultSelection, typedListener);
     }
 
+    /**
+     * @param event The event to dispose
+     */
     void dispose(Event event) {
         Display display = getDisplay();
         display.asyncExec(new Runnable() {
@@ -262,7 +265,7 @@ public class TableCursor extends Canvas {
      * Paint the cell of the table cursor. The <code>paint</code> method is different from the
      * original table cursor.
      * 
-     * @param event, the paint event to process.
+     * @param event the paint event to process.
      */
     void paint(Event event) {
         if (!isVisible()) {
@@ -324,7 +327,7 @@ public class TableCursor extends Canvas {
         }
     }
 
-    void tableFocusIn(Event event) {
+    void tableFocusIn() {
         if (isDisposed()) {
             return;
         }
@@ -458,7 +461,6 @@ public class TableCursor extends Canvas {
      *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created
      *                the receiver</li>
      *                </ul>
-     * 
      */
     public void setSelection(TableItem row, int column) {
         checkWidget();

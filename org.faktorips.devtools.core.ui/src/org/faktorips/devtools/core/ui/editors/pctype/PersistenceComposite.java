@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 
 /**
- * Extends the supertype with the ability to view tabular data.
+ * Extends the super type with the ability to view tabular data.
  * 
  * @author Roman Grutza
  */
@@ -44,8 +44,6 @@ public abstract class PersistenceComposite extends IpsPartsComposite {
     public abstract String[] getColumnHeaders();
 
     /**
-     * {@inheritDoc}
-     * 
      * This class redefines the creation of the viewer to apply its own column headers and
      * content/label providers.
      */

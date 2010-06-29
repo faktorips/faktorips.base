@@ -88,8 +88,6 @@ public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
 
     /**
      * Changing the link creator for testing
-     * 
-     * @param linkCreator
      */
     public void setLinkCreator(LinkCreatorUtil linkCreator) {
         this.linkCreator = linkCreator;

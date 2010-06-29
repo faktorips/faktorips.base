@@ -47,7 +47,7 @@ public class PackageNameEditDialog extends StatusDialog {
 
     /**
      * @param parent Composite
-     * @param srcfolderEntry parent entry for which to alter an attribute
+     * @param srcFolderEntry parent entry for which to alter an attribute
      * @param attribute attribute to be changed, must be of type DEFAULT_BASE_PACKAGE_MERGABLE,
      *            DEFAULT_BASE_PACKAGE_DERIVED, SPECIFIC_BASE_PACKAGE_MERGABLE or
      *            SPECIFIC_BASE_PACKAGE_DERIVED
@@ -66,9 +66,6 @@ public class PackageNameEditDialog extends StatusDialog {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite)super.createDialogArea(parent);
@@ -78,7 +75,7 @@ public class PackageNameEditDialog extends StatusDialog {
         buttonDefaultPackageNameSelected = new Button(group, SWT.RADIO);
         String defaultPackageName = getDefaultPackageName();
         buttonDefaultPackageNameSelected.setText(Messages.PackageNameEditDialog_button_text_use_default_folder
-                + " (" + defaultPackageName + ")"); //$NON-NLS-2$ 
+                + " (" + defaultPackageName + ")"); //$NON-NLS-1$//$NON-NLS-2$ 
         buttonCustomPackageNameSelected = new Button(group, SWT.RADIO);
         buttonCustomPackageNameSelected.setText(Messages.PackageNameEditDialog_button_text_use_specific_folder);
 
@@ -116,7 +113,6 @@ public class PackageNameEditDialog extends StatusDialog {
         layout.verticalSpacing = 10;
 
         buttonDefaultPackageNameSelected.addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
             }
@@ -129,7 +125,6 @@ public class PackageNameEditDialog extends StatusDialog {
         });
 
         buttonCustomPackageNameSelected.addSelectionListener(new SelectionListener() {
-
             @Override
             public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
             }
@@ -155,20 +150,16 @@ public class PackageNameEditDialog extends StatusDialog {
     }
 
     private String getSpecificPackageName() {
-
         String specificPackageName = ""; //$NON-NLS-1$
-
         if (attribute.isPackageNameForDerivedSources()) {
             specificPackageName = srcFolderEntry.getSpecificBasePackageNameForDerivedJavaClasses();
         } else {
             specificPackageName = srcFolderEntry.getSpecificBasePackageNameForMergableJavaClasses();
         }
-
         return specificPackageName;
     }
 
     private String getDefaultPackageName() {
-
         String projectName = ""; //$NON-NLS-1$
         if (attribute.isPackageNameForDerivedSources()) {
             projectName = srcFolderEntry.getIpsObjectPath().getBasePackageNameForDerivedJavaClasses();

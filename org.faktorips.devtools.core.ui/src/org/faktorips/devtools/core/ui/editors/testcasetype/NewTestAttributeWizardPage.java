@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
  * @author Joerg Ortmann
  */
 public class NewTestAttributeWizardPage extends WizardPage {
+
     private static final String PAGE_ID = "NewTestAttributeWizardPage"; //$NON-NLS-1$
     private NewTestAttributeWizard wizard;
 
@@ -81,17 +82,11 @@ public class NewTestAttributeWizardPage extends WizardPage {
      * Listener for the radio buttons.
      */
     private class KindOfTestAttributeSelectionListener implements SelectionListener {
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetSelected(SelectionEvent e) {
             wizard.kindOfTestAttrHasChanged();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);

@@ -58,9 +58,6 @@ public abstract class IpsFileTransferViewerDropAdapter extends ViewerDropAdapter
      * <p/>
      * On some systems it is not possible to determine the concrete object while dragging. In this
      * case the method returns an empty array. (e.g. linux)
-     * 
-     * @param transferType
-     * @return
      */
     protected List<IProductCmpt> getTransferElements(TransferData transferType) {
         if (transferType == null) {

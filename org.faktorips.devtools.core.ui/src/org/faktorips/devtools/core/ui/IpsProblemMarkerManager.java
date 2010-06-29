@@ -58,9 +58,6 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         listeners.add(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
         HashSet<IResource> changedElements = new HashSet<IResource>();
@@ -75,14 +72,14 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         }
 
         if (!changedElements.isEmpty()) {
-            fireChanges(changedElements.toArray(new IResource[changedElements.size()]), true);
+            fireChanges(changedElements.toArray(new IResource[changedElements.size()]));
         }
     }
 
-    /*
+    /**
      * inform all registered ips problem change listener about the ips problem changes
      */
-    private void fireChanges(IResource[] changes, boolean b) {
+    private void fireChanges(IResource[] changes) {
         // copy to avoid concurrent modifications!
         List<IIpsProblemChangedListener> listenersCopy = new ArrayList<IIpsProblemChangedListener>(listeners);
         for (IIpsProblemChangedListener listener : listenersCopy) {
@@ -101,9 +98,6 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
             this.changedElements = changedElements;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean visit(IResourceDelta delta) throws CoreException {
             IResource res = delta.getResource();
@@ -120,10 +114,10 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
             return true;
         }
 
-        /*
+        /**
          * Check the delta for relevant resources
          */
-        private void checkInvalidate(IResourceDelta delta, IResource resource) throws CoreException {
+        private void checkInvalidate(IResourceDelta delta, IResource resource) {
             int kind = delta.getKind();
             if (kind == IResourceDelta.REMOVED || kind == IResourceDelta.ADDED
                     || (kind == IResourceDelta.CHANGED && isErrorDelta(delta))) {
@@ -134,7 +128,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
             }
         }
 
-        /*
+        /**
          * Check if there is an ips problem marker change on the given delta
          */
         private boolean isErrorDelta(IResourceDelta delta) {
@@ -151,4 +145,5 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         }
 
     }
+
 }

@@ -91,22 +91,16 @@ public class ParametersEditControl extends Composite {
     private static final int TYPE_PROP = 1;
     private static final int NEWNAME_PROP = 2;
 
-    // configuration parameters
     private int tableStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
 
     private TableViewer fTableViewer;
 
-    // the buttons
     private Button fAddButton;
     private Button fRemoveButton;
 
     private IIpsProject ipsProject;
     private UIToolkit uiToolkit;
 
-    /**
-     * @param uiToolkit
-     * @param label the label before the table or <code>null</code>
-     */
     public ParametersEditControl(Composite parent, UIToolkit uiToolkit) {
         super(parent, SWT.NONE);
         ArgumentCheck.notNull(uiToolkit, this);
@@ -182,7 +176,6 @@ public class ParametersEditControl extends Composite {
         fTableViewer.setContentProvider(new ParameterInfoContentProvider());
         fTableViewer.setLabelProvider(new ParameterInfoLabelProvider());
         new TableMessageHoverService(fTableViewer) {
-
             @Override
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 return validate((IParameterBFE)element);
@@ -593,10 +586,11 @@ public class ParametersEditControl extends Composite {
                 fTableViewer.update(param, new String[] { PROPERTIES[TYPE_PROP] });
             }
 
-            // it is necessary to update all parameters at this point since there can be
-            // dependencies between the parameters.
-            // e.g. if the parameter name of two parameters is the same then an error is to display
-            // for both parameters.
+            /*
+             * it is necessary to update all parameters at this point since there can be
+             * dependencies between the parameters. e.g. if the parameter name of two parameters is
+             * the same then an error is to display for both parameters.
+             */
             fTableViewer.update(paramContainer.getParameterBFEs(), new String[] { property });
         }
     }

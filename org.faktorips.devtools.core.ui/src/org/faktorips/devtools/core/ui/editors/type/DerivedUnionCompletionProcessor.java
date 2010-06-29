@@ -38,9 +38,6 @@ public class DerivedUnionCompletionProcessor extends AbstractCompletionProcessor
         setIpsProject(association.getIpsProject());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {

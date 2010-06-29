@@ -88,9 +88,6 @@ public class ContentPage extends IpsObjectEditorPage {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run(IStructuredSelection selection) {
             if (super.runInternal(selection)) {
@@ -105,9 +102,6 @@ public class ContentPage extends IpsObjectEditorPage {
         super(editor, PAGE_ID, Messages.ContentPage_title);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         checkDifferences(formBody, toolkit);
@@ -116,7 +110,7 @@ public class ContentPage extends IpsObjectEditorPage {
         formBody.setLayout(layout);
 
         table = createTable(formBody);
-        initTableViewer(table, toolkit, formBody);
+        initTableViewer(table, toolkit);
         NewRowAction newRowAction = new NewRowAction(tableViewer, this);
         DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
         initTablePopupMenu(table, deleteRowAction, newRowAction);
@@ -175,7 +169,7 @@ public class ContentPage extends IpsObjectEditorPage {
         });
     }
 
-    /*
+    /**
      * Deactivates all active cell editor (i.e. the current active cell editor)
      */
     private void deactivateCellEditors() {
@@ -190,7 +184,6 @@ public class ContentPage extends IpsObjectEditorPage {
      * the table and adds a KeyListener that enables the editing of the first cell in the currently
      * selected row by pressing "F2".
      * 
-     * @param formBody
      * @return The newly created and initialized Table.
      */
     private Table createTable(Composite formBody) {
@@ -222,12 +215,8 @@ public class ContentPage extends IpsObjectEditorPage {
      * Inits the <code>TableViewer</code> for this page. Sets content- and labelprovider, column
      * headers and widths, column properties, cell editors, sorter. Inits popupmenu and
      * hoverservice.
-     * 
-     * @param table
-     * @param toolkit
-     * @param formBody
      */
-    private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody) {
+    private void initTableViewer(Table table, UIToolkit toolkit) {
         try {
             table.removeAll();
             increaseHeightOfTableRow(table, getTableContents().getNumOfColumns());
@@ -294,9 +283,6 @@ public class ContentPage extends IpsObjectEditorPage {
 
     /**
      * Adds the given deleteRowAction to the popupmenu of th given table.
-     * 
-     * @param table
-     * @param deleteRowAction
      */
     private void initTablePopupMenu(Table table, DeleteRowAction deleteRowAction, NewRowAction newRowAction) {
         // popupmenu
@@ -306,8 +292,6 @@ public class ContentPage extends IpsObjectEditorPage {
         menuMgr.add(deleteRowAction);
         Menu menu = menuMgr.createContextMenu(table);
         table.setMenu(menu);
-        // do not register to avoid mb additions
-        // getSite().registerContextMenu(menuMgr, tableViewer);
     }
 
     private void increaseHeightOfTableRow(Table table, final int numOfColumns) {
@@ -457,15 +441,13 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
     private class Validator implements IInputValidator {
+
         private int indexCount = 0;
 
         public Validator(int requiredIndexCount) {
             indexCount = requiredIndexCount;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String isValid(String newText) {
             StringTokenizer tokenizer = getTokenizer(newText);

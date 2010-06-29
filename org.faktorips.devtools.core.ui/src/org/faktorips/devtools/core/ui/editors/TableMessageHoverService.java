@@ -33,9 +33,6 @@ public abstract class TableMessageHoverService extends MessageHoverService {
         this.table = viewer.getTable();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getElementAt(Point point) {
         TableItem item = table.getItem(point);
@@ -45,9 +42,6 @@ public abstract class TableMessageHoverService extends MessageHoverService {
         return viewer.getElementAt(table.indexOf(item));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Rectangle getBoundsAt(Point point) {
         TableItem item = table.getItem(point);

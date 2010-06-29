@@ -79,8 +79,6 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
      * 
      * @param parent The parent control.
      * @param toolkit Toolkit to easily create the UI.
-     * @param sourceContent All values which should show up in the source list.
-     * @param targetContent All values which should show up in the target list.
      */
     public ListChooser(Composite parent, UIToolkit toolkit) {
         super(parent, SWT.NONE);
@@ -264,9 +262,6 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
      */
     private class MoveListener implements SelectionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetSelected(SelectionEvent e) {
             int[] selected = targetTable.getSelectionIndices();
@@ -314,9 +309,6 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
             targetTable.setSelection(newSelection);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
@@ -349,9 +341,6 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
             moveAll = all;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetSelected(SelectionEvent e) {
             String[] toMove;
@@ -381,9 +370,6 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
             ListChooser.this.notify(trgt, toMove, false);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
@@ -400,10 +386,12 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
         @Override
         public void dispose() {
+            // Nothing to do
         }
 
         @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // Nothing to do
         }
 
     }
@@ -435,33 +423,21 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
     private class MessageService extends TableMessageHoverService {
 
-        /**
-         * @param viewer
-         */
         public MessageService(TableViewer list) {
             super(list);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected MessageList getMessagesFor(Object element) throws CoreException {
             return ListChooser.this.getMessagesFor((String)element);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;

@@ -48,7 +48,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
      */
     public final static String PAGE_ID = "Properties"; //$NON-NLS-1$
 
-    // Sections for different property-groups
     private GenerationAttributesSection productAttributesSection;
 
     private FormulasSection formulasSection;
@@ -57,20 +56,20 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private LinksSection linksSection;
 
-    /*
+    /**
      * Layout for this page (see pageRoot) - if the content-structure for this page changes, the
      * current set top level composite is disposed and a completely new one is created. This is to
      * avoid complex code for structural refresh.
      */
     private StackLayout stack;
 
-    /*
+    /**
      * The composite which serves as root-composite for this page. This composit is controlled by
      * the Forms-framework, so it should not be disposed.
      */
     private Composite pageRoot;
 
-    /*
+    /**
      * The toolkit to make ui-construction easier.
      */
     private UIToolkit toolkit;
@@ -87,9 +86,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         pageRoot = formBody;
@@ -144,6 +140,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private abstract class GotoGenerationAction extends Action {
+
         /**
          * Explicit reference to outer class (avoids bug
          * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4030374).
@@ -200,8 +197,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         IProductCmptGeneration generation = getActiveGeneration();
 
         Composite left = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH);
-        productAttributesSection = new GenerationAttributesSection(generation, left, toolkit,
-                (ProductCmptEditor)getEditor());
+        productAttributesSection = new GenerationAttributesSection(generation, left, toolkit);
         formulasSection = new FormulasSection(generation, left, toolkit);
 
         Composite right = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH);
@@ -227,9 +223,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         return (IProductCmptGeneration)((ProductCmptEditor)getEditor()).getActiveGeneration();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void refresh() {
         updateTabname();
@@ -244,8 +237,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
      * for structural updates.
      */
     protected void rebuildInclStructuralChanges() {
-        // if stack == null, the page contents are not created yet, so do
-        // nothing.
+        // if stack == null, the page contents are not created yet, so do nothing.
         if (stack != null) {
             stack.topControl.dispose();
             Composite root = new Composite(pageRoot, SWT.NONE);
@@ -282,9 +274,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         updateTabText(getPartControl());
     }
 
-    /**
-     * @param partControl
-     */
     private void updateTabText(Control partControl) {
         if (partControl == null) {
             return;
@@ -296,9 +285,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         updateTabText(partControl.getParent());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean computeDataChangeableState() {
         return ((ProductCmptEditor)getIpsObjectEditor()).isActiveGenerationEditable();

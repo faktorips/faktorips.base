@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
  * @author dirmeier
- * 
  */
 public abstract class AbstractDeltaDialog extends TitleAreaDialog {
 
@@ -29,17 +28,11 @@ public abstract class AbstractDeltaDialog extends TitleAreaDialog {
 
     protected UIToolkit toolkit;
 
-    /**
-     */
     public AbstractDeltaDialog(Shell parentShell) {
         super(parentShell);
         toolkit = new UIToolkit(null);
-
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createButtonBar(Composite parent) {
         Control buttons = super.createButtonBar(parent);

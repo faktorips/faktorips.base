@@ -28,17 +28,11 @@ public class CardinalityField extends AbstractCardinalityField {
 
     private Text text;
 
-    /**
-     * {@inheritDoc}
-     */
     public CardinalityField(Text text) {
         super();
         this.text = text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         text.addModifyListener(new ModifyListener() {
@@ -51,41 +45,26 @@ public class CardinalityField extends AbstractCardinalityField {
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         return text.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     void setTextInternal(String newText) {
         text.setText(newText);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String text) {
         this.text.insert(text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         text.selectAll();

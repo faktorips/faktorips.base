@@ -36,6 +36,7 @@ import org.faktorips.util.StringUtil;
  * @author Joerg Ortmann
  */
 public class AssociationRefControl extends TextButtonControl {
+
     private String dialogTitle;
     private String dialogMessage;
     private IPolicyCmptType parentPolicyCmptType;
@@ -52,9 +53,6 @@ public class AssociationRefControl extends TextButtonControl {
         ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buttonClicked() {
         try {
@@ -73,6 +71,7 @@ public class AssociationRefControl extends TextButtonControl {
                 }
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

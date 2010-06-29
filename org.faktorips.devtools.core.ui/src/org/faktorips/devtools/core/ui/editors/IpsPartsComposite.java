@@ -215,7 +215,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         return toolkit.getFormToolkit().createTable(parent, SWT.NONE);
     }
 
-    /*
+    /**
      * If mouse down and the CTRL key is pressed then the open link method is called
      */
     private void registerOpenLinkListener() {
@@ -275,9 +275,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * Creates new, edit and delete buttons (if enabled). Can be overridden if other buttons are
      * needed.
-     * 
-     * @see org.faktorips.devtools.core.ui.forms.ViewerButtonSection#createButtons(org.eclipse.swt.widgets.Composite,
-     *      org.eclipse.ui.forms.widgets.FormToolkit)
      */
     @Override
     protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
@@ -319,14 +316,15 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             public void widgetSelected(SelectionEvent e) {
                 try {
                     newPart();
-
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
     }
@@ -340,12 +338,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 try {
                     editPart();
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
     }
@@ -359,12 +359,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 try {
                     deletePart();
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
     }
@@ -378,12 +380,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 try {
                     moveParts(true);
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
         downButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonDown);
@@ -394,12 +398,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 try {
                     moveParts(false);
                 } catch (Exception ex) {
+                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -507,6 +513,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -537,6 +544,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -563,6 +571,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             }
             fireDeleted(part);
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -625,6 +634,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * Moves the parts identified by the indexes in the model object up or down.
      * 
+     * @param indexes Array of indexes identifying the parts to move
+     * @param up Flag indicating whether to move up or down
+     * 
      * @return the new indices of the moved parts.
      */
     protected int[] moveParts(int[] indexes, boolean up) {
@@ -667,7 +679,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         if (viewer == null) {
             return false;
         }
-
         return viewer.getTable().getDisplay().getCursorControl() == viewer.getTable() ? true : false;
     }
 

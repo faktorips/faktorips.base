@@ -44,6 +44,7 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
 
     protected AssociationTargetPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association,
             UIToolkit toolkit, BindingContext bindingContext) {
+
         super(Messages.AssociationTargetPage_pageName, Messages.AssociationTargetPage_pageTitle, null);
         super.setDescription(Messages.AssociationTargetPage_pageDescription);
         this.wizard = wizard;
@@ -91,17 +92,11 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<String> getProperties() {
         return visibleProperties;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canFlipToNextPage() {
         return wizard.canPageFlipToNextPage(this);

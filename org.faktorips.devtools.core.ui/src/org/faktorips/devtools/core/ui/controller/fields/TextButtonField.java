@@ -21,9 +21,6 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.util.message.MessageList;
 
-/**
- *
- */
 public class TextButtonField extends DefaultEditField {
 
     TextButtonControl control;
@@ -35,9 +32,6 @@ public class TextButtonField extends DefaultEditField {
         this.control = control;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return control;
@@ -47,41 +41,26 @@ public class TextButtonField extends DefaultEditField {
         return control;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMessages(MessageList list) {
         MessageCueController.setMessageCue(control.getTextControl(), list);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         return super.prepareObjectForGet(control.getTextControl().getText());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         setText((String)super.prepareObjectForSet(newValue));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         return control.getTextControl().getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newText) {
         immediatelyNotifyListener = true;
@@ -92,25 +71,16 @@ public class TextButtonField extends DefaultEditField {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String text) {
         control.getTextControl().insert(text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         control.getTextControl().selectAll();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         ModifyListener ml = new ModifyListener() {
@@ -133,6 +103,7 @@ public class TextButtonField extends DefaultEditField {
      * @author Thorsten Guenther
      */
     private class MyDisposeListener implements DisposeListener {
+
         /**
          * Listener which has to be removed on dispose.
          */
@@ -147,9 +118,6 @@ public class TextButtonField extends DefaultEditField {
             this.ml = ml;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetDisposed(DisposeEvent e) {
             control.getTextControl().removeModifyListener(ml);

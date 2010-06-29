@@ -10,6 +10,7 @@ import org.faktorips.util.ArgumentCheck;
  * Collapses all elements in a tree viewer.
  */
 public class CollapseAllAction extends Action {
+
     private static final String COLLAPSE_ALL_ICON = "CollapseAll.gif"; //$NON-NLS-1$
 
     private final AbstractTreeViewer treeViewer;
@@ -29,9 +30,9 @@ public class CollapseAllAction extends Action {
         setActionDefinitionId(CollapseAllHandler.COMMAND_ID);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void run() {
         treeViewer.collapseAll();
     }
+
 }

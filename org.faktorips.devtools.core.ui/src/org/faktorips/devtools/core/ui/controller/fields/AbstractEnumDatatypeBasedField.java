@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.widgets.Combo;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -34,7 +33,6 @@ import org.faktorips.util.ArgumentCheck;
  * implementation doesn't adjust to changes of the values it represents. Therefore the reinit()
  * method has to be explicitly called.
  * 
- * @see IpsPreferences#formatValue(EnumDatatype, String)
  * @see IpsPreferences#getEnumTypeDisplay()
  * 
  * @author Peter Erzberger
@@ -68,6 +66,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
                 setValue(currentValue, false);
                 return;
             } catch (Exception e) {
+                // TODO catch Exception needs to be documented properly or specialized
                 // ignore exception, select first element instead if available
             }
             if (ids != null && ids.size() > 0) {

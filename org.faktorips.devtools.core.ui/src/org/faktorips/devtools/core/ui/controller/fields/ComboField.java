@@ -20,9 +20,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 
-/**
- *
- */
 public class ComboField extends DefaultEditField {
 
     private boolean immediatelyNotifyListener = false;
@@ -33,9 +30,6 @@ public class ComboField extends DefaultEditField {
         this.combo = combo;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return combo;
@@ -45,25 +39,16 @@ public class ComboField extends DefaultEditField {
         return combo;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         return super.prepareObjectForGet(getText());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         setText((String)prepareObjectForSet(newValue));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         int i = combo.getSelectionIndex();
@@ -74,9 +59,6 @@ public class ComboField extends DefaultEditField {
         return combo.getItem(i);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newText) {
         immediatelyNotifyListener = true;
@@ -87,34 +69,27 @@ public class ComboField extends DefaultEditField {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String text) {
         combo.setText(text);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         // add selection listener to get notifications if the user changes the selection
         combo.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                // changes in combo fields will always be notified immediately,
-                // it is not necessary to delay the notification, when the user selects a new item
-                // the time for the change is long enough
+                /*
+                 * changes in combo fields will always be notified immediately, it is not necessary
+                 * to delay the notification, when the user selects a new item the time for the
+                 * change is long enough
+                 */
                 notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener);
             }
 

@@ -14,24 +14,19 @@ package org.faktorips.devtools.core.ui.editors.deltapresentation;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * @author dirmeier
- * 
- */
 public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.deltapresentation.messages"; //$NON-NLS-1$
 
-    private Messages() {
-    }
-
     static {
-        // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    public static String AbstractDeltaDialog_Button_Fix;
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
 
+    public static String AbstractDeltaDialog_Button_Fix;
     public static String AbstractDeltaDialog_Button_Ignore;
 
 }

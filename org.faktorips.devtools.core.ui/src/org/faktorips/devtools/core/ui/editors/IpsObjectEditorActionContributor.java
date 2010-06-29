@@ -33,27 +33,18 @@ public class IpsObjectEditorActionContributor extends EditorActionBarContributor
         toggleWorkingModeAction = new ToggleWorkingModeAction();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IActionBars bars, IWorkbenchPage page) {
         super.init(bars, page);
         bars.setGlobalActionHandler(ToggleWorkingModeAction.ID, toggleWorkingModeAction);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         super.dispose();
         toggleWorkingModeAction.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setActiveEditor(IEditorPart targetEditor) {
         super.setActiveEditor(targetEditor);

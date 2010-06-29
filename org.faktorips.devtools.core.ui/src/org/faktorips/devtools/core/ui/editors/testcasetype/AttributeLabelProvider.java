@@ -23,11 +23,9 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
  * @author Joerg Ortmann
  */
 public class AttributeLabelProvider extends DefaultLabelProvider {
+
     private boolean showPolicyCmptTypeName;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)element;

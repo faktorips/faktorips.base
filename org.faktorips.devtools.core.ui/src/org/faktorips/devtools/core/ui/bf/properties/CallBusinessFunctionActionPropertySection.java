@@ -43,10 +43,12 @@ public class CallBusinessFunctionActionPropertySection extends AbstractPropertyS
 
     @Override
     public void aboutToBeHidden() {
+        // Nothing to do
     }
 
     @Override
     public void aboutToBeShown() {
+        // Nothing to do
     }
 
     @Override

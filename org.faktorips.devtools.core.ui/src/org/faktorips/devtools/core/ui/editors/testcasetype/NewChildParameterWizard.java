@@ -29,6 +29,7 @@ import org.faktorips.util.memento.Memento;
  * @author Joerg Ortmann
  */
 public class NewChildParameterWizard extends Wizard implements IBlockedValidationWizard {
+
     private UIToolkit uiToolkit = new UIToolkit(null);
 
     // Wizard pages
@@ -57,9 +58,6 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         this.parentTestPolicyCmptTypeParameter = parentTestPolicyCmptTypeParameter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         super.addPages();
@@ -71,17 +69,11 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         addPage(detailWizardPage);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IpsObjectUIController getController() {
         return controller;
@@ -165,9 +157,6 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         return newTestParameter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPageValid(int pageNo) {
         if (pageNo < pageDisplayedMax) {
@@ -186,9 +175,6 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void postAsyncRunnable(Runnable r) {
         if (!getShell().isDisposed()) {
@@ -196,9 +182,6 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMaxPageShown(int pageNumber) {
         pageDisplayedMax = pageNumber;

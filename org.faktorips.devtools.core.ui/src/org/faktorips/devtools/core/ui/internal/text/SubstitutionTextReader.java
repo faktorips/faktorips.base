@@ -21,8 +21,7 @@ import java.io.Reader;
  * The substitution may eat more characters than only the one passed into the computation routine.
  * <p>
  * Moved into this package from <code>org.eclipse.jface.internal.text.revisions</code>.
- * </p>
- * 
+ * <p>
  * NOTE: This class is a copy of the corresponding internal Eclipse class. It is copied as the
  * class' package has changed from Eclipse version 3.2 to 3.3.
  */
@@ -106,14 +105,10 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
         return ch;
     }
 
-    /**
-     * @see Reader#read()
-     */
     @Override
     public int read() throws IOException {
         int c;
         do {
-
             c = nextChar();
             while (!fReadFromBuffer) {
                 String s = computeSubstitution(c);
@@ -125,31 +120,21 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
                 }
                 c = nextChar();
             }
-
         } while (fSkipWhiteSpace && fWasWhiteSpace && (c == ' '));
         fWasWhiteSpace = (c == ' ' || c == '\r' || c == '\n');
         return c;
     }
 
-    /**
-     * @see Reader#ready()
-     */
     @Override
     public boolean ready() throws IOException {
         return fReader.ready();
     }
 
-    /**
-     * @see Reader#close()
-     */
     @Override
     public void close() throws IOException {
         fReader.close();
     }
 
-    /**
-     * @see Reader#reset()
-     */
     @Override
     public void reset() throws IOException {
         fReader.reset();

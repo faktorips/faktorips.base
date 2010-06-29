@@ -30,65 +30,41 @@ public class PreviewTextButtonField extends DefaultEditField {
         this.control = control;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return control;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void addListenerToControl() {
         // no changes - preview only
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object parseContent() {
         return control.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValue(Object newValue) {
         // nothing to do - preview only!
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText() {
         return control.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setText(String newText) {
         // nothing to do - preview only!
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void insertText(String text) {
         // nothing to do - preview only!
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectAll() {
         // nothing to do - preview only!

@@ -39,39 +39,39 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class IpsSection extends Composite implements IDataChangeableReadWriteAccess,
         IDataChangeableReadAccessWithListenerSupport, DisposeListener {
 
-    // The ui control for the section
+    /** The ui control for the section */
     private Section section;
 
-    // Flag indicating whether the section is currently refreshing
+    /** Flag indicating whether the section is currently refreshing */
     private boolean isRefreshing = false;
 
-    // The SWT style (for example SWT.TITLE_BAR)
+    /** The SWT style (for example SWT.TITLE_BAR) */
     private int style;
 
-    // SWT info how to layout the data (for example GridData.FILL_BOTH)
+    /** SWT info how to layout the data (for example GridData.FILL_BOTH) */
     private int layoutData;
 
-    // The ui toolkit to create new ui elements with
+    /** The ui toolkit to create new ui elements with */
     private UIToolkit toolkit;
 
-    // Flag indicating whether the content of this section can be changed by the user
+    /** Flag indicating whether the content of this section can be changed by the user */
     private boolean changeable;
 
     private ArrayList<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
 
-    /*
+    /**
      * The section to delegate the call of <code>setFocus()</code> to if this section does not
      * contain a control that has to get the focus.
      */
     private IpsSection focusSuccessor;
 
-    /*
+    /**
      * The section which will delegate the call of <code>setFocus()</code> to this section if it
      * does not contain a control that has to get the focus.
      */
     private IpsSection focusPredecessor;
 
-    // The control that has to be focussed if <code>setFocus()</code> of this section is called.
+    /** The control that has to be focussed if <code>setFocus()</code> of this section is called. */
     private Control focusCtrl;
 
     /** Binding context to bind ui elements with model data. */
@@ -99,7 +99,6 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     }
 
     /**
-     * <p>
      * Constructs the section's controls.
      * <p>
      * This has to to be called explicitly by subclasses <b>after</b> they have initialized any
@@ -269,8 +268,6 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /**
      * Set focus to the appropriate control. This is the first editable input available if the focus
      * was not set before or the control that had the focus gained at last.
-     * <p>
-     * {@inheritDoc}
      */
     @Override
     public boolean setFocus() {

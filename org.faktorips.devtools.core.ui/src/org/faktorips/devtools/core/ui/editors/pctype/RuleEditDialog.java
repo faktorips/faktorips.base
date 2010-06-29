@@ -43,9 +43,6 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 import org.faktorips.util.message.MessageList;
 
-/**
- *
- */
 public class RuleEditDialog extends IpsPartEditDialog {
 
     private IValidationRule rule;
@@ -61,21 +58,13 @@ public class RuleEditDialog extends IpsPartEditDialog {
     private Text msgText;
     private Label charCount;
 
-    /**
-     * @param parentShell
-     * @param title
-     */
     public RuleEditDialog(IValidationRule rule, Shell parentShell) {
         super(rule, parentShell, Messages.RuleEditDialog_title, true);
         this.rule = rule;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
-
         TabFolder folder = (TabFolder)parent;
 
         TabItem msgPage = new TabItem(folder, SWT.NONE);
@@ -91,16 +80,14 @@ public class RuleEditDialog extends IpsPartEditDialog {
         attributesPage.setControl(createAttributesPage(folder));
 
         createDescriptionTabItem(folder);
-        // the update cycle for changes to model objects is extended so that the gui will be updated
-        // due to
-        // model changes. The update cycle gui -> model -> gui is currently not implemented in a
-        // super class
-        // but should be considered in the future.
-        // It is necessary here because changes made to the model within the RuleFunctionsControl
-        // need to be
-        // communicated to the gui so that other controls can adjust there current state.
+        /*
+         * the update cycle for changes to model objects is extended so that the gui will be updated
+         * due to model changes. The update cycle gui -> model -> gui is currently not implemented
+         * in a super class but should be considered in the future. It is necessary here because
+         * changes made to the model within the RuleFunctionsControl need to be communicated to the
+         * gui so that other controls can adjust there current state.
+         */
         final ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
-
             @Override
             public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
                 if (!event.getIpsSrcFile().exists()) {
@@ -152,7 +139,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
         nameField = new TextField(nameText);
         msgCodeField = new TextField(codeText);
         msgTextField = new TextField(msgText);
-        msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());;
+        msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());
 
         return workArea;
     }
@@ -184,19 +171,11 @@ public class RuleEditDialog extends IpsPartEditDialog {
         return workArea;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectUIController createUIController(IIpsObjectPart part) {
         return new UIController(part);
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
-     */
     @Override
     protected void connectToModel() {
         super.connectToModel();

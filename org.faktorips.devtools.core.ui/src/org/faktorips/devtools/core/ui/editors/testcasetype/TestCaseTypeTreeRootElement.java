@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * @author Joerg Ortmann
  */
 class TestCaseTypeTreeRootElement {
+
     private ITestCaseType testCaseType;
 
     public TestCaseTypeTreeRootElement(ITestCaseType testCaseType) {

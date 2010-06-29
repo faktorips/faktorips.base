@@ -41,9 +41,6 @@ public class MissingResourcePage extends IpsObjectEditorPage {
         super(editor, PAGE_ID, ""); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         Composite root = new Composite(formBody, SWT.NONE);

@@ -30,10 +30,11 @@ public class AssociationCompletionProcessor extends AbstractCompletionProcessor 
 
     private IPolicyCmptType pcType;
 
-    // indicates that only assoziations and composition should be searched
+    /** indicates that only assoziations and composition should be searched */
     private boolean onlyAssoziationOrComposition;
 
     public AssociationCompletionProcessor() {
+        // Provides default constructor
     }
 
     /**
@@ -49,12 +50,10 @@ public class AssociationCompletionProcessor extends AbstractCompletionProcessor 
         setIpsProject(pcType.getIpsProject());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {
+
         prefix = prefix.toLowerCase();
 
         IPolicyCmptType currentPcType = pcType;
@@ -77,6 +76,7 @@ public class AssociationCompletionProcessor extends AbstractCompletionProcessor 
     private void addToResult(List<ICompletionProposal> result,
             IPolicyCmptTypeAssociation association,
             int documentOffset) {
+
         String name = association.getName();
         String displayText = name + " - " + association.getParent().getName(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin

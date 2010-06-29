@@ -30,9 +30,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
-/**
- *
- */
 public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
 
     private IpsObjectRefControl control;
@@ -66,7 +63,6 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
     private boolean match(String pack, String prefix, String qualifiedName) {
         String toMatchPack = StringUtil.getPackageName(qualifiedName).toLowerCase();
         String toMatchName = StringUtil.unqualifiedName(qualifiedName).toLowerCase();
-
         return (StringUtils.isEmpty(pack) || toMatchPack.startsWith(pack.toLowerCase()))
                 && (StringUtils.isEmpty(prefix) || toMatchName.startsWith(prefix.toLowerCase()));
     }
@@ -74,6 +70,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
     @Override
     public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl,
             int documentOffset) {
+
         if (ipsProject == null && control != null) {
             ipsProject = control.getIpsProject();
         }
@@ -83,6 +80,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
     @Override
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
             throws Exception {
+
         if (control == null && ipsProject == null) {
             setErrorMessage(Messages.IpsObjectCompletionProcessor_msgNoProject);
             return;
@@ -141,6 +139,8 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                 }
             }
         } catch (Exception e) {
+            // TODO catch Exception needs to be documented properly or specialized
+            // TODO catches all exceptions while throwing Exception?
             setErrorMessage(Messages.IpsObjectCompletionProcessor_msgInternalError);
             IpsPlugin.log(e);
             return;

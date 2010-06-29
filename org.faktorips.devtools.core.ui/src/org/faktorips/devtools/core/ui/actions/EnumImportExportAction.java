@@ -85,7 +85,7 @@ public class EnumImportExportAction extends IpsAction {
         }
 
         if (!(selection.getFirstElement() instanceof IEnumValueContainer)) {
-            IpsPlugin.logAndShowErrorDialog(new IpsStatus("The selected element is no enum value container!"));
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus("The selected element is no enum value container!")); //$NON-NLS-1$
         }
 
         if (isImport) {
@@ -150,6 +150,7 @@ public class EnumImportExportAction extends IpsAction {
 
         @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
+            // Nothing to do
         }
 
         @Override
@@ -159,10 +160,14 @@ public class EnumImportExportAction extends IpsAction {
 
         @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+            // Nothing to do
         }
 
         @Override
         public void setSelection(ISelection selection) {
+            // Nothing to do
         }
+
     }
+
 }

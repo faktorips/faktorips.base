@@ -49,10 +49,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private PmoAssociation pmoAssociation;
     private ExtensionPropertyControlFactory extFactory;
 
-    /**
-     * @param parentShell
-     * @param title
-     */
     public AssociationEditDialog(IProductCmptTypeAssociation association, Shell parentShell) {
         super(association, parentShell, Messages.AssociationEditDialog_title, true);
         this.association = association;
@@ -60,9 +56,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         extFactory = new ExtensionPropertyControlFactory(association.getClass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;

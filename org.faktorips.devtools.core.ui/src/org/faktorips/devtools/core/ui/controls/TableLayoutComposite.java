@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.TableColumn;
 /**
  * This class is copied from org.eclipse.jdt.internal.ui.util.TableLayoutComposite to avoid warning
  * caused by discouraged access.
- * 
+ * <p>
  * A special composite to layout columns inside a table. The composite is needed since we have to
  * layout the columns "before" the actual table gets layouted. Hence we can't use a normal layout
  * manager.
@@ -111,10 +111,11 @@ public class TableLayoutComposite extends Composite {
     }
 
     private void layoutTable(Table table, int width, Rectangle area, boolean increase) {
-        // Layout is being called with an invalid value the first time
-        // it is being called on Linux. This method resets the
-        // Layout to null so we make sure we run it only when
-        // the value is OK.
+        /*
+         * Layout is being called with an invalid value the first time it is being called on Linux.
+         * This method resets the Layout to null so we make sure we run it only when the value is
+         * OK.
+         */
         if (width <= 1) {
             return;
         }

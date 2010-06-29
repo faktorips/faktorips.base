@@ -38,6 +38,7 @@ import org.faktorips.util.message.MessageList;
  * @author Thorsten Guenther
  */
 public class CardinalityPanel implements IDataChangeableReadWriteAccess {
+
     private UIToolkit uiToolkit;
 
     private Text minKard;
@@ -167,9 +168,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      */
     private class KardinalitySelectionListener implements SelectionListener {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetSelected(SelectionEvent e) {
             removeMessageCue();
@@ -215,9 +213,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             listener.modifyText(new ModifyEvent(e));
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
@@ -285,17 +280,11 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         maxKard.addModifyListener(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;

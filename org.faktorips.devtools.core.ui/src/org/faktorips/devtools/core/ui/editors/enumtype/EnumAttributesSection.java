@@ -39,16 +39,16 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.RenameHandler;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.wizards.enumtype.EnumTypePage;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * The UI section for the <tt>EnumTypeStructurePage</tt> that contains the <tt>IEnumAttribute</tt>s
- * of the <tt>IEnumType</tt> to be edited.
+ * The UI section for the <tt>EnumTypePage</tt> that contains the <tt>IEnumAttribute</tt>s of the
+ * <tt>IEnumType</tt> to be edited.
  * 
- * @see EnumTypeStructurePage
+ * @see EnumTypePage
  * 
  * @author Alexander Weickmann
  * 
@@ -59,21 +59,16 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
     /** The UI composite for the section. */
     EnumAttributesComposite enumAttributesComposite;
 
-    private IpsObjectEditorPage page;
-
     /**
      * Creates a new <tt>EnumAttributesSection</tt> containing the <tt>IEnumAttribute</tt>s of the
      * given <tt>IEnumType</tt>.
      * 
-     * @param page The <tt>IpsObjectEditorPage</tt> this section belongs to.
      * @param enumType The <tt>IEnumType</tt> to show the <tt>IEnumAttribute</tt>s from.
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      */
-    public EnumAttributesSection(IpsObjectEditorPage page, IEnumType enumType, Composite parent, UIToolkit toolkit) {
+    public EnumAttributesSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(enumType, parent, Messages.EnumAttributesSection_title, toolkit);
-        ArgumentCheck.notNull(page);
-        this.page = page;
         ((EnumAttributesComposite)getPartsComposite()).createContextMenu();
     }
 
@@ -154,12 +149,12 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
                 @Override
                 public void dispose() {
-
+                    // Nothing to do
                 }
 
                 @Override
                 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+                    // Nothing to do
                 }
 
             };
@@ -237,7 +232,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
                 @Override
                 public void widgetDefaultSelected(SelectionEvent event) {
-
+                    // Nothing to do
                 }
             });
             updateInheritButtonEnabledState();
@@ -256,8 +251,6 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         }
 
         /**
-         * {@inheritDoc}
-         * <p>
          * Disables the "Delete" - Button if the selected <tt>IIpsObjectPart</tt> is an
          * <tt>IEnumLiteralNameAttribute</tt> while the <tt>IEnumType</tt> is needing to use it.
          */

@@ -27,7 +27,6 @@ public class ExpandSelectedAction extends Action {
         this.treeViewer = treeViewer;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void run() {
         TypedSelection<Object> selection = TypedSelection.create(Object.class, treeViewer.getSelection());
@@ -37,4 +36,5 @@ public class ExpandSelectedAction extends Action {
             treeViewer.expandAll();
         }
     }
+
 }

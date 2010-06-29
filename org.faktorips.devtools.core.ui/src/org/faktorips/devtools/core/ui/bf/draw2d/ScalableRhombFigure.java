@@ -24,7 +24,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
-import org.faktorips.util.message.MessageList;
 
 /**
  * The figure for the decision and merge business function elements.
@@ -75,10 +74,6 @@ public class ScalableRhombFigure extends Shape {
         graphics.translate(bounds.x, bounds.y);
         graphics.drawPolygon(scalePointList());
         graphics.popState();
-    }
-
-    public void showError(MessageList msgList) {
-
     }
 
     private Rectangle getTemplateBounds() {

@@ -155,11 +155,14 @@ public class ValidatedAttributesControl extends EditTableControl {
 
         @Override
         public void dispose() {
+            // Nothing to do
         }
 
         @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // Nothing to do
         }
+
     }
 
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -175,7 +178,6 @@ public class ValidatedAttributesControl extends EditTableControl {
 
         @Override
         public String getColumnText(Object element, int columnIndex) {
-
             if (columnIndex == 1) {
                 return ((IndexedValidatedAttributeWrapper)element).getAttributeName();
             }

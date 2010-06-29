@@ -20,9 +20,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
@@ -33,12 +31,12 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  * @author Joerg Ortmann
  */
 public class NewRootParamFirstWizardPage extends WizardPage implements ValueChangeListener {
+
     private static final String PAGE_ID = "RootParameterFirstPage"; //$NON-NLS-1$
     private static final int PAGE_NUMBER = 1;
 
     private NewRootParameterWizard wizard;
 
-    /** edit fields */
     private Button testValueParameterBtn;
     private Button testPolicyCmptTypeParameterBtn;
     private Button testRuleParameterBtn;
@@ -48,9 +46,7 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
      * Listener for the radio buttons.
      */
     private class KindOfTestParamSelectionListener implements SelectionListener {
-        /**
-         * {@inheritDoc}
-         */
+
         @Override
         public void widgetSelected(SelectionEvent e) {
             // if no reverse association is selected then disable next wizard page
@@ -77,9 +73,6 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
@@ -92,9 +85,6 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
         this.wizard = wizard;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
@@ -135,23 +125,13 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
         setPageComplete(true);
     }
 
-    /**
-     * Connects the edit fields with the given controller to the given test parameter
-     */
-    void connectToModel(IpsObjectUIController controller, ITestParameter testParameter) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
+        // Nothing to do
     }
 
     /**
      * Informs the wizard that this page was displayed.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public IWizardPage getNextPage() {

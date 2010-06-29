@@ -42,11 +42,13 @@ import org.faktorips.devtools.core.ui.editors.testcase.TestCaseTypeAssociation;
  * @author Joerg Ortmann
  */
 public class TestCaseDeltaContentProvider implements ITreeContentProvider {
-    /* The base content provider for the test case tree structure */
+
+    /** The base content provider for the test case tree structure */
     private TestCaseContentProvider testCaseContentProvider;
 
-    /* Contains the delta which will be displayed. */
+    /** Contains the delta which will be displayed. */
     private ITestCaseTestCaseTypeDelta in;
+
     // Contains the list from the delta from the test case side for faster search
     private List<ITestPolicyCmptLink> missingTestPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>();
     private List<ITestObject> missingTestObjects = new ArrayList<ITestObject>();
@@ -64,9 +66,6 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         viewer.addFilter(new MissingParamFilter());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput instanceof ITestCaseTestCaseTypeDelta) {
@@ -84,17 +83,13 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
+        // Nothing to do
     }
 
     /**
      * Retruns the 4 elements containing the aspects for the delta description.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public Object[] getElements(Object inputElement) {
@@ -141,9 +136,6 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         return result.toArray();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildren(Object element) {
         Object[] children = getChildren(element);
@@ -153,17 +145,11 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         return children.length > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
         ArrayList<Object> result = new ArrayList<Object>();
@@ -193,11 +179,12 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         return result.toArray();
     }
 
-    /*
+    /**
      * Adds test attributes or test attribute values to the given result list.
      */
     private void addMissingTestAttributesOrTestAttributesValue(TestCaseDeltaWrapperObject wrapperObject,
             ArrayList<Object> result) {
+
         if (wrapperObject.isHasToBeDeletedTestAttributes()) {
             for (ITestAttribute testAttr : missingTestAttributes) {
                 ITestPolicyCmpt[] testPolicyCmptsWithMissingTestAttr = in
@@ -220,9 +207,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
      * should be deleted. Or if test attribute should be deleted or added.
      */
     private class MissingParamFilter extends ViewerFilter {
-        /**
-         * {@inheritDoc}
-         */
+
         @Override
         public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
             int size = elements.length;
@@ -238,17 +223,12 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
 
         /**
          * The filter is always active.
-         * 
-         * {@inheritDoc}
          */
         @Override
         public boolean isFilterProperty(Object element, String property) {
             return true;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             if (element instanceof TestCaseDeltaWrapperObject) {
@@ -294,7 +274,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             }
         }
 
-        /*
+        /**
          * Returns <code>true</code> if the object itself or a child of the object is visible for
          * the given delta type aspect.
          */
@@ -348,7 +328,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             return false;
         }
 
-        /*
+        /**
          * Checks the visibility for the given object and delta type.
          */
         private boolean checkVisibility(Object object, TestCaseDeltaType deltaType) {
@@ -387,7 +367,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             return false;
         }
 
-        /*
+        /**
          * Check if the given test policy cmpt has missing test attributes values (to be deleted)
          */
         private boolean isTestAttributeValueInList(ITestPolicyCmpt cmpt) {
@@ -400,7 +380,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             return false;
         }
 
-        /*
+        /**
          * Check if the given test policy cmpt has missing test attributes (to be added)
          */
         private boolean isTestAttributeInList(ITestPolicyCmpt cmpt) {
