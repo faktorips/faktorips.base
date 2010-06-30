@@ -45,6 +45,7 @@ public class MoveHandler extends IpsRefactoringHandler {
 
     private static final String COMMAND_ID = "org.eclipse.ui.edit.move"; //$NON-NLS-1$
 
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
         final Shell shell = HandlerUtil.getActiveShell(event);
@@ -89,6 +90,7 @@ public class MoveHandler extends IpsRefactoringHandler {
                     wd.open();
                 } else if (selected instanceof IResource) {
                     MoveResourceAction action = new MoveResourceAction(new IShellProvider() {
+                        @Override
                         public Shell getShell() {
                             return shell;
                         }
@@ -102,8 +104,8 @@ public class MoveHandler extends IpsRefactoringHandler {
     }
 
     public static ContributionItem getContributionItem() {
-        CommandContributionItem moveItem = new CommandContributionItem(new CommandContributionItemParameter(PlatformUI
-                .getWorkbench(), null, COMMAND_ID, CommandContributionItem.STYLE_PUSH));
+        CommandContributionItem moveItem = new CommandContributionItem(new CommandContributionItemParameter(
+                PlatformUI.getWorkbench(), null, COMMAND_ID, CommandContributionItem.STYLE_PUSH));
         return moveItem;
     }
 

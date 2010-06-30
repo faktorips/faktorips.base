@@ -46,6 +46,7 @@ public class RenameHandler extends IpsRefactoringHandler {
 
     private static final String COMMAND_ID = "org.eclipse.ui.edit.rename"; //$NON-NLS-1$
 
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
         final Shell shell = HandlerUtil.getActiveShell(event);
@@ -91,6 +92,7 @@ public class RenameHandler extends IpsRefactoringHandler {
                     wd.open();
                 } else if (selected instanceof IResource) {
                     RenameResourceAction action = new RenameResourceAction(new IShellProvider() {
+                        @Override
                         public Shell getShell() {
                             return shell;
                         }

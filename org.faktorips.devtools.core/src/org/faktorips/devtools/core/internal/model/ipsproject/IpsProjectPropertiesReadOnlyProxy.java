@@ -390,6 +390,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
+    @Override
     public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
