@@ -256,9 +256,36 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     public void testContainsFormula() {
         assertFalse(productCmpt.containsFormula());
-        IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
+        IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(2000, 1,
+                1));
+        IProductCmptGeneration gen2 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(2010, 1,
+                1));
         gen1.newFormula();
         assertTrue(productCmpt.containsFormula());
+
+        for (IFormula formula : gen1.getFormulas()) {
+            formula.delete();
+        }
+        assertFalse(productCmpt.containsFormula());
+
+        gen2.newFormula();
+        assertTrue(productCmpt.containsFormula());
+    }
+
+    public void testContainsFormulaTest() {
+        assertFalse(productCmpt.containsFormula());
+        IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
+        IProductCmptGeneration gen2 = (IProductCmptGeneration)productCmpt.newGeneration();
+        gen1.newFormula().newFormulaTestCase();
+        assertTrue(productCmpt.containsFormulaTest());
+
+        for (IFormula formula : gen1.getFormulas()) {
+            formula.delete();
+        }
+        assertFalse(productCmpt.containsFormulaTest());
+
+        gen2.newFormula().newFormulaTestCase();
+        assertTrue(productCmpt.containsFormulaTest());
     }
 
     public void testDependsOn() throws Exception {

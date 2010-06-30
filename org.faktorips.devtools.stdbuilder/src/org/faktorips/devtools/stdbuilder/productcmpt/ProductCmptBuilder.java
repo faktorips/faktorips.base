@@ -25,10 +25,10 @@ import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 
@@ -41,7 +41,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     private MultiStatus buildStatus;
     private ProductCmptGenerationCuBuilder generationBuilder;
 
-    public ProductCmptBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+    public ProductCmptBuilder(StandardBuilderSet builderSet, String kindId) {
         super(builderSet);
         generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, kindId, this);
     }
@@ -102,7 +102,9 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(generation);
         generationBuilder.setProductCmptGeneration(generation);
         generationBuilder.beforeBuild(ipsSrcFile, buildStatus);
-        generationBuilder.build(ipsSrcFile);
+        if (((StandardBuilderSet)getBuilderSet()).getFormulaCompiling().compileToSubclass()) {
+            generationBuilder.build(ipsSrcFile);
+        }
         generationBuilder.afterBuild(ipsSrcFile);
     }
 
@@ -186,7 +188,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
      * project's naming strategy is applied to replace characters that aren't allowed in Java class
      * names.
      */
-    private String getUnchangedJavaSrcFilePrefix(IIpsSrcFile file) throws CoreException {
+    private String getUnchangedJavaSrcFilePrefix(IIpsSrcFile file) {
         return file.getQualifiedNameType().getUnqualifiedName() + ' ';
     }
 
