@@ -189,12 +189,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public boolean containsFormulaTest() {
-        IProductCmptGeneration gen = getProductCmptGeneration(0);
-        if (gen.getNumOfFormulas() > 0) {
-            IFormula[] formulas = gen.getFormulas();
-            for (IFormula formula : formulas) {
-                if (formula.getFormulaTestCases().length > 0) {
-                    return true;
+        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
+        for (IIpsObjectGeneration generation : generations) {
+            IProductCmptGeneration gen = (IProductCmptGeneration)generation;
+            if (gen.getNumOfFormulas() > 0) {
+                IFormula[] formulas = gen.getFormulas();
+                for (IFormula formula : formulas) {
+                    if (formula.getFormulaTestCases().length > 0) {
+                        return true;
+                    }
                 }
             }
         }
