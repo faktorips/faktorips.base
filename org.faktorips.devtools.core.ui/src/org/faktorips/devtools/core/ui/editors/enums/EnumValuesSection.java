@@ -985,6 +985,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             if (columnIndex != -1) {
                 IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(columnIndex);
 
+                // Do not modify if the value hasn't changed!
+                if (enumAttributeValue.getValue().equals(value)) {
+                    return;
+                }
+
                 /*
                  * Do not modify if it is the literal name column and the lock and sync option is
                  * active!
