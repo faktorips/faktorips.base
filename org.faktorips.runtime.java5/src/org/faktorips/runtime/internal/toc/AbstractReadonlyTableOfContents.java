@@ -30,9 +30,9 @@ import org.w3c.dom.NodeList;
 public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableOfContents {
 
     public final static String TOC_XML_ELEMENT = "FaktorIps-TableOfContents";
-    public static final String LASTMOD_XML_ELEMENT = "lastModified";
+    public static final String PRODUCT_DATA_VERSION_XML_ELEMENT = "productDataVersion";
 
-    private long lastModified;
+    private String productDataVersion;
 
     public AbstractReadonlyTableOfContents() {
         // do nothing
@@ -42,9 +42,9 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
      * Initializes the table of contents with data stored in the xml element.
      */
     public final void initFromXml(Element tocElement) {
-        String lastModString = tocElement.getAttribute(LASTMOD_XML_ELEMENT);
-        if (lastModString != null && !lastModString.equals("")) {
-            lastModified = Long.parseLong(lastModString);
+        productDataVersion = tocElement.getAttribute(PRODUCT_DATA_VERSION_XML_ELEMENT);
+        if (productDataVersion == null) {
+            productDataVersion = "0";
         }
         NodeList nl = tocElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -123,8 +123,8 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
      */
     public abstract Set<EnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries();
 
-    public long getLastModified() {
-        return lastModified;
+    public String getProductDataVersion() {
+        return productDataVersion;
     }
 
     /**

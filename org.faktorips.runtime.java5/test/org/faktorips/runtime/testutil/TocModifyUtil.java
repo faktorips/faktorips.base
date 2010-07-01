@@ -53,7 +53,7 @@ public class TocModifyUtil {
     private void saveXml(ReadonlyTableOfContents toc, long lastModified) throws Exception {
         Document doc = docBuilder.newDocument();
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
-        element.setAttribute(AbstractReadonlyTableOfContents.LASTMOD_XML_ELEMENT, "" + lastModified);
+        element.setAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT, "" + lastModified);
         for (TocEntryObject entry : toc.getEntries()) {
             element.appendChild(entry.toXml(doc));
         }

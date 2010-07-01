@@ -26,7 +26,7 @@ public class ExpirableSoftReferenceCache<T> extends SoftReferenceCache<T> {
 
     private final IModificationChecker modificationChecker;
 
-    private long timestamp;
+    private String actualVersion;
 
     /**
      * This constructor needs the modification checker and the initial size of this cache
@@ -39,9 +39,9 @@ public class ExpirableSoftReferenceCache<T> extends SoftReferenceCache<T> {
 
     @Override
     public T getObject(Object key) {
-        if (modificationChecker.isExpired(timestamp)) {
+        if (modificationChecker.isExpired(actualVersion)) {
             clear();
-            timestamp = modificationChecker.getModificationStamp();
+            actualVersion = modificationChecker.getProductDataVersion();
         }
         return super.getObject(key);
     }

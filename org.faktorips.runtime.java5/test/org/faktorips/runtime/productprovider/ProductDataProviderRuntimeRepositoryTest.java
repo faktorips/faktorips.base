@@ -96,7 +96,7 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         // should use cached object
         repository.getProductComponent("home.HomeBasic");
         assertFalse(productDataProvider.flag);
-        ++productDataProvider.modStamp;
+        productDataProvider.modStamp += "1";
         // should NOT use cached object
         repository.getProductComponent("home.HomeBasic");
         assertTrue(productDataProvider.flag);
@@ -146,7 +146,7 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         // should use cached object
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         assertFalse(productDataProvider.flag);
-        ++productDataProvider.modStamp;
+        productDataProvider.modStamp += "1";
         // should NOT use cached object
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         assertTrue(productDataProvider.flag);
@@ -325,8 +325,9 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
 
     private class TestProductDataProvider extends ClassLoaderProductDataProvider {
 
+        // set true by any method called (except getModificationStamp())
         boolean flag = false;
-        long modStamp = 0;
+        String modStamp = "0";
 
         public TestProductDataProvider(ClassLoader cl, String tocResourcePath) {
             super(cl, tocResourcePath);
@@ -363,7 +364,7 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         }
 
         @Override
-        public long getModificationStamp() {
+        public String getProductDataVersion() {
             return modStamp;
         }
     }

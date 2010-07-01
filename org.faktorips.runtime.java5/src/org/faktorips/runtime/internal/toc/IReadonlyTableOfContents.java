@@ -88,4 +88,12 @@ public interface IReadonlyTableOfContents {
      */
     public Set<EnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries();
 
+    /**
+     * Return the version of the product data in this table of content. This may be a version numbe
+     * or a timestamp
+     * 
+     * @return The version of the table of content
+     */
+    public String getProductDataVersion();
+
 }

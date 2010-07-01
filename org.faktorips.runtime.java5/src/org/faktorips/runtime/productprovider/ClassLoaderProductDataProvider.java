@@ -50,7 +50,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
 
     private final ClassLoader cl;
     private boolean checkTocModifications = false;
-    private long tocFileLastModified = -1;
+    private String tocFileLastModified = "";
     private URL tocUrl;
     private ReadonlyTableOfContents toc;
     protected DocumentBuilder docBuilder;
@@ -74,12 +74,12 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
 
     public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException {
         String resourcePath = tocEntry.getXmlResourceName();
-        checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
+        checkForModifications(tocEntry.getIpsObjectId(), getProductDataVersion());
         return getDocumentElement(resourcePath);
     }
 
     public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getParent().getIpsObjectId(), getModificationStamp());
+        checkForModifications(tocEntry.getParent().getIpsObjectId(), getProductDataVersion());
         Element docElement = getDocumentElement(tocEntry.getParent().getXmlResourceName());
         NodeList nl = docElement.getChildNodes();
         DateTime validFrom = tocEntry.getValidFrom();
@@ -96,18 +96,18 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
     }
 
     public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
+        checkForModifications(tocEntry.getIpsObjectId(), getProductDataVersion());
         String resourcePath = tocEntry.getXmlResourceName();
         return getDocumentElement(resourcePath);
     }
 
     public InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
+        checkForModifications(tocEntry.getIpsObjectId(), getProductDataVersion());
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
     public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), getModificationStamp());
+        checkForModifications(tocEntry.getIpsObjectId(), getProductDataVersion());
         return cl.getResourceAsStream(tocEntry.getXmlResourceName());
     }
 
@@ -132,7 +132,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
             Element tocElement = doc.getDocumentElement();
             toc = new ReadonlyTableOfContents();
             if (checkTocModifications) {
-                tocFileLastModified = getModificationStamp();
+                tocFileLastModified = getProductDataVersion();
             }
             toc.initFromXml(tocElement);
             return toc;
@@ -165,19 +165,19 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         return element;
     }
 
-    public long getModificationStamp() {
+    public String getProductDataVersion() {
         if (checkTocModifications) {
-            long lastMod = 0;
+            String lastMod = "0";
             try {
                 URLConnection connection = tocUrl.openConnection();
                 if (connection instanceof JarURLConnection) {
                     JarURLConnection jarUrlConnection = (JarURLConnection)connection;
                     URL jarUrl = jarUrlConnection.getJarFileURL();
                     File jarFile = new File(jarUrl.toURI());
-                    lastMod = jarFile.lastModified();
+                    lastMod = "" + jarFile.lastModified();
                 } else {
                     File tocFile = new File(tocUrl.getFile());
-                    lastMod = tocFile.lastModified();
+                    lastMod = "" + tocFile.lastModified();
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Cannot get last modification stamp of toc url", e);
@@ -185,14 +185,14 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
             return lastMod;
         }
         if (toc != null) {
-            return toc.getLastModified();
+            return toc.getProductDataVersion();
         } else {
-            return 0;
+            return "0";
         }
     }
 
-    private void checkForModifications(String name, long timestamp) throws DataModifiedException {
-        if (checkTocModifications && tocFileLastModified != timestamp) {
+    private void checkForModifications(String name, String timestamp) throws DataModifiedException {
+        if (checkTocModifications && !tocFileLastModified.equals(timestamp)) {
             throw new DataModifiedException(MODIFIED_EXCEPTION_MESSAGE + name, tocFileLastModified, timestamp);
         }
     }

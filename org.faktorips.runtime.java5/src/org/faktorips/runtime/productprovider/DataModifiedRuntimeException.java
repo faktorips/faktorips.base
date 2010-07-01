@@ -15,22 +15,25 @@ package org.faktorips.runtime.productprovider;
 
 /**
  * Exception thrown if the requested data has been modified since last correct modification check.
+ * This exception encapsulates a {@link DataModifiedException} in a runtime exception.
  * 
  * @author dirmeier
  */
-public class DataModifiedException extends Exception {
+public class DataModifiedRuntimeException extends RuntimeException {
 
     /**
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = 1L;
-    public final String oldVersion;
-    public final String newVersion;
+    private final DataModifiedException dataModifiedException;
 
-    public DataModifiedException(String message, String oldVersion, String newVersion) {
-        super(message);
-        this.oldVersion = oldVersion;
-        this.newVersion = newVersion;
+    public DataModifiedRuntimeException(DataModifiedException e) {
+        super(e);
+        this.dataModifiedException = e;
+    }
+
+    public DataModifiedException getDataModifiedRuntimeException() {
+        return dataModifiedException;
     }
 
 }

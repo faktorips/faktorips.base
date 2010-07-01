@@ -36,6 +36,21 @@ import org.w3c.dom.Element;
  * the classes if necessary. It is also important to have an expirable implementation of the cache
  * so the {@link ProductDataProviderRuntimeRepository} uses the {@link ExpirableCacheFactory} to
  * create the cache objects.
+ * <p>
+ * IMPORTANT FOR MULTIUSER/THREADING:<br>
+ * In a multiuser/threading environment using the {@link ProductDataProviderRuntimeRepository} you
+ * run into problems with reloading the table of contents after product data has changed: A client
+ * that receives product data from the repository gets a {@link DataModifiedRuntimeException} when
+ * the version has changed. To get the new deployed product data he has to call {@link #reload()} in
+ * order to reload the table of contents. The problem occurs if there is another client receiving
+ * product data the same time. Maybe the other client already received some product data but have to
+ * load some additional data. In this case, the client needs to get also a
+ * {@link DataModifiedRuntimeException} in order to not mix different versions of product data.
+ * Because of the first client has already called the {@link #reload()} method, the second client
+ * would not get any exception to recognize the new product data version.<br>
+ * To avoid this problem you have to use the {@link ClientRuntimeRepository}. For all clients there
+ * could be a shared instance of {@link ProductDataProviderRuntimeRepository}.
+ * 
  * 
  * @author dirmeier
  */
@@ -123,6 +138,25 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
         return productDataProvider.loadToc();
     }
 
+    protected synchronized boolean isExpired(String version) {
+        return !getProductDataVersion().equals(version);
+    }
+
+    protected synchronized String getProductDataVersion() {
+        return productDataProvider.getProductDataVersion();
+    }
+
+    @Override
+    public synchronized void reload() {
+        if (getTableOfContents() == null) {
+            super.reload();
+        }
+        String tocVersion = getTableOfContents().getProductDataVersion();
+        if (tocVersion == null || !tocVersion.equals(productDataProvider.getProductDataVersion())) {
+            super.reload();
+        }
+    }
+
     @Override
     protected InputStream getXmlAsStream(EnumContentTocEntry tocEntry) {
         try {
@@ -143,8 +177,7 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
 
     private RuntimeException dataModifiedException(DataModifiedException e) {
         // clear caches is not necessary because every cache is expiring for itself
-        toc = loadTableOfContents();
-        return new RuntimeException(e);
+        return new DataModifiedRuntimeException(e);
     }
 
     public boolean isModifiable() {

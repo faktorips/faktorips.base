@@ -27,8 +27,8 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
         super();
     }
 
-    public boolean isExpired(long timestamp) {
-        return getModificationStamp() != timestamp;
+    public boolean isExpired(String version) {
+        return !getProductDataVersion().equals(version);
     }
 
 }

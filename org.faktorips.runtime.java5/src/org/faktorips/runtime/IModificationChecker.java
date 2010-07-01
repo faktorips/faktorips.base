@@ -14,9 +14,9 @@
 package org.faktorips.runtime;
 
 /**
- * The modification checker holds a time stamp for the time it is up to date. You could ask the
- * modification checker whether a given time stamp is expired and you could get the actual time
- * stamp.
+ * The modification checker holds a version or time stamp for the version or time it is up to date.
+ * You could ask the modification checker whether a given version or time stamp is expired and you
+ * could get the actual version.
  * 
  * @author dirmeier
  */
@@ -26,16 +26,16 @@ public interface IModificationChecker {
      * Check whether a given time stamp is expired or not. This method is called very often and have
      * to be as fast as possible!
      * 
-     * @param timestamp The time stamp to check against the modification checker
+     * @param version The version or time stamp to check against the modification checker
      * @return true if the time stamp is expired
      */
-    public boolean isExpired(long timestamp);
+    public boolean isExpired(String version);
 
     /**
-     * Get the actual time stamp of the modification checker
+     * Get the actual version of the product data this modification checker is responsible for
      * 
-     * @return the actual time stamp maybe 0 if the timestamp is not set
+     * @return the acutal version of the product data
      */
-    public long getModificationStamp();
+    public String getProductDataVersion();
 
 }
