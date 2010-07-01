@@ -224,49 +224,49 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
 
         // case sensitive
-        pack.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
+        pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
         assertEquals(1, result.size());
-        assertTrue(result.contains(obj1));
+        assertTrue(result.contains(obj1.getIpsSrcFile()));
 
         // ignore case
         result.clear();
-        pack.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", true, result);
+        pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", true, result);
         assertEquals(2, result.size());
-        assertTrue(result.contains(obj1));
-        assertTrue(result.contains(obj2));
+        assertTrue(result.contains(obj1.getIpsSrcFile()));
+        assertTrue(result.contains(obj2.getIpsSrcFile()));
 
         // nothing found because no policy component type exists starting with z
         result.clear();
-        pack.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Z", true, result);
+        pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Z", true, result);
         assertEquals(0, result.size());
 
         // nothing found, because no product component exists
         result.clear();
-        pack.findIpsObjectsStartingWith(IpsObjectType.PRODUCT_CMPT, "M", true, result);
+        pack.findIpsSourceFilesStartingWith(IpsObjectType.PRODUCT_CMPT, "M", true, result);
         assertEquals(0, result.size());
 
         // pack does not exists
         IpsPackageFragment pack2 = (IpsPackageFragment)rootPackage.getIpsPackageFragment("notExistingPack");
-        pack2.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", true, result);
+        pack2.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", true, result);
         assertEquals(0, result.size());
 
         // ipsobjecttype null
         try {
-            pack.findIpsObjectsStartingWith(null, "M", true, result);
+            pack.findIpsSourceFilesStartingWith(null, "M", true, result);
             fail();
         } catch (NullPointerException e) {
         }
 
         // prefix null
         try {
-            pack.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, null, true, result);
+            pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, null, true, result);
             fail();
         } catch (NullPointerException e) {
         }
 
         // result null
         try {
-            pack.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null);
+            pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null);
             fail();
         } catch (NullPointerException e) {
         }

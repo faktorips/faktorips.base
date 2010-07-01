@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
 /**
  * Implementation of <code>IIpsPackageFragment<code>.
  */
-public class IpsPackageFragment extends AbstractIpsPackageFragment implements IIpsPackageFragment {
+public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     IpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
@@ -490,32 +490,10 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * @throws NullPointerException if either type, prefix or result is null.
      * @throws CoreException if an error occurs while searching.
      */
-    public void findIpsObjectsStartingWith(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result) throws CoreException {
-        findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase, result, true);
-    }
-
-    /**
-     * Searches all objects of the given type starting with the given prefix and adds them to the
-     * result.
-     * 
-     * @throws NullPointerException if either type, prefix or result is null.
-     * @throws CoreException if an error occurs while searching.
-     */
     public void findIpsSourceFilesStartingWith(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
             List<IIpsSrcFile> result) throws CoreException {
-        findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase, result, false);
-    }
-
-    public void findIpsSourceFilesStartingWithInternal(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List result,
-            boolean returnIpsObject) throws CoreException {
 
         ArgumentCheck.notNull(type);
         ArgumentCheck.notNull(prefix);
@@ -533,11 +511,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
                     String filename = ignoreCase ? file.getName().toLowerCase() : file.getName();
                     if (filename.startsWith(newPrefix)) {
                         IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
-                        if (returnIpsObject) {
-                            result.add(srcFile.getIpsObject());
-                        } else {
-                            result.add(srcFile);
-                        }
+                        result.add(srcFile);
                     }
                 }
             }
