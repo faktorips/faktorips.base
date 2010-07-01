@@ -50,7 +50,7 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
  */
 public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeRepository {
 
-    protected IReadonlyTableOfContents toc;
+    private IReadonlyTableOfContents toc;
 
     private ICacheFactory cacheFactory;
 
@@ -69,6 +69,20 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     }
 
     protected abstract IReadonlyTableOfContents loadTableOfContents();
+
+    /**
+     * @param toc The toc to set.
+     */
+    private void setTableOfContents(IReadonlyTableOfContents toc) {
+        this.toc = toc;
+    }
+
+    /**
+     * @return Returns the toc.
+     */
+    protected IReadonlyTableOfContents getTableOfContents() {
+        return toc;
+    }
 
     private void initCaches() {
         productCmptCache = cacheFactory.createProductCmptCache();
@@ -320,7 +334,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
      */
     public void reload() {
         initCaches();
-        toc = loadTableOfContents();
+        setTableOfContents(loadTableOfContents());
     }
 
     /**
@@ -388,7 +402,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     /**
      * {@inheritDoc}
      */
-    public IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt) {
+    @Override
+    public IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
         if (productCmpt == null) {
             throw new NullPointerException("The parameter productCmpt must not be null.");
         }

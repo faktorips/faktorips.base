@@ -267,14 +267,31 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * {@inheritDoc}
      */
-    public List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {
+    public final List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
-        for (IProductComponent productCmpt : getAllProductComponents()) {
+        getAllProductComponentsInternal(productCmptClass, result);
+        for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
+            AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
+            refRepository.getAllProductComponentsInternal(productCmptClass, result);
+        }
+        return result;
+    }
+
+    /**
+     * Same as {@link #getAllProductComponents(Class)} but only searches in own repository not in
+     * referenced ones and adding result to parameter result
+     * 
+     * @param productCmptClass The class you want to search product components for
+     * @param result adding the found product components to result list
+     */
+    public void getAllProductComponentsInternal(Class<?> productCmptClass, List<IProductComponent> result) {
+        List<IProductComponent> allPCmpsOfThisRepos = new ArrayList<IProductComponent>();
+        getAllProductComponents(allPCmpsOfThisRepos);
+        for (IProductComponent productCmpt : allPCmpsOfThisRepos) {
             if (productCmptClass.isAssignableFrom(productCmpt.getClass())) {
                 result.add(productCmpt);
             }
         }
-        return result;
     }
 
     /**
@@ -600,7 +617,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     protected abstract int getNumberOfProductComponentGenerationsInternal(IProductComponent productCmpt);
 
-    public IProductComponentGeneration getPreviousProductComponentGeneration(IProductComponentGeneration generation) {
+    public final IProductComponentGeneration getPreviousProductComponentGeneration(IProductComponentGeneration generation) {
         if (equals(generation.getRepository())) {
             return getPreviousProductComponentGenerationInternal(generation);
         }
@@ -616,6 +633,23 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     protected abstract IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation);
+
+    public final IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt) {
+        if (equals(productCmpt.getRepository())) {
+            return getLatestProductComponentGenerationInternal(productCmpt);
+        }
+
+        for (IRuntimeRepository refRepository : getAllReferencedRepositories()) {
+            if (refRepository.equals(productCmpt.getRepository())) {
+                return ((AbstractRuntimeRepository)refRepository)
+                        .getLatestProductComponentGenerationInternal(productCmpt);
+            }
+        }
+        throw new IllegalArgumentException(
+                "The provided product component generation instance is not hosted in this repository or in the referenced repositories");
+    }
+
+    protected abstract IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt);
 
     /**
      * 
