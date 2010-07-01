@@ -333,4 +333,9 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         }
         return propertyDef;
     }
+
+    @Override
+    public String toString() {
+        return "BuilderSetPropertyDefinition: " + getName(); //$NON-NLS-1$
+    }
 }

@@ -37,6 +37,12 @@ import org.w3c.dom.NodeList;
  */
 public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetConfigModel {
 
+    private static final String PROPERTY_XML_TAG = "Property"; //$NON-NLS-1$
+
+    private static final String NAME_XML_ATTR = "name"; //$NON-NLS-1$
+
+    private static final String VALUE_XML_ATTR = "value"; //$NON-NLS-1$
+
     private Map<String, String> properties;
     private Map<String, String> propertiesDescription;
 
@@ -65,11 +71,11 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
     public final void initFromXml(Element el) {
         properties = new LinkedHashMap<String, String>();
         propertiesDescription = new LinkedHashMap<String, String>();
-        NodeList nl = el.getElementsByTagName("Property"); //$NON-NLS-1$
+        NodeList nl = el.getElementsByTagName(PROPERTY_XML_TAG);
         for (int i = 0; i < nl.getLength(); i++) {
             Element propertyEl = (Element)nl.item(i);
-            String key = propertyEl.getAttribute("name"); //$NON-NLS-1$
-            String value = propertyEl.getAttribute("value"); //$NON-NLS-1$
+            String key = propertyEl.getAttribute(NAME_XML_ATTR);
+            String value = propertyEl.getAttribute(VALUE_XML_ATTR);
             NodeList propertyElNodeList = propertyEl.getChildNodes();
             for (int j = 0; j < propertyElNodeList.getLength(); j++) {
                 Node node = propertyElNodeList.item(j);
@@ -103,9 +109,9 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         ArgumentCheck.notNull(propertyName);
         ArgumentCheck.notNull(value);
         properties.put(propertyName, value);
-        if (description != null) {
-            propertiesDescription.put(propertyName, description);
-        }
+        // if (description != null) {
+        // propertiesDescription.put(propertyName, description);
+        // }
     }
 
     @Override
@@ -114,15 +120,15 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         Set<String> keys = properties.keySet();
         for (String key : keys) {
             String value = properties.get(key);
-            Element prop = doc.createElement("Property"); //$NON-NLS-1$
+            Element prop = doc.createElement(PROPERTY_XML_TAG);
             String description = propertiesDescription.get(key);
             if (description != null) {
                 Comment comment = doc.createComment(description);
                 prop.appendChild(comment);
             }
             root.appendChild(prop);
-            prop.setAttribute("name", key); //$NON-NLS-1$
-            prop.setAttribute("value", value); //$NON-NLS-1$
+            prop.setAttribute(NAME_XML_ATTR, key);
+            prop.setAttribute(VALUE_XML_ATTR, value);
         }
         return root;
     }
