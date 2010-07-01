@@ -185,7 +185,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         // if the lower bound is set, the value to check is not the real value but
         // the value reduced by the lower bound! In a range from 1-5, Step 2 the
         // values 1, 3 and 5 are valid, not 2 and 4.
-        if (!StringUtils.isEmpty(getLowerBound())) {
+        if (!StringUtils.isEmpty(getLowerBound()) && numDatatype != null) {
             diff = numDatatype.subtract(value, getLowerBound());
         }
 
