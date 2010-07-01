@@ -49,8 +49,14 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
      */
     @Override
     protected void setUp() throws Exception {
+        /**
+         * The repository loading the empty toc to include testing referenced repositories
+         */
         repository = ClassloaderRuntimeRepository
+                .create("org/faktorips/runtime/testrepository/fake-repository-toc.xml");
+        ClassloaderRuntimeRepository mainRepository = ClassloaderRuntimeRepository
                 .create("org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
+        repository.addDirectlyReferencedRepository(mainRepository);
     }
 
     public void testGetProductComponent() {
@@ -127,7 +133,7 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
         assertEquals(Money.euro(30, 0), motorProductGen.getFixedCosts());
     }
 
-    public void testGetAllProductComponentsByType() {
+    public void testGetAllProductComponents_ByClass() {
         // get all motor products
         List<IProductComponent> list = repository.getAllProductComponents(MotorProduct.class);
         assertEquals(2, list.size());

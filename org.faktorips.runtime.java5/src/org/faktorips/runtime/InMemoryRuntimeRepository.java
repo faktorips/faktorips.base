@@ -338,7 +338,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         return predecessors.last();
     }
 
-    public IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt) {
+    @Override
+    public IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
         if (productCmpt == null) {
             throw new NullPointerException("The parameter productCmpt cannot be null.");
         }

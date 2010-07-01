@@ -157,6 +157,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private Integer javaOptionsTabSize;
 
+    private FacadeHelper facadeHelper;
+
     /**
      * Creates a new JavaSourceFileBuilder.
      * 
@@ -365,6 +367,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     @Override
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
+        facadeHelper.reset();
         this.ipsSrcFile = null;
         ipsObject = null;
         buildStatus = null;
@@ -941,32 +944,30 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private void initJControlModel(IIpsProject project) throws CoreException {
-        IFile mergeFile = project.getJavaProject().getProject().getFile(
-                ComplianceCheck.isComplianceLevelAtLeast5(project) ? "merge.java5.xml" : "merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         model = new org.eclipse.emf.codegen.merge.java.JControlModel();
-        FacadeHelper facadeHelper;
         if (ComplianceCheck.isComplianceLevelAtLeast5(project)) {
             facadeHelper = new ASTFacadeHelper();
         } else {
             facadeHelper = new JDOMFacadeHelper();
         }
-        if (mergeFile.exists()) {
-            try {
-                model.initialize(facadeHelper, mergeFile.getLocation().toPortableString());
+        try {
+            model.initialize(facadeHelper, getJMergeConfigLocation(project));
 
-            } catch (Exception e) {
-                throw new CoreException(new IpsStatus(e));
-            }
-            return;
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus(e));
         }
-        model.initialize(facadeHelper, getJMergeDefaultConfigLocation(project));
     }
 
-    private String getJMergeDefaultConfigLocation(IIpsProject ipsProject) {
-        StringBuffer mergeFile = new StringBuffer();
-        mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
-                ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
-        return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
+    private String getJMergeConfigLocation(IIpsProject ipsProject) {
+        IFile mergeFile = ipsProject.getJavaProject().getProject().getFile(
+                ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "merge.java5.xml" : "merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (mergeFile.exists()) {
+            return mergeFile.getLocation().toPortableString();
+        }
+        StringBuffer mergeFileDefault = new StringBuffer();
+        mergeFileDefault.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
+                .append(ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+        return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFileDefault.toString()).toExternalForm();
     }
 
     private final static Pattern createFeatureSectionPattern() {

@@ -158,7 +158,7 @@ public class TableOfContent {
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
         long lastModified = new Date().getTime();
         element.setAttribute(VERSION_XML_ATTRIBUTE, ACTUAL_XML_VERSION);
-        element.setAttribute(AbstractReadonlyTableOfContents.LASTMOD_XML_ELEMENT, "" + lastModified);
+        element.setAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT, "" + lastModified);
         for (TocEntryObject entry : getEntries()) {
             element.appendChild(entry.toXml(doc));
         }
