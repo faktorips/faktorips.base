@@ -4,9 +4,9 @@ Bundle-Name: Test Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.ant.test
 Bundle-Version: 0.0.0
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
-Require-Bundle: org.faktorips.devtools.ant,
- org.apache.ant,
+Fragment-Host: org.faktorips.devtools.ant
+Require-Bundle: org.apache.ant,
  org.faktorips.devtools.core,
- org.junit;bundle-version="3.8.2"
+ org.faktorips.testutil;bundle-version="0.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.ant
