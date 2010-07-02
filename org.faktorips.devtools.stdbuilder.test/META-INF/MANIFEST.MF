@@ -15,7 +15,7 @@ Require-Bundle: org.faktorips.dtflcommon,
  org.eclipse.jdt.core,
  org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
  org.faktorips.devtools.core,
- org.faktorips.testutil
+ org.faktorips.devtools.abstracttest
 Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.productcmpt,
  org.faktorips.devtools.stdbuilder.table
