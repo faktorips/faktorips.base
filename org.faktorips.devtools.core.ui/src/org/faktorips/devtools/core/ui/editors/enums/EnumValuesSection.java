@@ -997,7 +997,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                  * Do not modify if it is the literal name column and the lock and sync option is
                  * active!
                  */
-                if (isLiteralNameColumn(columnIndex)) {
+                if (enumAttributeValue.isEnumLiteralNameAttributeValue()) {
                     if (lockAndSynchronizeLiteralNames) {
                         return;
                     }
@@ -1020,11 +1020,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 enumValuesTableViewer.refresh(true);
             }
         }
-
-        private boolean isLiteralNameColumn(int columnIndex) {
-            return enumType.getIndexOfEnumLiteralNameAttribute() == columnIndex;
-        }
-
     }
 
     /**
