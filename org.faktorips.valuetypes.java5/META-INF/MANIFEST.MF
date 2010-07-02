@@ -4,7 +4,6 @@ Bundle-Name: Faktor-IPS Valuetypes for Java5
 Bundle-SymbolicName: org.faktorips.valuetypes.java5
 Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
-Require-Bundle: org.junit
 Export-Package: javax.xml.bind,
  javax.xml.bind.annotation,
  javax.xml.bind.annotation.adapters,

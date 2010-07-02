@@ -6,7 +6,7 @@ Bundle-Version: 0.0.0
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Require-Bundle: org.faktorips.devtools.ant,
  org.apache.ant,
- org.junit,
- org.faktorips.devtools.core
+ org.faktorips.devtools.core,
+ org.junit;bundle-version="3.8.2"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.ant

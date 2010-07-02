@@ -6,10 +6,9 @@ Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Fragment-Host: org.faktorips.devtools.tableconversion
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.faktorips.devtools.core,
- org.faktorips.devtools.core.test,
- org.faktorips.devtools.tableconversion,
- org.faktorips.valuetypes.java5,
- org.junit;bundle-version="3.8.2"
+ org.faktorips.testutil,
+ org.faktorips.valuetypes.java5
