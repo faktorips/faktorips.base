@@ -26,7 +26,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.ProductGenerationA
  * @author dicker
  * 
  */
-public class ProductCmptContentPageElement extends AbstractObjectContentPageElement<IProductCmpt> {
+public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageElement<IProductCmpt> {
 
     /**
      * creates a page for the given {@link IProductCmpt} with the given config

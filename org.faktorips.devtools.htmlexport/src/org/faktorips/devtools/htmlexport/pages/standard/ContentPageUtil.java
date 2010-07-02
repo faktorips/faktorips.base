@@ -1,8 +1,10 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -22,38 +24,50 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageEle
  */
 public class ContentPageUtil {
 
-    public static AbstractRootPageElement createObjectContentPageElement(IIpsObject object,
+    public static AbstractRootPageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFilex,
             DocumentorConfiguration config) {
-        if (object.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
-            return new PolicyCmptTypeContentPageElement((IPolicyCmptType)object, config);
+
+        IIpsObject ipsSrcFile;
+        try {
+            ipsSrcFile = ipsSrcFilex.getIpsObject();
+            return createObjectContentPageElement(ipsSrcFile, config);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
-        if (object.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE) {
-            return new ProductCmptTypeContentPageElement((IProductCmptType)object, config);
+    }
+
+    private static AbstractRootPageElement createObjectContentPageElement(IIpsObject ipsSrcFile,
+            DocumentorConfiguration config) {
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
+            return new PolicyCmptTypeContentPageElement((IPolicyCmptType)ipsSrcFile, config);
         }
-        if (object.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
-            return new ProductCmptContentPageElement((IProductCmpt)object, config);
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE) {
+            return new ProductCmptTypeContentPageElement((IProductCmptType)ipsSrcFile, config);
         }
-        if (object.getIpsObjectType() == IpsObjectType.ENUM_TYPE) {
-            return new EnumTypeContentPageElement((IEnumType)object, config);
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
+            return new ProductCmptContentPageElement((IProductCmpt)ipsSrcFile, config);
         }
-        if (object.getIpsObjectType() == IpsObjectType.ENUM_CONTENT) {
-            return new EnumContentContentPageElement((IEnumContent)object, config);
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.ENUM_TYPE) {
+            return new EnumTypeContentPageElement((IEnumType)ipsSrcFile, config);
         }
-        if (object.getIpsObjectType() == IpsObjectType.TABLE_STRUCTURE) {
-            return new TableStructureContentPageElement((ITableStructure)object, config);
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.ENUM_CONTENT) {
+            return new EnumContentContentPageElement((IEnumContent)ipsSrcFile, config);
         }
-        if (object.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
-            return new TableContentsContentPageElement((ITableContents)object, config);
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.TABLE_STRUCTURE) {
+            return new TableStructureContentPageElement((ITableStructure)ipsSrcFile, config);
         }
-        if (object.getIpsObjectType() == IpsObjectType.TEST_CASE_TYPE) {
-            return new TestCaseTypeContentPageElement((ITestCaseType)object, config);
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
+            return new TableContentsContentPageElement((ITableContents)ipsSrcFile, config);
         }
-        if (object.getIpsObjectType() == IpsObjectType.TEST_CASE) {
-            return new TestCaseContentPageElement((ITestCase)object, config);
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE_TYPE) {
+            return new TestCaseTypeContentPageElement((ITestCaseType)ipsSrcFile, config);
+        }
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE) {
+            return new TestCaseContentPageElement((ITestCase)ipsSrcFile, config);
         }
 
         // TODO Businessfunction
-        return new IpsObjectContentPageElement(object, config);
+        return new IpsObjectContentPageElement(ipsSrcFile, config);
     }
 
 }

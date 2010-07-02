@@ -8,6 +8,7 @@ import java.util.Set;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
@@ -25,7 +26,7 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
 
     protected IIpsElement baseIpsElement;
     protected String linkTarget;
-    protected List<IIpsObject> objects;
+    protected List<IIpsSrcFile> srcFiles;
     protected IpsElementFilter filter = ALL_FILTER;
     private DocumentorConfiguration config;
 
@@ -42,9 +43,9 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
      * {@link Comparator}, which is used for sorting the {@link IIpsObject}s according to their
      * unqualified name.
      */
-    protected final static Comparator<IIpsObject> IPS_OBJECT_COMPARATOR = new Comparator<IIpsObject>() {
-        public int compare(IIpsObject o1, IIpsObject o2) {
-            return o1.getUnqualifiedName().compareTo(o2.getUnqualifiedName());
+    protected final static Comparator<IIpsSrcFile> IPS_OBJECT_COMPARATOR = new Comparator<IIpsSrcFile>() {
+        public int compare(IIpsSrcFile o1, IIpsSrcFile o2) {
+            return o1.getIpsObjectName().compareTo(o2.getIpsObjectName());
         }
     };
 
@@ -53,14 +54,14 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
      * 
      * @param baseIpsElement ipsElement, which represents the location of the page for links from
      *            the page
-     * @param objects unfiltered and unsorted objects to list on the page
+     * @param srcFiles unfiltered and unsorted objects to list on the page
      * @param filter for objects
      */
-    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter,
+    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
             DocumentorConfiguration config) {
         super();
         this.baseIpsElement = baseIpsElement;
-        this.objects = objects;
+        this.srcFiles = srcFiles;
         this.filter = filter;
         this.config = config;
     }
@@ -70,8 +71,9 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
      * @see AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects,
      *      IpsElementFilter filter)
      */
-    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, DocumentorConfiguration config) {
-        this(baseIpsElement, objects, ALL_FILTER, config);
+    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
+            DocumentorConfiguration config) {
+        this(baseIpsElement, srcFiles, ALL_FILTER, config);
     }
 
     /**
@@ -79,7 +81,7 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
      */
     protected Set<IIpsPackageFragment> getRelatedPackageFragments() {
         Set<IIpsPackageFragment> packageFragments = new LinkedHashSet<IIpsPackageFragment>();
-        for (IIpsObject object : objects) {
+        for (IIpsSrcFile object : srcFiles) {
             if (!filter.accept(object)) {
                 continue;
             }

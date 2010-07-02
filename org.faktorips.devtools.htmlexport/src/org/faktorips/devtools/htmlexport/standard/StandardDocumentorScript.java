@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
@@ -15,7 +15,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayoutResource;
 import org.faktorips.devtools.htmlexport.generators.html.BaseFrameHtmlGenerator;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
-import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectInIIpsPackageFilter;
+import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInIIpsPackageFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
@@ -37,18 +37,22 @@ public class StandardDocumentorScript implements IDocumentorScript {
      * .documentor.DocumentorConfiguration)
      */
     public void execute(DocumentorConfiguration config, IProgressMonitor monitor) {
-        List<IIpsObject> objects = config.getLinkedObjects();
-        Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(objects);
+        List<IIpsSrcFile> srcFiles = config.getDocumentedSourceFiles();
+        Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(srcFiles);
 
-        monitor.beginTask("Write Html Export", 5 + objects.size() + relatedPackageFragments.size());
-        writeOverviewPage(config, objects, new SubProgressMonitor(monitor, 1));
+        System.out.println("Anzahl Steps: " + (5 + srcFiles.size() + relatedPackageFragments.size()));
+        monitor.beginTask("Write Html Export", 5 + srcFiles.size() + relatedPackageFragments.size());
+
+        // Reihenfolge fuer anlauf des balkens im exportwizard ungemein wichtig
+
         writeBaseFrameDefinition(config, new SubProgressMonitor(monitor, 1));
-        writeAllClassesPage(config, objects, new SubProgressMonitor(monitor, 1));
-        writeProjectOverviewPage(config, new SubProgressMonitor(monitor, 1));
+        writeClassesContentPages(config, srcFiles, new SubProgressMonitor(monitor, srcFiles.size()));
+        writeOverviewPage(config, srcFiles, new SubProgressMonitor(monitor, 1));
+        writeAllClassesPage(config, srcFiles, new SubProgressMonitor(monitor, 1));
 
-        writePackagesClassesPages(config, objects, relatedPackageFragments, new SubProgressMonitor(monitor,
+        writeProjectOverviewPage(config, new SubProgressMonitor(monitor, 1));
+        writePackagesClassesPages(config, srcFiles, relatedPackageFragments, new SubProgressMonitor(monitor,
                 relatedPackageFragments.size()));
-        writeClassesContentPages(config, objects, new SubProgressMonitor(monitor, objects.size()));
 
         writeResources(config, new SubProgressMonitor(monitor, 1));
 
@@ -65,12 +69,12 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeClassesContentPages(DocumentorConfiguration config,
-            List<IIpsObject> objects,
+            List<IIpsSrcFile> srcFiles,
             IProgressMonitor monitor) {
 
-        monitor.beginTask("Classes", objects.size());
+        monitor.beginTask("Classes", srcFiles.size());
 
-        for (IIpsObject ipsObject : objects) {
+        for (IIpsSrcFile ipsObject : srcFiles) {
             writeClassContentPage(config, ipsObject);
             monitor.worked(1);
         }
@@ -78,11 +82,11 @@ public class StandardDocumentorScript implements IDocumentorScript {
         monitor.done();
     }
 
-    private void writeClassContentPage(DocumentorConfiguration config, IIpsObject ipsObject) {
-        AbstractRootPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsObject, config);
+    private void writeClassContentPage(DocumentorConfiguration config, IIpsSrcFile ipsSrcFile) {
+        AbstractRootPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, config);
         objectContentPage.build();
         FileHandler.writeFile(config, STANDARD_PATH
-                + HtmlUtil.getPathFromRoot(ipsObject, LinkedFileType.getLinkedFileTypeByIpsElement(ipsObject)),
+                + HtmlUtil.getPathFromRoot(ipsSrcFile, LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
                 getPageContent(config, objectContentPage));
     }
 
@@ -93,13 +97,13 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writePackagesClassesPages(DocumentorConfiguration config,
-            List<IIpsObject> objects,
+            List<IIpsSrcFile> srcFiles,
             Set<IIpsPackageFragment> relatedPackageFragments,
             IProgressMonitor monitor) {
 
         monitor.beginTask("Packages Overview", relatedPackageFragments.size());
         for (IIpsPackageFragment ipsPackageFragment : relatedPackageFragments) {
-            writePackagesClassesPage(config, ipsPackageFragment, objects);
+            writePackagesClassesPage(config, ipsPackageFragment, srcFiles);
             monitor.worked(1);
         }
 
@@ -108,9 +112,9 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private void writePackagesClassesPage(DocumentorConfiguration config,
             IIpsPackageFragment ipsPackageFragment,
-            List<IIpsObject> objects) {
-        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(ipsPackageFragment, objects,
-                new IpsObjectInIIpsPackageFilter(ipsPackageFragment), config);
+            List<IIpsSrcFile> srcFiles) {
+        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(ipsPackageFragment, srcFiles,
+                new IpsElementInIIpsPackageFilter(ipsPackageFragment), config);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH
@@ -118,18 +122,20 @@ public class StandardDocumentorScript implements IDocumentorScript {
                         .getLinkedFileTypeByIpsElement(ipsPackageFragment)), getPageContent(config, allClassesPage));
     }
 
-    private Set<IIpsPackageFragment> getRelatedPackageFragments(List<IIpsObject> objects) {
+    private Set<IIpsPackageFragment> getRelatedPackageFragments(List<IIpsSrcFile> srcFiles) {
         Set<IIpsPackageFragment> relatedPackageFragments = new HashSet<IIpsPackageFragment>();
-        for (IIpsObject ipsObject : objects) {
-            relatedPackageFragments.add(ipsObject.getIpsPackageFragment());
+        for (IIpsSrcFile srcFile : srcFiles) {
+            relatedPackageFragments.add(srcFile.getIpsPackageFragment());
         }
         return relatedPackageFragments;
     }
 
-    private void writeAllClassesPage(DocumentorConfiguration config, List<IIpsObject> objects, IProgressMonitor monitor) {
+    private void writeAllClassesPage(DocumentorConfiguration config,
+            List<IIpsSrcFile> srcFiles,
+            IProgressMonitor monitor) {
         monitor.beginTask("", 1);
 
-        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(config.getIpsProject(), objects, config);
+        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(config.getIpsProject(), srcFiles, config);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH + "classes.html", getPageContent(config, allClassesPage)); //$NON-NLS-1$
@@ -137,10 +143,10 @@ public class StandardDocumentorScript implements IDocumentorScript {
         monitor.done();
     }
 
-    private void writeOverviewPage(DocumentorConfiguration config, List<IIpsObject> objects, IProgressMonitor monitor) {
+    private void writeOverviewPage(DocumentorConfiguration config, List<IIpsSrcFile> srcFiles, IProgressMonitor monitor) {
         monitor.beginTask("", 1);
 
-        IpsPackagesListPageElement allPackagesPage = new IpsPackagesListPageElement(config.getIpsProject(), objects,
+        IpsPackagesListPageElement allPackagesPage = new IpsPackagesListPageElement(config.getIpsProject(), srcFiles,
                 config);
         allPackagesPage.setLinkTarget("classes"); //$NON-NLS-1$
         allPackagesPage.build();

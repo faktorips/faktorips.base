@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
@@ -27,22 +27,23 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 public class IpsObjectListPageElement extends AbstractListPageElement {
     /**
      * @param baseIpsElement
-     * @param objects
+     * @param srcFiles
      * @param config
      */
-    public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, DocumentorConfiguration config) {
-        this(baseIpsElement, objects, ALL_FILTER, config);
+    public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
+            DocumentorConfiguration config) {
+        this(baseIpsElement, srcFiles, ALL_FILTER, config);
     }
 
     /**
      * @param baseIpsElement
-     * @param objects
+     * @param srcFiles
      * @param filter
      * @param config
      */
-    public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter,
+    public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
             DocumentorConfiguration config) {
-        super(baseIpsElement, objects, filter, config);
+        super(baseIpsElement, srcFiles, filter, config);
         setTitle(Messages.IpsObjectListPageElement_objects);
     }
 
@@ -74,14 +75,14 @@ public class IpsObjectListPageElement extends AbstractListPageElement {
      * @return List of {@link PageElement}s
      */
     protected List<PageElement> createClassesList() {
-        Collections.sort(objects, IPS_OBJECT_COMPARATOR);
+        Collections.sort(srcFiles, IPS_OBJECT_COMPARATOR);
 
         List<PageElement> items = new ArrayList<PageElement>();
-        for (IIpsObject object : objects) {
-            if (!filter.accept(object)) {
+        for (IIpsSrcFile srcFile : srcFiles) {
+            if (!filter.accept(srcFile)) {
                 continue;
             }
-            PageElement link = PageElementUtils.createLinkPageElement(getConfig(), object, getLinkTarget(), object
+            PageElement link = PageElementUtils.createLinkPageElement(getConfig(), srcFile, getLinkTarget(), srcFile
                     .getName(), true);
             items.add(link);
         }

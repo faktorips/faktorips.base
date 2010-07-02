@@ -1,6 +1,7 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -11,14 +12,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -155,29 +154,28 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
      * adds a list with the productCmpts
      */
     private void addProductCmptList() {
-        IIpsSrcFile[] allProductCmptSrcFiles;
-        List<IProductCmpt> productCmpts;
+        List<IIpsSrcFile> allProductCmptSrcFiles;
         try {
-            allProductCmptSrcFiles = getDocumentedIpsObject().searchMetaObjectSrcFiles(true);
-            productCmpts = DocumentorUtil.getIpsObjects(allProductCmptSrcFiles);
+            allProductCmptSrcFiles = new ArrayList(Arrays.asList(getDocumentedIpsObject()
+                    .searchMetaObjectSrcFiles(true)));
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
 
-        productCmpts.retainAll(getConfig().getLinkedObjects());
+        allProductCmptSrcFiles.retainAll(getConfig().getDocumentedSourceFiles());
 
         WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural(),
                 TextType.HEADING_2));
 
-        if (productCmpts.size() == 0) {
+        if (allProductCmptSrcFiles.size() == 0) {
             wrapper.addPageElements(new TextPageElement(Messages.ProductCmptTypeContentPageElement_no
                     + IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural()));
             addPageElements(wrapper);
             return;
         }
 
-        List<PageElement> linkPageElements = PageElementUtils.createLinkPageElements(productCmpts, "content", //$NON-NLS-1$
+        List<PageElement> linkPageElements = PageElementUtils.createLinkPageElements(allProductCmptSrcFiles, "content", //$NON-NLS-1$
                 new LinkedHashSet<Style>(), getConfig());
         ListPageElement liste = new ListPageElement(linkPageElements);
 

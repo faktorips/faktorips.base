@@ -1,7 +1,6 @@
 package org.faktorips.devtools.htmlexport.helper.path;
 
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
@@ -44,10 +43,11 @@ public class LinkedFileType {
         if (element instanceof IIpsPackageFragment) {
             return PACKAGE_CLASSES_OVERVIEW;
         }
-        if (element instanceof IIpsObject) {
-            return new LinkedFileType(
-                    "object_", "." + ((IIpsObject)element).getIpsObjectType().getFileExtension(), "content"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
+        /*
+         * if (element instanceof IIpsObject) { return new LinkedFileType( "object_", "." +
+         * ((IIpsObject)element).getIpsObjectType().getFileExtension(), "content"); //$NON-NLS-1$
+         * //$NON-NLS-2$ //$NON-NLS-3$ }
+         */
         return ELEMENT_CONTENT;
     }
 }

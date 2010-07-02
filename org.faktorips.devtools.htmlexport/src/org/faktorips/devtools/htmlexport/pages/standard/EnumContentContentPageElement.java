@@ -17,7 +17,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
  * @author dicker
  * 
  */
-public class EnumContentContentPageElement extends AbstractObjectContentPageElement<IEnumContent> {
+public class EnumContentContentPageElement extends AbstractIpsObjectContentPageElement<IEnumContent> {
 
     private IEnumType enumType;
 

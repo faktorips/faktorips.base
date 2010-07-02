@@ -55,7 +55,7 @@ public class DocumentorConfiguration {
     private ILayouter layouter;
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy"); //$NON-NLS-1$
-    private List<IIpsObject> linkedObjects;
+    private List<IIpsSrcFile> documentedSrcFiles;
 
     public DocumentorConfiguration() {
         super();
@@ -85,31 +85,40 @@ public class DocumentorConfiguration {
         return linkedIpsObjectTypes;
     }
 
-    public List<IIpsObject> getLinkedObjects() {
-        if (linkedObjects == null) {
-            linkedObjects = getLinkedObjects(getLinkedIpsObjectTypes());
-        }
-
-        return linkedObjects;
-
-    }
-
-    private List<IIpsObject> getLinkedObjects(IpsObjectType... ipsObjectTypes) {
-
-        List<IIpsObject> objects = new ArrayList<IIpsObject>();
-
-        List<IIpsSrcFile> srcFiles = getLinkedSource(ipsObjectTypes);
-        for (IIpsSrcFile ipsSrcFile : srcFiles) {
-
+    public List<IIpsSrcFile> getDocumentedSourceFiles() {
+        if (documentedSrcFiles == null) {
+            documentedSrcFiles = new ArrayList<IIpsSrcFile>();
             try {
-                objects.add(ipsSrcFile.getIpsObject());
+                ipsProject.findAllIpsSrcFiles(documentedSrcFiles, getLinkedIpsObjectTypes());
             } catch (CoreException e) {
                 e.printStackTrace();
             }
         }
 
-        return objects;
+        return documentedSrcFiles;
+
     }
+
+    /*
+     * public List<IIpsObject> getLinkedObjects() { if (linkedObjects == null) { linkedObjects =
+     * getLinkedObjects(getLinkedIpsObjectTypes()); }
+     * 
+     * return linkedObjects;
+     * 
+     * }
+     * 
+     * private List<IIpsObject> getLinkedObjects(IpsObjectType... ipsObjectTypes) {
+     * 
+     * List<IIpsObject> objects = new ArrayList<IIpsObject>();
+     * 
+     * List<IIpsSrcFile> srcFiles = getLinkedSource(ipsObjectTypes); for (IIpsSrcFile ipsSrcFile :
+     * srcFiles) {
+     * 
+     * try { objects.add(ipsSrcFile.getIpsObject()); } catch (CoreException e) {
+     * e.printStackTrace(); } }
+     * 
+     * return objects; }
+     */
 
     /**
      * returns all {@link IIpsSrcFile} within the {@link IpsProject}, which type is within the given
@@ -118,7 +127,7 @@ public class DocumentorConfiguration {
      * @param ipsObjectTypes Array with all relevant {@link IpsObjectType}s
      * @return List<IIpsSrcFile>
      */
-    public List<IIpsSrcFile> getLinkedSource(IpsObjectType... ipsObjectTypes) {
+    public List<IIpsSrcFile> getDocumentedSourceFiles(IpsObjectType... ipsObjectTypes) {
 
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         try {
@@ -133,8 +142,8 @@ public class DocumentorConfiguration {
     public Collection<IIpsPackageFragment> getLinkedPackageFragments() {
 
         Set<IIpsPackageFragment> relatedPackageFragments = new HashSet<IIpsPackageFragment>();
-        List<IIpsObject> linkedObjects = getLinkedObjects();
-        for (IIpsObject ipsObject : linkedObjects) {
+        List<IIpsSrcFile> linkedObjects = getDocumentedSourceFiles(getLinkedIpsObjectTypes());
+        for (IIpsSrcFile ipsObject : linkedObjects) {
             relatedPackageFragments.add(ipsObject.getIpsPackageFragment());
         }
 

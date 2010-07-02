@@ -9,11 +9,10 @@ import java.util.Set;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -32,8 +31,8 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
     /*
      * Comparator, which support the sorting of packages by name
      */
-    private Comparator<IIpsObject> packagesComparator = new Comparator<IIpsObject>() {
-        public int compare(IIpsObject arg0, IIpsObject arg1) {
+    private Comparator<IIpsSrcFile> packagesComparator = new Comparator<IIpsSrcFile>() {
+        public int compare(IIpsSrcFile arg0, IIpsSrcFile arg1) {
             return arg0.getIpsPackageFragment().getName().compareTo(arg1.getIpsPackageFragment().getName());
         }
     };
@@ -41,25 +40,25 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
     /**
      * @see AbstractListPageElement#AbstractListPageElement(IIpsElement, List, IpsElementFilter)
      * @param baseIpsElement
-     * @param objects
+     * @param srcFiles
      * @param filter
      * @param config
      */
-    public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects, IpsElementFilter filter,
+    public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
             DocumentorConfiguration config) {
-        super(baseIpsElement, objects, filter, config);
+        super(baseIpsElement, srcFiles, filter, config);
         setTitle(Messages.IpsPackagesListPageElement_allPackages);
     }
 
     /**
      * @see AbstractListPageElement#AbstractListPageElement(IIpsElement, List)
      * @param baseIpsElement
-     * @param objects
+     * @param srcFiles
      * @param config
      */
-    public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects,
+    public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
             DocumentorConfiguration config) {
-        this(baseIpsElement, objects, ALL_FILTER, config);
+        this(baseIpsElement, srcFiles, ALL_FILTER, config);
     }
 
     /*
@@ -84,7 +83,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
 
     private List<PageElement> createPackageList() {
 
-        Collections.sort(objects, packagesComparator);
+        Collections.sort(srcFiles, packagesComparator);
 
         Set<IIpsPackageFragment> packageFragments = getRelatedPackageFragments();
 

@@ -6,9 +6,10 @@ import java.util.Set;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.helper.filter.IpsObjectInLinkedObjectsFilter;
+import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
 
 /**
  * Utility for {@link PageElement}s
@@ -51,21 +52,21 @@ public class PageElementUtils {
      * creates a {@link List} with link to the given {@link IIpsObject}s with the given target and
      * {@link Style}s
      * 
-     * @param objects
+     * @param srcFiles
      * @param target
      * @param styles
      * @param config
      * @return {@link List} of {@link LinkPageElement}s
      */
-    public static List<PageElement> createLinkPageElements(List<? extends IIpsObject> objects,
+    public static List<PageElement> createLinkPageElements(List<? extends IIpsSrcFile> srcFiles,
             String target,
             Set<Style> styles,
             DocumentorConfiguration config) {
         List<PageElement> liste = new ArrayList<PageElement>();
 
-        for (IIpsObject object : objects) {
-            PageElement linkPageElement = createLinkPageElement(config, object, target, object.getName(), true, styles
-                    .toArray(new Style[styles.size()]));
+        for (IIpsSrcFile srcFile : srcFiles) {
+            PageElement linkPageElement = createLinkPageElement(config, srcFile, target, srcFile.getName(), true,
+                    styles.toArray(new Style[styles.size()]));
             linkPageElement.addStyles(styles.toArray(new Style[styles.size()]));
             liste.add(linkPageElement);
         }
@@ -88,7 +89,7 @@ public class PageElementUtils {
             String text,
             boolean useImage,
             Style... styles) {
-        IpsObjectInLinkedObjectsFilter filter = new IpsObjectInLinkedObjectsFilter(config);
+        IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(config);
 
         PageElement element = createInnerLinkPageElement(to, text, useImage);
 
@@ -106,8 +107,8 @@ public class PageElementUtils {
      */
     private static PageElement createInnerLinkPageElement(IIpsElement to, String text, boolean useImage) {
         if (useImage) {
-            return new WrapperPageElement(WrapperType.NONE).addPageElements(new IpsObjectImagePageElement(to)).addPageElements(
-                    new TextPageElement('\u00A0' + text));
+            return new WrapperPageElement(WrapperType.NONE).addPageElements(new IpsObjectImagePageElement(to))
+                    .addPageElements(new TextPageElement('\u00A0' + text));
         }
         return new TextPageElement(text);
     }

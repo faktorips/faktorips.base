@@ -10,7 +10,7 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
  * @author dicker
  * 
  */
-public class IpsObjectContentPageElement extends AbstractObjectContentPageElement<IIpsObject> {
+public class IpsObjectContentPageElement extends AbstractIpsObjectContentPageElement<IIpsObject> {
 
     protected IpsObjectContentPageElement(IIpsObject documentedIpsObject, DocumentorConfiguration config) {
         super(documentedIpsObject, config);

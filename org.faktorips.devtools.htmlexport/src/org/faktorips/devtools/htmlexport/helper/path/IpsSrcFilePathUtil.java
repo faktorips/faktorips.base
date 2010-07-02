@@ -1,6 +1,7 @@
 package org.faktorips.devtools.htmlexport.helper.path;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
@@ -9,9 +10,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  * @author dicker
  * 
  */
-public class IpsObjectPathUtil extends AbstractIpsElementPathUtil<IIpsObject> {
+public class IpsSrcFilePathUtil extends AbstractIpsElementPathUtil<IIpsSrcFile> {
 
-    public IpsObjectPathUtil(IIpsObject ipsElement) {
+    public IpsSrcFilePathUtil(IIpsSrcFile ipsElement) {
         super(ipsElement);
     }
 
@@ -23,8 +24,9 @@ public class IpsObjectPathUtil extends AbstractIpsElementPathUtil<IIpsObject> {
     @Override
     protected String getFileName() {
         StringBuilder builder = new StringBuilder();
-        builder.append(getIpsElement().getIpsObjectType().getId());
-        builder.append('_');
+        /*
+         * builder.append(getIpsElement().getIpsObjectType().getId()); builder.append('_');
+         */
         builder.append(getIpsElement().getName());
         return builder.toString();
     }

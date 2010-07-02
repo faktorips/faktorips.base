@@ -29,7 +29,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTa
  * @author dicker
  * 
  */
-public class TableContentsContentPageElement extends AbstractObjectContentPageElement<ITableContents> {
+public class TableContentsContentPageElement extends AbstractIpsObjectContentPageElement<ITableContents> {
 
     /**
      * a table for the content of the given tableContentsGeneration

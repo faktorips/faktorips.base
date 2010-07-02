@@ -29,7 +29,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageEl
  * 
  * @param <T>
  */
-public abstract class AbstractTypeContentPageElement<T extends IType> extends AbstractObjectContentPageElement<T> {
+public abstract class AbstractTypeContentPageElement<T extends IType> extends AbstractIpsObjectContentPageElement<T> {
 
     /**
      * Visitor for superclass hierarchy
@@ -130,7 +130,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
         List<PageElement> subTypes = new ArrayList<PageElement>();
 
-        for (IIpsSrcFile srcFile : getConfig().getLinkedSource(getDocumentedIpsObject().getIpsObjectType())) {
+        for (IIpsSrcFile srcFile : getConfig().getDocumentedSourceFiles(getDocumentedIpsObject().getIpsObjectType())) {
             try {
                 IType type = (IType)srcFile.getIpsObject();
                 if (type == null) {

@@ -37,7 +37,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageE
  * @author dicker
  * 
  */
-public class TestCaseTypeContentPageElement extends AbstractObjectContentPageElement<ITestCaseType> {
+public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPageElement<ITestCaseType> {
 
     /**
      * a table for the {@link ITestAttribute}s of the {@link ITestCaseType}

@@ -32,7 +32,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTa
  * @author dicker
  * 
  */
-public class EnumTypeContentPageElement extends AbstractObjectContentPageElement<IEnumType> {
+public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElement<IEnumType> {
 
     /**
      * a table representing {@link IEnumAttribute}s of a given {@link IEnumType}
@@ -159,7 +159,7 @@ public class EnumTypeContentPageElement extends AbstractObjectContentPageElement
      * adds the subclasses of the enumType
      */
     protected void addSubTypeHierarchy() {
-        List<IIpsSrcFile> allClasses = getConfig().getLinkedSource(getDocumentedIpsObject().getIpsObjectType());
+        List<IIpsSrcFile> allClasses = getConfig().getDocumentedSourceFiles(getDocumentedIpsObject().getIpsObjectType());
 
         List<PageElement> subTypes = new ArrayList<PageElement>();
         for (IIpsSrcFile srcFile : allClasses) {

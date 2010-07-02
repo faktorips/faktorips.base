@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -179,12 +179,13 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private MessageList validateLinkedObjects() {
-        List<IIpsObject> linkedObjects = getConfig().getLinkedObjects();
+        List<IIpsSrcFile> srcFiles = getConfig().getDocumentedSourceFiles();
         MessageList ml = new MessageList();
-        for (IIpsObject ipsObject : linkedObjects) {
+        for (IIpsSrcFile srcFile : srcFiles) {
             try {
-                ml.add(ipsObject.validate(getProject()));
-            } catch (CoreException e) {
+                ml.add(srcFile.getIpsObject().validate(getProject()));
+            } catch (Exception e) {
+                System.out.println(srcFile);
                 e.printStackTrace();
             }
         }

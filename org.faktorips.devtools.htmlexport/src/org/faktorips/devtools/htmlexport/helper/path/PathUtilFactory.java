@@ -3,6 +3,7 @@ package org.faktorips.devtools.htmlexport.helper.path;
 import org.apache.commons.lang.NotImplementedException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -28,8 +29,11 @@ public class PathUtilFactory {
         if (ipsElement instanceof IIpsPackageFragment) {
             return new IpsPackageFragmentPathUtil((IIpsPackageFragment)ipsElement);
         }
+        if (ipsElement instanceof IIpsSrcFile) {
+            return new IpsSrcFilePathUtil((IIpsSrcFile)ipsElement);
+        }
         if (ipsElement instanceof IIpsObject) {
-            return new IpsObjectPathUtil((IIpsObject)ipsElement);
+            return new IpsSrcFilePathUtil(((IIpsObject)ipsElement).getIpsSrcFile());
         }
         throw new NotImplementedException(
                 "There is no IpsElementPathUtil for the IIpsElement of the type " + ipsElement.getClass().getCanonicalName()); //$NON-NLS-1$

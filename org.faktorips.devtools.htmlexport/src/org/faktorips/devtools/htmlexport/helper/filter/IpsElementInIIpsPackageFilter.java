@@ -1,10 +1,12 @@
 package org.faktorips.devtools.htmlexport.helper.filter;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
@@ -15,10 +17,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  * @author dicker
  * 
  */
-public class IpsObjectInIIpsPackageFilter implements IpsElementFilter {
+public class IpsElementInIIpsPackageFilter implements IpsElementFilter {
     private IIpsPackageFragment ipsPackageFragment;
 
-    public IpsObjectInIIpsPackageFilter(IIpsPackageFragment ipsPackageFragment) {
+    public IpsElementInIIpsPackageFilter(IIpsPackageFragment ipsPackageFragment) {
         this.ipsPackageFragment = ipsPackageFragment;
     }
 
@@ -29,10 +31,25 @@ public class IpsObjectInIIpsPackageFilter implements IpsElementFilter {
      * (org.faktorips.devtools.core.model.IIpsElement)
      */
     public boolean accept(IIpsElement ipsElement) {
-        if (!(ipsElement instanceof IIpsObject)) {
-            return false;
+
+        if (ipsElement instanceof IIpsSrcFile) {
+
+            try {
+                IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
+                return acceptIpsObject(ipsObject);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return ((IIpsObject)ipsElement).getIpsPackageFragment().equals(ipsPackageFragment)
-                || ((IIpsObject)ipsElement).getIpsPackageFragment().getName().equals(ipsPackageFragment.getName());
+        if (ipsElement instanceof IIpsObject) {
+            IIpsObject ipsObject = (IIpsObject)ipsElement;
+            return acceptIpsObject(ipsObject);
+        }
+        return false;
+    }
+
+    private boolean acceptIpsObject(IIpsObject ipsObject) {
+        return ipsObject.getIpsPackageFragment().equals(ipsPackageFragment)
+                || ipsObject.getIpsPackageFragment().getName().equals(ipsPackageFragment.getName());
     }
 }

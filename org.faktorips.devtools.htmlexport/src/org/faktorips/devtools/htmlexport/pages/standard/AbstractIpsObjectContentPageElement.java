@@ -1,7 +1,6 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
@@ -29,7 +28,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @param <T>
  */
-public abstract class AbstractObjectContentPageElement<T extends IIpsObject> extends AbstractRootPageElement {
+public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> extends AbstractRootPageElement {
 
     private T documentedIpsObject;
     private DocumentorConfiguration config;
@@ -40,7 +39,7 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
      * @param documentedIpsObject
      * @param config
      */
-    protected AbstractObjectContentPageElement(T documentedIpsObject, DocumentorConfiguration config) {
+    protected AbstractIpsObjectContentPageElement(T documentedIpsObject, DocumentorConfiguration config) {
         this.documentedIpsObject = documentedIpsObject;
         this.config = config;
         setTitle(documentedIpsObject.getName());
@@ -92,26 +91,28 @@ public abstract class AbstractObjectContentPageElement<T extends IIpsObject> ext
      * there are no messages.
      */
     private void addValidationErrors() {
+
+        MessageList messageList = new MessageList();
         try {
-
-            MessageList messageList = getDocumentedIpsObject().validate(getDocumentedIpsObject().getIpsProject());
-            if (messageList.isEmpty()) {
-                return;
-            }
-
-            WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-            wrapper.addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_validationErrors,
-                    TextType.HEADING_2));
-
-            TablePageElement tablePageElement = new MessageListTablePageElement(messageList);
-
-            wrapper.addPageElements(tablePageElement);
-
-            addPageElements(wrapper);
-
-        } catch (CoreException e) {
+            messageList = getDocumentedIpsObject().validate(getDocumentedIpsObject().getIpsProject());
+        } catch (Exception e) {
+            System.out.println(getDocumentedIpsObject().getName());
             e.printStackTrace();
         }
+        if (messageList.isEmpty()) {
+            return;
+        }
+
+        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        wrapper.addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_validationErrors,
+                TextType.HEADING_2));
+
+        TablePageElement tablePageElement = new MessageListTablePageElement(messageList);
+
+        wrapper.addPageElements(tablePageElement);
+
+        addPageElements(wrapper);
+
     }
 
     /**

@@ -88,7 +88,7 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
     public String getPathFromRoot(LinkedFileType linkedFileType) {
         StringBuilder builder = new StringBuilder();
         builder.append(getPackageFragmentPathFromRoot(getIpsPackageFragment()));
-        builder.append(linkedFileType.getPrefix());
+        // builder.append(linkedFileType.getPrefix());
         builder.append(getFileName());
         builder.append(linkedFileType.getSuffix());
 

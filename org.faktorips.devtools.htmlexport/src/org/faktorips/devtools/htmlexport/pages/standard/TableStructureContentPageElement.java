@@ -1,6 +1,7 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -9,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
@@ -17,7 +17,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -28,7 +27,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
 
-public class TableStructureContentPageElement extends AbstractObjectContentPageElement<ITableStructure> {
+public class TableStructureContentPageElement extends AbstractIpsObjectContentPageElement<ITableStructure> {
 
     /**
      * a table for foreignKeys of the tableStructure
@@ -363,26 +362,26 @@ public class TableStructureContentPageElement extends AbstractObjectContentPageE
      * adds a list with the table contents of this table structure
      */
     private void addTableContentList() {
-        IIpsSrcFile[] allTableContentsSrcFiles;
-        List<IProductCmpt> tableContents;
+        List<IIpsSrcFile> tableContentsSrcFiles;
         try {
-            allTableContentsSrcFiles = getDocumentedIpsObject().searchMetaObjectSrcFiles(true);
-            tableContents = DocumentorUtil.getIpsObjects(allTableContentsSrcFiles);
+            tableContentsSrcFiles = Arrays.asList(getDocumentedIpsObject().searchMetaObjectSrcFiles(true));
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+
+        tableContentsSrcFiles.retainAll(getConfig().getDocumentedSourceFiles());
 
         WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_CONTENTS.getDisplayNamePlural(),
                 TextType.HEADING_2));
 
-        if (tableContents.size() == 0) {
+        if (tableContentsSrcFiles.size() == 0) {
             wrapper.addPageElements(new TextPageElement("No " + IpsObjectType.TABLE_CONTENTS.getDisplayNamePlural())); //$NON-NLS-1$
             addPageElements(wrapper);
             return;
         }
 
-        List<PageElement> linkPageElements = PageElementUtils.createLinkPageElements(tableContents,
+        List<PageElement> linkPageElements = PageElementUtils.createLinkPageElements(tableContentsSrcFiles,
                 "content", new LinkedHashSet<Style>(), getConfig()); //$NON-NLS-1$
         ListPageElement liste = new ListPageElement(linkPageElements);
 
