@@ -11,18 +11,19 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.builder;
+package org.faktorips.abstracttest.builder;
 
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.util.LocalizedStringsSet;
 
-class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
+public class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
     public boolean generateCalled = false;
     public boolean isBuilderFor = false;
@@ -43,7 +44,7 @@ class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
         return isBuilderFor;
     }
 
-    void reset() {
+    public void reset() {
         generateCalled = false;
         isBuilderFor = false;
     }

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.builder;
+package org.faktorips.abstracttest.builder;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;

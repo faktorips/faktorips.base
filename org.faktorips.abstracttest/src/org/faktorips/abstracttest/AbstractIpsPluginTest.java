@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core;
+package org.faktorips.abstracttest;
 
 import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
@@ -53,8 +53,11 @@ import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
+import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.Util;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -89,7 +92,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
-import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
 
