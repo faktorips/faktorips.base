@@ -4,7 +4,14 @@ Bundle-Name: Abstract Tests for Faktor-IPS
 Bundle-SymbolicName: org.faktorips.devtools.abstracttest
 Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
-Require-Bundle: org.junit;bundle-version="3.8.2";visibility:=reexport,org.eclipse.core.runtime,org.faktorips.devtools.core,org.eclipse.draw2d,org.eclipse.ltk.core.refactoring,org.eclipse.jdt.core;bundle-version="3.4.4",org.eclipse.jdt.launching;bundle-version="3.4.1",org.faktorips.fl
+Require-Bundle: org.junit;bundle-version="3.8.2";visibility:=reexport,
+ org.eclipse.core.runtime,
+ org.faktorips.devtools.core,
+ org.faktorips.fl,
+ org.eclipse.jdt.core,
+ org.eclipse.draw2d,
+ org.eclipse.ltk.core.refactoring,
+ org.eclipse.jdt.launching
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
