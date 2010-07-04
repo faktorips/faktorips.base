@@ -68,4 +68,7 @@
 
     	<ant dir="../org.faktorips.runtime.productdataprovider.ejbclient.test/build" antfile="build.xml" target="buildjar"/>
 	</target>
+	
+	<target name="disable" description="This target does nothing - to easy disable the build prozess e.g. in hudson"/>
+	
 </project>
