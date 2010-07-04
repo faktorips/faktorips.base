@@ -85,7 +85,7 @@
         	</javac>
 		</target>
 
-		<target name="-compile.test" if="doesTestExists" depends="-checkTestExists">
+		<target name="-compile.test" if="doesTestExists" depends="-checkTestExists" unless="skipTests">
         	<copy todir="${test_classes}" failonerror="false">
         	    <fileset dir="${test_src}" >
         	      <include name="**/*.properties" />
@@ -113,7 +113,7 @@
 		</target>
 	
 	   <!-- perform Junit Tests -->
-	    <target name="test" depends="-checkTestExists,compile" if="doesTestExists">
+	    <target name="test" depends="-checkTestExists,compile" if="doesTestExists" unless="skipTests">
 	    	
 	    	<property name="haltOnJunitFailOrError" value="yes"/>
 	    	<property name="junitTimeout" value="30000"/>
