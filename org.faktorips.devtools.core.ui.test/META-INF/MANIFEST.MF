@@ -6,7 +6,6 @@ Bundle-Version: 0.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Fragment-Host: org.faktorips.devtools.core.ui
 Require-Bundle: org.faktorips.devtools.core,
- org.faktorips.devtools.core.ui,
  org.faktorips.abstracttest,
  org.eclipse.ui.forms,
  org.eclipse.ui;bundle-version="3.4.0",
