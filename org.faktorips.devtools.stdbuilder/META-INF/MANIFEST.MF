@@ -41,3 +41,4 @@ Import-Package: org.eclipse.jdt.core.refactoring,
  org.eclipse.jdt.internal.corext.refactoring.structure,
  org.eclipse.jdt.internal.corext.refactoring.structure.constraints,
  org.eclipse.jdt.internal.ui.preferences
+Eclipse-ExtensibleAPI: true

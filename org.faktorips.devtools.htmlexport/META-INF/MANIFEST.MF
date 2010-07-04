@@ -29,3 +29,4 @@ Export-Package: org.faktorips.devtools.htmlexport,
  org.faktorips.devtools.htmlexport.standard.pages,
  org.faktorips.devtools.htmlexport.wizards
 Bundle-Vendor: Faktor Zehn AG
+Eclipse-ExtensibleAPI: true

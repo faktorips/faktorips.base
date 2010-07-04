@@ -25,3 +25,4 @@ Export-Package: au.com.bytecode.opencsv,
 Bundle-ClassPath: .,
  lib/opencsv-1.8.jar,
  lib/poi-2.5.1-final-20040804.jar
+Eclipse-ExtensibleAPI: true

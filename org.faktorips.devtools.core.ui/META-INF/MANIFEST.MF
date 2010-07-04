@@ -89,3 +89,4 @@ Export-Package: org.faktorips.devtools.core.ui,
 Bundle-Localization: plugin
 Bundle-ClassPath: .
 Bundle-Vendor: Faktor Zehn AG
+Eclipse-ExtensibleAPI: true
