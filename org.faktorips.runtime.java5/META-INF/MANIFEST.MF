@@ -4,7 +4,8 @@ Bundle-Name: Faktor-IPS Runtime for Java5
 Bundle-SymbolicName: org.faktorips.runtime.java5
 Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
-Require-Bundle: org.faktorips.valuetypes.java5
+Require-Bundle: org.faktorips.valuetypes.java5,
+ org.junit
 Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.formula,
  org.faktorips.runtime.internal,
