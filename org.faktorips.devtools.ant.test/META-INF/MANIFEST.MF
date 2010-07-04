@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Plug-in
-Bundle-SymbolicName: org.faktorips.devtools.ant.test
+Bundle-SymbolicName: org.faktorips.devtools.ant.test;singleton:=true
 Bundle-Version: 0.0.0
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-Vendor: Faktor Zehn AG
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Fragment-Host: org.faktorips.devtools.ant
 Require-Bundle: org.apache.ant,
- org.faktorips.devtools.core,
- org.faktorips.abstracttest;bundle-version="0.0.0"
-Bundle-ActivationPolicy: lazy
+ org.faktorips.abstracttest
 Export-Package: org.faktorips.devtools.ant
+Bundle-ClassPath: .
