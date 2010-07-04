@@ -15,7 +15,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.GregorianCalendar;
 
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;

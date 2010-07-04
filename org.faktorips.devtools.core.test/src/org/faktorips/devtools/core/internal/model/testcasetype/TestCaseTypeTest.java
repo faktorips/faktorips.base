@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.AbstractDependencyTest;
+import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;

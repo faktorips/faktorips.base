@@ -17,10 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;

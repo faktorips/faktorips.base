@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.AbstractDependencyTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;

@@ -15,8 +15,8 @@ package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
+import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;

@@ -14,8 +14,8 @@
 package org.faktorips.devtools.core.internal.model.bf;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;

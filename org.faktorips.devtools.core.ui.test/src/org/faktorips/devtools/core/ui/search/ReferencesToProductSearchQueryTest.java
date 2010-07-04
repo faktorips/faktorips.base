@@ -18,7 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 
 import org.eclipse.search.ui.NewSearchUI;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;

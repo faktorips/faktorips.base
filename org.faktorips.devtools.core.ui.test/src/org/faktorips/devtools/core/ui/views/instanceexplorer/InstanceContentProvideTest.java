@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 

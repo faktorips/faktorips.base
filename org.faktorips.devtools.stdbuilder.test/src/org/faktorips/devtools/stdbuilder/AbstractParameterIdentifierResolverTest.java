@@ -15,10 +15,10 @@ package org.faktorips.devtools.stdbuilder;
 
 import java.util.Locale;
 
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;

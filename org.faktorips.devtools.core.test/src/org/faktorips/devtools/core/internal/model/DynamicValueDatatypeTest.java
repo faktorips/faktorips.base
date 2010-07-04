@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;

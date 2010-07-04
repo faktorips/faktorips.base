@@ -18,10 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractDependencyTest;
+import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.AbstractDependencyTest;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
-import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;

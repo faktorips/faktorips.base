@@ -2,7 +2,7 @@ package org.faktorips.devtools.htmlexport.test.helper.html;
 
 import java.io.UnsupportedEncodingException;
 
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;

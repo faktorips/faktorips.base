@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.util.message.MessageList;
 
 public class IpsTestRunnerTest extends AbstractIpsPluginTest {

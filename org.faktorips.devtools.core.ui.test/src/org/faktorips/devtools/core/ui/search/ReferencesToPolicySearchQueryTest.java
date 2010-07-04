@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.ui.search;
 import java.util.HashSet;
 
 import org.eclipse.search.ui.NewSearchUI;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;

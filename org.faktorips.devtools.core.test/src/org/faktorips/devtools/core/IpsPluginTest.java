@@ -24,6 +24,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.xml.sax.SAXException;
 

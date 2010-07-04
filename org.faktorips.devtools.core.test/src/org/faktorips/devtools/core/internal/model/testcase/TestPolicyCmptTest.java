@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;

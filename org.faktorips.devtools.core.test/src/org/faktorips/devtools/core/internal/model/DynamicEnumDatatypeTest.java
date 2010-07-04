@@ -16,8 +16,8 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.TestEnumType;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 
 /**

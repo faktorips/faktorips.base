@@ -28,12 +28,12 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.faktorips.abstracttest.TestConfigurationElement;
+import org.faktorips.abstracttest.TestExtension;
+import org.faktorips.abstracttest.TestExtensionPoint;
+import org.faktorips.abstracttest.TestExtensionRegistry;
+import org.faktorips.abstracttest.TestLogger;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.TestConfigurationElement;
-import org.faktorips.devtools.core.TestExtension;
-import org.faktorips.devtools.core.TestExtensionPoint;
-import org.faktorips.devtools.core.TestExtensionRegistry;
-import org.faktorips.devtools.core.TestLogger;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 

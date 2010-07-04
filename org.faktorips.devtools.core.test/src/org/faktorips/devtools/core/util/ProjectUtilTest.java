@@ -15,7 +15,7 @@ package org.faktorips.devtools.core.util;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 
 public class ProjectUtilTest extends AbstractIpsPluginTest {
 
