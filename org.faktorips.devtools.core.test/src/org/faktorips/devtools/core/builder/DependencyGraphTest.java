@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.abstracttest.builder;
+package org.faktorips.devtools.core.builder;
 
 import java.util.List;
 
