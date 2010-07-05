@@ -18,6 +18,7 @@ public abstract class AbstractTextGenerator implements IGenerator {
      * 
      * @see org.faktorips.devtools.htmlexport.generators.IGenerator#generate()
      */
+    @Override
     public final byte[] generate() {
         try {
             return generateText().getBytes(CHARSET);

@@ -15,6 +15,7 @@ public class DefaultTablePageElementLayout implements TablePageElementLayout {
      * org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElementLayout#layoutCell
      * (int, int, org.faktorips.devtools.htmlexport.pages.elements.core.table.TableCellPageElement)
      */
+    @Override
     public void layoutCell(int row, int column, TableCellPageElement cellPageElement) {
     }
 
@@ -25,6 +26,7 @@ public class DefaultTablePageElementLayout implements TablePageElementLayout {
      * org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElementLayout#layoutRow
      * (int, org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement)
      */
+    @Override
     public void layoutRow(int row, TableRowPageElement rowPageElement) {
     }
 

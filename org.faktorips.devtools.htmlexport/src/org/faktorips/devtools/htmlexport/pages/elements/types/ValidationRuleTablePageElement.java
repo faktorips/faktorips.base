@@ -89,6 +89,7 @@ public class ValidationRuleTablePageElement extends AbstractSpecificTablePageEle
      * 
      * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
      */
+    @Override
     public boolean isEmpty() {
         return ArrayUtils.isEmpty(policyCmptType.getRules());
     }

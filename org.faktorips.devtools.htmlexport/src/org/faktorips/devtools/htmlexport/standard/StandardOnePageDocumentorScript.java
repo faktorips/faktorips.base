@@ -11,6 +11,7 @@ import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageEleme
 
 public class StandardOnePageDocumentorScript implements IDocumentorScript {
 
+    @Override
     public void execute(DocumentorConfiguration config, IProgressMonitor monitor) {
         writeProjectOverviewPage(config);
 

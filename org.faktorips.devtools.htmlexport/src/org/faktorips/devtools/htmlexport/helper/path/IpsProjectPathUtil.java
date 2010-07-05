@@ -31,6 +31,7 @@ public class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> 
      * 
      * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getPathToRoot()
      */
+    @Override
     public String getPathToRoot() {
         return ""; //$NON-NLS-1$
     }

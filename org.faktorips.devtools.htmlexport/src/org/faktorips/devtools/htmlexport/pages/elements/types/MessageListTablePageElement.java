@@ -84,6 +84,7 @@ public class MessageListTablePageElement extends AbstractSpecificTablePageElemen
      * 
      * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
      */
+    @Override
     public boolean isEmpty() {
         return messageList.isEmpty();
     }

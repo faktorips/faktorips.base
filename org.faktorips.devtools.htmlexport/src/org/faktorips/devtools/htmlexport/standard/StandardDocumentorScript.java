@@ -36,6 +36,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
      * org.faktorips.devtools.htmlexport.IDocumentorScript#execute(org.faktorips.devtools.htmlexport
      * .documentor.DocumentorConfiguration)
      */
+    @Override
     public void execute(DocumentorConfiguration config, IProgressMonitor monitor) {
         List<IIpsSrcFile> srcFiles = config.getDocumentedSourceFiles();
         Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(srcFiles);

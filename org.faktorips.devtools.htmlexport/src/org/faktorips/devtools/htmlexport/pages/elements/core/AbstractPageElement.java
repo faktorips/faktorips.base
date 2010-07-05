@@ -30,6 +30,7 @@ public abstract class AbstractPageElement implements PageElement {
      * 
      * @see org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#getStyles()
      */
+    @Override
     public Set<Style> getStyles() {
         if (styles == null) {
             return Collections.emptySet();
@@ -44,6 +45,7 @@ public abstract class AbstractPageElement implements PageElement {
      * org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#addStyles(org.faktorips
      * .devtools.htmlexport.pages.elements.core.Style[])
      */
+    @Override
     public PageElement addStyles(Style... style) {
         styles.addAll(Arrays.asList(style));
         return this;
@@ -56,6 +58,7 @@ public abstract class AbstractPageElement implements PageElement {
      * org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#removeStyles(org.faktorips
      * .devtools.htmlexport.pages.elements.core.Style[])
      */
+    @Override
     public void removeStyles(Style... style) {
         styles.removeAll(Arrays.asList(style));
     }
@@ -65,6 +68,7 @@ public abstract class AbstractPageElement implements PageElement {
      * 
      * @see org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#build()
      */
+    @Override
     public void build() {
     }
 
@@ -75,6 +79,7 @@ public abstract class AbstractPageElement implements PageElement {
      * org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#acceptLayouter(org.faktorips
      * .devtools.htmlexport.generators.ILayouter)
      */
+    @Override
     public abstract void acceptLayouter(ILayouter layouter);
 
 }

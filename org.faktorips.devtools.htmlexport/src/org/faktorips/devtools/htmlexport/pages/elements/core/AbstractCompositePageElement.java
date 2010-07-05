@@ -41,11 +41,6 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         this.title = title;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement#build()
-     */
     @Override
     public abstract void build();
 
@@ -57,6 +52,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
      * @throws ClassCastException if the given pageElements don't match restrictions for the
      *             CompositePageElement
      */
+    @Override
     public ICompositePageElement addPageElements(PageElement... pageElements) {
         for (PageElement pageElement : pageElements) {
             addSubElement(pageElement);
@@ -73,13 +69,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         subElements.add(pageElement);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement#visitSubElements
-     * (org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
+    @Override
     public void visitSubElements(ILayouter layouter) {
         for (PageElement subElement : subElements) {
             subElement.build();

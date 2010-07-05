@@ -34,6 +34,7 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
      * {@link IpsElementFilter}, which accepts all {@link IIpsElement}s
      */
     protected final static IpsElementFilter ALL_FILTER = new IpsElementFilter() {
+        @Override
         public boolean accept(IIpsElement object) {
             return true;
         }
@@ -44,6 +45,7 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
      * unqualified name.
      */
     protected final static Comparator<IIpsSrcFile> IPS_OBJECT_COMPARATOR = new Comparator<IIpsSrcFile>() {
+        @Override
         public int compare(IIpsSrcFile o1, IIpsSrcFile o2) {
             return o1.getIpsObjectName().compareTo(o2.getIpsObjectName());
         }

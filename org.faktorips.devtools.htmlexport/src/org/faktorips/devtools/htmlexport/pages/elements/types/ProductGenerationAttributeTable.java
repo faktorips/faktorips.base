@@ -104,6 +104,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
         return headline;
     }
 
+    @Override
     public boolean isEmpty() {
         return ArrayUtils.isEmpty(attributes) || productCmpt.getNumOfGenerations() == 0;
     }

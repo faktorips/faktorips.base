@@ -108,6 +108,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             return headline;
         }
 
+        @Override
         public boolean isEmpty() {
             return ArrayUtils.isEmpty(productCmptType.getTableStructureUsages());
         }

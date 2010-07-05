@@ -36,6 +36,7 @@ public class IpsSrcFilePathUtil extends AbstractIpsElementPathUtil<IIpsSrcFile> 
      * 
      * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getPathToRoot()
      */
+    @Override
     public String getPathToRoot() {
         return getPackageFragmentPathToRoot(getIpsPackageFragment());
     }

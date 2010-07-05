@@ -26,6 +26,7 @@ public abstract class AbstractLayouter implements ILayouter {
      * 
      * @see org.faktorips.devtools.htmlexport.generators.IGenerator#generate()
      */
+    @Override
     public byte[] generate() {
         if (Charset.isSupported(CHARSET)) {
             try {
@@ -42,6 +43,7 @@ public abstract class AbstractLayouter implements ILayouter {
      * 
      * @see org.faktorips.devtools.htmlexport.generators.ILayouter#clear()
      */
+    @Override
     public void clear() {
         content = new StringBuilder();
     }
@@ -55,6 +57,7 @@ public abstract class AbstractLayouter implements ILayouter {
         content.append(value);
     }
 
+    @Override
     public Set<LayoutResource> getLayoutResources() {
         return layoutResources;
     }

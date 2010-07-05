@@ -30,6 +30,7 @@ public class IpsElementInIIpsPackageFilter implements IpsElementFilter {
      * @see org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter#accept
      * (org.faktorips.devtools.core.model.IIpsElement)
      */
+    @Override
     public boolean accept(IIpsElement ipsElement) {
 
         if (ipsElement instanceof IIpsSrcFile) {

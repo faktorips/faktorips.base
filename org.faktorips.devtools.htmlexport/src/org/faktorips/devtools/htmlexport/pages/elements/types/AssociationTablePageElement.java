@@ -129,6 +129,7 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
      * 
      * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
      */
+    @Override
     public boolean isEmpty() {
         return ArrayUtils.isEmpty(type.getAssociations());
     }

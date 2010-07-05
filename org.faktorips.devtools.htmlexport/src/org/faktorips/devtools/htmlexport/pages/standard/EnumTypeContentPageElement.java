@@ -101,6 +101,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             return headline;
         }
 
+        @Override
         public boolean isEmpty() {
             return attributes.isEmpty();
         }

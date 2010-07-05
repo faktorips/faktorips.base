@@ -30,6 +30,7 @@ public class StandardDocumentorScriptErgoProjectTest extends XmlAbstractTestCase
 
     public StandardDocumentorScriptErgoProjectTest() throws Exception {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 IpsPlugin.getDefault().reinitModel(); // also starts the listening process
             }

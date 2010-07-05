@@ -31,6 +31,7 @@ public class StandardDocumentorScriptTutorialProjectTest extends XmlAbstractTest
 	
 	public StandardDocumentorScriptTutorialProjectTest() throws Exception {
     	IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 IpsPlugin.getDefault().reinitModel(); // also starts the listening process
             }

@@ -98,6 +98,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             return headline;
         }
 
+        @Override
         public boolean isEmpty() {
             return ArrayUtils.isEmpty(tableStructure.getForeignKeys());
         }
@@ -159,6 +160,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             return headline;
         }
 
+        @Override
         public boolean isEmpty() {
             return ArrayUtils.isEmpty(tableStructure.getRanges());
         }
@@ -213,6 +215,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             return headline;
         }
 
+        @Override
         public boolean isEmpty() {
             return ArrayUtils.isEmpty(tableStructure.getColumns());
         }
@@ -265,6 +268,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             return headline;
         }
 
+        @Override
         public boolean isEmpty() {
             return ArrayUtils.isEmpty(tableStructure.getUniqueKeys());
         }

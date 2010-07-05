@@ -116,6 +116,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             return headline;
         }
 
+        @Override
         public boolean isEmpty() {
             return ArrayUtils.isEmpty(testPolicyCmptTypeParameter.getTestAttributes());
         }

@@ -2,7 +2,6 @@ package org.faktorips.devtools.htmlexport.helper.path;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 
 /**
  * {@link IpsElementPathUtil} for an {@link IIpsPackageFragment}
@@ -37,6 +36,7 @@ public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsP
      * 
      * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getPathToRoot()
      */
+    @Override
     public String getPathToRoot() {
         if (getIpsElement().isDefaultPackage()) {
             return ""; //$NON-NLS-1$

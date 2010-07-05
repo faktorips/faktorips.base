@@ -14,6 +14,7 @@ public class IpsElementInDocumentedSourceFileFilter implements IpsElementFilter 
         this.config = config;
     }
 
+    @Override
     public boolean accept(IIpsElement element) {
         if (element instanceof IIpsSrcFile) {
             return config.getDocumentedSourceFiles().contains(element);

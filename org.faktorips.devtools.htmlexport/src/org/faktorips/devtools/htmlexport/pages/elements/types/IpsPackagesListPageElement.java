@@ -32,6 +32,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
      * Comparator, which support the sorting of packages by name
      */
     private Comparator<IIpsSrcFile> packagesComparator = new Comparator<IIpsSrcFile>() {
+        @Override
         public int compare(IIpsSrcFile arg0, IIpsSrcFile arg1) {
             return arg0.getIpsPackageFragment().getName().compareTo(arg1.getIpsPackageFragment().getName());
         }

@@ -65,6 +65,7 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
      * 
      * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getLinkText(boolean)
      */
+    @Override
     public String getLinkText(boolean withImage) {
         return ipsElement.getName();
     }
@@ -74,6 +75,7 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
      * 
      * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getIpsElement()
      */
+    @Override
     public T getIpsElement() {
         return ipsElement;
     }
@@ -85,6 +87,7 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
      * org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getPathFromRoot(org.faktorips
      * .devtools.htmlexport.helper.path.LinkedFileType)
      */
+    @Override
     public String getPathFromRoot(LinkedFileType linkedFileType) {
         StringBuilder builder = new StringBuilder();
         builder.append(getPackageFragmentPathFromRoot(getIpsPackageFragment()));

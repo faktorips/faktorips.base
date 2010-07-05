@@ -81,6 +81,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             return headline;
         }
 
+        @Override
         public boolean isEmpty() {
             return ArrayUtils.isEmpty(tableContentsGeneration.getRows());
         }
