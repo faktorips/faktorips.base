@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.ui,
- org.eclipse.ui.forms;visibility:=reexport,
  org.eclipse.ui.ide;visibility:=reexport,
  org.eclipse.ltk.core.refactoring,
  org.eclipse.jface.text,
@@ -35,7 +34,8 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.jdt.debug.ui,
  com.ibm.icu,
  org.eclipse.team.core,
- org.eclipse.gef
+ org.eclipse.gef,
+ org.junit;bundle-version="3.8.2"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
