@@ -37,7 +37,7 @@
         <!-- change to hudson    
         <project name="org.faktorips.util" mainbuildtarget="util">
         </project>
-    
+    	-->
         <!--=====================================================-->
         <!--Project definition: org.faktorips.valuetypes-->
         <!--=====================================================-->        
@@ -59,6 +59,7 @@
                 <project name="org.faktorips.util"/>
             </depends>
         </project>       
+            	-->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.dtflcommon-->
@@ -70,6 +71,7 @@
                 <project name="org.faktorips.util"/>
             </depends>            
         </project>
+            	-->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.runtime-->
@@ -93,6 +95,7 @@
                 <project name="org.faktorips.util"/>
             </depends>               
         </project>   
+            	-->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.fl-->
@@ -103,6 +106,7 @@
                 <project name="org.faktorips.dtflcommon"/>
             </depends>                      
         </project>
+            	-->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.core-->
@@ -113,6 +117,7 @@
                 <project name="org.faktorips.fl"/>
             </depends>
         </project>
+            	-->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.stdbuilder-->
@@ -125,6 +130,7 @@
                 <project name="org.faktorips.devtools.core"/>
             </depends>            
         </project>
+            	-->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.nebula-->
@@ -135,6 +141,7 @@
                 <project name="org.faktorips.devtools.core"/>
             </depends>
         </project>
+            	-->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.core.ui-->
@@ -145,6 +152,7 @@
                 <project name="org.faktorips.nebula"/>
             </depends>
         </project>
+            	-->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.tableconversion-->
@@ -155,6 +163,7 @@
                 <project name="org.faktorips.devtools.core.ui"/>
             </depends>
         </project>
+            	-->
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ant-->
@@ -163,6 +172,7 @@
         <project name="org.faktorips.devtools.ant" mainbuildtarget="devtools.ant" 
             testresult="${workdir}/${project.name}/scripts/">
         </project>
+    	-->
 
         <!--=====================================================-->
         <!--Project definition: org.faktorips.uml-->
@@ -173,6 +183,7 @@
                 <project name="org.faktorips.devtools.core"/>
             </depends>
         </project>
+    	-->
 
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ormext-->
@@ -183,6 +194,7 @@
                 <project name="org.faktorips.devtools.core"/>
             </depends>
         </project>
+    	-->
 
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ormext.ui-->
@@ -195,6 +207,7 @@
                 <project name="org.faktorips.devtools.ormext"/>
             </depends>
         </project>
+    	-->
 
         <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder-->
@@ -236,6 +249,7 @@
 
             </depends>      
         </project>
+    	-->
 
         <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder branch: v2_2_patches-->
@@ -435,6 +449,7 @@
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
+    	-->
 
         <!--=====================================================-->
         <!--Project definition: org.faktorips.integrationtest.v2_2_patches-->
@@ -582,6 +597,7 @@
                 <project name="org.faktorips.devtools.core"/>
             </depends>         
         </project>
+            	-->
         
 <!-- 
 TODO bbv und msgp 
