@@ -15,8 +15,11 @@ package org.faktorips.runtime.internal.toc;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TimeZone;
+import java.util.TreeMap;
 
 import org.faktorips.runtime.internal.DateTime;
 import org.w3c.dom.Element;
@@ -35,26 +38,26 @@ public class ProductCmptTocEntry extends TocEntryObject {
     public static final String PROPERTY_GENERATION_IMPL_CLASS_NAME = "generationImplClassName";
     public static final String XML_TAG = "ProductComponent";
 
-    protected List<GenerationTocEntry> generationEntries = new ArrayList<GenerationTocEntry>(0);
+    private TreeMap<Long, GenerationTocEntry> generationEntries = createNewTreeMap();
     /**
      * If this entry is a product component: the (runtime) id if of the product component kind,
      * empty string otherwise.
      */
-    protected final String kindId;
+    private final String kindId;
     /**
      * If this entry is a product component: the version id if of the product component kind, emtpy
      * string otherwise.
      */
-    protected final String versionId;
+    private final String versionId;
     /**
      * If this entry is for a product component: the date until this product component is valid
      */
-    protected final DateTime validTo;
+    private final DateTime validTo;
     /**
      * If this entry is for a product component type: the name of the implementation class for the
      * generation object
      */
-    protected final String generationImplClassName;
+    private final String generationImplClassName;
 
     public static ProductCmptTocEntry createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
@@ -71,11 +74,10 @@ public class ProductCmptTocEntry extends TocEntryObject {
                 xmlResourceName, implementationClassName, generationImplClassName, validTo);
 
         NodeList nl = entryElement.getElementsByTagName(GenerationTocEntry.XML_TAG);
-        newEntry.generationEntries = new ArrayList<GenerationTocEntry>(nl.getLength());
         for (int i = 0; i < nl.getLength(); i++) {
-            newEntry.generationEntries.add(GenerationTocEntry.createFromXml(newEntry, (Element)nl.item(i)));
+            GenerationTocEntry entry = GenerationTocEntry.createFromXml(newEntry, (Element)nl.item(i));
+            newEntry.generationEntries.put(entry.getValidFromInMillisec(TimeZone.getDefault()), entry);
         }
-        Collections.sort(newEntry.generationEntries, new TocEntryGeneratorComparator());
         return newEntry;
     }
 
@@ -116,7 +118,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * generation entries.
      */
     public List<GenerationTocEntry> getGenerationEntries() {
-        return generationEntries;
+        return new ArrayList<GenerationTocEntry>(generationEntries.values());
     }
 
     /**
@@ -137,8 +139,10 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * Sets the generation entries.
      */
     public void setGenerationEntries(List<GenerationTocEntry> entries) {
-        generationEntries = entries;
-        Collections.sort(generationEntries, new TocEntryGeneratorComparator());
+        generationEntries = createNewTreeMap();
+        for (GenerationTocEntry entry : entries) {
+            generationEntries.put(entry.getValidFromInMillisec(TimeZone.getDefault()), entry);
+        }
     }
 
     /**
@@ -147,15 +151,12 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * if the found one doesn't have a successor.
      */
     public GenerationTocEntry getNextGenerationEntry(Calendar validFrom) {
-        Integer index = getGenerationEntryIndex(validFrom);
-        if (index == null) {
+        SortedMap<Long, GenerationTocEntry> map = generationEntries.headMap(validFrom.getTimeInMillis());
+        if (map.isEmpty()) {
             return null;
         }
-        int next = index.intValue() - 1;
-        if (next >= 0 && generationEntries.size() > 0) {
-            return generationEntries.get(next);
-        }
-        return null;
+        Long key = map.lastKey();
+        return generationEntries.get(key);
     }
 
     /**
@@ -164,25 +165,23 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * provided date or if the found one doesn't have a predecessor.
      */
     public GenerationTocEntry getPreviousGenerationEntry(Calendar validFrom) {
-        Integer index = getGenerationEntryIndex(validFrom);
-        if (index == null) {
+        SortedMap<Long, GenerationTocEntry> map = generationEntries.tailMap(validFrom.getTimeInMillis() - 1);
+        if (map.isEmpty()) {
             return null;
         }
-        int previous = index.intValue() + 1;
-        if (previous < generationEntries.size()) {
-            return generationEntries.get(previous);
-        }
-        return null;
+        Long key = map.firstKey();
+        return generationEntries.get(key);
+
     }
 
     /**
      * Returns the latest {@link GenerationTocEntry} with repect to the generations validity date.
      */
     public GenerationTocEntry getLatestGenerationEntry() {
-        if (generationEntries.size() > 0) {
-            return generationEntries.get(0);
+        if (generationEntries.isEmpty()) {
+            return null;
         }
-        return null;
+        return generationEntries.get(generationEntries.firstKey());
     }
 
     /**
@@ -191,25 +190,24 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * <code>null</code>.
      */
     public GenerationTocEntry getGenerationEntry(Calendar effectiveDate) {
-        Integer index = getGenerationEntryIndex(effectiveDate);
-        if (index == null) {
+        if (effectiveDate == null) {
             return null;
         }
-        return generationEntries.get(index);
+        SortedMap<Long, GenerationTocEntry> map = generationEntries.tailMap(effectiveDate.getTimeInMillis() + 1);
+        if (map.isEmpty()) {
+            return null;
+        }
+        Long key = map.firstKey();
+        return generationEntries.get(key);
     }
 
-    Integer getGenerationEntryIndex(Calendar validFrom) {
-        if (validFrom == null) {
-            return null;
-        }
-        long effectiveTime = validFrom.getTimeInMillis();
-        for (int i = 0; i < generationEntries.size(); i++) {
-            long genValidFrom = generationEntries.get(i).getValidFromInMillisec(validFrom.getTimeZone());
-            if (effectiveTime >= genValidFrom) {
-                return new Integer(i);
-            }
-        }
-        return null;
+    /**
+     * Return the Generation Toc Entry for the exact valid at {@link DateTime}. This is the most
+     * effective way to get a generation toc entry
+     * 
+     */
+    public GenerationTocEntry getGenerationEntry(DateTime validAt) {
+        return generationEntries.get(validAt.toTimeInMillisecs(TimeZone.getDefault()));
     }
 
     @Override
@@ -221,7 +219,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
             entryElement.setAttribute(PROPERTY_VALID_TO, validTo.toIsoFormat());
         }
         entryElement.setAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME, generationImplClassName);
-        for (GenerationTocEntry generationEntry : generationEntries) {
+        for (GenerationTocEntry generationEntry : generationEntries.values()) {
             entryElement.appendChild(generationEntry.toXml(entryElement.getOwnerDocument()));
         }
     }
@@ -229,6 +227,86 @@ public class ProductCmptTocEntry extends TocEntryObject {
     @Override
     protected String getXmlElementTag() {
         return XML_TAG;
+    }
+
+    private static TreeMap<Long, GenerationTocEntry> createNewTreeMap() {
+        return new TreeMap<Long, GenerationTocEntry>(new InverseLongComparator());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        // using only the size of the generation entries is a quite weak implementation. But because
+        // we know that most time the other properties are not the same we prefer the performance
+        // of this implementation.
+        result = prime * result + ((generationEntries == null) ? 0 : generationEntries.size());
+        result = prime * result + ((generationImplClassName == null) ? 0 : generationImplClassName.hashCode());
+        result = prime * result + ((kindId == null) ? 0 : kindId.hashCode());
+        result = prime * result + ((validTo == null) ? 0 : validTo.hashCode());
+        result = prime * result + ((versionId == null) ? 0 : versionId.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof ProductCmptTocEntry)) {
+            return false;
+        }
+        ProductCmptTocEntry other = (ProductCmptTocEntry)obj;
+        if (generationEntries == null) {
+            if (other.generationEntries != null) {
+                return false;
+            }
+        } else if (!generationEntries.equals(other.generationEntries)) {
+            return false;
+        }
+        if (generationImplClassName == null) {
+            if (other.generationImplClassName != null) {
+                return false;
+            }
+        } else if (!generationImplClassName.equals(other.generationImplClassName)) {
+            return false;
+        }
+        if (kindId == null) {
+            if (other.kindId != null) {
+                return false;
+            }
+        } else if (!kindId.equals(other.kindId)) {
+            return false;
+        }
+        if (validTo == null) {
+            if (other.validTo != null) {
+                return false;
+            }
+        } else if (!validTo.equals(other.validTo)) {
+            return false;
+        }
+        if (versionId == null) {
+            if (other.versionId != null) {
+                return false;
+            }
+        } else if (!versionId.equals(other.versionId)) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        return true;
+    }
+
+    static class InverseLongComparator implements Comparator<Long> {
+
+        public int compare(Long first, Long second) {
+            return -1 * first.compareTo(second);
+        }
+
     }
 
 }

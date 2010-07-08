@@ -13,9 +13,6 @@
 
 package org.faktorips.runtime.internal.toc;
 
-import java.util.Comparator;
-import java.util.TimeZone;
-
 import org.w3c.dom.Element;
 
 /**
@@ -103,27 +100,45 @@ public abstract class TocEntryObject extends TocEntry {
                 .append(')').toString();
     }
 
-    static class TocEntryGeneratorComparator implements Comparator<GenerationTocEntry> {
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((ipsObjectId == null) ? 0 : ipsObjectId.hashCode());
+        result = prime * result + ((ipsObjectQualifiedName == null) ? 0 : ipsObjectQualifiedName.hashCode());
+        return result;
+    }
 
-        /**
-         * {@inheritDoc}
-         */
-        public int compare(GenerationTocEntry first, GenerationTocEntry second) {
-
-            long firstValidFrom = first.getValidFromInMillisec(TimeZone.getDefault());
-            long secondValidFrom = second.getValidFromInMillisec(TimeZone.getDefault());
-
-            if (firstValidFrom > secondValidFrom) {
-                return -1;
-            }
-
-            if (firstValidFrom == secondValidFrom) {
-                return 0;
-            }
-
-            return 1;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
-
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof TocEntryObject)) {
+            return false;
+        }
+        TocEntryObject other = (TocEntryObject)obj;
+        if (ipsObjectId == null) {
+            if (other.ipsObjectId != null) {
+                return false;
+            }
+        } else if (!ipsObjectId.equals(other.ipsObjectId)) {
+            return false;
+        }
+        if (ipsObjectQualifiedName == null) {
+            if (other.ipsObjectQualifiedName != null) {
+                return false;
+            }
+        } else if (!ipsObjectQualifiedName.equals(other.ipsObjectQualifiedName)) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        return true;
     }
 
 }

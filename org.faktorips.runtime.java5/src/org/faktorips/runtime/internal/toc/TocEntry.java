@@ -63,4 +63,42 @@ public abstract class TocEntry {
      */
     protected abstract String getXmlElementTag();
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((implementationClassName == null) ? 0 : implementationClassName.hashCode());
+        result = prime * result + ((xmlResourceName == null) ? 0 : xmlResourceName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof TocEntry)) {
+            return false;
+        }
+        TocEntry other = (TocEntry)obj;
+        if (implementationClassName == null) {
+            if (other.implementationClassName != null) {
+                return false;
+            }
+        } else if (!implementationClassName.equals(other.implementationClassName)) {
+            return false;
+        }
+        if (xmlResourceName == null) {
+            if (other.xmlResourceName != null) {
+                return false;
+            }
+        } else if (!xmlResourceName.equals(other.xmlResourceName)) {
+            return false;
+        }
+        return true;
+    }
+
 }
