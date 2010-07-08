@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -466,8 +467,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * given scr file doesn't contains a formula test case.
      */
     private void removeFormulaTestEntry(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-        getToc(ipsSrcFile).removeEntry(ipsObject.getQualifiedNameType());
+        getToc(ipsSrcFile).removeEntry(new QualifiedNameType(ipsSrcFile.getIpsObjectName(), IpsObjectType.TEST_CASE));
         if (formulaTestBuilder != null) {
             formulaTestBuilder.delete(ipsSrcFile);
         }
