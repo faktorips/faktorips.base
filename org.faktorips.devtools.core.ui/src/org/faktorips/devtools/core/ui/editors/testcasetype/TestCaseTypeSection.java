@@ -2107,7 +2107,7 @@ public class TestCaseTypeSection extends IpsSection {
             selectedTestParamIndexes = new int[] { childs.indexOf(testParameter) };
             parent.moveTestPolicyCmptTypeChild(selectedTestParamIndexes, up);
         }
-
+        refreshTree();
         redrawDetails(testParameter);
     }
 
