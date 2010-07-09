@@ -48,9 +48,9 @@ public class ValueToXmlHelper {
      * child element exists.
      * 
      * <pre>
-     *     <Parent>
-     *         <Property isNull="false">42</Property>
-     *     </Parent>
+     *     &lt;Parent&gt;
+     *         &lt;Property isNull=&quot;false&quot;&gt;42&lt;/Property&gt;
+     *     &lt;/Parent&gt;
      * </pre>
      * 
      * @param el The xml element that is the parent of the element storing the value.
@@ -61,6 +61,21 @@ public class ValueToXmlHelper {
         if (valueEl == null) {
             return null;
         }
+        return getValueFromElement(valueEl);
+    }
+
+    /**
+     * Returns the string representation of the value stored in given value element. Returns
+     * <code>null</code> if the value is null, the attribute isNull is <code>true</code> or no such
+     * child element exists.
+     * 
+     * <pre>
+     *         &lt;Property isNull=&quot;false&quot;&gt;42&lt;/Property&gt;
+     * </pre>
+     * 
+     * @param valueEl The xml value element containing the value.
+     */
+    public final static String getValueFromElement(Element valueEl) {
         if (Boolean.valueOf(valueEl.getAttribute("isNull")).equals(Boolean.TRUE)) { //$NON-NLS-1$
             return null;
         }
@@ -69,9 +84,9 @@ public class ValueToXmlHelper {
             return text.getData();
         }
         CDATASection cdata = XmlUtil.getFirstCDataSection(valueEl);
-        // if no cdata-section was found, the value stored was an empty string. In this
-        // case, the cdata-section get lost during transformation of the xml-document
-        // to a string.
+        // if no cdata-section was found, the value stored was an empty string.
+        // In this case, the cdata-section get lost during transformation of the
+        // xml-document to a string.
         String result = ""; //$NON-NLS-1$
         if (cdata != null) {
             result = cdata.getData();

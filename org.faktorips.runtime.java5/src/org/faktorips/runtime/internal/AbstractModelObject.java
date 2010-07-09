@@ -31,7 +31,6 @@ import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 /**
  * Abstract base class for all policy component types.
@@ -232,15 +231,7 @@ public abstract class AbstractModelObject implements IModelObject {
 
     private void initPropertyFromXml(Element el, HashMap<String, String> propMap) {
         String propName = el.getNodeName();
-        String value = null;
-        String isNull = el.getAttribute("isNull"); //$NON-NLS-1$
-        if (!Boolean.valueOf(isNull).booleanValue()) {
-            Text textNode = getTextNode(el);
-            if (textNode != null) {
-                value = textNode.getNodeValue();
-            }
-        }
-        propMap.put(propName, value);
+        propMap.put(propName, ValueToXmlHelper.getValueFromElement(el));
     }
 
     /**
@@ -284,18 +275,4 @@ public abstract class AbstractModelObject implements IModelObject {
             throws Exception {
         return null;
     }
-
-    /*
-     * Returns the element's first text node.
-     */
-    private Text getTextNode(Element valueElement) {
-        NodeList nl = valueElement.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Text) {
-                return (Text)nl.item(i);
-            }
-        }
-        return null;
-    }
-
 }
