@@ -25,7 +25,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     private final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    public void testCopy() {
+    public void testCreateCopy() {
         Message msg = new Message("code", "text", Message.INFO);
         Message copy = Message.createCopy(msg, "a", "b");
         assertEquals("code", msg.getCode());
@@ -38,7 +38,10 @@ public class MessageTest extends XmlAbstractTestCase {
         ObjectProperty op0 = new ObjectProperty(oldObject, "prop0");
         ObjectProperty op1 = new ObjectProperty(this, "prop1");
         ObjectProperty op2 = new ObjectProperty(oldObject, "prop2");
-        msg = new Message("code", "text", Message.ERROR, new ObjectProperty[] { op0, op1, op2 });
+        MsgReplacementParameter mp0 = new MsgReplacementParameter("0", "v0");
+        MsgReplacementParameter mp1 = new MsgReplacementParameter("1", "v1");
+        msg = new Message("code", "text", Message.ERROR, new ObjectProperty[] { op0, op1, op2 },
+                new MsgReplacementParameter[] { mp0, mp1 });
         Object newObject = new Object();
         copy = Message.createCopy(msg, oldObject, newObject);
         List<ObjectProperty> ops = copy.getInvalidObjectProperties();
@@ -49,7 +52,43 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("prop1", ops.get(1).getProperty());
         assertEquals(newObject, ops.get(2).getObject());
         assertEquals("prop2", ops.get(2).getProperty());
-        assertEquals(0, msg.getReplacementParameters().size());
+        assertEquals(msg.getReplacementParameters().size(), copy.getReplacementParameters().size());
+        List<MsgReplacementParameter> mpsCpy = copy.getReplacementParameters();
+        List<MsgReplacementParameter> mps = msg.getReplacementParameters();
+        for (int i = 0; i < mps.size(); i++) {
+            assertEquals(mps.get(i).getName(), mpsCpy.get(i).getName());
+            assertEquals(mps.get(i).getValue(), mpsCpy.get(i).getValue());
+        }
+    }
+
+    public void testCopyConstructor() {
+        ObjectProperty op0 = new ObjectProperty("0", "prop0");
+        ObjectProperty op1 = new ObjectProperty("1", "prop1");
+        MsgReplacementParameter mp0 = new MsgReplacementParameter("0", "v0");
+        MsgReplacementParameter mp1 = new MsgReplacementParameter("1", "v1");
+        Message msg = new Message("code", "text", Message.INFO, new ObjectProperty[] { op0, op1 },
+                new MsgReplacementParameter[] { mp0, mp1 });
+
+        Message msgCpy = new Message(msg);
+        assertEquals(msg.getCode(), msgCpy.getCode());
+        assertEquals(msg.getSeverity(), msgCpy.getSeverity());
+        assertEquals(msg.getText(), msgCpy.getText());
+        List<ObjectProperty> opsCpy = msgCpy.getInvalidObjectProperties();
+        List<MsgReplacementParameter> mpsCpy = msgCpy.getReplacementParameters();
+        List<ObjectProperty> ops = msg.getInvalidObjectProperties();
+        List<MsgReplacementParameter> mps = msg.getReplacementParameters();
+        assertEquals(ops.size(), opsCpy.size());
+        assertEquals(mps.size(), mpsCpy.size());
+        for (int i = 0; i < mps.size(); i++) {
+            assertEquals(mps.get(i).getName(), mpsCpy.get(i).getName());
+            assertEquals(mps.get(i).getValue(), mpsCpy.get(i).getValue());
+        }
+        for (int i = 0; i < ops.size(); i++) {
+            assertEquals(ops.get(i).getIndex(), opsCpy.get(i).getIndex());
+            assertEquals(ops.get(i).getObject(), opsCpy.get(i).getObject());
+            assertEquals(ops.get(i).getProperty(), opsCpy.get(i).getProperty());
+        }
+
     }
 
     public void testMessage_StringStringint() {

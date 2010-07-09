@@ -111,7 +111,7 @@ public class Message implements Serializable {
                 newOp.add(objectProperty);
             }
         }
-        return new Message(msg.code, msg.text, msg.severity, newOp);
+        return new Message(msg.code, msg.text, msg.severity, newOp, msg.getReplacementParameters());
     }
 
     /**
@@ -143,14 +143,13 @@ public class Message implements Serializable {
         this.severity = msg.severity;
         this.text = msg.text;
         if (msg.invalidOp != null) {
-            invalidOp = new ArrayList<ObjectProperty>(msg.invalidOp.size());
-            Collections.copy(invalidOp, msg.invalidOp);
+            invalidOp = new ArrayList<ObjectProperty>();
+            invalidOp.addAll(msg.invalidOp);
         }
         if (msg.replacementParameters != null) {
             replacementParameters = new ArrayList<MsgReplacementParameter>();
             replacementParameters.addAll(msg.replacementParameters);
         }
-
     }
 
     /**
@@ -208,9 +207,22 @@ public class Message implements Serializable {
      * indicated objects and their properties.
      */
     public Message(String code, String text, Severity severity, List<ObjectProperty> refersTo) {
+        this(code, text, severity, refersTo, (List<MsgReplacementParameter>)null);
+    }
+
+    /**
+     * Creates a new message with the indicated code, text and severity. The message refers to the
+     * indicated objects and their properties. The message's contains the given replacement
+     * parameters.
+     */
+    public Message(String code, String text, Severity severity, List<ObjectProperty> refersTo,
+            List<MsgReplacementParameter> replacementParameters) {
         this(code, text, severity);
         if (refersTo != null) {
             invalidOp = new ArrayList<ObjectProperty>(refersTo);
+        }
+        if (replacementParameters != null) {
+            this.replacementParameters = new ArrayList<MsgReplacementParameter>(replacementParameters);
         }
     }
 
@@ -221,7 +233,6 @@ public class Message implements Serializable {
      */
     public Message(String code, String text, Severity severity, ObjectProperty refersTo,
             MsgReplacementParameter... parameters) {
-
         this(code, text, severity);
         if (refersTo != null) {
             invalidOp = new ArrayList<ObjectProperty>(1);
