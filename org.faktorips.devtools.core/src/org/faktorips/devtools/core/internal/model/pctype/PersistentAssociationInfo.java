@@ -41,6 +41,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
     private boolean ownerOfManyToManyAssociation = false;
 
+    private boolean orphanRemoval;
+
+    private boolean cascadeTypeOverwriteDefault;
+    private boolean cascadeTypePersist;
+    private boolean cascadeTypeMerge;
+    private boolean cascadeTypeRemove;
+    private boolean cascadeTypeRefresh;
+
     private String joinTableName = ""; //$NON-NLS-1$
 
     private String targetColumnName = ""; //$NON-NLS-1$
@@ -99,6 +107,71 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     @Override
+    public boolean isOrphanRemoval() {
+        return orphanRemoval;
+    }
+
+    @Override
+    public boolean isCascadeTypeOverwriteDefault() {
+        return cascadeTypeOverwriteDefault;
+    }
+
+    @Override
+    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) {
+        boolean oldValue = this.cascadeTypeOverwriteDefault;
+        this.cascadeTypeOverwriteDefault = cascadeTypeOverwriteDefault;
+        valueChanged(oldValue, cascadeTypeOverwriteDefault);
+    }
+
+    @Override
+    public boolean isCascadeTypePersist() {
+        return cascadeTypePersist;
+    }
+
+    @Override
+    public void setCascadeTypePersist(boolean cascadeTypePersist) {
+        boolean oldValue = this.cascadeTypePersist;
+        this.cascadeTypePersist = cascadeTypePersist;
+        valueChanged(oldValue, cascadeTypePersist);
+    }
+
+    @Override
+    public boolean isCascadeTypeMerge() {
+        return cascadeTypeMerge;
+    }
+
+    @Override
+    public void setCascadeTypeMerge(boolean cascadeTypeMerge) {
+        boolean oldValue = this.cascadeTypeMerge;
+        this.cascadeTypeMerge = cascadeTypeMerge;
+        valueChanged(oldValue, cascadeTypeMerge);
+    }
+
+    @Override
+    public boolean isCascadeTypeRemove() {
+        return cascadeTypeRemove;
+    }
+
+    @Override
+    public void setCascadeTypeRemove(boolean cascadeTypeRemove) {
+        boolean oldValue = this.cascadeTypeRemove;
+        this.cascadeTypeRemove = cascadeTypeRemove;
+        valueChanged(oldValue, cascadeTypeRemove);
+    }
+
+    @Override
+    public boolean isCascadeTypeRefresh() {
+        return cascadeTypeRefresh;
+    }
+
+    @Override
+    public void setCascadeTypeRefresh(boolean cascadeTypeRefresh) {
+        boolean oldValue = this.cascadeTypeRefresh;
+        this.cascadeTypeRefresh = cascadeTypeRefresh;
+        valueChanged(oldValue, cascadeTypeRefresh);
+    }
+
+    @Override
     public boolean isBidirectional() {
         return getPolicyComponentTypeAssociation().hasInverseAssociation();
     }
@@ -133,9 +206,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    public boolean isOrphanDeleting() {
-        return isUnidirectional() && getPolicyComponentTypeAssociation().isComposition()
-                && getPolicyComponentTypeAssociation().is1ToMany();
+    public boolean isOrphanRemovalRequired() {
+        return getPolicyComponentTypeAssociation().isCompositionMasterToDetail();
     }
 
     @Override
@@ -148,7 +220,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(fetchType);
         FetchType oldValue = this.fetchType;
         this.fetchType = fetchType;
-
         valueChanged(oldValue, fetchType);
     }
 
@@ -157,7 +228,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newJoinTableName);
         String oldValue = joinTableName;
         joinTableName = newJoinTableName;
-
         valueChanged(oldValue, joinTableName);
     }
 
@@ -166,7 +236,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newSourceColumnName);
         String oldValue = sourceColumnName;
         sourceColumnName = newSourceColumnName;
-
         valueChanged(oldValue, sourceColumnName);
     }
 
@@ -175,7 +244,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newTargetColumnName);
         String oldValue = targetColumnName;
         targetColumnName = newTargetColumnName;
-
         valueChanged(oldValue, targetColumnName);
     }
 
@@ -184,7 +252,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newJoinColumnName);
         String oldValue = joinColumnName;
         joinColumnName = newJoinColumnName;
-
         valueChanged(oldValue, joinColumnName);
     }
 
@@ -208,6 +275,12 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         boolean oldValue = this.ownerOfManyToManyAssociation;
         this.ownerOfManyToManyAssociation = ownerOfManyToManyAssociation;
         valueChanged(oldValue, ownerOfManyToManyAssociation);
+    }
+
+    public void setOrphanRemoval(boolean orphanRemoval) {
+        boolean oldValue = this.orphanRemoval;
+        this.orphanRemoval = orphanRemoval;
+        valueChanged(oldValue, orphanRemoval);
     }
 
     /**
@@ -399,6 +472,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         } else {
             fetchType = FetchType.EAGER;
         }
+        setOrphanRemoval(isOrphanRemovalRequired());
     }
 
     @Override
@@ -417,6 +491,13 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         joinTableName = element.getAttribute(PROPERTY_JOIN_TABLE_NAME);
         fetchType = FetchType.valueOf(element.getAttribute(PROPERTY_FETCH_TYPE));
         joinColumnName = element.getAttribute(PROPERTY_JOIN_COLUMN_NAME);
+        orphanRemoval = Boolean.valueOf(element.getAttribute(PROPERTY_ORPHAN_REMOVAL));
+
+        cascadeTypeOverwriteDefault = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT));
+        cascadeTypePersist = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_PERSIST));
+        cascadeTypeRefresh = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_REFRESH));
+        cascadeTypeMerge = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_MERGE));
+        cascadeTypeRemove = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_REMOVE));
     }
 
     @Override
@@ -430,6 +511,13 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName); //$NON-NLS-1$
         element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType); //$NON-NLS-1$
         element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_ORPHAN_REMOVAL, Boolean.toString(orphanRemoval));
+
+        element.setAttribute(PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT, Boolean.toString(cascadeTypeOverwriteDefault));
+        element.setAttribute(PROPERTY_CASCADE_TYPE_MERGE, Boolean.toString(cascadeTypeMerge));
+        element.setAttribute(PROPERTY_CASCADE_TYPE_PERSIST, Boolean.toString(cascadeTypePersist));
+        element.setAttribute(PROPERTY_CASCADE_TYPE_REMOVE, Boolean.toString(cascadeTypeRemove));
+        element.setAttribute(PROPERTY_CASCADE_TYPE_REFRESH, Boolean.toString(cascadeTypeRefresh));
     }
 
     @Override

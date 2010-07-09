@@ -13,20 +13,21 @@
 
 package org.faktorips.devtools.core.internal.migration;
 
-import java.lang.reflect.InvocationTargetException;
-
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 
 /**
- * Migration from version 3.0.0.ms4 to version 3.0.0.ms5.
+ * Migration from version 3.0.0.ms4 to version 3.0.0.ms5. See getDescription() for details.
  * 
- * @author dirmeier
+ * @author ortmann2
  */
-public class Migration_3_0_0_ms4 extends AbstractIpsProjectMigrationOperation {
+public class Migration_3_0_0_ms4 extends DefaultMigration {
 
     public Migration_3_0_0_ms4(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
@@ -34,7 +35,7 @@ public class Migration_3_0_0_ms4 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getDescription() {
-        return ""; //$NON-NLS-1$
+        return "JPA: Sets the default annotation OrphanRemoval on all master to detail compositions."; //$NON-NLS-1$
     }
 
     @Override
@@ -44,12 +45,30 @@ public class Migration_3_0_0_ms4 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return false;
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-            InterruptedException {
-        return new MessageList();
+    protected boolean migrate(IFile file) throws CoreException {
+        return false;
+    }
+
+    @Override
+    protected void migrate(IIpsSrcFile srcFile) throws CoreException {
+        if (srcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)srcFile.getIpsObject();
+            IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = policyCmptType.getPolicyCmptTypeAssociations();
+            for (IPolicyCmptTypeAssociation ass : policyCmptTypeAssociations) {
+                migrateAssociation(ass);
+            }
+        }
+    }
+
+    private void migrateAssociation(IPolicyCmptTypeAssociation ass) {
+        IPersistentAssociationInfo persistenceAssociatonInfo = ass.getPersistenceAssociatonInfo();
+        if (persistenceAssociatonInfo == null) {
+            return;
+        }
+        persistenceAssociatonInfo.setOrphanRemoval(persistenceAssociatonInfo.isOrphanRemovalRequired());
     }
 }

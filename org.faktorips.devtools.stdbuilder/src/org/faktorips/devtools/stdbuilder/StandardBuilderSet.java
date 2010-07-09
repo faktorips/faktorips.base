@@ -671,6 +671,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return persistenceProviderImpl != null && getPersistenceProviderImplementation().isSupportingConverters();
     }
 
+    @Override
+    public boolean isPersistentProviderSupportOrphanRemoval() {
+        IPersistenceProvider persistenceProviderImpl = getPersistenceProviderImplementation();
+        return persistenceProviderImpl != null && getPersistenceProviderImplementation().isSupportingOrphanRemoval();
+    }
+
     /**
      * Returns the persistence provider or <code>null</code> if no
      */

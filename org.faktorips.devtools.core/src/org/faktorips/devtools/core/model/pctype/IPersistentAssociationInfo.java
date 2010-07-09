@@ -81,6 +81,39 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public final static String PROPERTY_JOIN_COLUMN_NAME = "joinColumnName"; //$NON-NLS-1$
 
     /**
+     * Specifies if the orphan removal (private owned) annotation should be used or not. The
+     * property make only sense on the master to detail side of an one to many composition.
+     */
+    public final static String PROPERTY_ORPHAN_REMOVAL = "orphanRemoval"; //$NON-NLS-1$
+
+    /**
+     * Specifies if the default cascade should be ignored and the other cascade type propertied
+     * should be used instead. The default for compositions is ALL for all other types the cascade
+     * type will not be generated.
+     */
+    public final static String PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT = "cascadeTypeOverwriteDefault"; //$NON-NLS-1$
+
+    /**
+     * Specifies if the cascade type PERSIST should be added.
+     */
+    public final static String PROPERTY_CASCADE_TYPE_PERSIST = "cascadeTypePersist"; //$NON-NLS-1$
+
+    /**
+     * Specifies if the cascade type MERGE should be added.
+     */
+    public final static String PROPERTY_CASCADE_TYPE_MERGE = "cascadeTypeMerge"; //$NON-NLS-1$
+
+    /**
+     * Specifies if the cascade type REMOVE should be added.
+     */
+    public final static String PROPERTY_CASCADE_TYPE_REMOVE = "cascadeTypeRemove"; //$NON-NLS-1$
+
+    /**
+     * Specifies if the cascade type REFRESH should be added.
+     */
+    public final static String PROPERTY_CASCADE_TYPE_REFRESH = "cascadeTypeRefresh"; //$NON-NLS-1$
+
+    /**
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "PERSISTENCEASSOCIATION-"; //$NON-NLS-1$
@@ -252,10 +285,11 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public boolean isCascading();
 
     /**
-     * @return <code>true</code> when the orphan deletion attribute is required for the
-     *         corresponding association, <code>false</code> otherwise.
+     * @return <code>true</code> when the orphan removal annotation is required (default) for the
+     *         corresponding association, <code>false</code> otherwise. The orphan removal
+     *         annotation is required in case of master to detail compositions.
      */
-    public boolean isOrphanDeleting();
+    public boolean isOrphanRemovalRequired();
 
     /**
      * @return <code>true</code> for n-to-m relationships where a join table is mandatory,
@@ -288,6 +322,69 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
      * Returns true if the association is the owner of am many-to-many association.
      */
     public boolean isOwnerOfManyToManyAssociation();
+
+    /**
+     * Set to <code>true</code> if the association should be annotated as orphan removal. Note that
+     * this property make only sense on the master to detail side of an one to many composition.
+     */
+    public void setOrphanRemoval(boolean orphanRemoval);
+
+    /**
+     * Returns <code>true</code> if the orphan removal feature is used otherwise <code>false</code>.
+     */
+    public boolean isOrphanRemoval();
+
+    /**
+     * Returns <code>true</code> if the default cascade type should be ignored and the other cascade
+     * type properties should be used instead.
+     */
+    public boolean isCascadeTypeOverwriteDefault();
+
+    /**
+     * Set to <code>true</code> if the default cascade type should be ignored and the other cascade
+     * type properties should be used instead.
+     */
+    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault);
+
+    /**
+     * Returns <code>true</code> if the corresponding cascade type should be used.
+     */
+    public boolean isCascadeTypeRefresh();
+
+    /**
+     * Set to <code>true</code> if the corresponding cascade type should be used.
+     */
+    public void setCascadeTypeRefresh(boolean cascadeTypeRefresh);
+
+    /**
+     * Returns <code>true</code> if the corresponding cascade type should be used.
+     */
+    public boolean isCascadeTypeRemove();
+
+    /**
+     * Set to <code>true</code> if the corresponding cascade type should be used.
+     */
+    public void setCascadeTypeRemove(boolean cascadeTypeRemove);
+
+    /**
+     * Returns <code>true</code> if the corresponding cascade type should be used.
+     */
+    public boolean isCascadeTypeMerge();
+
+    /**
+     * Set to <code>true</code> if the corresponding cascade type should be used.
+     */
+    public void setCascadeTypeMerge(boolean cascadeTypeMerge);
+
+    /**
+     * Returns <code>true</code> if the corresponding cascade type should be used.
+     */
+    public boolean isCascadeTypePersist();
+
+    /**
+     * Set to <code>true</code> if the corresponding cascade type should be used.
+     */
+    public void setCascadeTypePersist(boolean cascadeTypePersist);
 
     /**
      * Set to <code>true</code> if the association should be transient. Set to <code>false</code> if

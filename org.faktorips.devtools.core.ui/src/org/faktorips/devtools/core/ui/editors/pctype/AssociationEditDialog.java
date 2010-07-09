@@ -68,6 +68,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private ExtensionPropertyControlFactory extFactory;
     private IPolicyCmptTypeAssociation inverseAssociation;
     private Composite joinColumnComposite;
+    private Composite cascadeTypesComposite;
 
     public AssociationEditDialog(IPolicyCmptTypeAssociation relation2, Shell parentShell) {
         super(relation2, parentShell, Messages.AssociationEditDialog_title, true);
@@ -261,12 +262,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createVerticalSpacer(allPersistentProps, 12);
         createGroupOtherPersistentProps(allPersistentProps);
 
+        uiToolkit.createVerticalSpacer(allPersistentProps, 12);
+        createGroupCascadeType(allPersistentProps);
+
         // persistence is enabled initialize enable / disable bindings
         // disable all persistent controls if attribute is marked as transient
-        bindingContext.add(new ControlPropertyBinding(allPersistentProps, association.getPersistenceAssociatonInfo(),
-                IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
+        bindingContext.add(new NotificationPropertyBinding(allPersistentProps, association
+                .getPersistenceAssociatonInfo(), IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
             @Override
-            public void updateUiIfNotDisposed() {
+            public void propertyChanged() {
                 IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                 boolean persistEnabled = isPersistEnabled(associationInfo);
                 if (!persistEnabled) {
@@ -278,10 +282,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             }
         });
         // disable join table
-        bindingContext.add(new ControlPropertyBinding(joinTableComposite, association.getPersistenceAssociatonInfo(),
-                IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, Boolean.TYPE) {
+        bindingContext.add(new NotificationPropertyBinding(joinTableComposite, association
+                .getPersistenceAssociatonInfo(), IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION,
+                Boolean.TYPE) {
             @Override
-            public void updateUiIfNotDisposed() {
+            public void propertyChanged() {
                 IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                 boolean persistEnabled = isPersistEnabled(associationInfo);
                 if (!persistEnabled) {
@@ -300,6 +305,47 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 }
             }
         });
+        // disable cascade type checkboxes
+        bindingContext.add(new NotificationPropertyBinding(cascadeTypesComposite, association
+                .getPersistenceAssociatonInfo(), IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT,
+                Boolean.TYPE) {
+            @Override
+            public void propertyChanged() {
+                IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
+                boolean persistEnabled = isPersistEnabled(associationInfo);
+                if (!persistEnabled) {
+                    uiToolkit.setDataChangeable(getControl(), false);
+                    return;
+                }
+                uiToolkit.setDataChangeable(getControl(), associationInfo.isCascadeTypeOverwriteDefault());
+            }
+        });
+    }
+
+    private Group createGroupCascadeType(Composite parentComposite) {
+
+        Group group = uiToolkit.createGroup(parentComposite, "Cascade Type"); //$NON-NLS-1$
+        GridData layoutData = (GridData)group.getLayoutData();
+        layoutData.grabExcessVerticalSpace = false;
+
+        bindingContext.bindContent(uiToolkit.createCheckbox(group, "Overwrite default cascade types"), association
+                .getPersistenceAssociatonInfo(), IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT);
+
+        cascadeTypesComposite = uiToolkit.createLabelEditColumnComposite(group);
+        cascadeTypesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        createCheckbox(cascadeTypesComposite, "Persist:", IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_PERSIST);
+        createCheckbox(cascadeTypesComposite, "Merge:", IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_MERGE);
+        createCheckbox(cascadeTypesComposite, "Remove:", IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE);
+        createCheckbox(cascadeTypesComposite, "Refresh:", IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH);
+
+        return group;
+    }
+
+    private void createCheckbox(Composite composite, String label, String property) {
+        uiToolkit.createFormLabel(composite, label);
+        bindingContext.bindContent(uiToolkit.createCheckbox(composite), association.getPersistenceAssociatonInfo(),
+                property);
     }
 
     private boolean isPersistEnabled(IPersistentAssociationInfo associationInfo) {
@@ -323,6 +369,16 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         ComboField fetchTypeField = new EnumField(fetchTypeCombo, FetchType.class);
         bindingContext.bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
+
+        String labelText = "Orphan Removal:";
+        if (ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportOrphanRemoval()) {
+            createCheckbox(otherPropsComposite, labelText, IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL);
+        } else {
+            Label label = uiToolkit.createFormLabel(otherPropsComposite, labelText);
+            Label text = uiToolkit.createLabel(otherPropsComposite, "Not supported by persistence provider.");
+            label.setEnabled(false);
+            text.setEnabled(false);
+        }
 
         return groupOtherProps;
     }
@@ -516,4 +572,28 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
     }
+
+    private abstract class NotificationPropertyBinding extends ControlPropertyBinding {
+        public NotificationPropertyBinding(Control control, Object object, String propertyName, Class<?> exptectedType) {
+            super(control, object, propertyName, exptectedType);
+        }
+
+        private Object oldValue;
+
+        @Override
+        public void updateUiIfNotDisposed() {
+            try {
+                Object newValue = getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+                if (oldValue == null || !oldValue.equals(newValue)) {
+                    oldValue = newValue;
+                    propertyChanged();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        protected abstract void propertyChanged();
+    }
+
 }

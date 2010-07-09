@@ -70,6 +70,8 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME,
                 "Join Column Name")); //$NON-NLS-1$
         columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE, "Fetch Type")); //$NON-NLS-1$
+        columnProperties.put(6, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL,
+                "Orphan Removal")); //$NON-NLS-1$
     }
 
     private static class AttrPropertyAndLabel {
@@ -237,6 +239,8 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                     }
                 } else if (IPersistentAssociationInfo.PROPERTY_FETCH_TYPE.equals(property)) {
                     result = jpaAssociationInfo.getFetchType().toString();
+                } else if (IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL.equals(property)) {
+                    result = Boolean.valueOf(jpaAssociationInfo.isOrphanRemoval()).toString();
                 }
                 return (result == null ? "" : result); //$NON-NLS-1$
             }

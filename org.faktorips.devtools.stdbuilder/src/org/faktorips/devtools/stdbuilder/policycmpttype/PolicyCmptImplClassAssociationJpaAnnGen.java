@@ -118,27 +118,18 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
             // add attributes to relationship annotation
             List<String> attributesToAppend = new ArrayList<String>();
-            addAnnotationAttributeMappedBy(relationShip, fragment, attributesToAppend, genAssociation,
-                    genInverseAssociation);
-            addAnnotationAttributeCascade(relationShip, fragment, attributesToAppend, genAssociation,
-                    genInverseAssociation);
-            addAnnotationAttributeFetch(relationShip, fragment, attributesToAppend, genAssociation,
-                    genInverseAssociation);
-            addAnnotationAttributesTargetEntity(fragment, attributesToAppend, genAssociation, genInverseAssociation);
-            if (persistenceProviderImpl != null && persistenceProviderImpl.isSupportingOrphanRemoval()) {
-                String attributeOrphanRemoval = persistenceProviderImpl
-                        .getRelationshipAnnotationAttributeOrphanRemoval();
-                if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
-                    attributesToAppend.add(attributeOrphanRemoval);
-                }
-            }
+            addAnnotationAttributeMappedBy(relationShip, attributesToAppend, genAssociation, genInverseAssociation);
+            addAnnotationAttributeCascadeType(relationShip, fragment, attributesToAppend, genAssociation);
+            addAnnotationAttributeFetch(fragment, attributesToAppend, genAssociation);
+            addAnnotationAttributesTargetEntity(fragment, attributesToAppend, genAssociation);
+            addAnnotationAttributeOrphanRemoval(persistenceProviderImpl, attributesToAppend);
             appendAllAttributes(fragment, attributesToAppend);
 
             // evaluate further attributes depending on the relationship type
-            addAnnotationFor(persistenceProviderImpl, relationShip, fragment, genAssociation, genInverseAssociation);
+            addAnnotationFor(persistenceProviderImpl, fragment, genAssociation);
 
             // add special annotation in case of join table needed
-            addAnnotationJoinTable(fragment, genAssociation, genInverseAssociation);
+            addAnnotationJoinTable(fragment, genAssociation);
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -146,35 +137,34 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         return fragment;
     }
 
-    private void addAnnotationFor(IPersistenceProvider persistenceProviderImpl,
-            RelationshipType relationShip,
-            JavaCodeFragment fragment,
-            GenAssociation genAssociation,
-            GenAssociation genInverseAssociation) {
-        IPolicyCmptTypeAssociation association = genAssociation.getAssociation();
-        switch (relationShip) {
-            case ONE_TO_MANY:
-                if (!association.isAssoziation()) {
-                    if (persistenceProviderImpl != null && persistenceProviderImpl.isSupportingOrphanRemoval()) {
-                        persistenceProviderImpl.addAnnotationOrphanRemoval(fragment);
-                    }
-                }
-                break;
-            case ONE_TO_ONE:
-                break;
-            case MANY_TO_ONE:
-                break;
-            case MANY_TO_MANY:
-                break;
-            default:
-                // maybe unidirectional association
-                break;
+    private void addAnnotationAttributeOrphanRemoval(IPersistenceProvider persistenceProviderImpl,
+            List<String> attributesToAppend) {
+        // note that depending on the JPA implementation (not JPA
+        // 2.0) the orphan removal feature could be set as attribute or separate annotation
+        if (persistenceProviderImpl == null || !persistenceProviderImpl.isSupportingOrphanRemoval()) {
+            return;
         }
+        String attributeOrphanRemoval = persistenceProviderImpl.getRelationshipAnnotationAttributeOrphanRemoval();
+        if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
+            attributesToAppend.add(attributeOrphanRemoval);
+        }
+    }
 
+    private void addAnnotationFor(IPersistenceProvider persistenceProviderImpl,
+            JavaCodeFragment fragment,
+            GenAssociation genAssociation) {
         IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
                 .getPersistenceAssociatonInfo();
+
+        // add orphan removal annotation, note that depending on the JPA implementation (not JPA
+        // 2.0) the orphan removal feature could be set as attribute or separate annotation
+        if (persistenceProviderImpl != null && persistenceProviderImpl.isSupportingOrphanRemoval()
+                && persistenceAssociatonInfo.isOrphanRemoval()) {
+            persistenceProviderImpl.addAnnotationOrphanRemoval(fragment);
+        }
+
         if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
-            appendJoinColumn(fragment, persistenceAssociatonInfo.getJoinColumnName(), false);
+            appendJoinColumn(fragment, persistenceAssociatonInfo.getJoinColumnName());
         }
     }
 
@@ -190,9 +180,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         return getStandardBuilderSet().getGenerator(policyCmptType);
     }
 
-    private void addAnnotationJoinTable(JavaCodeFragment fragment,
-            GenAssociation genAssociation,
-            GenAssociation genInverseAssociation) throws CoreException {
+    private void addAnnotationJoinTable(JavaCodeFragment fragment, GenAssociation genAssociation) throws CoreException {
         IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
                 .getPersistenceAssociatonInfo();
         if (!persistenceAssociatonInfo.isJoinTableRequired()) {
@@ -229,11 +217,11 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         }
         String lhs = inverse ? "inverseJoinColumns = " : "joinColumns = ";
         fragment.append(lhs);
-        appendJoinColumn(fragment, columnName, inverse);
+        appendJoinColumn(fragment, columnName);
         return true;
     }
 
-    private void appendJoinColumn(JavaCodeFragment fragment, String columnName, boolean inverse) {
+    private void appendJoinColumn(JavaCodeFragment fragment, String columnName) {
         fragment.addImport(IMPORT_JOIN_COLUMN);
         fragment.append(ANNOTATION_JOIN_COLUMN).append('(');
         appendName(fragment, columnName).append(")");
@@ -253,34 +241,60 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
     private void addAnnotationAttributesTargetEntity(JavaCodeFragment fragment,
             List<String> attributesToAppend,
-            GenAssociation genAssociation,
-            GenAssociation genInverseAssociation) throws CoreException {
+            GenAssociation genAssociation) throws CoreException {
         GenPolicyCmptType genTargetPolicyCmptType = getGenerator(genAssociation.getTargetPolicyCmptType());
         String targetQName = genTargetPolicyCmptType.getUnqualifiedClassName(false);
         fragment.addImport(genTargetPolicyCmptType.getQualifiedName(false));
         attributesToAppend.add("targetEntity = " + targetQName + ".class");
     }
 
-    private void addAnnotationAttributeCascade(RelationshipType relationShip,
+    private void addAnnotationAttributeCascadeType(RelationshipType relationShip,
             JavaCodeFragment fragment,
             List<String> attributesToAppend,
-            GenAssociation genAssociation,
-            GenAssociation genInverseAssociation) {
-        if (genAssociation.getAssociation().isAssoziation() || relationShip == RelationshipType.MANY_TO_ONE) {
-            // no cascade type if association type is association or the relationShip type is many
-            // to one
+            GenAssociation genAssociation) {
+        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
+                .getPersistenceAssociatonInfo();
+        if (!persistenceAssociatonInfo.isCascadeTypeOverwriteDefault()) {
+            if (genAssociation.getAssociation().isAssoziation() || relationShip == RelationshipType.MANY_TO_ONE) {
+                // no cascade type if association type is association or the relationShip type is
+                // many to one
+                return;
+            }
+            fragment.addImport(IMPORT_CASCADE_TYPE);
+            attributesToAppend.add("cascade=CascadeType.ALL");
             return;
         }
-
+        List<String> cascadeTypes = new ArrayList<String>();
+        if (persistenceAssociatonInfo.isCascadeTypeMerge()) {
+            cascadeTypes.add("CascadeType.MERGE");
+        }
+        if (persistenceAssociatonInfo.isCascadeTypeRemove()) {
+            cascadeTypes.add("CascadeType.REMOVE");
+        }
+        if (persistenceAssociatonInfo.isCascadeTypePersist()) {
+            cascadeTypes.add("CascadeType.PERSIST");
+        }
+        if (persistenceAssociatonInfo.isCascadeTypeRefresh()) {
+            cascadeTypes.add("CascadeType.REFRESH");
+        }
+        if (cascadeTypes.size() == 0) {
+            return;
+        }
         fragment.addImport(IMPORT_CASCADE_TYPE);
-        attributesToAppend.add("cascade=CascadeType.ALL");
+        String cascadeTypesAsString = "cascade={";
+        for (Iterator<String> iterator = cascadeTypes.iterator(); iterator.hasNext();) {
+            cascadeTypesAsString += iterator.next();
+            if (iterator.hasNext()) {
+                cascadeTypesAsString += ",";
+            }
+        }
+        cascadeTypesAsString += "}";
+        attributesToAppend.add(cascadeTypesAsString);
     }
 
-    private void addAnnotationAttributeFetch(RelationshipType relationShip,
-            JavaCodeFragment fragment,
+    private void addAnnotationAttributeFetch(JavaCodeFragment fragment,
             List<String> attributesToAppend,
-            GenAssociation genAssociation,
-            GenAssociation genInverseAssociation) {
+            GenAssociation genAssociation) {
         fragment.addImport(IMPORT_FETCH_TYPE);
         IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
                 .getPersistenceAssociatonInfo();
@@ -294,7 +308,6 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
      * table will be used to hold all associations to the target.
      */
     private void addAnnotationAttributeMappedBy(RelationshipType relationShip,
-            JavaCodeFragment fragment,
             List<String> attributesToAppend,
             GenAssociation genAssociation,
             GenAssociation genInverseAssociation) throws CoreException {
@@ -320,7 +333,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
     }
 
     public boolean isOwnerOfRelationship(IPolicyCmptTypeAssociation association,
-            IPolicyCmptTypeAssociation inverseAssociation) throws CoreException {
+            IPolicyCmptTypeAssociation inverseAssociation) {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         if (persistenceAssociatonInfo.isUnidirectional()) {
             // if no inverse is given, then the association is always the owner

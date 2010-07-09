@@ -97,6 +97,12 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
     public boolean isPersistentProviderSupportConverter();
 
     /**
+     * Returns <code>true</code> if the persistent provider supports orphan removal. If no
+     * persistent provider is specified returns <code>false</code>.
+     */
+    public boolean isPersistentProviderSupportOrphanRemoval();
+
+    /**
      * Returns a compilation result that gives access to a table via the indicated function. Returns
      * <code>null</code> if this builder set does not support table access.
      * 

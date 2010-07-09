@@ -276,6 +276,12 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         assertFalse(persistenceAssociatonInfo.isTransient());
         assertFalse(persistenceAssociatonInfo.isOwnerOfManyToManyAssociation());
+        assertTrue(persistenceAssociatonInfo.isCascadeTypeOverwriteDefault());
+        assertTrue(persistenceAssociatonInfo.isCascadeTypeRefresh());
+        assertTrue(persistenceAssociatonInfo.isCascadeTypeMerge());
+        assertTrue(persistenceAssociatonInfo.isCascadeTypePersist());
+        assertTrue(persistenceAssociatonInfo.isCascadeTypeRemove());
+        assertTrue(persistenceAssociatonInfo.isOrphanRemoval());
         assertEquals("joinTable1", persistenceAssociatonInfo.getJoinTableName());
         assertEquals("targetColumn1", persistenceAssociatonInfo.getTargetColumnName());
         assertEquals("sourceColumn1", persistenceAssociatonInfo.getSourceColumnName());
@@ -287,11 +293,17 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         persistenceAssociatonInfo.setTransient(true);
         persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
+        persistenceAssociatonInfo.setCascadeTypeOverwriteDefault(true);
+        persistenceAssociatonInfo.setCascadeTypeMerge(true);
+        persistenceAssociatonInfo.setCascadeTypeRemove(true);
+        persistenceAssociatonInfo.setCascadeTypeRefresh(true);
+        persistenceAssociatonInfo.setCascadeTypePersist(true);
         persistenceAssociatonInfo.setJoinTableName("joinTable0");
         persistenceAssociatonInfo.setTargetColumnName("targetColumn0");
         persistenceAssociatonInfo.setSourceColumnName("sourceColumn0");
         persistenceAssociatonInfo.setFetchType(FetchType.EAGER);
         persistenceAssociatonInfo.setJoinColumnName("joinColumn0");
+        persistenceAssociatonInfo.setOrphanRemoval(true);
         Element element = persistenceAssociatonInfo.toXml(newDocument());
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
@@ -302,11 +314,17 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         assertTrue(copyOfPersistenceAssociatonInfo.isTransient());
         assertTrue(copyOfPersistenceAssociatonInfo.isOwnerOfManyToManyAssociation());
+        assertTrue(copyOfPersistenceAssociatonInfo.isCascadeTypeOverwriteDefault());
+        assertTrue(copyOfPersistenceAssociatonInfo.isCascadeTypeRefresh());
+        assertTrue(copyOfPersistenceAssociatonInfo.isCascadeTypeMerge());
+        assertTrue(copyOfPersistenceAssociatonInfo.isCascadeTypePersist());
+        assertTrue(copyOfPersistenceAssociatonInfo.isCascadeTypeRemove());
         assertEquals("joinTable0", copyOfPersistenceAssociatonInfo.getJoinTableName());
         assertEquals("targetColumn0", copyOfPersistenceAssociatonInfo.getTargetColumnName());
         assertEquals("sourceColumn0", copyOfPersistenceAssociatonInfo.getSourceColumnName());
         assertEquals(FetchType.EAGER, copyOfPersistenceAssociatonInfo.getFetchType());
         assertEquals("joinColumn0", copyOfPersistenceAssociatonInfo.getJoinColumnName());
+        assertTrue(copyOfPersistenceAssociatonInfo.isOrphanRemoval());
     }
 
     public void testIsJoinColumnRequired() {
@@ -399,7 +417,9 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.initDefaults();
         inversePersistenceAssociatonInfo.initDefaults();
         assertEquals(FetchType.LAZY, persistenceAssociatonInfo.getFetchType());
+        assertTrue(persistenceAssociatonInfo.isOrphanRemoval());
         assertEquals(FetchType.EAGER, inversePersistenceAssociatonInfo.getFetchType());
+        assertFalse(inversePersistenceAssociatonInfo.isOrphanRemoval());
 
         pcAssociation.setAssociationType(AssociationType.ASSOCIATION);
         pcAssociation.setMaxCardinality(1);
@@ -408,7 +428,9 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.initDefaults();
         inversePersistenceAssociatonInfo.initDefaults();
         assertEquals(FetchType.EAGER, persistenceAssociatonInfo.getFetchType());
+        assertFalse(persistenceAssociatonInfo.isOrphanRemoval());
         assertEquals(FetchType.EAGER, inversePersistenceAssociatonInfo.getFetchType());
+        assertFalse(inversePersistenceAssociatonInfo.isOrphanRemoval());
     }
 
     public void testValidateLazyFetchForSingleValuedAssociationsAllowed() throws CoreException {
@@ -509,7 +531,6 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals(RelationshipType.UNKNOWN, persistenceAssociatonInfo.evalBidirectionalRelationShipType(null));
     }
 
-    // TODO JPA joerg in persistence type info test
     public void testColumnNamesUnique() throws CoreException {
         IPolicyCmptTypeAssociation pcAssociation2 = policyCmptType.newPolicyCmptTypeAssociation();
         IPersistentAssociationInfo persistenceAssociatonInfo1 = pcAssociation.getPersistenceAssociatonInfo();
@@ -640,5 +661,17 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
         ml = implDerivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
         assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+    }
+
+    public void testIsOrphanRemovalRequired() {
+        IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
+        pcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        assertFalse(persistenceAssociatonInfo.isOrphanRemovalRequired());
+
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertFalse(persistenceAssociatonInfo.isOrphanRemovalRequired());
+
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertTrue(persistenceAssociatonInfo.isOrphanRemovalRequired());
     }
 }

@@ -195,4 +195,8 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         return false;
     }
 
+    @Override
+    public boolean isPersistentProviderSupportOrphanRemoval() {
+        return false;
+    }
 }
