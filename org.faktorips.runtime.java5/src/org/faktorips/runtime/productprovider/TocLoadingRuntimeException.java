@@ -11,27 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.testrepository.motor;
+package org.faktorips.runtime.productprovider;
 
-import java.util.List;
+public class TocLoadingRuntimeException extends RuntimeException {
 
-import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.internal.Table;
-
-/**
- * 
- * @author Peter Erzberger
- */
-public class RateTable extends Table {
-
-    @Override
-    protected void initKeyMaps() {
-        // do nothing
-    }
-
-    @Override
-    protected void addRow(List columns, IRuntimeRepository repository) {
-        // do nothing
-    }
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
+    private static final long serialVersionUID = 1L;
 
 }

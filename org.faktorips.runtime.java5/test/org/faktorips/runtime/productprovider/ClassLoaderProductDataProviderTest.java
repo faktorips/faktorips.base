@@ -24,14 +24,13 @@ import java.io.OutputStream;
 import java.io.Reader;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
 
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.faktorips.runtime.productprovider.ClassLoaderProductDataProvider.Builder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -50,8 +49,9 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        docBuilder = createDocumentBuilder();
-        pdp = new ClassLoaderProductDataProvider(getClassLoader(), TOC_FIlE_NAME);
+        Builder builder = new ClassLoaderProductDataProvider.Builder(getClassLoader(), TOC_FIlE_NAME);
+        docBuilder = builder.getDocumentBuilder();
+        pdp = (ClassLoaderProductDataProvider)builder.build();
         pdp.setCheckTocModifications(true);
         copy(TOC_FIlE_NAME_1, TOC_FIlE_NAME);
     }
@@ -277,18 +277,6 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
                 bufferedReader.close();
             }
         }
-    }
-
-    private final static DocumentBuilder createDocumentBuilder() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        DocumentBuilder builder;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e1) {
-            throw new RuntimeException("Error creating document builder.", e1);
-        }
-        return builder;
     }
 
 }

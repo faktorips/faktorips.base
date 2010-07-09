@@ -11,24 +11,18 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime;
+package org.faktorips.runtime.caching;
 
-/**
- * A cache factory that produces {@link ExpirableSoftReferenceCache}s
- * 
- * @author dirmeier
- */
-public class ExpirableCacheFactory extends DefaultCacheFactory {
+public abstract class AbstractComputable<K, V> implements IComputable<K, V> {
 
-    private final IModificationChecker modificationChecker;
+    private final Class<? super V> valueClass;
 
-    public ExpirableCacheFactory(IModificationChecker modificationChecker) {
-        this.modificationChecker = modificationChecker;
+    public AbstractComputable(Class<? super V> valueClass) {
+        this.valueClass = valueClass;
     }
 
-    @Override
-    public <T> ICache<T> createCache(Class<T> typeClass) {
-        return new ExpirableSoftReferenceCache<T>(modificationChecker, getInitialSiez(typeClass));
+    public Class<? super V> getValueClass() {
+        return valueClass;
     }
 
 }

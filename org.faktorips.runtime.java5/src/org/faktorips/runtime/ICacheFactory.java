@@ -13,6 +13,11 @@
 
 package org.faktorips.runtime;
 
+import java.util.List;
+
+import org.faktorips.runtime.caching.IComputable;
+import org.faktorips.runtime.caching.Memoizer;
+
 /**
  * A factory for creating caches used by the repository.
  * 
@@ -23,12 +28,14 @@ public interface ICacheFactory {
     /**
      * Creates a new cache of the given type.
      */
-    public <T> ICache<T> createCache(Class<T> typeClass);
+    public <K, V> Memoizer<K, V> createCache(IComputable<K, V> computable);
 
-    public ICache<IProductComponent> createProductCmptCache();
+    public Memoizer<String, IProductComponent> createProductCmptCache(IComputable<String, IProductComponent> computable);
 
-    public ICache<IProductComponentGeneration> createProductCmptGenerationCache();
+    public Memoizer<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(IComputable<GenerationId, IProductComponentGeneration> computable);
 
-    public ICache<ITable> createTableCache();
+    public Memoizer<String, ITable> createTableCache(IComputable<String, ITable> computable);
+
+    public Memoizer<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable);
 
 }

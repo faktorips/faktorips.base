@@ -100,4 +100,17 @@ public interface IProductDataProvider extends IModificationChecker {
      */
     public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException;
 
+    /**
+     * This is a builder to build a {@link IProductDataProvider}. We use the builder pattern here to
+     * guarantee one instance of {@link IProductDataProvider} is only used by one
+     * {@link ProductDataProviderRuntimeRepository}
+     * 
+     * @author dirmeier
+     */
+    public static interface Builder {
+
+        public IProductDataProvider build();
+
+    }
+
 }

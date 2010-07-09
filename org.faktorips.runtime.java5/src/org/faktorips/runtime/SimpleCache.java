@@ -13,44 +13,53 @@
 
 package org.faktorips.runtime;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.faktorips.runtime.caching.IComputable;
 
 /**
- * Simple cache that just uses a HashMap to cache objects and never releases them.
+ * Simple cache that just uses a HashMap to cache objects and never releases them. This Cache is
+ * thread safe but not very high-performance.
  * 
  * @author Jan Ortmann
  */
-public class SimpleCache implements ICache<Object> {
+public class SimpleCache implements IComputable<Object, Object> {
 
-    private Map<Object, Object> objects;
+    private ConcurrentHashMap<Object, Object> objects;
+    private final IComputable<Object, Object> computable;
+
+    public SimpleCache(IComputable<Object, Object> computable) {
+        this.computable = computable;
+    }
 
     /**
      * 
      */
-    public SimpleCache(int initialCapacity) {
-        objects = new HashMap<Object, Object>(initialCapacity);
+    public SimpleCache(IComputable<Object, Object> computable, int initialCapacity) {
+        this(computable);
+        objects = new ConcurrentHashMap<Object, Object>(initialCapacity);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void clear() {
-        objects.clear();
+    public Object compute(Object key) throws InterruptedException {
+        Object result = objects.get(key);
+        if (result != null) {
+            return result;
+        }
+        synchronized (this) {
+            result = objects.get(key);
+            if (result == null) {
+                result = computable.compute(key);
+                if (result != null) {
+                    objects.putIfAbsent(key, result);
+                    return result;
+                }
+            }
+            return null;
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Object getObject(Object key) {
-        return objects.get(key);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void put(Object key, Object o) {
-        objects.put(key, o);
+    public Class<? super Object> getValueClass() {
+        return computable.getValueClass();
     }
 
 }

@@ -14,7 +14,11 @@
 package org.faktorips.runtime;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.faktorips.runtime.caching.IComputable;
+import org.faktorips.runtime.caching.Memoizer;
 
 /**
  * Default cache factory. Uses SoftReferenceCaches for each object type.
@@ -63,7 +67,7 @@ public class DefaultCacheFactory implements ICacheFactory {
         this.defaultInitialSize = defaultInitialSize;
     }
 
-    protected int getInitialSiez(Class<?> typeClass) {
+    protected int getInitialSize(Class<?> typeClass) {
         Integer initSize = initialSizeMap.get(typeClass);
         if (initSize == null) {
             initSize = defaultInitialSize;
@@ -71,20 +75,24 @@ public class DefaultCacheFactory implements ICacheFactory {
         return initSize;
     }
 
-    public <T> ICache<T> createCache(Class<T> typeClass) {
-        return new SoftReferenceCache<T>(getInitialSiez(typeClass));
+    public <K, V> Memoizer<K, V> createCache(IComputable<K, V> computable) {
+        return new Memoizer<K, V>(computable);
     }
 
-    public ICache<IProductComponent> createProductCmptCache() {
-        return createCache(IProductComponent.class);
+    public Memoizer<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable) {
+        return createCache(computable);
     }
 
-    public ICache<IProductComponentGeneration> createProductCmptGenerationCache() {
-        return createCache(IProductComponentGeneration.class);
+    public Memoizer<String, IProductComponent> createProductCmptCache(IComputable<String, IProductComponent> computable) {
+        return createCache(computable);
     }
 
-    public ICache<ITable> createTableCache() {
-        return createCache(ITable.class);
+    public Memoizer<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(IComputable<GenerationId, IProductComponentGeneration> computable) {
+        return createCache(computable);
+    }
+
+    public Memoizer<String, ITable> createTableCache(IComputable<String, ITable> computable) {
+        return createCache(computable);
     }
 
 }

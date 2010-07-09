@@ -165,7 +165,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         for (ProductCmptTocEntry entry : entries) {
             Class<?> clazz = getClass(entry.getImplementationClassName(), cl);
             if (productCmptClass.isAssignableFrom(clazz)) {
-                result.add(getProductComponentInternal(entry));
+                result.add(getProductComponentInternal(entry.getIpsObjectId()));
             }
         }
     }

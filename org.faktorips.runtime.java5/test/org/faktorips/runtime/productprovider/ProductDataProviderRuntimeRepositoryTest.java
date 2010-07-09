@@ -52,10 +52,10 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        productDataProvider = new TestProductDataProvider(getClass().getClassLoader(),
+        Builder builder = new Builder(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
-        repository = new ProductDataProviderRuntimeRepository("testRR", getClass().getClassLoader(),
-                productDataProvider, null);
+        repository = new ProductDataProviderRuntimeRepository("testRR", getClass().getClassLoader(), builder, null);
+        productDataProvider = builder.testProductDataProvider;
     }
 
     public void testGetProductComponent() {
@@ -97,8 +97,13 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         repository.getProductComponent("home.HomeBasic");
         assertFalse(productDataProvider.flag);
         productDataProvider.modStamp += "1";
-        // should NOT use cached object
+
+        // should use cached object
+        assertFalse(productDataProvider.flag);
+
+        repository.checkForModifications();
         repository.getProductComponent("home.HomeBasic");
+        // should NOT use cached object
         assertTrue(productDataProvider.flag);
     }
 
@@ -147,8 +152,11 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         assertFalse(productDataProvider.flag);
         productDataProvider.modStamp += "1";
-        // should NOT use cached object
+        // should use cached object
+        assertFalse(productDataProvider.flag);
+        repository.checkForModifications();
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
+        // should NOT use cached object
         assertTrue(productDataProvider.flag);
     }
 
@@ -323,14 +331,14 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         }
     }
 
-    private class TestProductDataProvider extends ClassLoaderProductDataProvider {
+    private static class TestProductDataProvider extends ClassLoaderProductDataProvider {
 
         // set true by any method called (except getModificationStamp())
         boolean flag = false;
         String modStamp = "0";
 
-        public TestProductDataProvider(ClassLoader cl, String tocResourcePath) {
-            super(cl, tocResourcePath);
+        public TestProductDataProvider(Builder builder) {
+            super(builder);
         }
 
         @Override
@@ -367,6 +375,22 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         public String getProductDataVersion() {
             return modStamp;
         }
+    }
+
+    public static class Builder extends ClassLoaderProductDataProvider.Builder {
+
+        private TestProductDataProvider testProductDataProvider;
+
+        public Builder(ClassLoader cl, String tocResourcePath) {
+            super(cl, tocResourcePath);
+        }
+
+        @Override
+        public IProductDataProvider build() {
+            testProductDataProvider = new TestProductDataProvider(this);
+            return testProductDataProvider;
+        }
+
     }
 
 }

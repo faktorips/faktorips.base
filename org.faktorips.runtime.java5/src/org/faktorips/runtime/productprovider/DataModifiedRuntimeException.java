@@ -32,6 +32,10 @@ public class DataModifiedRuntimeException extends RuntimeException {
         this.dataModifiedException = e;
     }
 
+    public DataModifiedRuntimeException(String message, String oldVersion, String newVersion) {
+        this(new DataModifiedException(message, oldVersion, newVersion));
+    }
+
     public DataModifiedException getDataModifiedRuntimeException() {
         return dataModifiedException;
     }

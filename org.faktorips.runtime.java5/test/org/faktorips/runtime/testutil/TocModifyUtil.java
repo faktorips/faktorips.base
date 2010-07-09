@@ -41,7 +41,8 @@ public class TocModifyUtil {
     public TocModifyUtil(String tocResourcePath) throws ParserConfigurationException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         tocResource = cl.getResource(tocResourcePath);
-        productDataProvider = new ClassLoaderProductDataProvider(cl, tocResourcePath);
+        productDataProvider = (ClassLoaderProductDataProvider)new ClassLoaderProductDataProvider.Builder(cl,
+                tocResourcePath).build();
         docBuilder = createDocumentBuilder();
     }
 

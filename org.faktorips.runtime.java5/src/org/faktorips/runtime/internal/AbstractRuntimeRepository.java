@@ -371,9 +371,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllTables(List<ITable> result);
 
-    /**
-     * {@inheritDoc}
-     */
     public final ITable getTable(Class<?> tableClass) {
         ITable table = getTableInternal(tableClass);
         if (table != null) {
@@ -391,14 +388,11 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getTable() but searches only in this repository and not the ones, this repository
-     * depends on.
+     * Same as {@link #getTable(Class)} but searches only in this repository and not the ones, this
+     * repository depends on.
      */
     protected abstract ITable getTableInternal(Class<?> tableClass);
 
-    /**
-     * {@inheritDoc}
-     */
     public ITable getTable(String qualifiedTableName) {
         ITable table = getTableInternal(qualifiedTableName);
         if (table != null) {
@@ -414,14 +408,11 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getTable() but searches only in this repository and not the ones, this repository
-     * depends on.
+     * Same as {@link #getTable(String)}) but searches only in this repository and not the ones,
+     * this repository depends on.
      */
     protected abstract ITable getTableInternal(String qualifiedTableName);
 
-    /**
-     * {@inheritDoc}
-     */
     public final List<IpsTest2> getAllIpsTestCases(IRuntimeRepository runtimeRepository) {
         List<IpsTest2> result = new ArrayList<IpsTest2>();
         getAllIpsTestCases(result, runtimeRepository);
@@ -432,9 +423,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IpsTest2> getIpsTestCasesStartingWith(String qNamePrefix, IRuntimeRepository runtimeRepository) {
         List<IpsTest2> result = new ArrayList<IpsTest2>();
         getIpsTestCasesStartingWith(qNamePrefix, result, runtimeRepository);
@@ -446,8 +434,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getAllTestCases() but searches only in this repository and not the ones, this
-     * repository depends on. Adds the components found to the given result list.
+     * Same as {@link #getAllIpsTestCases(IRuntimeRepository)} but searches only in this repository
+     * and not the ones, this repository depends on. Adds the components found to the given result
+     * list.
      */
     protected abstract void getAllIpsTestCases(List<IpsTest2> result, IRuntimeRepository runtimeRepository);
 
@@ -458,16 +447,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             List<IpsTest2> result,
             IRuntimeRepository runtimeRepository);
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsTest2 getIpsTest(String qName) {
         return getIpsTest(qName, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsTest2 getIpsTest(String qName, IRuntimeRepository runtimeRepository) {
         IpsTest2 test = getIpsTestCase(qName, runtimeRepository);
         if (test != null) {
@@ -476,16 +459,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return getIpsTestSuite(qName, runtimeRepository);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsTestCaseBase getIpsTestCase(String qName) {
         return getIpsTestCase(qName, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsTestCaseBase getIpsTestCase(String qName, IRuntimeRepository runtimeRepository) {
         if (qName == null) {
             throw new NullPointerException();
@@ -506,23 +483,17 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getIpsTestCase() but searches only in this repository and not the ones, this
-     * repository depends on. The given runtimeRepository specifies the repository which will be
-     * used to instantiate the test case (e.g. the first repository which contains all dependence
-     * repositories).
+     * Same as {@link #getIpsTestCase(String, IRuntimeRepository)} but searches only in this
+     * repository and not the ones, this repository depends on. The given runtimeRepository
+     * specifies the repository which will be used to instantiate the test case (e.g. the first
+     * repository which contains all dependence repositories).
      */
     protected abstract IpsTestCaseBase getIpsTestCaseInternal(String qName, IRuntimeRepository runtimeRepository);
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsTestSuite getIpsTestSuite(String qNamePrefix) {
         return getIpsTestSuite(qNamePrefix, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IpsTestSuite getIpsTestSuite(String qNamePrefix, IRuntimeRepository runtimeRepository) {
         if (qNamePrefix == null) {
             throw new NullPointerException();
@@ -684,24 +655,15 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return modelType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IModelType getModelType(IModelObject modelObject) {
         return getModelType(modelObject.getClass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IModelType getModelType(IProductComponent modelObject) {
         return getModelType(modelObject.getClass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    final public Set<String> getAllModelTypeImplementationClasses() {
+    public final Set<String> getAllModelTypeImplementationClasses() {
         Set<String> result = new HashSet<String>();
         getAllModelTypeImplementationClasses(result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
@@ -732,9 +694,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final <T> T getEnumValue(Class<T> clazz, Object value) {
         if (value == null) {
             return null;
@@ -773,9 +732,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         throw new IllegalStateException("Unable to call the getEnumValueId of the provided enumeration value.", e); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final <T> List<T> getEnumValues(Class<T> clazz) {
         List<T> values = null;
         IEnumValueLookupService<T> lookup = getEnumValueLookupService(clazz);
@@ -802,24 +758,18 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract <T> List<T> getEnumValuesInternal(Class<T> clazz);
 
-    /**
-     * {@inheritDoc}
-     */
     public void addEnumValueLookupService(IEnumValueLookupService<?> lookup) {
         enumValueLookups.put(lookup.getEnumTypeClass(), lookup);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("unchecked")
     public <T> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz) {
-        return (IEnumValueLookupService<T>)enumValueLookups.get(enumClazz);
+        @SuppressWarnings("unchecked")
+        // because we store every kind of enumValueLookupService in the same map we could not know
+        // the type of the object. This is ugly design!
+        IEnumValueLookupService<T> enumValueLookupService = (IEnumValueLookupService<T>)enumValueLookups.get(enumClazz);
+        return enumValueLookupService;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void removeEnumValueLookupService(IEnumValueLookupService<?> lookup) {
         enumValueLookups.remove(lookup.getEnumTypeClass());
     }
@@ -878,13 +828,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * @throws RuntimeException Exceptions that are thrown while trying to load a class from the
      *             class loader or creating the jaxb context are wrapped into a runtime exception
      */
-    @SuppressWarnings("unchecked")
     public JAXBContext newJAXBContext() {
         try {
             Set<String> classNames = getAllModelTypeImplementationClasses();
-            List<Class> classes = new ArrayList<Class>(classNames.size());
+            List<Class<?>> classes = new ArrayList<Class<?>>(classNames.size());
             for (String className : classNames) {
-                Class clazz = getClassLoader().loadClass(className);
+                Class<?> clazz = getClassLoader().loadClass(className);
                 if (AbstractModelObject.class.isAssignableFrom(clazz)) {
                     classes.add(clazz);
                 }

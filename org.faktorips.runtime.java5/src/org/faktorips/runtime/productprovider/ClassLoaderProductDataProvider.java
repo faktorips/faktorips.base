@@ -53,23 +53,19 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
     private String tocFileLastModified = "";
     private URL tocUrl;
     private ReadonlyTableOfContents toc;
-    protected DocumentBuilder docBuilder;
-
-    public ClassLoaderProductDataProvider(ClassLoader cl, String tocResourcePath) {
-        this(cl, tocResourcePath, createDocumentBuilder());
-    }
+    private DocumentBuilder docBuilder;
 
     public void setCheckTocModifications(boolean checkTocModifications) {
         this.checkTocModifications = checkTocModifications;
     }
 
-    public ClassLoaderProductDataProvider(ClassLoader cl, String tocResourcePath, DocumentBuilder docBuilder) {
-        this.cl = cl;
-        tocUrl = cl.getResource(tocResourcePath);
+    protected ClassLoaderProductDataProvider(Builder builder) {
+        this.cl = builder.classLoader;
+        tocUrl = cl.getResource(builder.tocResourcePath);
         if (tocUrl == null) {
-            throw new IllegalArgumentException("Can' find table of contents file " + tocResourcePath);
+            throw new IllegalArgumentException("Can' find table of contents file " + builder.tocResourcePath);
         }
-        this.docBuilder = docBuilder;
+        this.docBuilder = builder.getDocumentBuilder();
     }
 
     public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException {
@@ -220,6 +216,42 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
             }
         });
         return builder;
+    }
+
+    public static class Builder implements IProductDataProvider.Builder {
+
+        private final ClassLoader classLoader;
+        private final String tocResourcePath;
+        private DocumentBuilder documentBuilder;
+
+        public Builder(ClassLoader cl, String tocResourcePath) {
+            this.classLoader = cl;
+            this.tocResourcePath = tocResourcePath;
+        }
+
+        public IProductDataProvider build() {
+            if (documentBuilder == null) {
+                documentBuilder = createDocumentBuilder();
+            }
+            return new ClassLoaderProductDataProvider(this);
+        }
+
+        /**
+         * Setting the optional document builder. If not set, a new document builder would be
+         * created
+         */
+        public void setDocBuilder(DocumentBuilder docBuilder) {
+            this.documentBuilder = docBuilder;
+        }
+
+        public DocumentBuilder getDocumentBuilder() {
+            if (documentBuilder != null) {
+                return documentBuilder;
+            } else {
+                return createDocumentBuilder();
+            }
+        }
+
     }
 
 }

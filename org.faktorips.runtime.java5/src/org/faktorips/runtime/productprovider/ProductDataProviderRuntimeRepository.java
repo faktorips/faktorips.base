@@ -16,7 +16,7 @@ package org.faktorips.runtime.productprovider;
 import java.io.InputStream;
 
 import org.faktorips.runtime.AbstractClassLoadingRuntimeRepository;
-import org.faktorips.runtime.ExpirableCacheFactory;
+import org.faktorips.runtime.DefaultCacheFactory;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -33,9 +33,8 @@ import org.w3c.dom.Element;
  * <p>
  * Because the data from an {@link IProductDataProvider} could change over time the
  * {@link ProductDataProviderRuntimeRepository} have to look for modifications and reinstantiates
- * the classes if necessary. It is also important to have an expirable implementation of the cache
- * so the {@link ProductDataProviderRuntimeRepository} uses the {@link ExpirableCacheFactory} to
- * create the cache objects.
+ * the classes if necessary. To check whether the cache is up to date or not the client have to call
+ * the Method #checkForModifications() each time before it starts a transaction.
  * <p>
  * IMPORTANT FOR MULTIUSER/THREADING:<br>
  * In a multiuser/threading environment using the {@link ProductDataProviderRuntimeRepository} you
@@ -58,7 +57,14 @@ import org.w3c.dom.Element;
 public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRuntimeRepository {
 
     private final IProductDataProvider productDataProvider;
+
     private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
+
+    /**
+     * This variable is true while the repository loads the table of content. It has to be volatile
+     * that all threads see exactly the same value.
+     */
+    private volatile boolean tocLoading = false;
 
     /**
      * This is the constructor for the {@link ProductDataProviderRuntimeRepository} expecting a name
@@ -68,7 +74,8 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
      * 
      * @param name The name of the runtime repository
      * @param cl the {@link ClassLoader} to load the product data instances
-     * @param productDataProvider the {@link IProductDataProvider} to get the product data content
+     * @param productDataProviderBuilder the {@link IProductDataProvider.Builder} to create the
+     *            {@link IProductDataProvider} from which we receive product data content
      * @param formulaEvaluatorFactory a {@link IFormulaEvaluatorFactory} to create a
      *            {@link org.faktorips.runtime.formula.IFormulaEvaluator} for evaluating formula on
      *            the fly instead of loading classes with compiled formulas. If you have no
@@ -76,10 +83,10 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
      *            compiled formula. In this case you could not change the product data in the
      *            product data provider because once loaded classes could not change.
      */
-    public ProductDataProviderRuntimeRepository(String name, ClassLoader cl, IProductDataProvider productDataProvider,
-            IFormulaEvaluatorFactory formulaEvaluatorFactory) {
-        super(name, new ExpirableCacheFactory(productDataProvider), cl);
-        this.productDataProvider = productDataProvider;
+    public ProductDataProviderRuntimeRepository(String name, ClassLoader cl,
+            IProductDataProvider.Builder productDataProviderBuilder, IFormulaEvaluatorFactory formulaEvaluatorFactory) {
+        super(name, new DefaultCacheFactory(), cl);
+        this.productDataProvider = productDataProviderBuilder.build();
         this.formulaEvaluatorFactory = formulaEvaluatorFactory;
         reload();
     }
@@ -138,25 +145,6 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
         return productDataProvider.loadToc();
     }
 
-    protected synchronized boolean isExpired(String version) {
-        return !getProductDataVersion().equals(version);
-    }
-
-    protected synchronized String getProductDataVersion() {
-        return productDataProvider.getProductDataVersion();
-    }
-
-    @Override
-    public synchronized void reload() {
-        if (getTableOfContents() == null) {
-            super.reload();
-        }
-        String tocVersion = getTableOfContents().getProductDataVersion();
-        if (tocVersion == null || !tocVersion.equals(productDataProvider.getProductDataVersion())) {
-            super.reload();
-        }
-    }
-
     @Override
     protected InputStream getXmlAsStream(EnumContentTocEntry tocEntry) {
         try {
@@ -175,8 +163,37 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
         }
     }
 
+    /**
+     * 
+     * @return true if there are modifications and false if nothing has changed
+     */
+    public synchronized boolean checkForModifications() {
+        if (isExpired(productDataProvider.getProductDataVersion())) {
+            super.reload();
+            return true;
+        }
+        return false;
+    }
+
+    boolean isExpired(String version) {
+        if (getTableOfContents() == null) {
+            return true;
+        }
+        String productDataVersion = getTableOfContents().getProductDataVersion();
+        // TODO delegate to modification checker
+        return productDataVersion == null || !productDataVersion.equals(version);
+    }
+
+    public String getProductDataVersion() {
+        if (getTableOfContents() != null) {
+            return getTableOfContents().getProductDataVersion();
+        } else {
+            return null;
+        }
+    }
+
     private RuntimeException dataModifiedException(DataModifiedException e) {
-        // clear caches is not necessary because every cache is expiring for itself
+        initCaches();
         return new DataModifiedRuntimeException(e);
     }
 

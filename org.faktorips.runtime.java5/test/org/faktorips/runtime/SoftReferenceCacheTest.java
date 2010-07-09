@@ -13,9 +13,6 @@
 
 package org.faktorips.runtime;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 /**
@@ -37,124 +34,124 @@ public class SoftReferenceCacheTest extends TestCase {
         // constants
         // DUMMY_BLOCK_SIZE_IN_MB and ENTRY_SIZE_IN_MB or set the java max heap size (e.g. -Xmx63m).
     }
-
-    /*
-     * Test the SoftReferenceMap several times to increase the base memory usage of the JVM, thus
-     * this base memory usage shouldn't influence the tests.
-     */
-    public void _testASoftReferenceMap0() {
-        // no OutOfMemoryError expected by using the SoftReferenceCache
-        testMap(new SoftReferenceCache<Object>(5));
-        System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
-    }
-
-    public void _testBSoftReferenceMap1() {
-        // no OutOfMemoryError expected by using the SoftReferenceCache
-        testMap(new SoftReferenceCache<Object>(5));
-        System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
-    }
-
-    public void _testCHashMap() {
-        boolean errorCatched = false;
-
-        try {
-            testMap(new HashMap<String, BigEntry>(5));
-        } catch (Error err) {
-            // Expected OutOfMemoryError error
-            if (err instanceof OutOfMemoryError) {
-                errorCatched = true;
-                System.out.println("=> Ok, OutOfMemoryError by using HashMap<=");
-            }
-        }
-        if (!errorCatched) {
-            fail("Warning: OutOfMemoryError expected by using HashMap, but wasn't thrown. "
-                    + "Decrease the JVM heap size or increase the constants in this class");
-        }
-    }
-
-    public void _testDSoftReferenceMap() {
-        // no OutOfMemoryError expected by using the SoftReferenceCache
-        testMap(new SoftReferenceCache<Object>(60));
-        System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
-    }
-
-    public void _testESoftReferenceMap() {
-        // no OutOfMemoryError expected by using the SoftReferenceCache
-        // the last 5 entries will be stored as hard references, and not removed
-        // by the garbage collector
-        testMap(new SoftReferenceCache<Object>(60, 5));
-        System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
-    }
-
-    private static void print(Map<String, BigEntry> map) {
-        System.out.println("One=" + map.get("One"));
-        System.out.println("Two=" + map.get("Two"));
-        System.out.println("Three=" + map.get("Three"));
-        System.out.println("Four=" + map.get("Four"));
-        System.out.println("Five=" + map.get("Five"));
-        System.out.println("Six=" + map.get("Six"));
-    }
-
-    private static void print(ICache<Object> map) {
-        System.out.println("One=" + map.getObject("One"));
-        System.out.println("Two=" + map.getObject("Two"));
-        System.out.println("Three=" + map.getObject("Three"));
-        System.out.println("Four=" + map.getObject("Four"));
-        System.out.println("Five=" + map.getObject("Five"));
-        System.out.println("Six=" + map.getObject("Six"));
-    }
-
-    private static void testMap(Map<String, BigEntry> map) {
-        System.out.println("Testing: " + map.getClass());
-        map.put("One", new BigEntry(1));
-        map.get("One");
-        map.put("Two", new BigEntry(2));
-        map.get("Two");
-        map.put("Three", new BigEntry(3));
-        map.get("Three");
-        map.put("Four", new BigEntry(4));
-        map.get("Four");
-        map.put("Five", new BigEntry(5));
-        map.get("Five");
-        map.put("Six", new BigEntry(6));
-        map.get("Six");
-        print(map);
-        byte[] block = new byte[DUMMY_BLOCK_SIZE_IN_MB * 1024 * 1024];
-        print(map);
-        block[0] = block[0];
-    }
-
-    private static void testMap(ICache<Object> map) {
-        System.out.println("Testing: " + map.getClass());
-        map.put("One", new BigEntry(1));
-        map.getObject("One");
-        map.put("Two", new BigEntry(2));
-        map.getObject("Two");
-        map.put("Three", new BigEntry(3));
-        map.getObject("Three");
-        map.put("Four", new BigEntry(4));
-        map.getObject("Four");
-        map.put("Five", new BigEntry(5));
-        map.getObject("Five");
-        map.put("Six", new BigEntry(6));
-        map.getObject("Six");
-        print(map);
-        byte[] block = new byte[DUMMY_BLOCK_SIZE_IN_MB * 1024 * 1024];
-        print(map);
-        block[0] = block[0];
-    }
-
-    private static class BigEntry {
-
-        private final Integer value;
-
-        public BigEntry(int value) {
-            this.value = new Integer(value);
-        }
-
-        @Override
-        public String toString() {
-            return "" + value;
-        }
-    }
+    //
+    // /*
+    // * Test the SoftReferenceMap several times to increase the base memory usage of the JVM, thus
+    // * this base memory usage shouldn't influence the tests.
+    // */
+    // public void _testASoftReferenceMap0() {
+    // // no OutOfMemoryError expected by using the SoftReferenceCache
+    // testMap(new SoftReferenceCache<Object>(5));
+    // System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
+    // }
+    //
+    // public void _testBSoftReferenceMap1() {
+    // // no OutOfMemoryError expected by using the SoftReferenceCache
+    // testMap(new SoftReferenceCache<Object>(5));
+    // System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
+    // }
+    //
+    // public void _testCHashMap() {
+    // boolean errorCatched = false;
+    //
+    // try {
+    // testMap(new HashMap<String, BigEntry>(5));
+    // } catch (Error err) {
+    // // Expected OutOfMemoryError error
+    // if (err instanceof OutOfMemoryError) {
+    // errorCatched = true;
+    // System.out.println("=> Ok, OutOfMemoryError by using HashMap<=");
+    // }
+    // }
+    // if (!errorCatched) {
+    // fail("Warning: OutOfMemoryError expected by using HashMap, but wasn't thrown. "
+    // + "Decrease the JVM heap size or increase the constants in this class");
+    // }
+    // }
+    //
+    // public void _testDSoftReferenceMap() {
+    // // no OutOfMemoryError expected by using the SoftReferenceCache
+    // testMap(new SoftReferenceCache<Object>(60));
+    // System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
+    // }
+    //
+    // public void _testESoftReferenceMap() {
+    // // no OutOfMemoryError expected by using the SoftReferenceCache
+    // // the last 5 entries will be stored as hard references, and not removed
+    // // by the garbage collector
+    // testMap(new SoftReferenceCache<Object>(60, 5));
+    // System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
+    // }
+    //
+    // private static void print(Map<String, BigEntry> map) {
+    // System.out.println("One=" + map.get("One"));
+    // System.out.println("Two=" + map.get("Two"));
+    // System.out.println("Three=" + map.get("Three"));
+    // System.out.println("Four=" + map.get("Four"));
+    // System.out.println("Five=" + map.get("Five"));
+    // System.out.println("Six=" + map.get("Six"));
+    // }
+    //
+    // private static void print(ICache<Object> map) {
+    // System.out.println("One=" + map.getObject("One"));
+    // System.out.println("Two=" + map.getObject("Two"));
+    // System.out.println("Three=" + map.getObject("Three"));
+    // System.out.println("Four=" + map.getObject("Four"));
+    // System.out.println("Five=" + map.getObject("Five"));
+    // System.out.println("Six=" + map.getObject("Six"));
+    // }
+    //
+    // private static void testMap(Map<String, BigEntry> map) {
+    // System.out.println("Testing: " + map.getClass());
+    // map.put("One", new BigEntry(1));
+    // map.get("One");
+    // map.put("Two", new BigEntry(2));
+    // map.get("Two");
+    // map.put("Three", new BigEntry(3));
+    // map.get("Three");
+    // map.put("Four", new BigEntry(4));
+    // map.get("Four");
+    // map.put("Five", new BigEntry(5));
+    // map.get("Five");
+    // map.put("Six", new BigEntry(6));
+    // map.get("Six");
+    // print(map);
+    // byte[] block = new byte[DUMMY_BLOCK_SIZE_IN_MB * 1024 * 1024];
+    // print(map);
+    // block[0] = block[0];
+    // }
+    //
+    // private static void testMap(ICache<Object> map) {
+    // System.out.println("Testing: " + map.getClass());
+    // map.put("One", new BigEntry(1));
+    // map.getObject("One");
+    // map.put("Two", new BigEntry(2));
+    // map.getObject("Two");
+    // map.put("Three", new BigEntry(3));
+    // map.getObject("Three");
+    // map.put("Four", new BigEntry(4));
+    // map.getObject("Four");
+    // map.put("Five", new BigEntry(5));
+    // map.getObject("Five");
+    // map.put("Six", new BigEntry(6));
+    // map.getObject("Six");
+    // print(map);
+    // byte[] block = new byte[DUMMY_BLOCK_SIZE_IN_MB * 1024 * 1024];
+    // print(map);
+    // block[0] = block[0];
+    // }
+    //
+    // private static class BigEntry {
+    //
+    // private final Integer value;
+    //
+    // public BigEntry(int value) {
+    // this.value = new Integer(value);
+    // }
+    //
+    // @Override
+    // public String toString() {
+    // return "" + value;
+    // }
+    // }
 }

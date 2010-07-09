@@ -18,7 +18,7 @@ package org.faktorips.runtime.caching;
  * 
  * @author dirmeier
  */
-public interface Computable<K, V> {
+public interface IComputable<K, V> {
 
     /**
      * Compute an object of type V identified by the key of type K
@@ -28,5 +28,10 @@ public interface Computable<K, V> {
      * @throws InterruptedException When computation was interrupted
      */
     public V compute(K key) throws InterruptedException;
+
+    /**
+     * Getting the {@link Class} of the value this computable produces.
+     */
+    public Class<? super V> getValueClass();
 
 }

@@ -25,39 +25,39 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 /**
- * This is Memoizer is implemented as suggested by Brian Goetz in Java Concurrency in Practice. It
- * is a thread safe caching mechanism that loads not stored object by calling a {@link Computable}.
+ * This Memoizer is implemented as suggested by Brian Goetz in Java Concurrency in Practice. It is a
+ * thread safe caching mechanism that loads not stored object by calling a {@link IComputable}.
  * 
  * It is extended by the soft reference mechanism so references could be garbage collected in case
  * of memory needs.
  * 
  * @author dirmeier
  */
-public class Memoizer<K, V> implements Computable<K, V> {
+public class Memoizer<K, V> implements IComputable<K, V> {
 
-    private final ConcurrentMap<K, Future<SoftReference<V>>> cache = new ConcurrentHashMap<K, Future<SoftReference<V>>>();
+    private final ConcurrentMap<K, Future<SoftValue<V>>> cache = new ConcurrentHashMap<K, Future<SoftValue<V>>>();
 
-    private final Computable<K, V> computable;
+    private final IComputable<K, V> computable;
 
     private final ReferenceQueue<V> queue = new ReferenceQueue<V>();
 
-    public Memoizer(Computable<K, V> computable) {
+    public Memoizer(IComputable<K, V> computable) {
         this.computable = computable;
     }
 
     public V compute(final K key) throws InterruptedException {
-        // In case of CancellationException we want to try again - in all other cases we exit with
-        // return or throwing an exception
+        // In case of SoftReference is garbaged or CancellationException we want to try again - in
+        // all other cases we exit with return or throwing an exception
         while (true) {
-            Future<SoftReference<V>> future = cache.get(key);
+            Future<SoftValue<V>> future = cache.get(key);
             if (future == null) {
-                Callable<SoftReference<V>> eval = new Callable<SoftReference<V>>() {
+                Callable<SoftValue<V>> eval = new Callable<SoftValue<V>>() {
 
-                    public SoftReference<V> call() throws Exception {
+                    public SoftValue<V> call() throws Exception {
                         return new SoftValue<V>(key, computable.compute(key), queue);
                     }
                 };
-                FutureTask<SoftReference<V>> futureTask = new FutureTask<SoftReference<V>>(eval);
+                FutureTask<SoftValue<V>> futureTask = new FutureTask<SoftValue<V>>(eval);
                 processQueue();
                 future = cache.putIfAbsent(key, futureTask);
                 if (future == null) {
@@ -66,9 +66,17 @@ public class Memoizer<K, V> implements Computable<K, V> {
                 }
             }
             try {
+                SoftValue<V> softValue = future.get();
+                if (softValue.get() == null) {
+                    cache.remove(softValue.key);
+                    // try again: while (true)
+                } else {
+                    return softValue.get();
+                }
                 return future.get().get();
             } catch (CancellationException e) {
                 cache.remove(key, future);
+                // try again: while (true)
             } catch (ExecutionException e) {
                 throw launderThrowable(e.getCause());
             }
@@ -100,6 +108,10 @@ public class Memoizer<K, V> implements Computable<K, V> {
         } else {
             throw new IllegalStateException("Not unchecked", t);
         }
+    }
+
+    public Class<? super V> getValueClass() {
+        return computable.getValueClass();
     }
 
     /**

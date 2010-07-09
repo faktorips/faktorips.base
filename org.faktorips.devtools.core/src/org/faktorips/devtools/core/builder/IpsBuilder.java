@@ -831,6 +831,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     return true;
                 case IResourceDelta.REMOVED:
                     removedIpsSrcFiles.add(ipsSrcFile);
+                    break;
                 case IResourceDelta.CHANGED: {
                     // skip changes, not caused by content changes,
                     if (delta.getFlags() != 0 && element.exists()) {
