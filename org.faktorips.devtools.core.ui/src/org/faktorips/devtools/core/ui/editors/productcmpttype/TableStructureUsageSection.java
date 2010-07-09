@@ -14,16 +14,27 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
@@ -44,9 +55,71 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         this.productCmptType = productCmptType;
     }
 
+    /**
+     * Action to open the selected target in a new editor window
+     */
+    private class OpenTableStructuresInEditorAction extends IpsAction {
+        String textSingular = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorSingular;
+        String textPlural = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorPlural;
+
+        public OpenTableStructuresInEditorAction(ISelectionProvider selectionProvider) {
+            super(selectionProvider);
+            setText(textSingular);
+        }
+
+        @Override
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            Object selected = selection.getFirstElement();
+            return (selected instanceof ITableStructureUsage);
+        }
+
+        @Override
+        public void run(IStructuredSelection selection) {
+            ITableStructureUsage tableStructureUsage = getTableStructureFromSelection(selection);
+            if (tableStructureUsage == null) {
+                return;
+            }
+            try {
+                String[] tableStructures = tableStructureUsage.getTableStructures();
+                for (String tblStruct : tableStructures) {
+                    IpsUIPlugin.getDefault().openEditor(
+                            getProductCmptType().getIpsProject()
+                                    .findIpsObject(IpsObjectType.TABLE_STRUCTURE, tblStruct));
+                }
+            } catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+
+        private ITableStructureUsage getTableStructureFromSelection(ISelection selection) {
+            if (!(selection instanceof IStructuredSelection)) {
+                return null;
+            }
+            Object selected = ((IStructuredSelection)selection).getFirstElement();
+            if (selected instanceof ITableStructureUsage) {
+                return (ITableStructureUsage)selected;
+            }
+            return null;
+        }
+
+        public void updateLabelFromSelection(ISelection selection) {
+            ITableStructureUsage tableStructureUsage = getTableStructureFromSelection(selection);
+            if (tableStructureUsage.getTableStructures().length > 1) {
+                setText(textPlural);
+            } else {
+                setText(textSingular);
+            }
+        }
+    }
+
+    public IProductCmptType getProductCmptType() {
+        return (IProductCmptType)getIpsObject();
+    }
+
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         tblsStructureUsageComposite = new TblsStructureUsageComposite((IProductCmptType)getIpsObject(), parent, toolkit);
+        tblsStructureUsageComposite.initContextMenu();
         return tblsStructureUsageComposite;
     }
 
@@ -80,6 +153,33 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
      */
     private class TblsStructureUsageComposite extends IpsPartsComposite {
 
+        private OpenTableStructuresInEditorAction openAction;
+
+        public void initContextMenu() {
+            openAction = new OpenTableStructuresInEditorAction(getViewer());
+            buildContextMenu();
+        }
+
+        private void buildContextMenu() {
+            final MenuManager menuManager = new MenuManager();
+            menuManager.setRemoveAllWhenShown(true);
+            // display menu only if one element is selected
+            menuManager.addMenuListener(new IMenuListener() {
+                @Override
+                public void menuAboutToShow(IMenuManager manager) {
+                    ISelection selection = getViewer().getSelection();
+                    if (selection.isEmpty()) {
+                        return;
+                    }
+                    openAction.updateLabelFromSelection(selection);
+                    menuManager.add(openAction);
+                }
+            });
+
+            Menu menu = menuManager.createContextMenu(getViewer().getControl());
+            getViewer().getControl().setMenu(menu);
+        }
+
         private class TblsStructureUsageContentProvider implements IStructuredContentProvider {
 
             @Override
@@ -89,12 +189,12 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
             @Override
             public void dispose() {
-                // nothing todo
+                // nothing to do
             }
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // nothing todo
+                // nothing to do
             }
         }
 
@@ -128,6 +228,12 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
             ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
             return tsu;
         }
+
+        @Override
+        protected void openLink() {
+            openAction.run();
+        }
+
     }
 
 }

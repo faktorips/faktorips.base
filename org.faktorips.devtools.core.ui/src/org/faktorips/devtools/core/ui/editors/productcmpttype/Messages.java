@@ -83,6 +83,8 @@ public class Messages extends NLS {
     public static String ProductCmptTypeMethodEditDialog_formulaNameLabel;
     public static String ProductCmptTypeMethodEditDialog_labelOverloadsFormula;
     public static String StructurePage_structurePageTitle;
+    public static String TableStructureUsageSection_menuOpenTargetInNewEditorPlural;
+    public static String TableStructureUsageSection_menuOpenTargetInNewEditorSingular;
     public static String TableStructureUsageSection_title;
     public static String TblsStructureUsageEditDialog_addButton;
     public static String TblsStructureUsageEditDialog_contentRequiredLabel;
