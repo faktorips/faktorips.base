@@ -404,7 +404,48 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertTrue(inversePersistenceAssociatonInfo.isJoinColumnRequired(pcAssociation));
     }
 
-    public void testInitDefaults() {
+    public void testInitDefaultCascadeTypes() throws CoreException {
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMaxCardinality(2);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        targetPcAssociation.setMaxCardinality(1);
+
+        PersistentAssociationInfo persistenceAssociatonInfo = (PersistentAssociationInfo)pcAssociation
+                .getPersistenceAssociatonInfo();
+        PersistentAssociationInfo inversePersistenceAssociatonInfo = (PersistentAssociationInfo)targetPcAssociation
+                .getPersistenceAssociatonInfo();
+
+        persistenceAssociatonInfo.initDefaultsCascadeTypes();
+        assertTrue(persistenceAssociatonInfo.isCascadeTypeMerge());
+        assertTrue(persistenceAssociatonInfo.isCascadeTypeRefresh());
+        assertTrue(persistenceAssociatonInfo.isCascadeTypeRemove());
+        assertTrue(persistenceAssociatonInfo.isCascadeTypePersist());
+
+        inversePersistenceAssociatonInfo.initDefaultsCascadeTypes();
+        assertFalse(inversePersistenceAssociatonInfo.isCascadeTypeMerge());
+        assertFalse(inversePersistenceAssociatonInfo.isCascadeTypeRefresh());
+        assertFalse(inversePersistenceAssociatonInfo.isCascadeTypeRemove());
+        assertFalse(inversePersistenceAssociatonInfo.isCascadeTypePersist());
+
+        pcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        pcAssociation.setMaxCardinality(1);
+        targetPcAssociation.setAssociationType(AssociationType.ASSOCIATION);
+        targetPcAssociation.setMaxCardinality(1);
+
+        persistenceAssociatonInfo.initDefaultsCascadeTypes();
+        assertFalse(persistenceAssociatonInfo.isCascadeTypeMerge());
+        assertFalse(persistenceAssociatonInfo.isCascadeTypeRefresh());
+        assertFalse(persistenceAssociatonInfo.isCascadeTypeRemove());
+        assertFalse(persistenceAssociatonInfo.isCascadeTypePersist());
+
+        inversePersistenceAssociatonInfo.initDefaultsCascadeTypes();
+        assertFalse(inversePersistenceAssociatonInfo.isCascadeTypeMerge());
+        assertFalse(inversePersistenceAssociatonInfo.isCascadeTypeRefresh());
+        assertFalse(inversePersistenceAssociatonInfo.isCascadeTypeRemove());
+        assertFalse(inversePersistenceAssociatonInfo.isCascadeTypePersist());
+    }
+
+    public void testInitDefaults() throws CoreException {
         pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         pcAssociation.setMaxCardinality(2);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);

@@ -344,7 +344,7 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
      * Set to <code>true</code> if the default cascade type should be ignored and the other cascade
      * type properties should be used instead.
      */
-    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault);
+    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) throws CoreException;
 
     /**
      * Returns <code>true</code> if the corresponding cascade type should be used.
@@ -395,7 +395,7 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     /**
      * Initialize the default properties
      */
-    public void initDefaults();
+    public void initDefaults() throws CoreException;
 
     /**
      * Evaluates the relationship type for bidirectional associations. If the association is
@@ -424,5 +424,10 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
         INNER,
         OUTER;
     }
+
+    /**
+     * Initialize the default cascade type properties
+     */
+    public void initDefaultsCascadeTypes() throws CoreException;
 
 }

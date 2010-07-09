@@ -123,15 +123,15 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         Composite discriminatorDefComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
 
-        toolkit.createLabel(discriminatorDefComposite, "Descriminator Column Name"); //$NON-NLS-1$
+        toolkit.createLabel(discriminatorDefComposite, "Column Name"); //$NON-NLS-1$
         Text descriminatorColumnNameText = toolkit.createText(discriminatorDefComposite);
 
-        toolkit.createLabel(discriminatorDefComposite, "Descriminator Datatype"); //$NON-NLS-1$
+        toolkit.createLabel(discriminatorDefComposite, "Datatype"); //$NON-NLS-1$
         Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
         setComboItems(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
         ComboField descriminatorDatatypeField = new EnumField(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
 
-        toolkit.createLabel(discriminatorDefComposite, "Descriminator Column Value"); //$NON-NLS-1$
+        toolkit.createLabel(discriminatorDefComposite, "Column Value"); //$NON-NLS-1$
         Text descriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
 
         if (ipsObject.getPersistenceTypeInfo() != null) {

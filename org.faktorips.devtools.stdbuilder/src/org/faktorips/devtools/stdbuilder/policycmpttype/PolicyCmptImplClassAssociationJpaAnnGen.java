@@ -119,7 +119,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             // add attributes to relationship annotation
             List<String> attributesToAppend = new ArrayList<String>();
             addAnnotationAttributeMappedBy(relationShip, attributesToAppend, genAssociation, genInverseAssociation);
-            addAnnotationAttributeCascadeType(relationShip, fragment, attributesToAppend, genAssociation);
+            addAnnotationAttributeCascadeType(fragment, attributesToAppend, genAssociation);
             addAnnotationAttributeFetch(fragment, attributesToAppend, genAssociation);
             addAnnotationAttributesTargetEntity(fragment, attributesToAppend, genAssociation);
             addAnnotationAttributeOrphanRemoval(persistenceProviderImpl, attributesToAppend);
@@ -248,34 +248,28 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         attributesToAppend.add("targetEntity = " + targetQName + ".class");
     }
 
-    private void addAnnotationAttributeCascadeType(RelationshipType relationShip,
-            JavaCodeFragment fragment,
+    private void addAnnotationAttributeCascadeType(JavaCodeFragment fragment,
             List<String> attributesToAppend,
             GenAssociation genAssociation) {
         IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
                 .getPersistenceAssociatonInfo();
-        if (!persistenceAssociatonInfo.isCascadeTypeOverwriteDefault()) {
-            if (genAssociation.getAssociation().isAssoziation() || relationShip == RelationshipType.MANY_TO_ONE) {
-                // no cascade type if association type is association or the relationShip type is
-                // many to one
-                return;
-            }
-            fragment.addImport(IMPORT_CASCADE_TYPE);
-            attributesToAppend.add("cascade=CascadeType.ALL");
-            return;
-        }
         List<String> cascadeTypes = new ArrayList<String>();
-        if (persistenceAssociatonInfo.isCascadeTypeMerge()) {
-            cascadeTypes.add("CascadeType.MERGE");
-        }
-        if (persistenceAssociatonInfo.isCascadeTypeRemove()) {
-            cascadeTypes.add("CascadeType.REMOVE");
-        }
-        if (persistenceAssociatonInfo.isCascadeTypePersist()) {
-            cascadeTypes.add("CascadeType.PERSIST");
-        }
-        if (persistenceAssociatonInfo.isCascadeTypeRefresh()) {
-            cascadeTypes.add("CascadeType.REFRESH");
+        if (persistenceAssociatonInfo.isCascadeTypeMerge() && persistenceAssociatonInfo.isCascadeTypeRemove()
+                && persistenceAssociatonInfo.isCascadeTypePersist() && persistenceAssociatonInfo.isCascadeTypeRefresh()) {
+            attributesToAppend.add("cascade=CascadeType.ALL");
+        } else {
+            if (persistenceAssociatonInfo.isCascadeTypeMerge()) {
+                cascadeTypes.add("CascadeType.MERGE");
+            }
+            if (persistenceAssociatonInfo.isCascadeTypeRemove()) {
+                cascadeTypes.add("CascadeType.REMOVE");
+            }
+            if (persistenceAssociatonInfo.isCascadeTypePersist()) {
+                cascadeTypes.add("CascadeType.PERSIST");
+            }
+            if (persistenceAssociatonInfo.isCascadeTypeRefresh()) {
+                cascadeTypes.add("CascadeType.REFRESH");
+            }
         }
         if (cascadeTypes.size() == 0) {
             return;

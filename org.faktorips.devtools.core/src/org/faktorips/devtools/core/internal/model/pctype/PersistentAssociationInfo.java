@@ -117,10 +117,39 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) {
+    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) throws CoreException {
+        if (!cascadeTypeOverwriteDefault) {
+            initDefaultsCascadeTypes();
+        }
         boolean oldValue = this.cascadeTypeOverwriteDefault;
         this.cascadeTypeOverwriteDefault = cascadeTypeOverwriteDefault;
         valueChanged(oldValue, cascadeTypeOverwriteDefault);
+    }
+
+    @Override
+    public void initDefaultsCascadeTypes() throws CoreException {
+        IPolicyCmptTypeAssociation invAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
+                getPolicyComponentTypeAssociation().getIpsProject());
+        RelationshipType relationShip = null;
+        if (invAssociation == null) {
+            relationShip = evalUnidirectionalRelationShipType();
+        } else {
+            relationShip = evalBidirectionalRelationShipType(invAssociation);
+        }
+        if (getPolicyComponentTypeAssociation().isAssoziation() || relationShip == RelationshipType.MANY_TO_ONE) {
+            // no cascade type if association type is association or the relationShip type is
+            // many to one
+            setAllCascadeTypes(false);
+        } else {
+            setAllCascadeTypes(true);
+        }
+    }
+
+    private void setAllCascadeTypes(boolean enabled) {
+        cascadeTypeMerge = enabled;
+        cascadeTypeRefresh = enabled;
+        cascadeTypeRemove = enabled;
+        cascadeTypePersist = enabled;
     }
 
     @Override
@@ -267,10 +296,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         // clear other columns to hold a consistent state
         if (!ownerOfManyToManyAssociation) {
             setJoinTableName(""); //$NON-NLS-1$
-            setTargetColumnName(""); //$NON-NLS-1$
-            setSourceColumnName(""); //$NON-NLS-1$
+            setTargetColumnName("");//$NON-NLS-1$
+            setSourceColumnName("");//$NON-NLS-1$
         } else {
-            setJoinColumnName(""); //$NON-NLS-1$
+            setJoinColumnName("");//$NON-NLS-1$
         }
         boolean oldValue = this.ownerOfManyToManyAssociation;
         this.ownerOfManyToManyAssociation = ownerOfManyToManyAssociation;
@@ -427,7 +456,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (relType == RelationshipType.MANY_TO_ONE) {
             return true;
         }
-        throw new RuntimeException("'Unsupported relationship type: " + relType.toString()); //$NON-NLS-1$
+        throw new RuntimeException("'Unsupported relationship type: " + relType.toString());
     }
 
     @Override
@@ -466,13 +495,16 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    public void initDefaults() {
+    public void initDefaults() throws CoreException {
         if (getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier()) {
             fetchType = FetchType.LAZY;
         } else {
             fetchType = FetchType.EAGER;
         }
+
         setOrphanRemoval(isOrphanRemovalRequired());
+
+        initDefaultsCascadeTypes();
     }
 
     @Override
@@ -504,13 +536,13 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_TRANSIENT, "" + Boolean.toString(transientAssociation)); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, "" //$NON-NLS-1$
+        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, ""//$NON-NLS-1$
                 + Boolean.toString(ownerOfManyToManyAssociation));
         element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, "" + sourceColumnName); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName);//$NON-NLS-1$
+        element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);//$NON-NLS-1$
+        element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);//$NON-NLS-1$
+        element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName);//$NON-NLS-1$
         element.setAttribute(PROPERTY_ORPHAN_REMOVAL, Boolean.toString(orphanRemoval));
 
         element.setAttribute(PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT, Boolean.toString(cascadeTypeOverwriteDefault));
@@ -649,10 +681,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private void validateJoinColumn(MessageList msgList, boolean mustBeEmpty) {
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_COLUMN_NAME_EMPTY,
                 MSGCODE_JOIN_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME, joinColumnName,
-                "join column name"); //$NON-NLS-1$
+                "join column name");
         if (!mustBeEmpty) {
             // validate max join column name length
-            validateMaxColumnNameLength(msgList, joinColumnName, "join column name", MSGCODE_JOIN_COLUMN_NAME_INVALID, //$NON-NLS-1$
+            validateMaxColumnNameLength(msgList, joinColumnName, "join column name", MSGCODE_JOIN_COLUMN_NAME_INVALID,
                     PROPERTY_JOIN_COLUMN_NAME);
         }
     }
@@ -660,19 +692,19 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private void validateJoinTableDetails(MessageList msgList, boolean mustBeEmpty) {
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_TABLE_NAME_EMPTY,
                 MSGCODE_JOIN_TABLE_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME, joinTableName,
-                "join table name"); //$NON-NLS-1$
+                "join table name");
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_SOURCE_COLUMN_NAME_EMPTY,
                 MSGCODE_SOURCE_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
-                sourceColumnName, "source column name"); //$NON-NLS-1$
+                sourceColumnName, "source column name");
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_TARGET_COLUMN_NAME_EMPTY,
                 MSGCODE_TARGET_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
-                targetColumnName, "target column name"); //$NON-NLS-1$
+                targetColumnName, "target column name");
 
         // validate max join table columns name source and target length
         if (!mustBeEmpty) {
-            validateMaxColumnNameLength(msgList, sourceColumnName, "source column name", //$NON-NLS-1$
+            validateMaxColumnNameLength(msgList, sourceColumnName, "source column name",
                     MSGCODE_SOURCE_COLUMN_NAME_INVALID, PROPERTY_SOURCE_COLUMN_NAME);
-            validateMaxColumnNameLength(msgList, targetColumnName, "target column name", //$NON-NLS-1$
+            validateMaxColumnNameLength(msgList, targetColumnName, "target column name",
                     MSGCODE_TARGET_COLUMN_NAME_INVALID, PROPERTY_TARGET_COLUMN_NAME);
         }
 

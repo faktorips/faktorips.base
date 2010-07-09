@@ -64,11 +64,13 @@ public class Migration_3_0_0_ms4 extends DefaultMigration {
         }
     }
 
-    private void migrateAssociation(IPolicyCmptTypeAssociation ass) {
+    private void migrateAssociation(IPolicyCmptTypeAssociation ass) throws CoreException {
         IPersistentAssociationInfo persistenceAssociatonInfo = ass.getPersistenceAssociatonInfo();
         if (persistenceAssociatonInfo == null) {
             return;
         }
         persistenceAssociatonInfo.setOrphanRemoval(persistenceAssociatonInfo.isOrphanRemovalRequired());
+
+        persistenceAssociatonInfo.initDefaultsCascadeTypes();
     }
 }
