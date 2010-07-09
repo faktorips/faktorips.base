@@ -252,7 +252,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
             return;
         }
 
-        if (StringUtils.isBlank(tableColumnName)) {
+        if (StringUtils.isBlank(tableColumnName) && !getPolicyComponentTypeAttribute().isOverwrite()) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME, "Empty column name.", Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
         }

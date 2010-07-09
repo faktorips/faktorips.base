@@ -35,6 +35,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
         pcAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         pcAttribute.getPersistenceAttributeInfo().setTransient(false);
+        pcAttribute.setName("attr1");
     }
 
     public void testValidate() {
@@ -133,5 +134,25 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         pAttInfo.setTableColumnName("");
         ml = pAttInfo.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME));
+    }
+
+    public void testColumnNameIfOverwrittenAttribute() throws CoreException {
+        MessageList ml;
+        PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "SubPolicy");
+        policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        policyCmptType.setSupertype(policyCmptType.getQualifiedName());
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        IPersistentAttributeInfo persAttrInfo = attribute.getPersistenceAttributeInfo();
+        persAttrInfo.setTransient(false);
+        attribute.setOverwrite(false);
+        attribute.setName(pcAttribute.getName() + "_2");
+        ml = persAttrInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME));
+
+        attribute.setName(pcAttribute.getName());
+        attribute.setOverwrite(true);
+        ml = persAttrInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME));
+
     }
 }
