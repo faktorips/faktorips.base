@@ -86,7 +86,9 @@ public class ClientRuntimeRepository implements IRuntimeRepository {
         version = pdpRepository.getProductDataVersion();
     }
 
-    private void checkForModifications() {
+    public void checkForModifications() {
+        boolean modified = pdpRepository.checkForModifications();
+
         if (pdpRepository.isExpired(version)) {
             DataModifiedException e = new DataModifiedException("Product data repository changed version", version,
                     pdpRepository.getProductDataVersion());
