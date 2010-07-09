@@ -364,10 +364,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 && getPolicyCmptType().getAttributes().length > 0) {
             // TODO JPA Joerg wenn das mit getPolicyCmptType().getAttributes().length > 0 stimmt
             // zus. noch transiente attribute ausschliessen
-            String text = NLS
-                    .bind(
-                            "The discriminator definition is missing, the discriminator must be defined in the root entity {0}.",
-                            rootEntity.getUnqualifiedName());
+            String text = NLS.bind("The discriminator must be defined in the root entity {0}.", rootEntity
+                    .getUnqualifiedName());
             msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
             return;
