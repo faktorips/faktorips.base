@@ -428,6 +428,7 @@ public class GenAssociationToMany extends GenAssociation {
 
         // generate add method which delegates to the internal add method
         // and notifies all change listener
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureAddObject(methodsBuilder, false);
         methodsBuilder.openBracket();
 

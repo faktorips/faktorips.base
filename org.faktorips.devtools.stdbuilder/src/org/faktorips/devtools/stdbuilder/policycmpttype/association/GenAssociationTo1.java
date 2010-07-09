@@ -276,10 +276,12 @@ public class GenAssociationTo1 extends GenAssociation {
      */
     private void generateMethodSetRefObjectWithChangeListenerSupport(JavaCodeFragmentBuilder builder)
             throws CoreException {
+
         String paramName = getParamNameForSetObject();
 
         // generate set method which delegates to the internal set method
         // and notifies all change listener
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureSetObject(builder, false);
         builder.openBracket();
 
