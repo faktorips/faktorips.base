@@ -60,6 +60,8 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
 
     private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
+    private String tocVersion = "";
+
     /**
      * This variable is true while the repository loads the table of content. It has to be volatile
      * that all threads see exactly the same value.
@@ -142,7 +144,9 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
 
     @Override
     protected IReadonlyTableOfContents loadTableOfContents() {
-        return productDataProvider.loadToc();
+        IReadonlyTableOfContents toc = productDataProvider.loadToc();
+        tocVersion = productDataProvider.getProductDataVersion();
+        return toc;
     }
 
     @Override
@@ -168,8 +172,8 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
      * @return true if there are modifications and false if nothing has changed
      */
     public synchronized boolean checkForModifications() {
-        if (isExpired(productDataProvider.getProductDataVersion())) {
-            super.reload();
+        if (productDataProvider.isExpired(getProductDataVersion())) {
+            reload();
             return true;
         }
         return false;
@@ -179,17 +183,12 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
         if (getTableOfContents() == null) {
             return true;
         }
-        String productDataVersion = getTableOfContents().getProductDataVersion();
         // TODO delegate to modification checker
-        return productDataVersion == null || !productDataVersion.equals(version);
+        return !getProductDataVersion().equals(version);
     }
 
     public String getProductDataVersion() {
-        if (getTableOfContents() != null) {
-            return getTableOfContents().getProductDataVersion();
-        } else {
-            return null;
-        }
+        return tocVersion;
     }
 
     private RuntimeException dataModifiedException(DataModifiedException e) {
