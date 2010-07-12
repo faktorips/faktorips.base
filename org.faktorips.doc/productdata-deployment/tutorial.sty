@@ -1,0 +1,54 @@
+\ProvidesPackage{tutorial}
+
+\usepackage{ngerman}
+\usepackage[utf8]{inputenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+
+\geometry{a4paper,left=30mm,right=30mm, top=4cm, bottom=4cm} 
+\pagestyle{fancy}
+
+
+\makeatletter
+% \fancyhf{} %alle Kopf- und Fußzeilenfelder bereinigen
+% \fancyhead[L]{Titel} %Kopfzeile links
+% \fancyhead[C]{} %zentrierte Kopfzeile
+% \fancyhead[R]{Name} %Kopfzeile rechts
+% \renewcommand{\headrulewidth}{0.4pt} %obere Trennlinie
+\fancyhead[L]{\mycopyright}
+%CopyRight \fancyfoot[L]{\mycopyright} %CopyRight
+\fancyfoot[C]{\@title} %Titel
+\fancyfoot[R]{\thepage} %Seitennummer
+\renewcommand{\footrulewidth}{0.4pt} %untere Trennlinie
+
+\newcommand{\setcopyright}[1]{\newcommand{\mycopyright}{#1}}
+\renewcommand*{\thesection}{}
+\renewcommand*{\thesubsection}{\arabic{subsection}}
+\renewcommand{\maketitle}{
+\thispagestyle{empty}
+
+%
+\begin{center}
+\includegraphics[height=0.6cm]{./pics/FaktorZehn-ORG.png}
+\hrule
+\vfill
+\par
+\Huge \@title
+\vfill
+\vfill
+\hrule
+\vspace{2pt}
+\Large \@author\par
+\today
+\end{center}
+
+% \vfill
+\par
+\normalsize
+% \mycopyright
+% \newpage
+
+
+}
+\makeatother
