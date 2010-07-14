@@ -859,14 +859,4 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
-    /**
-     * In most implementation changing product data is not available while runtime. So this method
-     * simply returns false.
-     * 
-     * {@inheritDoc}
-     */
-    public boolean reloadIfModified() {
-        return false;
-    }
-
 }

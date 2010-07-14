@@ -153,18 +153,8 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         return element;
     }
 
-    public String getLocalVersion() {
+    public String getVersion() {
         return tocFileLastModified;
-    }
-
-    @Override
-    public boolean checkLocalVersion(String version) {
-        return checkTocModifications && super.checkLocalVersion(version);
-    }
-
-    @Override
-    public boolean checkBaseVersion(String version) {
-        return checkTocModifications && super.checkBaseVersion(version);
     }
 
     @Override
@@ -195,8 +185,8 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
     }
 
     private void throwExceptionIfModified(String name, String timestamp) throws DataModifiedException {
-        if (checkTocModifications && checkLocalVersion(timestamp)) {
-            throw new DataModifiedException(MODIFIED_EXCEPTION_MESSAGE + name, getLocalVersion(), timestamp);
+        if (checkTocModifications && !isCompatibleVersion(getVersion(), timestamp)) {
+            throw new DataModifiedException(MODIFIED_EXCEPTION_MESSAGE + name, getVersion(), timestamp);
         }
     }
 

@@ -23,16 +23,12 @@ package org.faktorips.runtime;
 public interface IVersionChecker {
 
     /**
-     * Check whether a given time stamp is expired or not. This method is called very often and have
-     * to be as fast as possible!
+     * Returns true if the new version is compatible to the old version or both versions are equal
      * 
-     * @param version The version or time stamp to check against the modification checker
-     * @return true if the time stamp is expired
+     * @param oldVersion the old version
+     * @param newVersion the new version
+     * @return true if versions are compatible
      */
-    public boolean checkLocalVersion(String version);
-
-    public boolean checkBaseVersion(String version);
-
-    public String getLocalVersion();
+    public boolean isCompatibleVersion(String oldVersion, String newVersion);
 
 }

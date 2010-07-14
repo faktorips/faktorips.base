@@ -76,18 +76,21 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
         return docBuilderHolder.get();
     }
 
-    public boolean checkForModifications() {
-        return checkBaseVersion(getLocalVersion());
+    /**
+     * Returns true if the old version is the same as new version
+     * 
+     * @param oldVersion the old version
+     * @param newVersion the new version
+     * @return true if both versions are compatible
+     */
+    public boolean isCompatibleVersion(String oldVersion, String newVersion) {
+        return oldVersion.equals(newVersion);
     }
 
-    public boolean checkLocalVersion(String version) {
-        return !getLocalVersion().equals(version);
+    public boolean isCompatibleToBaseVersion(String version) {
+        return isCompatibleVersion(version, getBaseVersion());
     }
 
-    public boolean checkBaseVersion(String version) {
-        return checkLocalVersion(version) || !getBaseVersion().equals(version);
-    }
-
-    protected abstract String getBaseVersion();
+    public abstract String getBaseVersion();
 
 }

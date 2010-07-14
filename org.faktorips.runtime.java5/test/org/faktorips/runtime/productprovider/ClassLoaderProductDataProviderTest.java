@@ -60,16 +60,16 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         copy(TOC_FIlE_NAME_1, TOC_FIlE_NAME);
     }
 
-    public void testgetLocalVersion() throws Exception {
+    public void testgetVersion() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
         tocFile.setLastModified(321321000);
         pdp.loadToc();
-        String stamp = pdp.getLocalVersion();
+        String stamp = pdp.getVersion();
         assertEquals("321321000", stamp);
 
         tocFile.setLastModified(123456000);
         pdp.loadToc();
-        stamp = pdp.getLocalVersion();
+        stamp = pdp.getVersion();
         assertEquals("123456000", stamp);
     }
 
@@ -78,7 +78,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         tocFile.setLastModified(321321000);
         pdp.loadToc();
 
-        assertEquals("321321000", pdp.getLocalVersion());
+        assertEquals("321321000", pdp.getVersion());
 
         ReadonlyTableOfContents expectedToc = new ReadonlyTableOfContents();
         expectedToc.initFromXml(getElement(TOC_FIlE_NAME_1));
@@ -91,7 +91,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         expectedToc = new ReadonlyTableOfContents();
         expectedToc.initFromXml(getElement(TOC_FIlE_NAME_2));
         assertEquals(expectedToc.toString(), pdp.loadToc().toString());
-        assertEquals("999999000", pdp.getLocalVersion());
+        assertEquals("999999000", pdp.getVersion());
     }
 
     public void testGetProductCmptData() throws Exception {
@@ -104,7 +104,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         IReadonlyTableOfContents toc = pdp.loadToc();
         Element actualElement = pdp.getProductCmptData(toc.getProductCmptTocEntry("sample.TestProduct 2006-01"));
 
-        assertEquals("321321000", pdp.getLocalVersion());
+        assertEquals("321321000", pdp.getVersion());
         assertTrue(expectedElement.isEqualNode(actualElement));
 
         tocFile.setLastModified(987987000);
@@ -116,7 +116,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         }
         actualElement = pdp.getProductCmptData(toc.getProductCmptTocEntry("sample.TestProduct 2006-01"));
 
-        assertEquals("987987000", pdp.getLocalVersion());
+        assertEquals("987987000", pdp.getVersion());
         assertTrue(expectedElement.isEqualNode(actualElement));
     }
 
@@ -129,7 +129,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         tocFile.setLastModified(321321000);
 
         IReadonlyTableOfContents toc = pdp.loadToc();
-        assertEquals("321321000", pdp.getLocalVersion());
+        assertEquals("321321000", pdp.getVersion());
 
         ProductCmptTocEntry pcmptEntry = toc.getProductCmptTocEntry("sample.TestProduct 2006-01");
         Element actualElement = pdp.getProductCmptGenerationData(pcmptEntry.getLatestGenerationEntry());
@@ -144,7 +144,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
             toc = pdp.loadToc();
         }
 
-        assertEquals("987987000", pdp.getLocalVersion());
+        assertEquals("987987000", pdp.getVersion());
         pcmptEntry = toc.getProductCmptTocEntry("sample.TestProduct 2006-01");
         actualElement = pdp.getProductCmptGenerationData(pcmptEntry.getLatestGenerationEntry());
         assertTrue(generations.item(1).isEqualNode(actualElement));
@@ -160,7 +160,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         IReadonlyTableOfContents toc = pdp.loadToc();
         Element actualElement = pdp.getTestcaseElement(toc.getTestCaseTocEntryByQName("testpack.Test"));
 
-        assertEquals("321321000", pdp.getLocalVersion());
+        assertEquals("321321000", pdp.getVersion());
         assertTrue(expectedElement.isEqualNode(actualElement));
 
         tocFile.setLastModified(987987000);
@@ -172,7 +172,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         }
         actualElement = pdp.getTestcaseElement(toc.getTestCaseTocEntryByQName("testpack.Test"));
 
-        assertEquals("987987000", pdp.getLocalVersion());
+        assertEquals("987987000", pdp.getVersion());
         assertTrue(expectedElement.isEqualNode(actualElement));
     }
 
@@ -189,7 +189,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         String actualContent = readStreamContent(is);
         is.close();
 
-        assertEquals("321321000", pdp.getLocalVersion());
+        assertEquals("321321000", pdp.getVersion());
         assertEquals(expectedContent, actualContent);
 
         tocFile.setLastModified(987987000);
@@ -203,7 +203,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
 
         actualContent = readStreamContent(is);
         is.close();
-        assertEquals("987987000", pdp.getLocalVersion());
+        assertEquals("987987000", pdp.getVersion());
         assertEquals(expectedContent, actualContent);
     }
 
@@ -221,7 +221,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         String actualContent = readStreamContent(is);
         is.close();
 
-        assertEquals("321321000", pdp.getLocalVersion());
+        assertEquals("321321000", pdp.getVersion());
         assertEquals(expectedContent, actualContent);
 
         tocFile.setLastModified(987987000);
@@ -235,7 +235,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
 
         actualContent = readStreamContent(is);
         is.close();
-        assertEquals("987987000", pdp.getLocalVersion());
+        assertEquals("987987000", pdp.getVersion());
         assertEquals(expectedContent, actualContent);
     }
 

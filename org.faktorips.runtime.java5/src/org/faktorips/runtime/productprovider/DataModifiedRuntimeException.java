@@ -32,11 +32,18 @@ public class DataModifiedRuntimeException extends RuntimeException {
         this.dataModifiedException = e;
     }
 
+    /**
+     * Constructs a new {@link DataModifiedRuntimeException} with a nested
+     * {@link DataModifiedException}
+     */
     public DataModifiedRuntimeException(String message, String oldVersion, String newVersion) {
         this(new DataModifiedException(message, oldVersion, newVersion));
     }
 
-    public DataModifiedException getDataModifiedRuntimeException() {
+    /**
+     * Getting the nested {@link DataModifiedException}
+     */
+    public DataModifiedException getDataModifiedException() {
         return dataModifiedException;
     }
 

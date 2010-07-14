@@ -101,14 +101,36 @@ public interface IProductDataProvider extends IVersionChecker {
     public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException;
 
     /**
+     * Getting the actual version of the product data provider. This should be a cached version and
+     * does not need to be requested from a file or server every time.
+     * 
+     * @return the version of the product data provider
+     */
+    public String getVersion();
+
+    /**
+     * Checks whether the given version is compatible to the base version. The base is the real
+     * version of the service or file - not the cached version of the prodct data provider
+     * 
+     * @param version The version to be checked against base version
+     * @return true if the version is compatible
+     */
+    public boolean isCompatibleToBaseVersion(String version);
+
+    /**
      * This is a builder to build a {@link IProductDataProvider}. We use the builder pattern here to
      * guarantee one instance of {@link IProductDataProvider} is only used by one
-     * {@link ProductDataProviderRuntimeRepository}
+     * {@link DetachedContentRuntimeRepositoryManager}
      * 
      * @author dirmeier
      */
     public static interface Builder {
 
+        /**
+         * This methods calls the constructor of the {@link IProductDataProvider} implementation
+         * 
+         * @return a new {@link IProductDataProvider}
+         */
         public IProductDataProvider build();
 
     }

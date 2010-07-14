@@ -395,14 +395,4 @@ public interface IRuntimeRepository {
      */
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory();
 
-    /**
-     * Call a modification check at the runtime repository. If there is any changes in the product
-     * data, this method reloads the necessary data and returns true. If there are no changes this
-     * method simply returns false. This is used by the
-     * {@link org.faktorips.runtime.productprovider.ProductDataProviderRuntimeRepository} to reload
-     * the content after product data has changed.
-     * 
-     * @return true if there were any modifications
-     */
-    public boolean reloadIfModified();
 }

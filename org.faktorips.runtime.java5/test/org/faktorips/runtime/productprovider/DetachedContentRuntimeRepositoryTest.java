@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
@@ -44,10 +45,11 @@ import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 import org.w3c.dom.Element;
 
-public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
+public class DetachedContentRuntimeRepositoryTest extends TestCase {
 
-    private ProductDataProviderRuntimeRepository repository;
+    private IRuntimeRepository repository;
     private TestProductDataProvider productDataProvider;
+    private DetachedContentRuntimeRepositoryManager pdpRuntimeRepository;
 
     @Override
     protected void setUp() throws Exception {
@@ -55,7 +57,9 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         Builder builder = new Builder(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
         builder.setCheckTocModifications(true);
-        repository = new ProductDataProviderRuntimeRepository("testRR", getClass().getClassLoader(), builder, null);
+        pdpRuntimeRepository = new DetachedContentRuntimeRepositoryManager("testRR", getClass().getClassLoader(),
+                builder, null);
+        repository = pdpRuntimeRepository.getTransaction();
         productDataProvider = builder.testProductDataProvider;
     }
 
@@ -102,7 +106,8 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         // should use cached object
         assertFalse(productDataProvider.flag);
 
-        repository.reloadIfModified();
+        repository = pdpRuntimeRepository.getTransaction();
+
         repository.getProductComponent("home.HomeBasic");
         // should NOT use cached object
         assertTrue(productDataProvider.flag);
@@ -155,7 +160,7 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         productDataProvider.baseVersion = "1";
         // should use cached object
         assertFalse(productDataProvider.flag);
-        repository.reloadIfModified();
+        repository = pdpRuntimeRepository.getTransaction();
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         // should NOT use cached object
         assertTrue(productDataProvider.flag);
@@ -183,10 +188,6 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         // Unknown policy component class => should return empty list
         list = repository.getAllProductComponents(String.class);
         assertEquals(0, list.size());
-    }
-
-    public void testReload() {
-        repository.reload();
     }
 
     public void testGetTableByClass() {

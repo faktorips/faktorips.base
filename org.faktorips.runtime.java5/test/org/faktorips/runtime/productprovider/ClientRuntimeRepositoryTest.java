@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 public class ClientRuntimeRepositoryTest extends TestCase {
 
-    private ProductDataProviderRuntimeRepository repository;
+    private DetachedContentRuntimeRepositoryManager repository;
 
     @Override
     protected void setUp() throws Exception {
@@ -31,7 +31,7 @@ public class ClientRuntimeRepositoryTest extends TestCase {
         MyBuilder builder = new MyBuilder(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
         builder.setCheckTocModifications(true);
-        repository = new ProductDataProviderRuntimeRepository("testRR", getClass().getClassLoader(), builder, null);
+        repository = new DetachedContentRuntimeRepositoryManager("testRR", getClass().getClassLoader(), builder, null);
     }
 
     private void setTocVersion(long version) {
@@ -54,9 +54,9 @@ public class ClientRuntimeRepositoryTest extends TestCase {
     }
 
     public void testClientCall() {
-        ClientRuntimeRepository client1 = new ClientRuntimeRepository(repository);
-        ClientRuntimeRepository client2 = new ClientRuntimeRepository(repository);
-        ClientRuntimeRepository client3 = new ClientRuntimeRepository(repository);
+        RuntimeRepositoryTransaction client1 = repository.getTransaction();
+        RuntimeRepositoryTransaction client2 = repository.getTransaction();
+        RuntimeRepositoryTransaction client3 = repository.getTransaction();
 
         assertNotNull(client1.getProductComponent("motor.MotorBasic"));
 
@@ -70,9 +70,8 @@ public class ClientRuntimeRepositoryTest extends TestCase {
         // we did not call checkForModifications()
         client1.getProductComponent("motor.MotorBasic");
 
-        client1.reloadIfModified();
-
-        // shold NOT throw an exception because we just called checkForModifications.
+        client1 = repository.getTransaction();
+        // shold NOT throw an exception because we just called reloadIfModified.
         client1.getProductComponent("motor.MotorPlus");
 
         setTocVersion(2000);
@@ -116,7 +115,7 @@ public class ClientRuntimeRepositoryTest extends TestCase {
             assertEquals("2000", dme.newVersion);
         }
 
-        client1.reloadIfModified();
+        client1 = repository.getTransaction();
         // no exception anymore for client1
         assertNotNull(client1.getProductComponent("motor.MotorBasic"));
 
@@ -146,7 +145,7 @@ public class ClientRuntimeRepositoryTest extends TestCase {
             assertEquals("2000", dme.newVersion);
         }
 
-        client2.reloadIfModified();
+        client2 = repository.getTransaction();
         // no exception anymore for client1 and client2
         assertNotNull(client1.getProductComponent("motor.MotorPlus"));
         assertNotNull(client2.getProductComponent("motor.MotorBasic"));
@@ -163,7 +162,7 @@ public class ClientRuntimeRepositoryTest extends TestCase {
             assertEquals("2000", dme.newVersion);
         }
 
-        client3.reloadIfModified();
+        client3 = repository.getTransaction();
         assertNotNull(client1.getProductComponent("motor.MotorPlus"));
         assertNotNull(client2.getProductComponent("home.HomeBasic"));
         assertNotNull(client3.getProductComponent("motor.MotorBasic"));
