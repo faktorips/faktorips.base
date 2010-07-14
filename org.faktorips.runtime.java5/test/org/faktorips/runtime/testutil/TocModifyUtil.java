@@ -28,26 +28,27 @@ import javax.xml.transform.stream.StreamResult;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
+import org.faktorips.runtime.productprovider.AbstractProductDataProvider;
 import org.faktorips.runtime.productprovider.ClassLoaderProductDataProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class TocModifyUtil {
 
-    private ClassLoaderProductDataProvider productDataProvider;
+    private AbstractProductDataProvider productDataProvider;
     private DocumentBuilder docBuilder;
     private URL tocResource;
 
     public TocModifyUtil(String tocResourcePath) throws ParserConfigurationException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         tocResource = cl.getResource(tocResourcePath);
-        productDataProvider = (ClassLoaderProductDataProvider)new ClassLoaderProductDataProvider.Builder(cl,
+        productDataProvider = (AbstractProductDataProvider)new ClassLoaderProductDataProvider.Builder(cl,
                 tocResourcePath).build();
         docBuilder = createDocumentBuilder();
     }
 
     public void setLastModified(long time) throws Exception {
-        ReadonlyTableOfContents toc = productDataProvider.loadToc();
+        ReadonlyTableOfContents toc = (ReadonlyTableOfContents)productDataProvider.loadToc();
         saveXml(toc, time);
     }
 

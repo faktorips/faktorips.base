@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import org.faktorips.runtime.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.DefaultCacheFactory;
+import org.faktorips.runtime.IVersionChecker;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -54,19 +55,14 @@ import org.w3c.dom.Element;
  * @author dirmeier
  */
 
-public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRuntimeRepository {
+public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRuntimeRepository implements
+        IVersionChecker {
 
     private final IProductDataProvider productDataProvider;
 
     private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
-    private String tocVersion = "";
-
-    /**
-     * This variable is true while the repository loads the table of content. It has to be volatile
-     * that all threads see exactly the same value.
-     */
-    private volatile boolean tocLoading = false;
+    private volatile String tocVersion = "";
 
     /**
      * This is the constructor for the {@link ProductDataProviderRuntimeRepository} expecting a name
@@ -111,7 +107,7 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
         try {
             return productDataProvider.getProductCmptData(tocEntry);
         } catch (DataModifiedException e) {
-            throw dataModifiedException(e);
+            throw createDataModifiedException(e);
         }
     }
 
@@ -120,7 +116,7 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
         try {
             return productDataProvider.getProductCmptGenerationData(tocEntry);
         } catch (DataModifiedException e) {
-            throw dataModifiedException(e);
+            throw createDataModifiedException(e);
         }
     }
 
@@ -129,7 +125,7 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
         try {
             return productDataProvider.getTestcaseElement(tocEntry);
         } catch (DataModifiedException e) {
-            throw dataModifiedException(e);
+            throw createDataModifiedException(e);
         }
     }
 
@@ -143,9 +139,9 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
     }
 
     @Override
-    protected IReadonlyTableOfContents loadTableOfContents() {
+    protected synchronized IReadonlyTableOfContents loadTableOfContents() {
         IReadonlyTableOfContents toc = productDataProvider.loadToc();
-        tocVersion = productDataProvider.getProductDataVersion();
+        tocVersion = productDataProvider.getLocalVersion();
         return toc;
     }
 
@@ -154,7 +150,7 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
         try {
             return productDataProvider.getEnumContentAsStream(tocEntry);
         } catch (DataModifiedException e) {
-            throw dataModifiedException(e);
+            throw createDataModifiedException(e);
         }
     }
 
@@ -163,36 +159,42 @@ public class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRu
         try {
             return productDataProvider.getTableContentAsStream(tocEntry);
         } catch (DataModifiedException e) {
-            throw dataModifiedException(e);
+            throw createDataModifiedException(e);
         }
+    }
+
+    @Override
+    public boolean reloadIfModified() {
+        boolean modified = checkBaseVersion(getLocalVersion());
+        if (modified) {
+            reload();
+        }
+        return modified;
     }
 
     /**
      * 
      * @return true if there are modifications and false if nothing has changed
      */
-    public synchronized boolean checkForModifications() {
-        if (productDataProvider.isExpired(getProductDataVersion())) {
-            reload();
-            return true;
-        }
-        return false;
+    public boolean checkBaseVersion(String version) {
+        return checkLocalVersion(version) || productDataProvider.checkBaseVersion(version);
     }
 
-    boolean isExpired(String version) {
+    public boolean checkLocalVersion(String version) {
         if (getTableOfContents() == null) {
             return true;
         }
         // TODO delegate to modification checker
-        return !getProductDataVersion().equals(version);
+        return !getLocalVersion().equals(version);
     }
 
-    public String getProductDataVersion() {
+    public String getLocalVersion() {
         return tocVersion;
     }
 
-    private RuntimeException dataModifiedException(DataModifiedException e) {
-        initCaches();
+    private RuntimeException createDataModifiedException(DataModifiedException e) {
+        // TODO do we clean the cache here or not?
+        // initCaches();
         return new DataModifiedRuntimeException(e);
     }
 

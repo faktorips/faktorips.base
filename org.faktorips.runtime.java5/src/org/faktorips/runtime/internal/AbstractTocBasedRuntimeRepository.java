@@ -49,7 +49,7 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
  */
 public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingRuntimeRepository {
 
-    IReadonlyTableOfContents toc;
+    private volatile IReadonlyTableOfContents toc;
 
     public AbstractTocBasedRuntimeRepository(String name, ICacheFactory cacheFactory) {
         super(name, cacheFactory);

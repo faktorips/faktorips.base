@@ -54,6 +54,7 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         super.setUp();
         Builder builder = new Builder(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
+        builder.setCheckTocModifications(true);
         repository = new ProductDataProviderRuntimeRepository("testRR", getClass().getClassLoader(), builder, null);
         productDataProvider = builder.testProductDataProvider;
     }
@@ -96,12 +97,12 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         // should use cached object
         repository.getProductComponent("home.HomeBasic");
         assertFalse(productDataProvider.flag);
-        productDataProvider.modStamp += "1";
+        productDataProvider.baseVersion = "1";
 
         // should use cached object
         assertFalse(productDataProvider.flag);
 
-        repository.checkForModifications();
+        repository.reloadIfModified();
         repository.getProductComponent("home.HomeBasic");
         // should NOT use cached object
         assertTrue(productDataProvider.flag);
@@ -151,10 +152,10 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         // should use cached object
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         assertFalse(productDataProvider.flag);
-        productDataProvider.modStamp += "1";
+        productDataProvider.baseVersion = "1";
         // should use cached object
         assertFalse(productDataProvider.flag);
-        repository.checkForModifications();
+        repository.reloadIfModified();
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         // should NOT use cached object
         assertTrue(productDataProvider.flag);
@@ -334,8 +335,11 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
     private static class TestProductDataProvider extends ClassLoaderProductDataProvider {
 
         // set true by any method called (except getModificationStamp())
+        // indicates that one of the overridden methods was calles - that means the data is not
+        // loaded from cache
         boolean flag = false;
-        String modStamp = "0";
+
+        String baseVersion = "0";
 
         public TestProductDataProvider(Builder builder) {
             super(builder);
@@ -372,8 +376,8 @@ public class ProductDataProviderRuntimeRepositoryTest extends TestCase {
         }
 
         @Override
-        public String getProductDataVersion() {
-            return modStamp;
+        public String getBaseVersion() {
+            return baseVersion;
         }
     }
 

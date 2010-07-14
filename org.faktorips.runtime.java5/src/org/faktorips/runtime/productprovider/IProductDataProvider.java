@@ -15,7 +15,7 @@ package org.faktorips.runtime.productprovider;
 
 import java.io.InputStream;
 
-import org.faktorips.runtime.IModificationChecker;
+import org.faktorips.runtime.IVersionChecker;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * 
  * @author dirmeier
  */
-public interface IProductDataProvider extends IModificationChecker {
+public interface IProductDataProvider extends IVersionChecker {
 
     /**
      * Reload the toc in the product data provider and returns it. This call also set the

@@ -14,7 +14,6 @@
 package org.faktorips.runtime;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.faktorips.runtime.caching.IComputable;
@@ -25,11 +24,15 @@ import org.faktorips.runtime.caching.Memoizer;
  * 
  * @author Jan Ortmann
  */
-public class DefaultCacheFactory implements ICacheFactory {
+public class DefaultCacheFactory extends AbstractCacheFactory implements ICacheFactory {
 
     private Map<Class<?>, Integer> initialSizeMap = new HashMap<Class<?>, Integer>();
 
     private int defaultInitialSize = 100;
+
+    private float laodFactor = 0.75f;
+
+    private int concurrencyLevel = 16;
 
     public DefaultCacheFactory() {
         setInitialSize(IProductComponent.class, 500);
@@ -76,23 +79,25 @@ public class DefaultCacheFactory implements ICacheFactory {
     }
 
     public <K, V> Memoizer<K, V> createCache(IComputable<K, V> computable) {
-        return new Memoizer<K, V>(computable);
+        Integer initSize = initialSizeMap.get(computable.getValueClass());
+        if (initSize == null) {
+            initSize = defaultInitialSize;
+        }
+        return new Memoizer<K, V>(computable, initSize, laodFactor, concurrencyLevel);
     }
 
-    public Memoizer<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable) {
-        return createCache(computable);
+    /**
+     * @param concurrencyLevel The concurrencyLevel to set.
+     */
+    public void setConcurrencyLevel(int concurrencyLevel) {
+        this.concurrencyLevel = concurrencyLevel;
     }
 
-    public Memoizer<String, IProductComponent> createProductCmptCache(IComputable<String, IProductComponent> computable) {
-        return createCache(computable);
-    }
-
-    public Memoizer<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(IComputable<GenerationId, IProductComponentGeneration> computable) {
-        return createCache(computable);
-    }
-
-    public Memoizer<String, ITable> createTableCache(IComputable<String, ITable> computable) {
-        return createCache(computable);
+    /**
+     * @return Returns the concurrencyLevel.
+     */
+    public int getConcurrencyLevel() {
+        return concurrencyLevel;
     }
 
 }

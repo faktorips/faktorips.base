@@ -33,4 +33,9 @@ public class DataModifiedException extends Exception {
         this.newVersion = newVersion;
     }
 
+    @Override
+    public String getMessage() {
+        return super.getMessage() + " old: " + oldVersion + " new: " + newVersion;
+    }
+
 }

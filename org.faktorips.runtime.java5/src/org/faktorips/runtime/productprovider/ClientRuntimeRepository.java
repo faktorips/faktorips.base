@@ -25,6 +25,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.IVersionChecker;
 import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.modeltype.IModelType;
@@ -69,7 +70,7 @@ import org.faktorips.runtime.test.IpsTestSuite;
  * 
  * @author dirmeier
  */
-public class ClientRuntimeRepository implements IRuntimeRepository {
+public class ClientRuntimeRepository implements IRuntimeRepository, IVersionChecker {
 
     private final ProductDataProviderRuntimeRepository pdpRepository;
 
@@ -77,285 +78,302 @@ public class ClientRuntimeRepository implements IRuntimeRepository {
 
     public ClientRuntimeRepository(ProductDataProviderRuntimeRepository pdpRepository) {
         this.pdpRepository = pdpRepository;
-        version = pdpRepository.getProductDataVersion();
-        reload();
+        version = pdpRepository.getLocalVersion();
     }
 
-    public boolean checkForModifications() {
-        boolean modified = pdpRepository.isExpired(version) || pdpRepository.checkForModifications();
+    public synchronized boolean reloadIfModified() {
+        boolean modified = checkBaseVersion(getLocalVersion());
         if (modified) {
-            version = pdpRepository.getProductDataVersion();
+            reload();
         }
         return modified;
     }
 
-    public void reload() {
-        pdpRepository.reload();
-        version = pdpRepository.getProductDataVersion();
+    /**
+     * @return Returns the version.
+     */
+    public String getLocalVersion() {
+        return version;
     }
 
-    public void throwExceptionIfVersionExpired() {
-        if (pdpRepository.isExpired(version)) {
-            throw new DataModifiedRuntimeException("Product data has changed", version, pdpRepository
-                    .getProductDataVersion());
+    public boolean checkLocalVersion(String version) {
+        return !getLocalVersion().equals(version);
+    }
+
+    public boolean checkBaseVersion(String version) {
+        return checkLocalVersion(version) || pdpRepository.checkBaseVersion(version);
+    }
+
+    public synchronized void reload() {
+        pdpRepository.reloadIfModified();
+        version = pdpRepository.getLocalVersion();
+    }
+
+    public synchronized void throwExceptionIfModified() {
+        if (pdpRepository.checkLocalVersion(getLocalVersion())) {
+            throw new DataModifiedRuntimeException("Product data has changed", getLocalVersion(), pdpRepository
+                    .getLocalVersion());
         }
     }
 
     /*
-     * ==========================================================================================
-     * all other methods of the interface IRuntimeRepository call checkForModifications() and then
-     * delegate to pdpRepository
-     * ==========================================================================================
+     * ============================================================================================
+     * all other methods of the interface IRuntimeRepository delegate to pdpRepository and then call
+     * throwExceptionIfVersionExpired()
+     * 
+     * ============================================================================================
      */
 
-    public List<IpsTest2> getAllIpsTestCases(IRuntimeRepository runtimeRepository) {
+    public synchronized List<IpsTest2> getAllIpsTestCases(IRuntimeRepository runtimeRepository) {
         List<IpsTest2> allIpsTestCases = pdpRepository.getAllIpsTestCases(runtimeRepository);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return allIpsTestCases;
     }
 
-    public Set<String> getAllModelTypeImplementationClasses() {
+    public synchronized Set<String> getAllModelTypeImplementationClasses() {
         Set<String> allModelTypeImplementationClasses = pdpRepository.getAllModelTypeImplementationClasses();
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return allModelTypeImplementationClasses;
     }
 
-    public List<String> getAllProductComponentIds() {
+    public synchronized List<String> getAllProductComponentIds() {
         List<String> allProductComponentIds = pdpRepository.getAllProductComponentIds();
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return allProductComponentIds;
     }
 
-    public List<IProductComponent> getAllProductComponents(String kindId) {
+    public synchronized List<IProductComponent> getAllProductComponents(String kindId) {
         List<IProductComponent> allProductComponents = pdpRepository.getAllProductComponents(kindId);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return allProductComponents;
     }
 
-    public List<IProductComponent> getAllProductComponents(Class<?> productComponentType) {
+    public synchronized List<IProductComponent> getAllProductComponents(Class<?> productComponentType) {
         List<IProductComponent> allProductComponents = pdpRepository.getAllProductComponents(productComponentType);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return allProductComponents;
     }
 
-    public List<IProductComponent> getAllProductComponents() {
+    public synchronized List<IProductComponent> getAllProductComponents() {
         List<IProductComponent> allProductComponents = pdpRepository.getAllProductComponents();
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return allProductComponents;
     }
 
-    public List<IRuntimeRepository> getAllReferencedRepositories() {
+    public synchronized List<IRuntimeRepository> getAllReferencedRepositories() {
         List<IRuntimeRepository> allReferencedRepositories = pdpRepository.getAllReferencedRepositories();
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return allReferencedRepositories;
     }
 
-    public List<ITable> getAllTables() {
+    public synchronized List<ITable> getAllTables() {
         List<ITable> allTables = pdpRepository.getAllTables();
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return allTables;
     }
 
-    public List<IRuntimeRepository> getDirectlyReferencedRepositories() {
+    public synchronized List<IRuntimeRepository> getDirectlyReferencedRepositories() {
         List<IRuntimeRepository> directlyReferencedRepositories = pdpRepository.getDirectlyReferencedRepositories();
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return directlyReferencedRepositories;
     }
 
-    public <T> T getEnumValue(Class<T> clazz, Object id) {
+    public synchronized <T> T getEnumValue(Class<T> clazz, Object id) {
         T enumValue = pdpRepository.getEnumValue(clazz, id);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return enumValue;
     }
 
-    public Object getEnumValue(String uniqueId) {
+    public synchronized Object getEnumValue(String uniqueId) {
         Object enumValue = pdpRepository.getEnumValue(uniqueId);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return enumValue;
     }
 
-    public <T> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz) {
+    public synchronized <T> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz) {
         IEnumValueLookupService<T> enumValueLookupService = pdpRepository.getEnumValueLookupService(enumClazz);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return enumValueLookupService;
     }
 
-    public <T> List<T> getEnumValues(Class<T> clazz) {
+    public synchronized <T> List<T> getEnumValues(Class<T> clazz) {
         List<T> enumValues = pdpRepository.getEnumValues(clazz);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return enumValues;
     }
 
-    public IProductComponent getExistingProductComponent(String id) throws ProductCmptNotFoundException {
+    public synchronized IProductComponent getExistingProductComponent(String id) throws ProductCmptNotFoundException {
         IProductComponent existingProductComponent = pdpRepository.getExistingProductComponent(id);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return existingProductComponent;
     }
 
-    public IProductComponentGeneration getExistingProductComponentGeneration(String id, Calendar effectiveDate) {
+    public synchronized IProductComponentGeneration getExistingProductComponentGeneration(String id,
+            Calendar effectiveDate) {
         IProductComponentGeneration existingProductComponentGeneration = pdpRepository
                 .getExistingProductComponentGeneration(id, effectiveDate);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return existingProductComponentGeneration;
     }
 
-    public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
+    public synchronized IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
         IFormulaEvaluatorFactory formulaEvaluatorFactory = pdpRepository.getFormulaEvaluatorFactory();
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return formulaEvaluatorFactory;
     }
 
-    public IpsTest2 getIpsTest(String qName) {
+    public synchronized IpsTest2 getIpsTest(String qName) {
         IpsTest2 ipsTest = pdpRepository.getIpsTest(qName);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return ipsTest;
     }
 
-    public IpsTest2 getIpsTest(String qName, IRuntimeRepository runtimeRepository) {
+    public synchronized IpsTest2 getIpsTest(String qName, IRuntimeRepository runtimeRepository) {
         IpsTest2 ipsTest = pdpRepository.getIpsTest(qName, runtimeRepository);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return ipsTest;
     }
 
-    public IpsTestCaseBase getIpsTestCase(String qName) {
+    public synchronized IpsTestCaseBase getIpsTestCase(String qName) {
         IpsTestCaseBase ipsTestCase = pdpRepository.getIpsTestCase(qName);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return ipsTestCase;
     }
 
-    public IpsTestCaseBase getIpsTestCase(String qName, IRuntimeRepository runtimeRepository) {
+    public synchronized IpsTestCaseBase getIpsTestCase(String qName, IRuntimeRepository runtimeRepository) {
         IpsTestCaseBase ipsTestCase = pdpRepository.getIpsTestCase(qName, runtimeRepository);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return ipsTestCase;
     }
 
-    public List<IpsTest2> getIpsTestCasesStartingWith(String qNamePrefix, IRuntimeRepository runtimeRepository) {
+    public synchronized List<IpsTest2> getIpsTestCasesStartingWith(String qNamePrefix,
+            IRuntimeRepository runtimeRepository) {
         List<IpsTest2> ipsTestCasesStartingWith = pdpRepository.getIpsTestCasesStartingWith(qNamePrefix,
                 runtimeRepository);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return ipsTestCasesStartingWith;
     }
 
-    public IpsTestSuite getIpsTestSuite(String qNamePrefix) {
+    public synchronized IpsTestSuite getIpsTestSuite(String qNamePrefix) {
         IpsTestSuite ipsTestSuite = pdpRepository.getIpsTestSuite(qNamePrefix);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return ipsTestSuite;
     }
 
-    public IpsTestSuite getIpsTestSuite(String qNamePrefix, IRuntimeRepository runtimeRepository) {
+    public synchronized IpsTestSuite getIpsTestSuite(String qNamePrefix, IRuntimeRepository runtimeRepository) {
         IpsTestSuite ipsTestSuite = pdpRepository.getIpsTestSuite(qNamePrefix, runtimeRepository);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return ipsTestSuite;
     }
 
-    public IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt) {
+    public synchronized IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt) {
         IProductComponentGeneration latestProductComponentGeneration = pdpRepository
                 .getLatestProductComponentGeneration(productCmpt);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return latestProductComponentGeneration;
     }
 
-    public IModelType getModelType(Class<?> modelObjectClass) {
+    public synchronized IModelType getModelType(Class<?> modelObjectClass) {
         IModelType modelType = pdpRepository.getModelType(modelObjectClass);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return modelType;
     }
 
-    public IModelType getModelType(IModelObject modelObject) {
+    public synchronized IModelType getModelType(IModelObject modelObject) {
         IModelType modelType = pdpRepository.getModelType(modelObject);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return modelType;
     }
 
-    public IModelType getModelType(IProductComponent modelObject) {
+    public synchronized IModelType getModelType(IProductComponent modelObject) {
         IModelType modelType = pdpRepository.getModelType(modelObject);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return modelType;
     }
 
-    public String getName() {
+    public synchronized String getName() {
         String name = pdpRepository.getName();
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return name;
     }
 
-    public IProductComponentGeneration getNextProductComponentGeneration(IProductComponentGeneration generation) {
+    public synchronized IProductComponentGeneration getNextProductComponentGeneration(IProductComponentGeneration generation) {
         IProductComponentGeneration nextProductComponentGeneration = pdpRepository
                 .getNextProductComponentGeneration(generation);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return nextProductComponentGeneration;
     }
 
-    public int getNumberOfProductComponentGenerations(IProductComponent productCmpt) {
+    public synchronized int getNumberOfProductComponentGenerations(IProductComponent productCmpt) {
         int numberOfProductComponentGenerations = pdpRepository.getNumberOfProductComponentGenerations(productCmpt);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return numberOfProductComponentGenerations;
     }
 
-    public IProductComponentGeneration getPreviousProductComponentGeneration(IProductComponentGeneration generation) {
+    public synchronized IProductComponentGeneration getPreviousProductComponentGeneration(IProductComponentGeneration generation) {
         IProductComponentGeneration previousProductComponentGeneration = pdpRepository
                 .getPreviousProductComponentGeneration(generation);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return previousProductComponentGeneration;
     }
 
-    public IProductComponent getProductComponent(String id) {
+    public synchronized IProductComponent getProductComponent(String id) {
         IProductComponent productComponent = pdpRepository.getProductComponent(id);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return productComponent;
     }
 
-    public IProductComponent getProductComponent(String kindId, String versionId) {
+    public synchronized IProductComponent getProductComponent(String kindId, String versionId) {
         IProductComponent productComponent = pdpRepository.getProductComponent(kindId, versionId);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return productComponent;
     }
 
-    public IProductComponentGeneration getProductComponentGeneration(String id, Calendar effectiveDate) {
+    public synchronized IProductComponentGeneration getProductComponentGeneration(String id, Calendar effectiveDate) {
         IProductComponentGeneration productComponentGeneration = pdpRepository.getProductComponentGeneration(id,
                 effectiveDate);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return productComponentGeneration;
     }
 
-    public List<IProductComponentGeneration> getProductComponentGenerations(IProductComponent productCmpt) {
+    public synchronized List<IProductComponentGeneration> getProductComponentGenerations(IProductComponent productCmpt) {
         List<IProductComponentGeneration> productComponentGenerations = pdpRepository
                 .getProductComponentGenerations(productCmpt);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return productComponentGenerations;
     }
 
-    public ITable getTable(Class<?> tableClass) {
+    public synchronized ITable getTable(Class<?> tableClass) {
         ITable table = pdpRepository.getTable(tableClass);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return table;
     }
 
-    public ITable getTable(String qualifiedTableName) {
+    public synchronized ITable getTable(String qualifiedTableName) {
         ITable table = pdpRepository.getTable(qualifiedTableName);
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return table;
     }
 
-    public JAXBContext newJAXBContext() {
+    public synchronized JAXBContext newJAXBContext() {
         JAXBContext newJAXBContext = pdpRepository.newJAXBContext();
-        throwExceptionIfVersionExpired();
+        throwExceptionIfModified();
         return newJAXBContext;
     }
 
-    public boolean isModifiable() {
+    public synchronized boolean isModifiable() {
         return pdpRepository.isModifiable();
     }
 
-    public void addDirectlyReferencedRepository(IRuntimeRepository repository) {
+    public synchronized void addDirectlyReferencedRepository(IRuntimeRepository repository) {
         pdpRepository.addDirectlyReferencedRepository(repository);
     }
 
-    public void addEnumValueLookupService(IEnumValueLookupService<?> lookupService) {
+    public synchronized void addEnumValueLookupService(IEnumValueLookupService<?> lookupService) {
         pdpRepository.addEnumValueLookupService(lookupService);
     }
 
-    public void removeEnumValueLookupService(IEnumValueLookupService<?> lookupService) {
+    public synchronized void removeEnumValueLookupService(IEnumValueLookupService<?> lookupService) {
         pdpRepository.removeEnumValueLookupService(lookupService);
     }
 

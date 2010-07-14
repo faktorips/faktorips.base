@@ -20,7 +20,7 @@ package org.faktorips.runtime;
  * 
  * @author dirmeier
  */
-public interface IModificationChecker {
+public interface IVersionChecker {
 
     /**
      * Check whether a given time stamp is expired or not. This method is called very often and have
@@ -29,13 +29,10 @@ public interface IModificationChecker {
      * @param version The version or time stamp to check against the modification checker
      * @return true if the time stamp is expired
      */
-    public boolean isExpired(String version);
+    public boolean checkLocalVersion(String version);
 
-    /**
-     * Get the actual version of the product data this modification checker is responsible for
-     * 
-     * @return the acutal version of the product data
-     */
-    public String getProductDataVersion();
+    public boolean checkBaseVersion(String version);
+
+    public String getLocalVersion();
 
 }

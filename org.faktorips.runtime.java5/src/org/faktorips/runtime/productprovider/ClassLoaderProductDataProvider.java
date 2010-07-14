@@ -20,10 +20,6 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -34,9 +30,6 @@ import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * The {@link ClassLoaderProductDataProvider} is an implementation of {@link IProductDataProvider}
@@ -49,15 +42,10 @@ import org.xml.sax.SAXParseException;
 public class ClassLoaderProductDataProvider extends AbstractProductDataProvider {
 
     private final ClassLoader cl;
-    private boolean checkTocModifications = false;
-    private String tocFileLastModified = "";
+    private final boolean checkTocModifications;
+    private volatile String tocFileLastModified = "";
     private URL tocUrl;
     private ReadonlyTableOfContents toc;
-    private DocumentBuilder docBuilder;
-
-    public void setCheckTocModifications(boolean checkTocModifications) {
-        this.checkTocModifications = checkTocModifications;
-    }
 
     protected ClassLoaderProductDataProvider(Builder builder) {
         this.cl = builder.classLoader;
@@ -65,17 +53,17 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         if (tocUrl == null) {
             throw new IllegalArgumentException("Can' find table of contents file " + builder.tocResourcePath);
         }
-        this.docBuilder = builder.getDocumentBuilder();
+        this.checkTocModifications = builder.isCheckTocModifications();
     }
 
     public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException {
         String resourcePath = tocEntry.getXmlResourceName();
-        checkForModifications(tocEntry.getIpsObjectId(), getProductDataVersion());
-        return getDocumentElement(resourcePath);
+        Element documentElement = getDocumentElement(resourcePath);
+        throwExceptionIfModified(tocEntry.getIpsObjectId(), getBaseVersion());
+        return documentElement;
     }
 
     public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getParent().getIpsObjectId(), getProductDataVersion());
         Element docElement = getDocumentElement(tocEntry.getParent().getXmlResourceName());
         NodeList nl = docElement.getChildNodes();
         DateTime validFrom = tocEntry.getValidFrom();
@@ -84,6 +72,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
                 Element genElement = (Element)nl.item(i);
                 DateTime generationValidFrom = DateTime.parseIso(genElement.getAttribute("validFrom"));
                 if (validFrom.equals(generationValidFrom)) {
+                    throwExceptionIfModified(tocEntry.getParent().getIpsObjectId(), getBaseVersion());
                     return genElement;
                 }
             }
@@ -92,27 +81,30 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
     }
 
     public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), getProductDataVersion());
         String resourcePath = tocEntry.getXmlResourceName();
-        return getDocumentElement(resourcePath);
+        Element documentElement = getDocumentElement(resourcePath);
+        throwExceptionIfModified(tocEntry.getIpsObjectId(), getBaseVersion());
+        return documentElement;
     }
 
     public InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), getProductDataVersion());
-        return cl.getResourceAsStream(tocEntry.getXmlResourceName());
+        InputStream resourceAsStream = cl.getResourceAsStream(tocEntry.getXmlResourceName());
+        throwExceptionIfModified(tocEntry.getIpsObjectId(), getBaseVersion());
+        return resourceAsStream;
     }
 
     public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException {
-        checkForModifications(tocEntry.getIpsObjectId(), getProductDataVersion());
-        return cl.getResourceAsStream(tocEntry.getXmlResourceName());
+        InputStream resourceAsStream = cl.getResourceAsStream(tocEntry.getXmlResourceName());
+        throwExceptionIfModified(tocEntry.getIpsObjectId(), getBaseVersion());
+        return resourceAsStream;
     }
 
-    public ReadonlyTableOfContents loadToc() {
+    public synchronized ReadonlyTableOfContents loadToc() {
         InputStream is = null;
         Document doc;
         try {
             is = tocUrl.openStream();
-            doc = docBuilder.parse(is);
+            doc = getDocumentBuilder().parse(is);
         } catch (Exception e) {
             throw new RuntimeException("Error loading table of contents from " + tocUrl.getFile(), e);
         } finally {
@@ -128,7 +120,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
             Element tocElement = doc.getDocumentElement();
             toc = new ReadonlyTableOfContents();
             if (checkTocModifications) {
-                tocFileLastModified = getProductDataVersion();
+                tocFileLastModified = getBaseVersion();
             }
             toc.initFromXml(tocElement);
             return toc;
@@ -144,7 +136,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         }
         Document doc;
         try {
-            doc = docBuilder.parse(is);
+            doc = getDocumentBuilder().parse(is);
         } catch (Exception e) {
             throw new RuntimeException("Can't parse xml resource " + resourcePath, e);
         } finally {
@@ -161,9 +153,24 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         return element;
     }
 
-    public String getProductDataVersion() {
+    public String getLocalVersion() {
+        return tocFileLastModified;
+    }
+
+    @Override
+    public boolean checkLocalVersion(String version) {
+        return checkTocModifications && super.checkLocalVersion(version);
+    }
+
+    @Override
+    public boolean checkBaseVersion(String version) {
+        return checkTocModifications && super.checkBaseVersion(version);
+    }
+
+    @Override
+    public String getBaseVersion() {
         if (checkTocModifications) {
-            String lastMod = "0";
+            String lastMod = "";
             try {
                 URLConnection connection = tocUrl.openConnection();
                 if (connection instanceof JarURLConnection) {
@@ -183,46 +190,21 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         if (toc != null) {
             return toc.getProductDataVersion();
         } else {
-            return "0";
+            return "";
         }
     }
 
-    private void checkForModifications(String name, String timestamp) throws DataModifiedException {
-        if (checkTocModifications && !tocFileLastModified.equals(timestamp)) {
-            throw new DataModifiedException(MODIFIED_EXCEPTION_MESSAGE + name, tocFileLastModified, timestamp);
+    private void throwExceptionIfModified(String name, String timestamp) throws DataModifiedException {
+        if (checkTocModifications && checkLocalVersion(timestamp)) {
+            throw new DataModifiedException(MODIFIED_EXCEPTION_MESSAGE + name, getLocalVersion(), timestamp);
         }
-    }
-
-    protected final static DocumentBuilder createDocumentBuilder() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        DocumentBuilder builder;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e1) {
-            throw new RuntimeException("Error creating document builder.", e1);
-        }
-        builder.setErrorHandler(new ErrorHandler() {
-            public void error(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            public void fatalError(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            public void warning(SAXParseException e) throws SAXException {
-                throw e;
-            }
-        });
-        return builder;
     }
 
     public static class Builder implements IProductDataProvider.Builder {
 
+        private boolean checkTocModifications = false;
         private final ClassLoader classLoader;
         private final String tocResourcePath;
-        private DocumentBuilder documentBuilder;
 
         public Builder(ClassLoader cl, String tocResourcePath) {
             this.classLoader = cl;
@@ -230,26 +212,21 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         }
 
         public IProductDataProvider build() {
-            if (documentBuilder == null) {
-                documentBuilder = createDocumentBuilder();
-            }
             return new ClassLoaderProductDataProvider(this);
         }
 
         /**
-         * Setting the optional document builder. If not set, a new document builder would be
-         * created
+         * @param checkTocModifications The checkTocModifications to set.
          */
-        public void setDocBuilder(DocumentBuilder docBuilder) {
-            this.documentBuilder = docBuilder;
+        public void setCheckTocModifications(boolean checkTocModifications) {
+            this.checkTocModifications = checkTocModifications;
         }
 
-        public DocumentBuilder getDocumentBuilder() {
-            if (documentBuilder != null) {
-                return documentBuilder;
-            } else {
-                return createDocumentBuilder();
-            }
+        /**
+         * @return Returns the checkTocModifications.
+         */
+        public boolean isCheckTocModifications() {
+            return checkTocModifications;
         }
 
     }

@@ -17,24 +17,26 @@ import java.util.List;
 
 import org.faktorips.runtime.caching.IComputable;
 
-/**
- * A factory for creating caches used by the repository.
- * 
- * @author Jan Ortmann
- */
-public interface ICacheFactory {
+public abstract class AbstractCacheFactory implements ICacheFactory {
 
-    /**
-     * Creates a new cache of the given type.
-     */
-    public <K, V> IComputable<K, V> createCache(IComputable<K, V> computable);
+    public AbstractCacheFactory() {
+        super();
+    }
 
-    public IComputable<String, IProductComponent> createProductCmptCache(IComputable<String, IProductComponent> computable);
+    public IComputable<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable) {
+        return createCache(computable);
+    }
 
-    public IComputable<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(IComputable<GenerationId, IProductComponentGeneration> computable);
+    public IComputable<String, IProductComponent> createProductCmptCache(IComputable<String, IProductComponent> computable) {
+        return createCache(computable);
+    }
 
-    public IComputable<String, ITable> createTableCache(IComputable<String, ITable> computable);
+    public IComputable<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(IComputable<GenerationId, IProductComponentGeneration> computable) {
+        return createCache(computable);
+    }
 
-    public IComputable<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable);
+    public IComputable<String, ITable> createTableCache(IComputable<String, ITable> computable) {
+        return createCache(computable);
+    }
 
 }

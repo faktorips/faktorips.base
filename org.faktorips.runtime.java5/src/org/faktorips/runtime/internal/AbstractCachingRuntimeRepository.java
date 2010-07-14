@@ -27,7 +27,6 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.caching.AbstractComputable;
 import org.faktorips.runtime.caching.IComputable;
-import org.faktorips.runtime.caching.Memoizer;
 
 /**
  * This abstract runtime repository handles the caching for already loaded instances. The caching
@@ -57,10 +56,10 @@ import org.faktorips.runtime.caching.Memoizer;
 public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRepository {
 
     private ICacheFactory cacheFactory;
-    private volatile Memoizer<String, IProductComponent> productCmptCache;
-    private volatile Memoizer<GenerationId, IProductComponentGeneration> productCmptGenerationCache;
-    private volatile Memoizer<String, ITable> tableCacheByQName;
-    private volatile Memoizer<Class<?>, List<?>> enumValuesCacheByClass;
+    private volatile IComputable<String, IProductComponent> productCmptCache;
+    private volatile IComputable<GenerationId, IProductComponentGeneration> productCmptGenerationCache;
+    private volatile IComputable<String, ITable> tableCacheByQName;
+    private volatile IComputable<Class<?>, List<?>> enumValuesCacheByClass;
     private List<XmlAdapter<?, ?>> enumXmlAdapters;
 
     public AbstractCachingRuntimeRepository(String name, ICacheFactory cacheFactory) {

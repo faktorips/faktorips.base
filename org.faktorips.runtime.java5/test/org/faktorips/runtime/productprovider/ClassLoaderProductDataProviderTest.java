@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.io.Reader;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
 
@@ -34,11 +36,13 @@ import org.faktorips.runtime.productprovider.ClassLoaderProductDataProvider.Buil
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class ClassLoaderProductDataProviderTest extends TestCase {
 
-    private ClassLoaderProductDataProvider pdp;
+    private AbstractProductDataProvider pdp;
 
     private DocumentBuilder docBuilder;
 
@@ -50,28 +54,31 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         Builder builder = new ClassLoaderProductDataProvider.Builder(getClassLoader(), TOC_FIlE_NAME);
-        docBuilder = builder.getDocumentBuilder();
-        pdp = (ClassLoaderProductDataProvider)builder.build();
-        pdp.setCheckTocModifications(true);
+        builder.setCheckTocModifications(true);
+        docBuilder = createDocumentBuilder();
+        pdp = (AbstractProductDataProvider)builder.build();
         copy(TOC_FIlE_NAME_1, TOC_FIlE_NAME);
     }
 
-    public void testgetProductDataVersion() throws Exception {
+    public void testgetLocalVersion() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
         tocFile.setLastModified(321321000);
-        String stamp = pdp.getProductDataVersion();
+        pdp.loadToc();
+        String stamp = pdp.getLocalVersion();
         assertEquals("321321000", stamp);
 
         tocFile.setLastModified(123456000);
-        stamp = pdp.getProductDataVersion();
+        pdp.loadToc();
+        stamp = pdp.getLocalVersion();
         assertEquals("123456000", stamp);
     }
 
     public void testLoadTocData() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
         tocFile.setLastModified(321321000);
+        pdp.loadToc();
 
-        assertEquals("321321000", pdp.getProductDataVersion());
+        assertEquals("321321000", pdp.getLocalVersion());
 
         ReadonlyTableOfContents expectedToc = new ReadonlyTableOfContents();
         expectedToc.initFromXml(getElement(TOC_FIlE_NAME_1));
@@ -84,7 +91,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         expectedToc = new ReadonlyTableOfContents();
         expectedToc.initFromXml(getElement(TOC_FIlE_NAME_2));
         assertEquals(expectedToc.toString(), pdp.loadToc().toString());
-        assertEquals("999999000", pdp.getProductDataVersion());
+        assertEquals("999999000", pdp.getLocalVersion());
     }
 
     public void testGetProductCmptData() throws Exception {
@@ -97,7 +104,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         IReadonlyTableOfContents toc = pdp.loadToc();
         Element actualElement = pdp.getProductCmptData(toc.getProductCmptTocEntry("sample.TestProduct 2006-01"));
 
-        assertEquals("321321000", pdp.getProductDataVersion());
+        assertEquals("321321000", pdp.getLocalVersion());
         assertTrue(expectedElement.isEqualNode(actualElement));
 
         tocFile.setLastModified(987987000);
@@ -109,7 +116,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         }
         actualElement = pdp.getProductCmptData(toc.getProductCmptTocEntry("sample.TestProduct 2006-01"));
 
-        assertEquals("987987000", pdp.getProductDataVersion());
+        assertEquals("987987000", pdp.getLocalVersion());
         assertTrue(expectedElement.isEqualNode(actualElement));
     }
 
@@ -122,7 +129,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         tocFile.setLastModified(321321000);
 
         IReadonlyTableOfContents toc = pdp.loadToc();
-        assertEquals("321321000", pdp.getProductDataVersion());
+        assertEquals("321321000", pdp.getLocalVersion());
 
         ProductCmptTocEntry pcmptEntry = toc.getProductCmptTocEntry("sample.TestProduct 2006-01");
         Element actualElement = pdp.getProductCmptGenerationData(pcmptEntry.getLatestGenerationEntry());
@@ -137,7 +144,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
             toc = pdp.loadToc();
         }
 
-        assertEquals("987987000", pdp.getProductDataVersion());
+        assertEquals("987987000", pdp.getLocalVersion());
         pcmptEntry = toc.getProductCmptTocEntry("sample.TestProduct 2006-01");
         actualElement = pdp.getProductCmptGenerationData(pcmptEntry.getLatestGenerationEntry());
         assertTrue(generations.item(1).isEqualNode(actualElement));
@@ -153,7 +160,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         IReadonlyTableOfContents toc = pdp.loadToc();
         Element actualElement = pdp.getTestcaseElement(toc.getTestCaseTocEntryByQName("testpack.Test"));
 
-        assertEquals("321321000", pdp.getProductDataVersion());
+        assertEquals("321321000", pdp.getLocalVersion());
         assertTrue(expectedElement.isEqualNode(actualElement));
 
         tocFile.setLastModified(987987000);
@@ -165,7 +172,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         }
         actualElement = pdp.getTestcaseElement(toc.getTestCaseTocEntryByQName("testpack.Test"));
 
-        assertEquals("987987000", pdp.getProductDataVersion());
+        assertEquals("987987000", pdp.getLocalVersion());
         assertTrue(expectedElement.isEqualNode(actualElement));
     }
 
@@ -182,7 +189,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         String actualContent = readStreamContent(is);
         is.close();
 
-        assertEquals("321321000", pdp.getProductDataVersion());
+        assertEquals("321321000", pdp.getLocalVersion());
         assertEquals(expectedContent, actualContent);
 
         tocFile.setLastModified(987987000);
@@ -196,7 +203,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
 
         actualContent = readStreamContent(is);
         is.close();
-        assertEquals("987987000", pdp.getProductDataVersion());
+        assertEquals("987987000", pdp.getLocalVersion());
         assertEquals(expectedContent, actualContent);
     }
 
@@ -214,7 +221,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         String actualContent = readStreamContent(is);
         is.close();
 
-        assertEquals("321321000", pdp.getProductDataVersion());
+        assertEquals("321321000", pdp.getLocalVersion());
         assertEquals(expectedContent, actualContent);
 
         tocFile.setLastModified(987987000);
@@ -228,7 +235,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
 
         actualContent = readStreamContent(is);
         is.close();
-        assertEquals("987987000", pdp.getProductDataVersion());
+        assertEquals("987987000", pdp.getLocalVersion());
         assertEquals(expectedContent, actualContent);
     }
 
@@ -279,4 +286,28 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         }
     }
 
+    private static final DocumentBuilder createDocumentBuilder() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(false);
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e1) {
+            throw new RuntimeException("Error creating document builder.", e1);
+        }
+        builder.setErrorHandler(new ErrorHandler() {
+            public void error(SAXParseException e) throws SAXException {
+                throw e;
+            }
+
+            public void fatalError(SAXParseException e) throws SAXException {
+                throw e;
+            }
+
+            public void warning(SAXParseException e) throws SAXException {
+                throw e;
+            }
+        });
+        return builder;
+    }
 }

@@ -25,18 +25,18 @@ import org.faktorips.runtime.caching.IComputable;
  */
 public class SimpleCache implements IComputable<Object, Object> {
 
-    private ConcurrentHashMap<Object, Object> objects;
+    private final ConcurrentHashMap<Object, Object> objects;
     private final IComputable<Object, Object> computable;
 
     public SimpleCache(IComputable<Object, Object> computable) {
-        this.computable = computable;
+        this(computable, 16);
     }
 
     /**
      * 
      */
     public SimpleCache(IComputable<Object, Object> computable, int initialCapacity) {
-        this(computable);
+        this.computable = computable;
         objects = new ConcurrentHashMap<Object, Object>(initialCapacity);
     }
 
@@ -47,12 +47,13 @@ public class SimpleCache implements IComputable<Object, Object> {
         }
         synchronized (this) {
             result = objects.get(key);
-            if (result == null) {
-                result = computable.compute(key);
-                if (result != null) {
-                    objects.putIfAbsent(key, result);
-                    return result;
-                }
+            if (result != null) {
+                return result;
+            }
+            result = computable.compute(key);
+            if (result != null) {
+                objects.putIfAbsent(key, result);
+                return result;
             }
             return null;
         }

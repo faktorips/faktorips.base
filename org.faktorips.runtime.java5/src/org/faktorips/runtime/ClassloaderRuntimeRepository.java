@@ -64,8 +64,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
     public final static ClassloaderRuntimeRepository create(String tocResource) {
-        return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), createDocumentBuilder(),
-                new DefaultCacheFactory());
+        return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), new DefaultCacheFactory());
     }
 
     /**
@@ -80,8 +79,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
     public final static ClassloaderRuntimeRepository create(String tocResource, ICacheFactory cacheFactory) {
-        return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), createDocumentBuilder(),
-                cacheFactory);
+        return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), cacheFactory);
     }
 
     /**
@@ -96,7 +94,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
     public final static ClassloaderRuntimeRepository create(String tocResource, ClassLoader cl) {
-        return create(tocResource, cl, createDocumentBuilder(), new DefaultCacheFactory());
+        return create(tocResource, cl, new DefaultCacheFactory());
     }
 
     /**
@@ -114,52 +112,27 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
     public final static ClassloaderRuntimeRepository create(String tocResource,
             ClassLoader cl,
             ICacheFactory cacheFactory) {
-        return create(tocResource, cl, createDocumentBuilder(), cacheFactory);
-    }
-
-    /**
-     * Creates a new repository that loads it's contents from the given toc resource and classloader
-     * using the given xml document builder to parse the xml data.
-     * 
-     * @param tocResource Path to the resource containing the toc file. E.g.
-     * @param cl The classloader to use.
-     *            "org/faktorips/sample/internal/faktorips-repository-toc.xml"
-     * @param docBuilder The document builder used to parse the xml data.
-     * 
-     * @throws NullPointerException if any argument is <code>null</code>.
-     * @throws RuntimeException if the registry's table of contents file can't be read.
-     */
-    public final static ClassloaderRuntimeRepository create(String tocResource,
-            ClassLoader cl,
-            DocumentBuilder docBuilder) {
-        return new ClassloaderRuntimeRepository(tocResource, cl, docBuilder, new DefaultCacheFactory());
-    }
-
-    /**
-     * Creates a new repository that loads it's contents from the given toc resource and classloader
-     * using the given xml document builder to parse the xml data.
-     * 
-     * @param tocResource Path to the resource containing the toc file. E.g.
-     * @param cl The classloader to use.
-     *            "org/faktorips/sample/internal/faktorips-repository-toc.xml"
-     * @param docBuilder The document builder used to parse the xml data.
-     * @param cacheFactory The CacheFactory used to create the cache objects in the repository
-     * 
-     * @throws NullPointerException if any argument is <code>null</code>.
-     * @throws RuntimeException if the registry's table of contents file can't be read.
-     */
-    public final static ClassloaderRuntimeRepository create(String tocResource,
-            ClassLoader cl,
-            DocumentBuilder docBuilder,
-            ICacheFactory cacheFactory) {
-        return new ClassloaderRuntimeRepository(tocResource, cl, docBuilder, cacheFactory);
+        return new ClassloaderRuntimeRepository(tocResource, cl, cacheFactory);
     }
 
     // path to the resource containing the toc.
-    private String tocResourcePath;
+    private final String tocResourcePath;
 
     // xml document builder
-    private DocumentBuilder docBuilder = null;
+    /**
+     * This is a thread local variable because the document builder is not thread safe. For every
+     * thread the method {@link #createDocumentBuilder()} is called automatically
+     */
+    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new ThreadLocal<DocumentBuilder>() {
+        @Override
+        protected DocumentBuilder initialValue() {
+            return createDocumentBuilder();
+        }
+    };
+
+    protected DocumentBuilder getDocumentBuilder() {
+        return docBuilderHolder.get();
+    }
 
     /**
      * Creates a new repository that loads it's contents from the given classloader and the given
@@ -176,7 +149,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @see #TABLE_OF_CONTENTS_FILE
      */
     public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage) throws ParserConfigurationException {
-        this(cl, basePackage, TABLE_OF_CONTENTS_FILE, createDocumentBuilder(), new DefaultCacheFactory());
+        this(cl, basePackage, TABLE_OF_CONTENTS_FILE, new DefaultCacheFactory());
     }
 
     /**
@@ -196,7 +169,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      */
     public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage, String pathToToc)
             throws ParserConfigurationException {
-        this(cl, basePackage, pathToToc, createDocumentBuilder(), new DefaultCacheFactory());
+        this(cl, basePackage, pathToToc, new DefaultCacheFactory());
     }
 
     /**
@@ -207,15 +180,13 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @param basePackage The name of the base package that contains the data.
      * @param pathToToc Path from the base package to the resource containing the toc, e.g.
      *            "faktorips-repository-toc.xml" or "motor/motor-repository-toc.xml"
-     * @param docBuilder The document builder used to parse the xml data.
      * 
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws IllegalArgumentException if the basePackage does not contain the table of contents
      *             file.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
-    public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage, String pathToToc,
-            DocumentBuilder docBuilder, ICacheFactory cacheFactory) {
+    public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage, String pathToToc, ICacheFactory cacheFactory) {
         super(basePackage, cacheFactory, cl);
         if (cl == null) {
             throw new NullPointerException();
@@ -226,15 +197,11 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         if (pathToToc == null) {
             throw new NullPointerException();
         }
-        if (docBuilder == null) {
-            throw new NullPointerException();
-        }
         if (basePackage.equals("")) {
             tocResourcePath = pathToToc;
         } else {
             tocResourcePath = basePackage.replace('.', '/') + '/' + pathToToc;
         }
-        this.docBuilder = docBuilder;
         reload();
     }
 
@@ -243,15 +210,13 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * resource using the given docuemnt builder to parse the xml data.
      * 
      * @param cl The classloader to use.
-     * @param docBuilder The document builder used to parse the xml data.
      * 
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws IllegalArgumentException if the tocResource does not contain a valid table of
      *             contents.
      * @throws RuntimeException if the table of contents can't be read.
      */
-    private ClassloaderRuntimeRepository(String tocResource, ClassLoader cl, DocumentBuilder docBuilder,
-            ICacheFactory cacheFactory) {
+    private ClassloaderRuntimeRepository(String tocResource, ClassLoader cl, ICacheFactory cacheFactory) {
         super(tocResource, cacheFactory, cl);
         if (tocResource == null) {
             throw new NullPointerException();
@@ -259,11 +224,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         if (cl == null) {
             throw new NullPointerException();
         }
-        if (docBuilder == null) {
-            throw new NullPointerException();
-        }
         tocResourcePath = tocResource;
-        this.docBuilder = docBuilder;
         reload();
     }
 
@@ -276,7 +237,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
             if (is == null) {
                 throw new IllegalArgumentException("Can' find table of contents file " + tocResourcePath);
             }
-            doc = docBuilder.parse(is);
+            doc = getDocumentBuilder().parse(is);
         } catch (Exception e) {
             throw new RuntimeException("Error loading table of contents from " + tocResourcePath, e);
         } finally {
@@ -348,7 +309,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         }
         Document doc;
         try {
-            doc = docBuilder.parse(is);
+            doc = getDocumentBuilder().parse(is);
         } catch (Exception e) {
             throw new RuntimeException("Can't parse xml resource " + resource, e);
         } finally {

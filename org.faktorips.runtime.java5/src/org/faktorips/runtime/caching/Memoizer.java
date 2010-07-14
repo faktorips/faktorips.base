@@ -35,14 +35,36 @@ import java.util.concurrent.FutureTask;
  */
 public class Memoizer<K, V> implements IComputable<K, V> {
 
-    private final ConcurrentMap<K, Future<SoftValue<V>>> cache = new ConcurrentHashMap<K, Future<SoftValue<V>>>();
+    private final ConcurrentMap<K, Future<SoftValue<V>>> cache;
 
     private final IComputable<K, V> computable;
 
     private final ReferenceQueue<V> queue = new ReferenceQueue<V>();
 
+    /**
+     * The constructor to create a memoizer with default values for the internal
+     * {@link ConcurrentHashMap}
+     * 
+     * @param computable the {@link IComputable} to load new items
+     */
     public Memoizer(IComputable<K, V> computable) {
         this.computable = computable;
+        cache = new ConcurrentHashMap<K, Future<SoftValue<V>>>();
+    }
+
+    /**
+     * This constructor needs next to the {@link IComputable} also the initial size, the load factor
+     * and the concurrency level. These parameters are only for tuning purpose and are directly
+     * forwarded to the internal {@link ConcurrentHashMap}.
+     * 
+     * @param computable The {@link IComputable} to load new items
+     * @param initSize the initial size @see {@link ConcurrentHashMap}
+     * @param loadFactor the load factor @see {@link ConcurrentHashMap}
+     * @param concurrencyLevel the concurrency level @see {@link ConcurrentHashMap}
+     */
+    public Memoizer(IComputable<K, V> computable, int initSize, float loadFactor, int concurrencyLevel) {
+        this.computable = computable;
+        cache = new ConcurrentHashMap<K, Future<SoftValue<V>>>(initSize, loadFactor, concurrencyLevel);
     }
 
     public V compute(final K key) throws InterruptedException {
