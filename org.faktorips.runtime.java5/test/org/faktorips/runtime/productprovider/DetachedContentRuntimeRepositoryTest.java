@@ -13,387 +13,175 @@
 
 package org.faktorips.runtime.productprovider;
 
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.TimeZone;
+import java.io.File;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 
 import junit.framework.TestCase;
 
-import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.InMemoryRuntimeRepository;
-import org.faktorips.runtime.internal.DateTime;
-import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
-import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.TableContentTocEntry;
-import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.faktorips.runtime.test.IpsFormulaTestCase;
-import org.faktorips.runtime.test.IpsTest2;
-import org.faktorips.runtime.test.IpsTestCase2;
-import org.faktorips.runtime.testrepository.PnCProduct;
-import org.faktorips.runtime.testrepository.home.HomeProduct;
-import org.faktorips.runtime.testrepository.home.HomeProductGen;
-import org.faktorips.runtime.testrepository.motor.MotorProduct;
-import org.faktorips.runtime.testrepository.motor.MotorProductGen;
-import org.faktorips.runtime.testrepository.motor.RateTable;
-import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
-import org.faktorips.values.Decimal;
-import org.faktorips.values.Money;
-import org.w3c.dom.Element;
 
 public class DetachedContentRuntimeRepositoryTest extends TestCase {
 
-    private IRuntimeRepository repository;
-    private TestProductDataProvider productDataProvider;
-    private DetachedContentRuntimeRepositoryManager pdpRuntimeRepository;
+    private DetachedContentRuntimeRepositoryManager repository;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        Builder builder = new Builder(getClass().getClassLoader(),
+        setTocVersion(0);
+        MyBuilder builder = new MyBuilder(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
         builder.setCheckTocModifications(true);
-        pdpRuntimeRepository = new DetachedContentRuntimeRepositoryManager("testRR", getClass().getClassLoader(),
-                builder, null);
-        repository = pdpRuntimeRepository.getTransaction();
-        productDataProvider = builder.testProductDataProvider;
+        repository = new DetachedContentRuntimeRepositoryManager("testRR", getClass().getClassLoader(), builder, null);
     }
 
-    public void testGetProductComponent() {
-        Calendar effectiveDate = new GregorianCalendar(2005, 1, 1);
-        MotorProduct motorPk = (MotorProduct)repository.getProductComponent("motor.MotorBasic");
-        assertNotNull(motorPk);
-        MotorProductGen motorProductGen = (MotorProductGen)motorPk.getGenerationBase(effectiveDate);
-        assertNotNull(motorProductGen);
-        assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
-        assertEquals(Money.euro(15, 0), motorProductGen.getFixedCosts());
-        assertEquals(new DateTime(2010, 1, 18), motorPk.getValidTo()); // the valid to of this
-        // product component is read
-        // from the toc entry
-
-        motorPk = (MotorProduct)repository.getProductComponent("motor.MotorPlus");
-        assertNotNull(motorPk);
-        motorProductGen = (MotorProductGen)motorPk.getGenerationBase(effectiveDate);
-        assertNotNull(motorProductGen);
-        assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
-        assertEquals(Money.euro(20, 0), motorProductGen.getFixedCosts());
-        assertEquals(new DateTime(2010, 1, 16), motorPk.getValidTo()); // the valid to of this
-        // product component is read
-        // from the xml content of
-        // the prod. comp.
-
-        HomeProduct homePk = (HomeProduct)repository.getProductComponent("home.HomeBasic");
-        assertNotNull(homePk);
-        HomeProductGen homeProductGen = (HomeProductGen)homePk.getGenerationBase(effectiveDate);
-        assertNotNull(homeProductGen);
-        assertEquals(Decimal.valueOf("0.16"), homeProductGen.getTaxRate());
-        assertEquals(Money.euro(10, 0), homeProductGen.getFixedCosts());
-
-        // request for none existing component
-        assertNull(repository.getProductComponent("notThere"));
-
-        assertTrue(productDataProvider.flag);
-        productDataProvider.flag = false;
-        // should use cached object
-        repository.getProductComponent("home.HomeBasic");
-        assertFalse(productDataProvider.flag);
-        productDataProvider.baseVersion = "1";
-
-        // should use cached object
-        assertFalse(productDataProvider.flag);
-
-        repository = pdpRuntimeRepository.getTransaction();
-
-        repository.getProductComponent("home.HomeBasic");
-        // should NOT use cached object
-        assertTrue(productDataProvider.flag);
-    }
-
-    public void testGetProductComponent_KindId_VersionId() {
-        MotorProduct motorProduct = (MotorProduct)repository.getProductComponent("motor.MotorPlus", "2005-01");
-        assertNotNull(motorProduct);
-        assertEquals("2005-01", motorProduct.getVersionId());
-        assertEquals("motor.MotorPlus", motorProduct.getKindId());
-        assertNull(repository.getProductComponent(null, "2005-01"));
-        assertNull(repository.getProductComponent("Unknown", "2005-01"));
-    }
-
-    public void testGetAllProductComponents_KindId() {
-        MotorProduct motorProduct = (MotorProduct)repository.getProductComponent("motor.MotorPlus", "2005-01");
-        assertNotNull(motorProduct);
-
-        List<IProductComponent> result = repository.getAllProductComponents("motor.MotorPlus");
-        assertEquals(1, result.size());
-        assertEquals(motorProduct, result.get(0));
-
-        assertEquals(0, repository.getAllProductComponents((String)null).size());
-        assertEquals(0, repository.getAllProductComponents("unknown").size());
-    }
-
-    public void testGetProductComponentGeneration() {
-        assertNull(repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2004, 11, 31)));
-        assertNull(repository.getProductComponentGeneration("unknown", new GregorianCalendar(2005, 1, 1)));
-        IProductComponentGeneration gen = repository.getProductComponentGeneration("motor.MotorPlus", null);
-        assertNull(gen);
-
-        MotorProductGen motorProductGen = (MotorProductGen)repository.getProductComponentGeneration("motor.MotorPlus",
-                new GregorianCalendar(2005, 1, 1));
-        assertNotNull(motorProductGen);
-        assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
-        assertEquals(Money.euro(20, 0), motorProductGen.getFixedCosts());
-
-        motorProductGen = (MotorProductGen)repository.getProductComponentGeneration("motor.MotorPlus",
-                new GregorianCalendar(2006, 1, 1));
-        assertNotNull(motorProductGen);
-        assertEquals(Decimal.valueOf("0.16"), motorProductGen.getTaxRate());
-        assertEquals(Money.euro(30, 0), motorProductGen.getFixedCosts());
-
-        assertTrue(productDataProvider.flag);
-        productDataProvider.flag = false;
-        // should use cached object
-        repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
-        assertFalse(productDataProvider.flag);
-        productDataProvider.baseVersion = "1";
-        // should use cached object
-        assertFalse(productDataProvider.flag);
-        repository = pdpRuntimeRepository.getTransaction();
-        repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
-        // should NOT use cached object
-        assertTrue(productDataProvider.flag);
-    }
-
-    public void testGetAllProductComponentsByType() {
-        // get all motor products
-        List<IProductComponent> list = repository.getAllProductComponents(MotorProduct.class);
-        assertEquals(2, list.size());
-        assertTrue(list.contains(repository.getProductComponent("motor.MotorBasic")));
-        assertTrue(list.contains(repository.getProductComponent("motor.MotorPlus")));
-
-        // get all home products
-        list = repository.getAllProductComponents(HomeProduct.class);
-        assertEquals(1, list.size());
-        assertTrue(list.contains(repository.getProductComponent("home.HomeBasic")));
-
-        // get all PnC products (should return all motor and home products)
-        list = repository.getAllProductComponents(PnCProduct.class);
-        assertEquals(3, list.size());
-        assertTrue(list.contains(repository.getProductComponent("motor.MotorBasic")));
-        assertTrue(list.contains(repository.getProductComponent("motor.MotorPlus")));
-        assertTrue(list.contains(repository.getProductComponent("home.HomeBasic")));
-
-        // Unknown policy component class => should return empty list
-        list = repository.getAllProductComponents(String.class);
-        assertEquals(0, list.size());
-    }
-
-    public void testGetTableByClass() {
-        RateTable table = (RateTable)repository.getTable(RateTable.class);
-        assertNotNull(table);
-    }
-
-    public void testGetTableByQualifiedName() {
-        RateTable table = (RateTable)repository.getTable("motor.RateTable");
-        assertNotNull(table);
-        table = (RateTable)repository.getTable("motor.RateTableAlternate");
-        assertNotNull(table);
-    }
-
-    public void testGetAllProductComponentNames() {
-        List<String> allNames = repository.getAllProductComponentIds();
-        assertEquals(3, allNames.size());
-        assertTrue(allNames.contains("motor.MotorBasic"));
-        assertTrue(allNames.contains("motor.MotorPlus"));
-        assertTrue(allNames.contains("home.HomeBasic"));
-    }
-
-    public void testGetAllProductComponents() {
-        List<IProductComponent> allProductCmpts = repository.getAllProductComponents();
-        assertTrue(allProductCmpts.contains(repository.getProductComponent("motor.MotorBasic")));
-        assertTrue(allProductCmpts.contains(repository.getProductComponent("motor.MotorPlus")));
-        assertTrue(allProductCmpts.contains(repository.getProductComponent("home.HomeBasic")));
-    }
-
-    public void testGetProductComponentGenerations() {
-        IProductComponent motorPk = repository.getProductComponent("motor.MotorBasic");
-        List<IProductComponentGeneration> result = repository.getProductComponentGenerations(motorPk);
-        assertEquals(1, result.size());
-
-        motorPk = repository.getProductComponent("motor.MotorPlus");
-        result = repository.getProductComponentGenerations(motorPk);
-        assertEquals(3, result.size());
-
-        IProductComponent unknownPc = new MotorProduct(new InMemoryRuntimeRepository(), "", "", "");
-        result = repository.getProductComponentGenerations(unknownPc);
-        assertEquals(0, result.size());
-    }
-
-    public void testGetIpsTestCase() throws Exception {
-        TestPremiumCalculation test = (TestPremiumCalculation)repository.getIpsTestCase("test.CalculationTest1");
-        assertNotNull(test);
-        assertEquals("test.CalculationTest1", test.getQualifiedName());
-        assertEquals("42", test.getInputSumInsured());
-        assertEquals("43", test.getExpResultPremium());
-
-        // formla test
-        IpsFormulaTestCase formulaTest = (IpsFormulaTestCase)repository.getIpsTest("motor.MotorBasic");
-        assertNotNull(formulaTest);
-    }
-
-    public void testGetAllIpsTestCases() throws Exception {
-        List<IpsTest2> tests = repository.getAllIpsTestCases(repository);
-        assertEquals(3, tests.size());
-    }
-
-    public void testGetNumberOfProductComponentGenerations() {
-        IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
-        int number = repository.getNumberOfProductComponentGenerations(productComponent);
-        assertEquals(3, number);
-    }
-
-    public void testGetNextProductComponentGeneration() {
-        IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
-        MotorProductGen motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(
-                2005, Calendar.JANUARY, 1));
-        assertNotNull(motorProductGen);
-
-        MotorProductGen next = (MotorProductGen)repository.getNextProductComponentGeneration(motorProductGen);
-        assertEquals(new DateTime(2006, 1, 1).toDate(TimeZone.getDefault()), next.getValidFrom(TimeZone.getDefault()));
-
-        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2006,
-                Calendar.JANUARY, 1));
-        assertNotNull(motorProductGen);
-
-        next = (MotorProductGen)repository.getNextProductComponentGeneration(motorProductGen);
-        assertEquals(new DateTime(2007, 1, 1).toDate(TimeZone.getDefault()), next.getValidFrom(TimeZone.getDefault()));
-
-        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2007,
-                Calendar.JANUARY, 1));
-        assertNotNull(motorProductGen);
-
-        next = (MotorProductGen)repository.getNextProductComponentGeneration(motorProductGen);
-        assertNull(next);
-
-    }
-
-    public void testGetPreviousProductComponentGeneration() {
-        IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
-
-        MotorProductGen motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(
-                2007, Calendar.JANUARY, 1));
-        MotorProductGen previous = (MotorProductGen)repository.getPreviousProductComponentGeneration(motorProductGen);
-        assertEquals(new DateTime(2006, 1, 1).toDate(TimeZone.getDefault()), previous.getValidFrom(TimeZone
-                .getDefault()));
-
-        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2006,
-                Calendar.JANUARY, 1));
-        previous = (MotorProductGen)repository.getPreviousProductComponentGeneration(motorProductGen);
-        assertEquals(new DateTime(2005, 1, 1).toDate(TimeZone.getDefault()), previous.getValidFrom(TimeZone
-                .getDefault()));
-
-        motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2005,
-                Calendar.JANUARY, 1));
-        previous = (MotorProductGen)repository.getPreviousProductComponentGeneration(motorProductGen);
-        assertNull(previous);
-    }
-
-    public void testGetLatestProductComponentGeneration() {
-        IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
-        IProductComponentGeneration generation = repository.getLatestProductComponentGeneration(productComponent);
-        assertEquals(new DateTime(2007, 1, 1).toDate(TimeZone.getDefault()), generation.getValidFrom(TimeZone
-                .getDefault()));
-
-    }
-
-    public void testGetIpsTestCaseStartingWith() {
-        assertIpsTestCasesStartingWith("test", new String[] { "test.CalculationTest1", "test.CalculationTest2" });
-        assertIpsTestCasesStartingWith("test.CalculationTest", new String[] { "test.CalculationTest1",
-                "test.CalculationTest2" });
-        assertIpsTestCasesStartingWith("test.CalculationTest1", new String[] { "test.CalculationTest1" });
-        assertIpsTestCasesStartingWith("test1", new String[] {});
-    }
-
-    private void assertIpsTestCasesStartingWith(String qNamePrefix, String[] testCasesExpected) {
-        List<IpsTest2> result = repository.getIpsTestCasesStartingWith(qNamePrefix, repository);
-        assertEquals("Unexpected number of test cases", testCasesExpected.length, result.size());
-        for (String element : testCasesExpected) {
-            boolean found = false;
-            for (IpsTest2 ipsTest2 : result) {
-                IpsTestCase2 testCase = (IpsTestCase2)ipsTest2;
-                if (testCase.getQualifiedName().equals(element)) {
-                    found = true;
-                    break;
-                }
-
+    private void setTocVersion(long version) {
+        URL tocUrl = getClass().getClassLoader().getResource(
+                "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
+        try {
+            URLConnection connection = tocUrl.openConnection();
+            if (connection instanceof JarURLConnection) {
+                JarURLConnection jarUrlConnection = (JarURLConnection)connection;
+                URL jarUrl = jarUrlConnection.getJarFileURL();
+                File jarFile = new File(jarUrl.toURI());
+                jarFile.setLastModified(version);
+            } else {
+                File tocFile = new File(tocUrl.getFile());
+                tocFile.setLastModified(version);
             }
-            assertTrue("Missing test case: " + element, found);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot get last modification stamp of toc url", e);
         }
     }
 
-    private static class TestProductDataProvider extends ClassLoaderProductDataProvider {
+    public void testClientCall() {
+        IRuntimeRepository client1 = repository.startRequest();
+        IRuntimeRepository client2 = repository.startRequest();
+        IRuntimeRepository client3 = repository.startRequest();
 
-        // set true by any method called (except getModificationStamp())
-        // indicates that one of the overridden methods was calles - that means the data is not
-        // loaded from cache
-        boolean flag = false;
+        assertNotNull(client1.getProductComponent("motor.MotorBasic"));
 
-        String baseVersion = "0";
+        assertNotNull(client2.getProductComponent("motor.MotorPlus"));
 
-        public TestProductDataProvider(Builder builder) {
-            super(builder);
+        assertNotNull(client3.getProductComponent("home.HomeBasic"));
+
+        setTocVersion(1000);
+
+        // should NOT throw an exception because product component is in cache and
+        // we did not call checkForModifications()
+        client1.getProductComponent("motor.MotorBasic");
+
+        client1 = repository.startRequest();
+        // shold NOT throw an exception because we just called reloadIfModified.
+        client1.getProductComponent("motor.MotorPlus");
+
+        setTocVersion(2000);
+
+        try {
+            // should throw an exception because version changed and requested product component is
+            // not in cache
+            client1.getProductComponent("motor.MotorBasic");
+            fail("Should throw a runtime exception");
+        } catch (RuntimeException e) {
+            assertTrue(e.getCause() instanceof DataModifiedException);
+            DataModifiedException dme = (DataModifiedException)e.getCause();
+            assertEquals("1000", dme.oldVersion);
+            assertEquals("2000", dme.newVersion);
         }
 
-        @Override
-        public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException {
-            flag = true;
-            return super.getEnumContentAsStream(tocEntry);
+        // MotorPlus is cached --> no exception until checkForModifications()
+        client1.getProductComponent("motor.MotorPlus");
+
+        // try again MotorBasic - did not call checkForModifications --> still same exception
+        try {
+            client1.getProductComponent("motor.MotorBasic");
+            fail("Should throw a runtime exception");
+
+        } catch (RuntimeException e) {
+            assertTrue(e.getCause() instanceof DataModifiedException);
+            DataModifiedException dme = (DataModifiedException)e.getCause();
+            assertEquals("1000", dme.oldVersion);
+            assertEquals("2000", dme.newVersion);
         }
 
-        @Override
-        public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException {
-            flag = true;
-            return super.getProductCmptData(tocEntry);
+        // exception should also be thrown for other clients
+        try {
+            client2.getProductComponent("motor.MotorBasic");
+            fail("Should throw a runtime exception");
+
+        } catch (RuntimeException e) {
+            assertTrue(e.getCause() instanceof DataModifiedException);
+            DataModifiedException dme = (DataModifiedException)e.getCause();
+            assertEquals("1000", dme.oldVersion);
+            assertEquals("2000", dme.newVersion);
         }
 
-        @Override
-        public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException {
-            flag = true;
-            return super.getProductCmptGenerationData(tocEntry);
+        client1 = repository.startRequest();
+        // no exception anymore for client1
+        assertNotNull(client1.getProductComponent("motor.MotorBasic"));
+
+        // but still exception for client2
+        try {
+            client2.getProductComponent("motor.MotorBasic");
+            fail("Should throw a runtime exception");
+
+        } catch (RuntimeException e) {
+            assertTrue(e.getCause() instanceof DataModifiedException);
+            DataModifiedException dme = (DataModifiedException)e.getCause();
+            // client2 was still on version 0 - never called checkForModifications
+            assertEquals("0", dme.oldVersion);
+            assertEquals("2000", dme.newVersion);
         }
 
-        @Override
-        public InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException {
-            flag = true;
-            return super.getTableContentAsStream(tocEntry);
+        // and still exception for client3
+        try {
+            client3.getProductComponent("motor.MotorBasic");
+            fail("Should throw a runtime exception");
+
+        } catch (RuntimeException e) {
+            assertTrue(e.getCause() instanceof DataModifiedException);
+            DataModifiedException dme = (DataModifiedException)e.getCause();
+            // client2 was still on version 0 - never called checkForModifications
+            assertEquals("0", dme.oldVersion);
+            assertEquals("2000", dme.newVersion);
         }
 
-        @Override
-        public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException {
-            flag = true;
-            return super.getTestcaseElement(tocEntry);
+        client2 = repository.startRequest();
+        // no exception anymore for client1 and client2
+        assertNotNull(client1.getProductComponent("motor.MotorPlus"));
+        assertNotNull(client2.getProductComponent("motor.MotorBasic"));
+
+        // but still exception for client3
+        try {
+            client3.getProductComponent("motor.MotorBasic");
+            fail("Should throw a runtime exception");
+
+        } catch (RuntimeException e) {
+            assertTrue(e.getCause() instanceof DataModifiedException);
+            DataModifiedException dme = (DataModifiedException)e.getCause();
+            assertEquals("0", dme.oldVersion);
+            assertEquals("2000", dme.newVersion);
         }
 
-        @Override
-        public String getBaseVersion() {
-            return baseVersion;
-        }
+        client3 = repository.startRequest();
+        assertNotNull(client1.getProductComponent("motor.MotorPlus"));
+        assertNotNull(client2.getProductComponent("home.HomeBasic"));
+        assertNotNull(client3.getProductComponent("motor.MotorBasic"));
     }
 
-    public static class Builder extends ClassLoaderProductDataProvider.Builder {
+    public class MyBuilder extends ClassLoaderProductDataProvider.Builder {
 
-        private TestProductDataProvider testProductDataProvider;
+        private IProductDataProvider provider;
 
-        public Builder(ClassLoader cl, String tocResourcePath) {
+        public MyBuilder(ClassLoader cl, String tocResourcePath) {
             super(cl, tocResourcePath);
         }
 
         @Override
         public IProductDataProvider build() {
-            testProductDataProvider = new TestProductDataProvider(this);
-            return testProductDataProvider;
+            provider = super.build();
+            return provider;
         }
 
     }

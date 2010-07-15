@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import org.faktorips.runtime.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.DefaultCacheFactory;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -28,12 +29,12 @@ import org.w3c.dom.Element;
 
 /**
  * The {@link DetachedContentRuntimeRepositoryManager} manages the access to the internal
- * {@link DetachedContentRuntimeRepository}. To use the internal repository you have to get a
- * {@link RuntimeRepositoryTransaction}. This transaction delegates every call to the
- * {@link DetachedContentRuntimeRepository} until the product data version has changed.
+ * {@link ProductDataProviderRuntimeRepository}. To use the internal repository you have to get a
+ * {@link DetachedContentRuntimeRepository}. This versionSafeRepository delegates every call to the
+ * {@link ProductDataProviderRuntimeRepository} until the product data version has changed.
  * 
+ * @see ProductDataProviderRuntimeRepository
  * @see DetachedContentRuntimeRepository
- * @see RuntimeRepositoryTransaction
  * 
  * 
  * @author dirmeier
@@ -41,42 +42,43 @@ import org.w3c.dom.Element;
 
 public class DetachedContentRuntimeRepositoryManager {
 
-    private volatile RuntimeRepositoryTransaction transaction;
-    private DetachedContentRuntimeRepository detachedContentRuntimeRepository;
+    private final ProductDataProviderRuntimeRepository productDataProviderRuntimeRepository;
 
     public DetachedContentRuntimeRepositoryManager(String name, ClassLoader cl,
             IProductDataProvider.Builder productDataProviderBuilder, IFormulaEvaluatorFactory formulaEvaluatorFactory) {
-        detachedContentRuntimeRepository = new DetachedContentRuntimeRepository(name, cl, productDataProviderBuilder,
-                formulaEvaluatorFactory);
+        productDataProviderRuntimeRepository = new ProductDataProviderRuntimeRepository(name, cl,
+                productDataProviderBuilder, formulaEvaluatorFactory);
     }
 
-    public synchronized RuntimeRepositoryTransaction getTransaction() {
-        detachedContentRuntimeRepository.reloadIfModified();
-        return transaction;
+    public synchronized IRuntimeRepository startRequest() {
+        productDataProviderRuntimeRepository.reloadIfModified();
+        return productDataProviderRuntimeRepository.versionSafeRepository;
     }
 
     /**
-     * The {@link DetachedContentRuntimeRepository} is a runtime repository that is able to parse
-     * the product data provided from a {@link IProductDataProvider} and instantiates the necessary
-     * objects.
+     * The {@link ProductDataProviderRuntimeRepository} is a runtime repository that is able to
+     * parse the product data provided from a {@link IProductDataProvider} and instantiates the
+     * necessary objects.
      * <p>
      * Because the data from an {@link IProductDataProvider} could change over time the
      * {@link DetachedContentRuntimeRepositoryManager} have to look for modifications and
      * reinstantiates the classes if necessary. To ensure that the client operates on only one
      * version of product data, the access to this repository is only possible through a
-     * {@link RuntimeRepositoryTransaction}.
+     * {@link DetachedContentRuntimeRepository}.
      * 
-     * @see RuntimeRepositoryTransaction
+     * @see DetachedContentRuntimeRepository
      */
-    class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntimeRepository {
+    class ProductDataProviderRuntimeRepository extends AbstractClassLoadingRuntimeRepository {
 
         private final IProductDataProvider productDataProvider;
 
         private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
+        private volatile DetachedContentRuntimeRepository versionSafeRepository;
+
         /**
-         * This is the constructor for the {@link DetachedContentRuntimeRepository} expecting a name
-         * for the repository, a {@link ClassLoader} to load the product data instances, a
+         * This is the constructor for the {@link ProductDataProviderRuntimeRepository} expecting a
+         * name for the repository, a {@link ClassLoader} to load the product data instances, a
          * {@link IProductDataProvider.Builder} to get product data and optionally a
          * {@link IFormulaEvaluatorFactory} to evaluate formula instead of loading compiled code.
          * 
@@ -92,7 +94,7 @@ public class DetachedContentRuntimeRepositoryManager {
          *            data in the product data provider because once loaded classes could not
          *            change. This parameter may be null.
          */
-        private DetachedContentRuntimeRepository(String name, ClassLoader classloader,
+        private ProductDataProviderRuntimeRepository(String name, ClassLoader classloader,
                 IProductDataProvider.Builder productDataProviderBuilder,
                 IFormulaEvaluatorFactory formulaEvaluatorFactory) {
             super(name, new DefaultCacheFactory(), classloader);
@@ -182,8 +184,8 @@ public class DetachedContentRuntimeRepositoryManager {
          * reload the content after product data has changed.
          * 
          */
-        private void reloadIfModified() {
-            if (!productDataProvider.isCompatibleToBaseVersion(transaction.getVersion())) {
+        private synchronized void reloadIfModified() {
+            if (!productDataProvider.isCompatibleToBaseVersion(versionSafeRepository.getVersion())) {
                 reload();
             }
         }
@@ -191,23 +193,23 @@ public class DetachedContentRuntimeRepositoryManager {
         @Override
         public synchronized void reload() {
             super.reload();
-            transaction = new RuntimeRepositoryTransaction(this, productDataProvider.getVersion());
+            versionSafeRepository = new DetachedContentRuntimeRepository(this, productDataProvider.getVersion());
         }
 
         /**
-         * Check whether the given transaction is still valid or not. The transaction is valid if it
-         * is equal to the singleton transaction of the
-         * {@link DetachedContentRuntimeRepositoryManager}. If the transaction is invalid, this
-         * method throws a {@link DataModifiedRuntimeException}.
+         * Check whether the given versionSafeRepository is still valid or not. The
+         * versionSafeRepository is valid if it is equal to the singleton versionSafeRepository of
+         * the {@link DetachedContentRuntimeRepositoryManager}. If the versionSafeRepository is
+         * invalid, this method throws a {@link DataModifiedRuntimeException}.
          * 
-         * @param transaction The transaction assert to be valid
-         * @throws DataModifiedRuntimeException if transaction is invalid
+         * @param versionSafeRepository The versionSafeRepository assert to be valid
+         * @throws DataModifiedRuntimeException if versionSafeRepository is invalid
          * 
          */
-        void assertValidTransaction(RuntimeRepositoryTransaction transaction) {
-            if (!DetachedContentRuntimeRepositoryManager.this.transaction.equals(transaction)) {
-                throw new DataModifiedRuntimeException("Transaction request out-dated data", transaction.getVersion(),
-                        productDataProvider.getVersion());
+        void assertValidTransaction(DetachedContentRuntimeRepository versionSafeRepository) {
+            if (!this.versionSafeRepository.equals(versionSafeRepository)) {
+                throw new DataModifiedRuntimeException("Transaction request out-dated data", versionSafeRepository
+                        .getVersion(), productDataProvider.getVersion());
             }
         }
 

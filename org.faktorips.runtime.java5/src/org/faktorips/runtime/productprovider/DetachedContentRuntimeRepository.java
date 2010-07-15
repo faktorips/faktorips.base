@@ -28,17 +28,17 @@ import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.modeltype.IModelType;
-import org.faktorips.runtime.productprovider.DetachedContentRuntimeRepositoryManager.DetachedContentRuntimeRepository;
+import org.faktorips.runtime.productprovider.DetachedContentRuntimeRepositoryManager.ProductDataProviderRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
 
 /**
  * This is an implementation of {@link IRuntimeRepository} to use the
- * {@link DetachedContentRuntimeRepository}.
+ * {@link ProductDataProviderRuntimeRepository}.
  * <p>
  * This runtime repository delegates every method of {@link IRuntimeRepository} to a shared
- * {@link DetachedContentRuntimeRepository}. The {@link DetachedContentRuntimeRepository} is nested
+ * {@link ProductDataProviderRuntimeRepository}. The {@link ProductDataProviderRuntimeRepository} is nested
  * in a {@link DetachedContentRuntimeRepositoryManager}. After the delegation, this transaction
  * checks whether it still valid. If it is invalid because the product data has changed, a
  * {@link DataModifiedRuntimeException} is thrown.
@@ -48,19 +48,19 @@ import org.faktorips.runtime.test.IpsTestSuite;
  * 
  * @author dirmeier
  */
-public class RuntimeRepositoryTransaction implements IRuntimeRepository {
+public class DetachedContentRuntimeRepository implements IRuntimeRepository {
 
-    private final DetachedContentRuntimeRepositoryManager.DetachedContentRuntimeRepository pdpRepository;
+    private final DetachedContentRuntimeRepositoryManager.ProductDataProviderRuntimeRepository pdpRepository;
 
     private final String version;
 
     /**
      * Constructor should only called by the {@link DetachedContentRuntimeRepositoryManager}
      * 
-     * @param repository The {@link DetachedContentRuntimeRepository} to delegate all methods to
+     * @param repository The {@link ProductDataProviderRuntimeRepository} to delegate all methods to
      * @param version The actual version this transaction is valid for
      */
-    RuntimeRepositoryTransaction(DetachedContentRuntimeRepositoryManager.DetachedContentRuntimeRepository repository,
+    DetachedContentRuntimeRepository(DetachedContentRuntimeRepositoryManager.ProductDataProviderRuntimeRepository repository,
             String version) {
         this.pdpRepository = repository;
         this.version = version;
