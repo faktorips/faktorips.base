@@ -51,10 +51,10 @@ public class AttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
             IAttribute attribute = (IAttribute)ipsObjectPart;
             String label = attribute.getName();
             if (attribute.isDerived()) {
-                label = "/" + label;
+                label = "/" + label; //$NON-NLS-1$
             }
             if (!StringUtils.isEmpty(attribute.getDatatype())) {
-                label += " : " + attribute.getDatatype();
+                label += " : " + attribute.getDatatype(); //$NON-NLS-1$
             }
             return label;
         } else {
