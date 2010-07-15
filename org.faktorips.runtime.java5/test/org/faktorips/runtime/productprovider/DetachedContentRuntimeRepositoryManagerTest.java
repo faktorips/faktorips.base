@@ -31,6 +31,11 @@ import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.productprovider.ClassLoaderPdpFactory;
+import org.faktorips.runtime.productprovider.ClassLoaderProductDataProvider;
+import org.faktorips.runtime.productprovider.DataModifiedException;
+import org.faktorips.runtime.productprovider.DetachedContentRuntimeRepositoryManager;
+import org.faktorips.runtime.productprovider.IProductDataProvider;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -49,19 +54,17 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
 
     private IRuntimeRepository repository;
     private TestProductDataProvider productDataProvider;
-    private DetachedContentRuntimeRepositoryManager pdpRuntimeRepository;
-    private Builder builder;
+    private DetachedContentRuntimeRepositoryManager runtimeRepositoryManager;
+    private MyFactory pdpFactory;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        builder = new Builder(getClass().getClassLoader(),
+        pdpFactory = new MyFactory(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
-        builder.setCheckTocModifications(true);
-        pdpRuntimeRepository = new DetachedContentRuntimeRepositoryManager("testRR", getClass().getClassLoader(),
-                builder, null);
-        repository = pdpRuntimeRepository.startRequest();
-        productDataProvider = builder.testProductDataProvider;
+        runtimeRepositoryManager = new DetachedContentRuntimeRepositoryManager.Builder(pdpFactory).build();
+        repository = runtimeRepositoryManager.startRequest();
+        productDataProvider = pdpFactory.testProductDataProvider;
     }
 
     public void testGetProductComponent() {
@@ -105,10 +108,11 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         productDataProvider.baseVersion = "1";
 
         // should use cached object
+        repository.getProductComponent("home.HomeBasic");
         assertFalse(productDataProvider.flag);
 
-        repository = pdpRuntimeRepository.startRequest();
-        productDataProvider = builder.testProductDataProvider;
+        repository = runtimeRepositoryManager.startRequest();
+        productDataProvider = pdpFactory.testProductDataProvider;
 
         repository.getProductComponent("home.HomeBasic");
         // should NOT use cached object
@@ -116,6 +120,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
     }
 
     public void testGetProductComponent_KindId_VersionId() {
+        repository = runtimeRepositoryManager.startRequest();
         MotorProduct motorProduct = (MotorProduct)repository.getProductComponent("motor.MotorPlus", "2005-01");
         assertNotNull(motorProduct);
         assertEquals("2005-01", motorProduct.getVersionId());
@@ -159,12 +164,15 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         // should use cached object
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         assertFalse(productDataProvider.flag);
+
         productDataProvider.baseVersion = "1";
+
         // should use cached object
+        repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         assertFalse(productDataProvider.flag);
 
-        repository = pdpRuntimeRepository.startRequest();
-        productDataProvider = builder.testProductDataProvider;
+        repository = runtimeRepositoryManager.startRequest();
+        productDataProvider = pdpFactory.testProductDataProvider;
 
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         // should NOT use cached object
@@ -347,8 +355,8 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
 
         String baseVersion = "0";
 
-        public TestProductDataProvider(Builder builder) {
-            super(builder);
+        public TestProductDataProvider(ClassLoader cl, String toc) {
+            super(cl, toc, true);
         }
 
         @Override
@@ -383,21 +391,28 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
 
         @Override
         public String getBaseVersion() {
+            if (baseVersion == null) {
+                return "0";
+            }
             return baseVersion;
         }
     }
 
-    public static class Builder extends ClassLoaderProductDataProvider.Builder {
+    public static class MyFactory extends ClassLoaderPdpFactory {
 
         private TestProductDataProvider testProductDataProvider;
+        private final ClassLoader cl;
+        private final String tocResourcePath2;
 
-        public Builder(ClassLoader cl, String tocResourcePath) {
-            super(cl, tocResourcePath);
+        public MyFactory(ClassLoader cl, String tocResourcePath) {
+            super(tocResourcePath);
+            this.cl = cl;
+            tocResourcePath2 = tocResourcePath;
         }
 
         @Override
-        public IProductDataProvider build() {
-            testProductDataProvider = new TestProductDataProvider(this);
+        public IProductDataProvider newInstance() {
+            testProductDataProvider = new TestProductDataProvider(cl, tocResourcePath2);
             return testProductDataProvider;
         }
 

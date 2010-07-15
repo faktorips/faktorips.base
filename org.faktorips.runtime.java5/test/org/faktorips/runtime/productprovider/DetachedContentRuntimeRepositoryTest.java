@@ -21,6 +21,10 @@ import java.net.URLConnection;
 import junit.framework.TestCase;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.productprovider.ClassLoaderPdpFactory;
+import org.faktorips.runtime.productprovider.DataModifiedException;
+import org.faktorips.runtime.productprovider.DetachedContentRuntimeRepositoryManager;
+import org.faktorips.runtime.productprovider.IProductDataProvider;
 
 public class DetachedContentRuntimeRepositoryTest extends TestCase {
 
@@ -32,8 +36,7 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
         setTocVersion(0);
         MyBuilder builder = new MyBuilder(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
-        builder.setCheckTocModifications(true);
-        repository = new DetachedContentRuntimeRepositoryManager("testRR", getClass().getClassLoader(), builder, null);
+        repository = new DetachedContentRuntimeRepositoryManager.Builder(builder).build();
     }
 
     private void setTocVersion(long version) {
@@ -199,17 +202,19 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
         assertNotNull(client3.getProductComponent("motor.MotorBasic"));
     }
 
-    public class MyBuilder extends ClassLoaderProductDataProvider.Builder {
+    public class MyBuilder extends ClassLoaderPdpFactory {
 
         private IProductDataProvider provider;
 
         public MyBuilder(ClassLoader cl, String tocResourcePath) {
-            super(cl, tocResourcePath);
+            super(tocResourcePath);
+            setClassLoader(cl);
+            setCheckForModifications(true);
         }
 
         @Override
-        public IProductDataProvider build() {
-            provider = super.build();
+        public IProductDataProvider newInstance() {
+            provider = super.newInstance();
             return provider;
         }
 

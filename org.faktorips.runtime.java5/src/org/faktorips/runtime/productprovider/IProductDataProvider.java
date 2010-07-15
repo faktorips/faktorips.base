@@ -27,23 +27,21 @@ import org.w3c.dom.Element;
 /**
  * A {@link IProductDataProvider} provides the content of product data identified by its toc entry.
  * To get the table of contents you have to call 'loadToc'. The product data could change over time.
- * If the user tries to request data from product data provider that has changed since last
- * modification check, you get a {@link DataModifiedException}. To get correct the actualized
- * content you first have to reload your table of content by calling {@link #loadToc()}
+ * If the user tries to request data from product data provider that has changed since creation a
+ * {@link DataModifiedException} is thrown. To get the actual product data the user have to create a
+ * new {@link IProductDataProvider}.
  * 
  * @author dirmeier
  */
 public interface IProductDataProvider extends IVersionChecker {
 
     /**
-     * Reload the toc in the product data provider and returns it. This call also set the
-     * modification time. When product data has changed the user have to call {@link #loadToc()} to
-     * actualize the contents. Otherwise all other methods would throwing
-     * {@link DataModifiedException}
+     * Getting the toc in the product data provider and returns it. Calling the method twice should
+     * not reload the table of content.
      * 
      * @return The loaded toc
      */
-    public IReadonlyTableOfContents loadToc();
+    public IReadonlyTableOfContents getToc();
 
     /**
      * Getting the product component data element for given tocEntry. If the toc has been modified
@@ -101,38 +99,22 @@ public interface IProductDataProvider extends IVersionChecker {
     public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException;
 
     /**
-     * Getting the actual version of the product data provider. This should be a cached version and
-     * does not need to be requested from a file or server every time.
+     * Getting the version of the product data provider. This is the version of the product data
+     * when this {@link IProductDataProvider} was created. The version should be final. Once product
+     * data has changed this {@link IProductDataProvider} getting useless and a new one should be
+     * created.
      * 
      * @return the version of the product data provider
      */
     public String getVersion();
 
     /**
-     * Checks whether the given version is compatible to the base version. The base is the real
-     * version of the service or file - not the cached version of the prodct data provider
+     * Return true if the version is compatible to the base version of this
+     * {@link IProductDataProvider}. The base version is the really actual version of the product
+     * data and should not be cached.
      * 
-     * @param version The version to be checked against base version
-     * @return true if the version is compatible
+     * @return true if version is compatible
      */
-    public boolean isCompatibleToBaseVersion(String version);
-
-    /**
-     * This is a builder to build a {@link IProductDataProvider}. We use the builder pattern here to
-     * guarantee one instance of {@link IProductDataProvider} is only used by one
-     * {@link DetachedContentRuntimeRepositoryManager}
-     * 
-     * @author dirmeier
-     */
-    public static interface Builder {
-
-        /**
-         * This methods calls the constructor of the {@link IProductDataProvider} implementation
-         * 
-         * @return a new {@link IProductDataProvider}
-         */
-        public IProductDataProvider build();
-
-    }
+    public boolean isCompatibleToBaseVersion();
 
 }

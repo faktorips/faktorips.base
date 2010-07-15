@@ -42,8 +42,13 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
         }
     };
 
+    /**
+     * Creating a document builder. If you want to inject your own implementation of document
+     * builder use the property specified in {@link DocumentBuilderFactory}.
+     * 
+     * @return a new {@link DocumentBuilder}
+     */
     private static final DocumentBuilder createDocumentBuilder() {
-
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         DocumentBuilder builder;
@@ -68,29 +73,35 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
         return builder;
     }
 
-    public AbstractProductDataProvider() {
-        super();
-    }
-
+    /**
+     * Getting the thread local instance of {@link DocumentBuilder}
+     * 
+     * @return a thread local instance of {@link DocumentBuilder}
+     */
     protected DocumentBuilder getDocumentBuilder() {
         return docBuilderHolder.get();
     }
 
     /**
-     * Returns true if the old version is the same as new version
-     * 
-     * @param oldVersion the old version
-     * @param newVersion the new version
-     * @return true if both versions are compatible
+     * Returns true if both versions are compatible. At the moment compatible means both versions
+     * are equal
+     * <p>
+     * {@inheritDoc}
      */
     public boolean isCompatibleVersion(String oldVersion, String newVersion) {
         return oldVersion.equals(newVersion);
     }
 
-    public boolean isCompatibleToBaseVersion(String version) {
-        return isCompatibleVersion(version, getBaseVersion());
+    public boolean isCompatibleToBaseVersion() {
+        return isCompatibleVersion(getVersion(), getBaseVersion());
     }
 
+    /**
+     * Getting the really actual version of the product data. That means to look in the file, asking
+     * your service or your database or what ever is your product data base.
+     * 
+     * @return the actual version of the product data
+     */
     public abstract String getBaseVersion();
 
 }

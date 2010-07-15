@@ -13,11 +13,8 @@
 
 package org.faktorips.runtime.productprovider;
 
-public class TocLoadingRuntimeException extends RuntimeException {
+public interface IProductDataProviderFactory {
 
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = 1L;
+    public IProductDataProvider newInstance();
 
 }

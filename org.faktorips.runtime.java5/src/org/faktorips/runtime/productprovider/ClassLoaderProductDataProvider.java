@@ -43,17 +43,46 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
 
     private final ClassLoader cl;
     private final boolean checkTocModifications;
-    private volatile String tocFileLastModified = "";
-    private URL tocUrl;
-    private ReadonlyTableOfContents toc;
+    private final String tocFileLastModified;
+    private final ReadonlyTableOfContents toc;
+    private final URL tocUrl;
 
-    protected ClassLoaderProductDataProvider(Builder builder) {
-        this.cl = builder.classLoader;
-        tocUrl = cl.getResource(builder.tocResourcePath);
+    public ClassLoaderProductDataProvider(ClassLoader classLoader, String tocResourcePath, boolean checkTocModifications) {
+        this.cl = classLoader;
+        tocUrl = cl.getResource(tocResourcePath);
         if (tocUrl == null) {
-            throw new IllegalArgumentException("Can' find table of contents file " + builder.tocResourcePath);
+            throw new IllegalArgumentException("Can' find table of contents file " + tocResourcePath);
         }
-        this.checkTocModifications = builder.isCheckTocModifications();
+        this.checkTocModifications = checkTocModifications;
+        toc = loadToc();
+        tocFileLastModified = getBaseVersion();
+    }
+
+    private ReadonlyTableOfContents loadToc() {
+        InputStream is = null;
+        Document doc;
+        try {
+            is = tocUrl.openStream();
+            doc = getDocumentBuilder().parse(is);
+        } catch (Exception e) {
+            throw new RuntimeException("Error loading table of contents from " + tocUrl.getFile(), e);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        try {
+            Element tocElement = doc.getDocumentElement();
+            ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+            toc.initFromXml(tocElement);
+            return toc;
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating toc from xml.", e);
+        }
     }
 
     public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException {
@@ -99,34 +128,8 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         return resourceAsStream;
     }
 
-    public synchronized ReadonlyTableOfContents loadToc() {
-        InputStream is = null;
-        Document doc;
-        try {
-            is = tocUrl.openStream();
-            doc = getDocumentBuilder().parse(is);
-        } catch (Exception e) {
-            throw new RuntimeException("Error loading table of contents from " + tocUrl.getFile(), e);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        try {
-            Element tocElement = doc.getDocumentElement();
-            toc = new ReadonlyTableOfContents();
-            if (checkTocModifications) {
-                tocFileLastModified = getBaseVersion();
-            }
-            toc.initFromXml(tocElement);
-            return toc;
-        } catch (Exception e) {
-            throw new RuntimeException("Error creating toc from xml.", e);
-        }
+    public synchronized ReadonlyTableOfContents getToc() {
+        return toc;
     }
 
     private Element getDocumentElement(String resourcePath) {
@@ -188,37 +191,6 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         if (checkTocModifications && !isCompatibleVersion(getVersion(), timestamp)) {
             throw new DataModifiedException(MODIFIED_EXCEPTION_MESSAGE + name, getVersion(), timestamp);
         }
-    }
-
-    public static class Builder implements IProductDataProvider.Builder {
-
-        private boolean checkTocModifications = false;
-        private final ClassLoader classLoader;
-        private final String tocResourcePath;
-
-        public Builder(ClassLoader cl, String tocResourcePath) {
-            this.classLoader = cl;
-            this.tocResourcePath = tocResourcePath;
-        }
-
-        public IProductDataProvider build() {
-            return new ClassLoaderProductDataProvider(this);
-        }
-
-        /**
-         * @param checkTocModifications The checkTocModifications to set.
-         */
-        public void setCheckTocModifications(boolean checkTocModifications) {
-            this.checkTocModifications = checkTocModifications;
-        }
-
-        /**
-         * @return Returns the checkTocModifications.
-         */
-        public boolean isCheckTocModifications() {
-            return checkTocModifications;
-        }
-
     }
 
 }
