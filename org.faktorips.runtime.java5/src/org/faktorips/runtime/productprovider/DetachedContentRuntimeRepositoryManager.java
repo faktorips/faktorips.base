@@ -25,13 +25,14 @@ import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.productprovider.IProductDataProvider.Builder;
 import org.w3c.dom.Element;
 
 /**
  * The {@link DetachedContentRuntimeRepositoryManager} manages the access to the internal
  * {@link ProductDataProviderRuntimeRepository}. To use the internal repository you have to get a
- * {@link DetachedContentRuntimeRepository}. This versionSafeRepository delegates every call to the
- * {@link ProductDataProviderRuntimeRepository} until the product data version has changed.
+ * {@link DetachedContentRuntimeRepository}. This productDataProviderRepository delegates every call
+ * to the {@link ProductDataProviderRuntimeRepository} until the product data version has changed.
  * 
  * @see ProductDataProviderRuntimeRepository
  * @see DetachedContentRuntimeRepository
@@ -42,17 +43,50 @@ import org.w3c.dom.Element;
 
 public class DetachedContentRuntimeRepositoryManager {
 
-    private final ProductDataProviderRuntimeRepository productDataProviderRuntimeRepository;
+    private volatile ProductDataProviderRuntimeRepository productDataProviderRuntimeRepository;
+    private final String name;
+    private final ClassLoader classloader;
+    private final Builder productDataProviderBuilder;
+    private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
-    public DetachedContentRuntimeRepositoryManager(String name, ClassLoader cl,
+    /**
+     * This is the constructor for the {@link DetachedContentRuntimeRepositoryManager} expecting a
+     * name for the repository, a {@link ClassLoader} to load the product data instances, a
+     * {@link IProductDataProvider.Builder} to get product data and optionally a
+     * {@link IFormulaEvaluatorFactory} to evaluate formula instead of loading compiled code.
+     * 
+     * @param name The name of the runtime repository
+     * @param classloader the {@link ClassLoader} to load the product data instances
+     * @param productDataProviderBuilder the {@link IProductDataProvider.Builder} to create the
+     *            {@link IProductDataProvider} from which we receive product data content
+     * @param formulaEvaluatorFactory a {@link IFormulaEvaluatorFactory} to create a
+     *            {@link org.faktorips.runtime.formula.IFormulaEvaluator} for evaluating formula on
+     *            the fly instead of loading classes with compiled formulas. If you have no
+     *            {@link IFormulaEvaluatorFactory} the repository try to load the classes containing
+     *            compiled formula. In this case you could not change the product data in the
+     *            product data provider because once loaded classes could not change. This parameter
+     *            may be null.
+     */
+    public DetachedContentRuntimeRepositoryManager(String name, ClassLoader classloader,
             IProductDataProvider.Builder productDataProviderBuilder, IFormulaEvaluatorFactory formulaEvaluatorFactory) {
-        productDataProviderRuntimeRepository = new ProductDataProviderRuntimeRepository(name, cl,
-                productDataProviderBuilder, formulaEvaluatorFactory);
+        this.name = name;
+        this.classloader = classloader;
+        this.productDataProviderBuilder = productDataProviderBuilder;
+        this.formulaEvaluatorFactory = formulaEvaluatorFactory;
     }
 
+    /**
+     * Call a modification check on the product data provider. If there are any changes in the
+     * product data, this method creates a new {@link ProductDataProviderRuntimeRepository}. If
+     * there are no changes this method simply returns the existing one.
+     * 
+     */
     public synchronized IRuntimeRepository startRequest() {
-        productDataProviderRuntimeRepository.reloadIfModified();
-        return productDataProviderRuntimeRepository.versionSafeRepository;
+        if (productDataProviderRuntimeRepository == null || !productDataProviderRuntimeRepository.isUpToDate()) {
+            productDataProviderRuntimeRepository = new ProductDataProviderRuntimeRepository(name, classloader,
+                    productDataProviderBuilder);
+        }
+        return productDataProviderRuntimeRepository.productDataProviderRepository;
     }
 
     /**
@@ -72,9 +106,7 @@ public class DetachedContentRuntimeRepositoryManager {
 
         private final IProductDataProvider productDataProvider;
 
-        private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
-
-        private volatile DetachedContentRuntimeRepository versionSafeRepository;
+        private final DetachedContentRuntimeRepository productDataProviderRepository;
 
         /**
          * This is the constructor for the {@link ProductDataProviderRuntimeRepository} expecting a
@@ -86,21 +118,13 @@ public class DetachedContentRuntimeRepositoryManager {
          * @param classloader the {@link ClassLoader} to load the product data instances
          * @param productDataProviderBuilder the {@link IProductDataProvider.Builder} to create the
          *            {@link IProductDataProvider} from which we receive product data content
-         * @param formulaEvaluatorFactory a {@link IFormulaEvaluatorFactory} to create a
-         *            {@link org.faktorips.runtime.formula.IFormulaEvaluator} for evaluating formula
-         *            on the fly instead of loading classes with compiled formulas. If you have no
-         *            {@link IFormulaEvaluatorFactory} the repository try to load the classes
-         *            containing compiled formula. In this case you could not change the product
-         *            data in the product data provider because once loaded classes could not
-         *            change. This parameter may be null.
          */
         private ProductDataProviderRuntimeRepository(String name, ClassLoader classloader,
-                IProductDataProvider.Builder productDataProviderBuilder,
-                IFormulaEvaluatorFactory formulaEvaluatorFactory) {
+                IProductDataProvider.Builder productDataProviderBuilder) {
             super(name, new DefaultCacheFactory(), classloader);
             this.productDataProvider = productDataProviderBuilder.build();
-            this.formulaEvaluatorFactory = formulaEvaluatorFactory;
             reload();
+            productDataProviderRepository = new DetachedContentRuntimeRepository(this, productDataProvider.getVersion());
         }
 
         /**
@@ -176,46 +200,49 @@ public class DetachedContentRuntimeRepositoryManager {
             }
         }
 
-        /**
-         * Call a modification check on the product data provider. If there are any changes in the
-         * product data, this method reloads the necessary data. If there are no changes this method
-         * simply returns. This is used by the
-         * {@link org.faktorips.runtime.productprovider.DetachedContentRuntimeRepositoryManager} to
-         * reload the content after product data has changed.
-         * 
-         */
-        private synchronized void reloadIfModified() {
-            if (!productDataProvider.isCompatibleToBaseVersion(versionSafeRepository.getVersion())) {
-                reload();
-            }
-        }
-
         @Override
         public synchronized void reload() {
             super.reload();
-            versionSafeRepository = new DetachedContentRuntimeRepository(this, productDataProvider.getVersion());
         }
 
         /**
-         * Check whether the given versionSafeRepository is still valid or not. The
-         * versionSafeRepository is valid if it is equal to the singleton versionSafeRepository of
-         * the {@link DetachedContentRuntimeRepositoryManager}. If the versionSafeRepository is
-         * invalid, this method throws a {@link DataModifiedRuntimeException}.
+         * Check whether the given productDataProviderRepository is still valid or not. The
+         * productDataProviderRepository is valid if it is equal to the singleton
+         * productDataProviderRepository of the {@link DetachedContentRuntimeRepositoryManager}. If
+         * the productDataProviderRepository is invalid, this method throws a
+         * {@link DataModifiedRuntimeException}.
          * 
-         * @param versionSafeRepository The versionSafeRepository assert to be valid
-         * @throws DataModifiedRuntimeException if versionSafeRepository is invalid
+         * @param productDataProviderRepository The productDataProviderRepository assert to be valid
+         * @throws DataModifiedRuntimeException if productDataProviderRepository is invalid
          * 
          */
-        void assertValidTransaction(DetachedContentRuntimeRepository versionSafeRepository) {
-            if (!this.versionSafeRepository.equals(versionSafeRepository)) {
-                throw new DataModifiedRuntimeException("Transaction request out-dated data", versionSafeRepository
-                        .getVersion(), productDataProvider.getVersion());
-            }
+        boolean isValidRepository(DetachedContentRuntimeRepository productDataProviderRepository) {
+            return this.productDataProviderRepository.equals(productDataProviderRepository);
+        }
+
+        /**
+         * Returning the actual version set in the product data provider.
+         * 
+         * @see IProductDataProvider#getVersion()
+         * 
+         * @return version of the product data provider
+         */
+        String getProductDataVersion() {
+            return productDataProvider.getVersion();
+        }
+
+        /**
+         * Checking the version of {@link DetachedContentRuntimeRepository} to be compatible with
+         * actual base version, requested from {@link IProductDataProvider}.
+         * 
+         * @return True if the base version is compatible to the version of the
+         *         {@link #productDataProviderRepository}
+         */
+        private boolean isUpToDate() {
+            return productDataProvider.isCompatibleToBaseVersion(productDataProviderRepository.getVersion());
         }
 
         private RuntimeException createDataModifiedException(DataModifiedException e) {
-            // TODO do we clean the cache here or not?
-            // initCaches();
             return new DataModifiedRuntimeException(e);
         }
 

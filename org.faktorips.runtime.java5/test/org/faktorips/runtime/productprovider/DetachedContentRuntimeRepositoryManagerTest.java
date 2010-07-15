@@ -50,11 +50,12 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
     private IRuntimeRepository repository;
     private TestProductDataProvider productDataProvider;
     private DetachedContentRuntimeRepositoryManager pdpRuntimeRepository;
+    private Builder builder;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        Builder builder = new Builder(getClass().getClassLoader(),
+        builder = new Builder(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
         builder.setCheckTocModifications(true);
         pdpRuntimeRepository = new DetachedContentRuntimeRepositoryManager("testRR", getClass().getClassLoader(),
@@ -107,6 +108,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertFalse(productDataProvider.flag);
 
         repository = pdpRuntimeRepository.startRequest();
+        productDataProvider = builder.testProductDataProvider;
 
         repository.getProductComponent("home.HomeBasic");
         // should NOT use cached object
@@ -160,7 +162,10 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         productDataProvider.baseVersion = "1";
         // should use cached object
         assertFalse(productDataProvider.flag);
+
         repository = pdpRuntimeRepository.startRequest();
+        productDataProvider = builder.testProductDataProvider;
+
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         // should NOT use cached object
         assertTrue(productDataProvider.flag);

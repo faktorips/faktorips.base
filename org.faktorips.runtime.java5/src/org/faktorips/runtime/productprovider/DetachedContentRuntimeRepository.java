@@ -38,13 +38,17 @@ import org.faktorips.runtime.test.IpsTestSuite;
  * {@link ProductDataProviderRuntimeRepository}.
  * <p>
  * This runtime repository delegates every method of {@link IRuntimeRepository} to a shared
- * {@link ProductDataProviderRuntimeRepository}. The {@link ProductDataProviderRuntimeRepository} is nested
- * in a {@link DetachedContentRuntimeRepositoryManager}. After the delegation, this transaction
- * checks whether it still valid. If it is invalid because the product data has changed, a
- * {@link DataModifiedRuntimeException} is thrown.
+ * {@link ProductDataProviderRuntimeRepository}. The {@link ProductDataProviderRuntimeRepository} is
+ * nested in a {@link DetachedContentRuntimeRepositoryManager}. After the delegation, this
+ * repository checks whether it still valid. If it is invalid because the product data has changed,
+ * a {@link DataModifiedRuntimeException} is thrown.
  * <p>
  * This implements a optimistic locking mechanism. That means that nothing happens until the
- * requested data is invalid.
+ * requested data is invalid. Once the product data has changed, this repository could still get
+ * cached data. That means every request that only calls data from the cache would continue without
+ * errors. To guarantee that a client does not work on out-dated data it has get the actual
+ * {@link DetachedContentRuntimeRepository} from {@link DetachedContentRuntimeRepositoryManager} for
+ * every new request.
  * 
  * @author dirmeier
  */
@@ -60,8 +64,8 @@ public class DetachedContentRuntimeRepository implements IRuntimeRepository {
      * @param repository The {@link ProductDataProviderRuntimeRepository} to delegate all methods to
      * @param version The actual version this transaction is valid for
      */
-    DetachedContentRuntimeRepository(DetachedContentRuntimeRepositoryManager.ProductDataProviderRuntimeRepository repository,
-            String version) {
+    DetachedContentRuntimeRepository(
+            DetachedContentRuntimeRepositoryManager.ProductDataProviderRuntimeRepository repository, String version) {
         this.pdpRepository = repository;
         this.version = version;
     }
@@ -84,250 +88,258 @@ public class DetachedContentRuntimeRepository implements IRuntimeRepository {
         // throw new IllegalStateException("This method is not allowed for transactions");
     }
 
-    private void assertValidTransaction() {
-        pdpRepository.assertValidTransaction(this);
+    /**
+     * This method have to be called from every method that accesses the product data provider. It
+     * ensures a {@link DataModifiedRuntimeException} is thrown in case of changed data.
+     */
+    private void assertValidRepository() {
+        if (!pdpRepository.isValidRepository(this)) {
+            throw new DataModifiedRuntimeException("Transaction request out-dated data", getVersion(), pdpRepository
+                    .getProductDataVersion());
+        }
     }
 
     /*
      * ============================================================================================
+     * 
      * all other methods of the interface IRuntimeRepository delegate to pdpRepository and then call
-     * throwExceptionIfVersionExpired()
+     * assertValidRepository()
      * 
      * ============================================================================================
      */
 
     public List<IpsTest2> getAllIpsTestCases(IRuntimeRepository runtimeRepository) {
         List<IpsTest2> allIpsTestCases = pdpRepository.getAllIpsTestCases(runtimeRepository);
-        assertValidTransaction();
+        assertValidRepository();
         return allIpsTestCases;
     }
 
     public Set<String> getAllModelTypeImplementationClasses() {
         Set<String> allModelTypeImplementationClasses = pdpRepository.getAllModelTypeImplementationClasses();
-        assertValidTransaction();
+        assertValidRepository();
         return allModelTypeImplementationClasses;
     }
 
     public List<String> getAllProductComponentIds() {
         List<String> allProductComponentIds = pdpRepository.getAllProductComponentIds();
-        assertValidTransaction();
+        assertValidRepository();
         return allProductComponentIds;
     }
 
     public List<IProductComponent> getAllProductComponents(String kindId) {
         List<IProductComponent> allProductComponents = pdpRepository.getAllProductComponents(kindId);
-        assertValidTransaction();
+        assertValidRepository();
         return allProductComponents;
     }
 
     public List<IProductComponent> getAllProductComponents(Class<?> productComponentType) {
         List<IProductComponent> allProductComponents = pdpRepository.getAllProductComponents(productComponentType);
-        assertValidTransaction();
+        assertValidRepository();
         return allProductComponents;
     }
 
     public List<IProductComponent> getAllProductComponents() {
         List<IProductComponent> allProductComponents = pdpRepository.getAllProductComponents();
-        assertValidTransaction();
+        assertValidRepository();
         return allProductComponents;
     }
 
     public List<IRuntimeRepository> getAllReferencedRepositories() {
         List<IRuntimeRepository> allReferencedRepositories = pdpRepository.getAllReferencedRepositories();
-        assertValidTransaction();
+        assertValidRepository();
         return allReferencedRepositories;
     }
 
     public List<ITable> getAllTables() {
         List<ITable> allTables = pdpRepository.getAllTables();
-        assertValidTransaction();
+        assertValidRepository();
         return allTables;
     }
 
     public List<IRuntimeRepository> getDirectlyReferencedRepositories() {
         List<IRuntimeRepository> directlyReferencedRepositories = pdpRepository.getDirectlyReferencedRepositories();
-        assertValidTransaction();
+        assertValidRepository();
         return directlyReferencedRepositories;
     }
 
     public <T> T getEnumValue(Class<T> clazz, Object id) {
         T enumValue = pdpRepository.getEnumValue(clazz, id);
-        assertValidTransaction();
+        assertValidRepository();
         return enumValue;
     }
 
     public Object getEnumValue(String uniqueId) {
         Object enumValue = pdpRepository.getEnumValue(uniqueId);
-        assertValidTransaction();
+        assertValidRepository();
         return enumValue;
     }
 
     public <T> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz) {
         IEnumValueLookupService<T> enumValueLookupService = pdpRepository.getEnumValueLookupService(enumClazz);
-        assertValidTransaction();
+        assertValidRepository();
         return enumValueLookupService;
     }
 
     public <T> List<T> getEnumValues(Class<T> clazz) {
         List<T> enumValues = pdpRepository.getEnumValues(clazz);
-        assertValidTransaction();
+        assertValidRepository();
         return enumValues;
     }
 
     public IProductComponent getExistingProductComponent(String id) throws ProductCmptNotFoundException {
         IProductComponent existingProductComponent = pdpRepository.getExistingProductComponent(id);
-        assertValidTransaction();
+        assertValidRepository();
         return existingProductComponent;
     }
 
     public IProductComponentGeneration getExistingProductComponentGeneration(String id, Calendar effectiveDate) {
         IProductComponentGeneration existingProductComponentGeneration = pdpRepository
                 .getExistingProductComponentGeneration(id, effectiveDate);
-        assertValidTransaction();
+        assertValidRepository();
         return existingProductComponentGeneration;
     }
 
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
         IFormulaEvaluatorFactory formulaEvaluatorFactory = pdpRepository.getFormulaEvaluatorFactory();
-        assertValidTransaction();
+        assertValidRepository();
         return formulaEvaluatorFactory;
     }
 
     public IpsTest2 getIpsTest(String qName) {
         IpsTest2 ipsTest = pdpRepository.getIpsTest(qName);
-        assertValidTransaction();
+        assertValidRepository();
         return ipsTest;
     }
 
     public IpsTest2 getIpsTest(String qName, IRuntimeRepository runtimeRepository) {
         IpsTest2 ipsTest = pdpRepository.getIpsTest(qName, runtimeRepository);
-        assertValidTransaction();
+        assertValidRepository();
         return ipsTest;
     }
 
     public IpsTestCaseBase getIpsTestCase(String qName) {
         IpsTestCaseBase ipsTestCase = pdpRepository.getIpsTestCase(qName);
-        assertValidTransaction();
+        assertValidRepository();
         return ipsTestCase;
     }
 
     public IpsTestCaseBase getIpsTestCase(String qName, IRuntimeRepository runtimeRepository) {
         IpsTestCaseBase ipsTestCase = pdpRepository.getIpsTestCase(qName, runtimeRepository);
-        assertValidTransaction();
+        assertValidRepository();
         return ipsTestCase;
     }
 
     public List<IpsTest2> getIpsTestCasesStartingWith(String qNamePrefix, IRuntimeRepository runtimeRepository) {
         List<IpsTest2> ipsTestCasesStartingWith = pdpRepository.getIpsTestCasesStartingWith(qNamePrefix,
                 runtimeRepository);
-        assertValidTransaction();
+        assertValidRepository();
         return ipsTestCasesStartingWith;
     }
 
     public IpsTestSuite getIpsTestSuite(String qNamePrefix) {
         IpsTestSuite ipsTestSuite = pdpRepository.getIpsTestSuite(qNamePrefix);
-        assertValidTransaction();
+        assertValidRepository();
         return ipsTestSuite;
     }
 
     public IpsTestSuite getIpsTestSuite(String qNamePrefix, IRuntimeRepository runtimeRepository) {
         IpsTestSuite ipsTestSuite = pdpRepository.getIpsTestSuite(qNamePrefix, runtimeRepository);
-        assertValidTransaction();
+        assertValidRepository();
         return ipsTestSuite;
     }
 
     public IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt) {
         IProductComponentGeneration latestProductComponentGeneration = pdpRepository
                 .getLatestProductComponentGeneration(productCmpt);
-        assertValidTransaction();
+        assertValidRepository();
         return latestProductComponentGeneration;
     }
 
     public IModelType getModelType(Class<?> modelObjectClass) {
         IModelType modelType = pdpRepository.getModelType(modelObjectClass);
-        assertValidTransaction();
+        assertValidRepository();
         return modelType;
     }
 
     public IModelType getModelType(IModelObject modelObject) {
         IModelType modelType = pdpRepository.getModelType(modelObject);
-        assertValidTransaction();
+        assertValidRepository();
         return modelType;
     }
 
     public IModelType getModelType(IProductComponent modelObject) {
         IModelType modelType = pdpRepository.getModelType(modelObject);
-        assertValidTransaction();
+        assertValidRepository();
         return modelType;
     }
 
     public String getName() {
         String name = pdpRepository.getName();
-        assertValidTransaction();
+        assertValidRepository();
         return name;
     }
 
     public IProductComponentGeneration getNextProductComponentGeneration(IProductComponentGeneration generation) {
         IProductComponentGeneration nextProductComponentGeneration = pdpRepository
                 .getNextProductComponentGeneration(generation);
-        assertValidTransaction();
+        assertValidRepository();
         return nextProductComponentGeneration;
     }
 
     public int getNumberOfProductComponentGenerations(IProductComponent productCmpt) {
         int numberOfProductComponentGenerations = pdpRepository.getNumberOfProductComponentGenerations(productCmpt);
-        assertValidTransaction();
+        assertValidRepository();
         return numberOfProductComponentGenerations;
     }
 
     public IProductComponentGeneration getPreviousProductComponentGeneration(IProductComponentGeneration generation) {
         IProductComponentGeneration previousProductComponentGeneration = pdpRepository
                 .getPreviousProductComponentGeneration(generation);
-        assertValidTransaction();
+        assertValidRepository();
         return previousProductComponentGeneration;
     }
 
     public IProductComponent getProductComponent(String id) {
         IProductComponent productComponent = pdpRepository.getProductComponent(id);
-        assertValidTransaction();
+        assertValidRepository();
         return productComponent;
     }
 
     public IProductComponent getProductComponent(String kindId, String versionId) {
         IProductComponent productComponent = pdpRepository.getProductComponent(kindId, versionId);
-        assertValidTransaction();
+        assertValidRepository();
         return productComponent;
     }
 
     public IProductComponentGeneration getProductComponentGeneration(String id, Calendar effectiveDate) {
         IProductComponentGeneration productComponentGeneration = pdpRepository.getProductComponentGeneration(id,
                 effectiveDate);
-        assertValidTransaction();
+        assertValidRepository();
         return productComponentGeneration;
     }
 
     public List<IProductComponentGeneration> getProductComponentGenerations(IProductComponent productCmpt) {
         List<IProductComponentGeneration> productComponentGenerations = pdpRepository
                 .getProductComponentGenerations(productCmpt);
-        assertValidTransaction();
+        assertValidRepository();
         return productComponentGenerations;
     }
 
     public ITable getTable(Class<?> tableClass) {
         ITable table = pdpRepository.getTable(tableClass);
-        assertValidTransaction();
+        assertValidRepository();
         return table;
     }
 
     public ITable getTable(String qualifiedTableName) {
         ITable table = pdpRepository.getTable(qualifiedTableName);
-        assertValidTransaction();
+        assertValidRepository();
         return table;
     }
 
     public JAXBContext newJAXBContext() {
         JAXBContext newJAXBContext = pdpRepository.newJAXBContext();
-        assertValidTransaction();
+        assertValidRepository();
         return newJAXBContext;
     }
 

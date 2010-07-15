@@ -60,11 +60,15 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
         IRuntimeRepository client2 = repository.startRequest();
         IRuntimeRepository client3 = repository.startRequest();
 
+        // every client repository should be the same (equal)
+        assertEquals(client1, client2);
+        assertEquals(client2, client3);
+
         assertNotNull(client1.getProductComponent("motor.MotorBasic"));
 
         assertNotNull(client2.getProductComponent("motor.MotorPlus"));
 
-        assertNotNull(client3.getProductComponent("home.HomeBasic"));
+        assertNotNull(client3.getProductComponent("motor.MotorBasic"));
 
         setTocVersion(1000);
 
@@ -73,7 +77,11 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
         client1.getProductComponent("motor.MotorBasic");
 
         client1 = repository.startRequest();
-        // shold NOT throw an exception because we just called reloadIfModified.
+        assertNotSame(client1, client2);
+        // still equals
+        assertEquals(client2, client3);
+
+        // shold NOT throw an exception because we just called startRequest.
         client1.getProductComponent("motor.MotorPlus");
 
         setTocVersion(2000);
@@ -105,25 +113,34 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
             assertEquals("2000", dme.newVersion);
         }
 
-        // exception should also be thrown for other clients
+        // client2 sill works on old version. MotroBasic is still in cache
+        assertNotNull(client2.getProductComponent("motor.MotorBasic"));
+        // exception should also be thrown if data not cached
         try {
-            client2.getProductComponent("motor.MotorBasic");
+            client2.getProductComponent("home.HomeBasic");
             fail("Should throw a runtime exception");
 
         } catch (RuntimeException e) {
             assertTrue(e.getCause() instanceof DataModifiedException);
             DataModifiedException dme = (DataModifiedException)e.getCause();
-            assertEquals("1000", dme.oldVersion);
+            assertEquals("0", dme.oldVersion);
             assertEquals("2000", dme.newVersion);
         }
 
         client1 = repository.startRequest();
-        // no exception anymore for client1
-        assertNotNull(client1.getProductComponent("motor.MotorBasic"));
+        assertNotSame(client1, client2);
+        // still equals
+        assertEquals(client2, client3);
 
-        // but still exception for client2
+        // no exception anymore for client1
+        assertNotNull(client1.getProductComponent("home.HomeBasic"));
+
+        // MotorBasic still cached
+        assertNotNull(client2.getProductComponent("motor.MotorBasic"));
+
+        // but still exception for not cached content in client2
         try {
-            client2.getProductComponent("motor.MotorBasic");
+            client2.getProductComponent("home.HomeBasic");
             fail("Should throw a runtime exception");
 
         } catch (RuntimeException e) {
@@ -134,9 +151,11 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
             assertEquals("2000", dme.newVersion);
         }
 
-        // and still exception for client3
+        // MotorBasic also for client3 in cache
+        assertNotNull(client3.getProductComponent("motor.MotorBasic"));
+        // and still exception for client3 for not cached data
         try {
-            client3.getProductComponent("motor.MotorBasic");
+            client3.getProductComponent("home.HomeBasic");
             fail("Should throw a runtime exception");
 
         } catch (RuntimeException e) {
@@ -148,13 +167,21 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
         }
 
         client2 = repository.startRequest();
-        // no exception anymore for client1 and client2
-        assertNotNull(client1.getProductComponent("motor.MotorPlus"));
-        assertNotNull(client2.getProductComponent("motor.MotorBasic"));
+        // client2 now equals to client1
+        assertEquals(client1, client2);
+        assertNotSame(client2, client3);
 
+        // no exception anymore for client1 and client2
+        assertNotNull(client1.getProductComponent("home.HomeBasic"));
+        assertNotNull(client2.getProductComponent("home.HomeBasic"));
+        assertNotNull(client1.getTable("motor.RateTable"));
+        assertNotNull(client2.getTable("motor.RateTable"));
+
+        // MotorBasic also for client3 in cache
+        assertNotNull(client3.getProductComponent("motor.MotorBasic"));
         // but still exception for client3
         try {
-            client3.getProductComponent("motor.MotorBasic");
+            client3.getProductComponent("home.HomeBasic");
             fail("Should throw a runtime exception");
 
         } catch (RuntimeException e) {
@@ -165,6 +192,8 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
         }
 
         client3 = repository.startRequest();
+        assertEquals(client1, client2);
+        assertEquals(client2, client3);
         assertNotNull(client1.getProductComponent("motor.MotorPlus"));
         assertNotNull(client2.getProductComponent("home.HomeBasic"));
         assertNotNull(client3.getProductComponent("motor.MotorBasic"));
