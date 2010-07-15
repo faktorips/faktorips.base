@@ -90,7 +90,7 @@ public class DetachedContentRuntimeRepository implements IRuntimeRepository {
 
     /**
      * This method have to be called from every method that accesses the product data provider. It
-     * ensures a {@link DataModifiedRuntimeException} is thrown in case of changed data.
+     * ensures a {@link DataModifiedRuntimeException} when the .
      */
     private void assertValidRepository() {
         if (!pdpRepository.isValidRepository(this)) {
