@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.productprovider;
+package org.faktorips.runtime.productdataprovider;
 
 import org.faktorips.runtime.DefaultCacheFactory;
 import org.faktorips.runtime.ICacheFactory;

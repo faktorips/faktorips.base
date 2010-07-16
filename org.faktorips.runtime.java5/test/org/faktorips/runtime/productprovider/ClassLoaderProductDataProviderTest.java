@@ -32,9 +32,9 @@ import junit.framework.TestCase;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
-import org.faktorips.runtime.productprovider.ClassLoaderPdpFactory;
-import org.faktorips.runtime.productprovider.DataModifiedException;
-import org.faktorips.runtime.productprovider.IProductDataProvider;
+import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProviderFactory;
+import org.faktorips.runtime.productdataprovider.DataModifiedException;
+import org.faktorips.runtime.productdataprovider.IProductDataProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -52,12 +52,12 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
     private final String TOC_FIlE_NAME_1 = "org/faktorips/sample/model/internal/faktorips-repository-toc.1.xml";
     private final String TOC_FIlE_NAME_2 = "org/faktorips/sample/model/internal/faktorips-repository-toc.2.xml";
 
-    private ClassLoaderPdpFactory pdpFactory;
+    private ClassLoaderProductDataProviderFactory pdpFactory;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        pdpFactory = new ClassLoaderPdpFactory(TOC_FIlE_NAME);
+        pdpFactory = new ClassLoaderProductDataProviderFactory(TOC_FIlE_NAME);
         pdpFactory.setCheckForModifications(true);
         docBuilder = createDocumentnewInstanceer();
         pdp = pdpFactory.newInstance();

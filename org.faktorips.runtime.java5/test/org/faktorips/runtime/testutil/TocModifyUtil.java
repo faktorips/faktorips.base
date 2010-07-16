@@ -28,8 +28,8 @@ import javax.xml.transform.stream.StreamResult;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.productprovider.AbstractProductDataProvider;
-import org.faktorips.runtime.productprovider.ClassLoaderPdpFactory;
+import org.faktorips.runtime.productdataprovider.AbstractProductDataProvider;
+import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProviderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -42,7 +42,7 @@ public class TocModifyUtil {
     public TocModifyUtil(String tocResourcePath) throws ParserConfigurationException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         tocResource = cl.getResource(tocResourcePath);
-        productDataProvider = (AbstractProductDataProvider)new ClassLoaderPdpFactory(tocResourcePath).newInstance();
+        productDataProvider = (AbstractProductDataProvider)new ClassLoaderProductDataProviderFactory(tocResourcePath).newInstance();
         docBuilder = createDocumentBuilder();
     }
 

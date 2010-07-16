@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.productprovider;
+package org.faktorips.runtime.productdataprovider;
 
 /**
  * Exception thrown if the requested data has been modified since last correct modification check.

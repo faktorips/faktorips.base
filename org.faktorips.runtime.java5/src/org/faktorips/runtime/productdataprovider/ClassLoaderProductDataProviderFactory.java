@@ -11,9 +11,9 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.productprovider;
+package org.faktorips.runtime.productdataprovider;
 
-public class ClassLoaderPdpFactory implements IProductDataProviderFactory {
+public class ClassLoaderProductDataProviderFactory implements IProductDataProviderFactory {
 
     private final String tocResourcePath;
 
@@ -21,7 +21,7 @@ public class ClassLoaderPdpFactory implements IProductDataProviderFactory {
 
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-    public ClassLoaderPdpFactory(String tocResourcePath) {
+    public ClassLoaderProductDataProviderFactory(String tocResourcePath) {
         this.tocResourcePath = tocResourcePath;
     }
 

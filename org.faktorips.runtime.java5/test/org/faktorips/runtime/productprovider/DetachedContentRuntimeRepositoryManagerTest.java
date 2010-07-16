@@ -31,11 +31,11 @@ import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.faktorips.runtime.productprovider.ClassLoaderPdpFactory;
-import org.faktorips.runtime.productprovider.ClassLoaderProductDataProvider;
-import org.faktorips.runtime.productprovider.DataModifiedException;
-import org.faktorips.runtime.productprovider.DetachedContentRuntimeRepositoryManager;
-import org.faktorips.runtime.productprovider.IProductDataProvider;
+import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProviderFactory;
+import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProvider;
+import org.faktorips.runtime.productdataprovider.DataModifiedException;
+import org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepositoryManager;
+import org.faktorips.runtime.productdataprovider.IProductDataProvider;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -398,7 +398,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         }
     }
 
-    public static class MyFactory extends ClassLoaderPdpFactory {
+    public static class MyFactory extends ClassLoaderProductDataProviderFactory {
 
         private TestProductDataProvider testProductDataProvider;
         private final ClassLoader cl;

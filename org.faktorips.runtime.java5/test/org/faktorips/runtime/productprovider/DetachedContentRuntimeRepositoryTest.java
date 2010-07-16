@@ -21,10 +21,10 @@ import java.net.URLConnection;
 import junit.framework.TestCase;
 
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.productprovider.ClassLoaderPdpFactory;
-import org.faktorips.runtime.productprovider.DataModifiedException;
-import org.faktorips.runtime.productprovider.DetachedContentRuntimeRepositoryManager;
-import org.faktorips.runtime.productprovider.IProductDataProvider;
+import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProviderFactory;
+import org.faktorips.runtime.productdataprovider.DataModifiedException;
+import org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepositoryManager;
+import org.faktorips.runtime.productdataprovider.IProductDataProvider;
 
 public class DetachedContentRuntimeRepositoryTest extends TestCase {
 
@@ -202,7 +202,7 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
         assertNotNull(client3.getProductComponent("motor.MotorBasic"));
     }
 
-    public class MyBuilder extends ClassLoaderPdpFactory {
+    public class MyBuilder extends ClassLoaderProductDataProviderFactory {
 
         private IProductDataProvider provider;
 
