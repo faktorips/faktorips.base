@@ -122,9 +122,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     @Override
     public void setUseTableDefinedInSupertype(boolean useTableDefinedInSupertype) {
-        if (useTableDefinedInSupertype) {
-            setTableName(""); //$NON-NLS-1$
-        }
+        setTableName(""); //$NON-NLS-1$
         boolean oldValue = this.useTableDefinedInSupertype;
         this.useTableDefinedInSupertype = useTableDefinedInSupertype;
         valueChanged(oldValue, useTableDefinedInSupertype);
@@ -191,9 +189,27 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     public void setInheritanceStrategy(InheritanceStrategy newStrategy) {
         ArgumentCheck.notNull(newStrategy);
         InheritanceStrategy oldValue = inheritanceStrategy;
-        inheritanceStrategy = newStrategy;
+
+        try {
+            setInheritanceStrategyInternal(newStrategy);
+        } catch (CoreException e) {
+            // maybe there was an error searching the root entity
+            // this error should be reported before, thus just ignore it by throwing a new runtime
+            // exception
+            throw new RuntimeException(e);
+        }
 
         valueChanged(oldValue, newStrategy);
+    }
+
+    public void setInheritanceStrategyInternal(InheritanceStrategy newStrategy) throws CoreException {
+        if (InheritanceStrategy.SINGLE_TABLE.equals(newStrategy) && !isRootEntity()) {
+            // initialize defaults for single table inheritance strategy if this is not the roor
+            // entity
+            useTableDefinedInSupertype = true;
+            tableName = "";
+        }
+        inheritanceStrategy = newStrategy;
     }
 
     @Override
@@ -218,7 +234,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             RooEntityFinder rootEntityFinder = new RooEntityFinder();
             rootEntityFinder.start(getPolicyCmptType());
 
-            validateInheritanceStrategy(msgList);
+            validateInheritanceStrategy(msgList, rootEntityFinder.rooEntity);
             validateTableName(msgList, rootEntityFinder.rooEntity);
             validateDisriminator(msgList, rootEntityFinder.rooEntity);
             validateUniqueColumnNameInHierarchy(msgList);
@@ -227,11 +243,22 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
-    private void validateInheritanceStrategy(final MessageList msgList) throws CoreException {
+    // TODO Internationalize messages
+    private void validateInheritanceStrategy(final MessageList msgList, IPolicyCmptType rooEntity) throws CoreException {
         IPolicyCmptType pcType = getPolicyCmptType();
+
         if (!pcType.hasSupertype()) {
             return;
         }
+
+        if (!isRootEntity(rooEntity) && InheritanceStrategy.SINGLE_TABLE.equals(inheritanceStrategy)
+                && !useTableDefinedInSupertype) {
+            msgList.add(new Message(MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY,
+                    "The table name of the root entitry must be used because this is not the root entity and the inheritance strategy is: "
+                            + inheritanceStrategy.toString(), Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
+        }
+
         new InheritanceStrategyMismatchVisitor(this, msgList).start(pcType);
     }
 
@@ -251,7 +278,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (isUseTableDefinedInSupertype()) {
             if (StringUtils.isEmpty(getPolicyCmptType().getSupertype())) {
                 msgList.add(new Message(MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED,
-                        "No supertype used, thus it is not possible to use the table defined in the supertyp.",
+                        "No supertype specified, thus it is not possible to use the table defined in the supertyp.",
                         Message.ERROR, this, IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
                 return;
             }
@@ -290,7 +317,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         // in single table inheritance only the root entity table name must not be empty
-        if (getPolicyCmptType() == rootEntity) {
+        if (isRootEntity(rootEntity)) {
             validateTableNameValidIdentifier(msgList);
             return;
         }
@@ -716,4 +743,13 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
+    private boolean isRootEntity() throws CoreException {
+        RooEntityFinder rootEntityFinder = new RooEntityFinder();
+        rootEntityFinder.start(getPolicyCmptType());
+        return isRootEntity(rootEntityFinder.rooEntity);
+    }
+
+    private boolean isRootEntity(IPolicyCmptType rootEntity) {
+        return getPolicyCmptType() == rootEntity;
+    }
 }

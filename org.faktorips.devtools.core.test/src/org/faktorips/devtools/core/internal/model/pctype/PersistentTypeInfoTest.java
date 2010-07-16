@@ -38,6 +38,32 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
     }
 
+    public void testValidateMustUseTableFromRootEntity() throws CoreException {
+        IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        PolicyCmptType subPcType = newPolicyCmptType(ipsProject, "subtype");
+        subPcType.setSupertype(policyCmptType.getQualifiedName());
+        IPersistentTypeInfo perTypeInfoSub = subPcType.getPersistenceTypeInfo();
+
+        persTypeInfo.setPersistentType(PersistentType.ENTITY);
+        perTypeInfoSub.setPersistentType(PersistentType.ENTITY);
+        persTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+        perTypeInfoSub.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+
+        persTypeInfo.setUseTableDefinedInSupertype(false);
+        perTypeInfoSub.setUseTableDefinedInSupertype(true);
+
+        MessageList msgList = persTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY));
+        msgList = perTypeInfoSub.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY));
+
+        perTypeInfoSub.setUseTableDefinedInSupertype(false);
+        msgList = persTypeInfo.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY));
+        msgList = perTypeInfoSub.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY));
+    }
+
     public void testValidate_InvalidTableNames() throws CoreException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
 

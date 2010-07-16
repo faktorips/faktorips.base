@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -25,6 +26,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
@@ -49,6 +51,8 @@ public class PersistentTypeInfoSection extends IpsSection {
     private final IPolicyCmptType ipsObject;
     private UIToolkit uiToolkit;
 
+    private List<Control> persistentComposites = new ArrayList<Control>();
+
     public PersistentTypeInfoSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
         super(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, GridData.FILL_HORIZONTAL, toolkit);
         this.ipsObject = ipsObject;
@@ -61,6 +65,7 @@ public class PersistentTypeInfoSection extends IpsSection {
     private class EnabledControlsBindingByProperty extends ControlPropertyBinding {
         private UIToolkit toolkit;
         private boolean checkEnable = true;
+        private Boolean oldValue;
 
         public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property, boolean checkEnable) {
             super(control, ipsObject.getPersistenceTypeInfo(), property, Boolean.TYPE);
@@ -71,22 +76,28 @@ public class PersistentTypeInfoSection extends IpsSection {
         @Override
         public void updateUiIfNotDisposed() {
             try {
-                if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
-                    toolkit.setDataChangeable(getControl(), false);
-                } else {
-                    boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
-                    if (!checkEnable) {
-                        enabled = !enabled;
-                    }
-                    toolkit.setDataChangeable(getControl(), enabled);
+                boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+                if (oldValue != null && enabled == oldValue) {
+                    return;
                 }
+                oldValue = enabled;
+                updateUiIfNotDisposedAndPropertyChanged(enabled);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-    }
 
-    List<Control> persistentComposites = new ArrayList<Control>();
+        public void updateUiIfNotDisposedAndPropertyChanged(boolean enabled) {
+            if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
+                toolkit.setDataChangeable(getControl(), false);
+            } else {
+                if (!checkEnable) {
+                    enabled = !enabled;
+                }
+                toolkit.setDataChangeable(getControl(), enabled);
+            }
+        }
+    }
 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
@@ -106,16 +117,20 @@ public class PersistentTypeInfoSection extends IpsSection {
         persistentComposites.add(inheritanceStrateyLabel);
         persistentComposites.add(inheritanceStrategyCombo);
 
-        Checkbox checkboxTableDefinedInSuperclass = toolkit.createCheckbox(client);
+        Composite tableAndDiscrComposite = uiToolkit.createGridComposite(client, 2, true, false);
+
+        // create table group
+        Group tableGroup = toolkit.createGroup(tableAndDiscrComposite, "Table"); //$NON-NLS-1$
+        persistentComposites.add(tableGroup);
+        Checkbox checkboxTableDefinedInSuperclass = toolkit.createCheckbox(tableGroup);
         checkboxTableDefinedInSuperclass.setText("Use table defined in supertype"); //$NON-NLS-1$
-        persistentComposites.add(checkboxTableDefinedInSuperclass);
 
-        Composite tableNameComposite = toolkit.createLabelEditColumnComposite(client);
+        Composite tableNameComposite = toolkit.createLabelEditColumnComposite(tableGroup);
         toolkit.createLabel(tableNameComposite, "Table Name"); //$NON-NLS-1$
-        Text tableNameText = toolkit.createText(tableNameComposite);
-        persistentComposites.add(tableNameComposite);
+        final Text tableNameText = toolkit.createText(tableNameComposite);
 
-        Group discriminatorGroup = toolkit.createGroup(client, "Descriminator"); //$NON-NLS-1$
+        // create discriminator group
+        Group discriminatorGroup = toolkit.createGroup(tableAndDiscrComposite, "Descriminator"); //$NON-NLS-1$
         persistentComposites.add(discriminatorGroup);
 
         Checkbox defineDiscriminatorColumn = toolkit.createCheckbox(discriminatorGroup);
@@ -143,21 +158,42 @@ public class PersistentTypeInfoSection extends IpsSection {
                         public void updateUiIfNotDisposed() {
                             IPersistentTypeInfo persTypeInfo = (IPersistentTypeInfo)getObject();
                             boolean enabled = persTypeInfo.getPersistentType() == PersistentType.ENTITY;
-                            for (Control control2 : persistentComposites) {
-                                uiToolkit.setDataChangeable(control2, enabled);
+                            for (Control ctrl : persistentComposites) {
+                                uiToolkit.setDataChangeable(ctrl, enabled);
                             }
                         }
                     });
 
             bindingContext.bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY);
-
             bindingContext.bindContent(checkboxTableDefinedInSuperclass, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE);
-            bindingContext.bindContent(tableNameText, ipsObject.getPersistenceTypeInfo(),
-                    IPersistentTypeInfo.PROPERTY_TABLE_NAME);
-            bindingContext.add(new EnabledControlsBindingByProperty(tableNameText, toolkit,
-                    IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, false));
+            bindingContext.add(new EnabledControlsBindingByProperty(checkboxTableDefinedInSuperclass, toolkit,
+                    IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, false) {
+                @Override
+                public void updateUiIfNotDisposed() {
+                    IPersistentTypeInfo persistenceTypeInfo = ipsObject.getPersistenceTypeInfo();
+                    if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
+                        uiToolkit.setDataChangeable(tableNameText, false);
+                        return;
+                    }
+
+                    if (persistenceTypeInfo.isUseTableDefinedInSupertype()) {
+                        bindingContext.removeBindings(tableNameText);
+                        try {
+                            IPolicyCmptType rootEntity = persistenceTypeInfo.findRootEntity();
+                            tableNameText.setText(rootEntity.getPersistenceTypeInfo().getTableName());
+                            uiToolkit.setDataChangeable(tableNameText, false);
+                        } catch (CoreException e) {
+                            IpsPlugin.logAndShowErrorDialog(e);
+                        }
+                    } else {
+                        bindingContext.bindContent(tableNameText, persistenceTypeInfo,
+                                IPersistentTypeInfo.PROPERTY_TABLE_NAME);
+                        uiToolkit.setDataChangeable(tableNameText, true);
+                    }
+                }
+            });
 
             bindingContext.bindContent(defineDiscriminatorColumn, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
@@ -184,7 +220,7 @@ public class PersistentTypeInfoSection extends IpsSection {
     }
 
     private void setComboItems(Combo combo, Class<? extends Enum> class1) {
-        Enum[] allEnumConstants = class1.getEnumConstants();
+        Enum<?>[] allEnumConstants = class1.getEnumConstants();
         String[] allEnumValues = new String[allEnumConstants.length];
         for (int i = 0; i < allEnumConstants.length; i++) {
             allEnumValues[i] = allEnumConstants[i].toString();

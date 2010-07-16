@@ -103,6 +103,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
     @Override
     protected void performRefresh() {
+        super.performRefresh();
         bindingContext.updateUI();
     }
 
@@ -269,4 +270,5 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         getResourceManager().dispose();
         super.dispose();
     }
+
 }

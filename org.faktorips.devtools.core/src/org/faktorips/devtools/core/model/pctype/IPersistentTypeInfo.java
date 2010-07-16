@@ -136,6 +136,12 @@ public interface IPersistentTypeInfo extends IIpsObjectPart {
             + "PersistenceAttrColumnNameDuplicate"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that in case of single table inheritance strategy the
+     * sub-entities must use the table name of the root entity.
+     */
+    public final static String MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY = MSGCODE_PREFIX + "MustUseTableFromRootEntity"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this persistent type info belongs to.
      */
     public IPolicyCmptType getPolicyCmptType();

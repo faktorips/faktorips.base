@@ -49,7 +49,6 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
         // necessary because maybe there are old unique key validation problem marker,
         // this could happen if the unique key error state didn't changed (e.g. at least there are
         // errors)
-        // TODO Joerg performance? evtl. pruefen ob unique key fehler existieren
         contentsPage.refreshTable();
     }
 

@@ -303,14 +303,31 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return;
         }
         List<ContentsChangeListener> listeners = new ArrayList<ContentsChangeListener>(changeListeners);
-        final Set<IIpsSrcFile> changedSrcFiles = new LinkedHashSet<IIpsSrcFile>();
+        final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents = new HashMap<IIpsSrcFile, ContentChangeEvent>();
         ContentsChangeListener batchListener = new ContentsChangeListener() {
 
             @Override
             public void contentsChanged(ContentChangeEvent event) {
-                changedSrcFiles.add(event.getIpsSrcFile());
+                ContentChangeEvent newEvent = null;
+                ContentChangeEvent previousEvent = changedSrcFileEvents.get(event.getIpsSrcFile());
+                if (previousEvent == null) {
+                    newEvent = event;
+                } else {
+                    newEvent = mergeChangeEvent(event, previousEvent);
+                }
+                changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
             }
 
+            private ContentChangeEvent mergeChangeEvent(ContentChangeEvent ce1, ContentChangeEvent ce2) {
+                if (ce1.getEventType() == ce2.getEventType()) {
+                    if (ce1.getPart() != null && ce1.getPart().equals(ce2.getPart())) {
+                        // same event type and part, thus no new event type needed
+                        return ce1;
+                    }
+                }
+                // different event types, return WholeContentChangedEvent
+                return ContentChangeEvent.newWholeContentChangedEvent(ce1.getIpsSrcFile());
+            }
         };
         changeListeners.clear();
         addChangeListener(batchListener);
@@ -337,9 +354,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             changeListeners = new HashSet<ContentsChangeListener>(listeners);
 
             // notify about changes
-            for (IIpsSrcFile file : changedSrcFiles) {
-                ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(file);
-                notifyChangeListeners(event);
+            for (IIpsSrcFile file : changedSrcFileEvents.keySet()) {
+                notifyChangeListeners(changedSrcFileEvents.get(file));
             }
 
             removeModificationStatusChangeListener(batchModifiyListener);

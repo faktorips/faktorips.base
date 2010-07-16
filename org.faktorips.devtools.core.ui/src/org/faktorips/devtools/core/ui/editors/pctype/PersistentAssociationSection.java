@@ -95,6 +95,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
     @Override
     protected void performRefresh() {
+        super.performRefresh();
         bindingContext.updateUI();
     }
 

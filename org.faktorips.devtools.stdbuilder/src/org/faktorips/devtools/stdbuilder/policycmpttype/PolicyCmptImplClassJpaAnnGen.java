@@ -101,7 +101,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
             tableName = getTableNameFromSupertype(persistenceTypeInfo);
         }
 
-        if (StringUtils.isNotEmpty(tableName)) {
+        if (StringUtils.isNotEmpty(tableName) && !persistenceTypeInfo.isUseTableDefinedInSupertype()) {
             fragment.addImport(IMPORT_TABLE);
             fragment.appendln(ANNOTATION_TABLE + "(name = \"" + tableName + "\")");
         }
