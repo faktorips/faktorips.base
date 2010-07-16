@@ -182,7 +182,11 @@ public class PersistentTypeInfoSection extends IpsSection {
                         bindingContext.removeBindings(tableNameText);
                         try {
                             IPolicyCmptType rootEntity = persistenceTypeInfo.findRootEntity();
-                            tableNameText.setText(rootEntity.getPersistenceTypeInfo().getTableName());
+                            if (rootEntity == null) {
+                                tableNameText.setText("Super type not found");
+                            } else {
+                                tableNameText.setText(rootEntity.getPersistenceTypeInfo().getTableName());
+                            }
                             uiToolkit.setDataChangeable(tableNameText, false);
                         } catch (CoreException e) {
                             IpsPlugin.logAndShowErrorDialog(e);
