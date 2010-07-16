@@ -123,5 +123,4 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         String[] tags = { "<table", "<tr>", "<td>", "</td>", "</tr>", "</table>" };
         assertContains(html, tags);
     }
-
 }

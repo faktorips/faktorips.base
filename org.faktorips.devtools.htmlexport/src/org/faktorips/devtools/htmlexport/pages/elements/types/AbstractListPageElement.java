@@ -9,6 +9,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
@@ -88,6 +89,20 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
                 continue;
             }
             packageFragments.add(object.getIpsPackageFragment());
+        }
+        return packageFragments;
+    }
+
+    /**
+     * @return the {@link IpsObjectType}s of all filtered objects
+     */
+    protected Set<IpsObjectType> getRelatedObjectTypes() {
+        Set<IpsObjectType> packageFragments = new LinkedHashSet<IpsObjectType>();
+        for (IIpsSrcFile object : srcFiles) {
+            if (!filter.accept(object)) {
+                continue;
+            }
+            packageFragments.add(object.getIpsObjectType());
         }
         return packageFragments;
     }

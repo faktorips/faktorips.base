@@ -28,6 +28,14 @@ public interface PageElement {
     public PageElement addStyles(Style... style);
 
     /**
+     * checks, whether PageElement has the Style
+     * 
+     * @param style
+     * @return boolean
+     */
+    public boolean hasStyle(Style style);
+
+    /**
      * removes the given {@link Style}s
      * 
      * @param style
@@ -45,4 +53,9 @@ public interface PageElement {
      * builds the content of the node
      */
     public void build();
+
+    /**
+     * changes the PageElement to a block
+     */
+    public void makeBlock();
 }

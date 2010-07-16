@@ -3,9 +3,9 @@ package org.faktorips.devtools.htmlexport.generators;
 import java.util.Set;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;

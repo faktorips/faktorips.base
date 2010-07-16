@@ -160,7 +160,8 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * adds the subclasses of the enumType
      */
     protected void addSubTypeHierarchy() {
-        List<IIpsSrcFile> allClasses = getConfig().getDocumentedSourceFiles(getDocumentedIpsObject().getIpsObjectType());
+        List<IIpsSrcFile> allClasses = getConfig()
+                .getDocumentedSourceFiles(getDocumentedIpsObject().getIpsObjectType());
 
         List<PageElement> subTypes = new ArrayList<PageElement>();
         for (IIpsSrcFile srcFile : allClasses) {

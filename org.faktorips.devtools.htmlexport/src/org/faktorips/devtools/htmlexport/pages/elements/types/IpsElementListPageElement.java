@@ -24,15 +24,18 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
  * @author dicker
  * 
  */
-public class IpsObjectListPageElement extends AbstractListPageElement {
+public class IpsElementListPageElement extends AbstractListPageElement {
+
+    private final boolean shownTypeChooser;
+
     /**
      * @param baseIpsElement
      * @param srcFiles
      * @param config
      */
-    public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
+    public IpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
             DocumentorConfiguration config) {
-        this(baseIpsElement, srcFiles, ALL_FILTER, config);
+        this(baseIpsElement, srcFiles, ALL_FILTER, config, false);
     }
 
     /**
@@ -40,10 +43,12 @@ public class IpsObjectListPageElement extends AbstractListPageElement {
      * @param srcFiles
      * @param filter
      * @param config
+     * @param shownTypeChooser
      */
-    public IpsObjectListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
-            DocumentorConfiguration config) {
+    public IpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
+            DocumentorConfiguration config, boolean shownTypeChooser) {
         super(baseIpsElement, srcFiles, filter, config);
+        this.shownTypeChooser = shownTypeChooser;
         setTitle(Messages.IpsObjectListPageElement_objects);
     }
 
@@ -55,7 +60,12 @@ public class IpsObjectListPageElement extends AbstractListPageElement {
     @Override
     public void build() {
         super.build();
+
         addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2));
+
+        if (shownTypeChooser) {
+            addPageElements(new TypeChosePageElement(getConfig(), getRelatedObjectTypes()));
+        }
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(new LinkPageElement(
                 "classes", "classes", Messages.IpsObjectListPageElement_allObjects))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -83,7 +93,7 @@ public class IpsObjectListPageElement extends AbstractListPageElement {
                 continue;
             }
             PageElement link = PageElementUtils.createLinkPageElement(getConfig(), srcFile, getLinkTarget(), srcFile
-                    .getName(), true);
+                    .getIpsObjectName(), true);
             items.add(link);
         }
         return items;

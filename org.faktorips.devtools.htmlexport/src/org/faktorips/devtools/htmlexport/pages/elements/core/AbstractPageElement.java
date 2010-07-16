@@ -63,6 +63,11 @@ public abstract class AbstractPageElement implements PageElement {
         styles.removeAll(Arrays.asList(style));
     }
 
+    @Override
+    public boolean hasStyle(Style style) {
+        return getStyles().contains(style);
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -81,5 +86,10 @@ public abstract class AbstractPageElement implements PageElement {
      */
     @Override
     public abstract void acceptLayouter(ILayouter layouter);
+
+    @Override
+    public void makeBlock() {
+        addStyles(Style.BLOCK);
+    }
 
 }

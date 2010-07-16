@@ -105,4 +105,13 @@ public class TextPageElement extends AbstractPageElement {
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutTextPageElement(this);
     }
+
+    @Override
+    public void makeBlock() {
+        if (getType().isBlockType()) {
+            return;
+        }
+        type = TextType.BLOCK;
+    }
+
 }

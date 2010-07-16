@@ -14,7 +14,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 
 /**
  * Utility for Content-Pages
@@ -24,7 +24,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageEle
  */
 public class ContentPageUtil {
 
-    public static AbstractRootPageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFilex,
+    public static AbstractPageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFilex,
             DocumentorConfiguration config) {
 
         IIpsObject ipsSrcFile;
@@ -36,7 +36,7 @@ public class ContentPageUtil {
         }
     }
 
-    private static AbstractRootPageElement createObjectContentPageElement(IIpsObject ipsSrcFile,
+    private static AbstractPageElement createObjectContentPageElement(IIpsObject ipsSrcFile,
             DocumentorConfiguration config) {
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
             return new PolicyCmptTypeContentPageElement((IPolicyCmptType)ipsSrcFile, config);

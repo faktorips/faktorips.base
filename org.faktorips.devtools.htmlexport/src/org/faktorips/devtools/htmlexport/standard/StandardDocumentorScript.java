@@ -18,9 +18,9 @@ import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInIIpsPackageFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectListPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsPackagesListPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
@@ -84,7 +84,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeClassContentPage(DocumentorConfiguration config, IIpsSrcFile ipsSrcFile) {
-        AbstractRootPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, config);
+        AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, config);
         objectContentPage.build();
         FileHandler.writeFile(config, STANDARD_PATH
                 + HtmlUtil.getPathFromRoot(ipsSrcFile, LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
@@ -114,8 +114,8 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writePackagesClassesPage(DocumentorConfiguration config,
             IIpsPackageFragment ipsPackageFragment,
             List<IIpsSrcFile> srcFiles) {
-        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(ipsPackageFragment, srcFiles,
-                new IpsElementInIIpsPackageFilter(ipsPackageFragment), config);
+        IpsElementListPageElement allClassesPage = new IpsElementListPageElement(ipsPackageFragment, srcFiles,
+                new IpsElementInIIpsPackageFilter(ipsPackageFragment), config, true);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH
@@ -136,7 +136,8 @@ public class StandardDocumentorScript implements IDocumentorScript {
             IProgressMonitor monitor) {
         monitor.beginTask("", 1);
 
-        IpsObjectListPageElement allClassesPage = new IpsObjectListPageElement(config.getIpsProject(), srcFiles, config);
+        IpsElementListPageElement allClassesPage = new IpsElementListPageElement(config.getIpsProject(), srcFiles,
+                config);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH + "classes.html", getPageContent(config, allClassesPage)); //$NON-NLS-1$
@@ -157,7 +158,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeFileWithOutput(DocumentorConfiguration config,
-            AbstractRootPageElement allPackagesPage,
+            AbstractPageElement allPackagesPage,
             String filePath) {
         byte[] pageContent = getPageContent(config, allPackagesPage);
 
@@ -183,7 +184,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writeProjectOverviewPage(DocumentorConfiguration config, IProgressMonitor monitor) {
         monitor.beginTask("", 1);
 
-        AbstractRootPageElement projectOverviewHtml = new ProjectOverviewPageElement(config);
+        AbstractPageElement projectOverviewHtml = new ProjectOverviewPageElement(config);
         projectOverviewHtml.build();
         FileHandler.writeFile(config, STANDARD_PATH + "summary.html", getPageContent(config, projectOverviewHtml)); //$NON-NLS-1$
 

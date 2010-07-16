@@ -1,9 +1,6 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
-import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 
 /**
  * {@link PageElement} representing a link
@@ -21,20 +18,6 @@ public class LinkPageElement extends AbstractCompositePageElement {
      * the path of the link
      */
     private String path;
-
-    /**
-     * creates a Link to the representation of the given {@link IIpsElement} using the given
-     * {@link PageElement}s to display the Link
-     * 
-     * @param to
-     * @param target
-     * @param pageElements
-     */
-    protected LinkPageElement(IIpsElement to, String target, PageElement... pageElements) {
-        this(PathUtilFactory.createPathUtil(to).getPathFromRoot(LinkedFileType.getLinkedFileTypeByIpsElement(to)),
-                target);
-        addPageElements(pageElements);
-    }
 
     /**
      * @param path

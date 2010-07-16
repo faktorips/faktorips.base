@@ -11,7 +11,7 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.IpsObjectImagePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IpsElementImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -65,7 +65,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     private void addTestCaseTypeParameters() {
         addPageElements(new TextPageElement(Messages.TestCaseContentPageElement_parameters, TextType.HEADING_2));
         TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE).addPageElements(
-                new IpsObjectImagePageElement(getDocumentedIpsObject())).addPageElements(
+                new IpsElementImagePageElement(getDocumentedIpsObject())).addPageElements(
                 new TextPageElement(getDocumentedIpsObject().getQualifiedName())));
 
         ITestObject[] testObjects = getDocumentedIpsObject().getTestObjects();
@@ -98,7 +98,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
 
     private PageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
-                .addPageElements(new IpsObjectImagePageElement(testObject)).addPageElements(
+                .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
                         new TextPageElement(testObject.getTestParameterName())));
 
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
@@ -115,7 +115,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
 
     private PageElement createTestRulePageElement(ITestRule testObject) {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
-                .addPageElements(new IpsObjectImagePageElement(testObject)).addPageElements(
+                .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
                         new TextPageElement(testObject.getTestParameterName())));
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
@@ -130,7 +130,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
 
     private PageElement createTestValuePageElement(ITestValue testObject) {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
-                .addPageElements(new IpsObjectImagePageElement(testObject)).addPageElements(
+                .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
                         new TextPageElement(testObject.getTestParameterName())));
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();

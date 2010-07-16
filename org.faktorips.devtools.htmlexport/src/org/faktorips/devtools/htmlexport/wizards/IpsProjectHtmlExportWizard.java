@@ -78,7 +78,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
         DocumentorConfiguration documentorConfig = new DocumentorConfiguration();
 
         documentorConfig.setPath(ipsProjectHtmlExportWizardPage.getDestinationDirectory());
-        // documentorConfig.
+        documentorConfig.setShowValidationErrors(ipsProjectHtmlExportWizardPage.getShowValidationErrors());
 
         documentorConfig.setIpsProject(IpsProjectHtmlExportWizard.getIpsProject(selection));
         documentorConfig.setLayouter(new HtmlLayouter(".resource"));

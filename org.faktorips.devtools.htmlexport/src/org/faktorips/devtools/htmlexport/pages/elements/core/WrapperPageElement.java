@@ -88,4 +88,11 @@ public class WrapperPageElement extends AbstractCompositePageElement {
     public void setWrapperType(WrapperType wrapperType) {
         this.wrapperType = wrapperType;
     }
+
+    @Override
+    public void makeBlock() {
+        if (getWrapperType() == WrapperType.NONE) {
+            setWrapperType(WrapperType.BLOCK);
+        }
+    }
 }

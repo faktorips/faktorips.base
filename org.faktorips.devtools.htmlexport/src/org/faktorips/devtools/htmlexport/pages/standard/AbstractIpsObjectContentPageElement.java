@@ -83,7 +83,9 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                 StringUtils.isBlank(getDocumentedIpsObject().getDescription()) ? Messages.AbstractObjectContentPageElement_noDescription
                         : getDocumentedIpsObject().getDescription(), TextType.BLOCK));
 
-        addValidationErrors();
+        if (getConfig().isShowValidationErrors()) {
+            addValidationErrors();
+        }
     }
 
     /*

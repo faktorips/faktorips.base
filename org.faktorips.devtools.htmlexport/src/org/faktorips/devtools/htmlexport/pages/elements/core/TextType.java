@@ -7,13 +7,23 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
  * 
  */
 public enum TextType {
-    HEADING_1,
-    HEADING_2,
-    HEADING_3,
-    HEADING_4,
-    HEADING_5,
-    HEADING_6,
-    BLOCK,
-    INLINE,
-    WITHOUT_TYPE
+    HEADING_1(true),
+    HEADING_2(true),
+    HEADING_3(true),
+    HEADING_4(true),
+    HEADING_5(true),
+    HEADING_6(true),
+    BLOCK(true),
+    INLINE(false),
+    WITHOUT_TYPE(false);
+
+    private final boolean blockType;
+
+    private TextType(boolean blockType) {
+        this.blockType = blockType;
+    }
+
+    public boolean isBlockType() {
+        return blockType;
+    }
 }

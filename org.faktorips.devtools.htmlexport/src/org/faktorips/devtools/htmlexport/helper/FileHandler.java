@@ -44,7 +44,6 @@ public class FileHandler {
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-
             OutputStream outputStream = new FileOutputStream(file);
             outputStream.write(content);
             outputStream.close();

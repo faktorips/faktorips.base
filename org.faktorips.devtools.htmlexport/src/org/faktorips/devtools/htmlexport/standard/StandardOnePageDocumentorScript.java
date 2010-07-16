@@ -5,7 +5,7 @@ import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
 
@@ -21,7 +21,7 @@ public class StandardOnePageDocumentorScript implements IDocumentorScript {
     }
 
     private void writeProjectOverviewPage(DocumentorConfiguration config) {
-        AbstractRootPageElement projectOverviewHtml = new ProjectOverviewPageElement(config);
+        AbstractPageElement projectOverviewHtml = new ProjectOverviewPageElement(config);
         createContent(config, projectOverviewHtml);
     }
 

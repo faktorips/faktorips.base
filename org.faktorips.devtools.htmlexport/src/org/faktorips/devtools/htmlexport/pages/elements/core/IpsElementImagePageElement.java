@@ -19,21 +19,21 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * @author dicker
  * 
  */
-public class IpsObjectImagePageElement extends ImagePageElement {
+public class IpsElementImagePageElement extends ImagePageElement {
 
     /**
      * @param element
      * @param title
      * @param path
      */
-    public IpsObjectImagePageElement(IIpsElement element, String title, String path) {
+    public IpsElementImagePageElement(IIpsElement element, String title, String path) {
         super(createImageDataByIpsElement(element), title, path);
     }
 
     /**
      * @param element
      */
-    public IpsObjectImagePageElement(IIpsElement element) {
+    public IpsElementImagePageElement(IIpsElement element) {
         this(element, element.getName(), getIpsElementImageName(element));
     }
 
@@ -57,6 +57,7 @@ public class IpsObjectImagePageElement extends ImagePageElement {
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
+            return object.getIpsObjectType().getFileExtension();
         }
 
         if (element instanceof IIpsObject) {

@@ -39,6 +39,8 @@ public class DocumentorConfiguration {
      */
     protected String path;
 
+    private boolean showValidationErrors = true;
+
     /**
      * All scripts within this documentation
      */
@@ -170,4 +172,11 @@ public class DocumentorConfiguration {
         return dateFormat;
     }
 
+    public boolean isShowValidationErrors() {
+        return showValidationErrors;
+    }
+
+    public void setShowValidationErrors(boolean outputMessages) {
+        this.showValidationErrors = outputMessages;
+    }
 }

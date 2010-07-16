@@ -3,16 +3,24 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 /**
@@ -27,6 +35,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
     private final IProductCmpt productCmpt;
     private final IAttribute[] attributes;
     private final DocumentorConfiguration config;
+    private final IProductCmptType productCmptType;
 
     /**
      * Creates a {@link ProductGenerationAttributeTable} for the specified
@@ -38,6 +47,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
     public ProductGenerationAttributeTable(IProductCmpt productCmpt, IProductCmptType productCmptType,
             DocumentorConfiguration config) {
         this.productCmpt = productCmpt;
+        this.productCmptType = productCmptType;
         this.attributes = findAttributes(productCmptType);
         this.config = config;
     }
@@ -66,6 +76,76 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
     protected void addDataRows() {
         for (IAttribute attribute : attributes) {
             addAttributeRow(attribute);
+        }
+        // TODO
+        // addParentProductCmptType();
+        addChildProductCmptTypes();
+    }
+
+    private void addChildProductCmptTypes() {
+        PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
+
+        cells[0] = new TextPageElement("Children Component Types");
+
+        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+            IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
+
+            ITableContentUsage[] tableContentUsages = productCmptGeneration.getTableContentUsages();
+            List<ITableContents> tableContents = new ArrayList<ITableContents>();
+            for (ITableContentUsage tableContentUsage : tableContentUsages) {
+                try {
+                    ITableContents tableContent = tableContentUsage.findTableContents(config.getIpsProject());
+                    if (tableContent != null) {
+                        tableContents.add(tableContent);
+                    }
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (productCmptGeneration.getLinks().length == 0 && tableContents.size() == 0) {
+                cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
+                continue;
+            }
+
+            WrapperPageElement cellContent = new WrapperPageElement(WrapperType.BLOCK);
+
+            addAssociatedProductCmpts(productCmptGeneration, cellContent);
+
+            addUsedTableContent(tableContents, cellContent);
+
+            cells[i + 1] = cellContent;
+        }
+
+        addSubElement(new TableRowPageElement(cells));
+
+    }
+
+    private void addUsedTableContent(List<ITableContents> tableContents, WrapperPageElement cellContent) {
+        for (ITableContents tableContent : tableContents) {
+            PageElement linkPageElement = PageElementUtils.createLinkPageElement(config, tableContent,
+                    "content", tableContent.getName(), true); //$NON-NLS-1$
+            linkPageElement.makeBlock();
+            cellContent.addPageElements(linkPageElement);
+        }
+    }
+
+    private void addAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration, WrapperPageElement cellContent) {
+        IAssociation[] associations = productCmptType.getAssociations();
+        for (IAssociation association : associations) {
+            TreeNodePageElement root = new TreeNodePageElement(PageElementUtils.createIpsElementReference(association,
+                    true));
+            IProductCmptLink[] links = productCmptGeneration.getLinks(association.getName());
+            for (IProductCmptLink productCmptLink : links) {
+                try {
+                    IProductCmpt target = productCmptLink.findTarget(productCmpt.getIpsProject());
+                    root.addPageElements(PageElementUtils.createLinkPageElement(config, target,
+                            "content", target.getName(), true)); //$NON-NLS-1$
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            cellContent.addPageElements(root);
         }
     }
 
@@ -106,7 +186,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
 
     @Override
     public boolean isEmpty() {
-        return ArrayUtils.isEmpty(attributes) || productCmpt.getNumOfGenerations() == 0;
+        return productCmpt.getNumOfGenerations() == 0;
     }
 
 }

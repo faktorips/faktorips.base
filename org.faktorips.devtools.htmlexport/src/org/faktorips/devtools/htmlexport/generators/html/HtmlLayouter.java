@@ -14,11 +14,11 @@ import org.faktorips.devtools.htmlexport.helper.html.HtmlTextType;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
-import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -60,10 +60,16 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
      */
     @Override
     public void layoutLinkPageElement(LinkPageElement pageElement) {
+        if (pageElement.hasStyle(Style.BLOCK)) {
+            append(HtmlUtil.createHtmlElementOpenTag("div"));
+        }
         append(HtmlUtil
                 .createLinkOpenTag(createLinkBase(pageElement), pageElement.getTarget(), getClasses(pageElement)));
         visitSubElements(pageElement);
         append(HtmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
+        if (pageElement.hasStyle(Style.BLOCK)) {
+            append(HtmlUtil.createHtmlElementCloseTag("div"));
+        }
     }
 
     /**

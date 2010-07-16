@@ -53,7 +53,9 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
         addIpsObjectPaths();
 
-        addMessageListTable();
+        if (getConfig().isShowValidationErrors()) {
+            addValidationErrorsTable();
+        }
 
         addCreationTime();
     }
@@ -167,7 +169,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         return wrapper.addPageElements(referencedProjects);
     }
 
-    private void addMessageListTable() {
+    private void addValidationErrorsTable() {
         MessageListTablePageElement messageListTablePageElement = new MessageListTablePageElement(
                 validateLinkedObjects());
         if (messageListTablePageElement.isEmpty()) {

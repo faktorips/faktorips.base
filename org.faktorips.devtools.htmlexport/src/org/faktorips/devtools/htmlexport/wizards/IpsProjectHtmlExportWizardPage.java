@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage implements ValueChangeListener,
         ModifyListener, ICheckStateListener {
@@ -52,6 +53,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     private UIToolkit toolkit = new UIToolkit(null);
     // TODO private Checkbox includeReferencedProjects;
     private Combo destinationNamesCombo;
+    private Checkbox showValidationErrorsCheckBox;
 
     protected IpsProjectHtmlExportWizardPage(IStructuredSelection selection) {
         super(PAGE_NAME);
@@ -83,6 +85,8 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
         // TODO includeReferencedProjects = toolkit.createCheckbox(composite,
         // "Include referenced Projects");
+
+        showValidationErrorsCheckBox = toolkit.createCheckbox(composite, "Show validation errors");
 
         restoreWidgetValues();
 
@@ -155,6 +159,10 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     public String getDestinationDirectory() {
         return destinationNamesCombo.getText().trim();
+    }
+
+    public boolean getShowValidationErrors() {
+        return showValidationErrorsCheckBox.isChecked();
     }
 
     private String getDefaultDestinationDirectory() {

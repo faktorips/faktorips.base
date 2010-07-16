@@ -10,6 +10,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
+import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 
 /**
  * Utility for {@link PageElement}s
@@ -65,8 +67,8 @@ public class PageElementUtils {
         List<PageElement> liste = new ArrayList<PageElement>();
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement linkPageElement = createLinkPageElement(config, srcFile, target, srcFile.getName(), true,
-                    styles.toArray(new Style[styles.size()]));
+            PageElement linkPageElement = createLinkPageElement(config, srcFile, target, srcFile.getIpsObjectName(),
+                    true, styles.toArray(new Style[styles.size()]));
             linkPageElement.addStyles(styles.toArray(new Style[styles.size()]));
             liste.add(linkPageElement);
         }
@@ -91,26 +93,36 @@ public class PageElementUtils {
             Style... styles) {
         IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(config);
 
-        PageElement element = createInnerLinkPageElement(to, text, useImage);
+        PageElement element = createIpsElementReference(to, text, useImage);
 
         if (filter.accept(to)) {
-            return new LinkPageElement(to, target, element).addStyles(styles);
+            return createLinkPageElementToIpsElement(to, target, element).addStyles(styles);
         }
         return element.addStyles(Style.DEAD_LINK);
     }
 
     /**
-     * @param to
+     * @param ipsElement
      * @param text
      * @param useImage
      * @return
      */
-    private static PageElement createInnerLinkPageElement(IIpsElement to, String text, boolean useImage) {
+    public static PageElement createIpsElementReference(IIpsElement ipsElement, String text, boolean useImage) {
         if (useImage) {
-            return new WrapperPageElement(WrapperType.NONE).addPageElements(new IpsObjectImagePageElement(to))
+            return new WrapperPageElement(WrapperType.NONE).addPageElements(new IpsElementImagePageElement(ipsElement))
                     .addPageElements(new TextPageElement('\u00A0' + text));
         }
         return new TextPageElement(text);
+    }
+
+    /**
+     * @param ipsElement
+     * @param text
+     * @param useImage
+     * @return
+     */
+    public static PageElement createIpsElementReference(IIpsElement ipsElement, boolean useImage) {
+        return createIpsElementReference(ipsElement, ipsElement.getName(), useImage);
     }
 
     public static PageElement createLinkPageElement(DocumentorConfiguration config,
@@ -121,4 +133,16 @@ public class PageElementUtils {
         return createLinkPageElement(config, to, target, text, useImage, new Style[0]);
     }
 
+    /**
+     * @param to
+     * @param target
+     * @param element
+     * @return
+     */
+    public static LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, String target, PageElement element) {
+        String path = PathUtilFactory.createPathUtil(to).getPathFromRoot(
+                LinkedFileType.getLinkedFileTypeByIpsElement(to));
+        LinkPageElement linkPageElement = new LinkPageElement(path, target, element);
+        return linkPageElement;
+    }
 }
