@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<?faktorips version="1.0"?>
+<FaktorIps-TableOfContents>	
+	<TestCase entryTypeipsObjectId="test/CalculationTest2.ipstestcase" ipsObjectQualifiedName="test.CalculationTest2" implementationClass="org.faktorips.runtime.testrepository.test.TestPremiumCalculation" xmlResource="org/faktorips/runtime/testrepository/test/CalculationTest2.xml"/> 
+</FaktorIps-TableOfContents>

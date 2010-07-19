@@ -53,7 +53,7 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
          * The repository loading the empty toc to include testing referenced repositories
          */
         repository = ClassloaderRuntimeRepository
-                .create("org/faktorips/runtime/testrepository/fake-repository-toc.xml");
+                .create("org/faktorips/runtime/testrepository/direct-repository-toc.xml");
         ClassloaderRuntimeRepository mainRepository = ClassloaderRuntimeRepository
                 .create("org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
         repository.addDirectlyReferencedRepository(mainRepository);
@@ -256,14 +256,14 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
         MotorProductGen motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(
                 2007, Calendar.JANUARY, 1));
         MotorProductGen previous = (MotorProductGen)repository.getPreviousProductComponentGeneration(motorProductGen);
-        assertEquals(new DateTime(2006, 1, 1).toDate(TimeZone.getDefault()),
-                previous.getValidFrom(TimeZone.getDefault()));
+        assertEquals(new DateTime(2006, 1, 1).toDate(TimeZone.getDefault()), previous.getValidFrom(TimeZone
+                .getDefault()));
 
         motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2006,
                 Calendar.JANUARY, 1));
         previous = (MotorProductGen)repository.getPreviousProductComponentGeneration(motorProductGen);
-        assertEquals(new DateTime(2005, 1, 1).toDate(TimeZone.getDefault()),
-                previous.getValidFrom(TimeZone.getDefault()));
+        assertEquals(new DateTime(2005, 1, 1).toDate(TimeZone.getDefault()), previous.getValidFrom(TimeZone
+                .getDefault()));
 
         motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(2005,
                 Calendar.JANUARY, 1));
@@ -274,8 +274,8 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
     public void testGetLatestProductComponentGeneration() {
         IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
         IProductComponentGeneration generation = repository.getLatestProductComponentGeneration(productComponent);
-        assertEquals(new DateTime(2007, 1, 1).toDate(TimeZone.getDefault()),
-                generation.getValidFrom(TimeZone.getDefault()));
+        assertEquals(new DateTime(2007, 1, 1).toDate(TimeZone.getDefault()), generation.getValidFrom(TimeZone
+                .getDefault()));
 
     }
 

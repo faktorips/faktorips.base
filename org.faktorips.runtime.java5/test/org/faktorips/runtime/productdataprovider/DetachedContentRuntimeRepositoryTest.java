@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.productprovider;
+package org.faktorips.runtime.productdataprovider;
 
 import java.io.File;
 import java.net.JarURLConnection;
@@ -24,11 +24,12 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProviderFactory;
 import org.faktorips.runtime.productdataprovider.DataModifiedException;
 import org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepositoryManager;
+import org.faktorips.runtime.productdataprovider.IDetachedContentRuntimeRepositoryManager;
 import org.faktorips.runtime.productdataprovider.IProductDataProvider;
 
 public class DetachedContentRuntimeRepositoryTest extends TestCase {
 
-    private DetachedContentRuntimeRepositoryManager repository;
+    private IDetachedContentRuntimeRepositoryManager repository;
 
     @Override
     protected void setUp() throws Exception {
@@ -59,9 +60,9 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
     }
 
     public void testClientCall() {
-        IRuntimeRepository client1 = repository.startRequest();
-        IRuntimeRepository client2 = repository.startRequest();
-        IRuntimeRepository client3 = repository.startRequest();
+        IRuntimeRepository client1 = repository.getActualRuntimeRepository();
+        IRuntimeRepository client2 = repository.getActualRuntimeRepository();
+        IRuntimeRepository client3 = repository.getActualRuntimeRepository();
 
         // every client repository should be the same (equal)
         assertEquals(client1, client2);
@@ -79,7 +80,7 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
         // we did not call checkForModifications()
         client1.getProductComponent("motor.MotorBasic");
 
-        client1 = repository.startRequest();
+        client1 = repository.getActualRuntimeRepository();
         assertNotSame(client1, client2);
         // still equals
         assertEquals(client2, client3);
@@ -130,7 +131,7 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
             assertEquals("2000", dme.newVersion);
         }
 
-        client1 = repository.startRequest();
+        client1 = repository.getActualRuntimeRepository();
         assertNotSame(client1, client2);
         // still equals
         assertEquals(client2, client3);
@@ -169,7 +170,7 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
             assertEquals("2000", dme.newVersion);
         }
 
-        client2 = repository.startRequest();
+        client2 = repository.getActualRuntimeRepository();
         // client2 now equals to client1
         assertEquals(client1, client2);
         assertNotSame(client2, client3);
@@ -194,7 +195,7 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
             assertEquals("2000", dme.newVersion);
         }
 
-        client3 = repository.startRequest();
+        client3 = repository.getActualRuntimeRepository();
         assertEquals(client1, client2);
         assertEquals(client2, client3);
         assertNotNull(client1.getProductComponent("motor.MotorPlus"));

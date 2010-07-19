@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.productprovider;
+package org.faktorips.runtime.productdataprovider;
 
 import java.io.InputStream;
 import java.util.Calendar;
@@ -31,14 +31,10 @@ import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProviderFactory;
-import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProvider;
-import org.faktorips.runtime.productdataprovider.DataModifiedException;
-import org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepositoryManager;
-import org.faktorips.runtime.productdataprovider.IProductDataProvider;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
+import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.testrepository.PnCProduct;
 import org.faktorips.runtime.testrepository.home.HomeProduct;
 import org.faktorips.runtime.testrepository.home.HomeProductGen;
@@ -54,16 +50,24 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
 
     private IRuntimeRepository repository;
     private TestProductDataProvider productDataProvider;
-    private DetachedContentRuntimeRepositoryManager runtimeRepositoryManager;
+    private IDetachedContentRuntimeRepositoryManager runtimeRepositoryManager;
     private MyFactory pdpFactory;
+    private TestProductDataProvider directPdp;
+    private MyFactory directPdpFactory;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        directPdpFactory = new MyFactory(getClass().getClassLoader(),
+                "org/faktorips/runtime/testrepository/direct-repository-toc.xml");
         pdpFactory = new MyFactory(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
-        runtimeRepositoryManager = new DetachedContentRuntimeRepositoryManager.Builder(pdpFactory).build();
-        repository = runtimeRepositoryManager.startRequest();
+        runtimeRepositoryManager = new DetachedContentRuntimeRepositoryManager.Builder(directPdpFactory).build();
+        IDetachedContentRuntimeRepositoryManager referencedManager = new DetachedContentRuntimeRepositoryManager.Builder(
+                pdpFactory).build();
+        runtimeRepositoryManager.addDirectlyReferencedManager(referencedManager);
+        repository = runtimeRepositoryManager.getActualRuntimeRepository();
+        directPdp = directPdpFactory.testProductDataProvider;
         productDataProvider = pdpFactory.testProductDataProvider;
     }
 
@@ -99,8 +103,8 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
 
         // request for none existing component
         assertNull(repository.getProductComponent("notThere"));
-
         assertTrue(productDataProvider.flag);
+
         productDataProvider.flag = false;
         // should use cached object
         repository.getProductComponent("home.HomeBasic");
@@ -111,16 +115,40 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         repository.getProductComponent("home.HomeBasic");
         assertFalse(productDataProvider.flag);
 
-        repository = runtimeRepositoryManager.startRequest();
+        repository = runtimeRepositoryManager.getActualRuntimeRepository();
         productDataProvider = pdpFactory.testProductDataProvider;
 
         repository.getProductComponent("home.HomeBasic");
         // should NOT use cached object
         assertTrue(productDataProvider.flag);
+
+        productDataProvider.flag = false;
+        // should use cached object
+        repository.getProductComponent("home.HomeBasic");
+        assertFalse(productDataProvider.flag);
+
+        directPdp = directPdpFactory.testProductDataProvider;
+        directPdp.baseVersion = "654321";
+
+        // should use cached object until getActualRuntimeRepository()
+        repository.getProductComponent("home.HomeBasic");
+        assertFalse(productDataProvider.flag);
+
+        repository = runtimeRepositoryManager.getActualRuntimeRepository();
+
+        repository.getProductComponent("home.HomeBasic");
+        // still cached because HomeBasic is in referenced repository
+        assertFalse(productDataProvider.flag);
+
+        directPdp = directPdpFactory.testProductDataProvider;
+        repository.getIpsTest("test.CalculationTest2");
+        // should NOT use cached object
+        assertTrue(directPdp.flag);
+
     }
 
     public void testGetProductComponent_KindId_VersionId() {
-        repository = runtimeRepositoryManager.startRequest();
+        repository = runtimeRepositoryManager.getActualRuntimeRepository();
         MotorProduct motorProduct = (MotorProduct)repository.getProductComponent("motor.MotorPlus", "2005-01");
         assertNotNull(motorProduct);
         assertEquals("2005-01", motorProduct.getVersionId());
@@ -171,7 +199,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
         assertFalse(productDataProvider.flag);
 
-        repository = runtimeRepositoryManager.startRequest();
+        repository = runtimeRepositoryManager.getActualRuntimeRepository();
         productDataProvider = pdpFactory.testProductDataProvider;
 
         repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2006, 1, 1));
@@ -250,6 +278,10 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertEquals("test.CalculationTest1", test.getQualifiedName());
         assertEquals("42", test.getInputSumInsured());
         assertEquals("43", test.getExpResultPremium());
+
+        IpsTestCaseBase test2 = repository.getIpsTestCase("test.CalculationTest2");
+        assertNotNull(test);
+        assertEquals("test.CalculationTest2", test2.getQualifiedName());
 
         // formla test
         IpsFormulaTestCase formulaTest = (IpsFormulaTestCase)repository.getIpsTest("motor.MotorBasic");
