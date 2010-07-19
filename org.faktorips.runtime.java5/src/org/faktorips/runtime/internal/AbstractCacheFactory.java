@@ -11,10 +11,15 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime;
+package org.faktorips.runtime.internal;
 
 import java.util.List;
 
+import org.faktorips.runtime.GenerationId;
+import org.faktorips.runtime.ICacheFactory;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.caching.IComputable;
 
 public abstract class AbstractCacheFactory implements ICacheFactory {

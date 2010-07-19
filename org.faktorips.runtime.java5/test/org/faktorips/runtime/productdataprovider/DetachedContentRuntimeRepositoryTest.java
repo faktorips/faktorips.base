@@ -21,15 +21,15 @@ import java.net.URLConnection;
 import junit.framework.TestCase;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepositoryManager;
 import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProviderFactory;
 import org.faktorips.runtime.productdataprovider.DataModifiedException;
 import org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepositoryManager;
-import org.faktorips.runtime.productdataprovider.IDetachedContentRuntimeRepositoryManager;
 import org.faktorips.runtime.productdataprovider.IProductDataProvider;
 
 public class DetachedContentRuntimeRepositoryTest extends TestCase {
 
-    private IDetachedContentRuntimeRepositoryManager repository;
+    private IRuntimeRepositoryManager repository;
 
     @Override
     protected void setUp() throws Exception {

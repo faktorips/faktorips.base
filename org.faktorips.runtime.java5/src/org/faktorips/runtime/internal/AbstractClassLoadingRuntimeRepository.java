@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime;
+package org.faktorips.runtime.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,11 +23,11 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
-import org.faktorips.runtime.internal.EnumSaxHandler;
-import org.faktorips.runtime.internal.ProductComponent;
-import org.faktorips.runtime.internal.ProductComponentGeneration;
-import org.faktorips.runtime.internal.Table;
+import org.faktorips.runtime.ICacheFactory;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;

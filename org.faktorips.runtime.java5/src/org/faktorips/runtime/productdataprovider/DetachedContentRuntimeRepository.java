@@ -15,8 +15,8 @@ package org.faktorips.runtime.productdataprovider;
 
 import java.io.InputStream;
 
-import org.faktorips.runtime.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
+import org.faktorips.runtime.internal.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;

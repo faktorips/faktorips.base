@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepositoryManager;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
@@ -50,7 +51,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
 
     private IRuntimeRepository repository;
     private TestProductDataProvider productDataProvider;
-    private IDetachedContentRuntimeRepositoryManager runtimeRepositoryManager;
+    private IRuntimeRepositoryManager runtimeRepositoryManager;
     private MyFactory pdpFactory;
     private TestProductDataProvider directPdp;
     private MyFactory directPdpFactory;
@@ -63,7 +64,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         pdpFactory = new MyFactory(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
         runtimeRepositoryManager = new DetachedContentRuntimeRepositoryManager.Builder(directPdpFactory).build();
-        IDetachedContentRuntimeRepositoryManager referencedManager = new DetachedContentRuntimeRepositoryManager.Builder(
+        IRuntimeRepositoryManager referencedManager = new DetachedContentRuntimeRepositoryManager.Builder(
                 pdpFactory).build();
         runtimeRepositoryManager.addDirectlyReferencedManager(referencedManager);
         repository = runtimeRepositoryManager.getActualRuntimeRepository();

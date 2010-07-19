@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.faktorips.runtime.caching.IComputable;
 import org.faktorips.runtime.caching.Memoizer;
+import org.faktorips.runtime.internal.AbstractCacheFactory;
 
 /**
  * Default cache factory. Uses SoftReferenceCaches for each object type.

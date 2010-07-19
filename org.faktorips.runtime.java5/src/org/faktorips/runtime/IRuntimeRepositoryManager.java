@@ -11,13 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.productdataprovider;
+package org.faktorips.runtime;
 
 import java.util.List;
 
-import org.faktorips.runtime.IRuntimeRepository;
 
-public interface IDetachedContentRuntimeRepositoryManager {
+public interface IRuntimeRepositoryManager {
 
     /**
      * Call a modification check on the product data provider. If there are any changes in the
@@ -27,13 +26,13 @@ public interface IDetachedContentRuntimeRepositoryManager {
     public IRuntimeRepository getActualRuntimeRepository();
 
     /**
-     * Use this method to add a referenced {@link IDetachedContentRuntimeRepositoryManager}. The
+     * Use this method to add a referenced {@link IRuntimeRepositoryManager}. The
      * {@link IRuntimeRepository} returned by {@link #getActualRuntimeRepository()} asks all
      * references managers for their repositories and adding the references.
      * 
      * @param manager The manager to connect with this manager
      */
-    public void addDirectlyReferencedManager(IDetachedContentRuntimeRepositoryManager manager);
+    public void addDirectlyReferencedManager(IRuntimeRepositoryManager manager);
 
     /**
      * Get the list of direct references managers.
@@ -41,15 +40,15 @@ public interface IDetachedContentRuntimeRepositoryManager {
      * @return All directly referenced managers
      * 
      */
-    public List<IDetachedContentRuntimeRepositoryManager> getDirectlyReferencedRepositoryManagers();
+    public List<IRuntimeRepositoryManager> getDirectlyReferencedRepositoryManagers();
 
     /**
      * Collect all referenced manager. This request all referenced managers from the direct
      * references managers recursively.
      * 
-     * @return A list of all {@link IDetachedContentRuntimeRepositoryManager} that are referenced
+     * @return A list of all {@link IRuntimeRepositoryManager} that are referenced
      *         directly or indirectly
      */
-    public List<IDetachedContentRuntimeRepositoryManager> getAllReferencedRepositoryManagers();
+    public List<IRuntimeRepositoryManager> getAllReferencedRepositoryManagers();
 
 }

@@ -13,17 +13,13 @@
 
 package org.faktorips.runtime.productdataprovider;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.faktorips.runtime.DefaultCacheFactory;
 import org.faktorips.runtime.ICacheFactory;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepositoryManager;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
+import org.faktorips.runtime.internal.AbstractRuntimeRepositoryManager;
 
 /**
  * The {@link DetachedContentRuntimeRepositoryManager} manages the access to the
@@ -40,15 +36,9 @@ import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
  * @author dirmeier
  */
 
-public class DetachedContentRuntimeRepositoryManager implements IDetachedContentRuntimeRepositoryManager {
+public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepositoryManager {
 
-    private volatile DetachedContentRuntimeRepository actualRuntimeRepository;
-
-    private final DetachedContentRuntimeRepositoryManager.Builder builder;
-
-    private List<IDetachedContentRuntimeRepositoryManager> managers = new CopyOnWriteArrayList<IDetachedContentRuntimeRepositoryManager>();
-
-    private volatile List<IDetachedContentRuntimeRepositoryManager> allManagers;
+    final Builder builder;
 
     /**
      * This is the constructor for the {@link DetachedContentRuntimeRepositoryManager}. The
@@ -57,83 +47,21 @@ public class DetachedContentRuntimeRepositoryManager implements IDetachedContent
      */
     private DetachedContentRuntimeRepositoryManager(Builder builder) {
         this.builder = builder;
-
     }
 
-    public synchronized IRuntimeRepository getActualRuntimeRepository() {
-        if (actualRuntimeRepository == null || !actualRuntimeRepository.isUpToDate()
-                || !isReferencedRepositorysUpToDate()) {
-            actualRuntimeRepository = new DetachedContentRuntimeRepository(builder);
-            for (IDetachedContentRuntimeRepositoryManager manager : managers) {
-                actualRuntimeRepository.addDirectlyReferencedRepository(manager.getActualRuntimeRepository());
-            }
-        }
-        return actualRuntimeRepository;
-    }
-
-    /**
-     * Returns true if every manager directly referenced to this one did not change it repository.
-     * 
-     * @return true if any direct referenced repository changed
-     */
-    private boolean isReferencedRepositorysUpToDate() {
-        List<IRuntimeRepository> directReferencedRepos = new ArrayList<IRuntimeRepository>(actualRuntimeRepository
-                .getDirectlyReferencedRepositories());
-        for (IDetachedContentRuntimeRepositoryManager manager : managers) {
-            IRuntimeRepository referencedRepository = manager.getActualRuntimeRepository();
-            // the repository of every manager have to be in the list of direct referenced
-            // repositories.
-            if (!directReferencedRepos.remove(referencedRepository)) {
-                // If any manager creates a new repository return false
-                return false;
-            }
-        }
-        // after iterating over all managers the list have to be empty. Otherwise a references
-        // manager was deleted
-        if (!directReferencedRepos.isEmpty()) {
+    @Override
+    protected boolean isRepositoryUpToDate(IRuntimeRepository actualRuntimeRepository) {
+        if (actualRuntimeRepository instanceof DetachedContentRuntimeRepository) {
+            DetachedContentRuntimeRepository detachedContentRR = (DetachedContentRuntimeRepository)actualRuntimeRepository;
+            return detachedContentRR.isUpToDate();
+        } else {
             return false;
         }
-        return true;
     }
 
-    public final void addDirectlyReferencedManager(IDetachedContentRuntimeRepositoryManager manager) {
-        allManagers = null;
-        managers.add(manager);
-    }
-
-    public List<IDetachedContentRuntimeRepositoryManager> getDirectlyReferencedRepositoryManagers() {
-        return Collections.unmodifiableList(managers);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<IDetachedContentRuntimeRepositoryManager> getAllReferencedRepositoryManagers() {
-        List<IDetachedContentRuntimeRepositoryManager> result = allManagers;
-        if (result == null) {
-            synchronized (this) {
-                result = allManagers;
-                if (result == null) {
-                    result = new ArrayList<IDetachedContentRuntimeRepositoryManager>(managers.size());
-                    // list is so small, linear search is ok.
-                    LinkedList<IDetachedContentRuntimeRepositoryManager> candidates = new LinkedList<IDetachedContentRuntimeRepositoryManager>();
-                    candidates.add(this);
-                    while (!candidates.isEmpty()) {
-                        IDetachedContentRuntimeRepositoryManager candidate = candidates.get(0);
-                        candidates.remove(0);
-                        if (candidate != this && !result.contains(candidate)) {
-                            result.add(candidate);
-                        }
-                        for (IDetachedContentRuntimeRepositoryManager newCandidate : candidate
-                                .getDirectlyReferencedRepositoryManagers()) {
-                            candidates.add(newCandidate);
-                        }
-                    }
-                    allManagers = Collections.unmodifiableList(result);
-                }
-            }
-        }
-        return allManagers;
+    @Override
+    protected IRuntimeRepository createNewRuntimeRepository() {
+        return new DetachedContentRuntimeRepository(builder);
     }
 
     /**
@@ -242,7 +170,7 @@ public class DetachedContentRuntimeRepositoryManager implements IDetachedContent
          * 
          * @return The created {@link DetachedContentRuntimeRepositoryManager}
          */
-        public IDetachedContentRuntimeRepositoryManager build() {
+        public IRuntimeRepositoryManager build() {
             return new DetachedContentRuntimeRepositoryManager(this);
         }
 

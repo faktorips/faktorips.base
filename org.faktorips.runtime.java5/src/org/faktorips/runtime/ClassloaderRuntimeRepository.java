@@ -20,6 +20,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.faktorips.runtime.internal.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -143,12 +144,10 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @throws IllegalArgumentException if the basePackage does not contain the table of contents
      *             file.
      * @throws RuntimeException if the registry's table of contents file can't be read.
-     * @throws ParserConfigurationException if the DocumentBuilderFactory.newInstance() method
-     *             throws this exception.
      * 
      * @see #TABLE_OF_CONTENTS_FILE
      */
-    public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage) throws ParserConfigurationException {
+    public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage) {
         this(cl, basePackage, TABLE_OF_CONTENTS_FILE, new DefaultCacheFactory());
     }
 
@@ -165,10 +164,8 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @throws IllegalArgumentException if the basePackage does not contain the table of contents
      *             file.
      * @throws RuntimeException if the registry's table of contents file can't be read.
-     * @throws ParserConfigurationException if the DocumentBuilderFactory.newInstance() method
      */
-    public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage, String pathToToc)
-            throws ParserConfigurationException {
+    public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage, String pathToToc) {
         this(cl, basePackage, pathToToc, new DefaultCacheFactory());
     }
 
