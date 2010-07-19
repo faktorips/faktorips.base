@@ -463,12 +463,12 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         model.runAndQueueChangeEvents(action, null);
 
         assertEquals(2, listener.changedFiles.size());
-        assertEquals(typeA.getIpsSrcFile(), listener.changedFiles.get(0));
-        assertEquals(typeB.getIpsSrcFile(), listener.changedFiles.get(1));
+        assertChangedFileIn(typeA.getIpsSrcFile(), listener.changedFiles);
+        assertChangedFileIn(typeB.getIpsSrcFile(), listener.changedFiles);
 
         assertEquals(2, modifyListener.modifiedFiles.size());
-        assertEquals(typeA.getIpsSrcFile(), modifyListener.modifiedFiles.get(0));
-        assertEquals(typeB.getIpsSrcFile(), modifyListener.modifiedFiles.get(1));
+        assertChangedFileIn(typeA.getIpsSrcFile(), modifyListener.modifiedFiles);
+        assertChangedFileIn(typeB.getIpsSrcFile(), modifyListener.modifiedFiles);
 
         listener.changedFiles.clear();
         modifyListener.modifiedFiles.clear();
@@ -483,8 +483,16 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         // expected due to the call to the setDescription() method, second due to the call to the
         // save() of the ips source file
         assertEquals(2, modifyListener.modifiedFiles.size());
-        assertEquals(typeA.getIpsSrcFile(), modifyListener.modifiedFiles.get(0));
+        assertChangedFileIn(typeA.getIpsSrcFile(), modifyListener.modifiedFiles);
+    }
 
+    private void assertChangedFileIn(IIpsSrcFile ipsSrcFile, List<IIpsSrcFile> changedFiles) {
+        for (IIpsSrcFile currIpsSrcFile : changedFiles) {
+            if (ipsSrcFile == currIpsSrcFile) {
+                return;
+            }
+        }
+        fail("expected IpsSrcFile: " + ipsSrcFile.getName() + " not in List!");
     }
 
     private static class TestContentsChangeListener implements ContentsChangeListener {
