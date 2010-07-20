@@ -39,6 +39,8 @@
 #           -forceBuild            : force build, no resource limit check  
 #           -forceTaggingCvs       : force tagging projects (no assert if the release already exists)
 #
+#			-notVersion3		   : building a version before FIPS 3.0.x. In version 3 some changed have been done in release skripts.  
+#
 # additional functionality
 #-------------------------
 #           -createBranch          : to create a branch, the latest head stand will be branched by default (see -branchRootTag)
@@ -89,6 +91,7 @@ NOCVS=false
 CREATE_BRANCH=false
 FORCE_BUILD=false
 FORCE_TAGCVS=false
+MIN_VERSION_3=true
 
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
@@ -272,7 +275,7 @@ parseArgs()
 	  -createBranch)  DO_CREATE_BRANCH=true ;;
 	  -branchRootTag) BRANCH_ROOT_TAG=$2 ; shift ;;
 	  -forceBuild)    FORCE_BUILD=true ;;
-	  -notVersion3)    MIN_VERSION_3=false ;;
+	  -notVersion3)   MIN_VERSION_3=false ;;
 	  -?)             showUsageAndExit ;;
 	  --?)            showUsageAndExit ;;
 	  -h)             showUsageAndExit ;;
