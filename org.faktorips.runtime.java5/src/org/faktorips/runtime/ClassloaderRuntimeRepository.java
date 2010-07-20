@@ -376,12 +376,11 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
             throw new RuntimeException("Can't parse the enumeration content of the resource "
                     + tocEntry.getXmlResourceName());
         }
-        T enumValue = null;
         ArrayList<T> enumValues = new ArrayList<T>();
         try {
-            Constructor<T>[] constructors = clazz.getDeclaredConstructors();
-            Constructor<T> constructor = null;
-            for (Constructor<T> currentConstructor : constructors) {
+            Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+            Constructor<?> constructor = null;
+            for (Constructor<?> currentConstructor : constructors) {
                 if ((currentConstructor.getModifiers() & Modifier.PROTECTED) > 0) {
                     Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
                     if (parameterTypes.length == 2 && parameterTypes[0] == List.class
@@ -396,7 +395,9 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
             }
             for (List<String> enumValueAsStrings : saxhandler.getEnumValueList()) {
                 constructor.setAccessible(true);
-                enumValue = constructor.newInstance(new Object[] { enumValueAsStrings, this });
+                @SuppressWarnings("unchecked")
+                // Suppress warnings because the constructor cannot be type safe (java6 issue)
+                T enumValue = (T)constructor.newInstance(new Object[] { enumValueAsStrings, this });
                 enumValues.add(enumValue);
             }
         } catch (Exception e) {
