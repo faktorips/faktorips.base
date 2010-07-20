@@ -61,7 +61,7 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
         super(builder.getRepositoryName(), builder.getCacheFactory(), builder.getClassLoader());
         this.productDataProvider = builder.getProductDataProviderFactory().newInstance();
         this.formulaEvaluatorFactory = builder.getFormulaEvaluatorFactory();
-        super.reload();
+        super.initialize();
     }
 
     /**
@@ -135,16 +135,6 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
         } catch (DataModifiedException e) {
             throw createDataModifiedException(e);
         }
-    }
-
-    /**
-     * Reload is not supported for {@link DetachedContentRuntimeRepository}. Once the product data
-     * has changed, a {@link DetachedContentRuntimeRepository} could only work with cached data.
-     * {@inheritDoc}
-     */
-    @Override
-    public synchronized void reload() {
-        throw new IllegalStateException("Reload not supportet. Get new runtime repository from manager.");
     }
 
     /**

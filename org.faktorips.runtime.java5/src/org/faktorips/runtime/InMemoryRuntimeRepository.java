@@ -116,7 +116,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * Nothing to do for the in memory repository.
      */
-    public void reload() {
+    public void initialize() {
         // nothing to do
     }
 

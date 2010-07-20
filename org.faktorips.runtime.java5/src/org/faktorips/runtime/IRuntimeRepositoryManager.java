@@ -15,7 +15,19 @@ package org.faktorips.runtime;
 
 import java.util.List;
 
-
+/**
+ * The {@link IRuntimeRepositoryManager} is able to provide a {@link IRuntimeRepository}. The
+ * manager is used in scenarios where product data could change over time. In this case, the
+ * repository would throw exceptions because product data is out-dated. By calling the method
+ * {@link #getActualRuntimeRepository()} the client gets a new {@link IRuntimeRepository} that is
+ * able to work with the actual data.
+ * <p>
+ * If you use a set of referenced repositories you have to connect your
+ * {@link IRuntimeRepositoryManager}s instead of the repositories. That enables the manager to set
+ * all the necessary references after creating a new repository.
+ * 
+ * @author dirmeier
+ */
 public interface IRuntimeRepositoryManager {
 
     /**
@@ -46,8 +58,8 @@ public interface IRuntimeRepositoryManager {
      * Collect all referenced manager. This request all referenced managers from the direct
      * references managers recursively.
      * 
-     * @return A list of all {@link IRuntimeRepositoryManager} that are referenced
-     *         directly or indirectly
+     * @return A list of all {@link IRuntimeRepositoryManager} that are referenced directly or
+     *         indirectly
      */
     public List<IRuntimeRepositoryManager> getAllReferencedRepositoryManagers();
 

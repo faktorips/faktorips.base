@@ -265,8 +265,11 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
      */
     protected abstract IpsTestCaseBase createTestCase(TestCaseTocEntry tocEntry, IRuntimeRepository runtimeRepository);
 
-    public synchronized void reload() {
-        initCaches();
+    /**
+     * Initializes the runtime repository by loading the table of contents. This method have to be
+     * called from the constructor after all necessary data is set.
+     */
+    protected synchronized void initialize() {
         setTableOfContents(loadTableOfContents());
     }
 

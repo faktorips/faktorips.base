@@ -22,13 +22,23 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepositoryManager;
 
-
+/**
+ * 
+ * The {@link AbstractRuntimeRepositoryManager} manages the referenced
+ * {@link IRuntimeRepositoryManager}. It delegates the up to date check and the creation of new
+ * repositories to the subclass.
+ * 
+ * @author dirmeier
+ */
 public abstract class AbstractRuntimeRepositoryManager implements IRuntimeRepositoryManager {
 
     private volatile IRuntimeRepository actualRuntimeRepository;
     private List<IRuntimeRepositoryManager> managers = new CopyOnWriteArrayList<IRuntimeRepositoryManager>();
     private volatile List<IRuntimeRepositoryManager> allManagers;
 
+    /**
+     * Creates a new {@link AbstractRuntimeRepositoryManager}
+     */
     public AbstractRuntimeRepositoryManager() {
         super();
     }
@@ -43,8 +53,21 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
         return actualRuntimeRepository;
     }
 
+    /**
+     * This method checks whether the {@link IRuntimeRepository} is up to date or not. If this
+     * method returns false, a new repository have to be created
+     * 
+     * @param actualRuntimeRepository The actual runtime repository that have to be checked
+     * @return true if the repository is still up to date
+     */
     protected abstract boolean isRepositoryUpToDate(IRuntimeRepository actualRuntimeRepository);
 
+    /**
+     * Creates a new repository. This method have to create thre repository but do NOT have to
+     * connect the repository to the other referenced repositories.
+     * 
+     * @return A newly created {@link IRuntimeRepository}
+     */
     protected abstract IRuntimeRepository createNewRuntimeRepository();
 
     /**
@@ -81,9 +104,6 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
         return Collections.unmodifiableList(managers);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IRuntimeRepositoryManager> getAllReferencedRepositoryManagers() {
         List<IRuntimeRepositoryManager> result = allManagers;
         if (result == null) {

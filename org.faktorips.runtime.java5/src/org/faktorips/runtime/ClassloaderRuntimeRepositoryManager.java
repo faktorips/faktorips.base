@@ -14,13 +14,28 @@
 package org.faktorips.runtime;
 
 import org.faktorips.runtime.internal.AbstractRuntimeRepositoryManager;
+import org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepository;
 
+/**
+ * This is a {@link IRuntimeRepositoryManager} for the {@link ClassloaderRuntimeRepository}. You do
+ * not really need a {@link IRuntimeRepositoryManager} for {@link ClassloaderRuntimeRepository} and
+ * in fact this manager always return the same {@link IRuntimeRepository}.
+ * <p>
+ * Use this {@link IRuntimeRepositoryManager} if you think about changing the runtime repository to
+ * another e.g. {@link DetachedContentRuntimeRepository} that need to use a
+ * {@link IRuntimeRepositoryManager} later.
+ * 
+ * @author dirmeier
+ */
 public class ClassloaderRuntimeRepositoryManager extends AbstractRuntimeRepositoryManager {
 
     private final ClassLoader classLoader;
     private final String basePackage;
     private final String pathToToc;
 
+    /**
+     * The constructor needs all the information to create a {@link ClassloaderRuntimeRepository}
+     */
     public ClassloaderRuntimeRepositoryManager(ClassLoader classLoader, String basePackage, String pathToToc) {
         this.classLoader = classLoader;
         this.basePackage = basePackage;

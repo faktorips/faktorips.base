@@ -157,10 +157,6 @@ public class ClassloaderRuntimeRepositoryTest extends TestCase {
         assertEquals(0, list.size());
     }
 
-    public void testReload() {
-        repository.reload();
-    }
-
     public void testGetTableByClass() {
         RateTable table = (RateTable)repository.getTable(RateTable.class);
         assertNotNull(table);

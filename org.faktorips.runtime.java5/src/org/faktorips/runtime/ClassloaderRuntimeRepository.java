@@ -199,7 +199,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         } else {
             tocResourcePath = basePackage.replace('.', '/') + '/' + pathToToc;
         }
-        reload();
+        initialize();
     }
 
     /**
@@ -222,7 +222,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
             throw new NullPointerException();
         }
         tocResourcePath = tocResource;
-        reload();
+        initialize();
     }
 
     @Override

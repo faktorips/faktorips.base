@@ -335,14 +335,6 @@ public interface IRuntimeRepository {
     public IpsTestSuite getIpsTestSuite(String qNamePrefix, IRuntimeRepository runtimeRepository);
 
     /**
-     * Forces the reload of all data upon the next request. The method is typically invoked in a web
-     * application at the beginning of the request processing, so that changes to the repository
-     * contents are reloaded without the need to restart the application server. This is mainly used
-     * during development time.
-     */
-    public void reload();
-
-    /**
      * Returns <code>true</code> if the repository's content is modifiable. This feature is mainly
      * targeted for writing test cases that need to setup a repository with a test specific content
      * programatically. Returns <code>false</code> otherwise.
