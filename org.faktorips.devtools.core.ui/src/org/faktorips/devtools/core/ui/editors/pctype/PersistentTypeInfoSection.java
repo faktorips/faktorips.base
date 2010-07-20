@@ -108,12 +108,13 @@ public class PersistentTypeInfoSection extends IpsSection {
         toolkit.createLabel(detailComposite, "Persistent type"); //$NON-NLS-1$
         Combo persistentTypeCombo = toolkit.createCombo(detailComposite);
         setComboItems(persistentTypeCombo, PersistentType.class);
-        ComboField persistentTypeField = new EnumField(persistentTypeCombo, PersistentType.class);
+        ComboField persistentTypeField = new EnumField<PersistentType>(persistentTypeCombo, PersistentType.class);
 
         Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite, "Inheritance Strategy"); //$NON-NLS-1$
         Combo inheritanceStrategyCombo = toolkit.createCombo(detailComposite);
         setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
-        ComboField inheritanceStrategyField = new EnumField(inheritanceStrategyCombo, InheritanceStrategy.class);
+        ComboField inheritanceStrategyField = new EnumField<InheritanceStrategy>(inheritanceStrategyCombo,
+                InheritanceStrategy.class);
         persistentComposites.add(inheritanceStrateyLabel);
         persistentComposites.add(inheritanceStrategyCombo);
 
@@ -144,7 +145,8 @@ public class PersistentTypeInfoSection extends IpsSection {
         toolkit.createLabel(discriminatorDefComposite, "Datatype"); //$NON-NLS-1$
         Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
         setComboItems(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
-        ComboField descriminatorDatatypeField = new EnumField(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
+        ComboField descriminatorDatatypeField = new EnumField<DiscriminatorDatatype>(descriminatorDatatypeCombo,
+                DiscriminatorDatatype.class);
 
         toolkit.createLabel(discriminatorDefComposite, "Column Value"); //$NON-NLS-1$
         Text descriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
@@ -223,8 +225,8 @@ public class PersistentTypeInfoSection extends IpsSection {
         getSectionControl().setExpanded(expanded);
     }
 
-    private void setComboItems(Combo combo, Class<? extends Enum> class1) {
-        Enum<?>[] allEnumConstants = class1.getEnumConstants();
+    private <E extends Enum<E>> void setComboItems(Combo combo, Class<E> class1) {
+        Enum<E>[] allEnumConstants = class1.getEnumConstants();
         String[] allEnumValues = new String[allEnumConstants.length];
         for (int i = 0; i < allEnumConstants.length; i++) {
             allEnumValues[i] = allEnumConstants[i].toString();

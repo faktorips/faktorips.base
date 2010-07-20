@@ -172,7 +172,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private IntegerField scaleField;
 
-    private EnumField temporalMappingField;
+    private EnumField<DateTimeMapping> temporalMappingField;
 
     private Text sqlColumnDefinition;
 
@@ -788,7 +788,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createFormLabel(workArea, "Temporal type:"); //$NON-NLS-1$
         Combo temporalMappingCombo = uiToolkit.createCombo(workArea);
         setComboItemsForEnum(temporalMappingCombo, DateTimeMapping.class);
-        temporalMappingField = new EnumField(temporalMappingCombo, DateTimeMapping.class);
+        temporalMappingField = new EnumField<DateTimeMapping>(temporalMappingCombo, DateTimeMapping.class);
         bindingContext.bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
 

@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.widgets.Combo;
 
 /**
@@ -21,26 +24,30 @@ import org.eclipse.swt.widgets.Combo;
  * 
  * @author Roman Grutza
  */
-public class EnumField extends ComboField {
+public class EnumField<T extends Enum<T>> extends ComboField {
 
-    private Enum[] usedEnumValues;
+    private List<T> usedEnumValues;
+    private final Class<? extends T> javaEnumClass;
 
-    public EnumField(Combo combo, Class<? extends Enum> javaEnum) {
+    public EnumField(Combo combo, Class<? extends T> javaEnum) {
         super(combo);
+        this.javaEnumClass = javaEnum;
         String[] items = combo.getItems();
-        Enum[] allEnumConstants = javaEnum.getEnumConstants();
+        T[] allEnumConstants = javaEnum.getEnumConstants();
 
-        usedEnumValues = new Enum[items.length];
-        for (int i = 0; i < items.length; i++) {
-            usedEnumValues[i] = getEnumValue(allEnumConstants, items[i]);
-            if (usedEnumValues[i] == null) {
-                throw new RuntimeException("Not enum value for combo box item " + items[i]); //$NON-NLS-1$
+        usedEnumValues = new ArrayList<T>();
+        for (String item : items) {
+            T enumValue = getEnumValue(allEnumConstants, item);
+            if (enumValue == null) {
+                throw new RuntimeException("Not enum value for combo box item " + enumValue); //$NON-NLS-1$
+            } else {
+                usedEnumValues.add(enumValue);
             }
         }
     }
 
-    private Enum getEnumValue(Enum[] allEnumConstants, String name) {
-        for (Enum allEnumConstant : allEnumConstants) {
+    private T getEnumValue(T[] allEnumConstants, String name) {
+        for (T allEnumConstant : allEnumConstants) {
             if (allEnumConstant.toString().equals(name)) {
                 return allEnumConstant;
             }
@@ -48,12 +55,12 @@ public class EnumField extends ComboField {
         return null;
     }
 
-    public Enum getEnumValue() {
+    public T getEnumValue() {
         int index = getCombo().getSelectionIndex();
         if (index == -1) {
             return null;
         }
-        return usedEnumValues[index];
+        return usedEnumValues.get(index);
     }
 
     @Override
@@ -61,12 +68,14 @@ public class EnumField extends ComboField {
         return getEnumValue();
     }
 
-    public void setEnumValue(Enum newValue) {
+    public void setEnumValue(Enum<?> newValue) {
         getCombo().setText(newValue == null ? "" : newValue.toString()); //$NON-NLS-1$
     }
 
     @Override
     public void setValue(Object newValue) {
-        setEnumValue((Enum)newValue);
+        if (javaEnumClass.isAssignableFrom(newValue.getClass())) {
+            setEnumValue(javaEnumClass.cast(newValue));
+        }
     }
 }
