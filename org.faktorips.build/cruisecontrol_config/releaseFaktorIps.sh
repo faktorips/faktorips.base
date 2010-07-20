@@ -272,6 +272,7 @@ parseArgs()
 	  -createBranch)  DO_CREATE_BRANCH=true ;;
 	  -branchRootTag) BRANCH_ROOT_TAG=$2 ; shift ;;
 	  -forceBuild)    FORCE_BUILD=true ;;
+	  -notVersion3    MIN_VERSION_3=false ;;
 	  -?)             showUsageAndExit ;;
 	  --?)            showUsageAndExit ;;
 	  -h)             showUsageAndExit ;;
