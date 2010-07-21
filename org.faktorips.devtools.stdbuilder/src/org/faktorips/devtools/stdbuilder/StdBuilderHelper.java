@@ -75,58 +75,6 @@ public class StdBuilderHelper {
         return javaClasses;
     }
 
-    // public final static String transformDatatypeToJavaClassName(
-    // String datatypeName,
-    // boolean resolveToPublishedInterface,
-    // IIpsProject ipsProject,
-    // GenPolicyCmptType genPolicyCmptType,
-    // GenProductCmptType genProductCmptType) throws CoreException {
-    //        
-    // Datatype datatype = ipsProject.findDatatype(datatypeName);
-    // if (datatype.isVoid()) {
-    // return "void";
-    // }
-    // if (datatype instanceof ValueDatatype) {
-    // DatatypeHelper helper = ipsProject.findDatatypeHelper(datatypeName);
-    // if (helper!=null) {
-    // return helper.getJavaClassName();
-    // }
-    // throw new RuntimeException("Can't get datatype helper for datatype " + datatypeName);
-    // }
-    // if (datatype instanceof PolicyCmptType) {
-    // if (resolveToPublishedInterface) {
-    // return
-    // genPolicyCmptType.getQualifiedName(true)policyCmptImplBuilder.getInterfaceBuilder().
-    // getQualifiedClassName((IIpsObject)datatype);
-    // }
-    // return policyCmptImplBuilder.getQualifiedClassName((IpsObject)datatype);
-    // } else if(datatype instanceof ProductCmptType){
-    // if (resolveToPublishedInterface) {
-    // return
-    //productCmptGenImplClassBuilder.getInterfaceBuilder().getQualifiedClassName((IpsObject)datatype
-    // );
-    // }
-    // return productCmptGenImplClassBuilder.getQualifiedClassName((IpsObject)datatype);
-    // }
-    // throw new RuntimeException("Can't get Java class name for datatype " + datatypeName);
-    // }
-    //    
-    // public final static String[] transformParameterTypesToJavaClassNames(
-    // IParameter[] params,
-    // boolean resolveToPublishedInterface,
-    // IIpsProject ipsProject,
-    // PolicyCmptImplClassBuilder policyCmptImplBuilder,
-    // ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder) throws CoreException {
-    //        
-    // String[] javaClasses = new String[params.length];
-    // for (int i=0; i<params.length; i++) {
-    // javaClasses[i] = transformDatatypeToJavaClassName(params[i].getDatatype(),
-    // resolveToPublishedInterface, ipsProject, policyCmptImplBuilder,
-    // productCmptGenImplClassBuilder);
-    // }
-    // return javaClasses;
-    // }
-
     /**
      * This method is supposed to be used for the generation of methods which deal with the range or
      * enum value set for a datatype. Since for primitive datatypes the range and enum value set
