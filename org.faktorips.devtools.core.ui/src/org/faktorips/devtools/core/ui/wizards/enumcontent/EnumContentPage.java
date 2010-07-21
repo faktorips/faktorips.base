@@ -367,7 +367,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
      */
     @Override
     protected void setIpsPackageFragment(IIpsPackageFragment pack) {
-
+        // nothing to do
     }
 
 }
