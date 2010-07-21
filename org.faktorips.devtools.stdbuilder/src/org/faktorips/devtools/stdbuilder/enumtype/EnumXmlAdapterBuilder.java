@@ -215,7 +215,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-
+        // nothing to do
     }
 
     @Override
