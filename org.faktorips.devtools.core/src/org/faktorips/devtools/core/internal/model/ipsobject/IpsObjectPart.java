@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.w3c.dom.Element;
@@ -124,8 +125,18 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
 
     @Override
+    public boolean isValid(IIpsProject ipsProject) throws CoreException {
+        return getValidationResultSeverity(ipsProject) != Message.ERROR;
+    }
+
+    @Override
     public int getValidationResultSeverity() throws CoreException {
         return validate(getIpsProject()).getSeverity();
+    }
+
+    @Override
+    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+        return validate(ipsProject).getSeverity();
     }
 
     @Override

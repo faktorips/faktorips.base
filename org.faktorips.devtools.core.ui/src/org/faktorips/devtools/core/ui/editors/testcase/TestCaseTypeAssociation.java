@@ -160,6 +160,17 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     }
 
     @Override
+    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public boolean isValid(IIpsProject ipsProject) throws CoreException {
+        return false;
+    }
+
+    @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         MessageList messageList = new MessageList();
         validate(messageList, ipsProject);

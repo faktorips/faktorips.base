@@ -160,8 +160,18 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
+    public boolean isValid(IIpsProject ipsProject) throws CoreException {
+        return getValidationResultSeverity(ipsProject) != Message.ERROR;
+    }
+
+    @Override
     public int getValidationResultSeverity() throws CoreException {
         return validate(getIpsProject()).getSeverity();
+    }
+
+    @Override
+    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+        return validate(ipsProject).getSeverity();
     }
 
     @Override

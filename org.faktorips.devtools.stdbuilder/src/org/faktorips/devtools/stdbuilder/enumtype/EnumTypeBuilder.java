@@ -215,7 +215,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         IEnumAttribute identifierAttribute = getEnumType().findIdentiferAttribute(getIpsProject());
-        if (identifierAttribute == null || !identifierAttribute.isValid()) {
+        if (identifierAttribute == null || !identifierAttribute.isValid(getIpsProject())) {
             return;
         }
         if (getEnumType().hasSuperEnumType() && identifierAttribute.getEnumType() != getEnumType()) {
@@ -270,7 +270,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             for (int i = 0; i < enumValues.size(); i++) {
                 IEnumValue currentEnumValue = enumValues.get(i);
                 // Generate only for valid enum values
-                if (currentEnumValue.isValid()) {
+                if (currentEnumValue.isValid(getIpsProject())) {
                     List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
                     IEnumAttributeValue currentLiteralNameEnumAttributeValue = currentEnumAttributeValues.get(enumType
                             .getIndexOfEnumAttribute(literalNameAttribute));
@@ -548,7 +548,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             String attributeName = currentEnumAttribute.getName();
             String codeName = getMemberVarName(attributeName);
 
-            if (currentEnumAttribute.isValid()) {
+            if (currentEnumAttribute.isValid(getIpsProject())) {
                 /*
                  * If the generation artifact is a class and the attribute is inherited do not
                  * generate source code for this attribute because it is also inherited in the
@@ -602,10 +602,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
 
         IEnumType enumType = getEnumType();
+        if (!enumType.isValid(getIpsProject())) {
+            return; // can't get datatypes for inherited attributes, if supertype is missing
+        }
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         List<IEnumAttribute> validEnumAttributes = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-            if (currentEnumAttribute.isValid()) {
+            if (currentEnumAttribute.isValid(getIpsProject())) {
                 validEnumAttributes.add(currentEnumAttribute);
             }
         }
@@ -646,7 +649,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
 
         IEnumType enumType = getEnumType();
-        if (enumType.isContainingValues() || enumType.isAbstract()) {
+        if (!enumType.isValid(getIpsProject()) || enumType.isContainingValues() || enumType.isAbstract()) {
             return;
         }
 
@@ -654,7 +657,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
         int i = 0;
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(false)) {
-            if (currentEnumAttribute.isValid()) {
+            if (currentEnumAttribute.isValid(getIpsProject())) {
                 String currentName = getJavaNamingConvention().getMemberVarName(currentEnumAttribute.getName());
                 body.append("this."); //$NON-NLS-1$
                 body.append(currentName);
@@ -706,7 +709,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Creates the attribute initialization code for the constructor. */
     private void createAttributeInitialization(JavaCodeFragment constructorMethodBody) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies(false)) {
-            if (currentEnumAttribute.isValid()) {
+            if (currentEnumAttribute.isValid(getIpsProject())) {
                 String currentName = getJavaNamingConvention().getMemberVarName(currentEnumAttribute.getName());
                 constructorMethodBody.append("this."); //$NON-NLS-1$
                 constructorMethodBody.append(currentName);
@@ -737,7 +740,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         // Create getters for each attribute.
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-            if (currentEnumAttribute.isValid()) {
+            if (currentEnumAttribute.isValid(getIpsProject())) {
                 DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
                         .findDatatype(ipsProject));
                 if (datatypeHelper == null) {
@@ -818,7 +821,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         for (IEnumAttribute currentEnumAttribute : uniqueAttributes) {
-            if (currentEnumAttribute.isValid()) {
+            if (currentEnumAttribute.isValid(getIpsProject())) {
                 if (EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, getIpsProject())) {
 
                     JavaCodeFragment body = new JavaCodeFragment();
@@ -834,7 +837,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
 
                     for (IEnumValue currentEnumValue : enumValues) {
-                        if (!(currentEnumValue.isValid())) {
+                        if (!(currentEnumValue.isValid(getIpsProject()))) {
                             continue;
                         }
 
@@ -884,7 +887,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-            if (currentEnumAttribute.isValid()) {
+            if (currentEnumAttribute.isValid(getIpsProject())) {
                 if (EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, getIpsProject())) {
                     JavaCodeFragment methodBody = new JavaCodeFragment();
                     methodBody.append("return "); //$NON-NLS-1$
@@ -937,7 +940,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         List<IEnumValue> enumValues = enumType.getEnumValues();
         for (int i = 0; i < enumValues.size(); i++) {
             IEnumValue currentEnumValue = enumValues.get(i);
-            if (!(currentEnumValue.isValid())) {
+            if (!(currentEnumValue.isValid(getIpsProject()))) {
                 continue;
             }
 
@@ -1030,7 +1033,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         IEnumAttribute idAttr = getEnumType().findIdentiferAttribute(getIpsProject());
-        if (idAttr == null || !idAttr.isValid()) {
+        if (idAttr == null || !idAttr.isValid(getIpsProject())) {
             return;
         }
         JavaCodeFragment body = new JavaCodeFragment();
@@ -1061,7 +1064,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         IEnumAttribute idAttr = getEnumType().findIdentiferAttribute(getIpsProject());
-        if (idAttr == null || !idAttr.isValid()) {
+        if (idAttr == null || !idAttr.isValid(getIpsProject())) {
             return;
         }
         JavaCodeFragment body = new JavaCodeFragment();
@@ -1096,7 +1099,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         IEnumAttribute idAttribute = enumType.findIdentiferAttribute(getIpsProject());
-        if (idAttribute == null || !(idAttribute.isValid())) {
+        if (idAttribute == null || !(idAttribute.isValid(getIpsProject()))) {
             return;
         }
 
@@ -1107,7 +1110,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(": \" + "); //$NON-NLS-1$
         methodBody.append(getJavaNamingConvention().getMemberVarName(idAttribute.getName()));
         IEnumAttribute displayName = enumType.findUsedAsNameInFaktorIpsUiAttribute(getIpsProject());
-        if (displayName == null || !(displayName.isValid())) {
+        if (displayName == null || !(displayName.isValid(getIpsProject()))) {
             methodBody.append(";"); //$NON-NLS-1$
         } else {
             methodBody.append(" + '(' + "); //$NON-NLS-1$

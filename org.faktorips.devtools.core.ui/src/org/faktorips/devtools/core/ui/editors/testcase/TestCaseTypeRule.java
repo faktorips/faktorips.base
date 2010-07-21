@@ -76,6 +76,16 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
     }
 
     @Override
+    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+        return 0;
+    }
+
+    @Override
+    public boolean isValid(IIpsProject ipsProject) throws CoreException {
+        return false;
+    }
+
+    @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         MessageList messageList = new MessageList();
         validate(messageList, ipsProject);

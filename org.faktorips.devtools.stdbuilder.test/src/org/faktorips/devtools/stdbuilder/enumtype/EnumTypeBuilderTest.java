@@ -78,7 +78,9 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         javaEnum = getGeneratedJavaType(enumType, false, false, ENUM_TYPE_NAME);
     }
 
-    public void testBuildEnumWithMissingSupertype() throws CoreException {
+    public void testBuildEnumTypeWithMissingSupertype() throws CoreException {
+        idAttribute.setDatatype("");
+        nameAttribute.setDatatype("");
         enumType.setSuperEnumType("MissingType");
         enumType.getIpsSrcFile().save(true, null);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
