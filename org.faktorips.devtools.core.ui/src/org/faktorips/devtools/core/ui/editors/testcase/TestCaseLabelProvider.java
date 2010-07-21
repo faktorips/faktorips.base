@@ -136,13 +136,13 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         }
         if (dummyAssociation.getParentTestPolicyCmpt() == null) {
             // root node
-            return getImageForRootPolicyCmptTypeParamNode(typeParam);
+            return getImageForRootPolicyCmptTypeParamNode();
         } else {
             return IpsUIPlugin.getImageHandling().getImageDescriptor(typeParam);
         }
     }
 
-    public ImageDescriptor getImageForRootPolicyCmptTypeParamNode(ITestPolicyCmptTypeParameter typeParam) {
+    public ImageDescriptor getImageForRootPolicyCmptTypeParamNode() {
         return IpsUIPlugin.getImageHandling().createImageDescriptor("TestParameterRootObject.gif"); //$NON-NLS-1$
     }
 
