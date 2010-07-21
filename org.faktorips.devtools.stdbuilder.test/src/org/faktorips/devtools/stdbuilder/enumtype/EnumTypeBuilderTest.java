@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.enumtype;
 
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
@@ -54,6 +56,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         IEnumAttribute superEnumAttribute = superEnumType.newEnumAttribute();
         superEnumAttribute.setName("superAttribute");
         superEnumAttribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        superEnumType.getIpsSrcFile().save(true, null);
 
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
         enumType.setAbstract(true);
@@ -73,6 +76,12 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         inheritedAttribute.setInherited(true);
 
         javaEnum = getGeneratedJavaType(enumType, false, false, ENUM_TYPE_NAME);
+    }
+
+    public void testBuildEnumWithMissingSupertype() throws CoreException {
+        enumType.setSuperEnumType("MissingType");
+        enumType.getIpsSrcFile().save(true, null);
+        ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
     public void testGetGeneratedJavaElementsForType() {

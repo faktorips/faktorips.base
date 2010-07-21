@@ -559,9 +559,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     IIpsProject ipsProject = getIpsProject();
                     DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
                             .findDatatype(ipsProject));
-                    attributeBuilder.javaDoc(currentEnumAttribute.getDescription(), ANNOTATION_GENERATED);
-                    attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);
-                    attributeBuilder.appendln(' ');
+                    if (datatypeHelper != null) {
+                        // can happen, if attribute is inherited from supertype, but the supertype
+                        // can't be found
+                        attributeBuilder.javaDoc(currentEnumAttribute.getDescription(), ANNOTATION_GENERATED);
+                        attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);
+                        attributeBuilder.appendln(' ');
+                    }
                 }
             }
         }
@@ -734,6 +738,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         // Create getters for each attribute.
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             if (currentEnumAttribute.isValid()) {
+                DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
+                        .findDatatype(ipsProject));
+                if (datatypeHelper == null) {
+                    // Can happen, if attribute is inherited, but supertype can't be found.
+                    continue;
+                }
                 String attributeName = currentEnumAttribute.getName();
                 String description = currentEnumAttribute.getDescription();
                 String methodName = getMethodNameGetter(currentEnumAttribute);
@@ -743,8 +753,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     if (!(currentEnumAttribute.isInherited())) {
                         appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute, //$NON-NLS-1$
                                 methodBuilder);
-                        DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
-                                .findDatatype(ipsProject));
                         methodBuilder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, null,
                                 null);
                         methodBuilder.appendln(';');
@@ -762,8 +770,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         methodBody.append(getMemberVarName(attributeName));
                         methodBody.append(';');
 
-                        DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
-                                .findDatatype(ipsProject));
                         methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, null,
                                 null);
                         methodBuilder.append(methodBody);
