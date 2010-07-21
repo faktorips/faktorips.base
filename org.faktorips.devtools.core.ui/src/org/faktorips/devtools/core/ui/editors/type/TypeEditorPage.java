@@ -80,12 +80,16 @@ public abstract class TypeEditorPage extends IpsObjectEditorPage {
      * The creation of the sections of this page should go here, assuming that all sections that are
      * to display in the editor are on one page.
      */
+    // The method name is wrong as all pages are derived from this class
+    // Please fix if you code a major issue
     protected abstract void createContentForSingleStructurePage(Composite parentContainer, UIToolkit toolkit);
 
     /**
      * The creation of the sections of this page should go here, assuming that all sections that are
      * to display in the editor are distributed over two pages.
      */
+    // The method name is wrong as all pages are derived from this class
+    // Please fix if you code a major issue
     protected abstract void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit);
 
 }

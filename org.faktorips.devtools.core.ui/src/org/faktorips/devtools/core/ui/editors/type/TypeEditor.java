@@ -45,12 +45,16 @@ public abstract class TypeEditor extends IpsObjectEditor {
      * This method is called when according to the preference settings all sections are to display
      * on one page.
      */
+    // The method name is wrong: only structure and behaviour page are meant
+    // Please fix if you add another page to the type editor
     protected abstract void addAllInOneSinglePage() throws PartInitException;
 
     /**
      * This method is called when according to the preference settings the sections are to display
      * on two pages.
      */
+    // The method name is wrong: only structure and behaviour page are meant
+    // Please fix if you add another page to the type editor
     protected abstract void addSplittedInMorePages() throws PartInitException;
 
     /**
