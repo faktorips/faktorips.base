@@ -17,7 +17,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Modifier;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaGeneratiorHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -192,7 +191,7 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
      * }
      * note that this method will only be created if 
      * a) createPropertyChangeListenerMethods=true or
-     * b) parentModelObjectNames.length > 0
+     * b) parentModelObjectNames.length &gt; 0
      * 
      * </pre>
      */
@@ -292,14 +291,6 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
         builder.append(" = new ");
         builder.appendClassName(IpsPropertyChangeSupport.class);
         builder.appendln("(this);");
-    }
-
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    protected String generate() throws CoreException {
-        return null; // nothing to do as we don't build our own classes.
     }
 
     /**

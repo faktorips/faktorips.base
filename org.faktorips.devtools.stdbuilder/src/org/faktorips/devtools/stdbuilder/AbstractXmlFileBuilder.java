@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -117,8 +116,6 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns true if the provided IpsObject is of the same type as the IpsObjectType this builder
      * is initialised with.
-     * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#isBuilderFor(IIpsObject)
      */
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {

@@ -64,11 +64,10 @@ public interface IChangeListenerSupportBuilder {
      * change listeners. Here filtering and propagation of events can happen.
      * 
      * @param methodBuilder the builder used for writing the code.
-     * @param String[] parentObjectFieldNames the field names of all parent objects (used for
-     *            propagation).
-     * @param createPropertyChangeListenerMethods <code>true</code> if the add-/remove- and
-     *            hasListener Method should be created or not. These methods should only be
-     *            generated if the current type has no supertype, means this type is the supertype
+     * @param parentObjectFieldNames the field names of all parent objects (used for propagation).
+     * @param generateParentNotification <code>true</code> if the add-/remove- and hasListener
+     *            Method should be created or not. These methods should only be generated if the
+     *            current type has no supertype, means this type is the supertype
      */
     public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder,
             String[] parentObjectFieldNames,

@@ -96,13 +96,15 @@ public class StdBuilderHelper {
     // if (datatype instanceof PolicyCmptType) {
     // if (resolveToPublishedInterface) {
     // return
-    // genPolicyCmptType.getQualifiedName(true)policyCmptImplBuilder.getInterfaceBuilder().getQualifiedClassName((IIpsObject)datatype);
+    // genPolicyCmptType.getQualifiedName(true)policyCmptImplBuilder.getInterfaceBuilder().
+    // getQualifiedClassName((IIpsObject)datatype);
     // }
     // return policyCmptImplBuilder.getQualifiedClassName((IpsObject)datatype);
     // } else if(datatype instanceof ProductCmptType){
     // if (resolveToPublishedInterface) {
     // return
-    // productCmptGenImplClassBuilder.getInterfaceBuilder().getQualifiedClassName((IpsObject)datatype);
+    //productCmptGenImplClassBuilder.getInterfaceBuilder().getQualifiedClassName((IpsObject)datatype
+    // );
     // }
     // return productCmptGenImplClassBuilder.getQualifiedClassName((IpsObject)datatype);
     // }
@@ -141,6 +143,7 @@ public class StdBuilderHelper {
     }
 
     private StdBuilderHelper() {
+        // prohibit instantiation
     }
 
 }
