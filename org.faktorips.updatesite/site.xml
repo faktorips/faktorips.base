@@ -3,6 +3,10 @@
 <description url="http://update.faktorzehn.org/faktorips">
       FaktorIPS update site
    </description>
+<feature url="features/org.faktorips.m2eclipse.feature_1.0.0.rfinal.jar" id="org.faktorips.m2eclipse.feature" version="1.0.0.rfinal">
+<category name="Faktor-IPS M2Eclipse Extension"/>
+</feature>
+<category-def name="Faktor-IPS M2Eclipse Extension" label="Faktor-IPS M2Eclipse Extension"/>
 <feature url="features/org.faktorips.feature_2.0.0.rfinal.jar" id="org.faktorips.feature" version="2.0.0.rfinal">
 <category name="Faktor-IPS 2.0"/>
 </feature>
