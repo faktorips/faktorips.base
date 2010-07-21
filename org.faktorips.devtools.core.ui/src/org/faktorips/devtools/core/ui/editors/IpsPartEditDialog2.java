@@ -130,9 +130,16 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         Control control = super.createContents(parent);
         bindingContext.updateUI();
         setTitle(buildTitle());
-        updateMessageArea();
-
+        // updateMessageArea should be called after the size of the dialog has been calculated -->
+        // @see method create() (MTB#142)
         return control;
+    }
+
+    @Override
+    public void create() {
+        super.create();
+        // updateMessageArea have to be called after the size of the dialog is set. (MTB#142)
+        updateMessageArea();
     }
 
     /**
@@ -220,9 +227,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
                     setMessage(msg.getText(), IMessageProvider.INFORMATION);
                     return;
                 }
-            }
-
-            if (part.getDescription() != null && !StringUtils.isEmpty(part.getDescription().trim())) {
+            } else if (part.getDescription() != null && !StringUtils.isEmpty(part.getDescription().trim())) {
                 setMessage(part.getDescription(), IMessageProvider.INFORMATION);
             } else {
                 setMessage(null);
@@ -243,8 +248,8 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     }
 
     // TODO: code duplication in PersistentTypeInfoSection
-    protected void setComboItemsForEnum(Combo combo, Class<? extends Enum> clazz) {
-        Enum[] allEnumConstants = clazz.getEnumConstants();
+    protected <E extends Enum<E>> void setComboItemsForEnum(Combo combo, Class<E> clazz) {
+        Enum<E>[] allEnumConstants = clazz.getEnumConstants();
         String[] allEnumValues = new String[allEnumConstants.length];
         for (int i = 0; i < allEnumConstants.length; i++) {
             allEnumValues[i] = allEnumConstants[i].toString();
