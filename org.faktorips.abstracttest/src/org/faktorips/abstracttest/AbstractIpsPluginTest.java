@@ -322,8 +322,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 .setMinRequiredVersionNumber(
                         "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ipsProject.setProperties(props);
-
-        ipsProject.setProperties(props);
     }
 
     private void addSystemLibraries(IJavaProject javaProject) throws JavaModelException {
