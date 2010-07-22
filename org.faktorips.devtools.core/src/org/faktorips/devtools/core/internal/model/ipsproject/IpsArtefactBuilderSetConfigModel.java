@@ -109,9 +109,9 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         ArgumentCheck.notNull(propertyName);
         ArgumentCheck.notNull(value);
         properties.put(propertyName, value);
-        // if (description != null) {
-        // propertiesDescription.put(propertyName, description);
-        // }
+        if (description != null) {
+            propertiesDescription.put(propertyName, description);
+        }
     }
 
     @Override
