@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -870,7 +871,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                         + System.identityHashCode(builder) + ", Project name: " //$NON-NLS-1$
                         + (ipsProject != null ? ipsProject.getName() : null));
             }
-            builder.beforeBuildProcess(ipsProject, buildKind);
+            if (builder != null) {
+                builder.beforeBuildProcess(ipsProject, buildKind);
+            } else {
+                throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                        "Builder is assert to be not null")); //$NON-NLS-1$
+            }
         }
 
         @Override
@@ -898,7 +904,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                         + System.identityHashCode(builder) + ", Project name: " //$NON-NLS-1$
                         + (ipsProject != null ? ipsProject.getName() : null));
             }
-            builder.afterBuildProcess(ipsProject, buildKind);
+            if (builder != null) {
+                builder.afterBuildProcess(ipsProject, buildKind);
+            } else {
+                throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                        "Builder is assert to be not null")); //$NON-NLS-1$
+            }
         }
 
         @Override
@@ -929,9 +940,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 } finally {
                     builder.afterBuild(ipsSrcFile);
                     if (TRACE_BUILDER_TRACE) {
-                        System.out
-                                .println(builder.getName()
-                                        + ": Finished building " + ipsSrcFile + ". Duration: " + (System.currentTimeMillis() - begin)); //$NON-NLS-1$ //$NON-NLS-2$
+                        System.out.println(builder.getName() + ": Finished building " + ipsSrcFile + ". Duration: " //$NON-NLS-1$ //$NON-NLS-2$
+                                + (System.currentTimeMillis() - begin));
                     }
                 }
             }
