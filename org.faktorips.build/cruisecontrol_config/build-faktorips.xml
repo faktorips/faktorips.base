@@ -491,10 +491,15 @@
     	<property name="pluginbuilder.features.ormext" value="org.faktorips.ormext.feature,org.faktorips.ormext.feature.nls1,org.faktorips.ormext.feature.source"/>
 
 
-		<property name="isMinVersion3" value="true" />
-		<condition property="isNotVersion3" value="true" else="false">
+		<condition property="isMinVersion3" value="true" >
 			<not>
-		        <equals arg1="${isMinVersion3}" arg2="true"/>
+				<!-- by checking NOT FALSE we get isMinVersion3=true if minVersion3 is not set -->
+	        	<equals arg1="${minVersion3}" arg2="false"/>
+			</not>
+		</condition>
+		<condition property="isNotVersion3" value="true">
+			<not>
+		        <equals arg1="${minVersion3}" arg2="true"/>
 			</not>
 		</condition>
 		

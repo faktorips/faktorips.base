@@ -833,8 +833,9 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -DdownloadDir=$DOWNLOAD_DIR \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
  -DproductProject=$BUILDPRODUCT \
- -DnoBranch=$NOBRANCH
- -Dcvsroot=$CVS_ROOT
+ -DnoBranch=$NOBRANCH \
+ -Dcvsroot=$CVS_ROOT \
+ -DminVersion3=$MIN_VERSION_3
  "
 echo $EXEC
 eval $EXEC
