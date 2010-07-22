@@ -81,7 +81,7 @@
         <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
-    <target name="runtime.groovy" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.groovy' project">
+    <target name="runtime.groovy" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.groovy' project" if="isMinVersion3">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.groovy"/>
         <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
@@ -92,7 +92,7 @@
         <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
-    <target name="runtime.productdataprovider.ejbclient" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.productdataprovider.ejbclient' project">
+    <target name="runtime.productdataprovider.ejbclient" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.productdataprovider.ejbclient' project" if="isMinVersion3">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.productdataprovider.ejbclient"/>
         <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
@@ -103,7 +103,7 @@
         <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
-    <target name="runtime.productdataservice" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.productdataservice' project">
+    <target name="runtime.productdataservice" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.productdataservice' project" if="isMinVersion3">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.productdataservice"/>
         <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
@@ -114,7 +114,7 @@
         <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 
-    <target name="runtime.productdataservice.common" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.productdataservice.common' project">
+    <target name="runtime.productdataservice.common" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.productdataservice.common' project" if="isMinVersion3">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.productdataservice.common"/>
         <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
