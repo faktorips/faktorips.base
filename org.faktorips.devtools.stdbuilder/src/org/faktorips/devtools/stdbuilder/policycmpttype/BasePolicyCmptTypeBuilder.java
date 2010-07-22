@@ -49,9 +49,7 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
-    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet)
-            throws CoreException {
-
+    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) {
         super(builderSet, kindId, stringsSet);
     }
 
