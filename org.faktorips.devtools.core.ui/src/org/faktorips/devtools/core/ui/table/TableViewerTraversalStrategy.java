@@ -95,9 +95,14 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
         if (isAtNewColumn()) {
             fireApplyEditorValue();
             if (isAtNewRow()) {
+                // in gtk/linux appending a new row resetting the selected column to -1
+                // so we safe the currently selected column
+                int currentRow = getCurrentRow();
                 appendTableRow();
+                tableViewer.getTable().select(currentRow);
             }
             editCell(getNextRow(), getNextColumn());
+            return;
         }
         editCell(getCurrentRow(), getNextColumn());
     }
