@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -477,7 +477,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * public void setCoverage(ICoverage newObject);
      * </pre>
      */
-    protected void generateMethodSetObjectInterface(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodSetObjectInterface(JavaCodeFragmentBuilder methodsBuilder) {
         appendLocalizedJavaDoc("METHOD_SET_OBJECT", association.getTargetRoleSingular(), methodsBuilder);
         generateSignatureSetObject(methodsBuilder);
         methodsBuilder.appendln(";");
@@ -545,20 +545,6 @@ public class GenAssociationTo1 extends GenAssociation {
             methodsBuilder.appendln(");");
         }
         methodsBuilder.appendln("}");
-        // TODO 2.5 - code - compare
-        // methodsBuilder.append("if (").append(field).appendln("!=null) {");
-        // methodsBuilder.append(paramName).append(".").append(field).append(" = (");
-        // methodsBuilder.appendClassName(targetTypeQName);
-        // methodsBuilder.append(")").append(field).append(".").append(PolicyCmptImplClassBuilder.METHOD_NEW_COPY)
-        // //
-        // .append("(").append(copyMapName).appendln(");");
-        // if (targetType.isDependantType()) {
-        // methodsBuilder.append(paramName).append(".").append(field).append(".").append(MethodNames.SET_PARENT)
-        // .append("(").append(paramName).appendln(");");
-        // }
-        // methodsBuilder.append(copyMapName).append(".put(").append(field).append(", ").append(paramName).append('.')
-        // .append(field).appendln(");");
-        // methodsBuilder.appendln("}");
     }
 
     @Override
@@ -671,14 +657,14 @@ public class GenAssociationTo1 extends GenAssociation {
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsElement ipsElement) {
-
+        // may be overridden
     }
 
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsElement ipsElement) {
-
+        // may be overridden
     }
 
     /**

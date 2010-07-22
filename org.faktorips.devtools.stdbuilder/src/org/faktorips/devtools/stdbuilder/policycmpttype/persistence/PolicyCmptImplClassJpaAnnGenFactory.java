@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsStatus;

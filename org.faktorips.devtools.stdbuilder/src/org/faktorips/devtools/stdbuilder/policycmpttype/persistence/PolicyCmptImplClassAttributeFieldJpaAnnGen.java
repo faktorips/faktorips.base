@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,8 +27,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 
 /**

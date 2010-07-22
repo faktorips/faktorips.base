@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -52,11 +52,14 @@ import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
+import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
+import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
+import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;

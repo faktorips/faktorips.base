@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.stdbuilder.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
