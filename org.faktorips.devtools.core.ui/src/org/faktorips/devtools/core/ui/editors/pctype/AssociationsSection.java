@@ -136,7 +136,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
 
         @Override
         protected IStructuredContentProvider createContentProvider() {
-            return new RelationContentProvider();
+            return new AssociationContentProvider();
         }
 
         @Override
@@ -222,7 +222,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             openAction.run();
         }
 
-        private class RelationContentProvider implements IStructuredContentProvider {
+        private class AssociationContentProvider implements IStructuredContentProvider {
             @Override
             public Object[] getElements(Object inputElement) {
                 return getPcType().getPolicyCmptTypeAssociations();
