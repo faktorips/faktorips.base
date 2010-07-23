@@ -2107,25 +2107,12 @@ public class TestCaseTypeSection extends IpsSection {
             selectedTestParamIndexes = new int[] { childs.indexOf(testParameter) };
             parent.moveTestPolicyCmptTypeChild(selectedTestParamIndexes, up);
         }
-        refreshTree();
-        redrawDetails(testParameter);
-    }
-
-    /**
-     * Redraw the details for the current selection
-     */
-    private void redrawDetails(ITestParameter testParameter) {
-        // redraw details for the new selected object
-        Object selObject = getSelectedObjectInTree();
-        if (!(selObject instanceof ITestParameter)) {
-            return;
+        if (showAll) {
+            // recreate and select element after moving
+            showAllClicked(); // off
+            showAllClicked(); // and on again
+            postSelectedTestParameterInTree(testParameter);
         }
-        currSelectedDetailObject = (ITestParameter)selObject;
-        createDetailsArea((ITestParameter)currSelectedDetailObject);
-        treeViewer.setSelection(new StructuredSelection(testParameter));
-
-        postRefreshAll();
-        postSelectedTestParameterInTree(testParameter);
     }
 
     /**
@@ -2323,6 +2310,7 @@ public class TestCaseTypeSection extends IpsSection {
                 }
                 try {
                     setFormRedraw(false);
+                    refreshTree();
                     refreshAttributeTable();
                     refreshSectionTitles();
                     // refresh attribute edit fields
