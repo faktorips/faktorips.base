@@ -618,8 +618,12 @@ public class UIToolkit {
     }
 
     public <E extends Enum<E>> Combo createCombo(Composite parent, Class<E> enumType) {
-        Combo newCombo = createCombo(parent);
         E[] values = enumType.getEnumConstants();
+        return createCombo(parent, values);
+    }
+
+    public <E extends Enum<E>> Combo createCombo(Composite parent, E[] values) {
+        Combo newCombo = createCombo(parent);
         String[] names = new String[values.length];
         for (int i = 0; i < values.length; i++) {
             names[i] = values[i].toString();

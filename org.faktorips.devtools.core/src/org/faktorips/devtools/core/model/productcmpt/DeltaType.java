@@ -13,55 +13,27 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-
 /**
  * Type of a delta.
  * 
  * @author Jan Ortmann
  */
-public class DeltaType extends DefaultEnumValue {
+public enum DeltaType {
 
-    public final static DeltaType MISSING_PROPERTY_VALUE;
-    public final static DeltaType VALUE_WITHOUT_PROPERTY;
-    public final static DeltaType VALUE_SET_MISMATCH;
-    public final static DeltaType PROPERTY_TYPE_MISMATCH;
-    public final static DeltaType LINK_WITHOUT_ASSOCIATION;
+    MISSING_PROPERTY_VALUE(Messages.DeltaType_missingValue),
+    VALUE_WITHOUT_PROPERTY(Messages.DeltaType_propertiesNotFoundInTheModel),
+    VALUE_SET_MISMATCH(Messages.DeltaType_ValueSetMismatches),
+    PROPERTY_TYPE_MISMATCH(Messages.DeltaType_propertiesWithTypeMismatch),
+    LINK_WITHOUT_ASSOCIATION(Messages.DeltaType_LinksNotFoundInTheModel);
 
-    public final static DeltaType[] ALL_TYPES;
-
-    private final static DefaultEnumType enumType;
-
-    static {
-        enumType = new DefaultEnumType("DeltaEntryType", DeltaType.class); //$NON-NLS-1$
-        MISSING_PROPERTY_VALUE = new DeltaType(enumType,
-                "MissingPropertyValue", Messages.DeltaType_missingValue, "DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
-        VALUE_WITHOUT_PROPERTY = new DeltaType(
-                enumType,
-                "ValueWithoutProperty", Messages.DeltaType_propertiesNotFoundInTheModel, "DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
-        PROPERTY_TYPE_MISMATCH = new DeltaType(
-                enumType,
-                "PropertyTypeMismatch", Messages.DeltaType_propertiesWithTypeMismatch, "DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
-        VALUE_SET_MISMATCH = new DeltaType(enumType,
-                "ValueSetMismatch", Messages.DeltaType_ValueSetMismatches, "DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
-        LINK_WITHOUT_ASSOCIATION = new DeltaType(
-                enumType,
-                "LinkWithoutAssociation", Messages.DeltaType_LinksNotFoundInTheModel, "DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$ //$NON-NLS-2$ 
-
-        ALL_TYPES = new DeltaType[] { MISSING_PROPERTY_VALUE, VALUE_WITHOUT_PROPERTY, PROPERTY_TYPE_MISMATCH,
-                VALUE_SET_MISMATCH, LINK_WITHOUT_ASSOCIATION };
-    }
-
-    private String imageName;
+    private final String description;
 
     public String getDescription() {
-        return getName();
+        return description;
     }
 
-    private DeltaType(DefaultEnumType type, String id, String name, String image) {
-        super(type, id, name);
-        imageName = image;
+    private DeltaType(String description) {
+        this.description = description;
     }
 
 }

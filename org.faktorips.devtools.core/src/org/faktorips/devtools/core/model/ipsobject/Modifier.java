@@ -22,23 +22,6 @@ import org.eclipse.jdt.core.Flags;
  */
 public enum Modifier implements IAdaptable {
 
-    // public final static Modifier PUBLISHED;
-    //
-    // public final static Modifier PUBLIC;
-    //
-    // private final static DefaultEnumType enumType;
-    //
-    // static {
-    //        enumType = new DefaultEnumType("Modifier", Modifier.class); //$NON-NLS-1$
-    //        PUBLISHED = new Modifier(enumType, "published", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC); //$NON-NLS-1$
-    //        PUBLIC = new Modifier(enumType, "public", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC); //$NON-NLS-1$
-    // }
-
-    // public final static EnumType getEnumType() {
-    // return enumType;
-    // }
-    //
-
     PUBLISHED("published", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC) { //$NON-NLS-1$
 
     },

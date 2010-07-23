@@ -202,7 +202,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        rangeType = ColumnRangeType.getValueById(element.getAttribute(PROPERTY_RANGE_TYPE));
+        rangeType = ColumnRangeType.valueOf(element.getAttribute(PROPERTY_RANGE_TYPE));
         from = element.getAttribute(PROPERTY_FROM_COLUMN);
         to = element.getAttribute(PROPERTY_TO_COLUMN);
         parameterName = element.getAttribute(PROPERTY_PARAMETER_NAME);
@@ -211,7 +211,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_RANGE_TYPE, rangeType.getId());
+        element.setAttribute(PROPERTY_RANGE_TYPE, rangeType.name());
         element.setAttribute(PROPERTY_FROM_COLUMN, from);
         element.setAttribute(PROPERTY_TO_COLUMN, to);
         element.setAttribute(PROPERTY_PARAMETER_NAME, parameterName);

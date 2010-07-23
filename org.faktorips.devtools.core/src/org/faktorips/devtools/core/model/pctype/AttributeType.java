@@ -13,19 +13,15 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-import org.faktorips.devtools.core.enums.EnumType;
-
 /**
  * Describes the kind of attribute.
  */
-public class AttributeType extends DefaultEnumValue {
+public enum AttributeType {
 
     /**
      * Defines an attribute as being changeable per policy component instance.
      */
-    public final static AttributeType CHANGEABLE;
+    CHANGEABLE("changeable", Messages.AttributeType_changeable), //$NON-NLS-1$
 
     /**
      * Defines an attribute as being computed. In contrast to a derived attribute a computed
@@ -37,7 +33,7 @@ public class AttributeType extends DefaultEnumValue {
      * the product developer. The IT developer defines the parameters that the product developer can
      * use.
      */
-    public final static AttributeType DERIVED_BY_EXPLICIT_METHOD_CALL;
+    DERIVED_BY_EXPLICIT_METHOD_CALL("computed", Messages.AttributeType_derived_by_explicit_method_call), //$NON-NLS-1$
 
     /**
      * Defines an attribute as being derived, that means the attributes value can be derived from
@@ -49,34 +45,27 @@ public class AttributeType extends DefaultEnumValue {
      * product developer. The IT developer defines the parameters that the product developer can
      * use.
      */
-    public final static AttributeType DERIVED_ON_THE_FLY;
+    DERIVED_ON_THE_FLY("derived", Messages.AttributeType_derived_on_the_fly), //$NON-NLS-1$
 
     /**
      * Defines an attribute as being constant for all policy components that are based on the same
      * product.
      */
-    public final static AttributeType CONSTANT;
+    CONSTANT("constant", Messages.AttributeType_constant); //$NON-NLS-1$
 
-    private final static DefaultEnumType enumType;
+    private final String id;
+    private final String name;
 
-    static {
-        enumType = new DefaultEnumType("AttributeType", AttributeType.class); //$NON-NLS-1$
-        CHANGEABLE = new AttributeType(enumType, "changeable", Messages.AttributeType_changeable); //$NON-NLS-1$
-        CONSTANT = new AttributeType(enumType, "constant", Messages.AttributeType_constant); //$NON-NLS-1$ 
-        DERIVED_BY_EXPLICIT_METHOD_CALL = new AttributeType(enumType,
-                "computed", Messages.AttributeType_derived_by_explicit_method_call); //$NON-NLS-1$
-        DERIVED_ON_THE_FLY = new AttributeType(enumType, "derived", Messages.AttributeType_derived_on_the_fly); //$NON-NLS-1$
-    }
-
-    public final static EnumType getEnumType() {
-        return enumType;
-    }
-
-    public final static AttributeType getAttributeType(String id) {
+    public static final AttributeType getAttributeType(String id) {
         if (id.equals("changable")) { //$NON-NLS-1$
             return CHANGEABLE; // migration of old files
         }
-        return (AttributeType)enumType.getEnumValue(id);
+        for (AttributeType at : values()) {
+            if (at.getId().equals(id)) {
+                return at;
+            }
+        }
+        return null;
     }
 
     /**
@@ -86,8 +75,28 @@ public class AttributeType extends DefaultEnumValue {
         return this == DERIVED_BY_EXPLICIT_METHOD_CALL || this == DERIVED_ON_THE_FLY;
     }
 
-    private AttributeType(DefaultEnumType type, String id, String name) {
-        super(type, id, name);
+    private AttributeType(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    /**
+     * @return Returns the id.
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

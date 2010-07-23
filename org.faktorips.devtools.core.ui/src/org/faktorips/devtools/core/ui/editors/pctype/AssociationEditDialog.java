@@ -134,8 +134,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_associationTypeLabel);
         final Combo typeCombo = uiToolkit
                 .createCombo(workArea, IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
-        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType
-                .getEnumType());
+        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
+                AssociationType.class);
         typeCombo.setFocus();
 
         // role singular

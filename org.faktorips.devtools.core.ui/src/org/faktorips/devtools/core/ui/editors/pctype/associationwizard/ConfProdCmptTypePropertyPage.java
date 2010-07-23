@@ -235,8 +235,8 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
 
     private void bindAllControls(IProductCmptTypeAssociation productCmptAssociation) {
         bindingContext.bindContent(targetText, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
-        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType
-                .getEnumType());
+        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
+                AssociationType.class);
         bindingContext.bindContent(targetRoleSingularTextProdCmptType, productCmptAssociation,
                 IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         bindingContext.bindContent(targetRolePluralTextProdCmptType, productCmptAssociation,

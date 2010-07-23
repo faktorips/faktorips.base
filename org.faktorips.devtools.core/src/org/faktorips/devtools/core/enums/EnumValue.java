@@ -21,7 +21,10 @@ package org.faktorips.devtools.core.enums;
  * ID.
  * 
  * @author Jan Ortmann
+ * 
+ * @deprecated We used this kind of EnumValue before Java 5 enums were introduced.
  */
+@Deprecated
 public interface EnumValue extends Comparable<Object> {
 
     /**

@@ -13,48 +13,35 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 
 /**
  * Describes the kind of relation, aggregation or association.
  */
-public class AssociationType extends DefaultEnumValue {
+public enum AssociationType {
 
-    public final static AssociationType COMPOSITION_MASTER_TO_DETAIL;
+    COMPOSITION_MASTER_TO_DETAIL("comp", "Composition (Master to Detail)"), //$NON-NLS-1$//$NON-NLS-2$
 
-    public final static AssociationType COMPOSITION_DETAIL_TO_MASTER;
+    COMPOSITION_DETAIL_TO_MASTER("reverseComp", "Composition (Detail to Master)"), //$NON-NLS-1$//$NON-NLS-2$
 
-    public final static AssociationType AGGREGATION;
+    ASSOCIATION("ass", "Association"), //$NON-NLS-1$//$NON-NLS-2$
 
-    public final static AssociationType ASSOCIATION;
+    AGGREGATION("aggr", "Aggregation"); //$NON-NLS-1$//$NON-NLS-2$
 
-    private final static DefaultEnumType enumType;
-
-    static {
-        enumType = new DefaultEnumType("RelationType", AssociationType.class); //$NON-NLS-1$
-        COMPOSITION_MASTER_TO_DETAIL = new AssociationType(enumType, "comp", "Composition (Master to Detail)"); //$NON-NLS-1$ //$NON-NLS-2$ 
-        COMPOSITION_DETAIL_TO_MASTER = new AssociationType(enumType, "reverseComp", "Composition (Detail to Master)"); //$NON-NLS-1$ //$NON-NLS-2$ 
-        ASSOCIATION = new AssociationType(enumType, "ass", "Association"); //$NON-NLS-1$ //$NON-NLS-2$ 
-        AGGREGATION = new AssociationType(enumType, "aggr", "Aggregation"); //$NON-NLS-1$ //$NON-NLS-2$ 
-    }
-
-    public final static EnumType getEnumType() {
-        return enumType;
-    }
-
-    public final static AssociationType getRelationType(int i) {
-        return (AssociationType)enumType.getEnumValue(i);
-    }
+    private final String id;
+    private final String name;
 
     public final static AssociationType getRelationType(String id) {
         if (id.equals("agg")) { //$NON-NLS-1$
             // Renamed aggregation to composition (including the id!)
             return COMPOSITION_MASTER_TO_DETAIL;
         }
-        return (AssociationType)enumType.getEnumValue(id);
+        for (AssociationType at : values()) {
+            if (at.getId().equals(id)) {
+                return at;
+            }
+        }
+        return null;
     }
 
     public boolean isCompositionMasterToDetail() {
@@ -78,8 +65,14 @@ public class AssociationType extends DefaultEnumValue {
         return AggregationKind.NONE;
     }
 
-    private AssociationType(DefaultEnumType type, String id, String name) {
-        super(type, id, name);
+    private AssociationType(String id, String name) {
+        this.name = name;
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
     /**
@@ -95,6 +88,20 @@ public class AssociationType extends DefaultEnumValue {
         return isAssoziation() ? AssociationType.ASSOCIATION
                 : isCompositionDetailToMaster() ? AssociationType.COMPOSITION_MASTER_TO_DETAIL
                         : isCompositionMasterToDetail() ? AssociationType.COMPOSITION_DETAIL_TO_MASTER : null;
+    }
+
+    /**
+     * @return Returns the id.
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
     }
 
 }

@@ -38,7 +38,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     @Override
     public Object[] getElements(Object inputElement) {
         List<DeltaType> elements = new ArrayList<DeltaType>();
-        for (DeltaType element : DeltaType.ALL_TYPES) {
+        for (DeltaType element : DeltaType.values()) {
             if (delta.getEntries(element).length > 0) {
                 elements.add(element);
             }
