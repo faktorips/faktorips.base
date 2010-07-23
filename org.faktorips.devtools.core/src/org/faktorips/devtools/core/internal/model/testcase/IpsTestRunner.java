@@ -23,6 +23,7 @@ import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -830,7 +831,10 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     private void getRepositoryPackages(IIpsProject ipsProject, List<String> repositoryPackages) throws CoreException {
         IIpsPackageFragmentRoot[] ipsRoots = ipsProject.getIpsPackageFragmentRoots();
-        for (IIpsPackageFragmentRoot ipsRoot : ipsRoots) {
+        List<IIpsPackageFragmentRoot> ipsRootsList = Arrays.asList(ipsRoots);
+        // need reverse sord order: see IpsTestAction#ipsProjectSelected
+        Collections.reverse(ipsRootsList);
+        for (IIpsPackageFragmentRoot ipsRoot : ipsRootsList) {
             IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
             IFile tocFile = builderSet.getRuntimeRepositoryTocFile(ipsRoot);
             if (tocFile != null && tocFile.exists()) {

@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.actions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -199,11 +200,17 @@ public class IpsTestAction extends IpsAction {
      */
     private IIpsPackageFragmentRoot ipsProjectSelected(IIpsProject ipsProject, List<String> selectedPathElements)
             throws CoreException {
-
         IIpsPackageFragmentRoot root = null;
-        IIpsPackageFragmentRoot[] rootsFromProject;
-        rootsFromProject = ipsProject.getIpsPackageFragmentRoots();
-        for (IIpsPackageFragmentRoot element : rootsFromProject) {
+        IIpsPackageFragmentRoot[] rootsFromProject = ipsProject.getIpsPackageFragmentRoots();
+        List<IIpsPackageFragmentRoot> ipsPckFrgmtRootList = Arrays.asList(rootsFromProject);
+        // we need to reverse the list of IpsPackageFragmentRoot, because this sort order will be
+        // used to build the runtime repository (each root becomes a separate repository). Starting
+        // with the first entry the next entry will be added as additionally repositories and so on.
+        // This order is very important when using enumeration contents in different source folder,
+        // because the product component which uses an enumeration content needs the correct
+        // repository with the depended repository as additionally repository.
+        Collections.reverse(ipsPckFrgmtRootList);
+        for (IIpsPackageFragmentRoot element : ipsPckFrgmtRootList) {
             root = element;
             IIpsProject project = root.getIpsProject();
             String tocFilePackage = getRepPckNameFromPckFrgmtRoot(root);

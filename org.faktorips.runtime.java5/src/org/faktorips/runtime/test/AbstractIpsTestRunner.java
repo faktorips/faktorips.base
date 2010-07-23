@@ -116,7 +116,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
     /**
      * Sets additional packages, will be used to create the ClassloaderRuntimeRepository which could
      * be used in the runtime environment to obtain necessary objects. Format:
-     * {package1}{package2}{...}{packagen}
+     * {package1}{package2}{...}{packageN}
      */
     protected void setAdditionalRepositoryPackages(String additionalRepositoryPackages) {
         this.additionalRepositoryPackages = additionalRepositoryPackages;
@@ -208,12 +208,10 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
         List<String> repositoryNameList = getRepositoryListFromInputString(repositoryPackages);
 
         // create the ClassloaderRuntimeRepository repository which could be used in runtime to
-        // obtain
-        // objects which are used in the test case
+        // obtain objects which are used in the test case
         // note: only one classloader repository will be created, it depends on the given ips
-        // project
-        // this repository is the same for all test cases which itself are searched in different
-        // repositories (see below)
+        // project this repository is the same for all test cases which itself are searched in
+        // different repositories (see below)
         List<String> runtimePackages = extractListFromString(additionalRepositoryPackages);
         IRuntimeRepository additionalRepositories = null;
         IRuntimeRepository currRepository = null;
