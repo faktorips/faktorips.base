@@ -280,8 +280,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 continue;
             }
             Element valueElem = XmlUtil.addNewChild(doc, element, testValues[i].getTestValueParameter());
-            XmlUtil.addNewCDATAorTextChild(doc, valueElem, testValues[i].getValue());
-            valueElem.setAttribute("type", "testvalue");
+            addValueElement(doc, valueElem, "testvalue", testValues[i].getValue());
         }
     }
 
@@ -491,8 +490,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 String childName = StringUtils.isEmpty(testAttribute.getAttribute()) ? testAttribute.getName()
                         : testAttribute.getAttribute();
                 Element attrValueElem = XmlUtil.addNewChild(doc, testPolicyCmpt, childName);
-                XmlUtil.addNewCDATAorTextChild(doc, attrValueElem, testAttrValues[i].getValue());
-                attrValueElem.setAttribute("type", "property");
+                addValueElement(doc, attrValueElem, "property", testAttrValues[i].getValue());
             }
         }
     }
@@ -515,4 +513,11 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         return true;
     }
 
+    private void addValueElement(Document doc, Element element, String type, String value) {
+        if (value == null) {
+            element.setAttribute("isNull", Boolean.toString(true));
+        }
+        XmlUtil.addNewCDATAorTextChild(doc, element, value);
+        element.setAttribute("type", type);
+    }
 }
