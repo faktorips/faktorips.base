@@ -13,41 +13,47 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.Flags;
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-import org.faktorips.devtools.core.enums.EnumType;
 
 /**
  * The kind of modifiers.
  */
-public class Modifier extends DefaultEnumValue {
+public enum Modifier implements IAdaptable {
 
-    public final static Modifier PUBLISHED;
+    // public final static Modifier PUBLISHED;
+    //
+    // public final static Modifier PUBLIC;
+    //
+    // private final static DefaultEnumType enumType;
+    //
+    // static {
+    //        enumType = new DefaultEnumType("Modifier", Modifier.class); //$NON-NLS-1$
+    //        PUBLISHED = new Modifier(enumType, "published", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC); //$NON-NLS-1$
+    //        PUBLIC = new Modifier(enumType, "public", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC); //$NON-NLS-1$
+    // }
 
-    public final static Modifier PUBLIC;
+    // public final static EnumType getEnumType() {
+    // return enumType;
+    // }
+    //
 
-    private final static DefaultEnumType enumType;
+    PUBLISHED("published", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC) { //$NON-NLS-1$
 
-    static {
-        enumType = new DefaultEnumType("Modifier", Modifier.class); //$NON-NLS-1$
-        PUBLISHED = new Modifier(enumType, "published", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC); //$NON-NLS-1$
-        PUBLIC = new Modifier(enumType, "public", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC); //$NON-NLS-1$
-    }
+    },
 
-    public final static EnumType getEnumType() {
-        return enumType;
-    }
+    PUBLIC("public", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC) { //$NON-NLS-1$
 
-    public final static Modifier getModifier(String id) {
-        return (Modifier)enumType.getEnumValue(id);
-    }
+    };
 
     /** Flags constant according to org.eclipse.jdt.core.Flags */
     private int jdtFlags;
 
     /** Modifier according to java.lang.reflect.Modifier */
     private int javaModifier;
+
+    private String id;
 
     /**
      * Returns the appropriate JDT Flags constants corresponding to the modifier.
@@ -75,10 +81,51 @@ public class Modifier extends DefaultEnumValue {
         return this == PUBLIC;
     }
 
-    private Modifier(DefaultEnumType type, String id, int jdtFlags, int javaModifier) {
-        super(type, id);
+    Modifier(String id, int jdtFlags, int javaModifier) {
+        this.id = id;
         this.jdtFlags = jdtFlags;
         this.javaModifier = javaModifier;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return getId();
+    }
+
+    // private Modifier(DefaultEnumType type, String id, int jdtFlags, int javaModifier) {
+    // super(type, id);
+    // this.jdtFlags = jdtFlags;
+    // this.javaModifier = javaModifier;
+    // }
+
+    public final static Modifier getModifier(String id) {
+        for (Modifier m : values()) {
+            if (m.id.equals(id)) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    // @Deprecated
+    // public String getName() {
+    // return toString();
+    // }
+    //
+    // @Deprecated
+    // public final static Class<Modifier> getEnumType() {
+    // return Modifier.class;
+    // }
+
+    @SuppressWarnings("unchecked")
+    // eclipse interface is not type safe
+    @Override
+    public Object getAdapter(Class adapter) {
+        return Platform.getAdapterManager().getAdapter(this, adapter);
     }
 
 }

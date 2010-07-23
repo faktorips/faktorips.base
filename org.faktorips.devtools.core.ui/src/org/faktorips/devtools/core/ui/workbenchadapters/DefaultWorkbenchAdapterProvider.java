@@ -99,7 +99,7 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
     }
 
     private void initContainers() {
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsModel.gif", true);
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsModel.gif", true); //$NON-NLS-1$
         register(IpsModel.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsProject.gif", true); //$NON-NLS-1$
         register(IpsProject.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));

@@ -23,26 +23,32 @@ import org.faktorips.devtools.core.ui.OverlayIcons;
 
 public class AttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
-    public static final String BASE_IMAGE = "AttributePublic.gif"; //$NON-NLS-1$ 
+    public static final String PUBLISHED_BASE_IMAGE = "AttributePublished.gif"; //$NON-NLS-1$
+
+    public static final String PUBLIC_BASE_IMAGE = "AttributePublic.gif"; //$NON-NLS-1$
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IAttribute) {
             IAttribute attribute = (IAttribute)ipsObjectPart;
+            String baseImage = PUBLISHED_BASE_IMAGE;
+            if (attribute.getModifier().isPublic()) {
+                baseImage = PUBLIC_BASE_IMAGE;
+            }
             String[] overlays = new String[4];
 
             if (attribute instanceof IPolicyCmptTypeAttribute
                     && ((IPolicyCmptTypeAttribute)attribute).isProductRelevant()) {
                 overlays[1] = OverlayIcons.PRODUCT_OVR;
             }
-            return IpsUIPlugin.getImageHandling().getSharedOverlayImage(BASE_IMAGE, overlays);
+            return IpsUIPlugin.getImageHandling().getSharedOverlayImage(baseImage, overlays);
         }
         return getDefaultImageDescriptor();
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor(BASE_IMAGE, true);
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor(PUBLISHED_BASE_IMAGE, true);
     }
 
     @Override
@@ -51,7 +57,7 @@ public class AttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
             IAttribute attribute = (IAttribute)ipsObjectPart;
             String label = attribute.getName();
             if (attribute.isDerived()) {
-                label = "/" + label; //$NON-NLS-1$
+                label = "/ " + label; //$NON-NLS-1$
             }
             if (!StringUtils.isEmpty(attribute.getDatatype())) {
                 label += " : " + attribute.getDatatype(); //$NON-NLS-1$

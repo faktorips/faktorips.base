@@ -78,7 +78,7 @@ public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
 
         methodData.add(method.getName());
         methodData.add(method.isAbstract() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-        methodData.add(method.getModifier().getName());
+        methodData.add(method.getModifier().toString());
         methodData.add(method.getDatatype());
         methodData.add(method.getSignatureString());
         methodData.add(method.getDescription());

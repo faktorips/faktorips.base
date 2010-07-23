@@ -23,7 +23,7 @@ public class ModifierTest extends TestCase {
      * Tests if all values can be created.
      */
     public void testGetEnumType() {
-        Modifier.getEnumType();
+        assertEquals(Modifier.PUBLIC.toString(), "public");
+        assertEquals(Modifier.PUBLISHED.toString(), "published");
     }
-
 }

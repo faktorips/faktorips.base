@@ -593,7 +593,7 @@ public class UIToolkit {
 
     /**
      * Creates a new Combo-Box. Note that the FormToolkit does not support Combos, so the appearence
-     * of this Combo-Box is NOT similar to the oter FormToolkit-Controls.
+     * of this Combo-Box is NOT similar to the other FormToolkit-Controls.
      */
     public Combo createCombo(Composite parent) {
         Combo newCombo = new Combo(parent, SWT.READ_ONLY);
@@ -612,6 +612,17 @@ public class UIToolkit {
         String[] names = new String[values.length];
         for (int i = 0; i < values.length; i++) {
             names[i] = values[i].getName();
+        }
+        newCombo.setItems(names);
+        return newCombo;
+    }
+
+    public <E extends Enum<E>> Combo createCombo(Composite parent, Class<E> enumType) {
+        Combo newCombo = createCombo(parent);
+        E[] values = enumType.getEnumConstants();
+        String[] names = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            names[i] = values[i].toString();
         }
         newCombo.setItems(names);
         return newCombo;

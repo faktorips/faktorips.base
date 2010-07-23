@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
 import org.faktorips.devtools.core.ui.controller.Messages;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
@@ -209,6 +210,24 @@ public class BindingContext {
         EnumValueField field = new EnumValueField(combo, enumType);
         bindContent(field, object, property);
 
+        return field;
+    }
+
+    /**
+     * Binds the given combo to the given ips object's property.
+     * 
+     * @return the edit field created to access the value in the text control.
+     * 
+     * @throws IllegalArgumentException if the property's type is not a subclass of
+     *             DefaultEnumValue.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     * 
+     * @see DefaultEnumValue
+     */
+    public <E extends Enum<E>> EnumField<E> bindContent(Combo combo, Object object, String property, Class<E> enumType) {
+        checkPropertyType(object, property, Enum.class);
+        EnumField<E> field = new EnumField<E>(combo, enumType);
+        bindContent(field, object, property);
         return field;
     }
 

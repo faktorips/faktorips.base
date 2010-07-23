@@ -335,8 +335,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelModifier);
-        Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.getEnumType());
-        bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.getEnumType());
+        Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.class);
+        bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelAttrType);
         Combo typeCombo = uiToolkit.createCombo(workArea, AttributeType.getEnumType());

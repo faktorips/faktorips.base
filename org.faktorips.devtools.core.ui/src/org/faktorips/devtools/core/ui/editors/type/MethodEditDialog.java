@@ -75,9 +75,9 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         Composite propertyPane = uiToolkit.createLabelEditColumnComposite(methodSignatureGroup);
 
         uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
-        modifierCombo = uiToolkit.createCombo(propertyPane, Modifier.getEnumType());
+        modifierCombo = uiToolkit.createCombo(propertyPane, Modifier.class);
         modifierCombo.setFocus();
-        bindingContext.bindContent(modifierCombo, method, IMethod.PROPERTY_MODIFIER, Modifier.getEnumType());
+        bindingContext.bindContent(modifierCombo, method, IMethod.PROPERTY_MODIFIER, Modifier.class);
 
         uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelAbstract);
         abstractCheckbox = uiToolkit.createCheckbox(propertyPane);

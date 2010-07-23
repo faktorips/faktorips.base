@@ -77,7 +77,7 @@ public class AttributesTablePageElement extends AbstractSpecificTablePageElement
 
         attributeData.add(attribute.getName());
         attributeData.add(attribute.getDatatype());
-        attributeData.add(attribute.getModifier().getName());
+        attributeData.add(attribute.getModifier().toString());
         attributeData.add(attribute.getDefaultValue());
         attributeData.add(attribute.getDescription());
 
