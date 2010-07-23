@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
@@ -184,8 +185,11 @@ public class PersistentTypeInfoSection extends IpsSection {
                         bindingContext.removeBindings(tableNameText);
                         try {
                             IPolicyCmptType rootEntity = persistenceTypeInfo.findRootEntity();
-                            if (rootEntity == null) {
+                            IType superType = ipsObject.findSupertype(ipsObject.getIpsProject());
+                            if (superType == null) {
                                 tableNameText.setText("Super type not found");
+                            } else if (rootEntity == null) {
+                                tableNameText.setText("Root entity not found");
                             } else {
                                 tableNameText.setText(rootEntity.getPersistenceTypeInfo().getTableName());
                             }
