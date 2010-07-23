@@ -254,7 +254,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (!isRootEntity(rooEntity) && InheritanceStrategy.SINGLE_TABLE.equals(inheritanceStrategy)
                 && !useTableDefinedInSupertype) {
             msgList.add(new Message(MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY,
-                    "The table name of the root entitry must be used because this is not the root entity and the inheritance strategy is: "
+                    "The table name of the root entity must be used because this is not the root entity and the inheritance strategy is: "
                             + inheritanceStrategy.toString(), Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
         }
@@ -684,7 +684,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             IPolicyCmptTypeAttribute[] policyCmptTypeAttributes = currentType.getPolicyCmptTypeAttributes();
             for (IPolicyCmptTypeAttribute currentAttribute : policyCmptTypeAttributes) {
                 if (isPersistentAttribute(currentAttribute)) {
-                    addColumnName(currentAttribute.getPersistenceAttributeInfo().getTableColumnName(),
+                    addIfNotEmpty(currentAttribute.getPersistenceAttributeInfo().getTableColumnName(),
                             new ObjectProperty(currentAttribute.getPersistenceAttributeInfo(),
                                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
                 }

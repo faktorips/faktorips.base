@@ -169,7 +169,11 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                         .getPersistenceAssociatonInfo();
                 MessageList msgList;
                 try {
-                    msgList = persistenceAssociationInfo.validate(persistenceAssociationInfo.getIpsProject());
+                    // we must validate both the PersistenceTypeInfo and and the PersistenceTypeInfo
+                    // because the PersistenceTypeInfo validates duplicate column names
+                    msgList = persistenceAssociationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
+                            .getPersistenceTypeInfo().validate(persistenceAssociationInfo.getIpsProject());
+                    msgList.add(persistenceAssociationInfo.validate(persistenceAssociationInfo.getIpsProject()));
                     String property = columnProperties.get(columnIndex).property;
                     if (property == null) {
                         return null;
