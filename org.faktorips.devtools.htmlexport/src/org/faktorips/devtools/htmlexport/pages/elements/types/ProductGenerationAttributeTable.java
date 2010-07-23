@@ -98,7 +98,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
     private void addChildProductCmptTypes() {
         PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
 
-        cells[0] = new TextPageElement("Children Component Types");
+        cells[0] = new TextPageElement("Associated Components");
 
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
             IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
