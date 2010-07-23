@@ -82,8 +82,8 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals("a1 : String", flatProvider.getText(attr));
         assertEquals("a1 : String", hierarchyProvider.getText(attr));
 
-        assertEquals("/a3 : float", flatProvider.getText(attr3));
-        assertEquals("/a3 : float", hierarchyProvider.getText(attr3));
+        assertEquals("/ a3 : float", flatProvider.getText(attr3));
+        assertEquals("/ a3 : float", hierarchyProvider.getText(attr3));
     }
 
     public void testGetImage() {
