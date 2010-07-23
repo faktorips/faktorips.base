@@ -34,7 +34,7 @@ public class TypeChosePageElement extends AbstractPageElement {
 
     public TypeChosePageElement(DocumentorConfiguration config) {
         this.config = config;
-        this.types = Arrays.asList(config.getLinkedIpsObjectTypes());
+        this.types = Arrays.asList(config.getDocumentedIpsObjectTypes());
     }
 
     public TypeChosePageElement(DocumentorConfiguration config, Set<IpsObjectType> relatedObjectTypes) {
@@ -46,7 +46,7 @@ public class TypeChosePageElement extends AbstractPageElement {
     public void build() {
         wrapper = new WrapperPageElement(WrapperType.BLOCK);
 
-        for (IpsObjectType ipsObjectType : config.getLinkedIpsObjectTypes()) {
+        for (IpsObjectType ipsObjectType : config.getDocumentedIpsObjectTypes()) {
             /*
              * Image image =
              * IpsUIPlugin.getImageHandling().getDefaultImage(ipsObjectType.getImplementingClass());

@@ -15,12 +15,16 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.ImageData;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
@@ -60,17 +64,20 @@ public class IpsElementImagePageElement extends ImagePageElement {
         }
 
         if (element instanceof IProductCmpt) {
-            IProductCmpt object = (IProductCmpt)element;
+            return getProductCmptImageName((IProductCmpt)element);
+        }
+
+        if (element instanceof IIpsSrcFile) {
+            IIpsSrcFile srcFile = (IIpsSrcFile)element;
+            if (srcFile.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
+                return srcFile.getIpsObjectType().getFileExtension();
+            }
             try {
-                IProductCmptType productCmptType = object.getIpsProject().findProductCmptType(
-                        object.getProductCmptType());
-                if (productCmptType.isUseCustomInstanceIcon()) {
-                    return object.getQualifiedName();
-                }
+                IProductCmpt ipsObject = (IProductCmpt)srcFile.getIpsObject();
+                return getProductCmptImageName(ipsObject);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
-            return object.getIpsObjectType().getFileExtension();
         }
 
         if (element instanceof IIpsObject) {
@@ -81,6 +88,9 @@ public class IpsElementImagePageElement extends ImagePageElement {
         if (element instanceof ITestObject) {
             if (element instanceof ITestRule) {
                 return "testrule"; //$NON-NLS-1$
+            }
+            if (element instanceof ITestPolicyCmpt) {
+                return "testpolicycmpt"; //$NON-NLS-1$
             }
             ITestObject testObject = (ITestObject)element;
             try {
@@ -98,6 +108,27 @@ public class IpsElementImagePageElement extends ImagePageElement {
             return testParameter.getDatatype();
         }
 
+        if (element instanceof ProductCmptTypeAssociation) {
+            ProductCmptTypeAssociation association = (ProductCmptTypeAssociation)element;
+            return getProductCmptImageNameByProductCmptType(association.getProductCmptType());
+        }
+
         return element.getName();
+    }
+
+    private static String getProductCmptImageName(IProductCmpt object) {
+        try {
+            IProductCmptType productCmptType = object.getIpsProject().findProductCmptType(object.getProductCmptType());
+            return getProductCmptImageNameByProductCmptType(productCmptType);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String getProductCmptImageNameByProductCmptType(IProductCmptType productCmptType) {
+        if (productCmptType.isUseCustomInstanceIcon()) {
+            return productCmptType.getQualifiedName();
+        }
+        return IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension();
     }
 }

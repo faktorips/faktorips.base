@@ -67,18 +67,6 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         assertEquals("<div>" + text + "</div>", layout(pageElement));
     }
 
-    /*
-     * da die Links ipsobjekte brauchen, muessen sie als plugin test getestet werden
-     */
-    /*
-     * public void testHtmlLayouterLinkPageElement() throws Exception { String text =
-     * "text beispiel";
-     * 
-     * LinkPageElement pageElement = new LinkPageElement();
-     * 
-     * assertEquals("<h3>" + text + "</h3>", layout(pageElement)); }
-     */
-
     public void testHtmlLayouterListPageElement() {
 
         String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" };

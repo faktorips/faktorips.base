@@ -287,11 +287,11 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
         append(HtmlUtil.createImage(getPathToRoot() + path, imagePageElement.getTitle()));
     }
 
-    String getPathToRoot() {
+    public String getPathToRoot() {
         return pathToRoot;
     }
 
-    void setPathToRoot(String pathToRoot) {
+    public void setPathToRoot(String pathToRoot) {
         this.pathToRoot = pathToRoot;
     }
 

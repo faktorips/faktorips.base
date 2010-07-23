@@ -170,7 +170,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
     private void addProductCmptList() {
         List<IIpsSrcFile> allProductCmptSrcFiles;
         try {
-            allProductCmptSrcFiles = new ArrayList(Arrays.asList(getDocumentedIpsObject()
+            allProductCmptSrcFiles = new ArrayList<IIpsSrcFile>(Arrays.asList(getDocumentedIpsObject()
                     .searchMetaObjectSrcFiles(true)));
         } catch (CoreException e) {
             throw new RuntimeException(e);

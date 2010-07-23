@@ -41,7 +41,8 @@ public class PageElementUtils {
      * @param texts
      * @param styles
      * @param type
-     * @return array of {@link PageElement}s
+     * @return array of {@link PageElement}s. To enable storing of other types of PageElements like
+     *         LinkPageElement, the return type is not TextPageElement[]
      */
     public static PageElement[] createTextPageElements(List<String> texts, Set<Style> styles, TextType type) {
         PageElement[] textPageElements = new PageElement[texts.size()];

@@ -45,7 +45,7 @@ public class DocumentorConfiguration {
     /**
      * related {@link IpsObjectType}s: Just {@link IIpsObject} of these types are documented
      */
-    protected IpsObjectType[] linkedIpsObjectTypes = new IpsObjectType[0];
+    protected IpsObjectType[] documentedIpsObjectTypes = new IpsObjectType[0];
 
     /**
      * Path for output
@@ -76,8 +76,8 @@ public class DocumentorConfiguration {
         super();
     }
 
-    public void setLinkedIpsObjectTypes(IpsObjectType... ipsObjectTypes) {
-        linkedIpsObjectTypes = ipsObjectTypes;
+    public void setDocumentedIpsObjectTypes(IpsObjectType... ipsObjectTypes) {
+        documentedIpsObjectTypes = ipsObjectTypes;
     }
 
     public IIpsProject getIpsProject() {
@@ -96,15 +96,15 @@ public class DocumentorConfiguration {
         this.path = path;
     }
 
-    public IpsObjectType[] getLinkedIpsObjectTypes() {
-        return linkedIpsObjectTypes;
+    public IpsObjectType[] getDocumentedIpsObjectTypes() {
+        return documentedIpsObjectTypes;
     }
 
     public List<IIpsSrcFile> getDocumentedSourceFiles() {
         if (documentedSrcFiles == null) {
             documentedSrcFiles = new ArrayList<IIpsSrcFile>();
             try {
-                ipsProject.findAllIpsSrcFiles(documentedSrcFiles, getLinkedIpsObjectTypes());
+                ipsProject.findAllIpsSrcFiles(documentedSrcFiles, getDocumentedIpsObjectTypes());
             } catch (CoreException e) {
                 e.printStackTrace();
             }
@@ -157,7 +157,7 @@ public class DocumentorConfiguration {
     public Collection<IIpsPackageFragment> getLinkedPackageFragments() {
 
         Set<IIpsPackageFragment> relatedPackageFragments = new HashSet<IIpsPackageFragment>();
-        List<IIpsSrcFile> linkedObjects = getDocumentedSourceFiles(getLinkedIpsObjectTypes());
+        List<IIpsSrcFile> linkedObjects = getDocumentedSourceFiles(getDocumentedIpsObjectTypes());
         for (IIpsSrcFile ipsObject : linkedObjects) {
             relatedPackageFragments.add(ipsObject.getIpsPackageFragment());
         }

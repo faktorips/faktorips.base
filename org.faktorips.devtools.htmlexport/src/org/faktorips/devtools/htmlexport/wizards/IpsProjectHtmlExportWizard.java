@@ -81,10 +81,11 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
         documentorConfig.setShowValidationErrors(ipsProjectHtmlExportWizardPage.getShowValidationErrors());
 
         documentorConfig.setIpsProject(IpsProjectHtmlExportWizard.getIpsProject(selection));
-        documentorConfig.setLayouter(new HtmlLayouter(".resource"));
+        documentorConfig.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
 
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());
-        documentorConfig.setLinkedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
+        documentorConfig
+                .setDocumentedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
 
         IWorkspaceRunnable op = new HtmlExportOperation(documentorConfig);
 

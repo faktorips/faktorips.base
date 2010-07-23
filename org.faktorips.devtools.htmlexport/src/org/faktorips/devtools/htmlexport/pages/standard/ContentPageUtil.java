@@ -37,13 +37,13 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement
  */
 public class ContentPageUtil {
 
-    public static AbstractPageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFilex,
+    public static AbstractPageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFile,
             DocumentorConfiguration config) {
 
-        IIpsObject ipsSrcFile;
+        IIpsObject ipsObject;
         try {
-            ipsSrcFile = ipsSrcFilex.getIpsObject();
-            return createObjectContentPageElement(ipsSrcFile, config);
+            ipsObject = ipsSrcFile.getIpsObject();
+            return createObjectContentPageElement(ipsObject, config);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

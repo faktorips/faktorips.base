@@ -101,7 +101,7 @@ public class CreateHtmlExportAction extends ActionDelegate {
         documentorConfig.setLayouter(new HtmlLayouter(".resource"));
 
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());
-        documentorConfig.setLinkedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
+        documentorConfig.setDocumentedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
 
         try {
             new HtmlExportOperation(documentorConfig).run(new NullProgressMonitor());
