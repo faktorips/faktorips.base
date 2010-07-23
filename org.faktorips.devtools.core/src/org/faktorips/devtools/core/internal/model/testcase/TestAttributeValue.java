@@ -107,6 +107,9 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpt();
         if (!StringUtils.isEmpty(testPolicyCmpt.getPolicyCmptType())) {
             IPolicyCmptType policyCmptType = testPolicyCmpt.findPolicyCmptType();
+            if (policyCmptType == null) {
+                return null;
+            }
             return policyCmptType.findAttribute(testAttr.getAttribute(), ipsProject);
         }
 
