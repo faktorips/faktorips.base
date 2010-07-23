@@ -13,26 +13,44 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
+
 /**
  * Instances of this class indicate the type of range that is represented by a ColumnRange instance.
  * 
  * @author Peter Erzberger
  */
-public enum ColumnRangeType {
+public class ColumnRangeType extends DefaultEnumValue {
 
-    TWO_COLUMN_RANGE(Messages.ColumnRangeType_twoColumns),
+    public final static ColumnRangeType TWO_COLUMN_RANGE;
 
-    ONE_COLUMN_RANGE_FROM(Messages.ColumnRangeType_fromColumnOnly),
+    public final static ColumnRangeType ONE_COLUMN_RANGE_FROM;
 
-    ONE_COLUMN_RANGE_TO(Messages.ColumnRangeType_toColumnOnly);
+    public final static ColumnRangeType ONE_COLUMN_RANGE_TO;
 
-    private final String name;
+    private final static DefaultEnumType enumType;
+
+    static {
+        enumType = new DefaultEnumType("ColumnRangeType", ColumnRangeType.class); //$NON-NLS-1$
+        TWO_COLUMN_RANGE = new ColumnRangeType(enumType, "twoColumn", Messages.ColumnRangeType_twoColumns); //$NON-NLS-1$
+        ONE_COLUMN_RANGE_FROM = new ColumnRangeType(enumType, "oneColumnFrom", Messages.ColumnRangeType_fromColumnOnly); //$NON-NLS-1$
+        ONE_COLUMN_RANGE_TO = new ColumnRangeType(enumType, "oneColumnTo", Messages.ColumnRangeType_toColumnOnly); //$NON-NLS-1$
+    }
+
+    public static final DefaultEnumType getEnumType() {
+        return enumType;
+    }
+
+    public static final ColumnRangeType getValueById(String id) {
+        return (ColumnRangeType)enumType.getEnumValue(id);
+    }
 
     /**
      * Private constructor according to the type save enumeration pattern.
      */
-    private ColumnRangeType(String name) {
-        this.name = name;
+    private ColumnRangeType(DefaultEnumType type, String id, String name) {
+        super(type, id, name);
     }
 
     public boolean isOneColumnFrom() {
@@ -45,12 +63,5 @@ public enum ColumnRangeType {
 
     public boolean isTwoColumn() {
         return TWO_COLUMN_RANGE.equals(this);
-    }
-
-    /**
-     * @return Returns the name.
-     */
-    public String getName() {
-        return name;
     }
 }

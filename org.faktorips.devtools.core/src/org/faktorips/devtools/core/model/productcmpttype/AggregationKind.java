@@ -13,35 +13,41 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
+
 /**
  * The aggregation kind as specified in the UML super structure document.
  * 
  * @author Jan Ortmann
  */
-public enum AggregationKind {
+public class AggregationKind extends DefaultEnumValue {
 
-    NONE("None"), //$NON-NLS-1$
+    public final static AggregationKind NONE;
 
-    SHARED("Shared"), //$NON-NLS-1$
+    public final static AggregationKind SHARED;
 
-    COMPOSITE("Composite"); //$NON-NLS-1$
+    public final static AggregationKind COMPOSITE;
 
-    private final String name;
+    private final static DefaultEnumType enumType;
 
-    private AggregationKind(String name) {
-        this.name = name;
+    public final static DefaultEnumType getEnumType() {
+        return enumType;
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
+    public final static AggregationKind getKind(String id) {
+        return (AggregationKind)enumType.getEnumValue(id);
     }
 
-    /**
-     * @return Returns the name.
-     */
-    public String getName() {
-        return name;
+    static {
+        enumType = new DefaultEnumType("AggregationKind", AggregationKind.class); //$NON-NLS-1$
+        NONE = new AggregationKind(enumType, "none", "None"); //$NON-NLS-1$ //$NON-NLS-2$ 
+        SHARED = new AggregationKind(enumType, "shared", "Shared"); //$NON-NLS-1$ //$NON-NLS-2$ 
+        COMPOSITE = new AggregationKind(enumType, "composite", "Composite"); //$NON-NLS-1$ //$NON-NLS-2$ 
+    }
+
+    private AggregationKind(DefaultEnumType type, String id, String name) {
+        super(type, id, name);
     }
 
 }

@@ -26,7 +26,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -41,7 +40,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.controller.fields.EnumField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -57,7 +56,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
 
     private TextField fromField;
     private TextField toField;
-    private EnumField<ColumnRangeType> rangeTypeField;
+    private EnumValueField rangeTypeField;
     private TextField parameterNameField;
     private Button toLeft;
     private Button toRight;
@@ -87,8 +86,8 @@ public class RangeEditDialog extends IpsPartEditDialog {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite rangeTypeArea = uiToolkit.createGridComposite(c, 2, false, true);
         uiToolkit.createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
-        Combo combo = uiToolkit.createCombo(rangeTypeArea, ColumnRangeType.class);
-        rangeTypeField = new EnumField<ColumnRangeType>(combo, ColumnRangeType.class);
+        rangeTypeField = new EnumValueField(uiToolkit.createCombo(rangeTypeArea, ColumnRangeType.getEnumType()),
+                ColumnRangeType.getEnumType());
         rangeTypeField.addChangeListener(new ValueChangeListener() {
             @Override
             public void valueChanged(FieldValueChangedEvent e) {
