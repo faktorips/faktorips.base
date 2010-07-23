@@ -30,7 +30,7 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 
     protected String zielpfad;
     protected IIpsProject ipsProject;
-    protected DocumentorConfiguration documentorConfig;
+    protected DocumentorConfiguration config;
     protected HtmlExportOperation operation;
 
     public AbstractFipsDocTest() {
@@ -47,17 +47,15 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject("TestProjekt");
 
-        documentorConfig = new DocumentorConfiguration();
+        config = new DocumentorConfiguration();
 
         String location = System.getProperty("java.io.tmpdir") + File.separator + "fips";
-        // So werden Dateien im Projekt gespeichert
-        // IPath location = ipsProject.getProject().getLocation();
 
-        documentorConfig.setPath(location + File.separator + "html");
-        documentorConfig.setIpsProject(ipsProject);
-        documentorConfig.setLayouter(new HtmlLayouter(".resource"));
+        config.setPath(location + File.separator + "html");
+        config.setIpsProject(ipsProject);
+        config.setLayouter(new HtmlLayouter(".resource"));
 
-        operation = new HtmlExportOperation(documentorConfig);
+        operation = new HtmlExportOperation(config);
     }
 
     protected void createStandardProjekt() {
@@ -237,7 +235,7 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
     }
 
     protected void deletePreviousGeneratedFiles() {
-        File file = new File(documentorConfig.getPath());
+        File file = new File(config.getPath());
         if (file.exists()) {
             file.delete();
         }

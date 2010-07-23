@@ -134,19 +134,19 @@ public class Spider {
             log("Processing: " + url);
             // get the URL's contents
             URLConnection connection = url.openConnection();
-            if ((connection.getContentType() != null) && !connection.getContentType().toLowerCase().startsWith("text/")) {
-                getWorkloadWaiting().remove(url);
-                getWorkloadProcessed().add(url);
-                log("Not processing because content type is: " + connection.getContentType());
-                return;
-            }
 
             // read the URL
             InputStream is = connection.getInputStream();
-            Reader r = new InputStreamReader(is);
-            // parse the URL
-            HTMLEditorKit.Parser parse = new HTMLParse().getParser();
-            parse.parse(r, new Parser(url), true);
+
+            if (connection.getContentType().toLowerCase().startsWith("text/")) {
+                Reader r = new InputStreamReader(is);
+
+                // parse the URL
+                HTMLEditorKit.Parser parse = new HTMLParse().getParser();
+                parse.parse(r, new Parser(url), true);
+            } else {
+                log("Not processing because content type is: " + connection.getContentType());
+            }
         } catch (IOException e) {
             getWorkloadWaiting().remove(url);
             getWorkloadError().add(url);
@@ -158,6 +158,12 @@ public class Spider {
         getWorkloadWaiting().remove(url);
         getWorkloadProcessed().add(url);
         log("Complete: " + url);
+
+    }
+
+    private void stopProcessing(URL url, String contentType) {
+        getWorkloadWaiting().remove(url);
+        getWorkloadProcessed().add(url);
 
     }
 
@@ -192,6 +198,11 @@ public class Spider {
             String href = (String)a.getAttribute(HTML.Attribute.HREF);
 
             if ((href == null) && (t == HTML.Tag.FRAME)) {
+                href = (String)a.getAttribute(HTML.Attribute.SRC);
+            }
+
+            // SD: auch images sollen ueberprueft werden
+            if ((href == null) && (t == HTML.Tag.IMG)) {
                 href = (String)a.getAttribute(HTML.Attribute.SRC);
             }
 

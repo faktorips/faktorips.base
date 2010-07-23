@@ -3,104 +3,122 @@ package org.faktorips.devtools.htmlexport.test.helper.html;
 import java.io.UnsupportedEncodingException;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 
 public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
-	protected IIpsProject ipsProject;
-	private HtmlLayouter layouter = new HtmlLayouter(".resource");
+    protected IIpsProject ipsProject;
+    private HtmlLayouter layouter = new HtmlLayouter(".resource");
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
 
-		layouter.clear();
-		ipsProject = newIpsProject("TestProjekt");
+        layouter.clear();
+        layouter.setPathToRoot("../../");
+        ipsProject = newIpsProject("TestProjekt");
 
-	}
-/*
-	public void testHtmlLayouterLinkPageElement() throws Exception {
-		String text = "text beispiel";
+    }
 
-		PolicyCmptType to = newPolicyCmptType(ipsProject, "base.BVB");
+    public void testHtmlLayouterLinkPageElement() throws Exception {
+        String linkText = "text beispiel";
 
-		String target = "classes";
+        PolicyCmptType to = newPolicyCmptType(ipsProject, "base.BVB");
 
-		LinkPageElement pageElement = new LinkPageElement(to, target, new TextPageElement(text));
+        String target = "classes";
 
-		String expected = "<a href=\"../../base/class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">" + text
-				+ "</a>";
-		assertEquals(expected, layout(pageElement));
-	}
+        LinkPageElement pageElement = PageElementUtils.createLinkPageElementToIpsElement(to, target,
+                new TextPageElement(linkText));
 
-	public void testHtmlLayouterLinkPageElementToRoot() throws Exception {
-		String text = "text beispiel";
+        assertLinkCorrect(linkText, to, target, pageElement);
+    }
 
-		PolicyCmptType to = newPolicyCmptType(ipsProject, "BVB");
+    public void testHtmlLayouterLinkPageElementToRoot() throws Exception {
+        String linkText = "text beispiel";
 
-		String target = "classes";
+        PolicyCmptType to = newPolicyCmptType(ipsProject, "BVB");
 
-		LinkPageElement pageElement = new LinkPageElement(to, target, new TextPageElement(text));
+        String target = "classes";
 
-		String expected = "<a href=\"../../class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">" + text
-				+ "</a>";
-		assertEquals(expected, layout(pageElement));
-	}
+        LinkPageElement pageElement = PageElementUtils.createLinkPageElementToIpsElement(to, target,
+                new TextPageElement(linkText));
 
-	public void testHtmlLayouterLinkPageElementFromRoot() throws Exception {
-		String text = "text beispiel";
+        assertLinkCorrect(linkText, to, target, pageElement);
+    }
 
-		PolicyCmptType to = newPolicyCmptType(ipsProject, "base.BVB");
+    public void testHtmlLayouterLinkPageElementFromRoot() throws Exception {
+        String linkText = "text beispiel";
 
-		String target = "classes";
+        PolicyCmptType to = newPolicyCmptType(ipsProject, "base.BVB");
 
-		LinkPageElement pageElement = new LinkPageElement(to, target, new TextPageElement(text));
+        String target = "classes";
 
-		String expected = "<a href=\"base/class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">" + text
-				+ "</a>";
-		assertEquals(expected, layout(pageElement));
-	}
+        LinkPageElement pageElement = PageElementUtils.createLinkPageElementToIpsElement(to, target,
+                new TextPageElement(linkText));
 
-	public void testHtmlLayouterLinkPageElementFromRootToRoot() throws Exception {
-		String text = "text beispiel";
+        assertLinkCorrect(linkText, to, target, pageElement);
+    }
 
-		PolicyCmptType to = newPolicyCmptType(ipsProject, "BVB");
+    public void testHtmlLayouterLinkPageElementFromRootToRoot() throws Exception {
+        String linkText = "text beispiel";
 
-		String target = "classes";
+        PolicyCmptType to = newPolicyCmptType(ipsProject, "BVB");
 
-		LinkPageElement pageElement = new LinkPageElement(to, target, new TextPageElement(text));
+        String target = "classes";
 
-		String expected = "<a href=\"class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">" + text + "</a>";
-		assertEquals(expected, layout(pageElement));
-	}
+        LinkPageElement pageElement = PageElementUtils.createLinkPageElementToIpsElement(to, target,
+                new TextPageElement(linkText));
 
-	public void testHtmlLayouterLinkPageElementPackage() throws Exception {
-		String text = "text beispiel";
+        assertLinkCorrect(linkText, to, target, pageElement);
+    }
 
-		PolicyCmptType to = newPolicyCmptType(ipsProject, "kranken.sub.BVB");
+    public void testHtmlLayouterLinkPageElementPackage() throws Exception {
+        String linkText = "text beispiel";
 
-		String target = "classes";
+        PolicyCmptType to = newPolicyCmptType(ipsProject, "kranken.sub.BVB");
 
-		LinkPageElement pageElement = new LinkPageElement(to, target, new TextPageElement(text));
+        String target = "classes";
 
-		String expected = "<a href=\"../kranken/sub/class_PolicyCmptType_BVB.html\" class=\"\" target=\"classes\">"
-				+ text + "</a>";
-		assertEquals(expected, layout(pageElement));
-	}
-*/
-	protected void assertContains(String html, String... containments) {
-		for (String string : containments) {
-			assertTrue("Nicht enthalten: " + string, html.contains(string));
-		}
-	}
+        LinkPageElement pageElement = PageElementUtils.createLinkPageElementToIpsElement(to, target,
+                new TextPageElement(linkText));
 
-	protected String layout(LinkPageElement pageElement) throws UnsupportedEncodingException {
-		pageElement.acceptLayouter(layouter);
-		byte[] generate = layouter.generate();
+        assertLinkCorrect(linkText, to, target, pageElement);
+    }
 
-		String html = new String(generate, "UTF-8").trim();
-		System.out.println(html);
-		return html;
-	}
+    protected void assertContains(String html, String... containments) {
+        for (String string : containments) {
+            assertTrue("Nicht enthalten: " + string, html.contains(string));
+        }
+    }
+
+    protected String layout(LinkPageElement pageElement) throws UnsupportedEncodingException {
+        pageElement.acceptLayouter(layouter);
+        byte[] generate = layouter.generate();
+
+        String html = new String(generate, "UTF-8").trim();
+        System.out.println(html);
+        return html;
+    }
+
+    private void assertLinkCorrect(String linkText, PolicyCmptType to, String target, LinkPageElement pageElement)
+            throws UnsupportedEncodingException {
+        StringBuilder expected = new StringBuilder();
+        expected.append("<a href=\"");
+        expected.append(layouter.getPathToRoot());
+        expected.append(to.getQualifiedName().replace('.', '/'));
+        expected.append('.');
+        expected.append(to.getIpsObjectType().getFileExtension());
+        expected.append(".html");
+        expected.append("\" target=\"");
+        expected.append(target);
+        expected.append("\">");
+        expected.append(linkText);
+        expected.append("</a>");
+
+        assertEquals(expected.toString(), layout(pageElement));
+    }
 }

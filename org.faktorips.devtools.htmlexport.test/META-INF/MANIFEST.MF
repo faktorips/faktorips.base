@@ -9,5 +9,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.faktorips.devtools.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.faktorips.devtools.htmlexport.test.documentor,
- org.faktorips.devtools.htmlexport.test.helper.html,
- org.faktorips.devtools.htmlexport.test.standard
+ org.faktorips.devtools.htmlexport.test.helper.html
