@@ -643,9 +643,10 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             for (ObjectProperty objectProperty : objectsUseSameColumnName) {
                 if (getPolicyCmptTypeFromObjectProperty(objectProperty).getPersistenceTypeInfo() == this) {
                     // append the other object property to the message text
-                    addMessageDuplicateColumnName(msgList, objectProperty, columnName
-                            + NLS.bind(". Found duplicate name in {0}.", StringUtils.strip(objectsAsString.replace(
-                                    objectPropertyAsString(objectProperty), ""), ", ")));
+                    String objAsString = StringUtils.strip(objectsAsString.replace(
+                            objectPropertyAsString(objectProperty), ""), ", ");
+                    String message = objAsString.length() == 0 ? "" : ". Found duplicate name in {0}.";
+                    addMessageDuplicateColumnName(msgList, objectProperty, columnName + NLS.bind(message, objAsString));
                 }
             }
         }

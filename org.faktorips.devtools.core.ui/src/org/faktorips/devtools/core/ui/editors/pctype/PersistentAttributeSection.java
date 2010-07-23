@@ -176,7 +176,11 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                         .getPersistenceAttributeInfo();
                 MessageList msgList;
                 try {
-                    msgList = persistenceAttributeInfo.validate(persistenceAttributeInfo.getIpsProject());
+                    // we must validate both the PersistenceTypeInfo and and the PersistenceTypeInfo
+                    // because the PersistenceTypeInfo validates duplicate column names
+                    msgList = persistenceAttributeInfo.getPolicyComponentTypeAttribute().getPolicyCmptType()
+                            .getPersistenceTypeInfo().validate(persistenceAttributeInfo.getIpsProject());
+                    msgList.add(persistenceAttributeInfo.validate(persistenceAttributeInfo.getIpsProject()));
                     String property = columnProperties.get(columnIndex).property;
                     if (property == null) {
                         return null;
