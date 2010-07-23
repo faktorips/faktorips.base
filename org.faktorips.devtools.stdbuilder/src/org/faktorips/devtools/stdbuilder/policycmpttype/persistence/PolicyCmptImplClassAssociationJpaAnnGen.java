@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
@@ -123,7 +123,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             addAnnotationAttributeCascadeType(fragment, attributesToAppend, genAssociation);
             addAnnotationAttributeFetch(fragment, attributesToAppend, genAssociation);
             addAnnotationAttributesTargetEntity(fragment, attributesToAppend, genAssociation);
-            addAnnotationAttributeOrphanRemoval(persistenceProviderImpl, attributesToAppend);
+            addAnnotationAttributeOrphanRemoval(persistenceProviderImpl, attributesToAppend, genAssociation);
             appendAllAttributes(fragment, attributesToAppend);
 
             // evaluate further attributes depending on the relationship type
@@ -139,15 +139,21 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
     }
 
     private void addAnnotationAttributeOrphanRemoval(IPersistenceProvider persistenceProviderImpl,
-            List<String> attributesToAppend) {
+            List<String> attributesToAppend,
+            GenAssociation genAssociation) {
         // note that depending on the JPA implementation (not JPA
         // 2.0) the orphan removal feature could be set as attribute or separate annotation
         if (persistenceProviderImpl == null || !persistenceProviderImpl.isSupportingOrphanRemoval()) {
             return;
         }
-        String attributeOrphanRemoval = persistenceProviderImpl.getRelationshipAnnotationAttributeOrphanRemoval();
-        if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
-            attributesToAppend.add(attributeOrphanRemoval);
+        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
+                .getPersistenceAssociatonInfo();
+
+        if (persistenceAssociatonInfo.isOrphanRemoval()) {
+            String attributeOrphanRemoval = persistenceProviderImpl.getRelationshipAnnotationAttributeOrphanRemoval();
+            if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
+                attributesToAppend.add(attributeOrphanRemoval);
+            }
         }
     }
 
