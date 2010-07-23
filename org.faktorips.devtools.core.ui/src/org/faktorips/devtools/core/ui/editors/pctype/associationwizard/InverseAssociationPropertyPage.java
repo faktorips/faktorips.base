@@ -1,5 +1,5 @@
 /*******************************************************************************
- * s * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 

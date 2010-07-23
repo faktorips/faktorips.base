@@ -10,6 +10,7 @@
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
+
 package org.faktorips.devtools.core.ui.editors.deltapresentation;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;

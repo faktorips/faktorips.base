@@ -1,5 +1,5 @@
-/***************************************************************************************************
- * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+/*******************************************************************************
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -9,8 +9,7 @@
  * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
- * 
- **************************************************************************************************/
+ *******************************************************************************/
 
 package org.faktorips.runtime.modeltype;
 
