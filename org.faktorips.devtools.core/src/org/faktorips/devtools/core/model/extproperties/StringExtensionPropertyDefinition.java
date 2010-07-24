@@ -30,6 +30,7 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
      */
     public StringExtensionPropertyDefinition() {
         super();
+        setDefaultValue(""); //$NON-NLS-1$
     }
 
     @Override
