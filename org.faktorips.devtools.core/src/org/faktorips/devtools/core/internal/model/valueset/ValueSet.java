@@ -71,7 +71,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         super(parent, partId);
         if (!(parent instanceof IValueSetOwner)) {
             super.parent = null;
-            throw new IllegalArgumentException("Parent has to implement IValueDatatypeProvider."); //$NON-NLS-1$
+            throw new IllegalArgumentException("Parent has to implement " + IValueSetOwner.class); //$NON-NLS-1$
         }
         descriptionChangable = false;
         this.type = type;

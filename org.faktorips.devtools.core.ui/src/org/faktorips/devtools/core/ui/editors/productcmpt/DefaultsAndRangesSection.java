@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.TimedEnumDatatypeUtil;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -36,6 +38,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.ValueSetFilter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -273,8 +276,11 @@ public class DefaultsAndRangesSection extends IpsSection {
      * value set).
      */
     private EditField createEditField(IConfigElement configElement, ValueDatatype datatype) {
+        GregorianCalendar genFrom = configElement.getProductCmptGeneration().getValidFrom();
+        GregorianCalendar genTo = configElement.getProductCmptGeneration().getValidTo();
+        IValueSet sourceSet = ValueSetFilter.filterValueSet(configElement.getValueSet(), datatype, genFrom, genTo,
+                TimedEnumDatatypeUtil.ValidityCheck.SOME_TIME_OF_THE_PERIOD);
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        return ctrlFactory.createEditField(toolkit, rootPane, datatype, configElement.getValueSet(), generation
-                .getIpsProject());
+        return ctrlFactory.createEditField(toolkit, rootPane, datatype, sourceSet, generation.getIpsProject());
     }
 }

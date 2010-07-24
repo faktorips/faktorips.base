@@ -201,7 +201,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         objectHasChanged();
     }
 
-    private void addValueWithoutTriggeringChangeEvent(String newValue) {
+    public void addValueWithoutTriggeringChangeEvent(String newValue) {
         values.add(newValue);
         Integer newIndex = values.size() - 1;
         setValueWithoutTriggeringChangeEvent(newValue, newIndex);
