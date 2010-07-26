@@ -63,8 +63,11 @@ public class LinkTest extends AbstractFipsDocTest {
         StringBuilder sb = new StringBuilder().append("Fehlerhafte Urls gefunden: ");
 
         for (int i = 0; i < errorUrls.size(); i++) {
-            sb.append('\n').append('\t').append(searchUrlsWithError.get(i).toString()).append('\t').append(
-                    errorUrls.get(i).toString());
+            URL url = searchUrlsWithError.get(i);
+            URL errorUrl = errorUrls.get(i);
+
+            sb.append('\n').append('\t').append(url == null ? "null" : url.toString()).append('\t').append(
+                    errorUrl == null ? "null" : errorUrl.toString());
         }
         fail(sb.toString());
 
