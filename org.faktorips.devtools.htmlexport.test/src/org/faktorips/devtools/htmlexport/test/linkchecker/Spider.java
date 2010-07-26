@@ -24,6 +24,8 @@ import javax.swing.text.html.HTMLEditorKit;
  * @author Jeff Heaton(http://www.jeffheaton.com)
  * @version 1.0
  */
+@SuppressWarnings("unchecked")
+// ugly designed
 public class Spider {
 
     /**
