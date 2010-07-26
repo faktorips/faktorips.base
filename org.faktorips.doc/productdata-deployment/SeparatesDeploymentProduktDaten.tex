@@ -38,34 +38,36 @@ Web Application Archive (WAR) erzeugt.
 
 Werden die Produktdaten verändert oder erweitert muss dieses Archiv ausgetauscht
 werden. Da Produktdaten und Programmcode eine Einheit bilden, muss auch der
-Programmcode neu ausgeliefert werden. Die Probleme, die beim separaten
-Ausliefern von Produktdaten ein einem eigenen Archiv entstehen und die daraus
-entwickelte Lösung wird in diesem Dokument vorgestellt.
+Programmcode neu ausgeliefert werden.
+
+Ziel des separaten Deployments von Produktdaten ist es, bei einer Änderung der
+Produktdaten nur die XML-Ressourcen auszutauschen ohne den Programmcode neu
+ausliefern zu müssen. Die Probleme, die dabei auftretenden Herausforderungen und
+die daraus entwickelten Lösungen werden in diesem Dokument vorgestellt.
 
 \section{Herausforderungen}
 
 \subsection{Runtime Repository}
 
-Für den Zugriff auf die Produktdaten zur Laufzeit steht in Faktor-IPS das
-Interface $IRuntimeRepository$ zur Verfügung. Wie bereits in der Einleitung
-beschrieben wurde bisher meist die Implementierung
+Für den Zugriff auf die Produktdaten steht in Faktor-IPS zur Laufzeit das
+Interface $IRuntimeRepository$ zur Verfügung. Wie bereits einleitend
+erwähnt wurde bisher meist die Implementierung
 $ClassloaderRuntimeRepository$ verwendet. Dieses lädt die Produktdaten über den
-Classpath als Ressourcen.
+Klassenpfad als Ressourcen.
 
 Um die Produktdaten unabhängig vom Programmcode zu halten muss zunächst ein
-Repository entwickelt werden, dass die Produktdaten unabhängig vom Classpath
-laden kann. Die hier vorgestellte Lösung greift dazu auf einen separaten Service
-(EJB 3.0 Stateless Session Bean) zu; die Verwendung einer Datenbank soll aber
-ohne großen Aufwand implementierbar sein.
-
+Repository entwickelt werden, dass die Produktdaten unabhängig vom Klassenpfad
+der Applikation laden kann. Die hier vorgestellte Lösung greift dazu auf einen
+separaten Service (EJB 3.0 Stateless Session Bean) zu; die Verwendung einer
+Datenbank soll aber ohne großen Aufwand implementierbar sein.
 
 \subsection{Ausführen von Formeln}
 
-In Faktor-IPS ist es möglich Formeln in einer einfachen Formelsprache in
-Produktdaten einzugeben. In den Modellklassen wird lediglich die Signatur der
-Formel festgelegt, die Berechnungsvorschrifen liegen in den Produktdaten. Um
-diese Formeln zur Laufzeit effizient auszuführen werden sie vom Faktor-IPS
-Builder in Java-Code übersetzt.
+In Faktor-IPS ist es möglich Formeln in einer einfachen Formelsprache in einem
+Produktbaustein einzugeben. In den Modellklassen wird lediglich die Signatur der
+Formel festgelegt, die Berechnungsvorschriften liegen in den Produktdaten. Um
+diese Formeln zur Laufzeit effizient auszuführen werden sie vom
+Faktor-IPS-Builder in Java-Code übersetzt.
 
 Bisher wurde dazu für jeden Produktbaustein\footnote{Genau genommen werden
 Formel für eine Anpassungsstufe festgelegt, dies würde jedoch die Beschreibung
@@ -80,6 +82,7 @@ korrekte Implementierung zu einem Produktbaustein lud.
 \label{subclassing}
 \end{figure}
 
+Werden nun die Produktdaten durch einen separaten Service abgerufen, 
 
 Beim separaten Ausliefern von Produktdaten entsteht dabei das Problem, dass mit
 den Produktdaten nicht nur XML-Ressourcen sondern auch Programmcode ausgetauscht
