@@ -56,7 +56,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         getEnumAttribute().setName(getNewName());
-        getIpsSrcFile().save(true, null);
 
         getEnumAttribute().getIpsModel().clearValidationCache();
         MessageList validationMessageList = getEnumAttribute().validate(getIpsProject());
@@ -64,7 +63,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         addValidationMessagesToStatus(validationMessageList, status);
 
         getEnumAttribute().setName(getOriginalName());
-        getIpsSrcFile().save(true, null);
     }
 
     private IIpsSrcFile getIpsSrcFile() {
@@ -102,7 +100,9 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     /** Updates the default value provider reference in the literal name attribute. */
     private void updateLiteralNameReference() {
         IEnumLiteralNameAttribute literalNameAttribute = getEnumType().getEnumLiteralNameAttribute();
-        literalNameAttribute.setDefaultValueProviderAttribute(getNewName());
+        if (literalNameAttribute.getDefaultValueProviderAttribute().equals(getOriginalName())) {
+            literalNameAttribute.setDefaultValueProviderAttribute(getNewName());
+        }
     }
 
     /** Updates all inherited attributes based on the enumeration attribute to be refactored. */

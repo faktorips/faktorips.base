@@ -78,14 +78,12 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         getAttribute().setName(getNewName());
-        getIpsSrcFile().save(true, null);
 
         MessageList validationMessageList = getAttribute().validate(getIpsProject());
         validationMessageList.add(getType().validate(getIpsProject()));
         addValidationMessagesToStatus(validationMessageList, status);
 
         getAttribute().setName(getOriginalName());
-        getIpsSrcFile().save(true, null);
     }
 
     private IIpsSrcFile getIpsSrcFile() {
