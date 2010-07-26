@@ -854,4 +854,12 @@ schutz” abgerufen und ausgedruckt werden.
          fragment="true"
          unpack="false"/>
 
+   <plugin
+         id="org.faktorips.devtools.htmlexport.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
 </feature>
