@@ -49,7 +49,9 @@ public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
 
         config = new DocumentorConfiguration();
 
-        String location = System.getProperty("java.io.tmpdir") + File.separator + "fips";
+        File tmpFile = File.createTempFile("tmp", "tmp");
+        String location = tmpFile.getParentFile() + File.separator + "fips";
+        tmpFile.delete();
 
         config.setPath(location + File.separator + "html");
         config.setIpsProject(ipsProject);
