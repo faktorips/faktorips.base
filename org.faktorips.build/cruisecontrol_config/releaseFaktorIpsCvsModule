@@ -54,7 +54,8 @@ createBranch()
   
   echo "branching "$BRANCH" ..."
 
-  # branch pluginbuilder projekt
+  # branch build and pluginbuilder projekt
+  branchProject $BUILD_PROJECT_NAME
   branchProject $PLUGINBUILDER_PROJECT_NAME
   
   # branch integrationtets projects
@@ -65,6 +66,9 @@ createBranch()
   # branch customer product project
   branchProject $CUSTOMER_PRODUCT_PROJECT
   
+  # branch devtarget project
+  branchProject $DEVTARGET_PLUGIN_NAME
+
   # branch all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
   for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
