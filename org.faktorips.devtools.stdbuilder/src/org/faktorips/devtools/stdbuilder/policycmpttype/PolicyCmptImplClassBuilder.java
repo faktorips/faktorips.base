@@ -359,19 +359,20 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Code sample
      * 
      * <pre>
-     * protected void copyProperties(CpParent copy, Map&lt;IModelObject, IModelObject&gt; copyMap) {
+     * protected void copyProperties(IModelObject copy, Map&lt;IModelObject, IModelObject&gt; copyMap) {
      *     super.copyProperties(copy); // if class has superclass
-     *     copy.changeableAttr = changeableAttr;
-     *     copy.derivedExplicitCall = derivedExplicitCall;
+     *     CpParent concreteCopy = (CpParent)copy;
+     *     concreteCopy.changeableAttr = changeableAttr;
+     *     concreteCopy.derivedExplicitCall = derivedExplicitCall;
      *     if (child1 != null) {
-     *         copy.child1 = (CpChild1)child1.newCopy();
-     *         copy.child1.setParentModelObjectInternal(copy);
+     *         concreteCopy.child1 = (CpChild1)child1.newCopy();
+     *         concreteCopy.child1.setParentModelObjectInternal(concreteCopy);
      *     }
      *     for (Iterator it = child2s.iterator(); it.hasNext();) {
      *         CpChild2 CpChild2 = (CpChild2)it.next();
      *         CpChild2 copyCpChild2 = (CpChild2)CpChild2.newCopy();
-     *         ((DependantObject)copyCpChild2).setParentModelObjectInternal(copy);
-     *         copy.child2s.add(copyCpChild2);
+     *         ((DependantObject)copyCpChild2).setParentModelObjectInternal(concreteCopy);
+     *         concreteCopy.child2s.add(copyCpChild2);
      *     }
      * }
      * </pre>
@@ -384,8 +385,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String paramName = "copy";
         String varCopyMap = "copyMap";
         methodsBuilder.addImport(Map.class);
+        if (getPcType().hasSupertype()) {
+            appendOverrideAnnotation(methodsBuilder, false);
+        }
+
         methodsBuilder.signature(java.lang.reflect.Modifier.PROTECTED, "void", getMethodNameCopyProperties(),
-                new String[] { paramName, varCopyMap }, new String[] { getUnqualifiedClassName(),
+                new String[] { paramName, varCopyMap }, new String[] { IModelObject.class.getName(),
                         getHashMapFragment(false).getSourcecode() });
         methodsBuilder.openBracket();
 
@@ -394,13 +399,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     + ");");
         }
 
+        boolean concreteCopyDefined = false;
+
         GenPolicyCmptType genPolicyCmptType = getGenerator();
         for (GenPolicyCmptTypeAttribute generator : genPolicyCmptType.getGenAttributes()) {
             if (generator.isMemberVariableRequired()) {
                 String field = generator.getMemberVarName();
-                methodsBuilder.append(paramName + "." + field + " = ");
+                methodsBuilder.append(getConcreteCopyVar(methodsBuilder, concreteCopyDefined) + "." + field + " = ");
                 methodsBuilder.append(generator.getDatatypeHelper().referenceOrSafeCopyIfNeccessary(field));
                 methodsBuilder.appendln(";");
+                concreteCopyDefined = true;
             }
         }
 
@@ -413,13 +421,24 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 continue;
             }
             if (associations[i].isAssoziation()) {
-                getGenerator(associations[i]).generateMethodCopyPropertiesForAssociation(paramName, methodsBuilder);
+                getGenerator(associations[i]).generateMethodCopyPropertiesForAssociation(
+                        getConcreteCopyVar(methodsBuilder, concreteCopyDefined), methodsBuilder);
             } else {
-                getGenerator(associations[i]).generateCodeForCopyPropertiesForComposition(paramName, varCopyMap,
-                        methodsBuilder);
+                getGenerator(associations[i]).generateCodeForCopyPropertiesForComposition(
+                        getConcreteCopyVar(methodsBuilder, concreteCopyDefined), varCopyMap, methodsBuilder);
             }
+            concreteCopyDefined = true;
         }
         methodsBuilder.closeBracket();
+    }
+
+    private String getConcreteCopyVar(JavaCodeFragmentBuilder methodsBuilder, boolean defined) throws CoreException {
+        String concreteCopy = "concreteCopy";
+        if (!defined) {
+            methodsBuilder.varDefinition(getUnqualifiedClassName(), concreteCopy, "(" + getUnqualifiedClassName() + ")"
+                    + "copy");
+        }
+        return concreteCopy;
     }
 
     /**
