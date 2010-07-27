@@ -880,6 +880,7 @@ ${faktoripsProductLinuxZipPath}
 	    <cvs command="co" package="org.faktorips.devtools.tableconversion.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 	    <cvs command="co" package="org.faktorips.devtools.stdbuilder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.devtools.ant.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		<cvs command="co" package="org.faktorips.devtools.core.htmlexport.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		
 		<!-- checkout faktorips uml plugins and feature -->
 	    <cvs command="co" package="org.faktorips.uml.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
