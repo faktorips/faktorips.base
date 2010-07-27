@@ -35,7 +35,10 @@ import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.ui.actions.RenameHandler;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer;
@@ -211,6 +214,15 @@ public class ProductExplorer extends ModelExplorer {
             }
 
             return false;
+        }
+
+        @Override
+        protected void createReorgActions(IMenuManager manager, Object selected) {
+            super.createReorgActions(manager, selected);
+            // TODO AW: IIpsProject and IIpsPackageFragmentRoot should be supported as well
+            if (selected instanceof IIpsObject || selected instanceof IIpsPackageFragment) {
+                manager.add(RenameHandler.getContributionItem());
+            }
         }
 
         @Override
