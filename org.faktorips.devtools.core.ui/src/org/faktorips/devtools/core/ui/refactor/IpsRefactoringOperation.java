@@ -11,24 +11,24 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.ui.refactor;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringUI;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.refactor.IIpsRefactoringProcessor;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -38,10 +38,10 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Alexander Weickmann
  */
-public final class IpsRefactoringOperation {
+public class IpsRefactoringOperation {
 
     /** The refactoring to execute. */
-    private final Refactoring refactoring;
+    private final ProcessorBasedRefactoring refactoring;
 
     /** The UI shell wherein this refactoring is being executed. */
     private final Shell shell;
@@ -52,7 +52,7 @@ public final class IpsRefactoringOperation {
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public IpsRefactoringOperation(Refactoring refactoring, Shell shell) {
+    public IpsRefactoringOperation(ProcessorBasedRefactoring refactoring, Shell shell) {
         ArgumentCheck.notNull(new Object[] { refactoring, shell });
         this.refactoring = refactoring;
         this.shell = shell;
@@ -62,7 +62,7 @@ public final class IpsRefactoringOperation {
      * Executes the refactoring. The conditions will be checked first. An appropriate dialog will be
      * shown to the user in case any warnings or errors are identified during the check.
      */
-    public void execute() {
+    public void run() {
         boolean conditionsOk = checkConditions();
         if (!(conditionsOk)) {
             return;
@@ -101,16 +101,22 @@ public final class IpsRefactoringOperation {
 
     /** Checks the refactoring's conditions and returns whether it is OK to execute the refactoring. */
     private boolean checkConditions() {
-        CheckConditionsOperation checkOperation = new CheckConditionsOperation(refactoring,
-                CheckConditionsOperation.ALL_CONDITIONS);
+        IIpsRefactoringProcessor processor = (IIpsRefactoringProcessor)refactoring.getProcessor();
+        IpsCheckConditionsOperation checkConditionsOperation = new IpsCheckConditionsOperation(refactoring,
+                IpsCheckConditionsOperation.ALL_CONDITIONS, processor.isSourceFilesSavedRequired(), null);
         try {
-            checkOperation.run(new NullProgressMonitor());
+            checkConditionsOperation.run();
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-        RefactoringStatus checkStatus = checkOperation.getStatus();
-        if (checkStatus.hasWarning()) {
-            return requestUserConfirmation(checkStatus);
+        if (processor.isSourceFilesSavedRequired()) {
+            if (!(checkConditionsOperation.getEditorsSaved())) {
+                return false;
+            }
+        }
+        RefactoringStatus status = checkConditionsOperation.getStatus();
+        if (status.hasWarning()) {
+            return requestUserConfirmation(status);
         }
         return true;
     }

@@ -70,4 +70,9 @@ public class PullUpAttributeProcessor extends IpsRefactoringProcessor {
         return new RefactoringStatus();
     }
 
+    @Override
+    public boolean isSourceFilesSavedRequired() {
+        return false;
+    }
+
 }

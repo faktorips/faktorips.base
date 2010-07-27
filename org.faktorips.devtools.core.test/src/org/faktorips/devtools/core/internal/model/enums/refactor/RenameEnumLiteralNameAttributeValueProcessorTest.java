@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.model.enums.refactor;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 
-public class RenameEnumLiteralNameAttributeValueProcessor extends AbstractIpsRefactoringTest {
+public class RenameEnumLiteralNameAttributeValueProcessorTest extends AbstractIpsRefactoringTest {
 
     public void testRenameEnumLiteralNameAttributeValue() throws CoreException {
         performRenameRefactoring(enumLiteralNameAttributeValue, "bar");

@@ -74,13 +74,13 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
-import org.faktorips.devtools.core.ui.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.util.ArgumentCheck;
@@ -1012,7 +1012,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     renameProcessor.setNewName((String)value);
 
                     IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
-                    refactorOp.execute();
+                    refactorOp.run();
 
                 } else {
                     enumAttributeValue.setValue((String)value);

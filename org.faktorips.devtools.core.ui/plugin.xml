@@ -1238,7 +1238,7 @@
          </enabledWhen>
       </handler>
             <handler
-            class="org.faktorips.devtools.core.ui.actions.RenameHandler"
+            class="org.faktorips.devtools.core.ui.refactor.IpsRenameHandler"
             commandId="org.eclipse.ui.edit.rename">
          <activeWhen>
             <with
@@ -1252,7 +1252,7 @@
             </with>
          </activeWhen>
          <class
-               class="org.faktorips.devtools.core.ui.actions.RenameHandler">
+               class="org.faktorips.devtools.core.ui.refactor.IpsRenameHandler">
          </class>
          <enabledWhen>
             <count
@@ -1261,7 +1261,7 @@
          </enabledWhen>
       </handler>
       <handler
-            class="org.faktorips.devtools.core.ui.actions.MoveHandler"
+            class="org.faktorips.devtools.core.ui.refactor.IpsMoveHandler"
             commandId="org.eclipse.ui.edit.move">
          <activeWhen>
             <with
@@ -1275,7 +1275,7 @@
             </with>
          </activeWhen>
          <class
-               class="org.faktorips.devtools.core.ui.actions.MoveHandler">
+               class="org.faktorips.devtools.core.ui.refactor.IpsMoveHandler">
          </class>
          <enabledWhen>
             <count

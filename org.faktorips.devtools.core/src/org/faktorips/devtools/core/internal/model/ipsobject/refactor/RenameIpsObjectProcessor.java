@@ -74,6 +74,11 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
         renameMoveHelper.refactorIpsModel(getIpsObject().getIpsPackageFragment(), getNewName(), pm);
     }
 
+    @Override
+    public boolean isSourceFilesSavedRequired() {
+        return renameMoveHelper.isSourceFilesSavedRequired();
+    }
+
     private IpsObject getIpsObject() {
         return (IpsObject)getIpsElement();
     }

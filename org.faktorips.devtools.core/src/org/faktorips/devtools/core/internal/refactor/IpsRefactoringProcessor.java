@@ -255,8 +255,10 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
         return true;
     }
 
-    /** Returns the <tt>IIpsElement</tt> to be refactored. */
-    protected final IIpsElement getIpsElement() {
+    /**
+     * Returns the <tt>IIpsElement</tt> to be refactored.
+     */
+    public final IIpsElement getIpsElement() {
         return ipsElement;
     }
 

@@ -33,12 +33,13 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.RenameHandler;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
+import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -128,7 +129,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
             manager.add(refactorSubmenu);
             manager.add(new Separator());
 
-            refactorSubmenu.add(RenameHandler.getContributionItem());
+            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
             // TODO AW: Pull Up not yet working
             // refactorSubmenu.add(new PullUpAction(editorSite.getShell(),
             // getPartsComposite()));

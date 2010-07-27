@@ -75,6 +75,11 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
     }
 
     @Override
+    public boolean isSourceFilesSavedRequired() {
+        return renameMoveHelper.isSourceFilesSavedRequired();
+    }
+
+    @Override
     public String getIdentifier() {
         return "org.faktorips.devtools.core.internal.model.type.refactor.MoveIpsObjectProcessor"; //$NON-NLS-1$
     }
