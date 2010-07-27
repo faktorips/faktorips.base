@@ -42,7 +42,7 @@ Programmcode neu ausgeliefert werden.
 
 Ziel des separaten Deployments von Produktdaten ist es, bei einer Änderung der
 Produktdaten nur die XML-Ressourcen auszutauschen ohne den Programmcode neu
-ausliefern zu müssen. Die Probleme, die dabei auftretenden Herausforderungen und
+ausliefern zu müssen. Die dabei auftretenden Herausforderungen und
 die daraus entwickelten Lösungen werden in diesem Dokument vorgestellt.
 
 \section{Herausforderungen}
@@ -57,8 +57,8 @@ Klassenpfad als Ressourcen.
 
 Um die Produktdaten unabhängig vom Programmcode zu halten muss zunächst ein
 Repository entwickelt werden, dass die Produktdaten unabhängig vom Klassenpfad
-der Applikation laden kann. Die hier vorgestellte Lösung greift dazu auf einen
-separaten Service (EJB 3.0 Stateless Session Bean) zu; die Verwendung einer
+der Applikation laden kann. Die später genauer vorgestellte Lösung greift dazu
+auf einen separaten Service (EJB 3.0 Stateless Session Bean) zu; die Verwendung einer
 Datenbank soll aber ohne großen Aufwand implementierbar sein.
 
 \subsection{Ausführen von Formeln}
@@ -82,21 +82,25 @@ korrekte Implementierung zu einem Produktbaustein lud.
 \label{subclassing}
 \end{figure}
 
-Werden nun die Produktdaten durch einen separaten Service abgerufen, 
+Werden nun die Produktdaten durch einen separaten Service abgerufen, müsste nach
+diesem Ansatz auch die Implementierung über den Service abgerufen werden. Die
+Instantiierung muss jedoch auf Seiten des Runtime Repositories vorgenommen
+werden. Ändert sich in einer neuen Version der Produktdaten eine Formel, muss
+auch geladene Implementierung ausgetauscht werden. Der Classloader von Java
+sieht jedoch keinen Austausch während des Betriebs vor. Da Application Server im
+JavaEE Umfeld selbst diverse Anpassungen am Classloader vornehmen ist eine
+eigene Anpassung an dieser Stelle nicht möglich.
 
-Beim separaten Ausliefern von Produktdaten entsteht dabei das Problem, dass mit
-den Produktdaten nicht nur XML-Ressourcen sondern auch Programmcode ausgetauscht
-werden muss. Der normale Classloading Mechanismus von Java sieht ein Austauschen
-von Bytecode zur Laufzeit nicht vor. Da im Java EE Umfeld von vielen Application
-Servern der Classloading Mechanismus beeinflusst wird, ist es nicht sinnvoll
-hierfür eigene Lösungen aufzubauen.
-
-Es musste also Teil des separaten Deployments sein, die Formeln
-zur Laufzeit zu interpretieren um die Produktdaten frei von Programmcode zu
-halten.
+Eine Herausforderung im separaten Deployment ist es daher, die Formeln nicht wie
+bisher in Subklassen zu kompilieren sondern zur Laufzeit zu interpretieren. Die
+Produktdaten werden dadurch frei von Programmcode.
 
 \subsection{Hot Deployment und Caching}
 \label{hot_deployment}
+
+Es soll möglich sein, die Produktdaten im laufenden Betrieb auszutauschen. Im
+Fall eines EJB Application Servers
+
 
 Eine weitere Herausforderung stellt das Hot Deployment dar. Es soll möglich
 sein, die Produktdaten bei laufendem Betrieb auszutauschen.
