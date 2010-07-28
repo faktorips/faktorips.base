@@ -15,7 +15,6 @@ package org.faktorips.runtime.productdataprovider;
 
 import java.io.InputStream;
 
-import org.faktorips.runtime.IVersionChecker;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
@@ -33,7 +32,7 @@ import org.w3c.dom.Element;
  * 
  * @author dirmeier
  */
-public interface IProductDataProvider extends IVersionChecker {
+public interface IProductDataProvider {
 
     /**
      * Getting the toc in the product data provider and returns it. Calling the method twice should
