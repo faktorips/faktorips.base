@@ -671,6 +671,8 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         Text text = (Text)control;
         DatatypeCompletionProcessor processor = new DatatypeCompletionProcessor();
         processor.setIpsProject(ipsProject);
+        processor.setValueDatatypesOnly(false);
+        processor.setIncludeAbstract(true);
         SubjectControlContentAssistant contentAssistant = CompletionUtil.createContentAssistant(processor);
 
         ContentAssistHandler.createHandlerForText(text, contentAssistant);
