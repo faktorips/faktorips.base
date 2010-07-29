@@ -19,9 +19,9 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsElement;
 
-public class PullUpRefactoringWizard extends IpsRefactoringWizard {
+public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
 
-    public PullUpRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
+    public IpsPullUpRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
     }
 

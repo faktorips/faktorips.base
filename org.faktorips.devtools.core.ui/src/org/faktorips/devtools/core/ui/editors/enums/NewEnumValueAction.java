@@ -35,20 +35,18 @@ public class NewEnumValueAction extends Action {
     private final String IMAGE_NAME = "InsertRowAfter.gif"; //$NON-NLS-1$
 
     /** The table viewer linking the enumeration values UI table widget with the model data. */
-    private TableViewer enumValuesTableViewer;
+    private final TableViewer tableViewer;
 
     /**
-     * Creates a new <tt>NewEnumValueAction</tt>.
+     * @param tableViewer The table viewer linking the table widget with the model data.
      * 
-     * @param enumValuesTableViewer The table viewer linking the table widget with the model data.
-     * 
-     * @throws NullPointerException If <tt>enumValuesTableViewer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <tt>tableViewer</tt> is <tt>null</tt>.
      */
-    public NewEnumValueAction(TableViewer enumValuesTableViewer) {
+    public NewEnumValueAction(TableViewer tableViewer) {
         super();
-        ArgumentCheck.notNull(enumValuesTableViewer);
+        ArgumentCheck.notNull(tableViewer);
 
-        this.enumValuesTableViewer = enumValuesTableViewer;
+        this.tableViewer = tableViewer;
 
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME));
         setText(Messages.EnumValuesSection_labelNewValue);
@@ -58,18 +56,18 @@ public class NewEnumValueAction extends Action {
     @Override
     public void run() {
         // Do nothing if there are no columns yet.
-        if (enumValuesTableViewer.getColumnProperties().length <= 0) {
+        if (tableViewer.getColumnProperties().length <= 0) {
             return;
         }
 
-        IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValuesTableViewer.getInput();
+        IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
         try {
             enumValueContainer.newEnumValue();
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
 
-        enumValuesTableViewer.refresh(true);
+        tableViewer.refresh(true);
     }
 
 }

@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.refactor.IIpsRefactoringProcessor;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
-import org.faktorips.devtools.core.ui.wizards.refactor.RefactoringDialog;
+import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringDialog;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -151,7 +151,7 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
         IJobManager jobManager = Job.getJobManager();
         jobManager.beginRule(ResourcesPlugin.getWorkspace().getRoot(), null);
         try {
-            Dialog dialog = new RefactoringDialog(shell, refactoringWizard);
+            Dialog dialog = new IpsRefactoringDialog(shell, refactoringWizard);
             dialog.create();
             dialog.open();
         } finally {

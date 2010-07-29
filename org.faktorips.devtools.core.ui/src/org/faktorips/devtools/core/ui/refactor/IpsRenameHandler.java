@@ -18,7 +18,7 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
-import org.faktorips.devtools.core.ui.wizards.refactor.RenameRefactoringWizard;
+import org.faktorips.devtools.core.ui.wizards.refactor.IpsRenameRefactoringWizard;
 
 /**
  * Provides the rename workbench contribution which opens the appropriate Faktor-IPS refactoring
@@ -37,7 +37,7 @@ public class IpsRenameHandler extends IpsRefactoringHandler {
 
     @Override
     protected RefactoringWizard getRefactoringWizard(Refactoring refactoring, IIpsElement selectedIpsElement) {
-        return new RenameRefactoringWizard(refactoring, selectedIpsElement);
+        return new IpsRenameRefactoringWizard(refactoring, selectedIpsElement);
     }
 
 }

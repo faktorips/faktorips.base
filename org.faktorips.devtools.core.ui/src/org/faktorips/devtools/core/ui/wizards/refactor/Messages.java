@@ -30,6 +30,7 @@ public class Messages extends NLS {
     public static String ElementNames_Attribute;
     public static String ElementNames_Method;
     public static String ElementNames_Type;
+    public static String ElementNames_EnumLiteralNameAttributeValue;
 
     public static String RenameRefactoringWizard_title;
     public static String MoveRefactoringWizard_title;

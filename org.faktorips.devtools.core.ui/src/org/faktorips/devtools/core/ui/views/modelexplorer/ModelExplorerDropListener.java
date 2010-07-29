@@ -109,7 +109,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                         moveProcessor.setTargetIpsPackageFragment((IIpsPackageFragment)target);
 
                         IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(moveRefactoring, shell);
-                        refactorOp.run();
+                        refactorOp.runDirectExecution();
                     }
 
                     return;

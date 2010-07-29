@@ -64,4 +64,9 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         assertEquals("FOOSSBAR", literalNameAttributeValue.getValue());
     }
 
+    public void testGetName() {
+        literalNameAttributeValue.setValue("FOOBAR");
+        assertEquals("FOOBAR", literalNameAttributeValue.getName());
+    }
+
 }
