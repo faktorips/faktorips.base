@@ -314,13 +314,20 @@ public class MoveOperation implements IRunnableWithProgress {
      * given array of sources, e.g. moving an Object in itself. If the given target is a package,
      * this method returns <code>false</code> if the package is a subpackage of the given sources.
      * <code>true</code> otherwise. If the corresponding resource of the target is null return
-     * <code>false</code> e.g. target is inside an ips archive.
+     * <code>false</code> e.g. target is inside an ips archive. Also returns <tt>false</tt> if at
+     * least one of the sources to move is a default package.
      */
     private static boolean canMovePackages(Object[] sources, Object target) {
         for (Object source : sources) {
             if (source.equals(target)) {
                 return false;
             } else if (source instanceof IIpsPackageFragment || source instanceof IIpsPackageFragmentRoot) {
+                if (source instanceof IIpsPackageFragment) {
+                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)source;
+                    if (packageFragment.isDefaultPackage()) {
+                        return false;
+                    }
+                }
                 if (target instanceof IIpsPackageFragment || target instanceof IIpsPackageFragmentRoot) {
                     IFolder sourceFolder = (IFolder)((IIpsElement)source).getCorrespondingResource();
                     IResource targetResource = ((IIpsElement)target).getCorrespondingResource();

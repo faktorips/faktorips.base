@@ -26,6 +26,7 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 
 /**
  * Abstract default implementation of a drop target listener. Drag over and drag leave are ignored
@@ -87,11 +88,21 @@ public abstract class IpsElementDropListener implements DropTargetListener {
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
             IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
             if (file != null) {
-                // getFileForLocation returns a file even if the path points to a folder.
-                // In this case file.exists() returns false.
+                /*
+                 * getFileForLocation(IPath) returns a file even if the path points to a folder. In
+                 * this case file.exists() returns false.
+                 */
                 if (file.exists()) {
                     IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
                     if (element != null && element.exists()) {
+                        /*
+                         * Moving package fragment roots does not make sense, so in this case the
+                         * default package is meant to be moved.
+                         */
+                        if (element instanceof IIpsPackageFragmentRoot) {
+                            IIpsPackageFragmentRoot packRoot = (IIpsPackageFragmentRoot)element;
+                            element = packRoot.getDefaultIpsPackageFragment();
+                        }
                         elements.add(element);
                     } else {
                         elements.add(file);
@@ -104,6 +115,14 @@ public abstract class IpsElementDropListener implements DropTargetListener {
                 if (container.exists()) {
                     IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(container);
                     if (element != null && element.exists()) {
+                        /*
+                         * Moving package fragment roots does not make sense, so in this case the
+                         * default package is meant to be moved.
+                         */
+                        if (element instanceof IIpsPackageFragmentRoot) {
+                            IIpsPackageFragmentRoot packRoot = (IIpsPackageFragmentRoot)element;
+                            element = packRoot.getDefaultIpsPackageFragment();
+                        }
                         elements.add(element);
                     } else {
                         elements.add(container);

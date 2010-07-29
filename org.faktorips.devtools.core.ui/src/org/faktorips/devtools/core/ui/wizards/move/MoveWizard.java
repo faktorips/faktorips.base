@@ -99,14 +99,24 @@ public class MoveWizard extends Wizard {
         Object[] selected = selection.toArray();
         selectedObjects = new IIpsElement[selected.length];
         for (int i = 0; i < selection.size(); i++) {
+            boolean unsupported = false;
             if (selected[i] instanceof IProductCmpt || selected[i] instanceof IIpsPackageFragment
                     || selected[i] instanceof ITableContents || selected[i] instanceof ITestCase) {
-                selectedObjects[i] = (IIpsElement)selected[i];
+                if (selected[i] instanceof IIpsPackageFragment) {
+                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)selected[i];
+                    if (packageFragment.isDefaultPackage()) {
+                        unsupported = true;
+                    }
+                }
             } else {
+                unsupported = true;
+            }
+            if (unsupported) {
                 selectionError = Messages.MoveWizard_errorUnsupported;
-
                 // does not make sense to work on...
                 break;
+            } else {
+                selectedObjects[i] = (IIpsElement)selected[i];
             }
         }
 
