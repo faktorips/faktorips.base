@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -64,7 +65,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
     }
 
     private void addValidationRuleTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper
                 .addPageElements(new TextPageElement(Messages.PolicyCmptTypeContentPageElement_rules,
                         TextType.HEADING_2));
@@ -99,8 +100,8 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
             }
 
             @Override
-            protected List<String> getHeadline() {
-                List<String> headline = super.getHeadline();
+            protected List<String> getHeadlineWithIpsObjectPart() {
+                List<String> headline = super.getHeadlineWithIpsObjectPart();
 
                 addHeadlineAndColumnLayout(headline, Messages.PolicyCmptTypeContentPageElement_productRelevant,
                         Style.CENTER);

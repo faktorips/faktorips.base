@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -86,7 +87,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
      * adds the paths of the IpsObjects
      */
     private void addIpsObjectPaths() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_paths, TextType.HEADING_2));
         IIpsObjectPath objectPath;
         try {
@@ -104,7 +105,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private PageElement createArchiveEntriesList(IIpsObjectPath objectPath) {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_archiveEntries,
                 TextType.HEADING_3));
 
@@ -119,7 +120,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private PageElement createReferencedIpsProjectList(IIpsObjectPath objectPath) {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_referencedProjects,
                 TextType.HEADING_3));
         if (objectPath.getReferencedIpsProjects().length == 0) {
@@ -137,7 +138,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private PageElement createReferencingIpsProjectList(IIpsObjectPath objectPath) {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_referencingProjects,
                 TextType.HEADING_3));
         IIpsProject[] referencingProjectLeavesOrSelf;
@@ -166,7 +167,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private PageElement createSourceFolders(IIpsObjectPath objectPath) {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_sourceFolder,
                 TextType.HEADING_3));
         if (objectPath.getReferencedIpsProjects().length == 0) {

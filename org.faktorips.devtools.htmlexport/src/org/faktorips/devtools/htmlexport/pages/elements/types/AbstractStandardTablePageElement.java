@@ -41,12 +41,17 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
  * @author dicker
  * 
  */
-public abstract class AbstractSpecificTablePageElement extends TablePageElement implements DataPageElement {
+public abstract class AbstractStandardTablePageElement extends TablePageElement implements DataPageElement {
+
+    // private final IpsObjectPartContainer partContainer;
+
     /**
      * Creates an AbstractSpecificTablePageElement
      */
-    public AbstractSpecificTablePageElement() {
+    public AbstractStandardTablePageElement() {
+        // public AbstractObjectPartTablePageElement(IpsObjectPartContainer partContainer) {
         super();
+        // this.partContainer = partContainer;
         addLayouts(new RowTablePageElementLayout(0, Style.TABLE_HEADLINE));
         addLayouts(new AlternateRowTablePageElementLayout(true));
     }
@@ -66,7 +71,12 @@ public abstract class AbstractSpecificTablePageElement extends TablePageElement 
     @Override
     public void build() {
         addHeadline();
+        addDataRowsWithExtensionPoints();
+    }
+
+    private void addDataRowsWithExtensionPoints() {
         addDataRows();
+
     }
 
     /**

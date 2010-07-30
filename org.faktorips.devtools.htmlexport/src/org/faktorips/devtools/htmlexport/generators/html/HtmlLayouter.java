@@ -18,13 +18,13 @@ import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.faktorips.devtools.htmlexport.generators.AbstractLayouter;
-import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayoutResource;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlTextType;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
@@ -34,7 +34,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 
 /**
@@ -43,7 +42,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElem
  * @author dicker
  * 
  */
-public class HtmlLayouter extends AbstractLayouter implements ILayouter {
+public class HtmlLayouter extends AbstractLayouter {
 
     /*
      * Name of the css-File
@@ -130,7 +129,7 @@ public class HtmlLayouter extends AbstractLayouter implements ILayouter {
      * .devtools.htmlexport.pages.elements.core.WrapperPageElement)
      */
     @Override
-    public void layoutWrapperPageElement(WrapperPageElement wrapperPageElement) {
+    public void layoutWrapperPageElement(AbstractCompositePageElement wrapperPageElement) {
         WrapperType wrapperType = wrapperPageElement.getWrapperType();
         if (wrapperType == WrapperType.NONE && wrapperPageElement.getStyles().isEmpty()) {
             visitSubElements(wrapperPageElement);

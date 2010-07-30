@@ -26,7 +26,6 @@ import org.faktorips.devtools.htmlexport.generators.WrapperType;
  * 
  */
 public class WrapperPageElement extends AbstractCompositePageElement {
-    protected WrapperType wrapperType;
 
     /**
      * creates an empty {@link WrapperPageElement}
@@ -34,7 +33,7 @@ public class WrapperPageElement extends AbstractCompositePageElement {
      * @param wrapperType
      */
     public WrapperPageElement(WrapperType wrapperType) {
-        this.wrapperType = wrapperType;
+        setWrapperType(wrapperType);
     }
 
     /**
@@ -61,7 +60,7 @@ public class WrapperPageElement extends AbstractCompositePageElement {
         if (styles != null) {
             addStyles(styles.toArray(new Style[styles.size()]));
         }
-        this.wrapperType = wrapperType;
+        setWrapperType(wrapperType);
     }
 
     /*
@@ -84,22 +83,6 @@ public class WrapperPageElement extends AbstractCompositePageElement {
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutWrapperPageElement(this);
-    }
-
-    /**
-     * @return the wrapperType
-     */
-    public WrapperType getWrapperType() {
-        return wrapperType;
-    }
-
-    /**
-     * sets the {@link WrapperType}
-     * 
-     * @param wrapperType
-     */
-    public void setWrapperType(WrapperType wrapperType) {
-        this.wrapperType = wrapperType;
     }
 
     @Override

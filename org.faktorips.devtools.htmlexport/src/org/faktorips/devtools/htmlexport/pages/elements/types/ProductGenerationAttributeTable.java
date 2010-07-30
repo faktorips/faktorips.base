@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -43,7 +44,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
  * @author dicker
  * 
  */
-public class ProductGenerationAttributeTable extends AbstractSpecificTablePageElement {
+public class ProductGenerationAttributeTable extends AbstractStandardTablePageElement {
 
     private final IProductCmpt productCmpt;
     private final IAttribute[] attributes;
@@ -121,7 +122,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
                 continue;
             }
 
-            WrapperPageElement cellContent = new WrapperPageElement(WrapperType.BLOCK);
+            AbstractCompositePageElement cellContent = new WrapperPageElement(WrapperType.BLOCK);
 
             addAssociatedProductCmpts(productCmptGeneration, cellContent);
 
@@ -134,7 +135,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
 
     }
 
-    private void addUsedTableContent(List<ITableContents> tableContents, WrapperPageElement cellContent) {
+    private void addUsedTableContent(List<ITableContents> tableContents, AbstractCompositePageElement cellContent) {
         for (ITableContents tableContent : tableContents) {
             PageElement linkPageElement = PageElementUtils.createLinkPageElement(config, tableContent,
                     "content", tableContent.getName(), true); //$NON-NLS-1$
@@ -143,7 +144,7 @@ public class ProductGenerationAttributeTable extends AbstractSpecificTablePageEl
         }
     }
 
-    private void addAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration, WrapperPageElement cellContent) {
+    private void addAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration, AbstractCompositePageElement cellContent) {
         IAssociation[] associations = productCmptType.getAssociations();
         for (IAssociation association : associations) {
             TreeNodePageElement root = new TreeNodePageElement(PageElementUtils.createIpsElementReference(association,

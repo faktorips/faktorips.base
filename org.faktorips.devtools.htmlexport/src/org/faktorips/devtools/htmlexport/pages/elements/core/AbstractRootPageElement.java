@@ -61,7 +61,7 @@ public abstract class AbstractRootPageElement extends AbstractCompositePageEleme
      * 
      */
     protected void createId() {
-    };
+    }
 
     public boolean hasId() {
         return StringUtils.isNotBlank(getId());

@@ -14,9 +14,9 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -26,7 +26,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 /**
  * Represents a table with the associations of an {@link IType} as rows and the attributes of the
@@ -35,10 +34,10 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
  * @author dicker
  * 
  */
-public class AssociationTablePageElement extends AbstractSpecificTablePageElement {
+public class AssociationTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IAssociation> {
 
-    protected IType type;
-    private DocumentorConfiguration config;
+    private final DocumentorConfiguration config;
+    private final IType type;
 
     /**
      * Creates an {@link AssociationTablePageElement} for the specified {@link IType}
@@ -46,32 +45,13 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
      * @param type
      */
     public AssociationTablePageElement(IType type, DocumentorConfiguration config) {
-        super();
-        this.type = type;
+        super(Arrays.asList(type.getAssociations()));
         this.config = config;
+        this.type = type;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * addDataRows()
-     */
     @Override
-    protected void addDataRows() {
-        IAssociation[] associations = type.getAssociations();
-        for (IAssociation association : associations) {
-            addAssociation(association);
-        }
-    }
-
-    /**
-     * reads the attributes of the association, creates a {@link TableRowPageElement} and adds it to
-     * the table.
-     * 
-     * @param association
-     */
-    private void addAssociation(IAssociation association) {
+    protected List<? extends PageElement> createRowWithIpsObjectPart(IAssociation association) {
         List<String> values = new ArrayList<String>();
 
         values.add(association.getName());
@@ -99,7 +79,7 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
             elements[1] = new TextPageElement(""); //$NON-NLS-1$
         }
 
-        addSubElement(new TableRowPageElement(elements));
+        return Arrays.asList(elements);
     }
 
     private String getMaxCardinalityString(int maxCardinality) {
@@ -116,7 +96,7 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
      * getHeadline()
      */
     @Override
-    protected List<String> getHeadline() {
+    protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
         headline.add(Messages.AssociationTablePageElement_headlineName);
@@ -137,13 +117,4 @@ public class AssociationTablePageElement extends AbstractSpecificTablePageElemen
         return headline;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
-     */
-    @Override
-    public boolean isEmpty() {
-        return ArrayUtils.isEmpty(type.getAssociations());
-    }
 }

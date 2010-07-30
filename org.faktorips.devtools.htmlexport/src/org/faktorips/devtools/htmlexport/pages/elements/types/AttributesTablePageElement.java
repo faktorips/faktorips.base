@@ -14,13 +14,13 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 /**
  * Represents a table with the attributes of an {@link IType} as rows and the attributes of the
@@ -29,7 +29,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
  * @author dicker
  * 
  */
-public class AttributesTablePageElement extends AbstractSpecificTablePageElement {
+public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IAttribute> {
 
     protected IType type;
 
@@ -39,31 +39,13 @@ public class AttributesTablePageElement extends AbstractSpecificTablePageElement
      * @param type
      */
     public AttributesTablePageElement(IType type) {
-        super();
+        super(Arrays.asList(type.getAttributes()));
         this.type = type;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * addDataRows()
-     */
     @Override
-    protected void addDataRows() {
-        IAttribute[] attributes = type.getAttributes();
-        for (IAttribute attribute : attributes) {
-            addAttributeRow(attribute);
-        }
-    }
-
-    /**
-     * adds a row for the given {@link IAttribute}
-     * 
-     * @param attribute
-     */
-    protected void addAttributeRow(IAttribute attribute) {
-        addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getAttributeData(attribute))));
+    protected List<? extends PageElement> createRowWithIpsObjectPart(IAttribute attribute) {
+        return Arrays.asList(PageElementUtils.createTextPageElements(getAttributeData(attribute)));
     }
 
     /**
@@ -91,7 +73,7 @@ public class AttributesTablePageElement extends AbstractSpecificTablePageElement
      * getHeadline()
      */
     @Override
-    protected List<String> getHeadline() {
+    protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
         headline.add(Messages.AttributesTablePageElement_headlineName);
@@ -101,16 +83,6 @@ public class AttributesTablePageElement extends AbstractSpecificTablePageElement
         headline.add(Messages.AttributesTablePageElement_headlineDescription);
 
         return headline;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
-     */
-    @Override
-    public boolean isEmpty() {
-        return ArrayUtils.isEmpty(type.getAttributes());
     }
 
 }

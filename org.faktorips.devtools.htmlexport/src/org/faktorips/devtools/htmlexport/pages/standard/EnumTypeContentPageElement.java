@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -37,7 +38,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractStandardTablePageElement;
 
 /**
  * A complete page representing an {@link IEnumType}
@@ -53,7 +54,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * @author dicker
      * 
      */
-    private class EnumAttributesTablePageElement extends AbstractSpecificTablePageElement {
+    private class EnumAttributesTablePageElement extends AbstractStandardTablePageElement {
 
         protected IEnumType type;
         private List<IEnumAttribute> attributes;
@@ -256,7 +257,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * adds table representing the attributes of the enumType
      */
     protected void addAttributesTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper
                 .addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_attributes, TextType.HEADING_2));
 
@@ -296,7 +297,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * adds table representing the values of the enumType
      */
     protected void addValuesTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_values, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getDocumentedIpsObject()),

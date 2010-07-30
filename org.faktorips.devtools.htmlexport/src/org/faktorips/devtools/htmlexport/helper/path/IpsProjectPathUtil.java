@@ -27,6 +27,10 @@ public class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> 
 
     private static final String INDEX_HTML = "indes.html"; //$NON-NLS-1$
 
+    public IpsProjectPathUtil(IIpsProject ipsElement) {
+        super(ipsElement);
+    }
+
     /*
      * (non-Javadoc)
      * 

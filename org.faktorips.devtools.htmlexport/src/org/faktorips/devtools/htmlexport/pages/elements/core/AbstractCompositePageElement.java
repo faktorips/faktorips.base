@@ -33,7 +33,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     protected List<PageElement> subElements = new ArrayList<PageElement>();
 
     protected String title;
-    protected final WrapperType wrapperType = WrapperType.NONE;
+    private WrapperType wrapperType = WrapperType.NONE;
 
     @Override
     public abstract void acceptLayouter(ILayouter layouter);
@@ -97,5 +97,14 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
      */
     public List<PageElement> getSubElements() {
         return subElements;
+    }
+
+    public WrapperType getWrapperType() {
+        return wrapperType;
+    }
+
+    protected void setWrapperType(WrapperType wrapperType) {
+        this.wrapperType = wrapperType;
+
     }
 }

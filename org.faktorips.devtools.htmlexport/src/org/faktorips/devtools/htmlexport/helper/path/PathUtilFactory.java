@@ -37,7 +37,7 @@ public class PathUtilFactory {
      */
     public static IpsElementPathUtil createPathUtil(IIpsElement ipsElement) {
         if (ipsElement instanceof IIpsProject) {
-            return new IpsProjectPathUtil();
+            return new IpsProjectPathUtil((IIpsProject)ipsElement);
         }
         if (ipsElement instanceof IIpsPackageFragment) {
             return new IpsPackageFragmentPathUtil((IIpsPackageFragment)ipsElement);

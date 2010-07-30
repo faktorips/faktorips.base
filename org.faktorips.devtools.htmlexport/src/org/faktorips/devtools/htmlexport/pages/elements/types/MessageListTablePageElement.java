@@ -30,7 +30,7 @@ import org.faktorips.util.message.MessageList;
  * @author dicker
  * 
  */
-public class MessageListTablePageElement extends AbstractSpecificTablePageElement {
+public class MessageListTablePageElement extends AbstractStandardTablePageElement {
 
     protected MessageList messageList;
 

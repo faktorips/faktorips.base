@@ -15,12 +15,12 @@ package org.faktorips.devtools.htmlexport.generators;
 
 import java.util.Set;
 
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 
 public interface ILayouter extends IGenerator {
@@ -65,7 +65,7 @@ public interface ILayouter extends IGenerator {
      * 
      * @param pageElement WrapperPageElement
      */
-    public void layoutWrapperPageElement(WrapperPageElement pageElement);
+    public void layoutWrapperPageElement(AbstractCompositePageElement pageElement);
 
     /**
      * clears the data

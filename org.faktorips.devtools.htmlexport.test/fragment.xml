@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         id="extPolicyCmptType"
+         name="extPolicyCmptType"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            defaultValue="TestValue"
+            extendedType="org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType"
+            position="top">
+      </property>
+   </extension>
+   <extension
+         id="extPolicyCmptType2"
+         name="ext PolicyCmptType 2"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            defaultValue="tralala"
+            extendedType="org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType"
+            position="top">
+      </property>
+   </extension>
+   <extension
+         id="extPolicyCmptType3"
+         name="ext PolicyCmptType 3"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            defaultValue="Aller guten Dinge sind drei"
+            extendedType="org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType"
+            position="top">
+      </property>
+   </extension>
+   <extension
+         id="extMethod"
+         name="extMethod"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.type.Method"
+            defaultValue="TestValue"
+            position="top">
+      </property>
+   </extension>
+   <extension
+         id="extAssoc"
+         name="extAssoc"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.type.Association"
+            defaultValue="TestValue"
+            position="top">
+      </property>
+   </extension>
+   
+   <extension
+         id="extAttribute"
+         name="externe Attribut Property"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.type.Attribute"
+            defaultValue="Huhu, ich bin der Default-Wert"
+            position="top">
+      </property>
+   </extension>
+
+   <extension
+         id="extAttribute2"
+         name="externe Attribut Property2"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.type.Attribute"
+            defaultValue="Eine externe Property reicht nicht"
+            position="top">
+      </property>
+   </extension>
+
+   <extension
+         id="extColumnRange"
+         name="externe ColumnRange"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange"
+            defaultValue="Ich bin die ColumnRange"
+            position="top">
+      </property>
+   </extension>
+
+   <extension
+         id="extForeignKey"
+         name="externe ForeignKey"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.tablestructure.ForeignKey"
+            defaultValue="ForeignKey"
+            position="top">
+      </property>
+   </extension>
+
+   <extension
+         id="extColumn"
+         name="externe Column"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.tablestructure.Column"
+            defaultValue="Column"
+            position="top">
+      </property>
+   </extension>
+
+   <extension
+         id="extUniqueKey"
+         name="externe UniqueKey"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.tablestructure.UniqueKey"
+            defaultValue="UniqueKey"
+            position="top">
+      </property>
+   </extension>
+   
+   <extension
+         id="extRow"
+         name="externe Row"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.tablecontents.Row"
+            defaultValue="Row"
+            position="top">
+      </property>
+   </extension>
+   
+      <extension
+         id="extValidationRule"
+         name="externe ValidationRule"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.pctype.ValidationRule"
+            defaultValue="Regeln Regeln Regeln"
+            position="top">
+      </property>
+   </extension>
+
+      <extension
+         id="extTestAttribute"
+         name="externe TestAttribute"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.testcasetype.TestAttribute"
+            defaultValue="TestAttribute"
+            position="top">
+      </property>
+   </extension>
+   
+      <extension
+         id="extTableStructureUsage"
+         name="externe TableStructureUsage"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage"
+            defaultValue="TableStructureUsage default"
+            position="top">
+      </property>
+   </extension>
+</fragment>

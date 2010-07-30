@@ -14,24 +14,22 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 /**
- * Represents a table with the {@link Method}s of an {@link IType} as rows and the attributes of the
- * method as columns
+ * Represents a table with the {@link IMethod}s of an {@link IType} as rows and the attributes of
+ * the method as columns
  * 
  * @author dicker
  * 
  */
-public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
-    protected IType type;
+public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IMethod> {
 
     /**
      * Creates a {@link MethodsTablePageElement} for the specified {@link IType}
@@ -39,32 +37,7 @@ public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
      * @param type
      */
     public MethodsTablePageElement(IType type) {
-        super();
-        this.type = type;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * addDataRows()
-     */
-    @Override
-    protected void addDataRows() {
-        IMethod[] methods = type.getMethods();
-        for (IMethod method : methods) {
-            addMethodRow(method);
-        }
-
-    }
-
-    /**
-     * adds a row for the given method
-     * 
-     * @param method
-     */
-    protected void addMethodRow(IMethod method) {
-        addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getMethodData(method))));
+        super(Arrays.asList(type.getMethods()));
     }
 
     /**
@@ -77,7 +50,7 @@ public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
         List<String> methodData = new ArrayList<String>();
 
         methodData.add(method.getName());
-        methodData.add(method.isAbstract() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+        methodData.add(method.isAbstract() ? "X" : "-");
         methodData.add(method.getModifier().toString());
         methodData.add(method.getDatatype());
         methodData.add(method.getSignatureString());
@@ -93,7 +66,7 @@ public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
      * getHeadline()
      */
     @Override
-    protected List<String> getHeadline() {
+    protected List<String> getHeadlineWithIpsObjectPart() {
         ArrayList<String> headline = new ArrayList<String>();
 
         headline.add(Messages.MethodsTablePageElement_headlineName);
@@ -106,14 +79,9 @@ public class MethodsTablePageElement extends AbstractSpecificTablePageElement {
         return headline;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
-     */
     @Override
-    public boolean isEmpty() {
-        return ArrayUtils.isEmpty(type.getMethods());
+    protected List<? extends PageElement> createRowWithIpsObjectPart(IMethod rowData) {
+        return Arrays.asList(PageElementUtils.createTextPageElements(getMethodData(rowData)));
     }
 
 }

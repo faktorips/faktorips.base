@@ -11,11 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.pages.elements.core;
+package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.ImageData;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -23,12 +22,15 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 
 /**
  * A {@link PageElement} representing an image for an {@link IIpsElement}.
@@ -79,8 +81,9 @@ public class IpsElementImagePageElement extends ImagePageElement {
             return createImageNameByTestParameter(element);
         }
 
-        if (element instanceof ProductCmptTypeAssociation) {
-            return getProductCmptImageNameByProductCmptType(((ProductCmptTypeAssociation)element).getProductCmptType());
+        if (element instanceof IProductCmptTypeAssociation) {
+            return getProductCmptImageNameByProductCmptType(((IProductCmptTypeAssociation)element).getProductCmptType())
+                    + "assoc"; //$NON-NLS-1$
         }
 
         return element.getName();

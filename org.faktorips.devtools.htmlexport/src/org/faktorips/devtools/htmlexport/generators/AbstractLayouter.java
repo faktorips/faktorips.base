@@ -28,7 +28,7 @@ public abstract class AbstractLayouter implements ILayouter {
     /*
      * Set of LayoutResources like Images, Stylesheets
      */
-    private Set<LayoutResource> layoutResources = new HashSet<LayoutResource>();;
+    private Set<LayoutResource> layoutResources = new HashSet<LayoutResource>();
 
     public AbstractLayouter() {
         super();

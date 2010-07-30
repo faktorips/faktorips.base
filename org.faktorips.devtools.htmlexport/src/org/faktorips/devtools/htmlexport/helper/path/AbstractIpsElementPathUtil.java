@@ -34,10 +34,6 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
         this.ipsElement = ipsElement;
     }
 
-    protected AbstractIpsElementPathUtil() {
-
-    }
-
     /**
      * returns the relative path from the {@link IIpsPackageFragment} to the root
      * 

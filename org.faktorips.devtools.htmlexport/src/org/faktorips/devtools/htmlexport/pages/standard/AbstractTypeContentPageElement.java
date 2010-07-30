@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -101,7 +102,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * adds a table which represents the methods of the type
      */
     protected void addMethodsTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper
                 .addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_methods,
                         TextType.HEADING_2));
@@ -229,7 +230,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * adds a table with the associations of the type
      */
     protected void addAssociationsTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_associations,
                 TextType.HEADING_2));
 
@@ -243,7 +244,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * adds a table with the attributes of the type
      */
     protected void addAttributesTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_attributes,
                 TextType.HEADING_2));
 

@@ -14,9 +14,9 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.tablecontents.Row;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -28,13 +28,13 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 
 /**
  * A page representing {@link ITableContents}
@@ -50,33 +50,23 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
      * @author dicker
      * 
      */
-    public class ContentTablePageElement extends AbstractSpecificTablePageElement {
-        private ITableContentsGeneration tableContentsGeneration;
+    public class ContentTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IRow> {
         private ITableStructure tableStructure;
 
         public ContentTablePageElement(ITableContentsGeneration tableContentsGeneration) {
-            super();
-            this.tableContentsGeneration = tableContentsGeneration;
+            super(Arrays.asList(tableContentsGeneration.getRows()));
             this.tableStructure = findTableStructure();
         }
 
         @Override
-        protected void addDataRows() {
-            IRow[] rows = tableContentsGeneration.getRows();
-            for (IRow row : rows) {
-                addRow(row);
-            }
-
+        protected List<? extends PageElement> createRowWithIpsObjectPart(IRow rowData) {
+            return Arrays.asList(PageElementUtils.createTextPageElements(getRowData(rowData)));
         }
 
-        private void addRow(IRow row) {
-            addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getRowData((Row)row))));
-        }
-
-        private List<String> getRowData(Row row) {
+        private List<String> getRowData(IRow row) {
             List<String> rowData = new ArrayList<String>();
 
-            for (int i = 0; i < row.getNoOfColumns(); i++) {
+            for (int i = 0; i < ((Row)row).getNoOfColumns(); i++) {
                 rowData.add(row.getValue(i));
             }
 
@@ -84,7 +74,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         }
 
         @Override
-        protected List<String> getHeadline() {
+        protected List<String> getHeadlineWithIpsObjectPart() {
             IColumn[] columns = tableStructure.getColumns();
 
             List<String> headline = new ArrayList<String>();
@@ -92,11 +82,6 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
                 headline.add(column.getName());
             }
             return headline;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return ArrayUtils.isEmpty(tableContentsGeneration.getRows());
         }
 
     }
@@ -147,7 +132,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
      * adds the content of the table
      */
     private void addContentTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.TableContentsContentPageElement_content,
                 TextType.HEADING_2));
 

@@ -27,8 +27,7 @@ public class IpsObjectInProjectFilter implements IpsElementFilter {
 
     @Override
     public boolean accept(IIpsElement element) {
-        IIpsProject ipsProject = element.getIpsProject();
-        return false;
+        return ipsProject.equals(element.getIpsProject());
     }
 
 }

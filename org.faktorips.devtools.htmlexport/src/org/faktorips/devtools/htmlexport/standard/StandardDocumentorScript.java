@@ -74,12 +74,15 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeResources(DocumentorConfiguration config, IProgressMonitor monitor) {
+        monitor.beginTask("", 1);
+
         ILayouter layouter = config.getLayouter();
         Set<LayoutResource> resources = layouter.getLayoutResources();
         for (LayoutResource layoutResource : resources) {
             System.out.println(layoutResource.getName() + ": " + layoutResource.getContent().length);
             FileHandler.writeFile(config, STANDARD_PATH + layoutResource.getName(), layoutResource.getContent());
         }
+        monitor.done();
     }
 
     private void writeClassesContentPages(DocumentorConfiguration config,

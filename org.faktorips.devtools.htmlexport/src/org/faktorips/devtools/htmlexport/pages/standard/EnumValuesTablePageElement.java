@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractStandardTablePageElement;
 
 /**
  * <p>
@@ -40,7 +40,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTa
  * @author dicker
  * 
  */
-class EnumValuesTablePageElement extends AbstractSpecificTablePageElement {
+class EnumValuesTablePageElement extends AbstractStandardTablePageElement {
 
     private List<IEnumAttribute> enumAttributes;
     private List<IEnumValue> enumValues;
