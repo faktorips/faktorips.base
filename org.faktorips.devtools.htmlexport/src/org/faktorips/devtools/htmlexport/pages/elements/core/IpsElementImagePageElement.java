@@ -63,60 +63,66 @@ public class IpsElementImagePageElement extends ImagePageElement {
             return "ipspackage"; //$NON-NLS-1$
         }
 
-        if (element instanceof IProductCmpt) {
-            return getProductCmptImageName((IProductCmpt)element);
-        }
-
         if (element instanceof IIpsSrcFile) {
-            IIpsSrcFile srcFile = (IIpsSrcFile)element;
-            if (srcFile.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
-                return srcFile.getIpsObjectType().getFileExtension();
-            }
-            try {
-                IProductCmpt ipsObject = (IProductCmpt)srcFile.getIpsObject();
-                return getProductCmptImageName(ipsObject);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            return createImageNameByIpsSrcFile(element);
         }
 
         if (element instanceof IIpsObject) {
-            IIpsObject object = (IIpsObject)element;
-            return object.getIpsObjectType().getFileExtension();
+            return createImageNameByIpsSrcFile(((IIpsObject)element).getIpsSrcFile());
         }
 
         if (element instanceof ITestObject) {
-            if (element instanceof ITestRule) {
-                return "testrule"; //$NON-NLS-1$
-            }
-            if (element instanceof ITestPolicyCmpt) {
-                return "testpolicycmpt"; //$NON-NLS-1$
-            }
-            ITestObject testObject = (ITestObject)element;
-            try {
-                return testObject.findTestParameter(element.getIpsProject()).getDatatype();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            return createImageNameByTestObject(element);
         }
 
         if (element instanceof ITestParameter) {
-            if (element instanceof ITestRuleParameter) {
-                return "testruleparameter"; //$NON-NLS-1$
-            }
-            ITestParameter testParameter = (ITestParameter)element;
-            return testParameter.getDatatype();
+            return createImageNameByTestParameter(element);
         }
 
         if (element instanceof ProductCmptTypeAssociation) {
-            ProductCmptTypeAssociation association = (ProductCmptTypeAssociation)element;
-            return getProductCmptImageNameByProductCmptType(association.getProductCmptType());
+            return getProductCmptImageNameByProductCmptType(((ProductCmptTypeAssociation)element).getProductCmptType());
         }
 
         return element.getName();
     }
 
-    private static String getProductCmptImageName(IProductCmpt object) {
+    private static String createImageNameByTestParameter(IIpsElement element) {
+        if (element instanceof ITestRuleParameter) {
+            return "testruleparameter"; //$NON-NLS-1$
+        }
+        ITestParameter testParameter = (ITestParameter)element;
+        return testParameter.getDatatype();
+    }
+
+    private static String createImageNameByTestObject(IIpsElement element) {
+        if (element instanceof ITestRule) {
+            return "testrule"; //$NON-NLS-1$
+        }
+        if (element instanceof ITestPolicyCmpt) {
+            return "testpolicycmpt"; //$NON-NLS-1$
+        }
+        ITestObject testObject = (ITestObject)element;
+        try {
+            return testObject.findTestParameter(element.getIpsProject()).getDatatype();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String createImageNameByIpsSrcFile(IIpsElement element) {
+        IIpsSrcFile srcFile = (IIpsSrcFile)element;
+        if (srcFile.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
+            return srcFile.getIpsObjectType().getFileExtension();
+        }
+        try {
+            IProductCmpt ipsObject = (IProductCmpt)srcFile.getIpsObject();
+            return createImageNameByProductCmpt(ipsObject);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String createImageNameByProductCmpt(IProductCmpt object) {
         try {
             IProductCmptType productCmptType = object.getIpsProject().findProductCmptType(object.getProductCmptType());
             return getProductCmptImageNameByProductCmptType(productCmptType);
@@ -129,6 +135,6 @@ public class IpsElementImagePageElement extends ImagePageElement {
         if (productCmptType.isUseCustomInstanceIcon()) {
             return productCmptType.getQualifiedName();
         }
-        return IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension();
+        return IpsObjectType.PRODUCT_CMPT.getFileExtension();
     }
 }
