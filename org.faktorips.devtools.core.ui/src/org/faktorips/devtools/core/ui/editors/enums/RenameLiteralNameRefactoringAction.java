@@ -62,11 +62,14 @@ public class RenameLiteralNameRefactoringAction extends Action {
 
         IEnumValue enumValue = (IEnumValue)selection.getFirstElement();
         IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue = enumValue.getEnumLiteralNameAttributeValue();
+
         ProcessorBasedRefactoring refactoring = enumLiteralNameAttributeValue.getRenameRefactoring();
         Shell shell = Display.getDefault().getActiveShell();
         IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(refactoring, shell);
         refactoringOperation.runWizardInteraction(new IpsRenameRefactoringWizard(refactoring,
                 enumLiteralNameAttributeValue));
+
+        tableViewer.refresh();
     }
 
 }
