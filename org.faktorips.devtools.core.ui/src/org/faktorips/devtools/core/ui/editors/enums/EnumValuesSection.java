@@ -349,12 +349,14 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         moveEnumValueUpAction = new MoveEnumValueAction(enumValuesTableViewer, true);
         moveEnumValueDownAction = new MoveEnumValueAction(enumValuesTableViewer, false);
 
-        lockAndSyncLiteralNameAction = new LockAndSyncLiteralNameAction(this);
-        lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
-
-        renameLiteralNameRefactoringAction = new RenameLiteralNameRefactoringAction(enumValuesTableViewer);
-        renameLiteralNameRefactoringAction.setEnabled(!(lockAndSynchronizeLiteralNames));
-        resetLiteralNamesAction = new ResetLiteralNamesAction(enumValuesTableViewer, (IEnumType)enumValueContainer);
+        if (enumTypeEditing) {
+            IEnumType enumType = (IEnumType)enumValueContainer;
+            lockAndSyncLiteralNameAction = new LockAndSyncLiteralNameAction(this);
+            lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
+            renameLiteralNameRefactoringAction = new RenameLiteralNameRefactoringAction(enumValuesTableViewer);
+            renameLiteralNameRefactoringAction.setEnabled(!(lockAndSynchronizeLiteralNames));
+            resetLiteralNamesAction = new ResetLiteralNamesAction(enumValuesTableViewer, enumType);
+        }
     }
 
     /** Creates the section's tool bar. */
