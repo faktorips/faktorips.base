@@ -14,9 +14,12 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -44,6 +47,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -106,6 +110,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private IPersistenceOptions persistenceOptions = new PersistenceOptions();
 
+    /** The set of natural languages supported by the IPS project. */
+    private Set<ISupportedLanguage> supportedLanguages = new HashSet<ISupportedLanguage>(2);
+
     public IpsProjectProperties() {
         super();
     }
@@ -134,6 +141,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             for (DynamicValueDatatype valuetype : valuetypes) {
                 list.add(valuetype.checkReadyToUse());
             }
+            validateSupportedLanguages(list);
             return list;
         } catch (RuntimeException e) {
             // if runtime exceptions are not converted into core exceptions the stack trace gets
@@ -187,6 +195,42 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     private void validateIpsObjectPath(MessageList list) throws CoreException {
         list.add(path.validate());
+    }
+
+    private void validateSupportedLanguages(MessageList list) {
+        validateSupportedLanguagesIsoConformity(list);
+        validateSupportedLanguagesOneDefaultLanguage(list);
+    }
+
+    private void validateSupportedLanguagesIsoConformity(MessageList list) {
+        String[] isoLanguages = Locale.getISOLanguages();
+        List<String> isoLanguagesList = Arrays.asList(isoLanguages);
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            String languageString = supportedLanguage.getLocale().getLanguage();
+            if (!(isoLanguagesList.contains(languageString))) {
+                String text = NLS.bind(Messages.IpsProjectProperties_msgSupportedLanguageUnknownLocale, languageString);
+                Message msg = new Message(IIpsProjectProperties.MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE, text,
+                        Message.ERROR);
+                list.add(msg);
+                break;
+            }
+        }
+    }
+
+    private void validateSupportedLanguagesOneDefaultLanguage(MessageList list) {
+        int defaultLanguageCount = 0;
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            if (supportedLanguage.isDefaultLanguage()) {
+                defaultLanguageCount++;
+            }
+            if (defaultLanguageCount == 2) {
+                String text = Messages.IpsProjectProperties_msgMoreThanOneDefaultLanguage;
+                Message msg = new Message(IIpsProjectProperties.MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE, text,
+                        Message.ERROR);
+                list.add(msg);
+                break;
+            }
+        }
     }
 
     /**
@@ -417,6 +461,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
         persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
 
+        // supported languages
+        createSupportedLanguagesDescriptionComment(projectEl);
+        Element supportedLanguagesEl = doc.createElement("SupportedLanguages"); //$NON-NLS-1$
+        projectEl.appendChild(supportedLanguagesEl);
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            supportedLanguagesEl.appendChild(supportedLanguage.toXml(doc));
+        }
+
         return projectEl;
     }
 
@@ -474,6 +526,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initOptionalConstraints(element);
 
         initPersistenceOptions(element);
+
+        initSupportedLanguages(element);
     }
 
     private void initRequiredFeatures(Element el) {
@@ -605,6 +659,21 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         persistenceOptions = new PersistenceOptions(XmlUtil.getFirstElement(element, IPersistenceOptions.XML_TAG_NAME));
     }
 
+    private void initSupportedLanguages(Element element) {
+        Element supportedLanguagesEl = XmlUtil.getFirstElement(element, "SupportedLanguages"); //$NON-NLS-1$
+
+        // Null if the project hasn't been migrated from version 3.0 to version 3.1 yet
+        if (supportedLanguagesEl != null) {
+            int childrenCount = supportedLanguagesEl.getElementsByTagName("SupportedLanguage").getLength(); //$NON-NLS-1$
+            for (int i = 0; i < childrenCount; i++) {
+                ISupportedLanguage supportedLanguage = new SupportedLanguage();
+                Element childElement = XmlUtil.getElement(supportedLanguagesEl, i);
+                supportedLanguage.initFromXml(childElement);
+                supportedLanguages.add(supportedLanguage);
+            }
+        }
+    }
+
     private void writeDefinedDataTypesToXML(Document doc, Element parent) {
         for (Datatype datatype : definedDatatypes) {
             Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
@@ -728,6 +797,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <ProductCmptNamingStrategy/>                       The strategy used for product component names. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <Datatypes/>                                       The datatypes used in the model. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <OptionalConstraints/>                             Definition of optional constraints. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <SupportedLanguages/>                              List of supported natural languages. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "</IpsProject>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl, "    "); //$NON-NLS-1$
     }
@@ -884,6 +954,27 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
 
+    private void createSupportedLanguagesDescriptionComment(Node parentEl) {
+        String s = "Supported Languages" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "This section lists all natural languages that are supported by this IPS project." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "Each language is identified by it's locale which is the ISO 639 language code, " //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "e.g. 'en' for English." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "Exactly one supported language must be marked as default language. The default language " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "will be used if a language is requested that is not supported by this IPS project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "If there is no supported language the names of the model elements will be " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "used directly." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "<SupportedLanguages>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <SupportedLanguage locale=\"en\" defaultLanguage=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <SupportedLanguage locale=\"de\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "</SupportedLanguages>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        createDescriptionComment(s, parentEl);
+    }
+
     private void createDescriptionComment(String text, Node parent) {
         createDescriptionComment(text, parent, "        "); //$NON-NLS-1$
     }
@@ -1019,6 +1110,71 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     public void setPersistenceOptions(IPersistenceOptions persistenceOptions) {
         this.persistenceOptions = persistenceOptions;
+    }
+
+    // --
+    // ## Methods related to multi-language support
+    // --
+
+    @Override
+    public Set<ISupportedLanguage> getSupportedLanguages() {
+        return Collections.unmodifiableSet(supportedLanguages);
+    }
+
+    @Override
+    public ISupportedLanguage getSupportedLanguage(Locale locale) {
+        ArgumentCheck.notNull(locale);
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            if (supportedLanguage.getLocale().equals(locale)) {
+                return supportedLanguage;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isSupportedLanguage(Locale locale) {
+        ArgumentCheck.notNull(locale);
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            if (supportedLanguage.getLocale().equals(locale)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public ISupportedLanguage getDefaultLanguage() {
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            if (supportedLanguage.isDefaultLanguage()) {
+                return supportedLanguage;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void setDefaultLanguage(ISupportedLanguage supportedLanguage) {
+        ArgumentCheck.notNull(supportedLanguage);
+
+        ISupportedLanguage currentDefaultLanguage = getDefaultLanguage();
+        if (currentDefaultLanguage != null) {
+            ((SupportedLanguage)currentDefaultLanguage).setDefaultLanguage(false);
+        }
+
+        ((SupportedLanguage)supportedLanguage).setDefaultLanguage(true);
+    }
+
+    @Override
+    public void addSupportedLanguage(Locale locale) {
+        ArgumentCheck.notNull(locale);
+        supportedLanguages.add(new SupportedLanguage(locale));
+    }
+
+    @Override
+    public void removeSupportedLanguage(ISupportedLanguage supportedLanguage) {
+        ArgumentCheck.notNull(supportedLanguage);
+        supportedLanguages.remove(supportedLanguage);
     }
 
 }

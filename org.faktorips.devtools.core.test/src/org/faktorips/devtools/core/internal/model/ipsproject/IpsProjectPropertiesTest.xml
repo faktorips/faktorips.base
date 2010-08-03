@@ -55,4 +55,8 @@
 		<Resource path="src"/>
 		<Resource path="build/build.xml"/>
 	</ResourcesExcludedFromProductDefinition>
+	<SupportedLanguages>
+		<SupportedLanguage locale="en" defaultLanguage="true"/>
+		<SupportedLanguage locale="de"/>
+	</SupportedLanguages>
 </IpsProject>

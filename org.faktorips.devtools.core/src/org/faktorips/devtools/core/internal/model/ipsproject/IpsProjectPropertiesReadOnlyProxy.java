@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -25,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -398,6 +401,45 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     @Override
     public void setTableNamingStrategy(ITableNamingStrategy newStrategy) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
+    // --
+    // ## Methods related to multi-language support
+    // --
+
+    @Override
+    public Set<ISupportedLanguage> getSupportedLanguages() {
+        return propertiesInternal.getSupportedLanguages();
+    }
+
+    @Override
+    public ISupportedLanguage getSupportedLanguage(Locale locale) {
+        return propertiesInternal.getSupportedLanguage(locale);
+    }
+
+    @Override
+    public boolean isSupportedLanguage(Locale locale) {
+        return propertiesInternal.isSupportedLanguage(locale);
+    }
+
+    @Override
+    public ISupportedLanguage getDefaultLanguage() {
+        return propertiesInternal.getDefaultLanguage();
+    }
+
+    @Override
+    public void setDefaultLanguage(ISupportedLanguage supportedLanguage) {
+        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public void addSupportedLanguage(Locale locale) {
+        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public void removeSupportedLanguage(ISupportedLanguage supportedLanguage) {
+        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
 
 }

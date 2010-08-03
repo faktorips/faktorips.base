@@ -75,5 +75,7 @@ public class Messages extends NLS {
     public static String IpsProjectProperties_ENUM_QUESTION_STATUS_OPEN;
     public static String IpsProjectProperties_msgUnknownDatatype;
     public static String IpsProjectProperties_msgUnknownBuilderSetId;
+    public static String IpsProjectProperties_msgSupportedLanguageUnknownLocale;
+    public static String IpsProjectProperties_msgMoreThanOneDefaultLanguage;
 
 }

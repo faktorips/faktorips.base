@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -55,6 +57,19 @@ public interface IIpsProjectProperties {
      * feature is missing.
      */
     public final static String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the language identifier used as locale for a
+     * supported language is not a valid ISO 639 language code.
+     */
+    public final static String MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE = MSGCODE_PREFIX
+            + "SupportedLanguageUnknownLocale"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that more than one supported language is marked as
+     * default language.
+     */
+    public final static String MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE = MSGCODE_PREFIX + "MoreThanOneDefaultLanguage"; //$NON-NLS-1$
 
     /**
      * Returns the time stamp of the last persistent modification of this object.
@@ -347,5 +362,75 @@ public interface IIpsProjectProperties {
      * @see #isPersistenceSupportEnabled()
      */
     public IPersistenceOptions getPersistenceOptions();
+
+    // --
+    // ## Methods related to multi-language support
+    // --
+
+    /**
+     * Returns a set (defensive copy) containing all languages supported by this IPS project.
+     */
+    public Set<ISupportedLanguage> getSupportedLanguages();
+
+    /**
+     * Returns the {@link ISupportedLanguage} with the given {@link Locale}. Returns <tt>null</tt>
+     * if the locale is not supported.
+     * 
+     * @param locale The locale to retrieve the {@link ISupportedLanguage} for.
+     * 
+     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     */
+    public ISupportedLanguage getSupportedLanguage(Locale locale);
+
+    /**
+     * Returns whether the language corresponding to the given {@link Locale} is supported by this
+     * IPS project.
+     * 
+     * @param locale The {@link Locale} to check whether it is supported.
+     * 
+     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     */
+    public boolean isSupportedLanguage(Locale locale);
+
+    /**
+     * Returns the {@link ISupportedLanguage} that is currently set as default language or
+     * <tt>null</tt> if there is no default language set at this moment.
+     */
+    public ISupportedLanguage getDefaultLanguage();
+
+    /**
+     * Sets the given {@link ISupportedLanguage} to be the default language.
+     * 
+     * @param supportedLanguage The {@link ISupportedLanguage} to set as default language.
+     * 
+     * @throws NullPointerException If <tt>supportedLanguage</tt> is <tt>null</tt>.
+     */
+    public void setDefaultLanguage(ISupportedLanguage supportedLanguage);
+
+    /**
+     * Adds the language identified by the given {@link Locale} to the supported languages of this
+     * IPS project.
+     * <p>
+     * A call to this operation does nothing if the language is already supported.
+     * 
+     * @param locale The {@link Locale} identifying the language that shall be supported from now
+     *            on.
+     * 
+     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     */
+    public void addSupportedLanguage(Locale locale);
+
+    /**
+     * Removes the given {@link ISupportedLanguage} from the list of supported languages causing it
+     * to be no longer supported.
+     * <p>
+     * A call to this operation does nothing if the language isn't supported at the time of the
+     * call.
+     * 
+     * @param supportedLanguage The {@link ISupportedLanguage} that is no longer supported.
+     * 
+     * @throws NullPointerException If <tt>supportedLanguage</tt> is <tt>null</tt>.
+     */
+    public void removeSupportedLanguage(ISupportedLanguage supportedLanguage);
 
 }

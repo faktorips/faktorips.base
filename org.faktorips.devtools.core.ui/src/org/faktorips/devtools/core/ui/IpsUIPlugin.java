@@ -101,6 +101,7 @@ import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsOb
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
+import org.faktorips.devtools.core.ui.workbenchadapters.IPluralLabelWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapterAdapterFactory;
@@ -643,6 +644,17 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return ""; //$NON-NLS-1$
         } else {
             return adapter.getLabel(ipsElement);
+        }
+    }
+
+    public final static String getPluralLabel(IIpsElement ipsElement) {
+        IPluralLabelWorkbenchAdapter adapter = (IPluralLabelWorkbenchAdapter)ipsElement.getAdapter(IPluralLabelWorkbenchAdapter.class);
+        if (adapter != null) {
+            return adapter.getPluralLabel(ipsElement);
+        } else {
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Plural not configured for element type " //$NON-NLS-1$
+                    + ipsElement.getClass()));
+            return getLabel(ipsElement);
         }
     }
 

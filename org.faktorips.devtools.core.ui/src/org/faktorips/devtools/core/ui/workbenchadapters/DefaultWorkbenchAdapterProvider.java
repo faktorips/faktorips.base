@@ -189,8 +189,7 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         register(TableStructureReference.class, tableStructureUsageWA);
 
         // ProductCmpt
-
-        register(AttributeValue.class, attributeWA);
+        register(AttributeValue.class, new AttributeValueWorkbenchAdapter());
         register(ConfigElement.class, attributeWA);
         register(Formula.class, formulaWA);
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmptLink.gif", true);

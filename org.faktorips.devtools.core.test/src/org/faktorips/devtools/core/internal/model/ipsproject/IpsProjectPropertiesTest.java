@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -25,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCm
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -69,6 +72,43 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(list.getMessageByCode(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE) != null);
     }
 
+    public void testValidate_SupportedLanguagesIsoConformity() throws CoreException {
+        IpsProjectProperties props = new IpsProjectProperties();
+        MessageList list = props.validate(ipsProject);
+        int numOfMessages = list.getNoOfMessages();
+
+        // Test that there is no additional error message if the locale is OK.
+        props.addSupportedLanguage(Locale.ENGLISH);
+        list = props.validate(ipsProject);
+        assertEquals(numOfMessages, list.getNoOfMessages());
+
+        // Test for one more additional error message if the locale is not OK.
+        props.addSupportedLanguage(new Locale("fooIsNotBarAndBarIsNotFoo"));
+        list = props.validate(ipsProject);
+        assertEquals(numOfMessages + 1, list.getNoOfMessages());
+        assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE));
+    }
+
+    public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreException {
+        IpsProjectProperties props = new IpsProjectProperties();
+        MessageList list = props.validate(ipsProject);
+        int numOfMessages = list.getNoOfMessages();
+
+        // Test that there is no additional error message if everything is OK.
+        props.addSupportedLanguage(Locale.ENGLISH);
+        props.addSupportedLanguage(Locale.GERMAN);
+        props.setDefaultLanguage(props.getSupportedLanguage(Locale.ENGLISH));
+        list = props.validate(ipsProject);
+        assertEquals(numOfMessages, list.getNoOfMessages());
+
+        // Test for one more additional error message if there is a problem.
+        ISupportedLanguage germanLanguage = props.getSupportedLanguage(Locale.GERMAN);
+        ((SupportedLanguage)germanLanguage).setDefaultLanguage(true);
+        list = props.validate(ipsProject);
+        assertEquals(numOfMessages + 1, list.getNoOfMessages());
+        assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE));
+    }
+
     public void testOptionalConstraints() {
         IpsProjectProperties props = new IpsProjectProperties();
 
@@ -92,6 +132,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     public void testToXml() {
+        // 1) Create a properties object ...
         IpsProjectProperties props = new IpsProjectProperties();
         props.setModelProject(true);
         props.setProductDefinitionProject(true);
@@ -132,7 +173,13 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.addResourcesPathExcludedFromTheProductDefiniton("a.xml");
         props.addResourcesPathExcludedFromTheProductDefiniton("src/a");
 
+        props.addSupportedLanguage(Locale.ENGLISH);
+        props.addSupportedLanguage(Locale.KOREAN);
+
+        // 2) ... and retrieve the corresponding XML element ...
         Element projectEl = props.toXml(newDocument());
+
+        // 3) ... then compare the XML element to the configuration.
         props = new IpsProjectProperties();
         props.initFromXml(ipsProject, projectEl);
         assertTrue(props.isModelProject());
@@ -172,6 +219,10 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isResourceExcludedFromProductDefinition("a.xml"));
         assertTrue(props.isResourceExcludedFromProductDefinition("src/a"));
         assertTrue(props.isPersistenceSupportEnabled());
+
+        assertTrue(props.isSupportedLanguage(Locale.ENGLISH));
+        assertTrue(props.isSupportedLanguage(Locale.KOREAN));
+        assertFalse(props.isSupportedLanguage(Locale.GERMAN));
     }
 
     public void testAddDefinedDatatype() {
@@ -253,5 +304,54 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         // test resource filter
         assertTrue(props.isResourceExcludedFromProductDefinition("src"));
         assertTrue(props.isResourceExcludedFromProductDefinition("build/build.xml"));
+
+        // supported languages
+        Set<ISupportedLanguage> supportedLanguages = props.getSupportedLanguages();
+        assertEquals(2, supportedLanguages.size());
+        assertTrue(supportedLanguages.contains(new SupportedLanguage(Locale.ENGLISH)));
+        assertTrue(supportedLanguages.contains(new SupportedLanguage(Locale.GERMAN)));
     }
+
+    public void testAddSupportedLanguage() {
+        IIpsProjectProperties props = new IpsProjectProperties();
+        props.addSupportedLanguage(Locale.ENGLISH);
+        assertEquals(1, props.getSupportedLanguages().size());
+        assertTrue(props.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
+    }
+
+    public void testRemoveSupportedLanguage() {
+        IIpsProjectProperties props = new IpsProjectProperties();
+        props.addSupportedLanguage(Locale.ENGLISH);
+        props.addSupportedLanguage(Locale.GERMAN);
+        assertEquals(2, props.getSupportedLanguages().size());
+        props.removeSupportedLanguage(props.getSupportedLanguage(Locale.ENGLISH));
+        assertEquals(1, props.getSupportedLanguages().size());
+        assertFalse(props.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
+    }
+
+    public void testGetSetDefaultLanguage() {
+        IIpsProjectProperties props = new IpsProjectProperties();
+        props.addSupportedLanguage(Locale.ENGLISH);
+        props.addSupportedLanguage(Locale.GERMAN);
+        assertNull(props.getDefaultLanguage());
+
+        ISupportedLanguage englishLanguage = props.getSupportedLanguage(Locale.ENGLISH);
+        props.setDefaultLanguage(englishLanguage);
+        assertTrue(englishLanguage.isDefaultLanguage());
+        assertEquals(englishLanguage, props.getDefaultLanguage());
+
+        ISupportedLanguage germanLanguage = props.getSupportedLanguage(Locale.GERMAN);
+        props.setDefaultLanguage(germanLanguage);
+        assertTrue(germanLanguage.isDefaultLanguage());
+        assertFalse(englishLanguage.isDefaultLanguage());
+        assertEquals(germanLanguage, props.getDefaultLanguage());
+    }
+
+    public void testIsSupportedLanguage() {
+        IIpsProjectProperties props = new IpsProjectProperties();
+        props.addSupportedLanguage(Locale.ENGLISH);
+        assertTrue(props.isSupportedLanguage(Locale.ENGLISH));
+        assertFalse(props.isSupportedLanguage(Locale.JAPANESE));
+    }
+
 }
