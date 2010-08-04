@@ -783,4 +783,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         }
     }
 
+    /**
+     * Only necessary for test cases.
+     */
+    public void resetManuallyCodeFixNecessary() {
+        valueChanged(manuallyCodeFixNecessary, false);
+        manuallyCodeFixNecessary = false;
+    }
 }
