@@ -183,6 +183,12 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
             + "LazyFetchForSingleValuedAssociationsAllowed"; //$NON-NLS-1$
 
     /**
+     * Validation message code indicates that due to a problem in jmerge the java code must be fixed
+     * manually.
+     */
+    public static final String MSGCODE_MANUALLY_CODE_FIX_NECESSARY = MSGCODE_PREFIX + "ManuallyCodeFixNecessary"; //$NON-NLS-1$
+
+    /**
      * Returns the {@link IPolicyCmptTypeAssociation} this info object belongs to.
      */
     public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation();
