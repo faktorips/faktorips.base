@@ -577,7 +577,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String textManualFixNecessary = "It is necessary to fix the annotation manually on the field '"
                     + getPolicyComponentTypeAssociation().getName()
                     + "' in the corresponding java class, because the merging of annotaion changes in java code doesn't work correctly yet.";
-            msgList.add(new Message("", textManualFixNecessary, Message.WARNING, this));
+            msgList
+                    .add(new Message(MSGCODE_MANUALLY_CODE_FIX_NECESSARY, textManualFixNecessary, Message.WARNING, this));
         }
 
         IPolicyCmptTypeAssociation inverseAssociation = null;
