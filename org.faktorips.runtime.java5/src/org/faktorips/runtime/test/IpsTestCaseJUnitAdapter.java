@@ -35,7 +35,7 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
      * Format of the failure entries
      */
     private static final String FAILUREFORMAT_FAILUREIN = "Failure in: \"{0}\"";
-    private static final String FAILUREFORMAT_OBJECT = ", Object: \"{1}\",";
+    private static final String FAILUREFORMAT_OBJECT = ", Object: \"{1}\"";
     private static final String FAILUREFORMAT_ATTRIBUTE = ", Attribute: \"{2}\".";
     private static final String FAILUREFORMAT_EXPECTED = ", expected: \"{3}\"";
     private static final String FAILUREFORMAT_ACTUAL = " but was: \"{4}\"";

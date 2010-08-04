@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -336,9 +337,9 @@ public class TestCaseDetailArea {
         // get the ctrlFactory to create the edit field
         ValueDatatype datatype = null;
         ValueDatatypeControlFactory ctrlFactory = null;
-
+        ITestAttribute testAttribute = null;
         try {
-            ITestAttribute testAttribute = attributeValue.findTestAttribute(ipsProject);
+            testAttribute = attributeValue.findTestAttribute(ipsProject);
             if (testAttribute != null && !testAttribute.isBasedOnModelAttribute()) {
                 // the attribute is an extension attribute
                 datatype = testAttribute.findDatatype(ipsProject);
@@ -369,14 +370,13 @@ public class TestCaseDetailArea {
 
         Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalize(attributeValue
                 .getTestAttribute()));
+        if (testAttribute != null) {
+            // use description of parameter as tooltip
+            label.setToolTipText(testAttribute.getDescription());
+        }
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);
 
-        try {
-            editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null, ipsProject);
-        } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
-            // ignore exception
-        }
+        editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null, ipsProject);
 
         // store the edit field
         String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
@@ -540,8 +540,9 @@ public class TestCaseDetailArea {
 
         ValueDatatype datatype = null;
         ValueDatatypeControlFactory ctrlFactory = null;
+        ITestValueParameter param = null;
         try {
-            ITestValueParameter param = testValue.findTestValueParameter(ipsProject);
+            param = testValue.findTestValueParameter(ipsProject);
             if (param != null) {
                 datatype = param.findValueDatatype(ipsProject);
                 ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
@@ -553,6 +554,12 @@ public class TestCaseDetailArea {
         }
 
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Value);
+        if (param != null) {
+            // use description of parameter as tooltip
+            label.setToolTipText(param.getDescription());
+            section.getChildren()[0].setToolTipText(param.getDescription());
+        }
+
         final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null, ipsProject);
         addSectionSelectionListeners(editField, label, testValue);
 
@@ -603,7 +610,19 @@ public class TestCaseDetailArea {
         Composite composite = toolkit.createLabelEditColumnComposite(section);
         section.setClient(composite);
 
+        ITestRuleParameter testRuleParameter = null;
+        try {
+            testRuleParameter = rule.findTestRuleParameter(ipsProject);
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Violation);
+        if (testRuleParameter != null) {
+            // use description of parameter as tooltip
+            label.setToolTipText(testRuleParameter.getDescription());
+            section.getChildren()[0].setToolTipText(testRuleParameter.getDescription());
+        }
         final EditField editField = new EnumValueField(toolkit.createCombo(composite, TestRuleViolationType
                 .getEnumType()), TestRuleViolationType.getEnumType());
         addSectionSelectionListeners(editField, label, rule);
@@ -642,8 +661,7 @@ public class TestCaseDetailArea {
                 return false;
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
-            // ignore exception, display the testObject
+            IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;
     }
