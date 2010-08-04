@@ -61,6 +61,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
     private IIpsObjectPart policyComponentTypeAssociation;
 
+    // workaround (MBT#280), due to problem in jmerge (MBT#223)
+    private boolean manuallyCodeFixNecessary = false;
+
     public PersistentAssociationInfo(IIpsObjectPart ipsObject, String id) {
         super(ipsObject, id);
         policyComponentTypeAssociation = ipsObject;
@@ -123,7 +126,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         }
         boolean oldValue = this.cascadeTypeOverwriteDefault;
         this.cascadeTypeOverwriteDefault = cascadeTypeOverwriteDefault;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeOverwriteDefault);
         valueChanged(oldValue, cascadeTypeOverwriteDefault);
+    }
+
+    private void checkIfManuallyCodeFixIsNecessary(boolean oldValue, boolean newValue) {
+        if (oldValue != newValue) {
+            manuallyCodeFixNecessary = true;
+        }
     }
 
     @Override
@@ -161,6 +171,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypePersist(boolean cascadeTypePersist) {
         boolean oldValue = this.cascadeTypePersist;
         this.cascadeTypePersist = cascadeTypePersist;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypePersist);
         valueChanged(oldValue, cascadeTypePersist);
     }
 
@@ -173,6 +184,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypeMerge(boolean cascadeTypeMerge) {
         boolean oldValue = this.cascadeTypeMerge;
         this.cascadeTypeMerge = cascadeTypeMerge;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeMerge);
         valueChanged(oldValue, cascadeTypeMerge);
     }
 
@@ -185,6 +197,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypeRemove(boolean cascadeTypeRemove) {
         boolean oldValue = this.cascadeTypeRemove;
         this.cascadeTypeRemove = cascadeTypeRemove;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeRemove);
         valueChanged(oldValue, cascadeTypeRemove);
     }
 
@@ -197,6 +210,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypeRefresh(boolean cascadeTypeRefresh) {
         boolean oldValue = this.cascadeTypeRefresh;
         this.cascadeTypeRefresh = cascadeTypeRefresh;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeRefresh);
         valueChanged(oldValue, cascadeTypeRefresh);
     }
 
@@ -309,6 +323,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setOrphanRemoval(boolean orphanRemoval) {
         boolean oldValue = this.orphanRemoval;
         this.orphanRemoval = orphanRemoval;
+        checkIfManuallyCodeFixIsNecessary(oldValue, orphanRemoval);
         valueChanged(oldValue, orphanRemoval);
     }
 
@@ -556,6 +571,13 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (!getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()) {
             return;
+        }
+
+        if (manuallyCodeFixNecessary) {
+            String textManualFixNecessary = "It is necessary to fix the annotation manually on the field '"
+                    + getPolicyComponentTypeAssociation().getName()
+                    + "' in the corresponding java class, because the merging of annotaion changes in java code doesn't work correctly yet.";
+            msgList.add(new Message("", textManualFixNecessary, Message.WARNING, this));
         }
 
         IPolicyCmptTypeAssociation inverseAssociation = null;
