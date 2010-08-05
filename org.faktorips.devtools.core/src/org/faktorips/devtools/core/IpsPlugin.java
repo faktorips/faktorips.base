@@ -333,15 +333,32 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the locale used by the localization. The returned locale is not the locale the
-     * localization <strong>should</strong> use, it is the locale the localization
-     * <strong>can</strong> use. That means if the default locale this plug-in runs is for example
-     * de_DE, but no language pack for German is installed, the localization uses the English
-     * language, and this method will return the Locale for "en".
+     * localization <strong>should use</strong>, but it is the locale the localization
+     * <strong>actually uses</strong>.
+     * <p>
+     * That means if the default locale this plug-in runs is for example de_DE, but no language pack
+     * for German is installed, the localization uses the English language, and this method will
+     * return the Locale for "en".
      */
     public Locale getUsedLanguagePackLocale() {
         Locale retValue = new Locale(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry,
                 Messages.IpsPlugin_languagePackVariant);
         return retValue;
+    }
+
+    /**
+     * Returns the locale that Faktor-IPS uses to internationalize Faktor-IPS models. Currently,
+     * this is the locale that is specified at the startup of Eclipse but at a later point may be
+     * changed so that it can be configured via the IPS preferences for example.
+     * <p>
+     * Note that this is <strong>not</strong> the locale used for internationalization of
+     * Faktor-IPS. The Faktor-IPS locale defines the language in that labels and descriptions of
+     * model elements shall be displayed.
+     * 
+     * @see #getUsedLanguagePackLocale()
+     */
+    public Locale getIpsModelLocale() {
+        return new Locale(Platform.getNL());
     }
 
     /**

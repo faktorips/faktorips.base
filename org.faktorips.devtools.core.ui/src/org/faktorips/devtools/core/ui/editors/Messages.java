@@ -44,4 +44,9 @@ public class Messages extends NLS {
     public static String UnparsableFilePage_fileContentIsNotParsable;
     public static String UnreachableFilePage_msgUnreachableFile;
 
+    public static String IpsPartEditDialog2_tabItemLabel;
+
+    public static String LabelEditComposite_tableColumnHeaderLanguage;
+    public static String LabelEditComposite_tableColumnHeaderLabel;
+
 }

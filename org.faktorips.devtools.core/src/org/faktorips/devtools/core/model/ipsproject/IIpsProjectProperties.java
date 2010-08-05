@@ -368,7 +368,7 @@ public interface IIpsProjectProperties {
     // --
 
     /**
-     * Returns a set (defensive copy) containing all languages supported by this IPS project.
+     * Returns an unmodifiable view on the set of languages supported by this IPS project.
      */
     public Set<ISupportedLanguage> getSupportedLanguages();
 

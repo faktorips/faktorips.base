@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.ILabeled;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -42,7 +43,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class Attribute extends IpsObjectPart implements IAttribute {
+public abstract class Attribute extends IpsObjectPart implements IAttribute, ILabeled {
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
@@ -162,6 +163,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
 
     private void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
             throws CoreException {
+
         if (!valueDatatype.isParsable(defaultValue)) {
             String defaultValueInMsg = defaultValue;
             if (defaultValue == null) {

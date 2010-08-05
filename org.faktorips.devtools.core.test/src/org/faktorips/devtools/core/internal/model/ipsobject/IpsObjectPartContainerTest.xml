@@ -7,4 +7,6 @@
 		<Value id="org.foo.prop2"><![CDATA[<>&]]></Value>
 		<Value id="org.foo.prop3" isNull="true"/>
 	</ExtensionProperties>
+	<Label locale="en" value="Test Part" pluralValue="Test Parts"/>
+	<Label locale="de" value="Test Teil" pluralValue="Test Teile"/>
 </TestPart>

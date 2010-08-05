@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -315,6 +316,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     protected void addPart(IIpsObjectPart part) {
+        super.addPart(part);
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
         } else {
@@ -324,6 +326,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        IIpsObjectPart part = super.newPart(xmlTag, id);
+        if (part != null) {
+            return part;
+        }
+
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
@@ -358,7 +365,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public IIpsElement[] getChildren() {
-        List<IIpsElement> children = new ArrayList<IIpsElement>();
+        IIpsElement[] superChildren = super.getChildren();
+        List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
         if (valueSet != null) {
             children.add(valueSet);
         }
@@ -402,13 +410,16 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     protected void reinitPartCollections() {
-        // Nothing to do.
+        super.reinitPartCollections();
         // TODO Joerg Merge PersistenceBranch: wirklich nicht valueSet neu anlegen?
     }
 
     @Override
     protected void removePart(IIpsObjectPart part) {
-        valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        super.removePart(part);
+        if (part instanceof IValueSet) {
+            valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        }
     }
 
     @Override

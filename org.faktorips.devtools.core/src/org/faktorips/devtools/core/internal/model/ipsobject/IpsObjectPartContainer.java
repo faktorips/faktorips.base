@@ -14,9 +14,11 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -41,8 +43,11 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
+import org.faktorips.devtools.core.model.ipsobject.ILabeled;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
 import org.faktorips.util.message.MessageList;
@@ -52,26 +57,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * A container for ips object parts.
+ * A container for IPS object parts.
  * 
  * @author Jan Ortmann
  */
 public abstract class IpsObjectPartContainer extends IpsElement implements IIpsObjectPartContainer,
         IExtensionPropertyAccess {
 
-    /**
-     * Name of the xml element the containing the elements for the extension property values.
-     */
+    /** Name of the XML element the containing the elements for the extension property values. */
     protected final static String XML_EXT_PROPERTIES_ELEMENT = "ExtensionProperties"; //$NON-NLS-1$
 
-    /**
-     * Name of the xml element containing a property value.
-     */
+    /** Name of the XML element containing a property value. */
     protected final static String XML_VALUE_ELEMENT = "Value"; //$NON-NLS-1$
 
-    /**
-     * Name of the value element's attribute that stores the property id.
-     */
+    /** Name of the value element's attribute that stores the property id. */
     protected final static String XML_ATTRIBUTE_EXTPROPERTYID = "id"; //$NON-NLS-1$
 
     /**
@@ -80,7 +79,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected final static String XML_ATTRIBUTE_ISNULL = "isNull"; //$NON-NLS-1$
 
-    /** Map containing extension property ids as keys and their values. */
+    /** Set containing all labels attached to this object part container. */
+    private Set<ILabel> labels = new HashSet<ILabel>();
+
+    /** Map containing extension property IDs as keys and their values. */
     private HashMap<String, Object> extPropertyValues = null;
 
     /** Validation start time used for tracing in debug mode */
@@ -109,11 +111,16 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * The IpsObjectPartContainer version does not throw an exception as no resource access is
      * necessary.
+     * <p>
+     * In addition, it adds the labels attached to the container to the children. Subclasses must
+     * therefore not forget to call <tt>super.getChildren()</tt>.
      * 
      * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
      */
     @Override
-    public abstract IIpsElement[] getChildren();
+    public IIpsElement[] getChildren() {
+        return labels.toArray(new IIpsElement[labels.size()]);
+    }
 
     /**
      * Returns the id that can be used for a new part, so that its id is unique.
@@ -485,11 +492,13 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * collections that hold references to parts, e.g. for IPolicyCmptType: Collections for
      * attributes, methods and so on have to be cleared.
      */
-    protected abstract void reinitPartCollections();
+    protected void reinitPartCollections() {
+        labels.clear();
+    }
 
     /**
      * Add the part top the container.
-     * <p/>
+     * <p>
      * This method is called during the initFromXml processing. When the part has been part of the
      * parent before the xml initialization and is still be found in the xml (the part's id is found
      * in the xml). Subclasses must override this method so that the part is added to the correct
@@ -498,12 +507,20 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @throws RuntimeException if the part can't be read, e.g. because it's type is unknown.
      */
-    protected abstract void addPart(IIpsObjectPart part);
+    protected void addPart(IIpsObjectPart part) {
+        if (part instanceof ILabel) {
+            labels.add((ILabel)part);
+        }
+    }
 
     /**
      * Removes the given part from the container.
      */
-    protected abstract void removePart(IIpsObjectPart part);
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof ILabel) {
+            labels.remove(part);
+        }
+    }
 
     /**
      * This method is called during the initFromXml processing to create a new part object for the
@@ -516,7 +533,18 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @return a new part with the given id, or <code>null</code> if the xml tag name is unknown.
      */
-    protected abstract IIpsObjectPart newPart(Element xmlTag, String id);
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        if (xmlTag.getNodeName().equals(ILabel.XML_TAG_NAME)) {
+            return newLabel(id);
+        }
+        return null;
+    }
+
+    private ILabel newLabel(String id) {
+        ILabel newLabel = new Label(this, id);
+        labels.add(newLabel);
+        return newLabel;
+    }
 
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
@@ -691,6 +719,65 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             details.put(dependency, detailList);
         }
         detailList.add(new DependencyDetail(part, propertyName));
+    }
+
+    /**
+     * @see ILabeled#getLabel(Locale)
+     */
+    public ILabel getLabel(Locale locale) {
+        ArgumentCheck.notNull(locale);
+        for (ILabel label : labels) {
+            if (label.getLocale().equals(locale)) {
+                return label;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @see ILabeled#getLabels()
+     */
+    public Set<ILabel> getLabels() {
+        return Collections.unmodifiableSet(labels);
+    }
+
+    /**
+     * @see ILabeled#getCurrentLocaleLabelValue()
+     */
+    public String getCurrentLocaleLabelValue() {
+        ILabel label = getLabelForCurrentLocale();
+        return (label == null) ? null : label.getValue();
+    }
+
+    /**
+     * @see ILabeled#getCurrentLocalePluralLabelValue()
+     */
+    public String getCurrentLocalePluralLabelValue() {
+        if (!(isPluralLabelSupported())) {
+            throw new UnsupportedOperationException(
+                    "This object part container does not support plural values for labels."); //$NON-NLS-1$
+        }
+        ILabel label = getLabelForCurrentLocale();
+        return (label == null) ? null : label.getPluralValue();
+    }
+
+    /**
+     * @see ILabeled#isPluralLabelSupported()
+     */
+    public boolean isPluralLabelSupported() {
+        return false;
+    }
+
+    private ILabel getLabelForCurrentLocale() {
+        Locale currentLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        return getLabel(currentLocale);
+    }
+
+    /**
+     * @see ILabeled#newLabel()
+     */
+    public ILabel newLabel() {
+        return newLabel(getNextPartId());
     }
 
     /**

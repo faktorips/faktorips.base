@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -67,10 +69,13 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     public IIpsElement[] getChildren() {
+        IIpsElement[] superChildren = super.getChildren();
         if (valueSet != null) {
-            return new IIpsElement[] { valueSet };
+            List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
+            children.add(valueSet);
+            return children.toArray(new IIpsElement[children.size()]);
         } else {
-            return new IIpsElement[0];
+            return superChildren;
         }
     }
 
@@ -148,11 +153,19 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     protected void addPart(IIpsObjectPart part) {
-        valueSet = (IValueSet)part;
+        super.addPart(part);
+        if (part instanceof IValueSet) {
+            valueSet = (IValueSet)part;
+        }
     }
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        IIpsObjectPart part = super.newPart(xmlTag, id);
+        if (part != null) {
+            return part;
+        }
+
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
@@ -161,13 +174,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    protected void reinitPartCollections() {
-        // nothing to do
-    }
-
-    @Override
     protected void removePart(IIpsObjectPart part) {
-        valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        super.removePart(part);
+        if (part instanceof IValueSet) {
+            valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        }
     }
 
 }

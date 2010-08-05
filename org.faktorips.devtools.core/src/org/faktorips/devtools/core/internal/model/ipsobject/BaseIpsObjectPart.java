@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -51,27 +52,37 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
     @Override
     public IIpsElement[] getChildren() {
-        List<IIpsObjectPart> result = new ArrayList<IIpsObjectPart>();
+        IIpsElement[] children = super.getChildren();
+
+        List<IIpsElement> result = new ArrayList<IIpsElement>(Arrays.asList(children));
         for (IpsObjectPartCollection<?> container : partCollections) {
             int size = container.size();
             for (int i = 0; i < size; i++) {
                 result.add(container.getPart(i));
             }
         }
+
         return result.toArray(new IIpsElement[result.size()]);
     }
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        IIpsObjectPart part = super.newPart(xmlTag, id);
+        if (part != null) {
+            return part;
+        }
+
         for (IpsObjectPartCollection<?> container : partCollections) {
-            IIpsObjectPart part = container.newPart(xmlTag, id);
+            part = container.newPart(xmlTag, id);
             if (part != null) {
                 return part;
             }
         }
+
         if (tagsToIgnore.contains(xmlTag.getNodeName())) {
             return null;
         }
+
         throw new RuntimeException("Could not create part for xml element " + xmlTag.getNodeName()); //$NON-NLS-1$
     }
 
@@ -82,6 +93,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
     @Override
     protected void addPart(IIpsObjectPart part) {
+        super.addPart(part);
         for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.addPart(part)) {
                 return;
@@ -92,6 +104,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
     @Override
     protected void reinitPartCollections() {
+        super.reinitPartCollections();
         for (IpsObjectPartCollection<?> container : partCollections) {
             container.clear();
         }
@@ -99,6 +112,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
     @Override
     protected void removePart(IIpsObjectPart part) {
+        super.removePart(part);
         for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.removePart(part)) {
                 return;

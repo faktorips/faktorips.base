@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.Locale;
+import java.util.Set;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
@@ -24,7 +27,9 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -107,7 +112,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         container.setExtPropertyValue("org.foo.prop0", "newValue");
         // as beforeSetValue returns now true, the property should still contain the old value
         assertEquals("blabla", container.getExtPropertyValue("org.foo.prop0"));
-
     }
 
     public void testIsExtPropertyDefinitionAvailable() {
@@ -118,6 +122,33 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         model.addIpsObjectExtensionProperty(extProperty0);
         assertTrue(container.isExtPropertyDefinitionAvailable("org.foo.prop0"));
         assertFalse(container.isExtPropertyDefinitionAvailable("org.foo.prop1"));
+    }
+
+    public void testToXml_Labels() {
+        ILabel englishLabel = container.newLabel();
+        englishLabel.setLocale(Locale.ENGLISH);
+        englishLabel.setValue("Test Part");
+        englishLabel.setPluralValue("Test Parts");
+
+        ILabel germanLabel = container.newLabel();
+        germanLabel.setLocale(Locale.GERMAN);
+        germanLabel.setValue("Test Teil");
+        germanLabel.setPluralValue("Test Teile");
+
+        Element xmlElement = container.toXml(newDocument());
+        IpsObjectPartContainer newContainer = new TestIpsObjectPartContainer();
+        newContainer.initFromXml(xmlElement);
+
+        Set<ILabel> labelSet = newContainer.getLabels();
+        assertEquals(2, labelSet.size());
+        englishLabel = container.getLabel(Locale.ENGLISH);
+        germanLabel = container.getLabel(Locale.GERMAN);
+        assertNotNull(englishLabel);
+        assertNotNull(germanLabel);
+        assertEquals("Test Part", englishLabel.getValue());
+        assertEquals("Test Parts", englishLabel.getPluralValue());
+        assertEquals("Test Teil", germanLabel.getValue());
+        assertEquals("Test Teile", germanLabel.getPluralValue());
     }
 
     public void testToXml_ExtensionProperties() {
@@ -210,6 +241,24 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         model.addIpsObjectExtensionProperty(newProp);
         container.initFromXml(docEl);
         assertEquals("defaultValue", container.getExtPropertyValue("org.foo.newProp"));
+    }
+
+    public void testInitFromXmlLabels() {
+        Element docEl = getTestDocument().getDocumentElement();
+        container.initFromXml(docEl);
+
+        Set<ILabel> labelSet = container.getLabels();
+        assertEquals(2, labelSet.size());
+
+        ILabel englishLabel = container.getLabel(Locale.ENGLISH);
+        ILabel germanLabel = container.getLabel(Locale.GERMAN);
+        assertNotNull(englishLabel);
+        assertNotNull(germanLabel);
+
+        assertEquals("Test Part", englishLabel.getValue());
+        assertEquals("Test Parts", englishLabel.getPluralValue());
+        assertEquals("Test Teil", germanLabel.getValue());
+        assertEquals("Test Teile", germanLabel.getPluralValue());
     }
 
     public void testInitFromXmlMissingExtPropDefinition() {
@@ -308,7 +357,61 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertTrue(messagesImmutable.isEmpty());
     }
 
-    class TestIpsObjectPartContainer extends AtomicIpsObjectPart {
+    public void testNewLabel() {
+        assertEquals(0, container.getLabels().size());
+        assertNotNull(container.newLabel());
+        assertEquals(1, container.getLabels().size());
+    }
+
+    public void testGetLabel() {
+        ILabel englishLabel = container.newLabel();
+        englishLabel.setLocale(Locale.ENGLISH);
+        ILabel germanLabel = container.newLabel();
+        germanLabel.setLocale(Locale.GERMAN);
+
+        assertEquals(englishLabel, container.getLabel(Locale.ENGLISH));
+        assertEquals(germanLabel, container.getLabel(Locale.GERMAN));
+        assertNull(container.getLabel(Locale.KOREAN));
+    }
+
+    public void testGetLabels() {
+        ILabel englishLabel = container.newLabel();
+        englishLabel.setLocale(Locale.ENGLISH);
+        ILabel germanLabel = container.newLabel();
+        germanLabel.setLocale(Locale.GERMAN);
+
+        Set<ILabel> labelSet = container.getLabels();
+        assertEquals(2, labelSet.size());
+        assertTrue(labelSet.contains(englishLabel));
+        assertTrue(labelSet.contains(germanLabel));
+        try {
+            labelSet.remove(germanLabel);
+            fail();
+        } catch (UnsupportedOperationException e) {
+        }
+    }
+
+    public void testGetCurrentLocaleLabelValue() {
+        container.initFromXml(getTestDocument().getDocumentElement());
+        Locale currentLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        if (currentLocale.equals(Locale.GERMAN)) {
+            assertEquals("Test Teil", container.getCurrentLocaleLabelValue());
+        } else if (currentLocale.equals(Locale.ENGLISH)) {
+            assertEquals("Test Part", container.getCurrentLocaleLabelValue());
+        }
+    }
+
+    public void testGetCurrentLocalePluralLabelValue() {
+        container.initFromXml(getTestDocument().getDocumentElement());
+        Locale currentLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        if (currentLocale.equals(Locale.GERMAN)) {
+            assertEquals("Test Teile", container.getCurrentLocalePluralLabelValue());
+        } else if (currentLocale.equals(Locale.ENGLISH)) {
+            assertEquals("Test Parts", container.getCurrentLocalePluralLabelValue());
+        }
+    }
+
+    class TestIpsObjectPartContainer extends IpsObjectPart {
 
         private String name;
         private int numOfUpdateSrcFileCalls = 0;
@@ -335,6 +438,26 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         @Override
         public void setName(String name) {
             this.name = name;
+        }
+
+        @Override
+        public boolean isPluralLabelSupported() {
+            return true;
+        }
+
+        @Override
+        protected void addPart(IIpsObjectPart part) {
+            super.addPart(part);
+        }
+
+        @Override
+        protected void removePart(IIpsObjectPart part) {
+            super.removePart(part);
+        }
+
+        @Override
+        public IIpsObjectPart newPart(Class<?> partType) {
+            return null;
         }
 
     }

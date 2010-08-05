@@ -219,6 +219,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         createPersistenceTabItemIfNecessary(tabFolder);
         createDescriptionTabItem(tabFolder);
+        createLabelTabItem(tabFolder);
 
         tabFolder.addSelectionListener(new SelectionListener() {
             @Override
