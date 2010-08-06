@@ -35,7 +35,7 @@ public interface Validatable {
      * 
      * @throws CoreException If an exception occurs while validating the object.
      * 
-     * @deprecated {@link #isValid(IIpsProject)}
+     * @deprecated since 3.0.0, use {@link #isValid(IIpsProject)}
      */
     @Deprecated
     public boolean isValid() throws CoreException;
@@ -54,6 +54,8 @@ public interface Validatable {
      * @throws CoreException If an exception occurs while validating the object.
      * 
      * @see #validate(IIpsProject)
+     * 
+     * @since 3.0.0
      */
     public boolean isValid(IIpsProject ipsProject) throws CoreException;
 
@@ -68,7 +70,7 @@ public interface Validatable {
      * @throws CoreException If an exception occurs while obtaining the resulting validation
      *             severity.
      * 
-     * @deprecated use {@link #getValidationResultSeverity(IIpsProject)}
+     * @deprecated since 3.0.0, use {@link #getValidationResultSeverity(IIpsProject)}
      */
     @Deprecated
     public int getValidationResultSeverity() throws CoreException;
@@ -88,6 +90,8 @@ public interface Validatable {
      *             severity.
      * 
      * @see #validate(IIpsProject)
+     * 
+     * @since 3.0.0
      */
     public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException;
 
