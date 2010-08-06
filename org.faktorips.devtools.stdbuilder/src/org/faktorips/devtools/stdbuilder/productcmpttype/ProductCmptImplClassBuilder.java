@@ -178,16 +178,16 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         IProductCmptType superType = getProductCmptType().findSuperProductCmptType(getIpsProject());
+        boolean interfaceMethodImplementation = true;
         if (!returnedTypeInSignature.equals(getPcType())) {
-            appendOverrideAnnotation(methodsBuilder, false);
+            interfaceMethodImplementation = false;
         } else if (superType != null) {
             IPolicyCmptType superPolicyCmptType = superType.findPolicyCmptType(getIpsProject());
             if (superPolicyCmptType != null && superPolicyCmptType.equals(getPcType())) {
-                appendOverrideAnnotation(methodsBuilder, false);
+                interfaceMethodImplementation = false;
             }
-        } else {
-            appendOverrideAnnotation(methodsBuilder, true);
         }
+        appendOverrideAnnotation(methodsBuilder, interfaceMethodImplementation);
         getStandardBuilderSet().getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return new ");
