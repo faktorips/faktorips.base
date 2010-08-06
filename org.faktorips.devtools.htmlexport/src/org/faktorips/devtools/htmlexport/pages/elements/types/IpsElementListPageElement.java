@@ -65,11 +65,6 @@ public class IpsElementListPageElement extends AbstractListPageElement {
         setTitle(Messages.IpsObjectListPageElement_objects);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -114,5 +109,6 @@ public class IpsElementListPageElement extends AbstractListPageElement {
 
     @Override
     protected void createId() {
+        // could be overridden
     }
 }

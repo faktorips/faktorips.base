@@ -36,13 +36,6 @@ public class TablePageElement extends AbstractCompositePageElement {
      */
     private Set<TablePageElementLayout> tableLayouts = new HashSet<TablePageElementLayout>();
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#acceptLayouter
-     * (org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layoutVisitor) {
         layoutVisitor.layoutTablePageElement(this);
@@ -80,14 +73,9 @@ public class TablePageElement extends AbstractCompositePageElement {
         setBorder(border);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#build()
-     */
     @Override
     public void build() {
+        // could be overridden
     }
 
     /**
@@ -110,12 +98,6 @@ public class TablePageElement extends AbstractCompositePageElement {
         styles.remove(Style.BORDER);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#
-     * visitSubElements(org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void visitSubElements(ILayouter layouter) {
         List<PageElement> subElements = getSubElements();

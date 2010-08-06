@@ -63,23 +63,11 @@ public class WrapperPageElement extends AbstractCompositePageElement {
         setWrapperType(wrapperType);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#build()
-     */
     @Override
     public void build() {
+        // could be overridden
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#acceptLayouter
-     * (org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutWrapperPageElement(this);

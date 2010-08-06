@@ -33,7 +33,7 @@ import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
 public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard {
 
-    private static String DIALOG_SETTINGS_KEY = "org.faktorips.devtools.htmlexport.ipsProjectHtmlExportWizard";
+    private static String DIALOG_SETTINGS_KEY = "org.faktorips.devtools.htmlexport.ipsProjectHtmlExportWizard"; //$NON-NLS-1$
     private IpsProjectHtmlExportWizardPage ipsProjectHtmlExportWizardPage;
     /**
      * Create a new IpsArExportWizard
@@ -43,7 +43,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
 
     public IpsProjectHtmlExportWizard() {
         super();
-        setWindowTitle("Faktor-IPS Html Export");
+        setWindowTitle(Messages.IpsProjectHtmlExportWizard_windowTitle);
         setDefaultPageImageDescriptor(HtmlExportPlugin.getImageDescriptor("icons/HtmlExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();

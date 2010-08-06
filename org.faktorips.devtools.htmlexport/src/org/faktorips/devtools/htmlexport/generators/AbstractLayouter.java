@@ -20,25 +20,17 @@ import java.util.Set;
 
 public abstract class AbstractLayouter implements ILayouter {
 
-    /*
+    /**
      * content of a page
      */
-    protected StringBuilder content = new StringBuilder();
+    private StringBuilder content = new StringBuilder();
 
-    /*
-     * Set of LayoutResources like Images, Stylesheets
-     */
     private Set<LayoutResource> layoutResources = new HashSet<LayoutResource>();
 
     public AbstractLayouter() {
         super();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.generators.IGenerator#generate()
-     */
     @Override
     public byte[] generate() {
         if (Charset.isSupported(CHARSET)) {
@@ -51,20 +43,13 @@ public abstract class AbstractLayouter implements ILayouter {
         return content.toString().getBytes();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.generators.ILayouter#clear()
-     */
     @Override
     public void clear() {
         content = new StringBuilder();
     }
 
     /**
-     * appends String to the content
-     * 
-     * @param value
+     * adds text to the content.
      */
     protected void append(String value) {
         content.append(value);

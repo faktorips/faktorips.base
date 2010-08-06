@@ -44,15 +44,18 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElem
  */
 public class HtmlLayouter extends AbstractLayouter {
 
-    /*
+    /**
      * Name of the css-File
      */
     private static final String HTML_BASE_CSS = "html/base.css"; //$NON-NLS-1$
-    /*
+
+    /**
      * path to the resource in the generated site
      */
+
     private String resourcePath;
-    /*
+
+    /**
      * path from the actual RootPageElement to the root-folder of the site
      */
     private String pathToRoot;
@@ -63,42 +66,27 @@ public class HtmlLayouter extends AbstractLayouter {
         initBaseResources();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.generators.ILayouter#layoutLinkPageElement(org.faktorips
-     * .devtools.htmlexport.pages.elements.core.LinkPageElement)
-     */
     @Override
     public void layoutLinkPageElement(LinkPageElement pageElement) {
         if (pageElement.hasStyle(Style.BLOCK)) {
-            append(HtmlUtil.createHtmlElementOpenTag("div"));
+            append(HtmlUtil.createHtmlElementOpenTag("div")); //$NON-NLS-1$
         }
         append(HtmlUtil
                 .createLinkOpenTag(createLinkBase(pageElement), pageElement.getTarget(), getClasses(pageElement)));
         visitSubElements(pageElement);
         append(HtmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
         if (pageElement.hasStyle(Style.BLOCK)) {
-            append(HtmlUtil.createHtmlElementCloseTag("div"));
+            append(HtmlUtil.createHtmlElementCloseTag("div")); //$NON-NLS-1$
         }
     }
 
     /**
-     * @param pageElement
-     * @return
+     * creates the relative href from the actual page to the linked page
      */
     String createLinkBase(LinkPageElement pageElement) {
-        return getPathToRoot() + pageElement.getPathFromRoot() + ".html";
+        return getPathToRoot() + pageElement.getPathFromRoot() + ".html"; //$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.generators.ILayouter#layoutListPageElement(org.faktorips
-     * .devtools.htmlexport.pages.elements.core.ListPageElement)
-     */
     @Override
     public void layoutListPageElement(ListPageElement pageElement) {
         String listBaseHtmlTag = pageElement.isOrdered() ? "ul" : "ol"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -107,13 +95,6 @@ public class HtmlLayouter extends AbstractLayouter {
         append(HtmlUtil.createHtmlElementCloseTag(listBaseHtmlTag));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.generators.ILayouter#layoutTablePageElement(org.faktorips
-     * .devtools.htmlexport.pages.elements.core.table.TablePageElement)
-     */
     @Override
     public void layoutTablePageElement(TablePageElement pageElement) {
         append(HtmlUtil.createHtmlElementOpenTag("table", getClasses(pageElement))); //$NON-NLS-1$
@@ -121,13 +102,6 @@ public class HtmlLayouter extends AbstractLayouter {
         append(HtmlUtil.createHtmlElementCloseTag("table")); //$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.generators.ILayouter#layoutWrapperPageElement(org.faktorips
-     * .devtools.htmlexport.pages.elements.core.WrapperPageElement)
-     */
     @Override
     public void layoutWrapperPageElement(AbstractCompositePageElement wrapperPageElement) {
         WrapperType wrapperType = wrapperPageElement.getWrapperType();
@@ -144,8 +118,6 @@ public class HtmlLayouter extends AbstractLayouter {
     /**
      * returns name of the html-element for the given {@link WrapperType}
      * 
-     * @param wrapper
-     * @return String
      */
     private String getHtmlElementByWrappingType(WrapperType wrapper) {
         if (wrapper == WrapperType.LISTITEM) {
@@ -163,13 +135,6 @@ public class HtmlLayouter extends AbstractLayouter {
         return "span"; //$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.generators.ILayouter#layoutRootPageElement(org.faktorips
-     * .devtools.htmlexport.pages.elements.core.AbstractRootPageElement)
-     */
     @Override
     public void layoutRootPageElement(AbstractRootPageElement pageElement) {
         initRootPage(pageElement);
@@ -183,20 +148,12 @@ public class HtmlLayouter extends AbstractLayouter {
     /**
      * sets the pathToRoot and clears the content
      * 
-     * @param pageElement
      */
     void initRootPage(AbstractRootPageElement pageElement) {
         setPathToRoot(pageElement.getPathToRoot());
         clear();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.generators.ILayouter#layoutTextPageElement(org.faktorips
-     * .devtools.htmlexport.pages.elements.core.TextPageElement)
-     */
     @Override
     public void layoutTextPageElement(TextPageElement pageElement) {
         if (pageElement.getType() == TextType.WITHOUT_TYPE && pageElement.getStyles().isEmpty()) {
@@ -209,8 +166,6 @@ public class HtmlLayouter extends AbstractLayouter {
     /**
      * puts all {@link Style}s of the {@link PageElement} in a String for the html-class-attribute.
      * 
-     * @param pageElement
-     * @return
      */
     private String getClasses(PageElement pageElement) {
 
@@ -230,9 +185,6 @@ public class HtmlLayouter extends AbstractLayouter {
 
     /**
      * returns the name of an html-element according to the given {@link TextPageElement}
-     * 
-     * @param textPageElement
-     * @return
      */
     private String identifyTagName(TextPageElement textPageElement) {
         return HtmlTextType.getHtmlTextTypeByTextType(textPageElement.getType()).getTagName();
@@ -241,7 +193,6 @@ public class HtmlLayouter extends AbstractLayouter {
     /**
      * The Layouter visits the subelements of the given {@link ICompositePageElement}
      * 
-     * @param compositePageElement
      */
     protected void visitSubElements(ICompositePageElement compositePageElement) {
         compositePageElement.visitSubElements(this);
@@ -262,20 +213,13 @@ public class HtmlLayouter extends AbstractLayouter {
         }
     }
 
-    /*
-     * return relative path from root to the external css-stylesheet-definitions
+    /**
+     * returns the relative path from root to the external css-stylesheet-definitions
      */
     String getStyleDefinitionPath() {
         return resourcePath + '/' + HTML_BASE_CSS;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.generators.ILayouter#layoutImagePageElement(org.faktorips
-     * .devtools.htmlexport.pages.elements.core.ImagePageElement)
-     */
     @Override
     public void layoutImagePageElement(ImagePageElement imagePageElement) {
 
@@ -293,5 +237,4 @@ public class HtmlLayouter extends AbstractLayouter {
     public void setPathToRoot(String pathToRoot) {
         this.pathToRoot = pathToRoot;
     }
-
 }

@@ -50,7 +50,7 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
         List<String> methodData = new ArrayList<String>();
 
         methodData.add(method.getName());
-        methodData.add(method.isAbstract() ? "X" : "-");
+        methodData.add(method.isAbstract() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         methodData.add(method.getModifier().toString());
         methodData.add(method.getDatatype());
         methodData.add(method.getSignatureString());

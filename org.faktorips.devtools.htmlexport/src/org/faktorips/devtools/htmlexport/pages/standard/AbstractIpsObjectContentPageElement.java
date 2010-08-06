@@ -140,14 +140,14 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
      * adds {@link PageElement}s for structural data like fitting ProductCmpt for a PolicyCmptType
      */
     protected void addStructureData() {
-        // could to be override,
+        // could be overridden
     }
 
     /**
      * adds {@link PageElement}s for hierarchical data like super- and subclasses
      */
     protected void addTypeHierarchy() {
-        // could to be override,
+        // could be overridden
     }
 
     /*
@@ -213,7 +213,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         }
 
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement("Extension Properties", TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(Messages.AbstractIpsObjectContentPageElement_extensionProperties, TextType.HEADING_2));
 
         wrapper.addPageElements(extensionPropertiesTable);
 

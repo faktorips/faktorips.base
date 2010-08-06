@@ -61,7 +61,7 @@ public interface ILayouter extends IGenerator {
     public void layoutTablePageElement(TablePageElement pageElement);
 
     /**
-     * Layout fuer WrapperElement
+     * Layout for a WrapperElement
      * 
      * @param pageElement WrapperPageElement
      */

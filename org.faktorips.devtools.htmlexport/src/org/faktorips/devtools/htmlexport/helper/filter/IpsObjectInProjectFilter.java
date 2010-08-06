@@ -16,6 +16,12 @@ package org.faktorips.devtools.htmlexport.helper.filter;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
+/**
+ * {@link IpsElementFilter}, which accepts all {@link IIpsElement}s within the given
+ * {@link IIpsProject}
+ * 
+ * @author dicker
+ */
 public class IpsObjectInProjectFilter implements IpsElementFilter {
 
     private final IIpsProject ipsProject;

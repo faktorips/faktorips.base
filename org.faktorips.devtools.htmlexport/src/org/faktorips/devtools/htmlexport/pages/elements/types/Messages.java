@@ -53,6 +53,7 @@ public class Messages extends NLS {
     public static String MethodsTablePageElement_headlineModifier;
     public static String MethodsTablePageElement_headlineName;
     public static String MethodsTablePageElement_headlineSignature;
+    public static String ProductGenerationAttributeTable_associatedComponents;
     public static String ProductGenerationAttributeTable_generationFrom;
     public static String ProductGenerationAttributeTable_undefined;
     public static String ValidationRuleTablePageElement_headlineDescription;
@@ -67,5 +68,6 @@ public class Messages extends NLS {
     }
 
     private Messages() {
+        //
     }
 }

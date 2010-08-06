@@ -61,6 +61,7 @@ public abstract class AbstractRootPageElement extends AbstractCompositePageEleme
      * 
      */
     protected void createId() {
+        // could be overridden
     }
 
     public boolean hasId() {

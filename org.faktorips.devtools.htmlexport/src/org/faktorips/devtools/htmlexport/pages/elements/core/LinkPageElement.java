@@ -75,26 +75,14 @@ public class LinkPageElement extends AbstractCompositePageElement {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#acceptLayouter
-     * (org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutLinkPageElement(this);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#build()
-     */
     @Override
     public void build() {
+        // could be overridden
     }
 
     /**

@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage implements ValueChangeListener,
         ModifyListener, ICheckStateListener {
 
-    private static final String PAGE_NAME = "IpsProjectHtmlExportWizardPage";
+    private static final String PAGE_NAME = "IpsProjectHtmlExportWizardPage"; //$NON-NLS-1$
 
     private static final String STORE_DESTINATION_NAMES = PAGE_NAME + ".DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
@@ -58,8 +58,8 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     protected IpsProjectHtmlExportWizardPage(IStructuredSelection selection) {
         super(PAGE_NAME);
         this.selection = selection;
-        setTitle("Html Export of " + getProject().getName());
-        setDescription("Choose destination and options");
+        setTitle(Messages.IpsProjectHtmlExportWizardPage_projectName + getProject().getName());
+        setDescription(Messages.IpsProjectHtmlExportWizardPage_description);
 
         setPageComplete(false);
     }
@@ -86,7 +86,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         // TODO includeReferencedProjects = toolkit.createCheckbox(composite,
         // "Include referenced Projects");
 
-        showValidationErrorsCheckBox = toolkit.createCheckbox(composite, "Show validation errors");
+        showValidationErrorsCheckBox = toolkit.createCheckbox(composite, Messages.IpsProjectHtmlExportWizardPage_showValidationErrors);
 
         restoreWidgetValues();
 
@@ -102,7 +102,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         destinationSelectionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_FILL));
 
-        new Label(destinationSelectionGroup, SWT.NONE).setText("Destination");
+        new Label(destinationSelectionGroup, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_destination);
 
         // destination name entry field
         destinationNamesCombo = new Combo(destinationSelectionGroup, SWT.SINGLE | SWT.BORDER);
@@ -114,7 +114,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
         // destination browse button
         Button destinationBrowseButton = new Button(destinationSelectionGroup, SWT.PUSH);
-        destinationBrowseButton.setText("Browse");
+        destinationBrowseButton.setText(Messages.IpsProjectHtmlExportWizardPage_browse);
         destinationBrowseButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         destinationBrowseButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -129,8 +129,8 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
      */
     protected void handleDestinationBrowseButtonPressed() {
         DirectoryDialog directoryDialog = new DirectoryDialog(getContainer().getShell());
-        directoryDialog.setText("DIALOG TEXT");
-        directoryDialog.setFilterPath(getProject().getLocation() + File.separator + "html");
+        directoryDialog.setText(Messages.IpsProjectHtmlExportWizardPage_directoryDialogText);
+        directoryDialog.setFilterPath(getProject().getLocation() + File.separator + "html"); //$NON-NLS-1$
 
         String selectedDirectoryName = directoryDialog.open();
         if (selectedDirectoryName != null) {
@@ -167,7 +167,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     private String getDefaultDestinationDirectory() {
         IProject firstElement = getProject();
-        return firstElement.getLocation().toOSString() + File.separator + "html";
+        return firstElement.getLocation().toOSString() + File.separator + "html"; //$NON-NLS-1$
 
     }
 

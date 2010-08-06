@@ -207,7 +207,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                 break;
             }
             TreeNodePageElement subElement = new TreeNodePageElement(PageElementUtils.createLinkPageElement(
-                    getConfig(), superTypes.get(i), "content", superTypes.get(i).getName(), true));
+                    getConfig(), superTypes.get(i), "content", superTypes.get(i).getName(), true)); //$NON-NLS-1$
             element.addPageElements(subElement);
             element = subElement;
         }

@@ -23,7 +23,6 @@ public interface IGenerator {
     /**
      * returns generated data as byte[]
      * 
-     * @return
      */
     public byte[] generate();
 
