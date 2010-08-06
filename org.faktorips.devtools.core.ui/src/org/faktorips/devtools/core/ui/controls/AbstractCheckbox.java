@@ -81,7 +81,7 @@ public abstract class AbstractCheckbox extends ControlComposite {
     @Override
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);
-        if (eventType != SWT.Paint) {
+        if (eventType != SWT.Paint && eventType != SWT.Dispose) {
             listenToControl(button, eventType);
         }
     }
