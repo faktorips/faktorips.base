@@ -64,6 +64,10 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
     }
 
     private List<String> getHeadlineWithExtentionPropertiesData() {
+        if (isEmpty()) {
+            return Collections.emptyList();
+        }
+
         IIpsElement rowData = objectParts.get(0);
         propertyDefinitions = rowData.getIpsModel().getExtensionPropertyDefinitions(rowData.getClass(), true);
 

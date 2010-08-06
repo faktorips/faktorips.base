@@ -17,6 +17,7 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,9 +25,9 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractStandardTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 
 /**
  * <p>
@@ -40,10 +41,9 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractStandardTa
  * @author dicker
  * 
  */
-class EnumValuesTablePageElement extends AbstractStandardTablePageElement {
+class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IEnumValue> {
 
     private List<IEnumAttribute> enumAttributes;
-    private List<IEnumValue> enumValues;
 
     /**
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumType}
@@ -51,9 +51,8 @@ class EnumValuesTablePageElement extends AbstractStandardTablePageElement {
      * @param type
      */
     public EnumValuesTablePageElement(IEnumType type) {
-        super();
+        super(type.getEnumValues());
         initEnumAttributes(type);
-        enumValues = type.getEnumValues();
     }
 
     /**
@@ -62,19 +61,19 @@ class EnumValuesTablePageElement extends AbstractStandardTablePageElement {
      * @param content
      */
     public EnumValuesTablePageElement(IEnumContent content) {
-        super();
+        super(content.getEnumValues());
         try {
             initEnumAttributes(content.findEnumType(content.getIpsProject()));
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-        enumValues = content.getEnumValues();
     }
 
     /**
      * finds the enumAttributes and initializes the List
      * 
      * @param type
+     * @return
      */
     private void initEnumAttributes(IEnumType type) {
         try {
@@ -84,52 +83,19 @@ class EnumValuesTablePageElement extends AbstractStandardTablePageElement {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * addDataRows()
-     */
     @Override
-    protected void addDataRows() {
-        for (IEnumValue value : enumValues) {
-            addValueRow(value);
-        }
-    }
-
-    /**
-     * adds a row for the given {@link IEnumValue}
-     * 
-     * @param value
-     */
-    protected void addValueRow(IEnumValue value) {
-        addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getValueData(value))));
-    }
-
-    /**
-     * returns the data of the attributes of the given {@link IEnumValue}
-     * 
-     * @param value
-     * @return
-     */
-    protected List<String> getValueData(IEnumValue value) {
+    protected List<? extends PageElement> createRowWithIpsObjectPart(IEnumValue rowData) {
         List<String> valueData = new ArrayList<String>();
 
         for (IEnumAttribute enumAttribute : enumAttributes) {
-            valueData.add(value.getEnumAttributeValue(enumAttribute).getValue());
+            valueData.add(rowData.getEnumAttributeValue(enumAttribute).getValue());
         }
 
-        return valueData;
+        return Arrays.asList(PageElementUtils.createTextPageElements(valueData));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * getHeadline()
-     */
     @Override
-    protected List<String> getHeadline() {
+    protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
         for (IEnumAttribute enumAttribute : enumAttributes) {
@@ -137,15 +103,5 @@ class EnumValuesTablePageElement extends AbstractStandardTablePageElement {
         }
 
         return headline;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
-     */
-    @Override
-    public boolean isEmpty() {
-        return enumAttributes.isEmpty() || enumValues.isEmpty();
     }
 }

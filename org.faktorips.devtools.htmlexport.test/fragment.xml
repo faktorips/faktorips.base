@@ -176,4 +176,30 @@
             position="top">
       </property>
    </extension>
+
+      <extension
+         id="extEnumAttributes"
+         name="externe EnumAttributes"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.enums.EnumAttribute"
+            defaultValue="EnumAttribute default"
+            position="top">
+      </property>
+   </extension>
+   
+      <extension
+         id="extEnumValue"
+         name="externe EnumValue"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.enums.EnumValue"
+            defaultValue="EnumValue default"
+            position="top">
+      </property>
+   </extension>
+   
+   
 </fragment>
