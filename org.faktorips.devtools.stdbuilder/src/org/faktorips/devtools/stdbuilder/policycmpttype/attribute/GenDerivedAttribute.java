@@ -42,7 +42,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
 
-    public GenDerivedAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
+    public GenDerivedAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) {
         super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.isDerived());
     }
@@ -100,6 +100,10 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (getAttribute().isOverwrite()) {
             appendOverrideAnnotation(builder, getIpsProject(), false);
+        } else {
+            if (getAttribute().getModifier().isPublished()) {
+                appendOverrideAnnotation(builder, getIpsProject(), true);
+            }
         }
         generateGetterSignature(builder);
         builder.openBracket();
