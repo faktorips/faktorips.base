@@ -1225,7 +1225,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation association2 : associations) {
             IPolicyCmptTypeAssociation association = association2;
-            if (!association.isCompositionMasterToDetail() || association.isDerivedUnion() || !association.isValid()) {
+            if (!association.isCompositionMasterToDetail() || association.isDerivedUnion() || !association.isValid(getIpsProject())) {
                 continue;
             }
             builder.append("if (");
@@ -1236,7 +1236,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.appendln("if (className.length()>0) {");
             builder.appendln("try {");
             builder.appendClassName(getQualifiedClassName(target));
-            String varName = StringUtils.uncapitalize(association.getTargetRoleSingular());
+            String varName = StringUtils.uncapitalize(association.getTargetRoleSingular() + "LocalVar");
             builder.append(" " + varName + "=(");
             builder.appendClassName(getQualifiedClassName(target));
             builder.appendln(")Class.forName(className).newInstance();");
