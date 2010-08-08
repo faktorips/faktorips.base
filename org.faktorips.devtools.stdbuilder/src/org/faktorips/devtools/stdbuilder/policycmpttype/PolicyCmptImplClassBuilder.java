@@ -1547,7 +1547,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String methodNameGetParent = associationGenerator.getMethodNameGetParentObject(false);
         String parentObjectFieldName = associationGenerator.getFieldNameForAssociation();
 
-        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodBuilder.javaDoc(null, ANNOTATION_GENERATED);
         methodBuilder.methodBegin(Modifier.PUBLIC, Void.TYPE.getName(), methodNameSetParent,
                 new String[] { paramName }, new String[] { getTargetQualifiedName(association, true) });
 
@@ -1558,7 +1558,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.append(paramName);
         methodBuilder.appendln("){");
         methodBuilder.appendln("return;");
-        methodBuilder.appendln("};");
+        methodBuilder.appendln("}");
         methodBuilder.appendClassName(IModelObject.class);
         methodBuilder.append(" parent = ");
         methodBuilder.append(MethodNames.GET_PARENT);

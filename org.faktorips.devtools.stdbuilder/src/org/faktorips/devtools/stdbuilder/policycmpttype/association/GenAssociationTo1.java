@@ -230,7 +230,8 @@ public class GenAssociationTo1 extends GenAssociation {
         }
 
         String paramName = getParamNameForSetObject();
-        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        String javaDocText = internal ? null : getJavaDocCommentForOverriddenMethod();
+        builder.javaDoc(javaDocText, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureSetObject(builder, internal);
 
         builder.openBracket();
@@ -334,7 +335,8 @@ public class GenAssociationTo1 extends GenAssociation {
     protected void generateMethodSetRefObjectForAssociation(JavaCodeFragmentBuilder methodsBuilder, boolean internal)
             throws CoreException {
         String paramName = getParamNameForSetObject();
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        String javaDocText = internal ? null : getJavaDocCommentForOverriddenMethod();
+        methodsBuilder.javaDoc(javaDocText, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureSetObject(methodsBuilder, internal);
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + " == ");
