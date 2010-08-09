@@ -133,6 +133,9 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         updateTitleInTitleArea();
         // updateMessageArea should be called after the size of the dialog has been calculated -->
         // @see method create() (MTB#142)
+        // at least an empty message must be set, otherwise the height of the dialog will be
+        // to short (MTB#0291 )
+        setMessage(null);
         return control;
     }
 
