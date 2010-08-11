@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.refactor;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
@@ -38,6 +39,11 @@ public class IpsMoveHandler extends IpsRefactoringHandler {
     @Override
     protected MoveWizard getMoveWizard(IStructuredSelection selection) {
         return new MoveWizard(selection, MoveWizard.OPERATION_MOVE);
+    }
+
+    @Override
+    protected ProcessorBasedRefactoring getRefactoring(IIpsElement selectedElement) {
+        return selectedElement.getMoveRefactoring();
     }
 
 }

@@ -71,6 +71,11 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
      */
     protected abstract MoveWizard getMoveWizard(IStructuredSelection selection);
 
+    /**
+     * Must return the refactoring instance for the given selected IPS element.
+     */
+    protected abstract ProcessorBasedRefactoring getRefactoring(IIpsElement selectedElement);
+
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
@@ -94,7 +99,7 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
                 }
             }
 
-            ProcessorBasedRefactoring refactoring = selectedElement.getRenameRefactoring();
+            ProcessorBasedRefactoring refactoring = getRefactoring(selectedElement);
             if (refactoring != null) {
                 IIpsRefactoringProcessor processor = (IIpsRefactoringProcessor)refactoring.getProcessor();
                 IpsCheckConditionsOperation checkConditionsOperation = new IpsCheckConditionsOperation(refactoring,
