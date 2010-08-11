@@ -20,35 +20,35 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.type.IAttribute;
 
-public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
+public class ConfigElementWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        // As of now, attribute values do not have an image.
+        // As of now configuration elements do not have an image.
         return null;
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        // As of now, attribute values do not have an image.
+        // As of now configuration elements do not have an image.
         return null;
     }
 
     @Override
     protected String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (!(ipsObjectPart instanceof IAttributeValue)) {
+        if (!(ipsObjectPart instanceof IConfigElement)) {
             return super.getLabel(ipsObjectPart);
         }
 
-        IAttributeValue attributeValue = (IAttributeValue)ipsObjectPart;
+        IConfigElement configElement = (IConfigElement)ipsObjectPart;
         try {
-            IAttribute attribute = attributeValue.findAttribute(ipsObjectPart.getIpsProject());
+            IAttribute attribute = configElement.findPcTypeAttribute(ipsObjectPart.getIpsProject());
             if (attribute == null) {
                 IpsPlugin.log(new IpsStatus(IStatus.WARNING,
-                        "Could not find the attribute the attribute value is based on.")); //$NON-NLS-1$ 
+                        "Could not find the attribute the config element is based on.")); //$NON-NLS-1$ 
                 return ""; //$NON-NLS-1$
             }
 
@@ -63,4 +63,5 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
             throw new RuntimeException(e);
         }
     }
+
 }

@@ -185,4 +185,10 @@ public interface IProductCmptLink extends IIpsObjectPart {
      */
     public boolean isOptional();
 
+    /**
+     * Returns <code>true</code> if this is a to-many association. This is the case if the max
+     * cardinality is greater than 1.
+     */
+    public boolean is1ToMany();
+
 }

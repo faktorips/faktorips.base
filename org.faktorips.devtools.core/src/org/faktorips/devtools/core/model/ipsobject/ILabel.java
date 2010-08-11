@@ -33,6 +33,21 @@ public interface ILabel extends IIpsObjectPart {
 
     public static final String PROPERTY_PLURAL_VALUE = "pluralValue"; //$NON-NLS-1$
 
+    /** Prefix for all message codes of this class. */
+    public final static String MSGCODE_PREFIX = "LABEL-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the locale of this label is not supported by the IPS
+     * project.
+     */
+    public final static String MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT = MSGCODE_PREFIX
+            + "LocaleNotSupportedByIpsProject"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the locale of this label is missing.
+     */
+    public final static String MSGCODE_LOCALE_MISSING = MSGCODE_PREFIX + "LocaleMissing"; //$NON-NLS-1$
+
     /**
      * Returns the locale of this label or <tt>null</tt> if this information is for some reason not
      * available.

@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -94,6 +96,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
+import org.w3c.dom.Document;
 
 /**
  * Base class for all plugin test cases. Has a factory method to create an ips project including the
@@ -157,6 +160,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             project.delete(true, true, null);
         }
         tearDownExtension();
+    }
+
+    protected Document createXmlDocument(String xmlTag) throws ParserConfigurationException {
+        Document xmlDocument = getDocumentBuilder().newDocument();
+        xmlDocument.appendChild(xmlDocument.createElement(xmlTag));
+        return xmlDocument;
     }
 
     protected void tearDownExtension() throws Exception {

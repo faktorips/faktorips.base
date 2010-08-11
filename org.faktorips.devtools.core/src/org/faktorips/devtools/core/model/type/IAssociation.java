@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -27,7 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
  * 
  * @author Jan Ortmann
  */
-public interface IAssociation extends IIpsObjectPart {
+public interface IAssociation extends IIpsObjectPart, ILabeledElement {
 
     public static final int CARDINALITY_ONE = 1;
     public static final int CARDINALITY_MANY = Integer.MAX_VALUE;

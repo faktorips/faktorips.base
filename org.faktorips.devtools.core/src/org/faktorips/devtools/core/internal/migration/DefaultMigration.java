@@ -64,6 +64,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
         try {
             monitor.beginTask("Migrate project: " + getIpsProject().getName(), countPackages() * 10); //$NON-NLS-1$
+            beforeFileMigration();
             for (IIpsPackageFragmentRoot root : roots) {
                 IIpsPackageFragment[] packs = root.getIpsPackageFragments();
                 for (IIpsPackageFragment pack : packs) {
@@ -163,4 +164,13 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * @see IIpsSrcFile#markAsDirty()
      */
     protected abstract void migrate(IIpsSrcFile srcFile) throws CoreException;
+
+    /**
+     * Hook method for subclasses to do stuff that is done once before any file is migrated.
+     * 
+     * @throws CoreException This method may throw this exception at any time.
+     */
+    protected void beforeFileMigration() throws CoreException {
+        // Empty default implementation
+    }
 }

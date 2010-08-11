@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.ILabeled;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -162,11 +162,11 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     }
 
     protected TabItem createLabelTabItem(TabFolder folder) {
-        if (!(part instanceof ILabeled)) {
+        if (!(part instanceof ILabeledElement)) {
             throw new RuntimeException("The IPS object part '" + part.getClass() //$NON-NLS-1$
-                    + "' does not implement the interface '" + ILabeled.class + "'."); //$NON-NLS-1$ //$NON-NLS-2$
+                    + "' does not implement the interface '" + ILabeledElement.class + "'."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        Composite labelEditComposite = new LabelEditComposite(folder, (ILabeled)part);
+        Composite labelEditComposite = new LabelEditComposite(folder, (ILabeledElement)part);
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog2_tabItemLabel);

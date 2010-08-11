@@ -31,8 +31,6 @@ public interface IPluralLabelWorkbenchAdapter {
      * Returns the plural label for the given IPS element.
      * 
      * @param element The IPS element to retrieve the plural label for.
-     * 
-     * @throws NullPointerException If <tt>element</tt> is <tt>null</tt>.
      */
     public String getPluralLabel(IIpsElement element);
 

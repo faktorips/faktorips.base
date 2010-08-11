@@ -13,10 +13,12 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -24,7 +26,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 
-public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
+public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter implements IPluralLabelWorkbenchAdapter {
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
@@ -63,14 +65,26 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
     @Override
     protected String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IAssociation) {
-            IAssociation association = (IAssociation)ipsObjectPart;
-            if (association.is1ToMany()) {
-                return association.getTargetRolePlural();
-            }
-            return association.getTargetRoleSingular();
-        } else {
+        if (!(ipsObjectPart instanceof IAssociation)) {
             return super.getLabel(ipsObjectPart);
+        }
+        return getLabel((IAssociation)ipsObjectPart, false);
+    }
+
+    @Override
+    public String getPluralLabel(IIpsElement element) {
+        if (!(element instanceof IAssociation)) {
+            return null;
+        }
+        return getLabel((IAssociation)element, true);
+    }
+
+    private String getLabel(IAssociation association, boolean plural) {
+        String labelValue = getMostSuitableLabelValue(association, plural);
+        if (StringUtils.isEmpty(labelValue)) {
+            return plural ? association.getTargetRolePlural() : association.getTargetRoleSingular();
+        } else {
+            return labelValue;
         }
     }
 

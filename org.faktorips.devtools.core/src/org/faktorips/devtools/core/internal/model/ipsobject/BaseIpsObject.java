@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class BaseIpsObject extends IpsObject {
+public abstract class BaseIpsObject extends LabeledIpsObject {
 
     private List<IpsObjectPartCollection<?>> partCollections = new ArrayList<IpsObjectPartCollection<?>>(1);
 
@@ -78,7 +78,12 @@ public abstract class BaseIpsObject extends IpsObject {
 
     @Override
     protected void addPart(IIpsObjectPart part) {
+        int childrenCount = getChildren().length;
         super.addPart(part);
+        if (getChildren().length > childrenCount) {
+            return;
+        }
+
         for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.addPart(part)) {
                 return;

@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -190,7 +189,7 @@ public class GenerationAttributesSection extends IpsSection {
             return;
         }
         IIpsProject ipsProject = toDisplay.getIpsProject();
-        Label label = toolkit.createLabel(rootPane, StringUtils.capitalize(toDisplay.getAttribute()));
+        Label label = toolkit.createLabel(rootPane, IpsUIPlugin.getLabel(toDisplay));
 
         IpsObjectUIController controller = new IpsObjectUIController(toDisplay);
         uiMasterController.add(controller);

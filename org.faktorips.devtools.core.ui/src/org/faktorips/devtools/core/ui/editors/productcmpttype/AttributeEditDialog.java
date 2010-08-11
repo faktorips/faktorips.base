@@ -100,6 +100,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         generalItem.setControl(createGeneralPage(folder));
 
         createDescriptionTabItem(folder);
+        createLabelTabItem(folder);
 
         return folder;
     }

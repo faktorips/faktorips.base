@@ -67,12 +67,27 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
         private final IProductCmptGeneration generation;
 
+        private final IProductCmptType productCmptType;
+
         public InternalLabelProvider(IProductCmptGeneration generation) {
             this.generation = generation;
+            try {
+                productCmptType = generation.findProductCmptType(generation.getIpsProject());
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         @Override
         public String getText(Object element) {
+            if (element instanceof String) {
+                IAssociation association = productCmptType.getAssociation((String)element);
+                if (association.is1ToMany()) {
+                    return IpsUIPlugin.getPluralLabel(association);
+                } else {
+                    return IpsUIPlugin.getLabel(association);
+                }
+            }
             if (element instanceof IProductCmptLink) {
                 IProductCmptLink rel = ((IProductCmptLink)element);
                 return StringUtil.unqualifiedName(rel.getTarget());

@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -167,7 +166,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     }
 
     private void createConfigElementNameLabel(IConfigElement element, IPolicyCmptTypeAttribute attribute) {
-        Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(element.getName()));
+        Label label = toolkit.createFormLabel(rootPane, IpsUIPlugin.getLabel(element));
         // use the description of the attribute as tooltip
         if (attribute != null) {
             label.setToolTipText(attribute.getDescription());

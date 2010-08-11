@@ -266,4 +266,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return getMinCardinality() == 0 && getMaxCardinality() == 1;
     }
 
+    @Override
+    public boolean is1ToMany() {
+        return getMaxCardinality() > 1;
+    }
+
 }

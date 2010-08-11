@@ -316,7 +316,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     protected void addPart(IIpsObjectPart part) {
+        int childrenCount = getChildren().length;
         super.addPart(part);
+        if (getChildren().length > childrenCount) {
+            return;
+        }
+
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
         } else {

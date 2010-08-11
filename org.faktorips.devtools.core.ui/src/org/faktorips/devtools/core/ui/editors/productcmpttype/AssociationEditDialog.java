@@ -65,6 +65,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         firstPage.setControl(createFirstPage(folder));
 
         createDescriptionTabItem(folder);
+        createLabelTabItem(folder);
+
         return folder;
     }
 

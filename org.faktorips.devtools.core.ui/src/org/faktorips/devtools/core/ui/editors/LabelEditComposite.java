@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.editors;
 
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -28,17 +29,20 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsobject.ILabeled;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.util.message.MessageList;
 
 /**
- * A composite that allows to edit the {@link ILabel}s attached to an {@link ILabeled} object. It
+ * A composite that allows to edit the {@link ILabel}s attached to an {@link ILabeledElement}. It
  * consists of a table with two columns listing all the labels with their associated language.
  * 
  * @since 3.1
@@ -47,14 +51,14 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
  */
 public class LabelEditComposite extends Composite {
 
-    private final ILabeled labeledObject;
+    private final ILabeledElement labeledElement;
 
     private final TableViewer tableViewer;
 
-    public LabelEditComposite(Composite parent, ILabeled labeledObject) {
+    public LabelEditComposite(Composite parent, ILabeledElement labeledElement) {
         super(parent, SWT.NONE);
 
-        this.labeledObject = labeledObject;
+        this.labeledElement = labeledElement;
 
         createLayout();
         tableViewer = createTableViewer();
@@ -68,33 +72,65 @@ public class LabelEditComposite extends Composite {
 
     private TableViewer createTableViewer() {
         TableViewer tableViewer = new TableViewer(this, SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
-        tableViewer.setColumnProperties(new String[] { Messages.LabelEditComposite_tableColumnHeaderLanguage,
-                Messages.LabelEditComposite_tableColumnHeaderLabel });
+        tableViewer.setColumnProperties(new String[] { ILabel.PROPERTY_LOCALE, ILabel.PROPERTY_VALUE,
+                ILabel.PROPERTY_PLURAL_VALUE });
 
-        TableViewerColumn languageColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-        languageColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderLanguage);
-        languageColumn.getColumn().setWidth(100);
-        TableViewerColumn labelColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-        labelColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderLabel);
-        labelColumn.getColumn().setWidth(350);
+        createTableColumns(tableViewer);
 
         tableViewer.setContentProvider(new TableContentProvider());
         tableViewer.setLabelProvider(new TableLabelProvider());
 
         tableViewer.setUseHashlookup(true);
-        tableViewer.setInput(labeledObject);
+        tableViewer.setInput(labeledElement);
 
         tableViewer.setCellModifier(new TableCellModifier());
 
-        CellEditor[] cellEditors = new CellEditor[2];
+        createTableCellEditors(tableViewer);
+
+        createTableHoverService(tableViewer);
+
+        return tableViewer;
+    }
+
+    private void createTableHoverService(TableViewer tableViewer) {
+        new TableMessageHoverService(tableViewer) {
+            @Override
+            protected MessageList getMessagesFor(Object element) throws CoreException {
+                if (element != null) {
+                    ILabel label = (ILabel)element;
+                    return label.validate(label.getIpsProject());
+                }
+                return null;
+            }
+        };
+    }
+
+    private void createTableCellEditors(TableViewer tableViewer) {
         ValueDatatype datatype = ValueDatatype.STRING;
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
         UIToolkit uiToolkit = new UIToolkit(null);
-        cellEditors[0] = controlFactory.createTableCellEditor(uiToolkit, datatype, null, tableViewer, 0, null);
-        cellEditors[1] = controlFactory.createTableCellEditor(uiToolkit, datatype, null, tableViewer, 1, null);
-        tableViewer.setCellEditors(cellEditors);
 
-        return tableViewer;
+        int numberCellEditors = labeledElement.isPluralLabelSupported() ? 3 : 2;
+        CellEditor[] cellEditors = new CellEditor[numberCellEditors];
+        for (int i = 0; i < cellEditors.length; i++) {
+            cellEditors[i] = controlFactory.createTableCellEditor(uiToolkit, datatype, null, tableViewer, i, null);
+        }
+
+        tableViewer.setCellEditors(cellEditors);
+    }
+
+    private void createTableColumns(TableViewer tableViewer) {
+        TableViewerColumn languageColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+        languageColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderLanguage);
+        languageColumn.getColumn().setWidth(100);
+        TableViewerColumn labelColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+        labelColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderLabel);
+        labelColumn.getColumn().setWidth(190);
+        if (labeledElement.isPluralLabelSupported()) {
+            TableViewerColumn pluralLabelColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+            pluralLabelColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderPluralLabel);
+            pluralLabelColumn.getColumn().setWidth(190);
+        }
     }
 
     private void configureTable() {
@@ -123,7 +159,7 @@ public class LabelEditComposite extends Composite {
 
         @Override
         public Object[] getElements(Object inputElement) {
-            return labeledObject.getLabels().toArray();
+            return labeledElement.getLabels().toArray();
         }
 
     }
@@ -132,7 +168,18 @@ public class LabelEditComposite extends Composite {
 
         @Override
         public Image getColumnImage(Object element, int columnIndex) {
-            // TODO AW: Return error image when there are errors
+            // Error markers appear only in the locale column.
+            if (columnIndex == 0) {
+                ILabel label = (ILabel)element;
+                try {
+                    MessageList messageList = label.validate(label.getIpsProject());
+                    if (!(messageList.isEmpty())) {
+                        return IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
+                    }
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             return null;
         }
 
@@ -186,10 +233,12 @@ public class LabelEditComposite extends Composite {
         public Object getValue(Object element, String property) {
             if (element instanceof ILabel) {
                 ILabel label = (ILabel)element;
-                if (property.equals(Messages.LabelEditComposite_tableColumnHeaderLanguage)) {
+                if (property.equals(ILabel.PROPERTY_LOCALE)) {
                     return label.getLocale().getLanguage();
-                } else if (property.equals(Messages.LabelEditComposite_tableColumnHeaderLabel)) {
+                } else if (property.equals(ILabel.PROPERTY_VALUE)) {
                     return label.getValue();
+                } else if (property.equals(ILabel.PROPERTY_PLURAL_VALUE)) {
+                    return label.getPluralValue();
                 }
             }
             return null;
@@ -197,6 +246,9 @@ public class LabelEditComposite extends Composite {
 
         @Override
         public void modify(Object element, String property, Object value) {
+            if (element instanceof Item) {
+                element = ((Item)element).getData();
+            }
             if (!(element instanceof ILabel)) {
                 return;
             }
@@ -207,11 +259,16 @@ public class LabelEditComposite extends Composite {
             ILabel label = (ILabel)element;
             String valueString = (String)value;
 
-            if (property.equals(Messages.LabelEditComposite_tableColumnHeaderLanguage)) {
+            if (property.equals(ILabel.PROPERTY_LOCALE)) {
                 label.setLocale(new Locale(valueString));
-            } else if (property.equals(Messages.LabelEditComposite_tableColumnHeaderLabel)) {
+            } else if (property.equals(ILabel.PROPERTY_VALUE)) {
                 label.setValue(valueString);
+            } else if (property.equals(ILabel.PROPERTY_PLURAL_VALUE)) {
+                label.setPluralValue(valueString);
             }
+
+            tableViewer.update(element, new String[] { property });
+            tableViewer.refresh(true);
         }
     }
 

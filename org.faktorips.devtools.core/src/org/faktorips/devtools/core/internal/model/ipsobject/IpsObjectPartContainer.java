@@ -14,11 +14,9 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -43,11 +41,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsobject.ILabeled;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
 import org.faktorips.util.message.MessageList;
@@ -79,9 +74,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected final static String XML_ATTRIBUTE_ISNULL = "isNull"; //$NON-NLS-1$
 
-    /** Set containing all labels attached to this object part container. */
-    private Set<ILabel> labels = new HashSet<ILabel>();
-
     /** Map containing extension property IDs as keys and their values. */
     private HashMap<String, Object> extPropertyValues = null;
 
@@ -111,16 +103,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * The IpsObjectPartContainer version does not throw an exception as no resource access is
      * necessary.
-     * <p>
-     * In addition, it adds the labels attached to the container to the children. Subclasses must
-     * therefore not forget to call <tt>super.getChildren()</tt>.
      * 
      * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
      */
     @Override
-    public IIpsElement[] getChildren() {
-        return labels.toArray(new IIpsElement[labels.size()]);
-    }
+    public abstract IIpsElement[] getChildren();
 
     /**
      * Returns the id that can be used for a new part, so that its id is unique.
@@ -492,9 +479,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * collections that hold references to parts, e.g. for IPolicyCmptType: Collections for
      * attributes, methods and so on have to be cleared.
      */
-    protected void reinitPartCollections() {
-        labels.clear();
-    }
+    protected abstract void reinitPartCollections();
 
     /**
      * Add the part top the container.
@@ -507,20 +492,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @throws RuntimeException if the part can't be read, e.g. because it's type is unknown.
      */
-    protected void addPart(IIpsObjectPart part) {
-        if (part instanceof ILabel) {
-            labels.add((ILabel)part);
-        }
-    }
+    protected abstract void addPart(IIpsObjectPart part);
 
     /**
      * Removes the given part from the container.
      */
-    protected void removePart(IIpsObjectPart part) {
-        if (part instanceof ILabel) {
-            labels.remove(part);
-        }
-    }
+    protected abstract void removePart(IIpsObjectPart part);
 
     /**
      * This method is called during the initFromXml processing to create a new part object for the
@@ -533,18 +510,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @return a new part with the given id, or <code>null</code> if the xml tag name is unknown.
      */
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        if (xmlTag.getNodeName().equals(ILabel.XML_TAG_NAME)) {
-            return newLabel(id);
-        }
-        return null;
-    }
-
-    private ILabel newLabel(String id) {
-        ILabel newLabel = new Label(this, id);
-        labels.add(newLabel);
-        return newLabel;
-    }
+    protected abstract IIpsObjectPart newPart(Element xmlTag, String id);
 
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
@@ -719,65 +685,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             details.put(dependency, detailList);
         }
         detailList.add(new DependencyDetail(part, propertyName));
-    }
-
-    /**
-     * @see ILabeled#getLabel(Locale)
-     */
-    public ILabel getLabel(Locale locale) {
-        ArgumentCheck.notNull(locale);
-        for (ILabel label : labels) {
-            if (label.getLocale().equals(locale)) {
-                return label;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @see ILabeled#getLabels()
-     */
-    public Set<ILabel> getLabels() {
-        return Collections.unmodifiableSet(labels);
-    }
-
-    /**
-     * @see ILabeled#getCurrentLocaleLabelValue()
-     */
-    public String getCurrentLocaleLabelValue() {
-        ILabel label = getLabelForCurrentLocale();
-        return (label == null) ? null : label.getValue();
-    }
-
-    /**
-     * @see ILabeled#getCurrentLocalePluralLabelValue()
-     */
-    public String getCurrentLocalePluralLabelValue() {
-        if (!(isPluralLabelSupported())) {
-            throw new UnsupportedOperationException(
-                    "This object part container does not support plural values for labels."); //$NON-NLS-1$
-        }
-        ILabel label = getLabelForCurrentLocale();
-        return (label == null) ? null : label.getPluralValue();
-    }
-
-    /**
-     * @see ILabeled#isPluralLabelSupported()
-     */
-    public boolean isPluralLabelSupported() {
-        return false;
-    }
-
-    private ILabel getLabelForCurrentLocale() {
-        Locale currentLocale = IpsPlugin.getDefault().getIpsModelLocale();
-        return getLabel(currentLocale);
-    }
-
-    /**
-     * @see ILabeled#newLabel()
-     */
-    public ILabel newLabel() {
-        return newLabel(getNextPartId());
     }
 
     /**

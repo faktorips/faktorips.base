@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -465,11 +466,18 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     protected void addPart(IIpsObjectPart part) {
-        persistenceAssociationInfo = part;
+        if (part instanceof PersistentAssociationInfo) {
+            persistenceAssociationInfo = part;
+        }
     }
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        IIpsObjectPart part = super.newPart(xmlTag, id);
+        if (part != null) {
+            return part;
+        }
+
         if (xmlTag.getTagName().equals(IPersistentAssociationInfo.XML_TAG)) {
             persistenceAssociationInfo = new PersistentAssociationInfo(this, id);
             return persistenceAssociationInfo;
@@ -492,7 +500,13 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     public IIpsElement[] getChildren() {
-        return (persistenceAssociationInfo == null) ? new IIpsElement[0]
-                : new IIpsElement[] { persistenceAssociationInfo };
+        IIpsElement[] superChildren = super.getChildren();
+        if (persistenceAssociationInfo == null) {
+            return superChildren;
+        } else {
+            List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
+            children.add(persistenceAssociationInfo);
+            return children.toArray(new IIpsElement[children.size()]);
+        }
     }
 }

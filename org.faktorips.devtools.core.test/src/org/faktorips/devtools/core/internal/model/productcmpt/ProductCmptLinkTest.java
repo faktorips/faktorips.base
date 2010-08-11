@@ -242,4 +242,11 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setMaxCardinality(2);
         assertFalse(link.isOptional());
     }
+
+    public void testIs1ToMany() {
+        link.setMaxCardinality(10);
+        assertTrue(link.is1ToMany());
+        link.setMaxCardinality(1);
+        assertFalse(link.is1ToMany());
+    }
 }

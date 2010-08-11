@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -28,7 +26,6 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Document;
 
 /**
  * Base test for all enumeration tests providing a simple enumeration model with a gender
@@ -149,12 +146,6 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_ID);
         tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValues().get(1);
         tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_NAME);
-    }
-
-    protected Document createXmlDocument(String xmlTag) throws ParserConfigurationException {
-        Document xmlDocument = getDocumentBuilder().newDocument();
-        xmlDocument.appendChild(xmlDocument.createElement(xmlTag));
-        return xmlDocument;
     }
 
     protected void assertOneValidationMessage(MessageList validationMessageList) {

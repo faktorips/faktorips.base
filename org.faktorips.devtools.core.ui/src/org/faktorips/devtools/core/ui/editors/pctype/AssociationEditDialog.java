@@ -97,6 +97,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         createPersistenceTabItemIfNecessary(folder);
         createDescriptionTabItem(folder);
+        createLabelTabItem(folder);
+
         return folder;
     }
 

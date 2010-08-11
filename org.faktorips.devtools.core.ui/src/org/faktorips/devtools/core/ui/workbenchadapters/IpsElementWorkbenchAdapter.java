@@ -21,6 +21,8 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 
 public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, IWorkbenchAdapter2 {
 
@@ -65,6 +67,27 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
 
     protected String getLabel(IIpsElement ipsElement) {
         return ipsElement.getName();
+    }
+
+    /**
+     * Returns the value of the {@link ILabel} for the current locale as specified by
+     * {@link ILabeledElement#getLabelForCurrentLocale()} if it is not <tt>null</tt>.
+     * <p>
+     * Otherwise the value of the {@link ILabel} for the default language as specified by
+     * {@link ILabeledElement#getLabelForDefaultLocale()} is returned.
+     * <p>
+     * Should that also be <tt>null</tt>, <tt>null</tt> is returned.
+     */
+    protected String getMostSuitableLabelValue(ILabeledElement labeledElement, boolean pluralValue) {
+        ILabel label = labeledElement.getLabelForCurrentLocale();
+        if (label == null) {
+            label = labeledElement.getLabelForDefaultLocale();
+        }
+        String labelValue = null;
+        if (label != null) {
+            labelValue = pluralValue ? label.getPluralValue() : label.getValue();
+        }
+        return labelValue;
     }
 
     @Override

@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
  * @see ILabel
  * @see IIpsProjectProperties#getSupportedLanguages()
  */
-public interface ILabeled {
+public interface ILabeledElement {
 
     /**
      * Returns the {@link ILabel} for the given {@link Locale}. If no label for the locale exists,
@@ -49,35 +49,26 @@ public interface ILabeled {
     public Set<ILabel> getLabels();
 
     /**
-     * Returns whether this element has a plural label. Only if this method returns <tt>true</tt> is
-     * it allowed to call {@link #getCurrentLocalePluralLabelValue()}.
+     * Returns whether this element has a plural label.
      */
     public boolean isPluralLabelSupported();
 
     /**
-     * Directly returns the value of the label for the current locale. The current locale is the
-     * locale that Faktor-IPS uses at the time this operation is called to internationalize
-     * Faktor-IPS models.
+     * Returns the label for the current locale. The current locale is the locale that Faktor-IPS
+     * uses at the time this operation is called to internationalize Faktor-IPS models.
      * <p>
      * If there is no label for that locale, <tt>null</tt> is returned.
      * 
      * @see IpsPlugin#getIpsModelLocale()
      */
-    public String getCurrentLocaleLabelValue();
+    public ILabel getLabelForCurrentLocale();
 
     /**
-     * Directly returns the value of the plural label for the current locale. The current locale is
-     * the locale that Faktor-IPS uses at the time this operation is called to internationalize
-     * Faktor-IPS models.
-     * <p>
-     * If there is no plural label for that locale, <tt>null</tt> is returned.
-     * 
-     * @throws UnsupportedOperationException If this object does not support plural labels.
-     * 
-     * @see IpsPlugin#getIpsModelLocale()
-     * @see #isPluralLabelSupported()
+     * Returns the label for the default language. The default language is specified trough the IPS
+     * project. Returns <tt>null</tt> if no label for the default language exists or no default
+     * language is specified.
      */
-    public String getCurrentLocalePluralLabelValue();
+    public ILabel getLabelForDefaultLocale();
 
     /**
      * Creates a new label for this object.

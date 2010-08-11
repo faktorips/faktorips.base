@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class BaseIpsObjectPart extends IpsObjectPart {
+public abstract class BaseIpsObjectPart extends LabeledIpsObjectPart {
 
     private List<String> tagsToIgnore = new ArrayList<String>(0);
 
@@ -93,12 +93,18 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
     @Override
     protected void addPart(IIpsObjectPart part) {
+        int childrenCount = getChildren().length;
         super.addPart(part);
+        if (getChildren().length > childrenCount) {
+            return;
+        }
+
         for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.addPart(part)) {
                 return;
             }
         }
+
         throw new IllegalArgumentException("Could not add part " + part); //$NON-NLS-1$
     }
 

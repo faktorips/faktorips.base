@@ -358,7 +358,12 @@ public class IpsPlugin extends AbstractUIPlugin {
      * @see #getUsedLanguagePackLocale()
      */
     public Locale getIpsModelLocale() {
-        return new Locale(Platform.getNL());
+        String nl = Platform.getNL();
+        // As of now, only the language is of concern to us, not the country.
+        if (nl.length() > 2) {
+            nl = nl.substring(0, 2);
+        }
+        return new Locale(nl);
     }
 
     /**
