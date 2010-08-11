@@ -74,13 +74,13 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
-import org.faktorips.devtools.core.ui.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.util.ArgumentCheck;
@@ -159,6 +159,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * default provider column.
      */
     private IAction lockAndSyncLiteralNameAction;
+
+    /**
+     * Action that enables the user to apply the 'Rename Literal Name' refactoring.
+     */
+    private IAction renameLiteralNameRefactoringAction;
 
     /** Action to reset all literal names to the values of their respective default providers. */
     private IAction resetLiteralNamesAction;
@@ -345,9 +350,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         moveEnumValueDownAction = new MoveEnumValueAction(enumValuesTableViewer, false);
 
         if (enumTypeEditing) {
+            IEnumType enumType = (IEnumType)enumValueContainer;
             lockAndSyncLiteralNameAction = new LockAndSyncLiteralNameAction(this);
             lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
-            resetLiteralNamesAction = new ResetLiteralNamesAction(enumValuesTableViewer, (IEnumType)enumValueContainer);
+            renameLiteralNameRefactoringAction = new RenameLiteralNameRefactoringAction(enumValuesTableViewer);
+            renameLiteralNameRefactoringAction.setEnabled(!(lockAndSynchronizeLiteralNames));
+            resetLiteralNamesAction = new ResetLiteralNamesAction(enumValuesTableViewer, enumType);
         }
     }
 
@@ -387,17 +395,18 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /**
-     * Toggles the 'Lock and Synchronize Literal Names' option. Updates the columns that are skipped
-     * by cell editors in the process.
+     * Toggles the 'Lock and Synchronize Literal Names' option. Updates the list of columns that are
+     * skipped by cell editors in the process.
      */
     void toggleLockAndSyncLiteralNames() {
-        lockAndSynchronizeLiteralNames = !lockAndSynchronizeLiteralNames;
+        lockAndSynchronizeLiteralNames = !(lockAndSynchronizeLiteralNames);
         lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
 
         IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings();
         settings.put(SETTINGS_KEY_LOCK_AND_SYNC, lockAndSynchronizeLiteralNames);
 
         updateCellEditorSkippedColumns();
+        renameLiteralNameRefactoringAction.setEnabled(!(lockAndSynchronizeLiteralNames));
     }
 
     /**
@@ -511,22 +520,25 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
     }
 
-    /** Creates the context menu for the <tt>enumValuesTable</tt>. */
+    /** Creates the context menu for the table. */
     private void createContextMenu() {
-        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        MenuManager menuManager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 
-        menuMgr.add(newEnumValueAction);
-        menuMgr.add(deleteEnumValueAction);
-        menuMgr.add(new Separator());
-        menuMgr.add(moveEnumValueUpAction);
-        menuMgr.add(moveEnumValueDownAction);
+        menuManager.add(newEnumValueAction);
+        menuManager.add(deleteEnumValueAction);
+        menuManager.add(new Separator());
+        menuManager.add(moveEnumValueUpAction);
+        menuManager.add(moveEnumValueDownAction);
 
         if (enumTypeEditing) {
-            menuMgr.add(new Separator());
-            menuMgr.add(resetLiteralNamesAction);
+            menuManager.add(new Separator());
+            MenuManager refactorMenuManager = new MenuManager(Messages.EnumValuesSection_labelSubmenuRefactor);
+            refactorMenuManager.add(renameLiteralNameRefactoringAction);
+            menuManager.add(refactorMenuManager);
+            menuManager.add(resetLiteralNamesAction);
         }
 
-        Menu menu = menuMgr.createContextMenu(enumValuesTable);
+        Menu menu = menuManager.createContextMenu(enumValuesTable);
         enumValuesTable.setMenu(menu);
     }
 
@@ -1001,24 +1013,35 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     if (lockAndSynchronizeLiteralNames) {
                         return;
                     }
-                    IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)enumAttributeValue;
-
                     /*
                      * If it is the literal name column we actually have to apply the corresponding
                      * Faktor-IPS refactoring now since generated Java code may depend on the value!
+                     * However, we only do this directly if the user has chosen to immediately apply
+                     * refactorings when applicable in the IPS preferences. Otherwise the user has
+                     * to explicitly start the refactoring via the context menu.
                      */
-                    ProcessorBasedRefactoring renameRefactoring = literalNameValue.getRenameRefactoring();
-                    IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-                    renameProcessor.setNewName((String)value);
-
-                    IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
-                    refactorOp.execute();
-
+                    // TODO AW: Program refactoring mode switch in IpsPreferences
+                    boolean immediatelyApplyRefactorings = false;
+                    if (immediatelyApplyRefactorings) {
+                        applyRenameLiteralNameRefactoring(value, enumAttributeValue);
+                    } else {
+                        enumAttributeValue.setValue((String)value);
+                    }
                 } else {
                     enumAttributeValue.setValue((String)value);
                 }
+
                 enumValuesTableViewer.refresh(true);
             }
+        }
+
+        private void applyRenameLiteralNameRefactoring(Object value, IEnumAttributeValue enumAttributeValue) {
+            IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)enumAttributeValue;
+            ProcessorBasedRefactoring renameRefactoring = literalNameValue.getRenameRefactoring();
+            IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+            renameProcessor.setNewName((String)value);
+            IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
+            refactorOp.runDirectExecution();
         }
     }
 

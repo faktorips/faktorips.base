@@ -32,17 +32,15 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * 
  * @author Alexander Weickmann
  */
-public final class RenameRefactoringWizard extends IpsRefactoringWizard {
+public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
 
     /**
-     * Creates a <tt>RenameRefactoringWizard</tt>.
-     * 
      * @param refactoring The refactoring used by the wizard.
      * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public RenameRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
+    public IpsRenameRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/RenameWizard.png"));
         setDefaultPageTitle(NLS.bind(Messages.RenameRefactoringWizard_title, getIpsElementName()));

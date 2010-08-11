@@ -60,6 +60,11 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
     }
 
     @Override
+    public boolean isSourceFilesSavedRequired() {
+        return false;
+    }
+
+    @Override
     public String getIdentifier() {
         return "org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumLiteralNameAttributeValueProcessor"; //$NON-NLS-1$
     }

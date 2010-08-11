@@ -33,15 +33,13 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Alexander Weickmann
  */
-public class RefactoringDialog extends RefactoringWizardDialog {
+public class IpsRefactoringDialog extends RefactoringWizardDialog {
 
     /**
-     * Creates a <tt>RefactoringDialog</tt>.
-     * 
      * @param shell The parent shell.
      * @param wizard The <tt>RefactoringWizard</tt> to start with this dialog.
      */
-    public RefactoringDialog(Shell shell, RefactoringWizard wizard) {
+    public IpsRefactoringDialog(Shell shell, RefactoringWizard wizard) {
         super(shell, wizard);
     }
 

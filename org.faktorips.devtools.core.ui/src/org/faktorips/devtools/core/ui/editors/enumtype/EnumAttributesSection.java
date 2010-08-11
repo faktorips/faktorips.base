@@ -37,10 +37,11 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.RenameHandler;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
+import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 import org.faktorips.devtools.core.ui.wizards.enumtype.EnumTypePage;
 import org.faktorips.util.ArgumentCheck;
 
@@ -133,7 +134,8 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             manager.add(refactorSubmenu);
             manager.add(new Separator());
 
-            refactorSubmenu.add(RenameHandler.getContributionItem());
+            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
+
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
         }

@@ -237,4 +237,9 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         return Messages.RenameAttributeProcessor_processorName;
     }
 
+    @Override
+    public boolean isSourceFilesSavedRequired() {
+        return false;
+    }
+
 }

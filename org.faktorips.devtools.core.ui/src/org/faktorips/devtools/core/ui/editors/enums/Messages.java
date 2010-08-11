@@ -38,6 +38,8 @@ public class Messages extends NLS {
     public static String EnumValuesSection_tooltipMoveEnumValueDown;
     public static String EnumValuesSection_labelLockAndSync;
     public static String EnumValuesSection_tooltipLockAndSync;
+    public static String EnumValuesSection_labelSubmenuRefactor;
+    public static String EnumValuesSection_labelRenameLiteralName;
     public static String EnumValuesSection_labelResetLiteralNames;
     public static String EnumValuesSection_tooltipResetLiteralNames;
 

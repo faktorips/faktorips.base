@@ -43,17 +43,15 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * 
  * @author Alexander Weickmann
  */
-public final class MoveRefactoringWizard extends IpsRefactoringWizard {
+public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
 
     /**
-     * Creates a <tt>MoveRefactoringWizard</tt>.
-     * 
      * @param refactoring The refactoring used by the wizard.
      * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
      * 
      * @throws NullPointerException If any parameter is <tt>null</tt>.
      */
-    public MoveRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
+    public IpsMoveRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/MoveWizard.png"));
         setDefaultPageTitle(NLS.bind(Messages.MoveRefactoringWizard_title, getIpsElementName()));

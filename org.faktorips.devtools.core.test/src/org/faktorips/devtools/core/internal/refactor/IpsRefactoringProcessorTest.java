@@ -96,6 +96,11 @@ public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
             return null;
         }
 
+        @Override
+        public boolean isSourceFilesSavedRequired() {
+            return false;
+        }
+
     }
 
 }

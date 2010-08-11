@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
@@ -182,6 +183,11 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(IEnumLiteralNameAttribute.XML_TAG);
+    }
+
+    @Override
+    public ProcessorBasedRefactoring getRenameRefactoring() {
+        return null;
     }
 
 }
