@@ -30,9 +30,11 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -161,16 +163,34 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         return item;
     }
 
+    protected TabItem createNewDescriptionTabItem(TabFolder folder) {
+        if (!(part instanceof IDescribedElement)) {
+            throw new RuntimeException("The IPS object part '" + part.getClass() //$NON-NLS-1$
+                    + "' does not implement the interface '" + IDescribedElement.class + "'."); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        IIpsProject ipsProject = part.getIpsProject();
+        IDescribedElement describedElement = (IDescribedElement)part;
+        Composite editComposite = new DescriptionEditComposite(folder, describedElement, ipsProject, uiToolkit);
+
+        TabItem item = new TabItem(folder, SWT.NONE);
+        item.setText(Messages.IpsPartEditDialog_description);
+        item.setControl(editComposite);
+
+        return item;
+    }
+
     protected TabItem createLabelTabItem(TabFolder folder) {
         if (!(part instanceof ILabeledElement)) {
             throw new RuntimeException("The IPS object part '" + part.getClass() //$NON-NLS-1$
                     + "' does not implement the interface '" + ILabeledElement.class + "'."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        Composite labelEditComposite = new LabelEditComposite(folder, (ILabeledElement)part);
+
+        Composite editComposite = new LabelEditComposite(folder, (ILabeledElement)part);
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog2_tabItemLabel);
-        item.setControl(labelEditComposite);
+        item.setControl(editComposite);
 
         return item;
     }

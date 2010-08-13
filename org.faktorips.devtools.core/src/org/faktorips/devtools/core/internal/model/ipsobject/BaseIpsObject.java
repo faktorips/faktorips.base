@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class BaseIpsObject extends LabeledIpsObject {
+public abstract class BaseIpsObject extends DescribedAndLabeledIpsObject {
 
     private List<IpsObjectPartCollection<?>> partCollections = new ArrayList<IpsObjectPartCollection<?>>(1);
 

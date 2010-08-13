@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class BaseIpsObjectPart extends LabeledIpsObjectPart {
+public abstract class BaseIpsObjectPart extends DescribedAndLabeledIpsObjectPart {
 
     private List<String> tagsToIgnore = new ArrayList<String>(0);
 

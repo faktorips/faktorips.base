@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.internal.model.ipsobject.LabeledIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.DescribedAndLabeledIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class Association extends LabeledIpsObjectPart implements IAssociation {
+public abstract class Association extends DescribedAndLabeledIpsObjectPart implements IAssociation {
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 

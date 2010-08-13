@@ -23,9 +23,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -33,11 +34,13 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class LabeledElementHelperTest extends AbstractIpsPluginTest {
+public class DescribedAndLabeledHelperTest extends AbstractIpsPluginTest {
 
     private MockHelper helper;
 
-    private ILabeledElement labeledObjectPart;
+    private IDescription usDescription;
+
+    private IDescription germanDescription;
 
     private ILabel usLabel;
 
@@ -55,8 +58,13 @@ public class LabeledElementHelperTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
 
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy");
-        labeledObjectPart = policyCmptType.newAttribute();
-        helper = new MockHelper((IpsObjectPartContainer)labeledObjectPart);
+        IIpsObjectPartContainer objectPartContainer = policyCmptType.newAttribute();
+        helper = new MockHelper(objectPartContainer);
+
+        usDescription = helper.newDescription();
+        usDescription.setLocale(Locale.US);
+        germanDescription = helper.newDescription();
+        germanDescription.setLocale(Locale.GERMAN);
 
         usLabel = helper.newLabel();
         usLabel.setLocale(Locale.US);
@@ -66,17 +74,21 @@ public class LabeledElementHelperTest extends AbstractIpsPluginTest {
 
     public void testGetChildren() {
         IIpsElement[] children = helper.getChildren();
-        assertEquals(2, children.length);
+        assertEquals(4, children.length);
 
         List<IIpsElement> childrenList = Arrays.asList(children);
+        assertTrue(childrenList.contains(usDescription));
+        assertTrue(childrenList.contains(germanDescription));
         assertTrue(childrenList.contains(usLabel));
         assertTrue(childrenList.contains(germanLabel));
     }
 
     public void testReinitPartCollections() {
         assertEquals(2, helper.getLabels().size());
+        assertEquals(2, helper.getDescriptions().size());
         helper.reinitPartCollections();
         assertEquals(0, helper.getLabels().size());
+        assertEquals(0, helper.getDescriptions().size());
     }
 
     public void testAddRemovePart() {
@@ -86,6 +98,13 @@ public class LabeledElementHelperTest extends AbstractIpsPluginTest {
         assertEquals(2, helper.getLabels().size());
         helper.addPart(labelToAdd);
         assertEquals(3, helper.getLabels().size());
+
+        IDescription descriptionToAdd = helper.newDescription();
+        assertEquals(3, helper.getDescriptions().size());
+        helper.removePart(descriptionToAdd);
+        assertEquals(2, helper.getDescriptions().size());
+        helper.addPart(descriptionToAdd);
+        assertEquals(3, helper.getDescriptions().size());
     }
 
     public void testNewPart() throws DOMException, ParserConfigurationException {
@@ -94,8 +113,18 @@ public class LabeledElementHelperTest extends AbstractIpsPluginTest {
         assertTrue(helper.newPart(element, "blub") instanceof ILabel);
         assertEquals(3, helper.getLabels().size());
 
+        element = xmlDoc.createElement(IDescription.XML_TAG_NAME);
+        assertTrue(helper.newPart(element, "blub") instanceof IDescription);
+        assertEquals(3, helper.getDescriptions().size());
+
         element = xmlDoc.createElement("foobar");
         assertNull(helper.newPart(element, "xyz"));
+    }
+
+    public void testNewDescription() {
+        assertEquals(2, helper.getDescriptions().size());
+        assertNotNull(helper.newDescription());
+        assertEquals(3, helper.getDescriptions().size());
     }
 
     public void testNewLabel() {
@@ -104,10 +133,28 @@ public class LabeledElementHelperTest extends AbstractIpsPluginTest {
         assertEquals(3, helper.getLabels().size());
     }
 
+    public void testGetDescription() {
+        assertEquals(usDescription, helper.getDescription(Locale.US));
+        assertEquals(germanDescription, helper.getDescription(Locale.GERMAN));
+        assertNull(helper.getDescription(Locale.KOREAN));
+    }
+
     public void testGetLabel() {
         assertEquals(usLabel, helper.getLabel(Locale.US));
         assertEquals(germanLabel, helper.getLabel(Locale.GERMAN));
         assertNull(helper.getLabel(Locale.KOREAN));
+    }
+
+    public void testGetDescriptions() {
+        Set<IDescription> descriptionSet = helper.getDescriptions();
+        assertEquals(2, descriptionSet.size());
+        assertTrue(descriptionSet.contains(usDescription));
+        assertTrue(descriptionSet.contains(germanDescription));
+        try {
+            descriptionSet.remove(germanDescription);
+            fail();
+        } catch (UnsupportedOperationException e) {
+        }
     }
 
     public void testGetLabels() {
@@ -122,9 +169,19 @@ public class LabeledElementHelperTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void testGetLabelForCurrentLocale() {
-        Locale currentLocale = IpsPlugin.getDefault().getIpsModelLocale();
-        assertEquals(currentLocale.getLanguage(), helper.getLabelForCurrentLocale().getLocale().getLanguage());
+    public void testGetDescriptionForIpsModelLocale() {
+        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        assertEquals(ipsModelLocale.getLanguage(), helper.getDescriptionForIpsModelLocale().getLocale().getLanguage());
+    }
+
+    public void testGetLabelForIpsModelLocale() {
+        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        assertEquals(ipsModelLocale.getLanguage(), helper.getLabelForIpsModelLocale().getLocale().getLanguage());
+    }
+
+    public void testGetDescriptionForDefaultLocale() {
+        Locale defaultLocale = Locale.GERMAN;
+        assertEquals(defaultLocale, helper.getDescriptionForDefaultLocale().getLocale());
     }
 
     public void testGetLabelForDefaultLocale() {
@@ -133,9 +190,9 @@ public class LabeledElementHelperTest extends AbstractIpsPluginTest {
     }
 
     // This class is necessary to be able to access protected methods.
-    private static class MockHelper extends LabeledElementHelper {
+    private static class MockHelper extends DescribedAndLabeledHelper {
 
-        public MockHelper(IpsObjectPartContainer ipsObjectPartContainer) {
+        public MockHelper(IIpsObjectPartContainer ipsObjectPartContainer) {
             super(ipsObjectPartContainer);
         }
 

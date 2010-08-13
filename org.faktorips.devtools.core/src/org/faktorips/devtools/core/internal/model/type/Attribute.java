@@ -21,7 +21,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.LabeledIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.DescribedAndLabeledIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class Attribute extends LabeledIpsObjectPart implements IAttribute {
+public abstract class Attribute extends DescribedAndLabeledIpsObjectPart implements IAttribute {
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 

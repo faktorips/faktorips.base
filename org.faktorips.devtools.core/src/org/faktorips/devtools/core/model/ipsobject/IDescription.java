@@ -16,72 +16,56 @@ package org.faktorips.devtools.core.model.ipsobject;
 import java.util.Locale;
 
 /**
- * A label is an object that has a locale, a value and a plural value.
+ * A description is an object that has a locale and a text.
  * 
  * @since 3.1
  * 
  * @author Alexander Weickmann
  */
-public interface ILabel extends IIpsObjectPart {
+public interface IDescription extends IIpsObjectPart {
 
-    public static final String XML_TAG_NAME = "Label"; //$NON-NLS-1$
+    public static final String XML_TAG_NAME = "Description"; //$NON-NLS-1$
 
     public static final String PROPERTY_LOCALE = "locale"; //$NON-NLS-1$
 
-    public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
-
-    public static final String PROPERTY_PLURAL_VALUE = "pluralValue"; //$NON-NLS-1$
-
     /** Prefix for all message codes of this class. */
-    public final static String MSGCODE_PREFIX = "LABEL-"; //$NON-NLS-1$
+    public final static String MSGCODE_PREFIX = "DESCRIPTION-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the locale of this label is not supported by the IPS
-     * project.
+     * Validation message code to indicate that the locale of this description is not supported by
+     * the IPS project.
      */
     public final static String MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT = MSGCODE_PREFIX
             + "LocaleNotSupportedByIpsProject"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the locale of this label is missing.
+     * Validation message code to indicate that the locale of this description is missing.
      */
     public final static String MSGCODE_LOCALE_MISSING = MSGCODE_PREFIX + "LocaleMissing"; //$NON-NLS-1$
 
     /**
-     * Returns the locale of this label or <tt>null</tt> if this information is for some reason not
-     * available.
+     * Returns the locale of this description or <tt>null</tt> if this information is for some
+     * reason not available.
      */
     public Locale getLocale();
 
     /**
-     * Sets the locale of this label.
+     * Sets the locale of this description.
      * 
-     * @param locale The locale of this label.
+     * @param locale The locale of this description.
      */
     public void setLocale(Locale locale);
 
     /**
-     * Returns the value of the label or <tt>null</tt> if this label has no value.
+     * Returns the text of this description.
      */
-    public String getValue();
+    public String getText();
 
     /**
-     * Sets the value of the label.
+     * Sets the text of this description.
      * 
-     * @param value The value for the label.
+     * @param text The text for this description.
      */
-    public void setValue(String value);
-
-    /**
-     * Returns the plural value of the label or <tt>null</tt> if this label has no plural label.
-     */
-    public String getPluralValue();
-
-    /**
-     * Sets the plural value of the label.
-     * 
-     * @param pluralValue The plural value for the label.
-     */
-    public void setPluralValue(String pluralValue);
+    public void setText(String text);
 
 }

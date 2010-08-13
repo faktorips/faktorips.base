@@ -71,7 +71,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
 
     /**
      * Returns the value of the {@link ILabel} for the current locale as specified by
-     * {@link ILabeledElement#getLabelForCurrentLocale()} if it is not <tt>null</tt>.
+     * {@link ILabeledElement#getLabelForIpsModelLocale()} if it is not <tt>null</tt>.
      * <p>
      * Otherwise the value of the {@link ILabel} for the default language as specified by
      * {@link ILabeledElement#getLabelForDefaultLocale()} is returned.
@@ -79,7 +79,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
      * Should that also be <tt>null</tt>, <tt>null</tt> is returned.
      */
     protected String getMostSuitableLabelValue(ILabeledElement labeledElement, boolean pluralValue) {
-        ILabel label = labeledElement.getLabelForCurrentLocale();
+        ILabel label = labeledElement.getLabelForIpsModelLocale();
         if (label == null) {
             label = labeledElement.getLabelForDefaultLocale();
         }

@@ -17,17 +17,20 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.w3c.dom.Element;
 
 /**
- * A <tt>LabeledIpsObject</tt> is an {@link IpsObject} that contains {@link ILabel}s.
+ * A <tt>DescribedAndLabeledIpsObjectPart</tt> is an {@link IpsObjectPart} that contains
+ * {@link IDescription}s and {@link ILabel}s.
  * <p>
- * If an IPS object wants to support labels, it has to inherit from this class. This class
- * implements the following methods of <tt>IpsObjectPartContainer</tt>:
+ * If an IPS object part wants to support descriptions and labels, it has to inherit from this
+ * class. This class implements the following methods of <tt>IpsObjectPartContainer</tt>:
  * <ul>
  * <li>getChildren()
  * <li>reinitPartCollections()
@@ -43,58 +46,62 @@ import org.w3c.dom.Element;
  * 
  * @since 3.1
  */
-public abstract class LabeledIpsObject extends IpsObject implements ILabeledElement {
+public abstract class DescribedAndLabeledIpsObjectPart extends IpsObjectPart implements ILabeledElement,
+        IDescribedElement {
 
-    private final LabeledElementHelper labelHelper;
+    private final DescribedAndLabeledHelper helper = new DescribedAndLabeledHelper(this);
 
-    protected LabeledIpsObject(IIpsSrcFile file) {
-        super(file);
-        labelHelper = new LabeledElementHelper(this);
+    protected DescribedAndLabeledIpsObjectPart(IIpsObjectPartContainer parent, String id) {
+        super(parent, id);
+    }
+
+    public DescribedAndLabeledIpsObjectPart() {
+        // Constructor for testing purposes
     }
 
     @Override
     public IIpsElement[] getChildren() {
-        return labelHelper.getChildren();
+        return helper.getChildren();
     }
 
     @Override
     protected void reinitPartCollections() {
-        labelHelper.reinitPartCollections();
+        helper.reinitPartCollections();
     }
 
     @Override
     protected void addPart(IIpsObjectPart part) {
-        labelHelper.addPart(part);
+        helper.addPart(part);
     }
 
     @Override
     protected void removePart(IIpsObjectPart part) {
-        labelHelper.removePart(part);
+        helper.removePart(part);
     }
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        return labelHelper.newPart(xmlTag, id);
+        return helper.newPart(xmlTag, id);
     }
 
     @Override
     public ILabel getLabel(Locale locale) {
-        return labelHelper.getLabel(locale);
+        return helper.getLabel(locale);
     }
 
     @Override
     public Set<ILabel> getLabels() {
-        return labelHelper.getLabels();
+        return helper.getLabels();
     }
 
     @Override
-    public ILabel getLabelForCurrentLocale() {
-        return labelHelper.getLabelForCurrentLocale();
+    public ILabel getLabelForIpsModelLocale() {
+        return helper.getLabelForIpsModelLocale();
     }
 
     @Override
     public ILabel getLabelForDefaultLocale() {
-        return labelHelper.getLabelForDefaultLocale();
+        return helper.getLabelForDefaultLocale();
     }
 
     @Override
@@ -104,7 +111,32 @@ public abstract class LabeledIpsObject extends IpsObject implements ILabeledElem
 
     @Override
     public ILabel newLabel() {
-        return labelHelper.newLabel();
+        return helper.newLabel();
+    }
+
+    @Override
+    public IDescription getDescription(Locale locale) {
+        return helper.getDescription(locale);
+    }
+
+    @Override
+    public Set<IDescription> getDescriptions() {
+        return helper.getDescriptions();
+    }
+
+    @Override
+    public IDescription getDescriptionForIpsModelLocale() {
+        return helper.getDescriptionForIpsModelLocale();
+    }
+
+    @Override
+    public IDescription getDescriptionForDefaultLocale() {
+        return helper.getDescriptionForDefaultLocale();
+    }
+
+    @Override
+    public IDescription newDescription() {
+        return helper.newDescription();
     }
 
 }

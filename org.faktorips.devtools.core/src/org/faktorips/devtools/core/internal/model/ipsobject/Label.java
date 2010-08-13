@@ -20,7 +20,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -63,8 +62,6 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
 
     @Override
     public void setLocale(Locale locale) {
-        ArgumentCheck.notNull(locale);
-
         Locale oldValue = this.locale;
         this.locale = locale;
         valueChanged(oldValue, locale);
@@ -85,12 +82,12 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
     }
 
     @Override
-    public void initFromXml(Element element, String id) {
-        locale = new Locale(element.getAttribute("locale")); //$NON-NLS-1$
-        value = element.getAttribute("value"); //$NON-NLS-1$
-        pluralValue = element.getAttribute("pluralValue"); //$NON-NLS-1$
+    protected void initPropertiesFromXml(Element element, String id) {
+        locale = new Locale(element.getAttribute(PROPERTY_LOCALE));
+        value = element.getAttribute(PROPERTY_VALUE);
+        pluralValue = element.getAttribute(PROPERTY_PLURAL_VALUE);
 
-        super.initFromXml(element, id);
+        super.initPropertiesFromXml(element, id);
     }
 
     @Override

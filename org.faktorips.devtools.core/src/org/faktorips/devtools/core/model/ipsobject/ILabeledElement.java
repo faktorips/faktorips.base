@@ -20,9 +20,9 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 
 /**
- * A labeled object is an object that supports attaching {@link ILabel}s in different languages to
+ * A labeled element is an element that supports attaching {@link ILabel}s in different languages to
  * it. Labels can be attached for all languages that are supported by the IPS project the labeled
- * object belongs to.
+ * element belongs to.
  * 
  * @since 3.1
  * 
@@ -44,7 +44,7 @@ public interface ILabeledElement {
     public ILabel getLabel(Locale locale);
 
     /**
-     * Returns an unmodifiable view on the set of labels this object currently has attached.
+     * Returns an unmodifiable view on the set of labels this element currently has attached.
      */
     public Set<ILabel> getLabels();
 
@@ -54,14 +54,14 @@ public interface ILabeledElement {
     public boolean isPluralLabelSupported();
 
     /**
-     * Returns the label for the current locale. The current locale is the locale that Faktor-IPS
-     * uses at the time this operation is called to internationalize Faktor-IPS models.
+     * Returns the label for the locale that Faktor-IPS uses at the time this operation is called to
+     * internationalize Faktor-IPS models.
      * <p>
      * If there is no label for that locale, <tt>null</tt> is returned.
      * 
      * @see IpsPlugin#getIpsModelLocale()
      */
-    public ILabel getLabelForCurrentLocale();
+    public ILabel getLabelForIpsModelLocale();
 
     /**
      * Returns the label for the default language. The default language is specified trough the IPS
@@ -71,7 +71,7 @@ public interface ILabeledElement {
     public ILabel getLabelForDefaultLocale();
 
     /**
-     * Creates a new label for this object.
+     * Creates a new label for this element.
      */
     public ILabel newLabel();
 
