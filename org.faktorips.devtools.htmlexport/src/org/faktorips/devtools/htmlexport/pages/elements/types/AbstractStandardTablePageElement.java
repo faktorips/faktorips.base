@@ -43,15 +43,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
  */
 public abstract class AbstractStandardTablePageElement extends TablePageElement implements DataPageElement {
 
-    // private final IpsObjectPartContainer partContainer;
-
     /**
      * Creates an AbstractSpecificTablePageElement
      */
     public AbstractStandardTablePageElement() {
-        // public AbstractObjectPartTablePageElement(IpsObjectPartContainer partContainer) {
         super();
-        // this.partContainer = partContainer;
         addLayouts(new RowTablePageElementLayout(0, Style.TABLE_HEADLINE));
         addLayouts(new AlternateRowTablePageElementLayout(true));
     }
@@ -59,7 +55,6 @@ public abstract class AbstractStandardTablePageElement extends TablePageElement 
     /**
      * returns the headlines as List of Strings
      * 
-     * @return
      */
     protected abstract List<String> getHeadline();
 
@@ -103,12 +98,9 @@ public abstract class AbstractStandardTablePageElement extends TablePageElement 
      * Useful e.g. for center the tablecell for boolean values
      * </p>
      * 
-     * @param headline
-     * @param item
-     * @param styles
      */
     protected void addHeadlineAndColumnLayout(List<String> headline, String item, Style... styles) {
-        addLayouts(new ColumnTablePageElementLayout(new int[] { headline.size() }, Style.CENTER));
+        addLayouts(new ColumnTablePageElementLayout(new int[] { headline.size() }, styles));
         headline.add(item);
     }
 }

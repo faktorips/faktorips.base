@@ -48,7 +48,6 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
     /**
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumType}
      * 
-     * @param type
      */
     public EnumValuesTablePageElement(IEnumType type) {
         super(type.getEnumValues());
@@ -58,7 +57,6 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
     /**
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumContent}
      * 
-     * @param content
      */
     public EnumValuesTablePageElement(IEnumContent content) {
         super(content.getEnumValues());
@@ -72,8 +70,6 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
     /**
      * finds the enumAttributes and initializes the List
      * 
-     * @param type
-     * @return
      */
     private void initEnumAttributes(IEnumType type) {
         try {

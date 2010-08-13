@@ -48,18 +48,12 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     /**
      * a page for the overview of an IpsProject, which is defined in the config
      * 
-     * @param config
      */
     public ProjectOverviewPageElement(DocumentorConfiguration config) {
         this.config = config;
         setTitle(Messages.ProjectOverviewPageElement_project + " " + getProject().getName()); //$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement #build()
-     */
     @Override
     public void build() {
         super.build();
@@ -208,12 +202,6 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         return ml;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement
-     * #getPathToRoot()
-     */
     @Override
     public String getPathToRoot() {
         return PathUtilFactory.createPathUtil(getProject()).getPathToRoot();
@@ -222,7 +210,6 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     /**
      * returns the configurated IpsProject
      * 
-     * @return
      */
     protected IIpsProject getProject() {
         return getConfig().getIpsProject();
@@ -231,7 +218,6 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     /**
      * returns the config
      * 
-     * @return
      */
     protected DocumentorConfiguration getConfig() {
         return config;

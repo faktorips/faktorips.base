@@ -52,11 +52,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private final IProductCmptType productCmptType;
 
     /**
-     * Creates a {@link ProductGenerationAttributeTable} for the specified
+     * Creates a {@link ProductGenerationAttributeTable} for the specified {@link IProductCmpt}
      * 
-     * @param productCmpt
-     * @param productCmptType
-     * @param config
      */
     public ProductGenerationAttributeTable(IProductCmpt productCmpt, IProductCmptType productCmptType,
             DocumentorConfiguration config) {
@@ -69,8 +66,6 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     /**
      * returns the attributes of the given {@link ProductCmptType}
      * 
-     * @param productCmptType
-     * @return
      */
     private IAttribute[] findAttributes(IProductCmptType productCmptType) {
         try {
@@ -80,19 +75,11 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * addDataRows()
-     */
     @Override
     protected void addDataRows() {
         for (IAttribute attribute : attributes) {
             addAttributeRow(attribute);
         }
-        // TODO
-        // addParentProductCmptType();
         addChildProductCmptTypes();
     }
 
@@ -132,7 +119,6 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         }
 
         addSubElement(new TableRowPageElement(cells));
-
     }
 
     private void addUsedTableContent(List<ITableContents> tableContents, AbstractCompositePageElement cellContent) {
@@ -144,11 +130,12 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         }
     }
 
-    private void addAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration, AbstractCompositePageElement cellContent) {
+    private void addAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration,
+            AbstractCompositePageElement cellContent) {
         IAssociation[] associations = productCmptType.getAssociations();
         for (IAssociation association : associations) {
-            TreeNodePageElement root = new TreeNodePageElement(PageElementUtils.createIpsElementReference(association,
-                    true));
+            TreeNodePageElement root = new TreeNodePageElement(PageElementUtils.createIpsElementRepresentation(
+                    association, true));
             IProductCmptLink[] links = productCmptGeneration.getLinks(association.getName());
             for (IProductCmptLink productCmptLink : links) {
                 try {
@@ -166,7 +153,6 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     /**
      * adds the row of an attribute with the value of all generations
      * 
-     * @param attribute
      */
     private void addAttributeRow(IAttribute attribute) {
         PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];

@@ -42,7 +42,6 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
     /**
      * Creates an {@link AssociationTablePageElement} for the specified {@link IType}
      * 
-     * @param type
      */
     public AssociationTablePageElement(IType type, DocumentorConfiguration config) {
         super(Arrays.asList(type.getAssociations()));
@@ -89,12 +88,6 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         return Integer.toString(maxCardinality);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * getHeadline()
-     */
     @Override
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
@@ -116,5 +109,4 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
 
         return headline;
     }
-
 }

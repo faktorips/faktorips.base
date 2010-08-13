@@ -26,15 +26,12 @@ public interface ICompositePageElement extends PageElement {
     /**
      * lets the {@link ILayouter} visit the subElements
      * 
-     * @param layouter
      */
     public void visitSubElements(ILayouter layouter);
 
     /**
-     * adds one or more {@link PageElement}s
+     * adds one or more {@link PageElement}s and returns this
      * 
-     * @param pageElements
-     * @return this
      */
     public ICompositePageElement addPageElements(PageElement... pageElements);
 }

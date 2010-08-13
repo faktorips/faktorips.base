@@ -88,7 +88,6 @@ public class TablePageElement extends AbstractCompositePageElement {
     /**
      * sets, whether the table has a border or not
      * 
-     * @param border
      */
     public void setBorder(boolean border) {
         if (border) {
@@ -112,8 +111,6 @@ public class TablePageElement extends AbstractCompositePageElement {
     /**
      * layouts the given {@link TableRowPageElement} using all added {@link TablePageElementLayout}s
      * 
-     * @param i
-     * @param rowPageElement
      */
     protected void layoutTableRow(int i, TableRowPageElement rowPageElement) {
         for (TablePageElementLayout tableLayout : tableLayouts) {
@@ -129,9 +126,8 @@ public class TablePageElement extends AbstractCompositePageElement {
     }
 
     /**
-     * adds {@link TablePageElementLayout}
+     * adds {@link TablePageElementLayout}s
      * 
-     * @param layouts
      */
     public void addLayouts(TablePageElementLayout... layouts) {
         tableLayouts.addAll(Arrays.asList(layouts));
@@ -140,7 +136,6 @@ public class TablePageElement extends AbstractCompositePageElement {
     /**
      * remove {@link TablePageElementLayout}s
      * 
-     * @param layouts
      */
     public void removeLayouts(TablePageElementLayout... layouts) {
         tableLayouts.removeAll(Arrays.asList(layouts));

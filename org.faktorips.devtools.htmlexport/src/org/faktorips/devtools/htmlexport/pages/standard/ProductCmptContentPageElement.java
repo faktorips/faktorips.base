@@ -45,19 +45,11 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
     /**
      * creates a page for the given {@link IProductCmpt} with the given config
      * 
-     * @param object
-     * @param config
      */
     protected ProductCmptContentPageElement(IProductCmpt object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement#
-     * addStructureData()
-     */
     @Override
     protected void addStructureData() {
         IProductCmptType productCmptType = getProductCmptType();
@@ -71,7 +63,6 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
     /**
      * returns the {@link IProductCmptType} for the productCmpt
      * 
-     * @return
      */
     protected IProductCmptType getProductCmptType() {
         try {
@@ -81,12 +72,6 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();

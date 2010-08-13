@@ -29,8 +29,6 @@ public class RowTablePageElementLayout extends DefaultTablePageElementLayout {
     /**
      * adds the given {@link Style}s to all given rows
      * 
-     * @param rows
-     * @param styles
      */
     public RowTablePageElementLayout(int[] rows, Style... styles) {
         this.rows = rows;
@@ -40,21 +38,11 @@ public class RowTablePageElementLayout extends DefaultTablePageElementLayout {
     /**
      * adds the given {@link Style}s to the rows
      * 
-     * @param row
-     * @param styles
      */
     public RowTablePageElementLayout(int row, Style... styles) {
         this(new int[] { row }, styles);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.table.DefaultTablePageElementLayout
-     * #layoutRow(int,
-     * org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement)
-     */
     @Override
     public void layoutRow(int row, TableRowPageElement rowPageElement) {
         if (isRelatedRow(row)) {
@@ -63,12 +51,11 @@ public class RowTablePageElementLayout extends DefaultTablePageElementLayout {
     }
 
     /**
-     * @param row
      * @return true, if the given row is related
      */
     protected boolean isRelatedRow(int row) {
-        for (int row2 : rows) {
-            if (row2 == row) {
+        for (int layoutedRow : rows) {
+            if (layoutedRow == row) {
                 return true;
             }
         }

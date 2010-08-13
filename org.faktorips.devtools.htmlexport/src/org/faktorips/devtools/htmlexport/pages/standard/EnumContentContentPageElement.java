@@ -39,8 +39,6 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
      * 
      * creates a page, which represents the given enumContent according to the given config
      * 
-     * @param object
-     * @param config
      */
     protected EnumContentContentPageElement(IEnumContent object, DocumentorConfiguration config) {
         super(object, config);
@@ -51,12 +49,6 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -85,7 +77,6 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
     /**
      * returns the enumType
      * 
-     * @return
      */
     protected IEnumType getEnumType() {
         return enumType;

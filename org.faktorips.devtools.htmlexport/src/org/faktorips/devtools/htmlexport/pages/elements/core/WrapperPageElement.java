@@ -28,9 +28,9 @@ import org.faktorips.devtools.htmlexport.generators.WrapperType;
 public class WrapperPageElement extends AbstractCompositePageElement {
 
     /**
-     * creates an empty {@link WrapperPageElement}
+     * creates an empty {@link WrapperPageElement} with the given {@link WrapperType} (e.g.
+     * LISTITEM, TABLECELL, BLOCK)
      * 
-     * @param wrapperType
      */
     public WrapperPageElement(WrapperType wrapperType) {
         setWrapperType(wrapperType);
@@ -39,8 +39,6 @@ public class WrapperPageElement extends AbstractCompositePageElement {
     /**
      * creates an {@link WrapperPageElement} with the given {@link PageElement}s
      * 
-     * @param wrapperType
-     * @param pageElements
      */
     public WrapperPageElement(WrapperType wrapperType, PageElement... pageElements) {
         this(wrapperType, null, pageElements);
@@ -50,9 +48,6 @@ public class WrapperPageElement extends AbstractCompositePageElement {
      * creates an {@link WrapperPageElement} with the given {@link PageElement}s and the given
      * styles
      * 
-     * @param wrapperType
-     * @param styles
-     * @param pageElements
      */
     public WrapperPageElement(WrapperType wrapperType, Set<Style> styles, PageElement... pageElements) {
         super();

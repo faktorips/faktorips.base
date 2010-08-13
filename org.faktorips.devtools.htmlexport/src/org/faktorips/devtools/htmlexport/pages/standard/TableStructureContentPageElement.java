@@ -227,19 +227,11 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
     /**
      * creates a page for the given {@link ITableStructure} with the config
      * 
-     * @param object
-     * @param config
      */
     protected TableStructureContentPageElement(ITableStructure object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();

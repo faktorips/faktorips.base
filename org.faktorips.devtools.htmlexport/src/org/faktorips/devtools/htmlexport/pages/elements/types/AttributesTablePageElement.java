@@ -36,7 +36,6 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
     /**
      * Creates an {@link AttributesTablePageElement} for the specified {@link IType}
      * 
-     * @param type
      */
     public AttributesTablePageElement(IType type) {
         super(Arrays.asList(type.getAttributes()));
@@ -51,8 +50,6 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
     /**
      * returns a list with the values of the attributes of the attribute
      * 
-     * @param attribute
-     * @return
      */
     protected List<String> getAttributeData(IAttribute attribute) {
         List<String> attributeData = new ArrayList<String>();
@@ -66,12 +63,6 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
         return attributeData;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * getHeadline()
-     */
     @Override
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();

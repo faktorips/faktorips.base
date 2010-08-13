@@ -36,7 +36,6 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
     /**
      * Creates a {@link ValidationRuleTablePageElement} for the specified {@link IPolicyCmptType}
      * 
-     * @param policyCmptType
      */
     public ValidationRuleTablePageElement(IPolicyCmptType policyCmptType) {
         super(Arrays.asList(policyCmptType.getRules()));

@@ -132,19 +132,11 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * 
      * creates a page, which represents the given enumType according to the given config
      * 
-     * @param object
-     * @param config
      */
     protected EnumTypeContentPageElement(IEnumType object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#addTypeHierarchy()
-     */
     @Override
     protected void addTypeHierarchy() {
         addSuperTypeHierarchy();
@@ -214,12 +206,6 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         addPageElements(baseElement);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();

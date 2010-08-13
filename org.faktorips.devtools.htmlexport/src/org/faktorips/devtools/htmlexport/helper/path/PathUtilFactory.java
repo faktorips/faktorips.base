@@ -32,8 +32,6 @@ public class PathUtilFactory {
     /**
      * returns {@link IpsElementPathUtil} for the given {@link IIpsElement}
      * 
-     * @param ipsElement
-     * @return
      */
     public static IpsElementPathUtil createPathUtil(IIpsElement ipsElement) {
         if (ipsElement instanceof IIpsProject) {

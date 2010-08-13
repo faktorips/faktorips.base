@@ -83,9 +83,11 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
     }
 
     /**
+     * creates an {@link AbstractListPageElement}
      * 
-     * @see AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsObject> objects,
-     *      IpsElementFilter filter)
+     * @param baseIpsElement ipsElement, which represents the location of the page for links from
+     *            the page
+     * @param srcFiles objects to list on the page
      */
     public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
             DocumentorConfiguration config) {
@@ -130,7 +132,6 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
     /**
      * sets the target for all links
      * 
-     * @param linkTarget
      */
     public void setLinkTarget(String linkTarget) {
         this.linkTarget = linkTarget;

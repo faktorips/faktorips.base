@@ -44,23 +44,15 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
     /**
      * creates a page for the given object according to the given config
      * 
-     * @param object
-     * @param config
      */
     PolicyCmptTypeContentPageElement(IPolicyCmptType object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard. AbstractTypeContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
 
-        // Regeln hinzufügen
         addValidationRuleTable();
     }
 
@@ -76,12 +68,6 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         addPageElements(wrapper);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractTypeContentPageElement#getAttributesTablePageElement()
-     */
     @Override
     AttributesTablePageElement getAttributesTablePageElement() {
         return new AttributesTablePageElement(getDocumentedIpsObject()) {
@@ -116,13 +102,6 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         };
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.standard.AbstractTypeContentPageElement#addStructureData
-     * ()
-     */
     @Override
     protected void addStructureData() {
         super.addStructureData();

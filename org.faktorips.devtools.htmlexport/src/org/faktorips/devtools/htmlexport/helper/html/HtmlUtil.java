@@ -109,8 +109,8 @@ public class HtmlUtil {
      */
     public static String getHtmlText(String text) {
         String adaptedText = text;
-        adaptedText = StringUtils.replace(adaptedText, "<", "&lt;");
-        adaptedText = StringUtils.replace(adaptedText, ">", "&gt;");
+        adaptedText = StringUtils.replace(adaptedText, "<", "&lt;"); //$NON-NLS-1$ //$NON-NLS-2$
+        adaptedText = StringUtils.replace(adaptedText, ">", "&gt;"); //$NON-NLS-1$ //$NON-NLS-2$
         return StringUtils.replace(adaptedText, "\n", "\n<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 

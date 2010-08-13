@@ -27,7 +27,6 @@ public interface IpsElementPathUtil {
     /**
      * returns relative path to the root from the <code>IIpsElement</code>
      * 
-     * @return
      */
     public String getPathToRoot();
 
@@ -36,7 +35,6 @@ public interface IpsElementPathUtil {
      * 
      * @param linkedFileType type of path
      * 
-     * @return
      */
     public String getPathFromRoot(LinkedFileType linkedFileType);
 
@@ -45,7 +43,6 @@ public interface IpsElementPathUtil {
      * 
      * @param withImage true: link includes a small image which represents the type of the
      *            {@link IpsElement}
-     * @return
      */
     public String getLinkText(boolean withImage);
 

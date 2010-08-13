@@ -31,38 +31,18 @@ public class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> 
         super(ipsElement);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.helper.path.AbstractIpsElementPathUtil#getPathFromRoot(
-     * org.faktorips.devtools.htmlexport.helper.path.LinkedFileType)
-     */
     @Override
     public String getPathFromRoot(LinkedFileType linkedFileType) {
         return INDEX_HTML;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getPathToRoot()
-     */
     @Override
     public String getPathToRoot() {
         return ""; //$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.helper.path.AbstractIpsElementPathUtil#getIpsPackageFragment
-     * ()
-     */
     @Override
     protected IIpsPackageFragment getIpsPackageFragment() {
         throw new NotImplementedException("An IpsProject has no IpsPackageFragment"); //$NON-NLS-1$
     }
-
 }

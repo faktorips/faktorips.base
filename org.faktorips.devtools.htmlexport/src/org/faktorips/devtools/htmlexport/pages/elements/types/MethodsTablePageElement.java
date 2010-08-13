@@ -34,17 +34,14 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
     /**
      * Creates a {@link MethodsTablePageElement} for the specified {@link IType}
      * 
-     * @param type
      */
     public MethodsTablePageElement(IType type) {
         super(Arrays.asList(type.getMethods()));
     }
 
     /**
-     * returns the method's data
+     * returns the data of the given {@link IMethod}
      * 
-     * @param method
-     * @return
      */
     protected List<String> getMethodData(IMethod method) {
         List<String> methodData = new ArrayList<String>();
@@ -59,12 +56,6 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
         return methodData;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * getHeadline()
-     */
     @Override
     protected List<String> getHeadlineWithIpsObjectPart() {
         ArrayList<String> headline = new ArrayList<String>();
@@ -83,5 +74,4 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
     protected List<? extends PageElement> createRowWithIpsObjectPart(IMethod rowData) {
         return Arrays.asList(PageElementUtils.createTextPageElements(getMethodData(rowData)));
     }
-
 }

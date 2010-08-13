@@ -123,19 +123,11 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     /**
      * creates a page representing the given {@link ITestCaseType} with the given config
      * 
-     * @param object
-     * @param config
      */
     protected TestCaseTypeContentPageElement(ITestCaseType object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -162,8 +154,6 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     /**
      * creates a PageElement representing the given testParameter
      * 
-     * @param testParameter
-     * @return
      */
     private PageElement createTestParameterPageElement(ITestParameter testParameter) {
         if (testParameter instanceof TestValueParameter) {

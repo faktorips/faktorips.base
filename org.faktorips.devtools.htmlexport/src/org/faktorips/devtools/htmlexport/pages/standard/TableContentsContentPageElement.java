@@ -89,19 +89,11 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
     /**
      * creates a page for the given {@link ITableContents} with the config
      * 
-     * @param object
-     * @param config
      */
     protected TableContentsContentPageElement(ITableContents object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#addStructureData()
-     */
     @Override
     protected void addStructureData() {
         super.addStructureData();
@@ -114,18 +106,11 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
 
         addContentTable();
-
     }
 
     /**
@@ -163,7 +148,6 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
     /**
      * returns the {@link ITableStructure} for the tableContent
      * 
-     * @return
      */
     private ITableStructure findTableStructure() {
         ITableStructure tableStructure;
@@ -178,10 +162,8 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
     /**
      * returns the {@link ITableContents}
      * 
-     * @return
      */
     private ITableContents getTableContent() {
         return getDocumentedIpsObject();
     }
-
 }

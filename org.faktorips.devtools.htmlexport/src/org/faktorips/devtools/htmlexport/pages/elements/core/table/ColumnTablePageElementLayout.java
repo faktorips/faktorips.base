@@ -29,8 +29,6 @@ public class ColumnTablePageElementLayout extends DefaultTablePageElementLayout 
     /**
      * adds the given {@link Style}s to all cells of the given columns
      * 
-     * @param columns
-     * @param styles
      */
     public ColumnTablePageElementLayout(int[] columns, Style... styles) {
         this.columns = columns;
@@ -40,30 +38,20 @@ public class ColumnTablePageElementLayout extends DefaultTablePageElementLayout 
     /**
      * adds the given {@link Style}s to all cells of the given column
      * 
-     * @param column
-     * @param styles
      */
     public ColumnTablePageElementLayout(int column, Style... styles) {
         this(new int[] { column }, styles);
     }
 
     protected boolean isRelatedColumn(int column) {
-        for (int column2 : columns) {
-            if (column2 == column) {
+        for (int layoutedColumn : columns) {
+            if (layoutedColumn == column) {
                 return true;
             }
         }
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.table.DefaultTablePageElementLayout
-     * #layoutCell(int, int,
-     * org.faktorips.devtools.htmlexport.pages.elements.core.table.TableCellPageElement)
-     */
     @Override
     public void layoutCell(int row, int column, TableCellPageElement cellPageElement) {
         if (isRelatedColumn(column)) {

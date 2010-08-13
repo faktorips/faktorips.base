@@ -40,18 +40,10 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
  */
 public class IpsElementImagePageElement extends ImagePageElement {
 
-    /**
-     * @param element
-     * @param title
-     * @param path
-     */
     public IpsElementImagePageElement(IIpsElement element, String title, String path) {
         super(createImageDataByIpsElement(element), title, path);
     }
 
-    /**
-     * @param element
-     */
     public IpsElementImagePageElement(IIpsElement element) {
         this(element, element.getName(), getIpsElementImageName(element));
     }

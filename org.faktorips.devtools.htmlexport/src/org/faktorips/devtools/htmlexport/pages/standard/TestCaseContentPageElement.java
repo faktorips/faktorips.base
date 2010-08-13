@@ -47,8 +47,6 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     /**
      * creates a page for the given {@link ITestCase} with the given config
      * 
-     * @param object
-     * @param config
      */
     protected TestCaseContentPageElement(ITestCase object, DocumentorConfiguration config) {
         super(object, config);
@@ -91,8 +89,6 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     /**
      * creates a {@link PageElement} for an {@link ITestObject}
      * 
-     * @param testObject
-     * @return
      */
     private PageElement createTestObjectPageElement(ITestObject testObject) {
         if (testObject instanceof ITestValue) {

@@ -41,7 +41,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
  */
 public class IpsPackagesListPageElement extends AbstractListPageElement {
 
-    /*
+    /**
      * Comparator, which support the sorting of packages by name
      */
     private Comparator<IIpsSrcFile> packagesComparator = new Comparator<IIpsSrcFile>() {
@@ -52,11 +52,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
     };
 
     /**
-     * @see AbstractListPageElement#AbstractListPageElement(IIpsElement, List, IpsElementFilter)
-     * @param baseIpsElement
-     * @param srcFiles
-     * @param filter
-     * @param config
+     * @see AbstractListPageElement
      */
     public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
             DocumentorConfiguration config) {
@@ -65,21 +61,13 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
     }
 
     /**
-     * @see AbstractListPageElement#AbstractListPageElement(IIpsElement, List)
-     * @param baseIpsElement
-     * @param srcFiles
-     * @param config
+     * @see AbstractListPageElement
      */
     public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
             DocumentorConfiguration config) {
         this(baseIpsElement, srcFiles, ALL_FILTER, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement#build()
-     */
     @Override
     public void build() {
         super.build();

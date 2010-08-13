@@ -42,13 +42,6 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private static final String STANDARD_PATH = ""; //$NON-NLS-1$
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.IDocumentorScript#execute(org.faktorips.devtools.htmlexport
-     * .documentor.DocumentorConfiguration)
-     */
     @Override
     public void execute(DocumentorConfiguration config, IProgressMonitor monitor) {
         List<IIpsSrcFile> srcFiles = config.getDocumentedSourceFiles();
@@ -175,12 +168,6 @@ public class StandardDocumentorScript implements IDocumentorScript {
             AbstractPageElement allPackagesPage,
             String filePath) {
         byte[] pageContent = getPageContent(config, allPackagesPage);
-
-        /*
-         * System.out.println("=======================================");
-         * System.out.println(filePath); System.out.println(); System.out.println(new
-         * String(pageContent));
-         */
 
         FileHandler.writeFile(config, filePath, pageContent);
     }

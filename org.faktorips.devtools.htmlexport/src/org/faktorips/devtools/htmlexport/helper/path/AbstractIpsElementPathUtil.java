@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  * 
  * @author dicker
  * 
- * @param <T>
  */
 public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implements IpsElementPathUtil {
     protected static final String PATH_UP = "../"; //$NON-NLS-1$
@@ -37,8 +36,6 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
     /**
      * returns the relative path from the {@link IIpsPackageFragment} to the root
      * 
-     * @param packageFragment
-     * @return
      */
     protected String getPackageFragmentPathToRoot(IIpsPackageFragment packageFragment) {
         if (packageFragment.isDefaultPackage()) {
@@ -59,8 +56,6 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
     /**
      * returns the relative path from the root to the {@link IIpsPackageFragment}
      * 
-     * @param ipsPackageFragment
-     * @return
      */
     protected String getPackageFragmentPathFromRoot(IIpsPackageFragment ipsPackageFragment) {
         if (ipsPackageFragment.isDefaultPackage()) {
@@ -69,38 +64,20 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
         return ipsPackageFragment.getRelativePath().toOSString() + File.separator;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getLinkText(boolean)
-     */
     @Override
     public String getLinkText(boolean withImage) {
         return ipsElement.getName();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getIpsElement()
-     */
     @Override
     public T getIpsElement() {
         return ipsElement;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getPathFromRoot(org.faktorips
-     * .devtools.htmlexport.helper.path.LinkedFileType)
-     */
     @Override
     public String getPathFromRoot(LinkedFileType linkedFileType) {
         StringBuilder builder = new StringBuilder();
         builder.append(getPackageFragmentPathFromRoot(getIpsPackageFragment()));
-        // builder.append(linkedFileType.getPrefix());
         builder.append(getFileName());
         builder.append(linkedFileType.getSuffix());
 

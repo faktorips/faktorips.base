@@ -28,49 +28,37 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
  * 
  */
 public class TextPageElement extends AbstractPageElement {
+    /**
+     * Text, which is represented
+     */
     private String text;
+    /**
+     * Type of the text e.g headline, block
+     */
     private TextType type;
 
     /**
      * creates a {@link TextPageElement} representing a paragraph
      * 
-     * @param text
-     * @return
      */
     public static TextPageElement createParagraph(String text) {
         return new TextPageElement(text, TextType.BLOCK);
     }
 
-    /**
-     * @param text
-     * @param styles
-     * @param type
-     */
     public TextPageElement(String text, Set<Style> styles, TextType type) {
         super(styles);
         this.text = text;
         this.type = type;
     }
 
-    /**
-     * @param text
-     * @param type
-     */
     public TextPageElement(String text, TextType type) {
         this(text, new LinkedHashSet<Style>(), type);
     }
 
-    /**
-     * @param text
-     * @param styles
-     */
     public TextPageElement(String text, Set<Style> styles) {
         this(text, styles, TextType.WITHOUT_TYPE);
     }
 
-    /**
-     * @param text
-     */
     public TextPageElement(String text) {
         this(text, new LinkedHashSet<Style>(), TextType.WITHOUT_TYPE);
     }
@@ -85,7 +73,6 @@ public class TextPageElement extends AbstractPageElement {
     /**
      * sets the given text
      * 
-     * @param text
      */
     public void setText(String text) {
         this.text = text;
@@ -101,19 +88,11 @@ public class TextPageElement extends AbstractPageElement {
     /**
      * sets the given {@link TextType}
      * 
-     * @param type
      */
     public void setType(TextType type) {
         this.type = type;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement#acceptLayouter(
-     * org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutTextPageElement(this);

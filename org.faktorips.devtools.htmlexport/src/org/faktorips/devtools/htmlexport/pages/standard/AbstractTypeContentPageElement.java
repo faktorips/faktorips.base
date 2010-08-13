@@ -41,7 +41,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageEl
  * 
  * @author dicker
  * 
- * @param <T>
  */
 public abstract class AbstractTypeContentPageElement<T extends IType> extends AbstractIpsObjectContentPageElement<T> {
 
@@ -74,19 +73,11 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     /**
      * creates a page, which represents the given type according to the given config
      * 
-     * @param object
-     * @param config
      */
     public AbstractTypeContentPageElement(T object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -116,18 +107,11 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     /**
      * returns a {@link MethodsTablePageElement} for the type
      * 
-     * @return
      */
     MethodsTablePageElement getMethodsTablePageElement() {
         return new MethodsTablePageElement(getDocumentedIpsObject());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#addTypeHierarchy()
-     */
     @Override
     protected void addTypeHierarchy() {
         addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_hierarchy, TextType.HEADING_2));
@@ -201,12 +185,6 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         addPageElements(baseElement);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#addStructureData()
-     */
     @Override
     protected void addStructureData() {
         super.addStructureData();
@@ -257,7 +235,6 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     /**
      * returns a table with the attributes of the type
      * 
-     * @return
      */
     AttributesTablePageElement getAttributesTablePageElement() {
         return new AttributesTablePageElement(getDocumentedIpsObject());

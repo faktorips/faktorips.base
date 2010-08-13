@@ -28,6 +28,13 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 
+/**
+ * Element to chose a {@link IpsObjectType}
+ * 
+ * TODO: nearly complete implementation
+ * 
+ * @author dicker
+ */
 public class TypeChosePageElement extends AbstractPageElement {
     private AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
     private final Collection<IpsObjectType> types;

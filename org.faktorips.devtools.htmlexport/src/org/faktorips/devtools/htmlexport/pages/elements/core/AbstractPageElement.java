@@ -38,11 +38,6 @@ public abstract class AbstractPageElement implements PageElement {
         this.styles = styles;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#getStyles()
-     */
     @Override
     public Set<Style> getStyles() {
         if (styles == null) {
@@ -51,26 +46,12 @@ public abstract class AbstractPageElement implements PageElement {
         return new HashSet<Style>(styles);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#addStyles(org.faktorips
-     * .devtools.htmlexport.pages.elements.core.Style[])
-     */
     @Override
     public PageElement addStyles(Style... style) {
         styles.addAll(Arrays.asList(style));
         return this;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#removeStyles(org.faktorips
-     * .devtools.htmlexport.pages.elements.core.Style[])
-     */
     @Override
     public void removeStyles(Style... style) {
         styles.removeAll(Arrays.asList(style));
@@ -81,23 +62,11 @@ public abstract class AbstractPageElement implements PageElement {
         return getStyles().contains(style);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#build()
-     */
     @Override
     public void build() {
         // override in subclass
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.PageElement#acceptLayouter(org.faktorips
-     * .devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public abstract void acceptLayouter(ILayouter layouter);
 
@@ -105,5 +74,4 @@ public abstract class AbstractPageElement implements PageElement {
     public void makeBlock() {
         addStyles(Style.BLOCK);
     }
-
 }

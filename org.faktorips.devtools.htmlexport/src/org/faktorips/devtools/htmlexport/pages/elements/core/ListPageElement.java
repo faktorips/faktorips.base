@@ -31,9 +31,6 @@ public class ListPageElement extends AbstractCompositePageElement {
         super();
     }
 
-    /**
-     * @param listElements
-     */
     public ListPageElement(List<? extends PageElement> listElements) {
         super();
         getSubElements().addAll(listElements);
@@ -59,7 +56,6 @@ public class ListPageElement extends AbstractCompositePageElement {
     /**
      * sets list ordered if ordered is true
      * 
-     * @param ordered
      */
     public void setOrdered(boolean ordered) {
         this.ordered = ordered;
