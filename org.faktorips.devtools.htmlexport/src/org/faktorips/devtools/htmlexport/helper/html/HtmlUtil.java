@@ -15,11 +15,9 @@ package org.faktorips.devtools.htmlexport.helper.html;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
@@ -38,10 +36,6 @@ public class HtmlUtil {
      * returns complete html with a frameset-definition with two columns and in the left column two
      * rows like a javadoc-site.
      * 
-     * @param title
-     * @param colDefinition
-     * @param rowsDefinition
-     * @return
      */
     public static String createDocFrame(String title, String colDefinition, String rowsDefinition) {
         StringBuilder builder = new StringBuilder();
@@ -63,9 +57,8 @@ public class HtmlUtil {
     /**
      * returns the head including the opening body-tag
      * 
-     * @param title
+     * @param title title of the page
      * @param stylePath relative path to the css-definitions
-     * @return
      */
     public static String createHtmlHead(String title, String stylePath) {
         StringBuilder builder = new StringBuilder();
@@ -90,37 +83,8 @@ public class HtmlUtil {
     }
 
     /**
-     * creates an list
-     * 
-     * @param items
-     * @param listClasses
-     * @param itemClasses
-     * @return
-     */
-    public static String createList(Collection<String> items, String listClasses, String itemClasses) {
-        if (items.size() == 0) {
-            return ""; //$NON-NLS-1$
-        }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(createHtmlElementOpenTag("ul", listClasses)); //$NON-NLS-1$
-
-        for (String string : items) {
-            builder.append(createHtmlElement("li", string, itemClasses)); //$NON-NLS-1$
-        }
-
-        builder.append(createHtmlElementCloseTag("ul")); //$NON-NLS-1$
-
-        return builder.toString();
-    }
-
-    /**
      * creates complete html-element with text
      * 
-     * @param element
-     * @param text
-     * @param classes
-     * @return
      */
     public static String createHtmlElement(String element, String text, String classes) {
         StringBuilder builder = new StringBuilder();
@@ -133,9 +97,6 @@ public class HtmlUtil {
     /**
      * creates complete html-element without text
      * 
-     * @param element
-     * @param attribute
-     * @return
      */
     public static String createHtmlElement(String element, HtmlAttribute... attribute) {
         StringBuilder builder = createHtmlElementOpenTagBase(element, attribute);
@@ -145,20 +106,17 @@ public class HtmlUtil {
 
     /**
      * returns the text adapted for html
-     * 
-     * @param text
-     * @return
      */
     public static String getHtmlText(String text) {
-        return StringUtils.replace(text, "\n", "\n<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
+        String adaptedText = text;
+        adaptedText = StringUtils.replace(adaptedText, "<", "&lt;");
+        adaptedText = StringUtils.replace(adaptedText, ">", "&gt;");
+        return StringUtils.replace(adaptedText, "\n", "\n<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
      * creates opening tag
      * 
-     * @param element
-     * @param classes
-     * @return
      */
     public static String createHtmlElementOpenTag(String element, String classes) {
         if (StringUtils.isBlank(classes)) {
@@ -171,9 +129,6 @@ public class HtmlUtil {
     /**
      * creates opening tag with given html-attributes
      * 
-     * @param element
-     * @param attributes
-     * @return
      */
     public static String createHtmlElementOpenTag(String element, HtmlAttribute... attributes) {
         StringBuilder builder = createHtmlElementOpenTagBase(element, attributes);
@@ -201,9 +156,6 @@ public class HtmlUtil {
 
     /**
      * creates closing tag
-     * 
-     * @param element
-     * @return
      */
     public static String createHtmlElementCloseTag(String element) {
         StringBuilder builder = new StringBuilder();
@@ -216,10 +168,6 @@ public class HtmlUtil {
     /**
      * creates opening link-tag
      * 
-     * @param href
-     * @param target
-     * @param classes
-     * @return
      */
     public static String createLinkOpenTag(String href, String target, String classes) {
         HtmlAttribute hrefAttr = new HtmlAttribute("href", href); //$NON-NLS-1$
@@ -240,8 +188,6 @@ public class HtmlUtil {
     /**
      * returns relative link from root to the page for the <code>IIpsElement</code>
      * 
-     * @param ipsElement
-     * @return
      */
     public static String getPathFromRoot(IIpsElement ipsElement, LinkedFileType linkedFileType) {
         IpsElementPathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
@@ -251,9 +197,6 @@ public class HtmlUtil {
     /**
      * creates tag for an image
      * 
-     * @param src
-     * @param alt
-     * @return
      */
     public static String createImage(String src, String alt) {
         HtmlAttribute[] attribute = new HtmlAttribute[] { new HtmlAttribute("src", src), new HtmlAttribute("alt", alt) }; //$NON-NLS-1$ //$NON-NLS-2$
@@ -262,36 +205,8 @@ public class HtmlUtil {
     }
 
     /**
-     * returns name of the {@link IIpsElement} for a link
-     * 
-     * @param ipsElement
-     * @param withImage true: link includes a small image which represents the type of the
-     *            {@link IpsElement}
-     * @return
-     */
-    public static String getLinkName(IIpsElement ipsElement, boolean withImage) {
-        IpsElementPathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
-        return pathUtil.getLinkText(withImage);
-    }
-
-    /**
-     * creates complete html-table
-     * 
-     * @param cells
-     * @param tableClasses
-     * @param cellClasses
-     * @return
-     */
-    public static String createHtmlTable(String[][] cells, String tableClasses, String cellClasses) {
-        HtmlTable table = new HtmlTable(cells, tableClasses, cellClasses);
-
-        return table.generate();
-    }
-
-    /**
      * creates foot of the html-page beginning with the closing body-tag
      * 
-     * @return
      */
     public static String createHtmlFoot() {
         return createHtmlElementCloseTag("body") + createHtmlElementCloseTag("html"); //$NON-NLS-1$ //$NON-NLS-2$
