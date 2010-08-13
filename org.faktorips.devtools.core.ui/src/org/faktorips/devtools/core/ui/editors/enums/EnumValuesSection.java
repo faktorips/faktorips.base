@@ -14,7 +14,9 @@
 package org.faktorips.devtools.core.ui.editors.enums;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -66,6 +68,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
@@ -111,7 +114,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private static final String SETTINGS_KEY_LOCK_AND_SYNC = "lockAndSyncLiteralNames"; //$NON-NLS-1$
 
     /** The <tt>IEnumValueContainer</tt> holding the <tt>IEnumValue</tt>s to be edited. */
-    private IEnumValueContainer enumValueContainer;
+    private final IEnumValueContainer enumValueContainer;
 
     /**
      * The <tt>IEnumType</tt> holding the <tt>IEnumValue</tt>s to be edited or <tt>null</tt> if an
@@ -178,6 +181,13 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private boolean enumTypeEditing;
 
     /**
+     * A map that is used to store all values of the current default literal name provider column.
+     * This is necessary so that we are able to determine whether a value has changed after it was
+     * edited.
+     */
+    private final Map<IEnumValue, String> defaultProviderValues;
+
+    /**
      * Creates a new <tt>EnumValuesSection</tt> containing the <tt>IEnumValue</tt>s of the given
      * <tt>IEnumValueContainer</tt>.
      * 
@@ -207,6 +217,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             enumContent = (IEnumContent)enumValueContainer;
         }
 
+        defaultProviderValues = new LinkedHashMap<IEnumValue, String>(enumValueContainer.getEnumValuesCount());
+        initDefaultProviderValues();
+
         loadDialogSettings();
         initControls();
         createActions();
@@ -217,6 +230,29 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         updateEnabledStates();
 
         registerAsChangeListenerToEnumValueContainer();
+    }
+
+    private void initDefaultProviderValues() {
+        if (!(enumTypeEditing)) {
+            return;
+        }
+        if (!(enumType.hasEnumLiteralNameAttribute())) {
+            return;
+        }
+
+        IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
+        IEnumAttribute defaultProviderAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
+                .getDefaultValueProviderAttribute());
+        if (defaultProviderAttribute == null) {
+            return;
+        }
+
+        for (IEnumValue enumValue : enumType.getEnumValues()) {
+            IEnumAttributeValue defaultProviderValue = enumValue.getEnumAttributeValue(defaultProviderAttribute);
+            if (defaultProviderValue != null) {
+                defaultProviderValues.put(enumValue, defaultProviderValue.getValue());
+            }
+        }
     }
 
     private void loadDialogSettings() {
@@ -354,7 +390,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             lockAndSyncLiteralNameAction = new LockAndSyncLiteralNameAction(this);
             lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
             renameLiteralNameRefactoringAction = new RenameLiteralNameRefactoringAction(enumValuesTableViewer);
-            renameLiteralNameRefactoringAction.setEnabled(!(lockAndSynchronizeLiteralNames));
             resetLiteralNamesAction = new ResetLiteralNamesAction(enumValuesTableViewer, enumType);
         }
     }
@@ -524,6 +559,13 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private void createContextMenu() {
         MenuManager menuManager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 
+        if (enumTypeEditing) {
+            MenuManager refactorMenuManager = new MenuManager(Messages.EnumValuesSection_labelSubmenuRefactor);
+            refactorMenuManager.add(renameLiteralNameRefactoringAction);
+            menuManager.add(refactorMenuManager);
+            menuManager.add(new Separator());
+        }
+
         menuManager.add(newEnumValueAction);
         menuManager.add(deleteEnumValueAction);
         menuManager.add(new Separator());
@@ -532,9 +574,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         if (enumTypeEditing) {
             menuManager.add(new Separator());
-            MenuManager refactorMenuManager = new MenuManager(Messages.EnumValuesSection_labelSubmenuRefactor);
-            refactorMenuManager.add(renameLiteralNameRefactoringAction);
-            menuManager.add(refactorMenuManager);
             menuManager.add(resetLiteralNamesAction);
         }
 
@@ -543,7 +582,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /** Creates the table viewer for the table. */
-    private void createTableViewer() throws CoreException {
+    private void createTableViewer() {
         enumValuesTableViewer = new TableViewer(enumValuesTable);
         enumValuesTableViewer.setUseHashlookup(true);
 
@@ -563,9 +602,13 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * overwrites the column properties with actual data. Also refreshes the viewer with actual
      * model data.
      */
-    private void updateTableViewer() throws CoreException {
+    private void updateTableViewer() {
         enumValuesTableViewer.setColumnProperties(columnNames.toArray(new String[columnNames.size()]));
-        createCellEditors();
+        try {
+            createCellEditors();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
         enumValuesTableViewer.setCellEditors(cellEditors);
         if (enumTypeEditing) {
             updateCellEditorSkippedColumns();
@@ -641,6 +684,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
             @Override
             public void applyEditorValue() {
+                if (!(lockAndSynchronizeLiteralNames)) {
+                    return;
+                }
+
                 /*
                  * Return if the default provider control is not a text control and therefore not
                  * valid.
@@ -664,31 +711,33 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 }
 
                 IEnumValue enumValue = enumValueContainer.getEnumValues().get(enumValuesTable.getSelectionIndex());
-                String defaultValue = ((Text)defaultProviderCellEditor.getControl()).getText();
-                if (defaultValue == null ? false : defaultValue.length() > 0) {
-                    if (isOverwriteExistingLiteralPossible(enumValue)) {
-                        if (defaultValue.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-                            defaultValue = null;
-                        }
-                        enumValue.getEnumLiteralNameAttributeValue().setValue(defaultValue);
-                    }
+                String newValue = ((Text)defaultProviderCellEditor.getControl()).getText();
+                if (newValue == null) {
+                    return;
                 }
-            }
 
-            /**
-             * Returns whether the given, existing literal name may be overwritten.
-             * <p>
-             * Returns <tt>true</tt> if the existing literal is <tt>null</tt>, empty or equals the
-             * configured null-representation. Also returns <tt>true</tt> if the option 'Lock and
-             * Synchronize Literal Names' is active.
-             */
-            private boolean isOverwriteExistingLiteralPossible(IEnumValue enumValue) {
-                if (lockAndSynchronizeLiteralNames) {
-                    return true;
+                // Return if the new value equals the old value.
+                String oldValue = defaultProviderValues.get(enumValue);
+                if (newValue.equals(oldValue)) {
+                    return;
                 }
-                String existingLiteral = enumValue.getEnumLiteralNameAttributeValue().getValue();
-                return (existingLiteral == null) ? true : existingLiteral.length() == 0
-                        || existingLiteral.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+
+                if (newValue.length() > 0) {
+                    if (newValue.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+                        newValue = null;
+                    }
+                    enumValue.getEnumLiteralNameAttributeValue().setValue(newValue);
+                    IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
+                    IEnumAttribute providerAttribute = enumType
+                            .getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
+                                    .getDefaultValueProviderAttribute());
+                    try {
+                        enumValue.setEnumAttributeValue(providerAttribute, newValue);
+                    } catch (CoreException e) {
+                        throw new RuntimeException(e);
+                    }
+                    enumValuesTableViewer.refresh();
+                }
             }
 
             @Override
