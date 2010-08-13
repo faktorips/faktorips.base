@@ -19,6 +19,8 @@ import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -37,6 +39,9 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
  * Furthermore, the natural language used when generating source code is added as
  * {@link ISupportedLanguage} to each IPS project. An {@link ILabel} is added for that language in
  * each {@link ILabeledElement}.
+ * <p>
+ * The existing descriptions for each {@link IDescribedElement} are associated to the locale of the
+ * generator language.
  * 
  * @author Alexander Weickmann
  */
@@ -60,6 +65,7 @@ public class Migration_3_0_0_rc1 extends DefaultMigration {
         if (ipsObject instanceof ILabeledElement) {
             addLabelForGeneratorLocale((ILabeledElement)ipsObject);
         }
+        associateDescriptionToGeneratorLocale(ipsObject);
         migrateChildren(ipsObject);
     }
 
@@ -69,8 +75,20 @@ public class Migration_3_0_0_rc1 extends DefaultMigration {
                 addLabelForGeneratorLocale((ILabeledElement)child);
             }
             if (child instanceof IIpsObjectPartContainer) {
-                migrateChildren((IIpsObjectPartContainer)child);
+                IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)child;
+                migrateChildren(ipsObjectPartContainer);
+                associateDescriptionToGeneratorLocale(ipsObjectPartContainer);
             }
+        }
+    }
+
+    private void associateDescriptionToGeneratorLocale(IIpsObjectPartContainer ipsObjectPartContainer) {
+        if (ipsObjectPartContainer instanceof IDescribedElement) {
+            IDescribedElement describedElement = (IDescribedElement)ipsObjectPartContainer;
+            String existingDescription = ipsObjectPartContainer.getDescription();
+            IDescription newDescription = describedElement.newDescription();
+            newDescription.setText(existingDescription);
+            newDescription.setLocale(generatorLocale);
         }
     }
 
@@ -91,9 +109,17 @@ public class Migration_3_0_0_rc1 extends DefaultMigration {
     public String getDescription() {
         return "For the new Faktor-IPS multi-language support feature a new XML " + //$NON-NLS-1$
                 "element called <SupportedLanguages> has been added to the .ipsproject file." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + SystemUtils.LINE_SEPARATOR
+                + "The language that the code generator uses at the moment of the " //$NON-NLS-1$
+                + " migration is added to the supported languages of the IPS project." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR + SystemUtils.LINE_SEPARATOR
-                + "In addition, it is now possible to attach labels to several model elements. " //$NON-NLS-1$
-                + " A new label is added to each model element that supports labels."; //$NON-NLS-1$
+                + "In addition, it is now possible to attach labels to several model " //$NON-NLS-1$
+                + "elements (one for each supported language)." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR + "A new label is added to each model element that supports labels." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR + SystemUtils.LINE_SEPARATOR + "Descriptions can now be written " //$NON-NLS-1$
+                + "for each supported language as well. Every existing description will be associated with the " //$NON-NLS-1$
+                + "language of the code generator during this migration."; //$NON-NLS-1$
     }
 
     @Override

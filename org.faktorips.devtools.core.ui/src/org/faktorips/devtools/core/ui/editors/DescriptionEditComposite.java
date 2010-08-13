@@ -126,7 +126,8 @@ public class DescriptionEditComposite extends Composite {
             textArea.setEnabled(true);
         }
 
-        String currentLanguageCode = languageCombo.getItem(currentSelectionIndex);
+        String currentLanguage = languageCombo.getItem(currentSelectionIndex);
+        String currentLanguageCode = languageCodes.get(currentLanguage);
         Locale currentLocale = new Locale(currentLanguageCode);
 
         IDescription description = describedElement.getDescription(currentLocale);
