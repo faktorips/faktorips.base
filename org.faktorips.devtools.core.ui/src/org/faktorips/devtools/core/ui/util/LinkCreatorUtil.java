@@ -144,10 +144,6 @@ public class LinkCreatorUtil {
 
     /**
      * Set to protected to override in test class
-     * 
-     * @param droppedCmptName
-     * @param possibleAssos
-     * @return
      */
     protected Object[] selectAssociation(String droppedCmptName, List<IAssociation> possibleAssos) {
         Shell shell = Display.getDefault().getActiveShell();

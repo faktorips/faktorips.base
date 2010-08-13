@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.enumimport;
 
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 /**
@@ -25,7 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 public class SelectFileAndImportMethodPage extends
         org.faktorips.devtools.core.ui.wizards.ipsimport.SelectFileAndImportMethodPage {
 
-    public SelectFileAndImportMethodPage(IStructuredSelection selection) throws JavaModelException {
+    public SelectFileAndImportMethodPage(IStructuredSelection selection) {
         super(selection);
     }
 

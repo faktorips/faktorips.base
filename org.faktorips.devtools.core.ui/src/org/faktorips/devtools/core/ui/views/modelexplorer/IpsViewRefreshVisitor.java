@@ -144,7 +144,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         }
     }
 
-    private boolean handleIpsElement(IResourceDelta delta, IIpsElement ipsElement) throws CoreException {
+    private boolean handleIpsElement(IResourceDelta delta, IIpsElement ipsElement) {
         if (isAddedOrRemoved(delta)) {
             IIpsElement parentEl = (IIpsElement)getParent(ipsElement);
             if (parentEl instanceof IIpsPackageFragment) {

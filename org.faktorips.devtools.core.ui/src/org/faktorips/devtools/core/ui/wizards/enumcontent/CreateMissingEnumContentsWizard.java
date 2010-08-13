@@ -110,8 +110,6 @@ public class CreateMissingEnumContentsWizard extends Wizard {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * The action will run in the <tt>IRunnableContext</tt> of the wizard dialog so that a progress
      * monitor can be shown directly in the wizard.
      */
@@ -146,7 +144,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         protected SelectEnumContentsPage() {
             super(Messages.SelectEnumContentsPage_title);
             setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "wizards/CreateMissingEnumContentsWizard.png"));
+                    "wizards/CreateMissingEnumContentsWizard.png")); //$NON-NLS-1$
             setMessage(Messages.SelectEnumContentsPage_prompt);
             setTitle(Messages.SelectEnumContentsPage_title);
         }
@@ -286,8 +284,6 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         }
 
         /**
-         * {@inheritDoc}
-         * <p>
          * Refreshes the wizard page, if a valid IPS project is selected all entries of the tree
          * viewer widget will be expanded and checked.
          */
@@ -350,7 +346,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
          */
         private IIpsProject getTargetIpsProject() {
             String targetFolder = targetSourceFolderControl.getText();
-            if (!(targetFolder.contains("/"))) {
+            if (!(targetFolder.contains("/"))) { //$NON-NLS-1$
                 return null;
             }
             String targetProject = targetFolder.substring(0, targetFolder.indexOf('/'));
@@ -370,7 +366,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             IIpsProject targetProject = getTargetIpsProject();
             IIpsPackageFragmentRoot root = targetProject.getIpsPackageFragmentRoot(getTargetSourceFolderName());
             if (root == null) {
-                root = targetProject.getIpsPackageFragmentRoot("VirtualRoot");
+                root = targetProject.getIpsPackageFragmentRoot("VirtualRoot"); //$NON-NLS-1$
             }
             return root;
         }
@@ -391,13 +387,13 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             @Override
             public Image getImage(Object element) {
                 if (element instanceof IEnumType) {
-                    return IpsUIPlugin.getImageHandling().getSharedImage("NewEnumContent.gif", true);
+                    return IpsUIPlugin.getImageHandling().getSharedImage("NewEnumContent.gif", true); //$NON-NLS-1$
                 }
                 IIpsPackageFragment pack = (IIpsPackageFragment)element;
                 if (pack == null || !(pack.exists())) {
-                    return IpsUIPlugin.getImageHandling().getSharedImage("NewIpsPackageFragment.gif", true);
+                    return IpsUIPlugin.getImageHandling().getSharedImage("NewIpsPackageFragment.gif", true); //$NON-NLS-1$
                 }
-                return IpsUIPlugin.getImageHandling().getSharedImage("IpsPackageFragment.gif", true);
+                return IpsUIPlugin.getImageHandling().getSharedImage("IpsPackageFragment.gif", true); //$NON-NLS-1$
             }
 
         }
@@ -449,7 +445,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+                // Nothing to do
             }
 
             @Override

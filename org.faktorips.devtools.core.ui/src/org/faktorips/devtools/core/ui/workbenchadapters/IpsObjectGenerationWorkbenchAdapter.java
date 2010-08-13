@@ -70,7 +70,7 @@ public class IpsObjectGenerationWorkbenchAdapter extends IpsObjectPartWorkbenchA
         // to load the image only with the language code (e.g. de).
         if (!exists(imageDescriptor) && locale.getCountry().length() != 0) {
             imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    id + "_" + GENERATION_IMAGE_BASE + "_" + locale.getLanguage() + ".gif"); //$NON-NLS-1$ //$NON-NLS-2$
+                    id + "_" + GENERATION_IMAGE_BASE + "_" + locale.getLanguage() + ".gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         // neither for full locale nor for only language code an image was found,
@@ -82,7 +82,7 @@ public class IpsObjectGenerationWorkbenchAdapter extends IpsObjectPartWorkbenchA
         }
         // if image still does not exists try to load default image
         if (!exists(imageDescriptor)) {
-            imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(GENERATION_IMAGE_BASE + ".gif");
+            imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(GENERATION_IMAGE_BASE + ".gif"); //$NON-NLS-1$
         }
 
         return imageDescriptor;

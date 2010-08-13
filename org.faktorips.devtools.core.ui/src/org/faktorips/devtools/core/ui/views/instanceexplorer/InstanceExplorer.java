@@ -88,7 +88,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     /**
      * The filename of the image for this view
      */
-    public static final String IMAGE = "InstanceExplorer.gif";
+    public static final String IMAGE = "InstanceExplorer.gif"; //$NON-NLS-1$
 
     private InstanceLabelProvider labelProvider;
     private TableViewer tableViewer;
@@ -127,17 +127,19 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         decoratedLabelProvider = new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
 
         selectedElementLink = new ImageHyperlink(panel, SWT.FILL);
-        selectedElementLink.setText("");
+        selectedElementLink.setText(""); //$NON-NLS-1$
         selectedElementLink.setUnderlined(true);
         selectedElementLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         selectedElementLink.addMouseListener(new MouseListener() {
 
             @Override
             public void mouseDoubleClick(MouseEvent e) {
+                // Nothing to do
             }
 
             @Override
             public void mouseDown(MouseEvent e) {
+                // Nothing to do
             }
 
             @Override
@@ -177,7 +179,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
-
         // subtype-search action
 
         subtypeSearchAction = new SubtypeSearchAction();
@@ -186,8 +187,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
         // refresh action
         Action refreshAction = new Action(Messages.InstanceExplorer_tooltipRefreshContents, IpsUIPlugin
-                .getImageHandling().createImageDescriptor("Refresh.gif")) {
-
+                .getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 setInputData(contentProvider.getActualElement());
@@ -206,17 +206,17 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
         // clear action
         toolBarManager.add(new Action(Messages.InstanceExplorer_tooltipClear, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("Clear.gif")) {
-            @Override
-            public void run() {
-                setInputData(null);
-            }
+                .createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
+                    @Override
+                    public void run() {
+                        setInputData(null);
+                    }
 
-            @Override
-            public String getToolTipText() {
-                return Messages.InstanceExplorer_tooltipClear;
-            }
-        });
+                    @Override
+                    public String getToolTipText() {
+                        return Messages.InstanceExplorer_tooltipClear;
+                    }
+                });
     }
 
     /**
@@ -247,7 +247,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
 
     private void showEmptyTableMessage(IIpsObject element) {
-        String message = "";
+        String message = ""; //$NON-NLS-1$
         if (element instanceof IEnumType && ((IEnumType)element).isContainingValues()) {
             message = Messages.InstanceExplorer_enumContainsValues;
         } else {
@@ -314,11 +314,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
                     showMessgeOrTableView(MessageTableSwitch.TABLE);
                 }
                 if (selectedElementLink != null && !selectedElementLink.isDisposed()) {
-                    if (element != null) {
-                        selectedElementLink.setText(decoratedLabelProvider.getText(ipsObject));
-                    } else {
-                        selectedElementLink.setText("");
-                    }
+                    selectedElementLink.setText(decoratedLabelProvider.getText(ipsObject));
                     selectedElementLink.setImage(decoratedLabelProvider.getImage(ipsObject));
                 }
                 tableViewer.refresh();
@@ -410,7 +406,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     private class SubtypeSearchAction extends Action {
 
-        private static final String SUBTYPE_SEARCH_IMG = "InstanceExplorerSubtypeSearch.gif";
+        private static final String SUBTYPE_SEARCH_IMG = "InstanceExplorerSubtypeSearch.gif"; //$NON-NLS-1$
 
         public SubtypeSearchAction() {
             setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(SUBTYPE_SEARCH_IMG));
@@ -474,6 +470,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
         @Override
         protected void addPart(IIpsObjectPart part) {
+            // Nothing to do
         }
 
         @Override
@@ -488,10 +485,12 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
         @Override
         protected void reinitPartCollections() {
+            // Nothing to do
         }
 
         @Override
         protected void removePart(IIpsObjectPart part) {
+            // Nothing to do
         }
 
         @Override

@@ -64,7 +64,7 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
     /** Returns the name describing the <tt>IIpsElement</tt> to be refactored. */
     // TODO AW: This should be moved to the core model -> IIpsElement#getElementName().
     protected final String getIpsElementName() {
-        String ipsElementName = "";
+        String ipsElementName = ""; //$NON-NLS-1$
         if (ipsElement instanceof IAttribute) {
             ipsElementName = Messages.ElementNames_Attribute;
         } else if (ipsElement instanceof IMethod) {

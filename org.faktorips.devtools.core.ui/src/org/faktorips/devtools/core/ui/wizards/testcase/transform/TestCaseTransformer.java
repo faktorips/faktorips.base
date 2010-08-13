@@ -125,21 +125,20 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
      * @param targetPackageName the target for the new transformed model test case
      * @param nameExtension (optional) the extension which will be added to the transformed test
      *            case file name
-     * 
-     * @throws Exception if an error occurs
      */
     public ITestCase createTestCaseFromRuntimeXml(IFile file,
             String testCaseTypeName,
             IIpsPackageFragmentRoot root,
             String targetPackageName,
             String nameExtension) throws CoreException {
+
         if (nameExtension == null) {
             nameExtension = ""; //$NON-NLS-1$
         }
 
         Document doc;
         try {
-            doc = XmlUtil.getDocument(file.getContents());
+            doc = XmlUtil.parseDocument(file.getContents());
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
         }

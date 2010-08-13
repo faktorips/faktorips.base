@@ -139,7 +139,6 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      * The method validates the filename.
      * <p>
      * Subclasses may extend this method to perform their own validation.
-     * </p>
      */
     protected void validateFilename() {
         String filename = filenameField.getText();
@@ -173,18 +172,16 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         }
     }
 
-    /*
+    /**
      * File selection with default name. The default name will be derived from the current selected
      * table contents name.
      */
     protected class FileSelectionDialogWithDefault extends FileSelectionControl {
+
         public FileSelectionDialogWithDefault(Composite parent, UIToolkit toolkit) {
             super(parent, toolkit, SWT.SAVE);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void buttonClicked() {
             String previousFilename = getFilename();
@@ -248,9 +245,6 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         setPageComplete(complete);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
@@ -274,9 +268,6 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         exportedIpsObjectControl.setIpsProject(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveWidgetValues() {
         IDialogSettings settings = getDialogSettings();
@@ -287,9 +278,6 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         settings.put(NULL_REPRESENTATION, nullRepresentation.getText());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
@@ -381,20 +369,14 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         updatePageComplete();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean allowNewContainerName() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void handleEvent(Event event) {
-
+        // Nothing to do
     }
 
     public String getNullRepresentation() {

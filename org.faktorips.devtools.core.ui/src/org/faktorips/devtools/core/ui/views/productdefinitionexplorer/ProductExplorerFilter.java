@@ -34,9 +34,6 @@ public class ProductExplorerFilter extends ViewerFilter {
 
     private boolean excludeNoIpsProductDefinitionProjects;
 
-    public ProductExplorerFilter() {
-    }
-
     /**
      * Returns <code>false</code> if the element is an <code>IFile</code> with name ".ipsproject".
      * <p>
@@ -76,9 +73,9 @@ public class ProductExplorerFilter extends ViewerFilter {
         return true;
     }
 
-    /*
-     * Returns <code>true</code> if the element should be displayed.<br> Returns <code>false</code>
-     * if the element shouldn't be displayed.<br>
+    /**
+     * Returns <code>true</code> if the element should be displayed.<br>
+     * Returns <code>false</code> if the element shouldn't be displayed.<br>
      */
     private boolean isAllowedReosource(Object element) {
         IIpsProject ipsProject = null;

@@ -49,9 +49,6 @@ public abstract class IpsObjectImportWizard extends Wizard implements IImportWiz
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
@@ -66,7 +63,7 @@ public abstract class IpsObjectImportWizard extends Wizard implements IImportWiz
     }
 
     public boolean isExcelTableFormatSelected() {
-        return startingPage.getFormat().getDefaultExtension().equals(".xls");
+        return startingPage.getFormat().getDefaultExtension().equals(".xls"); //$NON-NLS-1$
     }
 
     /**

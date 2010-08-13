@@ -42,17 +42,11 @@ public class ProjectSelectionPage extends WizardPage {
     private CheckboxTreeViewer treeViewer;
     private List<IIpsProject> preSelected;
 
-    /**
-     * @param pageName
-     */
     protected ProjectSelectionPage(List<IIpsProject> preSelected) {
         super(Messages.ProjectSelectionPage_titleSelectProjects);
         this.preSelected = preSelected;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         Composite root = new Composite(parent, SWT.NONE);
@@ -104,33 +98,21 @@ public class ProjectSelectionPage extends WizardPage {
 
     private class ContentProvider implements ITreeContentProvider {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Object[] getChildren(Object parentElement) {
             return new Object[0];
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Object getParent(Object element) {
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean hasChildren(Object element) {
             return false;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Object[] getElements(Object inputElement) {
             List<IIpsProject> result = new ArrayList<IIpsProject>();
@@ -139,7 +121,7 @@ public class ProjectSelectionPage extends WizardPage {
                 projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
             } catch (CoreException e) {
                 IpsPlugin.log(e);
-                setMessage("An internal error occurred while reading the projects", IMessageProvider.ERROR);
+                setMessage("An internal error occurred while reading the projects", IMessageProvider.ERROR); //$NON-NLS-1$
                 return new Object[0];
             }
             for (int i = 0; i < projects.length; i++) {
@@ -159,20 +141,15 @@ public class ProjectSelectionPage extends WizardPage {
             return result.toArray(new IIpsProject[result.size()]);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void dispose() {
             // nothing to do
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // nothing to do
         }
+
     }
 }

@@ -24,8 +24,6 @@ public class IpsProblemOverlayIcon {
 
     /**
      * Get overlay error overlay image descriptor
-     * 
-     * @return
      */
     private static ImageDescriptor getErrorOverlay() {
         return OverlayIcons.ERROR_OVR_DESC;
@@ -33,8 +31,6 @@ public class IpsProblemOverlayIcon {
 
     /**
      * Get overlay warning overlay image descriptor
-     * 
-     * @return
      */
     private static ImageDescriptor getWarningOverlay() {
         return OverlayIcons.WARNING_OVR_DESC;
@@ -42,8 +38,6 @@ public class IpsProblemOverlayIcon {
 
     /**
      * Get overlay info overlay image descriptor
-     * 
-     * @return
      */
     private static ImageDescriptor getInfoOverlay() {
         return OverlayIcons.INFO_OVR_DESC;
@@ -51,9 +45,6 @@ public class IpsProblemOverlayIcon {
 
     /**
      * Get the overly image descriptor for the specified severity @see {@link Message}
-     * 
-     * @param ipsMessageSeverity
-     * @return
      */
     public static ImageDescriptor getOverlay(int ipsMessageSeverity) {
         if (ipsMessageSeverity == Message.ERROR) {
@@ -68,10 +59,6 @@ public class IpsProblemOverlayIcon {
 
     /**
      * Create a new image descriptor with overlays for the given severity over the baseImage
-     * 
-     * @param baseImage
-     * @param ipsMessageSeverity
-     * @return
      */
     public static ImageDescriptor createOverlayIcon(Image baseImage, int ipsMessageSeverity) {
         if (baseImage != null) {
@@ -84,9 +71,6 @@ public class IpsProblemOverlayIcon {
 
     /**
      * Get the overlay icon for the specified {@link IMarker} severity
-     * 
-     * @param markerSeverity
-     * @return
      */
     public static ImageDescriptor getMarkerOverlay(int markerSeverity) {
         if (markerSeverity <= 0) {
@@ -106,10 +90,6 @@ public class IpsProblemOverlayIcon {
     /**
      * Create a new image descriptor with overlays for the given {@link IMarker} severity over the
      * baseImage
-     * 
-     * @param baseImage
-     * @param markerSeverity
-     * @return
      */
     public static ImageDescriptor createMarkerOverlayIcon(Image baseImage, int markerSeverity) {
         if (baseImage != null) {

@@ -60,9 +60,6 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 
     private ResourceManager resourceManager;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image decorateImage(Image baseImage, Object element) {
         if (baseImage != null) {
@@ -80,46 +77,42 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         IResource res = null;
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);
-            if (ipsElement != null) {
-                if (ipsElement instanceof IIpsProject) {
-                    return computeAdornmentFlagsProject((IIpsProject)ipsElement);
-                } else {
-                    // As we don't show ips source file in the user interface, but the ips object,
-                    // we handle ips objects as ips source files.
-                    // Added due to bug 1513
-                    if (ipsElement instanceof IIpsObject) {
-                        ipsElement = ipsElement.getParent();
-                    }
-                    // Following line changed from getEnclosingRessource to
-                    // getCorrespondingRessource() due to bug 1500
-                    // The special handling of ips obejcts parts in former version, was removed as
-                    // parts return null
-                    // as corresponding ressource. If for some reaseon we have to switch back to
-                    // getEnclosingRessource()
-                    // we must readd the special handling to ips object parts.
-                    res = ipsElement.getCorrespondingResource();
-                    if (res == null || !res.isAccessible()) {
-                        return DEFAULT_FLAG;
-                    }
-
-                    /*
-                     * In flat layout every package fragment is represented in its own tree item,
-                     * thus package fragments of parent folders should not be decorated. Only search
-                     * the package fragments children (files) for problems, no search is needed in
-                     * the tree of sub folders. PackageFragmentRoots on the other hand should always
-                     * be decorated with the problem markers of their package fragments.
-                     */
-                    int depth = IResource.DEPTH_INFINITE;
-                    if (ipsElement instanceof IIpsPackageFragment) {
-                        IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
-                        if (packageFragment.isDefaultPackage() || isFlatLayout) {
-                            depth = IResource.DEPTH_ONE;
-                        }
-                    }
-                    return res.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, true, depth);
-                }
+            if (ipsElement instanceof IIpsProject) {
+                return computeAdornmentFlagsProject((IIpsProject)ipsElement);
             } else {
-                return DEFAULT_FLAG;
+                // As we don't show ips source file in the user interface, but the ips object,
+                // we handle ips objects as ips source files.
+                // Added due to bug 1513
+                if (ipsElement instanceof IIpsObject) {
+                    ipsElement = ipsElement.getParent();
+                }
+                // Following line changed from getEnclosingRessource to
+                // getCorrespondingRessource() due to bug 1500
+                // The special handling of ips obejcts parts in former version, was removed as
+                // parts return null
+                // as corresponding ressource. If for some reaseon we have to switch back to
+                // getEnclosingRessource()
+                // we must readd the special handling to ips object parts.
+                res = ipsElement.getCorrespondingResource();
+                if (res == null || !res.isAccessible()) {
+                    return DEFAULT_FLAG;
+                }
+
+                /*
+                 * In flat layout every package fragment is represented in its own tree item, thus
+                 * package fragments of parent folders should not be decorated. Only search the
+                 * package fragments children (files) for problems, no search is needed in the tree
+                 * of sub folders. PackageFragmentRoots on the other hand should always be decorated
+                 * with the problem markers of their package fragments.
+                 */
+                int depth = IResource.DEPTH_INFINITE;
+                if (ipsElement instanceof IIpsPackageFragment) {
+                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+                    if (packageFragment.isDefaultPackage() || isFlatLayout) {
+                        depth = IResource.DEPTH_ONE;
+                    }
+                }
+                return res.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, true, depth);
             }
         } else if (element instanceof IResource) {
             return ((IResource)element).findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, false, IResource.DEPTH_ONE);

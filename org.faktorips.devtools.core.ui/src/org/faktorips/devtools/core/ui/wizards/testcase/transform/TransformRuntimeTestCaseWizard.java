@@ -62,9 +62,6 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
                 "wizards/NewTestCaseWizard.png")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         selectionSource = selection;
@@ -72,9 +69,6 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
         setNeedsProgressMonitor(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void addPages() {
         addPage(new SelectTargetPackagePage(this));
@@ -82,9 +76,6 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
         addPage(selectTestCaseTypePage);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canFinish() {
         if (StringUtils.isNotEmpty(testCaseTypeName) && targetIpsPackageFragment != null) {
@@ -105,9 +96,6 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {
@@ -158,8 +146,6 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
 
     /**
      * Sets the test case type to which the new imported test cases will belong to.
-     * 
-     * @param testCaseTypeName
      */
     public void setTestCaseTypeName(String testCaseTypeName) {
         this.testCaseTypeName = testCaseTypeName;

@@ -35,11 +35,9 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
      * Creates an item for each ips source file and marks the itens as duplicate, if two (or more)
      * ips source files have the same unqualified name.
      * 
-     * @throws CoreException
      * @throws NullPointerException if files is <code>null</code>
      */
-    public static final InstanceIpsSrcFileViewItem[] createItems(IIpsSrcFile[] files, IIpsMetaClass baseMetaClass)
-            throws CoreException {
+    public static final InstanceIpsSrcFileViewItem[] createItems(IIpsSrcFile[] files, IIpsMetaClass baseMetaClass) {
         IpsSrcFileCollection collection = new IpsSrcFileCollection(files, baseMetaClass);
         InstanceIpsSrcFileViewItem[] items = new InstanceIpsSrcFileViewItem[files.length];
         for (int i = 0; i < files.length; i++) {
@@ -51,7 +49,6 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
 
     /**
      * @param ipsSrcFile The IpsSrcFile represented by this viewer item
-     * @param collection
      */
     private InstanceIpsSrcFileViewItem(IIpsSrcFile ipsSrcFile, IpsSrcFileCollection collection) {
         super(ipsSrcFile);

@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -94,9 +93,9 @@ public class FailurePane implements IMenuListener {
             super("", AS_RADIO_BUTTON); //$NON-NLS-1$
             setText(Messages.IpsTestRunnerViewPart_Action_ShowStackTrace);
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowStackTraceToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/cfilter.gif"));
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/cfilter.gif")); //$NON-NLS-1$
             ImageDescriptor cfilterDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/cfilter.gif");
+                    "elcl16/cfilter.gif"); //$NON-NLS-1$
             setHoverImageDescriptor(cfilterDescriptor);
             setImageDescriptor(cfilterDescriptor);
             setEnabled(showStackTrace);
@@ -116,7 +115,7 @@ public class FailurePane implements IMenuListener {
     private class IpsTestCopyAction extends SelectionListenerAction {
         private String failureDetails;
 
-        protected IpsTestCopyAction(String failureDetails, Clipboard clipboard) {
+        protected IpsTestCopyAction(String failureDetails) {
             super(Messages.FailurePane_MenuLabel_CopyInClipboard);
             this.failureDetails = failureDetails;
         }
@@ -161,10 +160,6 @@ public class FailurePane implements IMenuListener {
             }
         }
 
-        public String getFileName() {
-            return fileName;
-        }
-
         public int getLine() {
             return line;
         }
@@ -199,6 +194,7 @@ public class FailurePane implements IMenuListener {
         table.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
+                // Nothing to do
             }
 
             @Override
@@ -237,12 +233,10 @@ public class FailurePane implements IMenuListener {
         return ""; //$NON-NLS-1$
     }
 
-    private boolean containsTraceLineRelevantSourceFile(String traceLine) {
+    private boolean containsTraceLineRelevantSourceFile() {
         return true;
         // the stacktrace will always be displayed
         // it doesn't matter if the source is inside the projects source folder or not
-        // TraceLineElement tli = new TraceLineElement(traceLine);
-        // return tli.isValidProjectSourceElement();
     }
 
     /*
@@ -264,7 +258,7 @@ public class FailurePane implements IMenuListener {
             }
 
             // try to get the editor input from the projects source folder
-            IEditorInput editorInput = getEditorInput(file, tli.getFileName());
+            IEditorInput editorInput = getEditorInput(file);
             if (editorInput == null) {
                 // maybe this is a java class file in an jar archive
                 IEditorPart part = JavaUI.openInEditor(file);
@@ -303,7 +297,7 @@ public class FailurePane implements IMenuListener {
      * Returns the editor input. Only files in the project source folder (compilation unit) are
      * supported. Class files in e.g. Jar's with source attachment are not supported.
      */
-    private IEditorInput getEditorInput(IJavaElement element, String name) throws JavaModelException {
+    private IEditorInput getEditorInput(IJavaElement element) {
         while (element != null) {
             if (element instanceof ICompilationUnit) {
                 ICompilationUnit unit = (ICompilationUnit)element;
@@ -356,7 +350,7 @@ public class FailurePane implements IMenuListener {
                 showStackTraceAction.setEnabled(true);
                 if (showStackTrace) {
                     String traceLine = testCaseFailures[i].substring(TEST_ERROR_STACK_INDICATOR.length());
-                    if (containsTraceLineRelevantSourceFile(traceLine) || i == 0) {
+                    if (containsTraceLineRelevantSourceFile() || i == 0) {
                         TableItem tableItem = new TableItem(table, SWT.NONE);
                         // show the stacktrace line only if the element is inside the projects
                         // sources or this is the last stacktrace line,
@@ -404,7 +398,7 @@ public class FailurePane implements IMenuListener {
     @Override
     public void menuAboutToShow(IMenuManager manager) {
         if (table.getSelectionCount() > 0) {
-            manager.add(new IpsTestCopyAction(getFailureDetailsAsString(), clipboard));
+            manager.add(new IpsTestCopyAction(getFailureDetailsAsString()));
         }
     }
 

@@ -43,12 +43,12 @@ public class AssociationSelectionDialog extends ListSelectionDialog {
 
         @Override
         public void dispose() {
-
+            // Nothing to do
         }
 
         @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+            // Nothing to do
         }
 
     }

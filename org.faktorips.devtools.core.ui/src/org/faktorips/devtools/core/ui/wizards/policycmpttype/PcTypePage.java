@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
@@ -43,19 +42,11 @@ public class PcTypePage extends TypePage {
 
     private CheckboxField configurableField;
 
-    /**
-     * @param pageName
-     * @param selection
-     * @throws JavaModelException
-     */
-    public PcTypePage(IStructuredSelection selection) throws JavaModelException {
+    public PcTypePage(IStructuredSelection selection) {
         super(IpsObjectType.POLICY_CMPT_TYPE, selection, Messages.PcTypePage_title);
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewPolicyCmptTypeWizard.png")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectRefControl createSupertypeControl(Composite container, UIToolkit toolkit) {
         return toolkit.createPcTypeRefControl(null, container);
@@ -68,9 +59,6 @@ public class PcTypePage extends TypePage {
         pageOfAssociatedType = page;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
@@ -155,9 +143,6 @@ public class PcTypePage extends TypePage {
                 IpsObjectType.PRODUCT_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validatePageExtension() throws CoreException {
         super.validatePageExtension();
@@ -189,9 +174,6 @@ public class PcTypePage extends TypePage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         super.finishIpsObjects(newIpsObject, modifiedIpsObjects);

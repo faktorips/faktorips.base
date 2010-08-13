@@ -54,7 +54,7 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
                 if (ipsSrcFile.exists() && ipsSrcFile.isContentParsable()) {
                     Class<? extends IpsObject> implementingClass = ipsSrcFile.getIpsObjectType().getImplementingClass();
                     if (implementingClass != null) {
-                        return getAdapterByClass(implementingClass, adapterType);
+                        return getAdapterByClass(implementingClass);
                     }
                     /*
                      * Comment from old Code in IpsObject.getImage(): The IPS source file doesn't
@@ -69,20 +69,13 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
             }
         }
         if (adaptableObject instanceof IpsElement) {
-            return getAdapterByClass((Class<? extends IpsElement>)adaptableObject.getClass(), adapterType);
+            return getAdapterByClass((Class<? extends IpsElement>)adaptableObject.getClass());
         } else {
             return null;
         }
     }
 
-    /**
-     * Getting the workbench adapter by class.
-     * 
-     * @param adaptableClass
-     * @param adapterType
-     * @return
-     */
-    public IpsElementWorkbenchAdapter getAdapterByClass(Class<? extends IpsElement> adaptableClass, Class<?> adapterType) {
+    public IpsElementWorkbenchAdapter getAdapterByClass(Class<? extends IpsElement> adaptableClass) {
         IpsElementWorkbenchAdapter result = null;
         while (result == null) {
             result = workbenchAdapterMap.get(adaptableClass);

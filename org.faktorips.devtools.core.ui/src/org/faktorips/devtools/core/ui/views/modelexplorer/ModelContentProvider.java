@@ -277,8 +277,6 @@ public class ModelContentProvider implements ITreeContentProvider {
      * child-packagefragments of the defaultpackage are returned. The defaultpackage of the given
      * <code>IpsPackageFragmentRoot</code> is contained in the returned array if it contains files
      * (has children).
-     * 
-     * @throws CoreException
      */
     protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
         if (layoutStyle == LayoutStyle.FLAT) {
@@ -347,8 +345,6 @@ public class ModelContentProvider implements ITreeContentProvider {
     /**
      * Returns all files contained in the given <code>IpsPackageFragment</code>. This includes
      * IpsElements as well as general files.
-     * 
-     * @throws CoreException
      */
     protected Object[] getFileContent(IIpsPackageFragment fragment) throws CoreException {
         IIpsElement[] files = fragment.getChildren();
@@ -509,12 +505,12 @@ public class ModelContentProvider implements ITreeContentProvider {
 
     @Override
     public void dispose() {
-
+        // Nothing to do
     }
 
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+        // Nothing to do
     }
 
     public void setLayoutStyle(LayoutStyle newStyle) {

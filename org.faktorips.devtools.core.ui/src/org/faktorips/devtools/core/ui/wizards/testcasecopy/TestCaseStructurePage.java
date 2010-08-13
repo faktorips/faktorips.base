@@ -188,23 +188,22 @@ public class TestCaseStructurePage extends WizardPage {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)((TableItem)element).getData();
                 checkedProductCmpt = ipsSrcFile;
                 IProductCmpt newProductCmpt = null;
-                IProductCmpt oldProductCmpt = null;
                 try {
                     newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                    oldProductCmpt = replaceSelectedProductCmpt(newProductCmpt);
+                    replaceSelectedProductCmpt(newProductCmpt);
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                     return;
                 }
-                refreshTree(oldProductCmpt, newProductCmpt);
+                refreshTree();
                 tableViewer.refresh();
             }
 
-            /*
-             * Refreshs the tree. This method resets the target as new input, because a simple
+            /**
+             * Refreshes the tree. This method resets the target as new input, because a simple
              * refresh doesn't work correctly if we change product cmpts and the labels.
              */
-            private void refreshTree(IProductCmpt oldProductCmpt, IProductCmpt newProductCmpt) {
+            private void refreshTree() {
                 try {
                     treeViewer.getTree().setRedraw(false);
                     TreeViewerExpandStateStorage storage = new TreeViewerExpandStateStorage(treeViewer);
@@ -238,10 +237,12 @@ public class TestCaseStructurePage extends WizardPage {
 
             @Override
             public void dispose() {
+                // Nothing to do
             }
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // Nothing to do
             }
         });
         tableViewer.setLabelProvider(new ITableLabelProvider() {
@@ -266,10 +267,12 @@ public class TestCaseStructurePage extends WizardPage {
 
             @Override
             public void addListener(ILabelProviderListener listener) {
+                // Nothing to do
             }
 
             @Override
             public void dispose() {
+                // Nothing to do
             }
 
             @Override
@@ -279,6 +282,7 @@ public class TestCaseStructurePage extends WizardPage {
 
             @Override
             public void removeListener(ILabelProviderListener listener) {
+                // Nothing to do
             }
         });
     }
@@ -311,8 +315,6 @@ public class TestCaseStructurePage extends WizardPage {
 
     /**
      * Sets and display a given target test case.
-     * 
-     * @param targetTestCase
      */
     public void setTargetTestCase(ITestCase targetTestCase) {
         // Note: creating a new tree viewer is necessary because the checked elements are cached
@@ -383,7 +385,7 @@ public class TestCaseStructurePage extends WizardPage {
         return null;
     }
 
-    /*
+    /**
      * Replace the product cmpt of the selected test policy cmpt object. Returns the product cmpt
      * which was replaced.
      */

@@ -241,11 +241,11 @@ public class EnumTypePage extends IpsObjectPage {
 
         String pack = getPackage();
         String name = getIpsObjectName();
-        String point = "";
+        String point = ""; //$NON-NLS-1$
         if (pack.length() > 0 && name.length() > 0) {
-            point = ".";
+            point = "."; //$NON-NLS-1$
         } else {
-            pack = "";
+            pack = ""; //$NON-NLS-1$
         }
         enumContentQualifiedNameField.setText(pack + point + name);
     }

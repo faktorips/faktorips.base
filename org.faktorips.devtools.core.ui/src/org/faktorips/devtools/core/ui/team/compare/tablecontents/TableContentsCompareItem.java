@@ -177,7 +177,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * If the compareitems do not contain rows, equals() returns the same value as the equals()
      * method in <code>AbstractCompareItem</code>.
      * 
-     * @see AbstractCompareItem#equals(Object) {@inheritDoc}
+     * @see AbstractCompareItem#equals(Object)
      */
     @Override
     public boolean equals(Object o) {
@@ -266,7 +266,6 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * <li>length is 9 -> returns 4 (3 tabs to fit 9 characters + 1 additional tab)</li>
      * <ul>
      * 
-     * @param length
      * @return Tabs needed to fit this string and create space between columns.
      * 
      * @see TableContentsCompareViewer#TAB_WIDTH
@@ -282,8 +281,6 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     /**
      * Returns an int array containing the widths of all columns in tabs. This includes the column
      * of Rownumbers, that are part of the string representation of the IpsObject.
-     * 
-     * @return
      */
     public int[] getColumnWidths() {
         if (isRoot()) {

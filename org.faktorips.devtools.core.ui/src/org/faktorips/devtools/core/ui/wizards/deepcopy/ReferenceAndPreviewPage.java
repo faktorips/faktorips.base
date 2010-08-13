@@ -50,7 +50,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
@@ -133,9 +132,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
         setPageComplete(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
 
@@ -164,7 +160,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
         tree = new TreeViewer(root);
         tree.setUseHashlookup(true);
         tree.setLabelProvider(new LabelProvider());
-        tree.setContentProvider(new ContentProvider(getDeepCopyWizard().getIpsProject()));
+        tree.setContentProvider(new ContentProvider());
         tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
@@ -172,9 +168,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
         workingDateLabel.setText(getDeepCopyWizard().getFormattedStructureDate());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
@@ -376,6 +369,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         @Override
         public void addListener(ILabelProviderListener listener) {
+            // Nothing to do
         }
 
         @Override
@@ -390,6 +384,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         @Override
         public void removeListener(ILabelProviderListener listener) {
+            // Nothing to do
         }
     }
 
@@ -410,7 +405,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         private Set<IProductCmptStructureReference> checkedNodes;
 
-        public ContentProvider(IIpsProject ipsProject) {
+        public ContentProvider() {
             super(true, true);
         }
 

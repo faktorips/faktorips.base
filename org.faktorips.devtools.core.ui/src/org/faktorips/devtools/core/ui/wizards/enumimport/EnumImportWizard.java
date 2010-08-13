@@ -205,7 +205,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         return true;
     }
 
-    /*
+    /**
      * Returns the enumeration type defining the structure for import.
      */
     private IEnumType getEnumType() {
@@ -225,7 +225,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         return null;
     }
 
-    /*
+    /**
      * Returns the enumeration type or enumeration content as a target for import.
      */
     private IEnumValueContainer getEnumValueContainer() throws CoreException {

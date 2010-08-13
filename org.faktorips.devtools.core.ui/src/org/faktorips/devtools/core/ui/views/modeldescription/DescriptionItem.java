@@ -19,7 +19,7 @@ public class DescriptionItem {
     private String name;
 
     public DescriptionItem() {
-
+        // Empty default constructor
     }
 
     public DescriptionItem(String name, String description) {

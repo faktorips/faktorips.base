@@ -67,7 +67,7 @@ import org.faktorips.devtools.core.ui.editors.enumcontent.Messages;
 public class FixEnumContentWizard extends Wizard {
 
     /** The image for this wizard. */
-    private final String IMAGE = "wizards/BrokenEnumWizard.png";
+    private final String IMAGE = "wizards/BrokenEnumWizard.png"; //$NON-NLS-1$
 
     /** The <tt>IEnumContent</tt> to fix. */
     private IEnumContent enumContent;
@@ -622,7 +622,7 @@ public class FixEnumContentWizard extends Wizard {
                 labels[i] = uiToolkit.createFormLabel(contents, currentEnumAttribute.getName() + ':');
                 combos[i] = uiToolkit.createCombo(contents);
                 for (int j = 0; j < availableColumns.size(); j++) {
-                    String listItem = (j == 0) ? "" : " - ";
+                    String listItem = (j == 0) ? "" : " - "; //$NON-NLS-1$ //$NON-NLS-2$
                     combos[i].add(listItem + availableColumns.get(j));
                     combos[i].addModifyListener(new ModifyListener() {
                         @Override

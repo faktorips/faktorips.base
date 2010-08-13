@@ -72,9 +72,6 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         if (selection.isEmpty()) {
@@ -90,9 +87,6 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         super.init(workbench, selection);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         try {
@@ -114,9 +108,6 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {

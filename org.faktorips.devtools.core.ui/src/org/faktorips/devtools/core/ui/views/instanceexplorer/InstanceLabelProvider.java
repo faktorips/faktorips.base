@@ -16,14 +16,12 @@ package org.faktorips.devtools.core.ui.views.instanceexplorer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 
@@ -39,12 +37,6 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
     private DefaultLabelProvider defaultLabelProvider = new DefaultLabelProvider();
 
     private boolean subTypeSearch = true;
-
-    /**
-     * Default Constructor
-     */
-    public InstanceLabelProvider() {
-    }
 
     protected boolean isSubTypeSearch() {
         return subTypeSearch;
@@ -64,15 +56,12 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
             } else if (element instanceof String) {
                 cell.setText((String)element);
             }
-
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
         } finally {
             super.update(cell);
         }
     }
 
-    private void updateCell(ViewerCell cell, InstanceIpsSrcFileViewItem item) throws CoreException {
+    private void updateCell(ViewerCell cell, InstanceIpsSrcFileViewItem item) {
         String elementName = getText(item);
         List<StyleRange> styleRanges = new ArrayList<StyleRange>();
         if (item.isInstanceOfMetaClass()) {
@@ -86,7 +75,7 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
             elementName += typeSuffix;
         }
         if (item.isDuplicateName()) {
-            String pathSuffix = " - " + item.getIpsSrcFile().getParent().getEnclosingResource().getFullPath();
+            String pathSuffix = " - " + item.getIpsSrcFile().getParent().getEnclosingResource().getFullPath(); //$NON-NLS-1$
             StyleRange styledPath = new StyleRange();
             styledPath.start = elementName.length();
             styledPath.length = pathSuffix.length();

@@ -21,13 +21,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferencePageContainer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -80,13 +78,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     }
 
     private Control createForIpsProject(Composite parent, IIpsProject ipsProject) throws CoreException {
-        IWorkbenchPreferenceContainer pageContainer = null;
-        IPreferencePageContainer container = getContainer();
-        if (container instanceof IWorkbenchPreferenceContainer) {
-            pageContainer = (IWorkbenchPreferenceContainer)container;
-        }
-
-        objectPathsContainer = new IpsObjectPathContainer(getSettings().getInt(INDEX), pageContainer);
+        objectPathsContainer = new IpsObjectPathContainer(getSettings().getInt(INDEX));
         objectPathsContainer.init(ipsProject);
         return objectPathsContainer.createControl(parent);
     }

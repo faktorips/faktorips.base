@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.LineStyleEvent;
 import org.eclipse.swt.custom.LineStyleListener;
@@ -60,7 +59,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      */
     private Map<Pattern, Color> highlightColorMap = new HashMap<Pattern, Color>();
 
-    public CompareViewerLineStyleListener(SourceViewer viewer) {
+    public CompareViewerLineStyleListener() {
         // init patterns and map highlight colors for productCmpts
         Pattern productPattern = Pattern
                 .compile(org.faktorips.devtools.core.ui.team.compare.productcmpt.Messages.ProductCmptCompareItem_ProductComponent);
@@ -122,10 +121,6 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * <p>
      * Only returns a style a if date/dash string is found, and only if such a token is found at
      * linestart to avoid faulty highlighting.
-     * 
-     * @param lineText
-     * @param lineOffset
-     * @return
      */
     protected List<StyleRange> getStylesForLineStart(String lineText, int lineOffset) {
         List<StyleRange> styleList = new ArrayList<StyleRange>();
@@ -148,10 +143,6 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * Returns a list of styles containing one or no <code>StyleRange</code> that hightlights the
      * found token and the following text in the given line. All token matches are highlighted with
      * bold font and an optional color.
-     * 
-     * @param lineText
-     * @param lineOffset
-     * @return
      */
     protected List<StyleRange> getStylesForRestOfLine(String lineText, int lineOffset) {
         List<StyleRange> styleList = new ArrayList<StyleRange>();
@@ -160,7 +151,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
             if (matcher.find()) {
                 int start = matcher.start();
                 Color highlight = highlightColorMap.get(pattern); // if null, default foreground is
-                                                                  // used
+                // used
                 styleList.add(new StyleRange(lineOffset + start, lineText.length() - start, highlight, null, SWT.BOLD));
                 break;
             }

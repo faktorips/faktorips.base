@@ -74,18 +74,12 @@ public class ProductExplorer extends ModelExplorer {
         supportCategories = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
         labelProvider.setProductDefinitionLabelProvider(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ModelExplorerConfiguration createConfig() {
         IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
@@ -312,9 +306,6 @@ public class ProductExplorer extends ModelExplorer {
         layout.putInteger(EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY, excludeNoIpsProductDefinitionProjects ? 1 : 0);
     }
 
-    /**
-     * @param menuManager
-     */
     @Override
     protected void addProjectFilterAction(IMenuManager menuManager) {
         Action showNoIpsProdDefProjectsAction = createShowNoIpsProductDefinitionAction();

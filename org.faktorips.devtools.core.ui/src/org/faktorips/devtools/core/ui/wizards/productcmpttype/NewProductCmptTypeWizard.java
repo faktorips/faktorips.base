@@ -21,16 +21,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
-/**
- *
- */
 public class NewProductCmptTypeWizard extends NewIpsObjectWizard {
 
     private ProductCmptTypePage typePage;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         typePage = new ProductCmptTypePage(selection, null);
@@ -40,6 +34,7 @@ public class NewProductCmptTypeWizard extends NewIpsObjectWizard {
     /**
      * {@inheritDoc}
      */
+    // FIXME AW: This method formally did override some method of the super class!!
     protected void finishIpsObject(IIpsObject ipsObject) throws CoreException {
         IProductCmptType type = (IProductCmptType)ipsObject;
         String supertypeName = typePage.getSuperType();

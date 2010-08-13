@@ -50,7 +50,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * @author Markus Blum
  * 
  */
-
 abstract public class DefaultModelDescriptionPage extends Page {
 
     private FormToolkit toolkit;
@@ -95,7 +94,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
     private void registerToolbarActions() {
         // register sorting action
         IToolBarManager toolBarManager = getSite().getActionBars().getToolBarManager();
-        toolBarManager.add(new LexicalSortingAction(this));
+        toolBarManager.add(new LexicalSortingAction());
     }
 
     /**
@@ -108,7 +107,6 @@ abstract public class DefaultModelDescriptionPage extends Page {
 
         // collect all attributes in one container
         expandableContainer = toolkit.createComposite(form.getBody());
-        // expandableContainer.setBackground(form.getBody().getDisplay().getSystemColor(SWT.COLOR_GREEN));
 
         TableWrapLayout layout = new TableWrapLayout();
         layout.verticalSpacing = 0;
@@ -131,7 +129,6 @@ abstract public class DefaultModelDescriptionPage extends Page {
      * child(text)=faktorips.description.
      * 
      * @param parent rootContainer object
-     * @param column faktorips data
      * @param index flag for switching the background colour
      */
     private void createExpandableControl(Composite parent, DescriptionItem item, int index) {
@@ -252,7 +249,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
      */
     class LexicalSortingAction extends Action {
 
-        public LexicalSortingAction(DefaultModelDescriptionPage page) {
+        public LexicalSortingAction() {
             super();
 
             setText(Messages.DefaultModelDescriptionPage_SortText);
@@ -270,9 +267,6 @@ abstract public class DefaultModelDescriptionPage extends Page {
             sortItems(checked);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run() {
             sortItems(isChecked());
@@ -309,9 +303,6 @@ abstract public class DefaultModelDescriptionPage extends Page {
      * @author Markus Blum
      */
     class DescriptionItemComparator implements Comparator<DescriptionItem> {
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public int compare(DescriptionItem item1, DescriptionItem item2) {
             Assert.isNotNull(item1, "DescriptionItem1"); //$NON-NLS-1$

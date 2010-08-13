@@ -31,7 +31,6 @@ public interface IModelDescriptionSupport {
      * Create a Page for {@link ModelDescriptionView}.
      * 
      * @return IPage new Page.
-     * @throws CoreException
      */
     public IPage createModelDescriptionPage() throws CoreException;
 }

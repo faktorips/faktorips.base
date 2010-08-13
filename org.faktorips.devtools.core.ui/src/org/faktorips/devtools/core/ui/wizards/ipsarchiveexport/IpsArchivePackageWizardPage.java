@@ -116,9 +116,6 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         setPageComplete(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("unchecked")
     public void createControl(Composite parent) {
@@ -128,18 +125,12 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         ITreeContentProvider treeContentProvider = new StandardJavaElementContentProvider() {
             private Object[] EMPTY_ARRAY = new Object[0];
 
-            /**
-             * {@inheritDoc}
-             */
             @Override
             public boolean hasChildren(Object element) {
                 // prevent the + from being shown in front of packages
                 return !(element instanceof IPackageFragmentRoot) && super.hasChildren(element);
             }
 
-            /**
-             * {@inheritDoc}
-             */
             @Override
             public Object[] getChildren(Object element) {
                 // show only ips projects and ips package fragment roots
@@ -297,17 +288,11 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         canFinish();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void modifyText(ModifyEvent e) {
         canFinish();
@@ -334,7 +319,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         return includeJavaSources.isChecked();
     }
 
-    /*
+    /**
      * Answer the contents of the destination specification widget. If this value does not have the
      * required suffix then add it first.
      */
@@ -346,13 +331,13 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         return destinationText;
     }
 
-    /*
+    /**
      * Sets if the page could be finished or not. The page could be finished if an archive name is
      * given and a selection is set.
      */
     private void canFinish() {
         boolean canFinish = true;
-        String target = destinationNamesCombo.getText().trim();;
+        String target = destinationNamesCombo.getText().trim();
         Path destPath = new Path(target);
 
         if (getCheckedElements().length == 0) {
@@ -371,9 +356,6 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDescription(String description) {
         // to avoid flickering set description only if the description changed
@@ -383,9 +365,6 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
@@ -429,9 +408,6 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         includeJavaBinaries.setChecked(settings.getBoolean(OPTION_INCLUDE_JAVA_BINARIES));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveWidgetValues() {
         // store selected elements
@@ -457,18 +433,14 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         settings.put(OPTION_INCLUDE_JAVA_BINARIES, isInclJavaBinaries());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean allowNewContainerName() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void handleEvent(Event event) {
+        // Nothing to do
     }
+
 }

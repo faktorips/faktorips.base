@@ -43,25 +43,16 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
     private IWorkbenchWindow window;
     private List<IIpsProject> preSelected = new ArrayList<IIpsProject>();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbenchWindow window) {
         this.window = window;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IAction action) {
         // save dirty editors
@@ -75,9 +66,6 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
         dialog.open();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection.isEmpty()) {
@@ -131,11 +119,9 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         window = targetPart.getSite().getWorkbenchWindow();
     }
+
 }

@@ -106,7 +106,7 @@ public class TestSelectionComposite extends Composite {
         Composite tableWithBtns = toolkit.createGridComposite(this, 2, false, true);
 
         tableWithBtns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        viewer = createViewer(tableWithBtns, toolkit);
+        viewer = createViewer(tableWithBtns);
         viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
@@ -125,9 +125,6 @@ public class TestSelectionComposite extends Composite {
         createButtons(buttons, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     private boolean createButtons(Composite buttons, UIToolkit toolkit) {
         createNewButton(buttons, toolkit);
         createNewSuiteButton(buttons, toolkit);
@@ -137,10 +134,7 @@ public class TestSelectionComposite extends Composite {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    private TableViewer createViewer(Composite parent, UIToolkit toolkit) {
+    private TableViewer createViewer(Composite parent) {
         table = new Table(parent, SWT.BORDER | SWT.MULTI);
         viewer = new TableViewer(table);
         viewer.setContentProvider(new ArrayContentProvider());
@@ -173,6 +167,7 @@ public class TestSelectionComposite extends Composite {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
     }
@@ -184,7 +179,7 @@ public class TestSelectionComposite extends Composite {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
-                    newTestSuite(buttons);
+                    newTestSuite();
                 } catch (Exception ex) {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
@@ -192,6 +187,7 @@ public class TestSelectionComposite extends Composite {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
     }
@@ -211,6 +207,7 @@ public class TestSelectionComposite extends Composite {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
     }
@@ -247,6 +244,7 @@ public class TestSelectionComposite extends Composite {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
         downButton = toolkit.createButton(buttons, Messages.TestSelectionComposite_labelButtonDown);
@@ -263,6 +261,7 @@ public class TestSelectionComposite extends Composite {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -303,7 +302,7 @@ public class TestSelectionComposite extends Composite {
         }
     }
 
-    protected void newTestSuite(Composite buttons) {
+    protected void newTestSuite() {
         try {
             IpsPackageSelectionDialog dialog = new IpsPackageSelectionDialog(getShell());
             dialog.setMultipleSelection(true);
@@ -419,7 +418,7 @@ public class TestSelectionComposite extends Composite {
         return AbstractIpsTestRunner.toStringFromList(roots);
     }
 
-    public String getTestCasesText() throws CoreException {
+    public String getTestCasesText() {
         List<String> testSuites = new ArrayList<String>();
         for (Object object : content) {
             IIpsElement element = (IIpsElement)object;

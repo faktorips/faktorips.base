@@ -39,7 +39,7 @@ public class TestPolicyCmptWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("PolicyCmptInstance.gif", true);
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("PolicyCmptInstance.gif", true); //$NON-NLS-1$
     }
 
 }

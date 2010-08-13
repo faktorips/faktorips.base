@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 
 public class MethodWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
-    public static final String METHOD_IMAGE_NAME = "MethodPublic.gif";
+    public static final String METHOD_IMAGE_NAME = "MethodPublic.gif"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {

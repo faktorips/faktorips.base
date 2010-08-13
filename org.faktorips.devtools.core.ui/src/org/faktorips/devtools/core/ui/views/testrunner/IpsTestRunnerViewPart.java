@@ -23,7 +23,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.Job;
@@ -74,6 +73,7 @@ import org.faktorips.util.StringUtil;
  * @author Joerg Ortmann
  */
 public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListener {
+
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.testRunner"; //$NON-NLS-1$
 
     // Ui refresh intervall
@@ -189,7 +189,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             super(Messages.IpsTestRunnerViewPart_Menu_ScrollLock, IAction.AS_CHECK_BOX);
             setToolTipText(Messages.IpsTestRunnerViewPart_Menu_ScrollLockTooltip);
             setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/lock.gif")); //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/lock.gif");
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/lock.gif"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
         }
@@ -208,7 +208,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             setText(Messages.IpsTestRunnerViewPart_Action_StopTest);
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_StopTest_ToolTip);
             setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/stop.gif")); //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/stop.gif");
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/stop.gif"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
             setEnabled(false);
@@ -233,7 +233,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_ToolTip);
             setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/relaunch.gif")); //$NON-NLS-1$
             ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/relaunch.gif");
+                    "elcl16/relaunch.gif"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
             setEnabled(false);
@@ -258,7 +258,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_NextFailureToolTip);
             setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
             ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/select_next.gif");
+                    "elcl16/select_next.gif"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
             setEnabled(false);
@@ -279,7 +279,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_PrevFailureToolTip);
             setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
             ImageDescriptor createImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/select_prev.gif");
+                    "elcl16/select_prev.gif"); //$NON-NLS-1$
             setHoverImageDescriptor(createImageDescriptor);
             setImageDescriptor(createImageDescriptor);
             setEnabled(false);
@@ -298,7 +298,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public ShowErrorsFailureOnlyAction() {
             super(Messages.IpsTestRunnerViewPart_Action_ShowFailuresOnly, IAction.AS_CHECK_BOX);
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowFailuresOnly_ToolTip);
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.gif");
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.gif"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
         }
@@ -315,7 +315,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     private class ToggleOrientationAction extends Action {
         private final int fActionOrientation;
 
-        public ToggleOrientationAction(IpsTestRunnerViewPart v, int orientation) {
+        public ToggleOrientationAction(int orientation) {
             super("", AS_RADIO_BUTTON); //$NON-NLS-1$
             if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL) {
                 setText(Messages.IpsTestRunnerViewPart_Menu_HorizontalOrientation);
@@ -381,16 +381,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFocus() {
+        // Nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createPartControl(Composite parent) {
         fParent = parent;
@@ -557,9 +552,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         fLockScrollAction = new LockScrollAction();
 
         fToggleOrientationActions = new ToggleOrientationAction[] {
-                new ToggleOrientationAction(this, VIEW_ORIENTATION_VERTICAL),
-                new ToggleOrientationAction(this, VIEW_ORIENTATION_HORIZONTAL),
-                new ToggleOrientationAction(this, VIEW_ORIENTATION_AUTOMATIC) };
+                new ToggleOrientationAction(VIEW_ORIENTATION_VERTICAL),
+                new ToggleOrientationAction(VIEW_ORIENTATION_HORIZONTAL),
+                new ToggleOrientationAction(VIEW_ORIENTATION_AUTOMATIC) };
 
         fToggleOrientationActions[2].setChecked(true);
 
@@ -585,6 +580,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         parent.addControlListener(new ControlListener() {
             @Override
             public void controlMoved(ControlEvent e) {
+                // Nothing to do
             }
 
             @Override
@@ -816,31 +812,31 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         }
     }
 
-    private void postStartTest(final String testId, final String qualifiedTestName) {
+    private void postStartTest(final String testId) {
         postSyncRunnable(new Runnable() {
             @Override
             public void run() {
                 if (isDisposed()) {
                     return;
                 }
-                fTestRunPane.startTest(testId, qualifiedTestName, scrollLocked);
+                fTestRunPane.startTest(testId, scrollLocked);
             }
         });
     }
 
-    private void postErrorInTest(final String testId, final String qualifiedTestName, final String[] errorDetails) {
+    private void postErrorInTest(final String testId, final String[] errorDetails) {
         postSyncRunnable(new Runnable() {
             @Override
             public void run() {
                 if (isDisposed()) {
                     return;
                 }
-                fTestRunPane.errorInTest(testId, qualifiedTestName, errorDetails);
+                fTestRunPane.errorInTest(testId, errorDetails);
             }
         });
     }
 
-    private void postEndTest(final String testId, final String qualifiedTestName) {
+    private void postEndTest(final String testId) {
         postSyncRunnable(new Runnable() {
             @Override
             public void run() {
@@ -848,7 +844,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
                     return;
                 }
                 handleEndTest();
-                fTestRunPane.endTest(testId, qualifiedTestName);
+                fTestRunPane.endTest(testId);
             }
         });
     }
@@ -967,7 +963,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         if (isFailure) {
             fFailureCount++;
         }
-        postEndTest(getTestId(qualifiedTestName), qualifiedTestName);
+        postEndTest(getTestId(qualifiedTestName));
     }
 
     /**
@@ -978,7 +974,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         setInfoMessage(StringUtil.unqualifiedName(qualifiedTestName));
         isFailure = false;
         setRunToolBarButtonsStatus(true);
-        postStartTest(getTestId(qualifiedTestName), qualifiedTestName);
+        postStartTest(getTestId(qualifiedTestName));
     }
 
     /**
@@ -1047,7 +1043,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         stopUpdateJobs();
         fUpdateJob = new UpdateUIJob(Messages.IpsTestRunnerViewPart_Job_UpdateUiTitle);
         ipsTestIsRunningJob = new IpsTestIsRunningJob("IPSTest Starter Job"); //$NON-NLS-1$
-        ipsTestIsRunningLock = Platform.getJobManager().newLock();
+        ipsTestIsRunningLock = Job.getJobManager().newLock();
         // acquire lock while a test run is running
         // the lock is released when the test run terminates
         // the wrapper job will wait on this lock.
@@ -1090,19 +1086,14 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         return NumberFormat.getInstance().format((double)elapsedTime / 1000);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testErrorOccured(String qualifiedTestName, String[] errorDetails) {
         fErrorCount++;
-        postErrorInTest(getTestId(qualifiedTestName), qualifiedTestName, errorDetails);
+        postErrorInTest(getTestId(qualifiedTestName), errorDetails);
     }
 
     /**
      * Informs that the selection of a test result changed.
-     * 
-     * @param testCaseDetails contains the details of the selcted test result.
      */
     public void selectionOfTestCaseChanged(String[] testCaseFailures) {
         fFailurePane.showFailureDetails(testCaseFailures);

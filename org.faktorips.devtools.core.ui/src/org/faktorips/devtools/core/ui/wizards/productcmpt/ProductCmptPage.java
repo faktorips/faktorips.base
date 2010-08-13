@@ -19,7 +19,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -51,9 +50,6 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-/**
- *
- */
 public class ProductCmptPage extends IpsObjectPage {
 
     private ProductCmptType2RefControl typeRefControl;
@@ -67,14 +63,11 @@ public class ProductCmptPage extends IpsObjectPage {
     // product cmpt template
     private IProductCmpt sourceProductCmpt;
 
-    public ProductCmptPage(IStructuredSelection selection) throws JavaModelException {
+    public ProductCmptPage(IStructuredSelection selection) {
         super(IpsObjectType.PRODUCT_CMPT, selection, Messages.ProductCmptPage_title);
         canModifyRuntimeId = IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
 
@@ -155,11 +148,6 @@ public class ProductCmptPage extends IpsObjectPage {
         });
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws CoreException
-     */
     @Override
     protected void setDefaults(IResource selectedResource) throws CoreException {
         super.setDefaults(selectedResource);
@@ -211,9 +199,6 @@ public class ProductCmptPage extends IpsObjectPage {
         return runtimeId.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
@@ -276,9 +261,6 @@ public class ProductCmptPage extends IpsObjectPage {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void packageChanged() {
         super.packageChanged();
@@ -341,7 +323,7 @@ public class ProductCmptPage extends IpsObjectPage {
         return defaultRuntimeId;
     }
 
-    /*
+    /**
      * Updates the runtime id, if the runtime edit field is read-only
      */
     private void updateRuntimeId() {
@@ -353,11 +335,11 @@ public class ProductCmptPage extends IpsObjectPage {
     /**
      * Sets the product cmpt which will be used as template for the input fields.
      */
-    public void setDefaultProductCmpt(IProductCmpt sourceProductCmpt) throws CoreException {
+    public void setDefaultProductCmpt(IProductCmpt sourceProductCmpt) {
         this.sourceProductCmpt = sourceProductCmpt;
     }
 
-    /*
+    /**
      * Updates the fields with the values from the product component template if available
      */
     private void updateDefaultsFromProductCmpt() throws CoreException {
@@ -381,9 +363,6 @@ public class ProductCmptPage extends IpsObjectPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void finishIpsObjects(IIpsObject ipsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsObject;

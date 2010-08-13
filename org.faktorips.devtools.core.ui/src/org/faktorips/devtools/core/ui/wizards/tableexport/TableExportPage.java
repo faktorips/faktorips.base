@@ -41,9 +41,6 @@ public class TableExportPage extends IpsObjectExportPage {
 
     public static final String PAGE_NAME = "TableExportPage"; //$NON-NLS-1$
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         super.createControl(parent);
@@ -52,14 +49,6 @@ public class TableExportPage extends IpsObjectExportPage {
         setTitle(Messages.TableExportPage_title);
     }
 
-    /**
-     * 
-     * 
-     * @param pageName
-     * @param selection
-     * 
-     * @throws JavaModelException
-     */
     public TableExportPage(IStructuredSelection selection) throws JavaModelException {
         super(Messages.TableExportPage_title);
         if (selection.getFirstElement() instanceof IResource) {
@@ -73,18 +62,12 @@ public class TableExportPage extends IpsObjectExportPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IpsObjectRefControl createExportedIpsObjectRefControlWithLabel(UIToolkit toolkit, Composite parent) {
         toolkit.createFormLabel(parent, Messages.TableExportPage_labelContents);
         return toolkit.createTableContentsRefControl(null, parent);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setDefaults(IResource selectedResource) {
         try {
@@ -126,9 +109,6 @@ public class TableExportPage extends IpsObjectExportPage {
         setIpsProject(contents.getIpsProject());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateObjectToExport() {
         if (exportedIpsObjectControl.getText().length() == 0) {

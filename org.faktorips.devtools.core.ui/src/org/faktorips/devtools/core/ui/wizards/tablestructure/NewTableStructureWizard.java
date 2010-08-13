@@ -19,9 +19,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
-/**
- *
- */
 public class NewTableStructureWizard extends NewIpsObjectWizard {
 
     public NewTableStructureWizard() {
@@ -29,12 +26,6 @@ public class NewTableStructureWizard extends NewIpsObjectWizard {
                 "wizards/NewTableStructureWizard.png")); //$NON-NLS-1$
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @throws JavaModelException
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createFirstPage()
-     */
     @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         return new TableStructurePage(selection);

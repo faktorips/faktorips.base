@@ -45,10 +45,6 @@ public abstract class IpsCellEditor extends CellEditor {
      * The created <tt>TableCellEditor</tt> does not create rows automatically and must be
      * configured to do so.
      * 
-     * @see #setRowCreating(boolean)
-     * 
-     * @param tableViewer The <tt>TableViewer</tt> this <tt>TableCellEditor</tt> is used in.
-     * @param columnIndex The index of the column which cells this editor edits.
      * @param control The control to be displayed in a cell when editing.
      * 
      * @throws NullPointerException If <tt>control</tt> is <tt>null</tt>.
@@ -63,8 +59,6 @@ public abstract class IpsCellEditor extends CellEditor {
 
     /**
      * Registers the given {@link TraversalStrategy} with this {@link CellEditor}.
-     * 
-     * @param strategy
      */
     public void setTraversalStrategy(TraversalStrategy strategy) {
         if (strategy != null) {
@@ -163,8 +157,6 @@ public abstract class IpsCellEditor extends CellEditor {
      * Returns the {@link TraversalStrategy} used for this {@link IpsCellEditor}. Will return
      * <code>null</code> if no {@link TraversalStrategy} is set using
      * {@link #setTraversalStrategy(TraversalStrategy)}.
-     * 
-     * @return
      */
     public TraversalStrategy getTraversalStrategy() {
         return traversalStrategy;

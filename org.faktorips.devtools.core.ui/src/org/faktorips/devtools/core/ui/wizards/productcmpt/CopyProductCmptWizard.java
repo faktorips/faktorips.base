@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import javax.xml.transform.TransformerException;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -48,17 +46,11 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
         sourceProductCmpt = productCmpt;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void addPages() {
         try {
@@ -69,19 +61,12 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
         }
     }
 
-    private ProductCmptPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
+    private ProductCmptPage createFirstPage(IStructuredSelection selection) {
         productCmptPage = new ProductCmptPage(selection);
-        try {
-            productCmptPage.setDefaultProductCmpt(sourceProductCmpt);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        productCmptPage.setDefaultProductCmpt(sourceProductCmpt);
         return productCmptPage;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {
@@ -98,7 +83,7 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
         return true;
     }
 
-    private void finishIpsObject(IProductCmpt productCmpt) throws CoreException {
+    private void finishIpsObject(IProductCmpt productCmpt) {
         productCmpt.setProductCmptType(productCmptPage.getProductCmptType());
         productCmpt.setRuntimeId(productCmptPage.getRuntimeId());
     }
@@ -114,11 +99,9 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.PRODUCT_CMPT;
     }
+
 }

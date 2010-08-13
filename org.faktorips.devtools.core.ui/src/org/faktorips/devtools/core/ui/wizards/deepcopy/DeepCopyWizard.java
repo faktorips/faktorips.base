@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
  * @author Thorsten Guenther
  */
 public class DeepCopyWizard extends ResizableWizard {
+
     public static final int TYPE_COPY_PRODUCT = 10;
     public static final int TYPE_NEW_VERSION = 100;
 
@@ -99,7 +100,7 @@ public class DeepCopyWizard extends ResizableWizard {
             throws IllegalArgumentException {
         super(SECTION_NAME, IpsPlugin.getDefault().getDialogSettings(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-        String logText = "Constructor DeepCopyWizard() " + product;
+        String logText = "Constructor DeepCopyWizard() " + product; //$NON-NLS-1$
         if (TRACE) {
             traceTimer = new HashMap<String, Long>();
         }
@@ -142,9 +143,6 @@ public class DeepCopyWizard extends ResizableWizard {
         logTraceEnd(logText);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         sourcePage = new SourcePage(structure, type);
@@ -155,9 +153,6 @@ public class DeepCopyWizard extends ResizableWizard {
         deepCopyPreview = new DeepCopyPreview(this, sourcePage);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performCancel() {
         // maybe the working date has changed, thus restore the old working date
@@ -166,9 +161,6 @@ public class DeepCopyWizard extends ResizableWizard {
         return super.performCancel();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {
@@ -184,12 +176,12 @@ public class DeepCopyWizard extends ResizableWizard {
                 @Override
                 protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
                         InterruptedException {
-                    logTraceStart("DeepCopyOperation.run");
+                    logTraceStart("DeepCopyOperation.run"); //$NON-NLS-1$
                     DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
                     dco.run(monitor);
                     copiedRoot = dco.getCopiedRoot();
-                    logTraceEnd("DeepCopyOperation.run");
+                    logTraceEnd("DeepCopyOperation.run"); //$NON-NLS-1$
                 }
             };
             getContainer().run(true, true, operation);
@@ -309,7 +301,7 @@ public class DeepCopyWizard extends ResizableWizard {
     }
 
     private synchronized void logTraceStartInternal(String methodName) {
-        trace(methodName + " - start");
+        trace(methodName + " - start"); //$NON-NLS-1$
         traceTimer.put(methodName, System.nanoTime());
     }
 
@@ -322,11 +314,11 @@ public class DeepCopyWizard extends ResizableWizard {
 
     private synchronized void logTraceEndIntenal(String methodName) {
         if (traceTimer.get(methodName) == null) {
-            throw new RuntimeException(methodName + " timer not started!");
+            throw new RuntimeException(methodName + " timer not started!"); //$NON-NLS-1$
         }
         long durration = System.nanoTime() - traceTimer.get(methodName);
         traceTimer.remove(methodName);
-        trace(methodName + " - end: " + ((double)durration) / 1000 / 1000 / 1000 + " s");
+        trace(methodName + " - end: " + ((double)durration) / 1000 / 1000 / 1000 + " s"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void trace(String text) {
@@ -334,9 +326,9 @@ public class DeepCopyWizard extends ResizableWizard {
     }
 
     private String getTracePrefix() {
-        String offset = "";
+        String offset = ""; //$NON-NLS-1$
         for (int i = 0; i < traceTimer.size(); i++) {
-            offset += " ";
+            offset += " "; //$NON-NLS-1$
         }
         return offset;
     }

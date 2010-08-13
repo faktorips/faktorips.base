@@ -42,7 +42,7 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
      */
     public IpsRenameRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/RenameWizard.png"));
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/RenameWizard.png")); //$NON-NLS-1$
         setDefaultPageTitle(NLS.bind(Messages.RenameRefactoringWizard_title, getIpsElementName()));
     }
 
@@ -74,7 +74,7 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
          * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
          */
         RenameUserInputPage(IIpsElement ipsElement) {
-            super(ipsElement, "RenameUserInputPage");
+            super(ipsElement, "RenameUserInputPage"); //$NON-NLS-1$
         }
 
         @Override

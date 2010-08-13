@@ -34,7 +34,7 @@ public class OpenNewEnumTypeWizardAction extends OpenNewWizardAction {
 
     @Override
     public void dispose() {
-
+        // Nothing to do
     }
 
 }

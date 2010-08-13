@@ -17,7 +17,6 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.TextViewer;
-import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -38,9 +37,6 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
      * Creates a <code>ProductCmptCompareViewer</code> using the given parent as parent composite
      * and the given <code>CompareConfiguration</code>. A <code>CompareViewerContentProvider</code>
      * is used as a content provider.
-     * 
-     * @param parent
-     * @param cc
      */
     protected ProductCmptCompareViewer(Composite parent, CompareConfiguration cc) {
         super(parent, cc);
@@ -66,7 +62,7 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
      */
     @Override
     protected void configureTextViewer(TextViewer textViewer) {
-        CompareViewerLineStyleListener listener = new CompareViewerLineStyleListener((SourceViewer)textViewer);
+        CompareViewerLineStyleListener listener = new CompareViewerLineStyleListener();
         textViewer.getTextWidget().addLineStyleListener(listener);
     }
 

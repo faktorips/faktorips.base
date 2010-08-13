@@ -19,7 +19,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.osgi.util.NLS;
@@ -40,9 +39,6 @@ import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 
-/**
- *
- */
 public class TableContentsPage extends IpsObjectPage {
 
     private TableStructureRefControl structureControl;
@@ -51,23 +47,15 @@ public class TableContentsPage extends IpsObjectPage {
 
     private ITableContents createdTableContents;
 
-    /**
-     * @param pageName
-     * @param selection
-     * @throws JavaModelException
-     */
-    public TableContentsPage(IStructuredSelection selection) throws JavaModelException {
+    public TableContentsPage(IStructuredSelection selection) {
         super(IpsObjectType.TABLE_CONTENTS, selection, Messages.TableContentsPage_title);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewTableContentsWizard.png"));
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewTableContentsWizard.png")); //$NON-NLS-1$
     }
 
     String getTableStructureName() {
         return structureControl.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         toolkit.createFormLabel(nameComposite, Messages.TableContentsPage_labelStructure);
@@ -117,9 +105,6 @@ public class TableContentsPage extends IpsObjectPage {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
@@ -139,9 +124,6 @@ public class TableContentsPage extends IpsObjectPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validatePageExtension() throws CoreException {
         if (getErrorMessage() != null) {
@@ -161,9 +143,6 @@ public class TableContentsPage extends IpsObjectPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
         IIpsSrcFile createdIpsSrcFile = super.createIpsSrcFile(monitor);
@@ -171,9 +150,6 @@ public class TableContentsPage extends IpsObjectPage {
         return createdIpsSrcFile;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void finishIpsObjects(IIpsObject pdObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         ITableContents table = (ITableContents)pdObject;

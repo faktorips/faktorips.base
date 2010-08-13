@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.ui.OverlayIcons;
 
 public class EnumAttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
-    private final static String ICON = "EnumAttribute.gif";
+    private final static String ICON = "EnumAttribute.gif"; //$NON-NLS-1$
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
@@ -70,9 +70,9 @@ public class EnumAttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter
             String label = enumAttribute.getName();
             try {
                 Datatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
-                String datatypeName = (datatype == null) ? "" : datatype.getName();
+                String datatypeName = (datatype == null) ? "" : datatype.getName(); //$NON-NLS-1$
                 if (!(StringUtils.isEmpty(datatypeName))) {
-                    label += " : " + datatypeName;
+                    label += " : " + datatypeName; //$NON-NLS-1$
                 }
             } catch (CoreException e) {
                 throw new RuntimeException(e);

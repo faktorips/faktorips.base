@@ -110,7 +110,7 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
         }
     }
 
-    private void setTargetForImport(IIpsObject ipsObject) throws CoreException {
+    private void setTargetForImport(IIpsObject ipsObject) {
         if (ipsObject != null && ipsObject.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
             ITableContents contents = (ITableContents)ipsObject;
             setTableContents(contents);

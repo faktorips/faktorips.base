@@ -18,12 +18,10 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -34,24 +32,18 @@ import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 
 /**
  * @author Joerg Ortmann
  */
-public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
+public class TestCasePage extends IpsObjectPage {
 
     private TestCaseTypeRefControl superTypeControl;
     private Text nameField;
 
-    /**
-     * @param pageName
-     * @param selection
-     * @throws JavaModelException
-     */
-    public TestCasePage(IStructuredSelection selection) throws JavaModelException {
+    public TestCasePage(IStructuredSelection selection) {
         super(IpsObjectType.TEST_CASE, selection, Messages.TestCasePage_title);
     }
 
@@ -68,9 +60,6 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
         superTypeControl.setFocus();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
@@ -98,9 +87,6 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
         return;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validatePageExtension() throws CoreException {
         if (getErrorMessage() != null) {
@@ -111,9 +97,6 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         // fill the default content of the test case bases on the test case type
@@ -121,13 +104,9 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
         testCase.setTestCaseType(getSuperType());
         ITestCaseType testCaseType = testCase.findTestCaseType(newIpsObject.getIpsProject());
         generateDefaultContent(testCaseType.getTestParameters(), testCase);
-        if (testCaseType == null) {
-            throw new CoreException(new IpsStatus(NLS.bind(Messages.NewTestCaseWizard_ErrorTestCaseTypeNotExists,
-                    testCase.getTestCaseType())));
-        }
     }
 
-    /*
+    /**
      * Generate the default content for the given test case. All test value parameter will be
      * created, because for this kind of parameter there is no add functionality.
      */

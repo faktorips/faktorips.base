@@ -17,7 +17,6 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.TextViewer;
-import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -40,9 +39,6 @@ public class TableContentsCompareViewer extends TextMergeViewer {
     /**
      * Creates a <code>TableContentsCompareViewer</code> using a
      * <code>CompareViewerCompareContentProvider</code> as a content provider.
-     * 
-     * @param parent
-     * @param cc
      */
     public TableContentsCompareViewer(Composite parent, CompareConfiguration configuration) {
         super(parent, configuration);
@@ -73,11 +69,11 @@ public class TableContentsCompareViewer extends TextMergeViewer {
      * Adds a <code>ProductCmptLineStyleListener</code> to the given <code>TextViewer</code> for
      * token highlighting. Sets the tabwidth of the given textViewer to a specific value.
      * 
-     * @see #TAB_WIDTH {@inheritDoc}
+     * @see #TAB_WIDTH
      */
     @Override
     protected void configureTextViewer(TextViewer textViewer) {
-        CompareViewerLineStyleListener listener = new CompareViewerLineStyleListener((SourceViewer)textViewer);
+        CompareViewerLineStyleListener listener = new CompareViewerLineStyleListener();
         textViewer.getTextWidget().addLineStyleListener(listener);
         textViewer.getTextWidget().setTabs(TAB_WIDTH);
     }

@@ -38,7 +38,7 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
     private static class PullUpPage extends IpsRefactoringUserInputPage {
 
         PullUpPage(IIpsElement ipsElement) {
-            super(ipsElement, "PullUpPage");
+            super(ipsElement, "PullUpPage"); //$NON-NLS-1$
         }
 
         @Override
@@ -49,12 +49,12 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
 
         @Override
         protected void setPromptMessage() {
-
+            // Nothing to do
         }
 
         @Override
         protected void validateUserInputThis(RefactoringStatus status) throws CoreException {
-
+            // Nothing to do
         }
 
     }

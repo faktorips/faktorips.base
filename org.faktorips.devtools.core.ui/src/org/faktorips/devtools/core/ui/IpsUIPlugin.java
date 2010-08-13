@@ -648,7 +648,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     public final static String getPluralLabel(IIpsElement ipsElement) {
-        IPluralLabelWorkbenchAdapter adapter = (IPluralLabelWorkbenchAdapter)ipsElement.getAdapter(IPluralLabelWorkbenchAdapter.class);
+        IPluralLabelWorkbenchAdapter adapter = (IPluralLabelWorkbenchAdapter)ipsElement
+                .getAdapter(IPluralLabelWorkbenchAdapter.class);
         if (adapter != null) {
             return adapter.getPluralLabel(ipsElement);
         } else {
@@ -1018,7 +1019,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          */
         public ImageDescriptor getDefaultImageDescriptor(Class<? extends IpsElement> ipsElementClass) {
             IpsElementWorkbenchAdapter adapter = getDefault().ipsElementWorkbenchAdapterAdapterFactory
-                    .getAdapterByClass(ipsElementClass, IWorkbenchAdapter.class);
+                    .getAdapterByClass(ipsElementClass);
             if (adapter != null) {
                 IpsElementWorkbenchAdapter ipsWA = adapter;
                 return ipsWA.getDefaultImageDescriptor();
@@ -1094,8 +1095,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
 
         public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<ProductCmpt> class1) {
-            return getDefault().ipsElementWorkbenchAdapterAdapterFactory.getAdapterByClass(class1,
-                    IWorkbenchAdapter.class);
+            return getDefault().ipsElementWorkbenchAdapterAdapterFactory.getAdapterByClass(class1);
         }
 
         public void dispose() {

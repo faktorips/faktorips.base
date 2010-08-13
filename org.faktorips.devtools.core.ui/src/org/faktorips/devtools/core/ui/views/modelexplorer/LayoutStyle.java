@@ -61,7 +61,7 @@ public enum LayoutStyle {
         if (id == FLAT.getId()) {
             return FLAT;
         }
-        throw new RuntimeException("Unknown layout style id " + id);
+        throw new RuntimeException("Unknown layout style id " + id); //$NON-NLS-1$
     }
 
     // for historical reason: 0 is hierarchical, and flat is 1.
@@ -105,7 +105,7 @@ public enum LayoutStyle {
             }
             return parentPack;
         }
-        throw new RuntimeException("Unknown layout style " + this);
+        throw new RuntimeException("Unknown layout style " + this); //$NON-NLS-1$
     }
 
 }

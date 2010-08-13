@@ -45,7 +45,7 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
 
     public ProductCmptWorkbenchAdapter() {
         super();
-        prodCmptDefaultIcon = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmpt.gif");
+        prodCmptDefaultIcon = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmpt.gif"); //$NON-NLS-1$
     }
 
     private ImageRegistry getImageRegistry() {
@@ -63,9 +63,6 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
 
     /**
      * Public for testing purposes.
-     * 
-     * @param type
-     * @return
      */
     public IconDesc getProductCmptIconDesc(IProductCmptType type) {
         if (type == null) {

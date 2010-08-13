@@ -53,7 +53,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
      */
     public IpsMoveRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/MoveWizard.png"));
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/MoveWizard.png")); //$NON-NLS-1$
         setDefaultPageTitle(NLS.bind(Messages.MoveRefactoringWizard_title, getIpsElementName()));
     }
 
@@ -85,7 +85,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
          * @param ipsElement The <tt>IIpsElement</tt> to be moved.
          */
         MoveUserInputPage(IIpsElement ipsElement) {
-            super(ipsElement, "MoveUserInputPage");
+            super(ipsElement, "MoveUserInputPage"); //$NON-NLS-1$
         }
 
         @Override
@@ -156,14 +156,14 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             IStructuredSelection selection = (IStructuredSelection)treeViewer.getSelection();
             Object selectedElement = selection.getFirstElement();
             if (selectedElement == null) {
-                throw new RuntimeException("No selection available.");
+                throw new RuntimeException("No selection available."); //$NON-NLS-1$
             }
 
             IIpsPackageFragment targetFragment;
             if (selectedElement instanceof IIpsPackageFragment) {
                 targetFragment = (IIpsPackageFragment)selectedElement;
             } else {
-                throw new RuntimeException("Only package fragments are valid selections.");
+                throw new RuntimeException("Only package fragments are valid selections."); //$NON-NLS-1$
             }
 
             getIpsMoveProcessor().setTargetIpsPackageFragment(targetFragment);
@@ -183,7 +183,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                 String text = ""; //$NON-NLS-1$
                 if (element instanceof IIpsPackageFragment) {
                     if (((IIpsPackageFragment)element).isDefaultPackage()) {
-                        text = "(default package)";
+                        text = "(default package)"; //$NON-NLS-1$
                     } else {
                         text = ((IIpsPackageFragment)element).getName();
                     }

@@ -157,7 +157,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
                             // replace all product cmpts
                             // (because the target is a copy of the source we could use the same
                             // index: testObjectsTarget[i])
-                            replaceAllProductCmpts((ITestPolicyCmpt)testObjectsTarget[i], productCmpt, newProductCmpt);
+                            replaceAllProductCmpts((ITestPolicyCmpt)testObjectsTarget[i], newProductCmpt);
                         }
                     }
                 }
@@ -170,12 +170,12 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
     }
 
-    /*
+    /**
      * Replace all product cmpt (inclusive childs)
      */
-    private void replaceAllProductCmpts(ITestPolicyCmpt testPolicyCmpt,
-            IProductCmpt productCmpt,
-            IProductCmpt newProductCmpt) throws CoreException {
+    private void replaceAllProductCmpts(ITestPolicyCmpt testPolicyCmpt, IProductCmpt newProductCmpt)
+            throws CoreException {
+
         testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(newProductCmpt.getQualifiedName());
 
         String newVersionId = newProductCmpt.getVersionId();

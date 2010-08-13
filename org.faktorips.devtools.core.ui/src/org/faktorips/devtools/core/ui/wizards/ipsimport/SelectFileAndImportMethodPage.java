@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.wizards.ipsimport;
 import java.io.File;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -80,12 +79,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
 
     private boolean importIntoExisting;
 
-    /**
-     * 
-     * @param selection
-     * @throws JavaModelException
-     */
-    public SelectFileAndImportMethodPage(IStructuredSelection selection) throws JavaModelException {
+    public SelectFileAndImportMethodPage(IStructuredSelection selection) {
         super(Messages.SelectFileAndImportMethodPage_title);
         if (selection != null && selection.getFirstElement() instanceof IResource) {
             initialSelection = (IResource)selection.getFirstElement();
@@ -94,9 +88,6 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         formats = IpsPlugin.getDefault().getExternalTableFormats();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == filenameField) {
@@ -217,9 +208,6 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
@@ -368,9 +356,6 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         return nullRepresentation.getText();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
@@ -384,9 +369,6 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         importExistingReplaceChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveWidgetValues() {
         IDialogSettings settings = getDialogSettings();
@@ -398,20 +380,14 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         settings.put(NULL_REPRESENTATION, nullRepresentation.getText());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean allowNewContainerName() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void handleEvent(Event event) {
-
+        // Nothing to do
     }
 
     /**
@@ -424,16 +400,12 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     /**
      * Returns the label for the widget which is enabled when the destination IPS object (which can
      * be a table content or an enum type/value) should be newly created.
-     * 
-     * @return
      */
     protected abstract String getLabelForImportIntoNewIpsObject();
 
     /**
      * Returns the label for the widget which is enabled when the destination IPS object (which can
      * be a table content or an enum type/value) is an existing type.
-     * 
-     * @return
      */
     protected abstract String getLabelForImportIntoExistingIpsObject();
 

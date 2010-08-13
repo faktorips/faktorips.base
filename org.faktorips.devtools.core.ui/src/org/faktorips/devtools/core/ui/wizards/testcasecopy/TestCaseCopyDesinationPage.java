@@ -81,6 +81,7 @@ import org.faktorips.util.message.MessageList;
  * @author Joerg Ortmann
  */
 public class TestCaseCopyDesinationPage extends WizardPage implements ValueChangeListener {
+
     private static final String COLUMN_ROOT_PARAMETER_PRODUCTCMPT = "rootParameter"; //$NON-NLS-1$
 
     private static final String COLUMN_NEW_PRODUCTCMPT = "productcmpt"; //$NON-NLS-1$
@@ -191,10 +192,11 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     private String evalUniqueTestCaseName(IIpsPackageFragment targetIpsPackageFragment,
             ITestCase sourceTestCase,
             int uniqueCopyOfCounter) {
+
         String newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter,
                 sourceTestCase.getUnqualifiedName());
         String fileExtension = sourceTestCase.getIpsSrcFile().getIpsObjectType().getFileExtension();
-        IIpsSrcFile ipsSrcFile = targetIpsPackageFragment.getIpsSrcFile(newName + "." + fileExtension);
+        IIpsSrcFile ipsSrcFile = targetIpsPackageFragment.getIpsSrcFile(newName + "." + fileExtension); //$NON-NLS-1$
         if (ipsSrcFile != null && ipsSrcFile.exists()) {
             return evalUniqueTestCaseName(targetIpsPackageFragment, sourceTestCase, uniqueCopyOfCounter + 1);
         }
@@ -288,10 +290,12 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
             @Override
             public void dispose() {
+                // Nothing to do
             }
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // Nothing to do
             }
         });
 
@@ -319,10 +323,12 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
             @Override
             public void addListener(ILabelProviderListener listener) {
+                // Nothing to do
             }
 
             @Override
             public void dispose() {
+                // Nothing to do
             }
 
             @Override
@@ -332,6 +338,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
             @Override
             public void removeListener(ILabelProviderListener listener) {
+                // Nothing to do
             }
         });
 
@@ -439,8 +446,9 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
     private CellEditor createCellEditor(TableViewer tableViewer, List<ITestPolicyCmpt> testObjects)
             throws CoreException {
+
         ILabelProvider provider = DefaultLabelProvider.createWithIpsSourceFileMapping();
-        List<ComboCellEditor> cellEditors = new ArrayList<ComboCellEditor>(10);;
+        List<ComboCellEditor> cellEditors = new ArrayList<ComboCellEditor>(10);
         DelegateCellEditor delegateCellEditor = new DelegateCellEditor(tableViewer, 1);
         ITestCase sourceTestCase = getTestCaseCopyWizard().getSourceTestCase();
         IProductCmptNamingStrategy productCmptNamingStrategy = sourceTestCase.getIpsProject()

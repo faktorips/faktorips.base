@@ -260,10 +260,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      * This operation is empty by default. Subclasses may overwrite to create filters for filtering
      * out specific content from the model explorer.
      * 
-     * @param tree
+     * @param tree The tree viewer of the model explorer.
      */
     protected void createFilters(TreeViewer tree) {
-
+        // Empty default implementation
     }
 
     /** Create menu for layout styles */
@@ -292,8 +292,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     /**
      * Create additional menu entries e.g. filters.
-     * 
-     * @param menuManager
      */
     protected void createAdditionalMenuEntries(IMenuManager menuManager) {
         menuManager.add(new Separator(MENU_FILTER_GROUP));
@@ -308,9 +306,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     }
 
-    /**
-     * @param menuManager
-     */
     protected void addProjectFilterAction(IMenuManager menuManager) {
         Action showNoIpsProjectsAction = createShowNoIpsProjectsAction();
         showNoIpsProjectsAction.setChecked(excludeNoIpsProjects);
@@ -342,7 +337,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     @Override
     public void setFocus() {
-
+        // Nothing to do
     }
 
     /** Answers whether this part shows the packagFragments flat or hierarchical */
@@ -514,8 +509,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         /**
          * Creates a new activation listener.
-         * 
-         * @param partService
          */
         public ActivationListener(IPartService partService) {
             this.partService = partService;
@@ -565,37 +558,37 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         @Override
         public void partBroughtToTop(IWorkbenchPart part) {
-
+            // Nothing to do
         }
 
         @Override
         public void partClosed(IWorkbenchPart part) {
-
+            // Nothing to do
         }
 
         @Override
         public void partDeactivated(IWorkbenchPart part) {
-
+            // Nothing to do
         }
 
         @Override
         public void partOpened(IWorkbenchPart part) {
-
+            // Nothing to do
         }
 
         @Override
         public void windowDeactivated(IWorkbenchWindow window) {
-
+            // Nothing to do
         }
 
         @Override
         public void windowClosed(IWorkbenchWindow window) {
-
+            // Nothing to do
         }
 
         @Override
         public void windowOpened(IWorkbenchWindow window) {
-
+            // Nothing to do
         }
 
     }
@@ -615,8 +608,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         /**
          * Creates a new model explorer double click listener.
-         * 
-         * @param tree
          */
         public ModelExplorerDoubleclickListener(TreeViewer tree) {
             super(tree);
@@ -630,7 +621,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     }
 
-    private class LayoutAction extends Action implements IAction {
+    private class LayoutAction extends Action {
 
         private boolean isFlatLayout;
 

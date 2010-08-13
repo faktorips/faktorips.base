@@ -13,24 +13,18 @@
 
 package org.faktorips.devtools.core.ui.wizards.testcasetype;
 
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 
 /**
  * @author Joerg Ortmann
  */
-public class TestCaseTypePage extends IpsObjectPage implements ValueChangeListener {
-    /**
-     * @param pageName
-     * @param selection
-     * @throws JavaModelException
-     */
-    public TestCaseTypePage(IStructuredSelection selection) throws JavaModelException {
+public class TestCaseTypePage extends IpsObjectPage {
+
+    public TestCaseTypePage(IStructuredSelection selection) {
         super(IpsObjectType.TEST_CASE_TYPE, selection, Messages.TestCaseTypePage_title);
     }
 
@@ -39,11 +33,9 @@ public class TestCaseTypePage extends IpsObjectPage implements ValueChangeListen
         super.fillNameComposite(nameComposite, toolkit);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
     }
+
 }

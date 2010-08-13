@@ -37,9 +37,9 @@ public class TestPolicyCmptTypeParameterWorkbenchAdapter extends IpsObjectPartWo
             ITestPolicyCmptTypeParameter testParameter = (ITestPolicyCmptTypeParameter)ipsObjectPart;
             if (StringUtils.isEmpty(testParameter.getAssociation())) {
                 if (testParameter.isRequiresProductCmpt()) {
-                    return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmpt.gif", true);
+                    return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmpt.gif", true); //$NON-NLS-1$
                 } else {
-                    return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("PolicyCmptType.gif", true);
+                    return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("PolicyCmptType.gif", true); //$NON-NLS-1$
                 }
             }
             if (!testParameter.isRoot()) {

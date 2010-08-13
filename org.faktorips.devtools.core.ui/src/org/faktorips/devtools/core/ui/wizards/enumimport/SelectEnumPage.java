@@ -122,7 +122,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
         }
     }
 
-    private void setTargetForImport(IIpsObject ipsObject) throws CoreException {
+    private void setTargetForImport(IIpsObject ipsObject) {
         if (ipsObject != null && ipsObject instanceof IEnumValueContainer) {
             IEnumValueContainer valueContainer = (IEnumValueContainer)ipsObject;
             setEnum(valueContainer);
@@ -173,7 +173,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
 
     private void setEnum(IEnumValueContainer enumValueContainer) {
         if (enumValueContainer == null) {
-            importTargetControl.setText("");
+            importTargetControl.setText(""); //$NON-NLS-1$
             setIpsProject(null);
             return;
         }

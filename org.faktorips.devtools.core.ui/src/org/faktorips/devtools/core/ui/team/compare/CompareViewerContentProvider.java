@@ -36,9 +36,6 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
         config = cc;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getAncestorLabel(Object input) {
         return config.getAncestorLabel(input);
@@ -75,17 +72,11 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
         return null;
     }
 
-    /**
-     * Returns false. {@inheritDoc}
-     */
     @Override
     public boolean showAncestor(Object input) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLeftLabel(Object input) {
         return config.getLeftLabel(input);
@@ -121,24 +112,16 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
         return null;
     }
 
-    /**
-     * Returns false. {@inheritDoc}
-     */
     @Override
     public boolean isLeftEditable(Object input) {
         return false;
     }
 
-    /**
-     * Empty implementation. Nothing to save. {@inheritDoc}
-     */
     @Override
     public void saveLeftContent(Object input, byte[] bytes) {
+        // Empty implementation, nothing to save
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getRightLabel(Object input) {
         return config.getRightLabel(input);
@@ -175,33 +158,24 @@ public class CompareViewerContentProvider implements IMergeViewerContentProvider
         return null;
     }
 
-    /**
-     * Returns false. {@inheritDoc}
-     */
     @Override
     public boolean isRightEditable(Object input) {
         return false;
     }
 
-    /**
-     * Empty implementation. Nothing to save. {@inheritDoc}
-     */
     @Override
     public void saveRightContent(Object input, byte[] bytes) {
+        // Empty implementation, nothing to save
     }
 
-    /**
-     * Empty implementation. {@inheritDoc}
-     */
     @Override
     public void dispose() {
+        // Nothing to do
     }
 
-    /**
-     * Empty implementation. {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        // Nothing to do
     }
 
 }

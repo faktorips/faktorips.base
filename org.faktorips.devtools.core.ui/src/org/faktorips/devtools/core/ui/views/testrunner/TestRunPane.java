@@ -54,6 +54,7 @@ import org.faktorips.devtools.core.ui.actions.IpsTestAction;
  * @author Joerg Ortmann
  */
 public class TestRunPane {
+
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
 
     private Table fTable;
@@ -72,7 +73,7 @@ public class TestRunPane {
     private Map<String, TestTableEntry> fTableItemMap = new HashMap<String, TestTableEntry>();
 
     private final ImageDescriptor testImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "obj16/test.gif");
+            "obj16/test.gif"); //$NON-NLS-1$
 
     public TestRunPane(Composite parent, final IpsTestRunnerViewPart testRunnerViewPart) {
         this.testRunnerViewPart = testRunnerViewPart;
@@ -94,6 +95,7 @@ public class TestRunPane {
         fTable.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
+                // Nothing to do
             }
 
             @Override
@@ -329,7 +331,7 @@ public class TestRunPane {
     /**
      * The given test ends.
      */
-    public void endTest(String testId, String qualifiedTestName) {
+    public void endTest(String testId) {
         TestTableEntry testTableEntry = fTableItemMap.get(testId);
         if (testTableEntry == null) {
             missingTestEntries.add(testId);
@@ -365,17 +367,15 @@ public class TestRunPane {
 
     /**
      * The given test has started.
-     * 
-     * @param scrollLocked
      */
-    public void startTest(String testId, String qualifiedTestName, boolean scrollLocked) {
+    public void startTest(String testId, boolean scrollLocked) {
         TestTableEntry testTableEntry = fTableItemMap.get(testId);
         if (testTableEntry == null) {
             return;
         }
 
         TableItem tableItem = testTableEntry.getTableItem();
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testrun.gif");
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testrun.gif"); //$NON-NLS-1$
         tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
 
         // select current item and scroll
@@ -405,7 +405,7 @@ public class TestRunPane {
     /**
      * There was an error while running the given test.
      */
-    public void errorInTest(String testId, String qualifiedTestName, String[] errorDetails) {
+    public void errorInTest(String testId, String[] errorDetails) {
         TestTableEntry testTableEntry = fTableItemMap.get(testId);
         if (testTableEntry == null) {
             // in case of an error before starting a single test
@@ -414,7 +414,7 @@ public class TestRunPane {
             testTableEntry = fTableItemMap.get(testId);
         }
         TableItem tableItem = testTableEntry.getTableItem();
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testerr.gif");
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testerr.gif"); //$NON-NLS-1$
         tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
         testTableEntry.setErrorDetails(errorDetails);
         testTableEntry.setStatus(TestTableEntry.ERROR);
@@ -593,7 +593,7 @@ public class TestRunPane {
                 // test was successful before, because it was not visible <- show only error or
                 // failure filter
                 ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                        "obj16/testok.gif");
+                        "obj16/testok.gif"); //$NON-NLS-1$
                 tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
                 tableItem.setData(tableEntry);
                 tableEntry.setTableItem(tableItem);

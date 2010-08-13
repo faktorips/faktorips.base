@@ -83,7 +83,7 @@ public class BeanTableCellModifier implements ICellModifier {
         DelegateCellEditor dm = delegateCellEditor.get(new Integer(column));
         if (dm == null) {
             // error wrong initializing of the delegate cell editor
-            throw new RuntimeException("Wrong index of delegate cell editor!");
+            throw new RuntimeException("Wrong index of delegate cell editor!"); //$NON-NLS-1$
         }
         for (ValueDatatype datatypesRow : datatypesRows) {
             rowCellEditors.add(createCellEditor(uiToolkit, datatypesRow, dm.getColumn()));
@@ -106,8 +106,8 @@ public class BeanTableCellModifier implements ICellModifier {
         for (int i = 0; i < properties.length; i++) {
             ColumnIdentifier ci = new ColumnIdentifier(properties[i], datatypes[i], i);
             // assert that a property could only be assigned to one column
-            Assert.isTrue(columnIdentifers.get(properties[i]) == null, "A column modifier for property "
-                    + properties[i] + " already exist!");
+            Assert.isTrue(columnIdentifers.get(properties[i]) == null, "A column modifier for property " //$NON-NLS-1$
+                    + properties[i] + " already exist!"); //$NON-NLS-1$
             columnIdentifers.put(properties[i], ci);
             // create cell modifier if enabled
 
@@ -141,7 +141,7 @@ public class BeanTableCellModifier implements ICellModifier {
         } else {
             ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault()
                     .getValueDatatypeControlFactory(valueDatatype);
-            return factory.createCellEditor(uiToolkit, valueDatatype, null, tableViewer, columnIndex, ipsProject);
+            return factory.createTableCellEditor(uiToolkit, valueDatatype, null, tableViewer, columnIndex, ipsProject);
         }
     }
 
@@ -152,17 +152,11 @@ public class BeanTableCellModifier implements ICellModifier {
         columnChangeListeners.add(changeListener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canModify(Object element, String property) {
         return parentControl.isDataChangeable();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getValue(Object element, String property) {
         try {
@@ -171,9 +165,9 @@ public class BeanTableCellModifier implements ICellModifier {
                 return (String)getPropertyValue(element, pd);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName());
+            throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName()); //$NON-NLS-1$
         }
-        throw new RuntimeException("Error resolving property method " + property);
+        throw new RuntimeException("Error resolving property method " + property); //$NON-NLS-1$
     }
 
     /**
@@ -195,9 +189,9 @@ public class BeanTableCellModifier implements ICellModifier {
                 return;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName());
+            throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName()); //$NON-NLS-1$
         }
-        throw new RuntimeException("Error resolving property method " + property);
+        throw new RuntimeException("Error resolving property method " + property); //$NON-NLS-1$
     }
 
     /*
@@ -228,7 +222,7 @@ public class BeanTableCellModifier implements ICellModifier {
             Object value = getter.invoke(element, new Object[0]);
             return value;
         } catch (Exception e) {
-            throw new RuntimeException("Error getting property value " + property.getName());
+            throw new RuntimeException("Error getting property value " + property.getName()); //$NON-NLS-1$
         }
     }
 
@@ -240,7 +234,7 @@ public class BeanTableCellModifier implements ICellModifier {
             Method setter = property.getWriteMethod();
             setter.invoke(element, new Object[] { value });
         } catch (Exception e) {
-            throw new RuntimeException("Error setting property value " + property.getName(), e);
+            throw new RuntimeException("Error setting property value " + property.getName(), e); //$NON-NLS-1$
         }
     }
 

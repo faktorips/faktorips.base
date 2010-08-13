@@ -48,7 +48,7 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
 
     @Override
     public void dispose() {
-
+        // Nothing to do
     }
 
     private InstanceIpsSrcFileViewItem[] collectIpsSrcFileViewItems(IIpsMetaClass ipsMetaClass, IProgressMonitor monitor) {
@@ -85,8 +85,10 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
         return null;
     }
 
+    // TODO AW: Internationalize?
     @Override
     protected String getWaitingLabel() {
-        return "collecting instances...";
+        return "collecting instances..."; //$NON-NLS-1$
     }
+
 }

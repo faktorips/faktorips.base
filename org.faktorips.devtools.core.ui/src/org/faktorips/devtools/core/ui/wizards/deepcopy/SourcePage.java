@@ -180,12 +180,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         setPageComplete(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
-        getDeepCopyWizard().logTraceStart("SourcePage.createControl");
+        getDeepCopyWizard().logTraceStart("SourcePage.createControl"); //$NON-NLS-1$
         if (structure == null) {
             Label errormsg = new Label(parent, SWT.WRAP);
             GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, true, false);
@@ -306,7 +303,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
         addListenerToAllControls();
 
-        getDeepCopyWizard().logTraceEnd("SourcePage.createControl");
+        getDeepCopyWizard().logTraceEnd("SourcePage.createControl"); //$NON-NLS-1$
     }
 
     private void setMessagePleaseEnterWorkingDate() {
@@ -366,14 +363,14 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     protected void refreshPageAferValueChange() {
-        getDeepCopyWizard().logTraceStart("refreshPageAferValueChange");
+        getDeepCopyWizard().logTraceStart("refreshPageAferValueChange"); //$NON-NLS-1$
 
         getDeepCopyWizard().getDeepCopyPreview().resetCacheAfterValueChange();
         refreshTree();
         validate();
         updatePageComplete();
 
-        getDeepCopyWizard().logTraceEnd("refreshPageAferValueChange");
+        getDeepCopyWizard().logTraceEnd("refreshPageAferValueChange"); //$NON-NLS-1$
     }
 
     /**
@@ -483,10 +480,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
     /**
      * Create the columns for the receiver.
-     * 
-     * @param pageWidth
-     * 
-     * @param currentColumns the columns to refresh
      */
     private void createColumns() {
         SourceTreeCellLabelProvider labelProvider = new SourceTreeCellLabelProvider(new DeepCopyLabelProvider());
@@ -607,7 +600,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             }
 
             private void setSameOperationForAllChilds(IProductCmptReference element, boolean asLink) {
-                getDeepCopyWizard().logTraceStart("setSameOperationForAllChilds");
+                getDeepCopyWizard().logTraceStart("setSameOperationForAllChilds"); //$NON-NLS-1$
 
                 List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
                 childs.addAll(Arrays.asList(structure.getChildProductCmptReferences(element)));
@@ -626,7 +619,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     }
                 }
 
-                getDeepCopyWizard().logTraceEnd("setSameOperationForAllChilds");
+                getDeepCopyWizard().logTraceEnd("setSameOperationForAllChilds"); //$NON-NLS-1$
             }
         });
 
@@ -677,7 +670,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                         cell.setImage((Image)resourceManager.get(imageDescriptor));
                     } else {
                         cell.setImage(labelProvider.getImage(element));
-                    };
+                    }
                 } else {
                     cell.setImage(labelProvider.getImage(element));
                 }
@@ -796,7 +789,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     private void validate() {
-        getDeepCopyWizard().logTraceStart("validate");
+        getDeepCopyWizard().logTraceStart("validate"); //$NON-NLS-1$
 
         setMessage(null);
         setErrorMessage(null);
@@ -804,13 +797,13 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         if (!(tree != null && tree.getCheckedElements().length > 0)) {
             // no elements checked
             setErrorMessage(Messages.SourcePage_msgNothingSelected);
-            getDeepCopyWizard().logTraceEnd("validate");
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
             return;
         }
 
         validateWorkingDate();
         if (getErrorMessage() != null) {
-            getDeepCopyWizard().logTraceEnd("validate");
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
             return;
         }
 
@@ -818,25 +811,25 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             MessageList ml = namingStrategy.validateVersionId(versionId.getText());
             if (!ml.isEmpty()) {
                 setErrorMessage(ml.getMessage(0).getText());
-                getDeepCopyWizard().logTraceEnd("validate");
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
                 return;
             }
         }
 
         if (structure == null) {
             setErrorMessage(Messages.SourcePage_msgCircleRelationShort);
-            getDeepCopyWizard().logTraceEnd("validate");
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
             return;
         }
 
         IIpsPackageFragmentRoot ipsPckFragmentRoot = targetPackRootControl.getIpsPckFragmentRoot();
         if (ipsPckFragmentRoot != null && !ipsPckFragmentRoot.exists()) {
             setErrorMessage(NLS.bind(Messages.SourcePage_msgMissingSourceFolder, ipsPckFragmentRoot.getName()));
-            getDeepCopyWizard().logTraceEnd("validate");
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
             return;
         } else if (ipsPckFragmentRoot == null) {
             setErrorMessage(Messages.SourcePage_msgSelectSourceFolder);
-            getDeepCopyWizard().logTraceEnd("validate");
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
             return;
         }
 
@@ -845,31 +838,31 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     WARNING);
         } else if (getTargetPackage() == null) {
             setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
-            getDeepCopyWizard().logTraceEnd("validate");
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
             return;
         }
 
         if (getDeepCopyWizard().getDeepCopyPreview().getProductCmptStructRefToCopy().length == 0) {
             setMessage(Messages.ReferenceAndPreviewPage_msgSelectAtLeastOneProduct, WARNING);
-            getDeepCopyWizard().logTraceEnd("validate");
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
             return;
         }
 
         if (getDeepCopyWizard().getDeepCopyPreview().getErrorElements().size() != 0) {
             setErrorMessage(Messages.SourcePage_msgCopyNotPossible + " " //$NON-NLS-1$
                     + getDeepCopyWizard().getDeepCopyPreview().getFirstErrorText());
-            getDeepCopyWizard().logTraceEnd("validate");
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
             return;
         }
 
         validateSearchPattern();
         if (getErrorMessage() != null) {
-            getDeepCopyWizard().logTraceEnd("validate");
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
             return;
         }
 
         setPageComplete(true);
-        getDeepCopyWizard().logTraceEnd("validate");
+        getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
     }
 
     private void validateSearchPattern() {

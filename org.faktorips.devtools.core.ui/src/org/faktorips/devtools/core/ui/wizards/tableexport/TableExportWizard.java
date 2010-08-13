@@ -69,9 +69,6 @@ public class TableExportWizard extends IpsObjectExportWizard {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         try {
@@ -93,9 +90,6 @@ public class TableExportWizard extends IpsObjectExportWizard {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {
@@ -164,9 +158,6 @@ public class TableExportWizard extends IpsObjectExportWizard {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveWidgetSettings() {
         exportPage.saveWidgetValues();

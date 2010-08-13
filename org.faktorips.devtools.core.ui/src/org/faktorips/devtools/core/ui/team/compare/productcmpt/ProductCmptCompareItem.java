@@ -74,7 +74,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * A CompareItem representing a generation is processed separately in
      * initGenerationContentString().
      * 
-     * @see #initGenerationContentString(StringBuffer, int) {@inheritDoc}
+     * @see #initGenerationContentString(StringBuffer, int)
      */
     @Override
     protected int initTreeContentString(StringBuffer sb, int offset) {
@@ -243,10 +243,6 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * occurrence. Multiple occurrences of the same ID are ignored.
      * <p>
      * Thus a list of relations with the IDs 1,2,1,3,1 returns the array {1,2,3}.
-     * 
-     * 
-     * @param gen
-     * @return
      */
     private String[] getRelationTypes(IProductCmptGeneration gen) {
         // use TreeSet to avoid duplicate IDs and at the same time maintain their order.

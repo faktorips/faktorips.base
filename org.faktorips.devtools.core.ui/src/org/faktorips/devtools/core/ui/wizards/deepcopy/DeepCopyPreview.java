@@ -41,6 +41,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 public class DeepCopyPreview {
+
     private Integer segmentsToIgnoreCached = null;
     private Object[] nonLinkElementsCached = null;
 
@@ -97,7 +98,7 @@ public class DeepCopyPreview {
      * component with this name) and refreshes the map of error messages.
      */
     public void checkForInvalidTargets() {
-        deepCopyWizard.logTraceStart("checkForInvalidTargets");
+        deepCopyWizard.logTraceStart("checkForInvalidTargets"); //$NON-NLS-1$
 
         errorElements.clear();
         filename2productMap.clear();
@@ -122,7 +123,7 @@ public class DeepCopyPreview {
             addMessage(object, currMessage.getText(), errorElements);
         }
 
-        deepCopyWizard.logTraceEnd("checkForInvalidTargets");
+        deepCopyWizard.logTraceEnd("checkForInvalidTargets"); //$NON-NLS-1$
     }
 
     private void validateTarget(IProductCmptStructureReference modified,
@@ -193,9 +194,9 @@ public class DeepCopyPreview {
      * and table contents are returned.
      */
     IProductCmptStructureReference[] getProductCmptStructRefToCopy() {
-        deepCopyWizard.logTraceStart("getProductCmptStructRefToCopy");
+        deepCopyWizard.logTraceStart("getProductCmptStructRefToCopy"); //$NON-NLS-1$
         List<IProductCmptStructureReference> result = getProductCmptStructRefToCopyInternal();
-        deepCopyWizard.logTraceEnd("getProductCmptStructRefToCopy");
+        deepCopyWizard.logTraceEnd("getProductCmptStructRefToCopy"); //$NON-NLS-1$
         return result.toArray(new IProductCmptStructureReference[result.size()]);
     }
 
@@ -219,7 +220,7 @@ public class DeepCopyPreview {
     }
 
     private Object[] getNonLinkElements() {
-        deepCopyWizard.logTraceStart("getNonLinkElements");
+        deepCopyWizard.logTraceStart("getNonLinkElements"); //$NON-NLS-1$
         if (nonLinkElementsCached != null) {
             return nonLinkElementsCached;
         }
@@ -233,7 +234,7 @@ public class DeepCopyPreview {
             result.add(currElement);
         }
         nonLinkElementsCached = result.toArray(new Object[result.size()]);
-        deepCopyWizard.logTraceEnd("getNonLinkElements");
+        deepCopyWizard.logTraceEnd("getNonLinkElements"); //$NON-NLS-1$
         return nonLinkElementsCached;
     }
 
@@ -372,7 +373,7 @@ public class DeepCopyPreview {
      * @throws CoreException if any error exists (e.g. naming collisions).
      */
     public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles() throws CoreException {
-        deepCopyWizard.logTraceStart("getHandles");
+        deepCopyWizard.logTraceStart("getHandles"); //$NON-NLS-1$
 
         if (!isValid()) {
             StringBuffer message = new StringBuffer();
@@ -401,7 +402,7 @@ public class DeepCopyPreview {
             result.put(element, file);
         }
 
-        deepCopyWizard.logTraceEnd("getHandles");
+        deepCopyWizard.logTraceEnd("getHandles"); //$NON-NLS-1$
         return result;
     }
 
@@ -430,7 +431,7 @@ public class DeepCopyPreview {
     }
 
     public IProductCmptStructureReference[] getProductsOrtTableContentsToRefer() {
-        deepCopyWizard.logTraceStart("getProductsOrtTableContentsToRefer");
+        deepCopyWizard.logTraceStart("getProductsOrtTableContentsToRefer"); //$NON-NLS-1$
 
         Set<Object> linkedElements = sourcePage.getLinkedElements();
         IProductCmptStructureReference[] result = new IProductCmptStructureReference[linkedElements.size()];
@@ -440,7 +441,7 @@ public class DeepCopyPreview {
 
         }
 
-        deepCopyWizard.logTraceEnd("getProductsOrtTableContentsToRefer");
+        deepCopyWizard.logTraceEnd("getProductsOrtTableContentsToRefer"); //$NON-NLS-1$
         return result;
     }
 

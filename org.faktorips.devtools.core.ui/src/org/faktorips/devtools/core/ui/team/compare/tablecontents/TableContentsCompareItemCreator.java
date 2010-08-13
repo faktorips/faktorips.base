@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
  * Structure creator for creating a tree that represents the structure of a
- * <code>ITableContents</code> object. {@inheritDoc}
+ * <code>ITableContents</code> object.
  * 
  * @author Stefan Widmaier
  */

@@ -155,7 +155,7 @@ public class ModelLabelProvider implements ILabelProvider {
 
     @Override
     public void addListener(ILabelProviderListener listener) {
-
+        // Nothing to do
     }
 
     @Override
@@ -170,15 +170,13 @@ public class ModelLabelProvider implements ILabelProvider {
 
     @Override
     public void removeListener(ILabelProviderListener listener) {
-
+        // Nothing to do
     }
 
     /**
      * Sets the flag for flat respectivly hierarchical labelnames
-     * 
-     * @param b
      */
-    /* package */void setIsFlatLayout(boolean b) {
+    void setIsFlatLayout(boolean b) {
         isFlatLayout = b;
         getProblemsDecorator().setFlatLayout(isFlatLayout);
     }

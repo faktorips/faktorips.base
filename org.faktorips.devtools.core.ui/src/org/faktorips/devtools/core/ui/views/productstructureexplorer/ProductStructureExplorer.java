@@ -147,7 +147,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private ProductStructureContentProvider contentProvider;
 
-    /*
+    /**
      * Class to handle double clicks. Doubleclicks of ProductCmptTypeAssociationReference will be
      * ignored.
      */
@@ -156,9 +156,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             super(tree);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void doubleClick(DoubleClickEvent event) {
             if (getSelectedObjectFromSelection(event.getSelection()) instanceof ProductCmptTypeAssociationReference) {
@@ -327,7 +324,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
-        final ImageDescriptor refreshDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif");
+        final ImageDescriptor refreshDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif"); //$NON-NLS-1$
         Action refreshAction = new Action() {
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -354,7 +351,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         toolBarManager.add(new CollapseAllAction(treeViewer));
 
         // clear action
-        toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {//$NON-NLS-1$
+        toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {//$NON-NLS-1$ //$NON-NLS-2$
                     @Override
                     public void run() {
                         productComponent = null;
@@ -444,6 +441,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -457,6 +455,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
             }
         });
 
@@ -501,16 +500,16 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
-        menumanager.add(new Separator("open"));
+        menumanager.add(new Separator("open")); //$NON-NLS-1$
         final IAction openAction = new OpenEditorAction(treeViewer);
         menumanager.add(openAction);
 
-        menumanager.add(new Separator("edit"));
+        menumanager.add(new Separator("edit")); //$NON-NLS-1$
         final IAction addAction = new AddLinkAction(treeViewer);
         menumanager.add(addAction);
         menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
 
-        menumanager.add(new Separator("copy"));
+        menumanager.add(new Separator("copy")); //$NON-NLS-1$
         final IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                 DeepCopyWizard.TYPE_NEW_VERSION);
         menumanager.add(copyNewVersionAction);
@@ -518,7 +517,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 DeepCopyWizard.TYPE_COPY_PRODUCT);
         menumanager.add(copyProductAction);
 
-        menumanager.add(new Separator("otherviews"));
+        menumanager.add(new Separator("otherviews")); //$NON-NLS-1$
         final IAction findReferenceAction = new FindProductReferencesAction(treeViewer);
         menumanager.add(findReferenceAction);
         final IAction showInstancesAction = new ShowInstanceAction(treeViewer);
@@ -584,9 +583,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         return selectedRef;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFocus() {
         // nothing to do.
@@ -596,7 +592,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * Displays the structure of the product component defined by the given file.
      * 
      * @param file The selection to display
-     * @throws CoreException
      */
     public void showStructure(IIpsSrcFile file) throws CoreException {
         if (isSupported(file)) {
@@ -691,9 +686,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ShowInContext getShowInContext() {
         ShowInContext context = new ShowInContext(null, treeViewer.getSelection());
@@ -731,9 +723,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         showErrorMsg(message);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         if (file == null || !event.getIpsSrcFile().equals(file)) {
@@ -759,9 +748,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
         // TODO update AdjustmentDateContent, wenn neue Anpassungsstufe hinzugekommen ist
@@ -771,9 +757,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         postRefresh();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
@@ -807,9 +790,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 + Messages.ProductStructureExplorer_infoMessageEmptyView_2);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
@@ -824,9 +804,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveState(IMemento memento) {
         super.saveState(memento);
@@ -865,9 +842,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         return showAssociationNode;
     }
 
-    /**
-     * @param showAssociations The showAssociations to set.
-     */
     public void setShowAssociatedCmpts(boolean showAssociatedCmpts) {
         this.showAssociatedCmpts = showAssociatedCmpts;
         contentProvider.setShowAssociatedCmpts(showAssociatedCmpts);

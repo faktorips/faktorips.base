@@ -36,25 +36,31 @@ public abstract class AbstractTraversalStrategy implements TraversalStrategy {
 
     @Override
     public void keyTraversed(TraverseEvent e) {
+        // Nothing to do
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // Nothing to do
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        // Nothing to do
     }
 
     @Override
     public void focusGained(FocusEvent e) {
+        // Nothing to do
     }
 
     @Override
     public void focusLost(FocusEvent e) {
+        // Nothing to do
     }
 
     protected void fireApplyEditorValue() {
         getCellEditor().fireApplyEditorValue();
     }
+
 }

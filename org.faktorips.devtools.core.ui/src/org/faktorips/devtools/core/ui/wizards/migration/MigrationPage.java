@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.migration;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -35,11 +34,6 @@ public class MigrationPage extends WizardPage {
     private Composite overview;
     private Text description;
 
-    /**
-     * @param pageName
-     * @param selection
-     * @throws JavaModelException
-     */
     public MigrationPage(ProjectSelectionPage projectSelectionPage) {
         super(Messages.MigrationPage_titleMigrationOperations);
         this.projectSelectionPage = projectSelectionPage;
@@ -71,9 +65,6 @@ public class MigrationPage extends WizardPage {
         description.setText(desc.toString());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         overview = new Composite(parent, SWT.NONE);

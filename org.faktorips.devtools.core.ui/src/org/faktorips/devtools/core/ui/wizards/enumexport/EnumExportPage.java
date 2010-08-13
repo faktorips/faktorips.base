@@ -36,15 +36,13 @@ import org.faktorips.util.message.Message;
 /**
  * Wizard page for configuring an enum type or enum content for export.
  * 
- * @see {@link IEnumType}, {@link IEnumContent}
+ * @see IEnumType
+ * @see IEnumContent
  * 
  * @author Roman Grutza
  */
 public class EnumExportPage extends IpsObjectExportPage {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         super.createControl(parent);
@@ -66,18 +64,12 @@ public class EnumExportPage extends IpsObjectExportPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IpsObjectRefControl createExportedIpsObjectRefControlWithLabel(UIToolkit toolkit, Composite parent) {
         toolkit.createFormLabel(parent, Messages.EnumExportPage_enum_label);
         return toolkit.createEnumRefControl(getIpsProject(), parent, true, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void validateObjectToExport() {
         if (exportedIpsObjectControl.getText().length() == 0) {
@@ -136,9 +128,6 @@ public class EnumExportPage extends IpsObjectExportPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setDefaults(IResource selectedResource) {
         if (selectedResource == null) {

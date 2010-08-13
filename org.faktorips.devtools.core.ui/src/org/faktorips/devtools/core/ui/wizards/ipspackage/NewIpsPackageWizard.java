@@ -37,9 +37,6 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
                 "wizards/NewIpsPackageWizard.png")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void addPages() {
         try {
@@ -51,24 +48,14 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
         }
     }
 
-    /**
-     * @param selection
-     * @return
-     * @throws JavaModelException
-     */
     protected IpsPackagePage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         return new IpsPackagePage(selection);
     }
 
-    /**
-     * Nothing to do.
-     */
     protected void createAdditionalPages() {
+        // Empty default implementation
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean performFinish() {
         try {
@@ -80,9 +67,6 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;

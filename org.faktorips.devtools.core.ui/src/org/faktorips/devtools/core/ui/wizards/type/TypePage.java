@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -44,28 +43,18 @@ public abstract class TypePage extends IpsObjectPage {
     /** The wizard type page of the associated (product or policy) type. */
     protected TypePage pageOfAssociatedType;
 
-    // The text field to choose the supertype
+    /** The text field to choose the supertype */
     private TextButtonField supertypeField;
 
-    // Flag inidcating whether this type page has already been entered
+    /** Flag inidcating whether this type page has already been entered */
     private boolean alreadyBeenEntered;
 
-    /**
-     * @param pageName
-     * @param selection
-     * @throws JavaModelException
-     */
-    public TypePage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName)
-            throws JavaModelException {
-
+    public TypePage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) {
         super(ipsObjectType, selection, pageName);
         alreadyBeenEntered = false;
         setTitle(pageName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
@@ -84,15 +73,9 @@ public abstract class TypePage extends IpsObjectPage {
         supertypeField.addChangeListener(this);
     }
 
-    /**
-     * 
-     * 
-     * @param nameComposite
-     * @param toolkit
-     */
     protected void addAbstractField(Composite nameComposite, UIToolkit toolkit) {
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
-        abstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, "Abstract"));
+        abstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, "Abstract")); //$NON-NLS-1$
         abstractField.addChangeListener(this);
     }
 
@@ -110,25 +93,19 @@ public abstract class TypePage extends IpsObjectPage {
      * Empty by default. Subclasses can override it to react input changes of the super type
      * control.
      * 
+     * @param supertypeField The text button field used to select the supertype.
+     * 
      * @throws CoreException Subclasses may throw at any time.
      */
     protected void supertypeChanged(TextButtonField supertypeField) throws CoreException {
-
+        // Empty default implementation
     }
 
     /**
      * The type specific control must be instantiated and returned by this method.
-     * 
-     * @param container
-     * @param toolkit
-     * 
-     * @return
      */
     protected abstract IpsObjectRefControl createSupertypeControl(Composite container, UIToolkit toolkit);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
@@ -180,9 +157,6 @@ public abstract class TypePage extends IpsObjectPage {
         supertypeField.setValue(superTypeQualifiedName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
         IType type = (IType)newIpsObject;
@@ -192,12 +166,8 @@ public abstract class TypePage extends IpsObjectPage {
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * <p>
      * Checks if the name of the policy component type and product component type of the associated
      * product component type page are not equal.
-     * </p>
      */
     @Override
     protected void validatePageExtension() throws CoreException {
@@ -218,9 +188,6 @@ public abstract class TypePage extends IpsObjectPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void pageEntered() throws CoreException {
         super.pageEntered();

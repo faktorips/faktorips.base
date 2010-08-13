@@ -48,7 +48,7 @@ public class AddLinkAction extends Action {
     private static LinkCreatorUtil linkCreator;
 
     public AddLinkAction(TreeViewer tree) {
-        super(Messages.AddLinkAction_add, IpsUIPlugin.getImageHandling().createImageDescriptor("Add.gif"));
+        super(Messages.AddLinkAction_add, IpsUIPlugin.getImageHandling().createImageDescriptor("Add.gif")); //$NON-NLS-1$
         treeViewer = tree;
         linkCreator = new LinkCreatorUtil(true);
     }
@@ -76,13 +76,10 @@ public class AddLinkAction extends Action {
 
     /**
      * returns a list of product cmpts because the link creator requests a list
-     * 
-     * @param ipsProject
-     * @return
-     * @throws CoreException
      */
     private List<IProductCmpt> selectProductCmpt(IIpsProject ipsProject, IProductCmptStructureReference linkTarget)
             throws CoreException {
+
         List<IProductCmpt> selectedResults = new ArrayList<IProductCmpt>();
         OpenIpsObjectSelectionDialog dialog = getSelectDialog(ipsProject, linkTarget);
         // TODO set multi select in dialog

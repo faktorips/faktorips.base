@@ -15,34 +15,22 @@ package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 import org.faktorips.devtools.core.ui.wizards.productcmpttype.ProductCmptTypePage;
 
-/**
- *
- */
-public class NewPcTypeWizard extends NewIpsObjectWizard implements IPageChangedListener {
+public class NewPcTypeWizard extends NewIpsObjectWizard {
 
     private PcTypePage pctypePage;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         pctypePage = new PcTypePage(selection);
         return pctypePage;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws CoreException
-     */
     @Override
     protected IWizardPage[] createAdditionalPages(IStructuredSelection selection) throws CoreException {
         ProductCmptTypePage page = new ProductCmptTypePage(selection, pctypePage);

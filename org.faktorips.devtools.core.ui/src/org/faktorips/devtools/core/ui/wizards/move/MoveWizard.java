@@ -65,8 +65,8 @@ public class MoveWizard extends Wizard {
     /**
      * The mode we are operating in
      * 
-     * @see MoveWizard#OPERATION_MOVE;
-     * @see MoveWizard#OPERATION_RENAME;
+     * @see MoveWizard#OPERATION_MOVE
+     * @see MoveWizard#OPERATION_RENAME
      */
     private int operation;
 
@@ -125,9 +125,6 @@ public class MoveWizard extends Wizard {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         if (selectionError != null) {
@@ -140,9 +137,6 @@ public class MoveWizard extends Wizard {
         super.addPage(sourcePage);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {
@@ -158,7 +152,7 @@ public class MoveWizard extends Wizard {
                     moveOp = new MoveOperation(productCmpt, renamePage.getNewName(), renamePage.getNewRuntimeId());
                 }
             } else {
-                throw new CoreException(new IpsStatus("Wrong operation: " + operation));
+                throw new CoreException(new IpsStatus("Wrong operation: " + operation)); //$NON-NLS-1$
             }
             getContainer().run(true, true, new ModifyOperation(moveOp));
 

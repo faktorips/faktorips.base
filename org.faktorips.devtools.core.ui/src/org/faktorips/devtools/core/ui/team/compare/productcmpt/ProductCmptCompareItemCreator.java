@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
  * Creates a structure of <code>ProductCmptCompareItems</code> that is used for comparing
- * <code>ProductCmpt</code>s. {@inheritDoc}
+ * <code>ProductCmpt</code>s.
  * 
  * @author Stefan Widmaier
  */

@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -68,7 +67,7 @@ public class IpsObjectPathContainer {
 
     private ResourceManager resourceManager;
 
-    public IpsObjectPathContainer(int pageToShow, IWorkbenchPreferenceContainer preferenceContainer) {
+    public IpsObjectPathContainer(int pageToShow) {
         pageIndex = pageToShow;
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }

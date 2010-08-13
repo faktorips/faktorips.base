@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 
 public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
+
     public static String ID = "org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"; //$NON-NLS-1$
     private static String DIALOG_SETTINGS_KEY = "IpsArchiveExportWizard"; //$NON-NLS-1$
 
@@ -64,18 +65,12 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
         setNeedsProgressMonitor(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         super.addPages();
@@ -83,9 +78,6 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
         addPage(ipsArPackageWizardPage);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         File destinationFile = ipsArPackageWizardPage.getDestinationFile();
@@ -111,14 +103,15 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
         return true;
     }
 
+    // TODO AW: Internationalize
     private boolean askForCreateParent(File folder) {
-        if (MessageDialog.openQuestion(getShell(), "Create Directory", NLS.bind(
-                "Directory {0} does not exists. Do you want to create it?", folder.getAbsolutePath()))) {
+        if (MessageDialog.openQuestion(getShell(), "Create Directory", NLS.bind( //$NON-NLS-1$
+                "Directory {0} does not exists. Do you want to create it?", folder.getAbsolutePath()))) { //$NON-NLS-1$
             try {
                 folder.mkdirs();
                 return true;
             } catch (Exception e) {
-                IpsPlugin.logAndShowErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, "Could not create "
+                IpsPlugin.logAndShowErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, "Could not create " //$NON-NLS-1$
                         + folder.getAbsoluteFile(), e));
             }
         }

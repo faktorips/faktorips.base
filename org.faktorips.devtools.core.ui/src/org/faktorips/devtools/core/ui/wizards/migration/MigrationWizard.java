@@ -38,7 +38,9 @@ import org.faktorips.util.message.MessageList;
  * @author Thorsten Guenther
  */
 public class MigrationWizard extends Wizard implements IWorkbenchWizard {
+
     private ProjectSelectionPage projectSelectionPage;
+
     private List<IIpsProject> preSelected;
 
     public MigrationWizard(List<IIpsProject> preSelected) {
@@ -57,9 +59,6 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         super.addPage(new MigrationPage(projectSelectionPage));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {
@@ -81,14 +80,13 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
+        // Nothing to do
     }
 
     class MigrateProjects implements IRunnableWithProgress {
+
         private MessageList messageList;
 
         @Override
@@ -115,5 +113,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         public MessageList getMessageList() {
             return messageList;
         }
+
     }
+
 }

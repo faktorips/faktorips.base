@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * @author Joerg Ortmann
  */
 public class SelectTargetPackagePage extends WizardPage {
+
     private static final String PAGE_ID = "SelectRuntimeTestCasePage"; //$NON-NLS-1$
 
     private TransformRuntimeTestCaseWizard wizard;
@@ -49,9 +50,6 @@ public class SelectTargetPackagePage extends WizardPage {
         setPageComplete(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
@@ -81,9 +79,6 @@ public class SelectTargetPackagePage extends WizardPage {
         setControl(container);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canFlipToNextPage() {
         return wizard.getTargetIpsPackageFragment() != null;
@@ -100,10 +95,12 @@ public class SelectTargetPackagePage extends WizardPage {
 
         @Override
         public void dispose() {
+            // Nothing to do
         }
 
         @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // Nothing to do
         }
     }
 
@@ -124,4 +121,5 @@ public class SelectTargetPackagePage extends WizardPage {
             return IpsUIPlugin.getImageHandling().getImage((IIpsPackageFragment)obj);
         }
     }
+
 }

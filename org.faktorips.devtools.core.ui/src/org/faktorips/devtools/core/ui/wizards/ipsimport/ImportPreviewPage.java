@@ -97,6 +97,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
      */
     public ImportPreviewPage(String filename, ITableFormat tableFormat, IIpsObject structure,
             boolean ignoreColumnHeaderRow) {
+
         super(Messages.ImportPreviewPage_pageName);
 
         ArgumentCheck.notNull(filename);
@@ -163,7 +164,6 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         configCompositeFactory.removeValueChangedListener(this);
     }
 
-    @SuppressWarnings("unchecked")
     private void fillPreview() {
         previewTable.removeAll();
 
@@ -239,9 +239,6 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (validateInput) { // don't validate during control creating!

@@ -111,7 +111,7 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
     }
 
     private void initSrcFiles() {
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsSrcFile.gif",
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("IpsSrcFile.gif", //$NON-NLS-1$
                 true);
         register(AbstractIpsSrcFile.class, new DefaultIpsElementWorkbenchAdapter(imageDescriptor));
     }
@@ -119,47 +119,46 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
     private void initIpsObjects() {
         // register(IpsObject.class, defaultWorkbenchAdapter);
         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
-                "BusinessFunction.gif", true);
+                "BusinessFunction.gif", true); //$NON-NLS-1$
         DefaultIpsObjectWorkbenchAdapter bfWA = new DefaultIpsObjectWorkbenchAdapter(imageDescriptor);
         register(BusinessFunction.class, bfWA);
         register(BusinessFunctionImpl.class, bfWA);
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("EnumContent.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("EnumContent.gif", true); //$NON-NLS-1$
         register(EnumContent.class, new DefaultIpsObjectWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("EnumType.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("EnumType.gif", true); //$NON-NLS-1$
         register(EnumType.class, new DefaultIpsObjectWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("PolicyCmptType.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("PolicyCmptType.gif", true); //$NON-NLS-1$
         register(PolicyCmptType.class, new DefaultIpsObjectWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmptType.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmptType.gif", true); //$NON-NLS-1$
         register(ProductCmptType.class, new DefaultIpsObjectWorkbenchAdapter(imageDescriptor));
         register(ProductCmpt.class, new ProductCmptWorkbenchAdapter());
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableStructure.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableStructure.gif", true); //$NON-NLS-1$
         register(TableStructure.class, new DefaultIpsObjectWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableContents.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableContents.gif", true); //$NON-NLS-1$
         register(TableContents.class, new DefaultIpsObjectWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TestCaseType.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TestCaseType.gif", true); //$NON-NLS-1$
         register(TestCaseType.class, new DefaultIpsObjectWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TestCase.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TestCase.gif", true); //$NON-NLS-1$
         register(TestCase.class, new DefaultIpsObjectWorkbenchAdapter(imageDescriptor));
     }
 
     private void initIpsObjectParts() {
-
         // some common workbench adapter
 
         AttributeWorkbenchAdapter attributeWA = new AttributeWorkbenchAdapter();
 
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Formula.gif", true);
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Formula.gif", true); //$NON-NLS-1$
         DefaultIpsObjectPartWorkbenchAdapter formulaWA = new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor);
 
         // Type
         register(Method.class, new MethodWorkbenchAdapter());
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Parameter.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Parameter.gif", true); //$NON-NLS-1$
         register(Parameter.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // BF
         // no Image for BFElement yet
         // register(BFElement.class, defaultWorkbenchAdapter);
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("obj16/ControlFlow.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("obj16/ControlFlow.gif", true); //$NON-NLS-1$
         register(ControlFlow.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // Enums
@@ -177,13 +176,13 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         // PolicyCmptType
         register(PolicyCmptTypeAssociation.class, new AssociationWorkbenchAdapter());
         register(PolicyCmptTypeAttribute.class, attributeWA);
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true); //$NON-NLS-1$
         register(ValidationRule.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // ProductCmptType
         register(ProductCmptTypeAssociation.class, new AssociationWorkbenchAdapter());
         register(ProductCmptTypeAttribute.class, attributeWA);
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableStructure.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableStructure.gif", true); //$NON-NLS-1$
         IpsElementWorkbenchAdapter tableStructureUsageWA = new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor);
         register(TableStructureUsage.class, tableStructureUsageWA);
         register(TableStructureReference.class, tableStructureUsageWA);
@@ -194,46 +193,47 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         register(Formula.class, formulaWA);
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmptLink.gif", true); //$NON-NLS-1$
         register(ProductCmptLink.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableContentsUsage.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableContentsUsage.gif", true); //$NON-NLS-1$
         register(TableContentUsage.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // TableStructure
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableColumn.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableColumn.gif", true); //$NON-NLS-1$
         register(Column.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableRange.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableRange.gif", true); //$NON-NLS-1$
         register(ColumnRange.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableKey.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableKey.gif", true); //$NON-NLS-1$
         register(Key.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
         // no Image for TableAccessFuction yet
         // register(TableAccessFunction.class, defaultWorkbenchAdapter);
 
         // TableContents
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableRow.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableRow.gif", true); //$NON-NLS-1$
         register(Row.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // TestCaseType
         register(TestAttribute.class, new TestAttributeWorkbenchAdapter());
         register(TestPolicyCmptTypeParameter.class, new TestPolicyCmptTypeParameterWorkbenchAdapter());
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true); //$NON-NLS-1$
         register(TestRuleParameter.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Datatype.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Datatype.gif", true); //$NON-NLS-1$
         register(TestValueParameter.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // TestCase
         register(TestAttributeValue.class, new TestAttributeValueWorkbenchAdapter());
         register(TestPolicyCmpt.class, new TestPolicyCmptWorkbenchAdapter());
         register(TestPolicyCmptLink.class, new TestPolicyCmptLinkWorkbenchAdapter());
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true); //$NON-NLS-1$
         register(TestRule.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TestValue.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TestValue.gif", true); //$NON-NLS-1$
         register(TestValue.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         register(FormulaTestCase.class, formulaWA);
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Parameter.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Parameter.gif", true); //$NON-NLS-1$
         register(FormulaTestInputValue.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // ValueSet
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValueSet.gif", true);
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValueSet.gif", true); //$NON-NLS-1$
         register(ValueSet.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
     }
+
 }

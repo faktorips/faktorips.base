@@ -43,24 +43,17 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      */
     private boolean fShowAssociationNodes = true;
 
-    // private IProductCmptReference root;
-
     private boolean showTableContents = true;
 
     private boolean showAssociatedCmpts;
 
     /**
      * Creates a new content provider.
-     * 
-     * @param showAssociationType <code>true</code> to show the association types as nodes.
      */
     public ProductStructureContentProvider(boolean showAssociationNodes) {
         fShowAssociationNodes = showAssociationNodes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
         List<IProductCmptStructureReference> children = new ArrayList<IProductCmptStructureReference>();
@@ -139,9 +132,6 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         return children.toArray();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
         if (structure == null) {
@@ -159,25 +149,16 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         structure = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getElements(Object inputElement) {
         if (structure == inputElement) {
@@ -187,9 +168,6 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput == null || !(newInput instanceof IProductCmptTreeStructure)) {
@@ -231,8 +209,6 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Set <code>true</code> to show related table contents.
-     * 
-     * @param showTableContents
      */
     public void setShowTableContents(boolean showTableContents) {
         this.showTableContents = showTableContents;

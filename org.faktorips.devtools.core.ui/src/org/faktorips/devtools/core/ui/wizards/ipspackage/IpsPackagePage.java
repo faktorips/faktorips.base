@@ -85,9 +85,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
@@ -120,12 +117,8 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         nameComposite = toolkit.createLabelEditColumnComposite(pageControl);
-        fillNameComposite(nameComposite, toolkit);
-        try {
-            setDefaults(selectedResource);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
+        fillNameComposite(toolkit);
+        setDefaults(selectedResource);
 
         validateInput = true;
     }
@@ -136,7 +129,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * @param selectedResource The resource that was selected in the current selection when the
      *            wizard was opened.
      */
-    protected void setDefaults(IResource selectedResource) throws CoreException {
+    protected void setDefaults(IResource selectedResource) {
         if (selectedResource == null) {
             setIpsPackageFragmentRoot(null);
             return;
@@ -167,7 +160,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         }
     }
 
-    protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
+    protected void fillNameComposite(UIToolkit toolkit) {
         Text nameText = addNameLabelField(toolkit);
         nameText.setFocus();
     }
@@ -239,11 +232,11 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     protected void packageChanged() {
-
+        // Empty default implementation
     }
 
     protected void nameChanged() {
-
+        // Empty default implementation
     }
 
     private void setIpsPackageFragment(IIpsPackageFragment pack) {
@@ -422,9 +415,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         setPageComplete(complete);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected void sourceFolderChanged() {
         IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
         setIpsPackageFragmentRoot(root);

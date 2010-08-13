@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.ui.wizards.tableimport.Messages;
  */
 public abstract class SelectImportTargetPage extends WizardPage implements ValueChangeListener {
 
-    public static final String PAGE_NAME = "SelectImportTargetPage";
+    public static final String PAGE_NAME = "SelectImportTargetPage"; //$NON-NLS-1$
     protected IResource selectedResource;
     protected IpsProjectRefControl projectControl;
     protected TextButtonField projectField;
@@ -133,7 +133,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
      * project is set.
      */
     protected void validateProject() {
-        if (projectField.getText().equals("")) {
+        if (projectField.getText().equals("")) { //$NON-NLS-1$
             setErrorMessage(Messages.SelectTableContentsPage_msgProjectEmpty);
             return;
         }

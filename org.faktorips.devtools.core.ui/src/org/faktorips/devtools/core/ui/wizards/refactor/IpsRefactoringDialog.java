@@ -43,9 +43,7 @@ public class IpsRefactoringDialog extends RefactoringWizardDialog {
         super(shell, wizard);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
+    /*
      * Overridden to always call the super implementation with the <tt>cancelable</tt> flag set to
      * <tt>false</tt> because Faktor-IPS refactorings may not be canceled.
      */
