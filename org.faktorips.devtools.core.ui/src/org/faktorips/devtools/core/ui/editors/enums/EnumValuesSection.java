@@ -529,6 +529,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * <li>The <tt>columnNames</tt> will be emptied and created anew.
      * <li>Every table column of the table will be disposed and created anew.
      * <li>The table viewer will be refreshed.
+     * <li>The default provider values will be re-initialized.
      */
     public void reinit() throws CoreException {
         columnNames.clear();
@@ -537,6 +538,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
         createTableColumns();
         updateTableViewer();
+        initDefaultProviderValues();
     }
 
     /** Updates the enabled states of the table and the tool bar actions. */
@@ -736,6 +738,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
+                    defaultProviderValues.put(enumValue, newValue);
                     enumValuesTableViewer.refresh();
                 }
             }
