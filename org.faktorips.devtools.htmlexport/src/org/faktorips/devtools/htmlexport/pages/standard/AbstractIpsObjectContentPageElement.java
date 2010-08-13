@@ -208,12 +208,15 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
 
         KeyValueTablePageElement extensionPropertiesTable = new KeyValueTablePageElement();
         for (IExtensionPropertyDefinition iExtensionPropertyDefinition : properties) {
-            extensionPropertiesTable.addKeyValueRow(iExtensionPropertyDefinition.getName(), getDocumentedIpsObject()
-                    .getExtPropertyValue(iExtensionPropertyDefinition.getPropertyId()).toString());
+            Object extPropertyValue = getDocumentedIpsObject().getExtPropertyValue(
+                    iExtensionPropertyDefinition.getPropertyId());
+            extensionPropertiesTable.addKeyValueRow(iExtensionPropertyDefinition.getName(),
+                    extPropertyValue == null ? null : extPropertyValue.toString());
         }
 
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.AbstractIpsObjectContentPageElement_extensionProperties, TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(Messages.AbstractIpsObjectContentPageElement_extensionProperties,
+                TextType.HEADING_2));
 
         wrapper.addPageElements(extensionPropertiesTable);
 

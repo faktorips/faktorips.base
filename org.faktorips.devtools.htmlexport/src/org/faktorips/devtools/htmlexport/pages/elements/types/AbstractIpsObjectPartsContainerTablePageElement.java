@@ -86,7 +86,7 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
         List<PageElement> extensionPropertyValues = new ArrayList<PageElement>();
         for (IExtensionPropertyDefinition property : propertyDefinitions) {
             Object value = rowData.getExtPropertyValue(property.getPropertyId());
-            extensionPropertyValues.add(new TextPageElement(value.toString()));
+            extensionPropertyValues.add(new TextPageElement(value == null ? null : value.toString()));
         }
         return extensionPropertyValues;
     }

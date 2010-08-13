@@ -317,7 +317,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
     private void addTableContentList() {
         List<IIpsSrcFile> tableContentsSrcFiles;
         try {
-            tableContentsSrcFiles = Arrays.asList(getDocumentedIpsObject().searchMetaObjectSrcFiles(true));
+            tableContentsSrcFiles = new ArrayList<IIpsSrcFile>(Arrays.asList(getDocumentedIpsObject()
+                    .searchMetaObjectSrcFiles(true)));
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
