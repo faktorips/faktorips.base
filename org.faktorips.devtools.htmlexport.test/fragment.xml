@@ -13,6 +13,27 @@
       </property>
    </extension>
    <extension
+         id="extPolicyCmptTypeNullDefaultvalue"
+         name="extPolicyCmptType Null-Defaultvalue"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType"
+            position="top">
+      </property>
+   </extension>
+   <extension
+         id="extProductCmptType"
+         name="extProductCmptType"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            defaultValue="ProductCmptType TestValue"
+            extendedType="org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType"
+            position="top">
+      </property>
+   </extension>
+   <extension
          id="extPolicyCmptType2"
          name="ext PolicyCmptType 2"
          point="org.faktorips.devtools.core.objectExtensionProperty">
@@ -65,6 +86,16 @@
             class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
             extendedType="org.faktorips.devtools.core.internal.model.type.Attribute"
             defaultValue="Huhu, ich bin der Default-Wert"
+            position="top">
+      </property>
+   </extension>
+   <extension
+         id="extAttributeOhneDafault"
+         name="externe Attribut Property OhneDafault"
+         point="org.faktorips.devtools.core.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.core.internal.model.type.Attribute"
             position="top">
       </property>
    </extension>
