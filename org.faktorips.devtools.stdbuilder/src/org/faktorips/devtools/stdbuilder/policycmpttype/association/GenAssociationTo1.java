@@ -173,7 +173,7 @@ public class GenAssociationTo1 extends GenAssociation {
             getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
                     association, builder);
 
-            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetInterfaceName, fieldName,
+            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetImplClassName, fieldName,
                     new JavaCodeFragment("null"));
         }
     }
