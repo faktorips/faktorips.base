@@ -238,11 +238,11 @@ public class GenAssociationTo1 extends GenAssociation {
 
         if (target.isDependantType() && inverseAssociation != null) {
             builder.appendln("if(" + fieldName + " != null) {");
-            builder.append(generateCodeToSynchronizeReverseComposition(fieldName, "null"));
+            builder.append(generateCodeToSynchronizeReverseComposition(fieldName, "null", false));
             builder.appendln("}");
 
             builder.appendln("if(" + paramName + " != null) {");
-            builder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
+            builder.append(generateCodeToSynchronizeReverseComposition(paramName, "this", true));
             builder.appendln("}");
         }
 
@@ -532,14 +532,9 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(MethodNames.NEW_COPY);
         methodsBuilder.appendln("();");
         if (targetType.isDependantType() && inverseAssociation != null) {
-            methodsBuilder.append("(");
-            methodsBuilder.append("(");
-            methodsBuilder.appendClassName(targetTypeQName);
-            methodsBuilder.append(")");
             methodsBuilder.append(paramName);
             methodsBuilder.append(".");
             methodsBuilder.append(field);
-            methodsBuilder.append(")");
             methodsBuilder.append(".");
             methodsBuilder.append(getMethodNameSetParentObjectInternal(true));
             methodsBuilder.append("(");
@@ -713,7 +708,7 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(unqTargetImplName).append(' ').append(varCopyTarget).append(" = ") //
                 .append('(').append(unqTargetImplName).append(')').append(varCopyMap) //
                 .append(".get(").append(fieldName).appendln(");");
-        methodsBuilder.append("((").append(unqTargetImplName).append(')').append(fieldName).append(").") //
+        methodsBuilder.append(fieldName).append(".") //
                 .append(PolicyCmptImplClassBuilder.METHOD_COPY_ASSOCIATIONS) //
                 .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
         methodsBuilder.closeBracket();
