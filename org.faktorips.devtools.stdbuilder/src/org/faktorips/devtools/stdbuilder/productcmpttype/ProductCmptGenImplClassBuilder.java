@@ -840,10 +840,16 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends "
                 + IProductComponent.class.getName() + ">>");
-        methodsBuilder.append(" list = new ");
-        methodsBuilder.appendClassName(ArrayList.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName
-                + "<? extends " + IProductComponent.class.getName() + ">>");
-        methodsBuilder.appendln("();");
+        methodsBuilder.append(" list = ");
+        if (getProductCmptType().hasSupertype()) {
+            methodsBuilder.append("super.getLinks();");
+        } else {
+            methodsBuilder.append("new ");
+            methodsBuilder.appendClassName(ArrayList.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName
+                    + "<? extends " + IProductComponent.class.getName() + ">>");
+            methodsBuilder.appendln("();");
+        }
+
         IAssociation[] associations = getProductCmptType().getAssociations();
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)associations[i];
