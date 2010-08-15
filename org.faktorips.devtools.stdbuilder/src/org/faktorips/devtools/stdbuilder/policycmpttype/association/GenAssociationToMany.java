@@ -464,7 +464,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.closeBracket();
         if (association.isCompositionMasterToDetail()) {
             if (target != null && target.isDependantType() && inverseAssociation != null) {
-                methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
+                methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this", true));
             }
         }
         methodsBuilder.append(fieldName);
@@ -525,7 +525,7 @@ public class GenAssociationToMany extends GenAssociation {
                 methodsBuilder.append(generateCodeToCleanupOldReference(association, inverseAssociation, paramName));
             } else {
                 if (inverseAssociation != null) {
-                    methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "null"));
+                    methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "null", true));
                 }
             }
             methodsBuilder.closeBracket();
@@ -739,13 +739,9 @@ public class GenAssociationToMany extends GenAssociation {
                 .append("(").append(copyMapName).append(");");
 
         if (inverseAssociation != null) {
-            String targetClass = getQualifiedClassName(inverseAssociation.getPolicyCmptType(), false);
             if (targetType.isDependantType()) {
-                methodsBuilder.append("((");
-                methodsBuilder.appendClassName(targetClass);
-                methodsBuilder.append(")");
                 methodsBuilder.append(varCopy);
-                methodsBuilder.append(").");
+                methodsBuilder.append(".");
                 methodsBuilder.append(getMethodNameSetParentObjectInternal(true));
                 methodsBuilder.append("(");
                 methodsBuilder.append(paramName);

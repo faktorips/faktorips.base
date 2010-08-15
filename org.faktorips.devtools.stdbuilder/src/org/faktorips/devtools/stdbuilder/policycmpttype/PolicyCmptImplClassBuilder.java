@@ -175,7 +175,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
             generateMethodNewCopy_CopyMap(methodsBuilder);
             generateMethodCopyProperties(methodsBuilder);
-            generateMethodCopyAssociations(methodsBuilder);
+            generateMethodCopyAssociationsInternal(methodsBuilder);
         }
         if (isGenerateVisitorSupport()) {
             generateMethodAccept(methodsBuilder);
@@ -469,7 +469,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      * 
      */
-    protected void generateMethodCopyAssociations(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodCopyAssociationsInternal(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String javaDoc = getLocalizedText(getPcType(), "METHOD_COPY_ASSOCIATIONS_INTERNAL");
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         String varAbstractCopy = "abstractCopy";
