@@ -582,7 +582,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         boolean associationFound = false;
         for (IAssociation association : associations) {
             IProductCmptTypeAssociation ass = (IProductCmptTypeAssociation)association;
-            if (!ass.isValid()) {
+            if (!ass.isValid(getIpsProject())) {
                 continue;
             }
             if (!ass.isDerived()) {
@@ -646,7 +646,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodDoInitTableUsagesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         IProductCmptType type = getProductCmptType();
-        if (type == null || !type.isValid()) {
+        if (type == null || !type.isValid(getIpsProject())) {
             return;
         }
         ITableStructureUsage[] tsus = type.getTableStructureUsages();
@@ -837,10 +837,15 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends " //$NON-NLS-1$//$NON-NLS-2$
                 + IProductComponent.class.getName() + ">>"); //$NON-NLS-1$
-        methodsBuilder.append(" list = new "); //$NON-NLS-1$
-        methodsBuilder.appendClassName(ArrayList.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName //$NON-NLS-1$
-                + "<? extends " + IProductComponent.class.getName() + ">>"); //$NON-NLS-1$ //$NON-NLS-2$
-        methodsBuilder.appendln("();"); //$NON-NLS-1$
+        methodsBuilder.append(" list = ");
+        if (getProductCmptType().hasSupertype()) {
+            methodsBuilder.append("super.getLinks();");
+        } else {
+            methodsBuilder.append("new ");
+            methodsBuilder.appendClassName(ArrayList.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName
+                    + "<? extends " + IProductComponent.class.getName() + ">>");
+            methodsBuilder.appendln("();");
+        }
         IAssociation[] associations = getProductCmptType().getAssociations();
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)associations[i];
