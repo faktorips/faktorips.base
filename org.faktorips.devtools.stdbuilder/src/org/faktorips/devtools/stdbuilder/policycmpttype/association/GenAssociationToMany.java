@@ -775,8 +775,10 @@ public class GenAssociationToMany extends GenAssociation {
      *     return getNumOfCoveragesInternal();
      * }
      * </pre>
+     * 
+     * @param subsetAssociations List of associations that are subsets of the derived union association that this is a generator for.  
      */
-    protected void generateMethodGetNumOfForContainerAssociationImplementation(List<IAssociation> implAssociations,
+    protected void generateMethodGetNumOfForContainerAssociationImplementation(List<IAssociation> subsetAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
@@ -1081,14 +1083,14 @@ public class GenAssociationToMany extends GenAssociation {
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsElement ipsElement) {
-
+        // nothing to do
     }
 
     @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsElement ipsElement) {
-
+        // nothing to do
     }
 
     /**
