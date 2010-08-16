@@ -83,7 +83,8 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
-        locale = new Locale(element.getAttribute(PROPERTY_LOCALE));
+        String localeCode = element.getAttribute(PROPERTY_LOCALE);
+        locale = localeCode.equals("") ? null : new Locale(localeCode); //$NON-NLS-1$
         value = element.getAttribute(PROPERTY_VALUE);
         pluralValue = element.getAttribute(PROPERTY_PLURAL_VALUE);
 

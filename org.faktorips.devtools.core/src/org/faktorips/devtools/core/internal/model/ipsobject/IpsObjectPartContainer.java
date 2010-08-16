@@ -437,8 +437,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node item = nl.item(i);
-            if (item.getNodeType() != Node.ELEMENT_NODE
-                    || DescriptionHelper.XML_ELEMENT_NAME.equals(item.getNodeName())) {
+            if (item.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
             Element partEl = (Element)item;

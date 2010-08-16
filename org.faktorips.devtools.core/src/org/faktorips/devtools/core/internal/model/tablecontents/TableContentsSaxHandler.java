@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -91,7 +90,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = false;
             if (textBuffer != null) {
-                ((IpsObject)tableContents).setDescriptionInternal(textBuffer.toString());
+                tableContents.setDescription(textBuffer.toString());
             }
             textBuffer = null;
         } else if (EXTENSIONPROPERTIES.equals(qName)) {

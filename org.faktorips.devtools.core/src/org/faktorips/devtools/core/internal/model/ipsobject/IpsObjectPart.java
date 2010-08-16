@@ -23,15 +23,15 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.w3c.dom.Element;
 
 public abstract class IpsObjectPart extends IpsObjectPartContainer implements IIpsObjectPart {
 
-    private String description = ""; //$NON-NLS-1$
     private String id;
+
     private boolean deleted = false;
+
     protected boolean descriptionChangable = true;
 
     protected IpsObjectPart(IIpsObjectPartContainer parent, String id) {
@@ -87,24 +87,19 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
 
     @Override
     public String getDescription() {
-        return description;
+        // Deprecated method only returning the empty string from now on
+        return ""; //$NON-NLS-1$
     }
 
     @Override
     public boolean isDescriptionChangable() {
-        return descriptionChangable;
+        // Deprecated method only returning false from now on
+        return false;
     }
 
     @Override
     public void setDescription(String newDescription) {
-        ArgumentCheck.notNull(description, this);
-        ArgumentCheck.isTrue(isDescriptionChangable(), "The description attribute of this object is marked " + //$NON-NLS-1$
-                "as not changeable. See the method isDescriptionChangable() for explanation"); //$NON-NLS-1$
-
-        String oldDescription = description;
-        description = newDescription;
-
-        valueChanged(oldDescription, newDescription);
+        // Deprecated method doing nothing from now on
     }
 
     @Override
@@ -149,18 +144,11 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
                 this.id = s;
             } // else keep the id set in the constructor. migration for old files without id!
         }
-
-        if (isDescriptionChangable()) {
-            description = DescriptionHelper.getDescription(element);
-        }
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         element.setAttribute(PROPERTY_ID, "" + id); //$NON-NLS-1$
-        if (isDescriptionChangable()) {
-            DescriptionHelper.setDescription(element, description);
-        }
     }
 
     @Override

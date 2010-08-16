@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.migration;
 
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFile;
@@ -85,10 +86,19 @@ public class Migration_3_0_0_rc1 extends DefaultMigration {
     private void associateDescriptionToGeneratorLocale(IIpsObjectPartContainer ipsObjectPartContainer) {
         if (ipsObjectPartContainer instanceof IDescribedElement) {
             IDescribedElement describedElement = (IDescribedElement)ipsObjectPartContainer;
-            String existingDescription = ipsObjectPartContainer.getDescription();
-            IDescription newDescription = describedElement.newDescription();
-            newDescription.setText(existingDescription);
-            newDescription.setLocale(generatorLocale);
+
+            /*
+             * There is exactly one description or none, it has already been loaded by XML
+             * initialization.
+             */
+            IDescription description;
+            Set<IDescription> descriptionSet = describedElement.getDescriptions();
+            if (descriptionSet.size() > 0) {
+                description = descriptionSet.toArray(new IDescription[1])[0];
+            } else {
+                description = describedElement.newDescription();
+            }
+            description.setLocale(generatorLocale);
         }
     }
 

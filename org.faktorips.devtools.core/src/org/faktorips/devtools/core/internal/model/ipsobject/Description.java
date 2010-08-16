@@ -75,7 +75,9 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        validateLocale(list, ipsProject);
+        // TODO AW: Out commented for now, it needs to be decided if this will be necessary
+        // Right now it conflicts with the integration test projects that cannot be migrated yet
+        // validateLocale(list, ipsProject);
     }
 
     private void validateLocale(MessageList list, IIpsProject ipsProject) {
@@ -98,7 +100,8 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
-        locale = new Locale(element.getAttribute(PROPERTY_LOCALE));
+        String localeCode = element.getAttribute(PROPERTY_LOCALE);
+        locale = localeCode.equals("") ? null : new Locale(localeCode); //$NON-NLS-1$
         text = element.getTextContent();
 
         super.initPropertiesFromXml(element, id);

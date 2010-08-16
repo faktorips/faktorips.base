@@ -45,9 +45,6 @@ import org.w3c.dom.Element;
  */
 public abstract class IpsObject extends IpsObjectPartContainer implements IIpsObject {
 
-    /** The description currently attached to this <tt>IpsObject</tt> */
-    private String description = ""; //$NON-NLS-1$
-
     /** Flag indicating whether this <tt>IpsObject</tt> was created from a parsable file content. */
     private boolean fromParsableFile = false;
 
@@ -124,27 +121,19 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     @Override
     public final boolean isDescriptionChangable() {
-        return true;
+        // Deprecated method only returning false from now on
+        return false;
     }
 
     @Override
     public void setDescription(String newDescription) {
-        description = newDescription;
-        objectHasChanged();
-    }
-
-    /**
-     * This is a not published method to set the description from outside of this class without
-     * triggering the object changed event handler. It is used by <tt>TableContentsSaxHandler</tt>
-     * to load the description.
-     */
-    public void setDescriptionInternal(String newDescription) {
-        description = newDescription;
+        // Deprecated method doing nothing from now on
     }
 
     @Override
     public String getDescription() {
-        return description;
+        // Deprecated method only returning the empty string from now on
+        return ""; //$NON-NLS-1$
     }
 
     /** Notifies the model that this <tt>IpsObject</tt> has changed. */
@@ -221,7 +210,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     @Override
     protected void propertiesToXml(Element element) {
-        DescriptionHelper.setDescription(element, description);
+        // Empty implementation now, not removed because of subclasses calling super implementation.
     }
 
     @Override
@@ -232,7 +221,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
-        description = DescriptionHelper.getDescription(element);
+        // Empty implementation now, not removed because of subclasses calling super implementation.
     }
 
     @Override
