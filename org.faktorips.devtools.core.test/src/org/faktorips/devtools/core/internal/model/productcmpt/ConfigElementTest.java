@@ -25,7 +25,6 @@ import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -466,19 +465,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         newCfgElement.initFromXml(xmlElement);
 
         assertNull(newCfgElement.getValue());
-    }
-
-    /**
-     * Tests for the correct type of exception to be thrown - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            configElement.newPart(PolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
     }
 
     private class InvalidDatatype implements ValueDatatype {

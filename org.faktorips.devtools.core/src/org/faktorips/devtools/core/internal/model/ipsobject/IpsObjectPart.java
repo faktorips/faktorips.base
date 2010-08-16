@@ -30,9 +30,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
 
     private String id;
 
-    private boolean deleted = false;
-
-    protected boolean descriptionChangable = true;
+    private boolean deleted;
 
     protected IpsObjectPart(IIpsObjectPartContainer parent, String id) {
         super(parent, ""); //$NON-NLS-1$
@@ -57,7 +55,6 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         if (container == null) {
             return null;
         }
-
         return container.getIpsObject();
     }
 
@@ -83,23 +80,6 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     @Override
     public boolean isDeleted() {
         return deleted;
-    }
-
-    @Override
-    public String getDescription() {
-        // Deprecated method only returning the empty string from now on
-        return ""; //$NON-NLS-1$
-    }
-
-    @Override
-    public boolean isDescriptionChangable() {
-        // Deprecated method only returning false from now on
-        return false;
-    }
-
-    @Override
-    public void setDescription(String newDescription) {
-        // Deprecated method doing nothing from now on
     }
 
     @Override
@@ -153,10 +133,9 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
 
     @Override
     public int hashCode() {
-        final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+        result = 31 * result + ((id == null) ? 0 : id.hashCode());
+        result = 31 * result + ((parent == null) ? 0 : parent.hashCode());
         return result;
     }
 
@@ -168,10 +147,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof IpsObjectPart)) {
             return false;
         }
         IpsObjectPart other = (IpsObjectPart)obj;
@@ -182,6 +158,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         } else if (!id.equals(other.id)) {
             return false;
         }
+        // TODO AW: Is the id not sufficient?
         if (parent == null) {
             if (other.parent != null) {
                 return false;
@@ -202,8 +179,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
              * ipsobjectparts in ModelExplorer and ProductExplorer.
              */
             return null;
-        } else {
-            return super.getAdapter(adapterType);
         }
+        return super.getAdapter(adapterType);
     }
 }

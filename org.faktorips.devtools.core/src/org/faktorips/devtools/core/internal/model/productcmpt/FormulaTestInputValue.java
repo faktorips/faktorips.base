@@ -20,7 +20,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
@@ -35,7 +35,7 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormulaTestInputValue {
+public class FormulaTestInputValue extends IpsObjectPart implements IFormulaTestInputValue {
 
     final static String TAG_NAME = "FormulaTestInputValue"; //$NON-NLS-1$
 

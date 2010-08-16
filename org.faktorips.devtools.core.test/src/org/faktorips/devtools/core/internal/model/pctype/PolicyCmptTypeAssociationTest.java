@@ -28,9 +28,6 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -325,19 +322,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
         assertEquals("blabla", copy.getDescription());
-    }
-
-    /**
-     * Tests for the correct type of excetion to be thrwon - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            association.newPart(PolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
     }
 
     // TODO

@@ -465,28 +465,27 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof PersistentAssociationInfo) {
             persistenceAssociationInfo = part;
+            return true;
         }
+        return super.addPart(part);
     }
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        IIpsObjectPart part = super.newPart(xmlTag, id);
-        if (part != null) {
-            return part;
-        }
-
         if (xmlTag.getTagName().equals(IPersistentAssociationInfo.XML_TAG)) {
             persistenceAssociationInfo = new PersistentAssociationInfo(this, id);
             return persistenceAssociationInfo;
         }
-        return null;
+        return super.newPart(xmlTag, id);
     }
 
     @Override
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+        // TODO AW: I don't think this implementation is reasonable as it only should create those
+        // instances that can actually be part of the association.
         try {
             Constructor<? extends IIpsObjectPart> constructor = partType.getConstructor(IIpsObjectPart.class,
                     String.class);
@@ -495,7 +494,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         } catch (Exception e) {
             IpsPlugin.log(e);
         }
-        throw new IllegalArgumentException("Unsupported part type: " + partType); //$NON-NLS-1$
+        return super.newPart(partType);
     }
 
     @Override
@@ -503,10 +502,10 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         IIpsElement[] superChildren = super.getChildren();
         if (persistenceAssociationInfo == null) {
             return superChildren;
-        } else {
-            List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
-            children.add(persistenceAssociationInfo);
-            return children.toArray(new IIpsElement[children.size()]);
         }
+        List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
+        children.add(persistenceAssociationInfo);
+        return children.toArray(new IIpsElement[children.size()]);
     }
+
 }

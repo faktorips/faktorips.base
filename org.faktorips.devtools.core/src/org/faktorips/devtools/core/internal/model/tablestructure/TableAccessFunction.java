@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -21,14 +21,11 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAccessFunction {
+public class TableAccessFunction extends IpsObjectPart implements ITableAccessFunction {
 
     private String accessedColumn;
     private String type;
     private String[] argTypes = new String[0];
-
-    // hides field in supertype. Done to avoid update-events fired on description changes.
-    private String description;
 
     public TableAccessFunction(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
@@ -92,21 +89,9 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
         return types; // return defensive copy
     }
 
-    /**
-     * Overridden to avoid change-notifications on description changes. This method is necessary,
-     * because we hide the field holding the description in supertype.
-     */
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Overridden to avoid change-notifications on description changes.
-     */
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
+    public boolean hasDescriptionSupport() {
+        return true;
     }
 
 }

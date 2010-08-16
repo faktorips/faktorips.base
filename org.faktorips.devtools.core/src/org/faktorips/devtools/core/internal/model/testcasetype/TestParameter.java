@@ -22,7 +22,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
@@ -62,11 +61,6 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     @Override
     protected Element createElement(Document doc) {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
-    }
-
-    @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 
     @Override
@@ -152,10 +146,9 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     public TestCaseType getTestCaseType() {
         if (isRoot()) {
             return (TestCaseType)getParent();
-        } else {
-            ITestParameter root = getRootParameter();
-            return (TestCaseType)root.getParent();
         }
+        ITestParameter root = getRootParameter();
+        return (TestCaseType)root.getParent();
     }
 
 }

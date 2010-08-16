@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -33,13 +31,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.message.MessageList;
 
-public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChangeListener {
+public class IpsObjectTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot rootFolder;
-    private IIpsSrcFile srcFile;
     private IIpsObject ipsObject;
-    private ContentChangeEvent lastEvent;
 
     @Override
     protected void setUp() throws Exception {
@@ -47,7 +43,6 @@ public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChan
         ipsProject = this.newIpsProject("TestProject");
         rootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
         ipsObject = newPolicyCmptType(ipsProject, "pack.TestProduct");
-        srcFile = ipsObject.getIpsSrcFile();
     }
 
     public void testGetQualifiedName() throws CoreException {
@@ -55,14 +50,6 @@ public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChan
         IIpsPackageFragment defaultFolder = rootFolder.getIpsPackageFragment("");
         IIpsSrcFile file = defaultFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestProduct", true, null);
         assertEquals("TestProduct", file.getIpsObject().getQualifiedName());
-    }
-
-    public void testSetDescription() {
-        ipsObject.getIpsModel().addChangeListener(this);
-        ipsObject.setDescription("new description");
-        assertEquals("new description", ipsObject.getDescription());
-        assertTrue(srcFile.isDirty());
-        assertEquals(srcFile, lastEvent.getIpsSrcFile());
     }
 
     public void testValidateEqualIpsObjectAlreadyExistsInIpsObjectPath() throws CoreException {
@@ -86,11 +73,6 @@ public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChan
 
         msgList = aPolicyProjectB.validate(b);
         assertNotNull(msgList.getMessageByCode(IIpsObject.MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD));
-    }
-
-    @Override
-    public void contentsChanged(ContentChangeEvent event) {
-        lastEvent = event;
     }
 
 }

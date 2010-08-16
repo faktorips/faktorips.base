@@ -494,4 +494,9 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
     }
 
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
 }

@@ -15,16 +15,17 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -207,7 +208,9 @@ public class TableContentsTest extends AbstractDependencyTest {
     }
 
     public void testToXmlDocument() {
-        table.setDescription("blabla");
+        IDescription description = table.newDescription();
+        description.setLocale(Locale.GERMAN);
+        description.setText("blabla");
         table.setTableStructure("RateTableStructure");
         table.newColumn("");
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
@@ -216,13 +219,13 @@ public class TableContentsTest extends AbstractDependencyTest {
         row.setValue(0, "value");
 
         Element element = table.toXml(newDocument());
-        table.setDescription("");
+        description.setText("");
         table.setTableStructure("");
         table.deleteColumn(0);
         gen1.delete();
         gen2.delete();
         table.initFromXml(element);
-        assertEquals("blabla", table.getDescription());
+        assertEquals("blabla", description.getText());
         assertEquals("RateTableStructure", table.getTableStructure());
         assertEquals(1, table.getNumOfColumns());
         assertEquals(2, table.getNumOfGenerations());
@@ -231,19 +234,6 @@ public class TableContentsTest extends AbstractDependencyTest {
         row = gen.getRows()[0];
         assertEquals("value", row.getValue(0));
 
-    }
-
-    /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            table.newPart(PolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
     }
 
     public void testValidateKeyValuesFromTo() throws Exception {

@@ -20,7 +20,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -132,19 +131,6 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         range.setToColumn("unknownColumn");
         columns = range.getColumns();
         assertEquals(0, columns.length);
-    }
-
-    /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            range.newPart(IPolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
     }
 
     /**

@@ -37,7 +37,7 @@ public class IpsObjectPartState {
     /**
      * Type information to create a new IIpsObjectPart.
      */
-    private Class<?> type;
+    private Class<? extends IIpsObjectPart> type;
 
     /**
      * The complete state-information to create a copy of an IIpsObjectPart.
@@ -91,8 +91,9 @@ public class IpsObjectPartState {
 
         Attr typeAttr = (Attr)nodes.item(0).getAttributes().getNamedItem("type"); //$NON-NLS-1$
         String typeName = typeAttr.getValue();
+
         try {
-            type = Class.forName(typeName);
+            type = (Class<? extends IIpsObjectPart>)Class.forName(typeName);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -119,7 +120,7 @@ public class IpsObjectPartState {
      * @return The newly created IIpsObjectPart, initialized to match the stored state.
      */
     public IIpsObjectPart newPart(IIpsObjectPartContainer parent) {
-        IIpsObjectPart part = parent.newPart(type);
+        IIpsObjectPart part = ((IpsObjectPartContainer)parent).newPart(type);
         NodeList nodes = state.getDocumentElement().getElementsByTagName(ELEMENT_DATA);
 
         if (nodes.getLength() != 1) {

@@ -64,30 +64,34 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     public IIpsElement[] getChildren() {
-        return testParameters.toArray(new IIpsElement[0]);
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+        childrenList.addAll(testParameters);
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override
     protected void reinitPartCollections() {
-        testParameters = new ArrayList<ITestParameter>();
+        super.reinitPartCollections();
+        testParameters.clear();
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof ITestParameter) {
             testParameters.add((ITestParameter)part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        return super.addPart(part);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (part instanceof ITestParameter) {
             testParameters.remove(part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        return super.removePart(part);
     }
 
     @Override
@@ -100,17 +104,13 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         } else if (TestRuleParameter.TAG_NAME.equals(xmlTagName)) {
             return newTestRuleParameterInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
+
+        return super.newPart(xmlTag, id);
     }
 
     @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TEST_CASE_TYPE;
-    }
-
-    @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
     @Override
@@ -128,6 +128,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     private void addDependenciesForTestPolicyCmptTypeParams(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details,
             ITestPolicyCmptTypeParameter[] parameters) {
+
         for (ITestPolicyCmptTypeParameter parameter : parameters) {
             if (StringUtils.isNotEmpty(parameter.getPolicyCmptType())) {
                 IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
@@ -145,6 +146,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     private void addDependenciesForTestPolicyCmptTypeParameterAttributes(ITestAttribute[] attributes,
             Map<IDependency, List<IDependencyDetail>> details,
             Set<IDependency> dependencies) {
+
         for (ITestAttribute attribute : attributes) {
             if (!StringUtils.isEmpty(attribute.getPolicyCmptType())) {
                 IDependency dependency = new DatatypeDependency(getQualifiedNameType(), attribute.getPolicyCmptType());
@@ -211,6 +213,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     @Override
     public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter)
             throws CoreException {
+
         ITestPolicyCmptTypeParameter[] parameters = getTestParameters(TestParameterType.INPUT,
                 TestPolicyCmptTypeParameter.class, inputTestPolicyCmptTypeParameter).toArray(
                 new ITestPolicyCmptTypeParameter[0]);
@@ -496,6 +499,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     private void getValidationRules(ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters,
             List<IValidationRule> validationRules,
             IIpsProject ipsProject) throws CoreException {
+
         for (ITestPolicyCmptTypeParameter parameter : testPolicyCmptTypeParameters) {
             IPolicyCmptType policyCmptType = parameter.findPolicyCmptType(ipsProject);
             if (policyCmptType == null) {
@@ -520,6 +524,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     private void getAllChildTestParameter(ITestParameter testParameter, List<ITestParameter> allParameters)
             throws CoreException {
+
         allParameters.add(testParameter);
         IIpsElement[] elems = testParameter.getChildren();
         for (IIpsElement elem : elems) {
@@ -537,6 +542,16 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             result.addAll(Arrays.asList(project.findAllTestCaseSrcFiles(this)));
         }
         return result.toArray(new IIpsSrcFile[result.size()]);
+    }
+
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
+    @Override
+    public boolean hasLabelSupport() {
+        return true;
     }
 
 }

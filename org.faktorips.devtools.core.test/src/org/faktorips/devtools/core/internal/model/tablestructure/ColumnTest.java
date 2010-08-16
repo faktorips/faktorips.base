@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -89,19 +88,6 @@ public class ColumnTest extends AbstractIpsPluginTest {
         assertEquals("42", column.getId());
         assertEquals("premium", column.getName());
         assertEquals("Money", column.getDatatype());
-    }
-
-    /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            column.newPart(PolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
     }
 
     public void testValidateName() throws Exception {

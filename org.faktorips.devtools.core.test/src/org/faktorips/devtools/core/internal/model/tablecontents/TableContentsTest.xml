@@ -3,7 +3,8 @@
 <!--
  Test data for TableContentsTest.java
 -->
-<TableContents description="blabla" tableStructure="RateTableStructure" numOfColumns="2">
+<TableContents tableStructure="RateTableStructure" numOfColumns="2">
+	<Description locale="de">blabla</Description>
     <ExtensionProperties>
         <Value id="prop1" isNull="false"><![CDATA[XYZ]]></Value>
         <Value id="prop2" isNull="false"><![CDATA[ABC]]></Value>

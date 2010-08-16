@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.bf;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
@@ -99,15 +98,6 @@ public class ActionBFE extends MethodCallBFE implements IActionBFE {
                         Message.ERROR, this));
             }
         }
-    }
-
-    @Override
-    public RenameRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    public boolean isRenameRefactoringSupported() {
-        return false;
     }
 
 }

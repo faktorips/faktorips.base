@@ -70,47 +70,48 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
 
     @Override
     protected void reinitPartCollections() {
+        super.reinitPartCollections();
         formulaTestInputValues.clear();
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-    }
-
-    @Override
-    protected IIpsObjectPart newPart(Element partEl, String id) {
-        String xmlTagName = partEl.getNodeName();
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        String xmlTagName = xmlTag.getNodeName();
         if (FormulaTestInputValue.TAG_NAME.equals(xmlTagName)) {
             return newFormulaTestInputValueInternal(id);
+
         } else if (PROPERTY_EXPECTED_RESULT.equalsIgnoreCase(xmlTagName)) {
             // ignore expected result nodes, will be parsed in the this#initPropertiesFromXml method
             return null;
         }
-        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
+
+        return super.newPart(xmlTag, id);
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof IFormulaTestInputValue) {
             formulaTestInputValues.add((IFormulaTestInputValue)part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        return super.addPart(part);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (part instanceof IFormulaTestInputValue) {
             formulaTestInputValues.remove(part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        return super.removePart(part);
     }
 
     @Override
     public IIpsElement[] getChildren() {
-        return formulaTestInputValues.toArray(new IIpsElement[formulaTestInputValues.size()]);
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+        childrenList.addAll(formulaTestInputValues);
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override
@@ -297,68 +298,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         return formulaUpdater.isFormulaTestCaseChanged();
     }
 
-    private class FormulaUpdater implements IWorkspaceRunnable {
-
-        private boolean formulaTestCaseChanged;
-        private String[] newIdentifiers;
-        private List<IFormulaTestInputValue> oldInputValues;
-        private List<IFormulaTestInputValue> newListOfInputValues;
-        private IIpsProject ipsProject;
-
-        public FormulaUpdater(String[] newIdentifiers, List<IFormulaTestInputValue> oldInputValues,
-                List<IFormulaTestInputValue> newListOfInputValues, IIpsProject ipsProject) {
-            this.newIdentifiers = newIdentifiers;
-            this.oldInputValues = oldInputValues;
-            this.newListOfInputValues = newListOfInputValues;
-            this.ipsProject = ipsProject;
-        }
-
-        @Override
-        public void run(IProgressMonitor monitor) throws CoreException {
-            for (int i = 0; i < newIdentifiers.length; i++) {
-                IFormulaTestInputValue inputValue = getFormulaTestInputValue(newIdentifiers[i]);
-                if (inputValue == null) {
-                    inputValue = newFormulaTestInputValue();
-                    inputValue.setIdentifier(newIdentifiers[i]);
-                    // try to set the default value depending on the corresponding value datatype
-                    try {
-                        Datatype datatype = inputValue.findDatatypeOfFormulaParameter(ipsProject);
-                        if (datatype != null) {
-                            inputValue.setValue(((ValueDatatype)datatype).getDefaultValue());
-                        }
-                        /*
-                         * ignore if the datatype is not value datatype this is a validation error
-                         * see FormulaTestInputValue#validateThis method
-                         */
-                    } catch (CoreException e) {
-                        /*
-                         * ignore exception if the datatype wasn't found, this error will be handled
-                         * as validation error see FormulaTestInputValue#validateThis method
-                         */
-                    }
-                    formulaTestCaseChanged = true;
-                } else {
-                    int idxOld = formulaTestInputValues.indexOf(inputValue);
-                    oldInputValues.remove(inputValue);
-                    if (idxOld != i) {
-                        formulaTestCaseChanged = true;
-                    }
-                }
-                newListOfInputValues.add(inputValue);
-            }
-            // delete old input value
-            for (IFormulaTestInputValue oldInputValue : oldInputValues) {
-                oldInputValue.delete();
-                formulaTestCaseChanged = true;
-            }
-        }
-
-        public boolean isFormulaTestCaseChanged() {
-            return formulaTestCaseChanged;
-        }
-
-    }
-
     @Override
     public boolean isFormulaTestCaseEmpty() {
         if (formulaTestInputValues.size() == 0) {
@@ -421,6 +360,68 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
                     name, getFormula().getName());
             list.add(new Message(MSGCODE_IDENTIFIER_MISMATCH, text, Message.WARNING, this, PROPERTY_NAME));
         }
+    }
+
+    private class FormulaUpdater implements IWorkspaceRunnable {
+
+        private boolean formulaTestCaseChanged;
+        private String[] newIdentifiers;
+        private List<IFormulaTestInputValue> oldInputValues;
+        private List<IFormulaTestInputValue> newListOfInputValues;
+        private IIpsProject ipsProject;
+
+        public FormulaUpdater(String[] newIdentifiers, List<IFormulaTestInputValue> oldInputValues,
+                List<IFormulaTestInputValue> newListOfInputValues, IIpsProject ipsProject) {
+            this.newIdentifiers = newIdentifiers;
+            this.oldInputValues = oldInputValues;
+            this.newListOfInputValues = newListOfInputValues;
+            this.ipsProject = ipsProject;
+        }
+
+        @Override
+        public void run(IProgressMonitor monitor) throws CoreException {
+            for (int i = 0; i < newIdentifiers.length; i++) {
+                IFormulaTestInputValue inputValue = getFormulaTestInputValue(newIdentifiers[i]);
+                if (inputValue == null) {
+                    inputValue = newFormulaTestInputValue();
+                    inputValue.setIdentifier(newIdentifiers[i]);
+                    // try to set the default value depending on the corresponding value datatype
+                    try {
+                        Datatype datatype = inputValue.findDatatypeOfFormulaParameter(ipsProject);
+                        if (datatype != null) {
+                            inputValue.setValue(((ValueDatatype)datatype).getDefaultValue());
+                        }
+                        /*
+                         * ignore if the datatype is not value datatype this is a validation error
+                         * see FormulaTestInputValue#validateThis method
+                         */
+                    } catch (CoreException e) {
+                        /*
+                         * ignore exception if the datatype wasn't found, this error will be handled
+                         * as validation error see FormulaTestInputValue#validateThis method
+                         */
+                    }
+                    formulaTestCaseChanged = true;
+                } else {
+                    int idxOld = formulaTestInputValues.indexOf(inputValue);
+                    oldInputValues.remove(inputValue);
+                    if (idxOld != i) {
+                        formulaTestCaseChanged = true;
+                    }
+                }
+                newListOfInputValues.add(inputValue);
+            }
+            // delete old input value
+            for (IFormulaTestInputValue oldInputValue : oldInputValues) {
+                oldInputValue.delete();
+                formulaTestCaseChanged = true;
+            }
+        }
+
+        public boolean isFormulaTestCaseChanged() {
+            return formulaTestCaseChanged;
+        }
+
     }
 
 }

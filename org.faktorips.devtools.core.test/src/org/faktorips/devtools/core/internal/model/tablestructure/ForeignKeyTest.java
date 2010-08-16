@@ -17,7 +17,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.w3c.dom.Element;
 
 public class ForeignKeyTest extends AbstractIpsPluginTest {
@@ -95,16 +94,4 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
         assertEquals("gender", key.getKeyItemNames()[1]);
     }
 
-    /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            key.newPart(IPolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
-    }
 }

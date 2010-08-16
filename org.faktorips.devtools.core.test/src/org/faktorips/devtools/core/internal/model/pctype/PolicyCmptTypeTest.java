@@ -669,13 +669,6 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertTrue(policyCmptType.newPart(Method.class) instanceof IMethod);
         assertTrue(policyCmptType.newPart(PolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
         assertTrue(policyCmptType.newPart(ValidationRule.class) instanceof IValidationRule);
-
-        try {
-            policyCmptType.newPart(Object.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
     }
 
     public void testIsAggregateRoot() throws CoreException {

@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * 
  * @author Alexander Weickmann
  */
-public class Label extends AtomicIpsObjectPart implements ILabel {
+public class Label extends IpsObjectPart implements ILabel {
 
     private Locale locale;
 
@@ -125,11 +125,6 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG_NAME);
-    }
-
-    @Override
-    public boolean isDescriptionChangable() {
-        return false;
     }
 
 }

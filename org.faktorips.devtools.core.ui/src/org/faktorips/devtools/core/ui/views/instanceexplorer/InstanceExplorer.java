@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -53,7 +57,6 @@ import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -62,7 +65,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
-import org.w3c.dom.Element;
 
 /**
  * <p>
@@ -469,28 +471,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         }
 
         @Override
-        protected void addPart(IIpsObjectPart part) {
-            // Nothing to do
-        }
-
-        @Override
         public IIpsElement[] getChildren() {
-            return new IIpsElement[] { metaObject };
-        }
-
-        @Override
-        protected IIpsObjectPart newPart(Element xmlTag, String id) {
-            return null;
-        }
-
-        @Override
-        protected void reinitPartCollections() {
-            // Nothing to do
-        }
-
-        @Override
-        protected void removePart(IIpsObjectPart part) {
-            // Nothing to do
+            IIpsElement[] children = super.getChildren();
+            List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+            childrenList.add(metaObject);
+            return childrenList.toArray(new IIpsElement[childrenList.size()]);
         }
 
         @Override
@@ -506,11 +491,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         @Override
         public IDependency[] dependsOn() throws CoreException {
             return new IDependency[0];
-        }
-
-        @Override
-        public IIpsObjectPart newPart(Class<?> partType) {
-            return null;
         }
 
     }

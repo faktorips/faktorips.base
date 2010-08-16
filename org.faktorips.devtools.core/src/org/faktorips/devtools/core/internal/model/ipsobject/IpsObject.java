@@ -119,23 +119,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         return null;
     }
 
-    @Override
-    public final boolean isDescriptionChangable() {
-        // Deprecated method only returning false from now on
-        return false;
-    }
-
-    @Override
-    public void setDescription(String newDescription) {
-        // Deprecated method doing nothing from now on
-    }
-
-    @Override
-    public String getDescription() {
-        // Deprecated method only returning the empty string from now on
-        return ""; //$NON-NLS-1$
-    }
-
     /** Notifies the model that this <tt>IpsObject</tt> has changed. */
     @Override
     protected void objectHasChanged() {

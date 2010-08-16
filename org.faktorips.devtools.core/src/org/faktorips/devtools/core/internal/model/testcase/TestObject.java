@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -114,17 +113,11 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
             // ignore exception check type of root
         }
         return testCase.isTypeOrDefault(root.getTestParameterName(), TestParameterType.COMBINED, DEFAULT_TYPE);
-
     }
 
     @Override
     protected Element createElement(Document doc) {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
-    }
-
-    @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 
 }

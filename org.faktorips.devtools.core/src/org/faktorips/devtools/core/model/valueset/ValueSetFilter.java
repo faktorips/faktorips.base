@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.TimedEnumDatatype;
 import org.faktorips.datatype.TimedEnumDatatypeUtil;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.w3c.dom.Document;
@@ -124,7 +124,7 @@ public class ValueSetFilter {
         return newSet;
     }
 
-    private static class InternalValueSetOwner extends AtomicIpsObjectPart implements IValueSetOwner {
+    private static class InternalValueSetOwner extends IpsObjectPart implements IValueSetOwner {
 
         private ValueDatatype datatype;
         private IValueSet valueSet;

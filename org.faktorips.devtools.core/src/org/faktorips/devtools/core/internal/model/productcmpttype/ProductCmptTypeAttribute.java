@@ -68,18 +68,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] superChildren = super.getChildren();
-        if (valueSet != null) {
-            List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
-            children.add(valueSet);
-            return children.toArray(new IIpsElement[children.size()]);
-        } else {
-            return superChildren;
-        }
-    }
-
-    @Override
     public String getPropertyName() {
         return name;
     }
@@ -147,38 +135,41 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public IIpsObjectPart newPart(Class partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+    public IIpsElement[] getChildren() {
+        IIpsElement[] superChildren = super.getChildren();
+        if (valueSet != null) {
+            List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
+            children.add(valueSet);
+            return children.toArray(new IIpsElement[children.size()]);
+        }
+        return superChildren;
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
-        super.addPart(part);
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
+            return true;
         }
+        return super.addPart(part);
     }
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        IIpsObjectPart part = super.newPart(xmlTag, id);
-        if (part != null) {
-            return part;
-        }
-
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
         }
-        return null;
+        return super.newPart(xmlTag, id);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
-        super.removePart(part);
+    protected boolean removePart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = new UnrestrictedValueSet(this, getNextPartId());
+            return true;
         }
+        return super.removePart(part);
     }
 
 }

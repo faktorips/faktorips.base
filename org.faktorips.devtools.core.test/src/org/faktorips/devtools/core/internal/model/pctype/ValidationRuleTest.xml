@@ -3,7 +3,7 @@
 <!--
  Test data for AttributeImplTest.java
 -->
-<ValidationRuleDef id="42" name="checkAge" appliedInAllBusinessFunctions="false" description="blabla" messageSeverity="warning" messageCode="ageMissing" messageText="messageText">
+<ValidationRuleDef id="42" name="checkAge" appliedInAllBusinessFunctions="false" messageSeverity="warning" messageCode="ageMissing" messageText="messageText">
     <BusinessFunction name="NewOffer"/>
     <BusinessFunction name="Renewal"/>
     <ValidatedAttribute name="a"/>

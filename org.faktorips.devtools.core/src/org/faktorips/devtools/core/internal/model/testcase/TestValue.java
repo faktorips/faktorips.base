@@ -18,8 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -179,32 +177,6 @@ public class TestValue extends TestObject implements ITestValue {
                 list.add(msg);
             }
         }
-    }
-
-    @Override
-    public IIpsElement[] getChildren() {
-        return new IIpsElement[0];
-    }
-
-    @Override
-    protected void reinitPartCollections() {
-        // Nothing to do
-    }
-
-    @Override
-    protected void addPart(IIpsObjectPart part) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected void removePart(IIpsObjectPart part) {
-        throw new UnsupportedOperationException();
-
-    }
-
-    @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        return null;
     }
 
     @Override

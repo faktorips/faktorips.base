@@ -276,19 +276,6 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertTrue(attribute.isOverwrite());
     }
 
-    /**
-     * Tests for the correct type of excetion to be thrwon - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            attribute.newPart(PolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
-    }
-
     public void testValidate_productRelevant() throws Exception {
         pcType.setConfigurableByProductCmptType(true);
         attribute.setProductRelevant(true);

@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class BaseIpsObjectPart extends DescribedAndLabeledIpsObjectPart {
+public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
     private List<String> tagsToIgnore = new ArrayList<String>(0);
 
@@ -54,58 +54,62 @@ public abstract class BaseIpsObjectPart extends DescribedAndLabeledIpsObjectPart
     public IIpsElement[] getChildren() {
         IIpsElement[] children = super.getChildren();
 
-        List<IIpsElement> result = new ArrayList<IIpsElement>(Arrays.asList(children));
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
         for (IpsObjectPartCollection<?> container : partCollections) {
             int size = container.size();
             for (int i = 0; i < size; i++) {
-                result.add(container.getPart(i));
+                childrenList.add(container.getPart(i));
             }
         }
 
-        return result.toArray(new IIpsElement[result.size()]);
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        IIpsObjectPart part = super.newPart(xmlTag, id);
-        if (part != null) {
-            return part;
+        if (tagsToIgnore.contains(xmlTag.getNodeName())) {
+            return null;
         }
 
         for (IpsObjectPartCollection<?> container : partCollections) {
-            part = container.newPart(xmlTag, id);
+            IIpsObjectPart part = container.newPart(xmlTag, id);
             if (part != null) {
                 return part;
             }
         }
 
-        if (tagsToIgnore.contains(xmlTag.getNodeName())) {
-            return null;
-        }
-
-        throw new RuntimeException("Could not create part for xml element " + xmlTag.getNodeName()); //$NON-NLS-1$
-    }
-
-    @Deprecated
-    protected void reAddPart(IIpsObjectPart part) {
-        addPart(part);
+        return super.newPart(xmlTag, id);
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
-        int childrenCount = getChildren().length;
-        super.addPart(part);
-        if (getChildren().length > childrenCount) {
-            return;
-        }
-
+    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
         for (IpsObjectPartCollection<?> container : partCollections) {
-            if (container.addPart(part)) {
-                return;
+            IIpsObjectPart newPart = container.newPart(partType);
+            if (newPart != null) {
+                return newPart;
             }
         }
+        throw new IllegalArgumentException("Could not create a new part for class " + partType); //$NON-NLS-1$
+    }
 
-        throw new IllegalArgumentException("Could not add part " + part); //$NON-NLS-1$
+    @Override
+    protected boolean addPart(IIpsObjectPart part) {
+        for (IpsObjectPartCollection<?> container : partCollections) {
+            if (container.addPart(part)) {
+                return true;
+            }
+        }
+        return super.addPart(part);
+    }
+
+    @Override
+    protected boolean removePart(IIpsObjectPart part) {
+        for (IpsObjectPartCollection<?> container : partCollections) {
+            if (container.removePart(part)) {
+                return true;
+            }
+        }
+        return super.removePart(part);
     }
 
     @Override
@@ -114,28 +118,6 @@ public abstract class BaseIpsObjectPart extends DescribedAndLabeledIpsObjectPart
         for (IpsObjectPartCollection<?> container : partCollections) {
             container.clear();
         }
-    }
-
-    @Override
-    protected void removePart(IIpsObjectPart part) {
-        super.removePart(part);
-        for (IpsObjectPartCollection<?> container : partCollections) {
-            if (container.removePart(part)) {
-                return;
-            }
-        }
-        return;
-    }
-
-    @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        for (IpsObjectPartCollection<?> container : partCollections) {
-            IIpsObjectPart newPart = container.newPart(partType);
-            if (newPart != null) {
-                return newPart;
-            }
-        }
-        throw new IllegalArgumentException("Could not create a new part for class " + partType); //$NON-NLS-1$
     }
 
 }

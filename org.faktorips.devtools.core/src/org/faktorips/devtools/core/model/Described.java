@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.model;
 
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * An interface that marks an object as having a description.
@@ -31,7 +33,8 @@ public interface Described {
      * means of the setter method.
      * 
      * @deprecated In version 3.1 another interface called {@link IDescribedElement} was introduced.
-     *             This method doesn't work any longer.
+     *             This method now delegates to
+     *             {@link IIpsObjectPartContainer#hasDescriptionSupport()}.
      */
     // Deprecated since 3.1
     @Deprecated
@@ -43,7 +46,12 @@ public interface Described {
      * @throws IllegalArgumentException if newDescription is null.
      * 
      * @deprecated In version 3.1 another interface called {@link IDescribedElement} was introduced.
-     *             This method doesn't work any longer.
+     *             This method now sets the text of the first {@link IDescription} retrieved via
+     *             {@link IIpsObjectPartContainer#getDescriptions()}. If there is no
+     *             {@link IDescription} at all, then one is created. In addition, an
+     *             {@link UnsupportedOperationException} is thrown, should
+     *             {@link #isDescriptionChangable()} return <tt>false</tt> at the moment this
+     *             operation is called.
      */
     // Deprecated since 3.1
     @Deprecated
@@ -53,7 +61,9 @@ public interface Described {
      * Returns the object's description. This method never returns null.
      * 
      * @deprecated In version 3.1 another interface called {@link IDescribedElement} was introduced.
-     *             This method doesn't work any longer.
+     *             This method now returns the text of the first description retrieved via
+     *             {@link IIpsObjectPartContainer#getDescriptions()} or returns the empty string if
+     *             none is available.
      */
     // Deprecated since 3.1
     @Deprecated

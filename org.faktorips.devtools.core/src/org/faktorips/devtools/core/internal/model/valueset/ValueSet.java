@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.model.valueset;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Thorsten Guenther
  * @author Jan Ortmann
  */
-public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet {
+public abstract class ValueSet extends IpsObjectPart implements IValueSet {
 
     /**
      * Name of the xml element used in the xml conversion.
@@ -73,7 +73,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
             super.parent = null;
             throw new IllegalArgumentException("Parent has to implement " + IValueSetOwner.class); //$NON-NLS-1$
         }
-        descriptionChangable = false;
         this.type = type;
     }
 

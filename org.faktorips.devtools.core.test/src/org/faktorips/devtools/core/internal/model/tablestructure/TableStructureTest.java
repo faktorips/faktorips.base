@@ -171,7 +171,6 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 
     public void testInitFromXml() {
         table.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals("blabla", table.getDescription());
         assertTrue(table.isMultipleContentsAllowed());
         assertEquals(3, table.getNumOfColumns());
         assertEquals("ageFrom", table.getColumns()[0].getName());
@@ -183,7 +182,6 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     }
 
     public void testToXmlDocument() {
-        table.setDescription("blabla");
         table.setTableStructureType(TableStructureType.MULTIPLE_CONTENTS);
         IColumn column1 = table.newColumn();
         column1.setName("ageFrom");
@@ -199,7 +197,6 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         ITableStructure copy = new TableStructure();
         copy.initFromXml(element);
 
-        assertEquals("blabla", copy.getDescription());
         assertEquals(TableStructureType.MULTIPLE_CONTENTS, copy.getTableStructureType());
         assertEquals(2, copy.getNumOfColumns());
         assertEquals("ageFrom", copy.getColumns()[0].getName());
@@ -211,21 +208,13 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(1, copy.getNumOfUniqueKeys());
         IUniqueKey copyKey = copy.getUniqueKeys()[0];
         assertEquals(2, copyKey.getKeyItemNames().length);
-
     }
 
     public void testNewPart() {
-        try {
-            assertTrue(table.newPart(IColumn.class) instanceof IColumn);
-            assertTrue(table.newPart(IColumnRange.class) instanceof IColumnRange);
-            assertTrue(table.newPart(IUniqueKey.class) instanceof IUniqueKey);
-            assertTrue(table.newPart(IForeignKey.class) instanceof IForeignKey);
-
-            table.newPart(Object.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
+        assertTrue(table.newPart(IColumn.class) instanceof IColumn);
+        assertTrue(table.newPart(IColumnRange.class) instanceof IColumnRange);
+        assertTrue(table.newPart(IUniqueKey.class) instanceof IUniqueKey);
+        assertTrue(table.newPart(IForeignKey.class) instanceof IForeignKey);
     }
 
     public void testGetColumn() {

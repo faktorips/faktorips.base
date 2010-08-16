@@ -17,7 +17,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.w3c.dom.Element;
@@ -92,19 +91,6 @@ public class RowImplTest extends AbstractIpsPluginTest {
         assertEquals("0.15", row.getValue(0));
         assertEquals("", row.getValue(1));
         assertNull(row.getValue(2));
-    }
-
-    /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            row.newPart(IPolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
     }
 
     public void testGetRowNumber() {

@@ -20,10 +20,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.internal.model.ipsobject.DescribedAndLabeledIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
@@ -39,14 +37,10 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IAssociation.
- * <p>
- * Note: This implementation is atomic per default. We cannot inherit from
- * {@link AtomicIpsObjectPart} directly since some methods there are "final" and thus cannot be
- * overridden.
  * 
  * @author Jan Ortmann
  */
-public abstract class Association extends DescribedAndLabeledIpsObjectPart implements IAssociation {
+public abstract class Association extends IpsObjectPart implements IAssociation {
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
@@ -384,12 +378,17 @@ public abstract class Association extends DescribedAndLabeledIpsObjectPart imple
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("This implementation is atomic, cannot add part: " + partType); //$NON-NLS-1$
+    public boolean isPluralLabelSupported() {
+        return true;
     }
 
     @Override
-    public boolean isPluralLabelSupported() {
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
+    @Override
+    public boolean hasLabelSupport() {
         return true;
     }
 

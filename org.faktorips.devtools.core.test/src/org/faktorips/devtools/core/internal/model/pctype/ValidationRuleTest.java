@@ -104,7 +104,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         rule.initFromXml(doc.getDocumentElement());
         assertEquals("42", rule.getId());
         assertEquals("checkAge", rule.getName());
-        assertEquals("blabla", rule.getDescription());
         assertEquals("ageMissing", rule.getMessageCode());
         assertEquals("messageText", rule.getMessageText());
         assertEquals(MessageSeverity.WARNING, rule.getMessageSeverity());
@@ -122,7 +121,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         rule = pcType.newRule(); // => id=1 because it's the second rule
         rule.setName("checkAge");
         rule.setAppliedForAllBusinessFunctions(true);
-        rule.setDescription("blabla");
         rule.setMessageCode("ageMissing");
         rule.setMessageText("messageText");
         rule.setMessageSeverity(MessageSeverity.WARNING);
@@ -136,7 +134,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         copy.initFromXml(element);
         assertEquals(rule.getId(), copy.getId());
         assertEquals("checkAge", copy.getName());
-        assertEquals("blabla", copy.getDescription());
         assertEquals("ageMissing", copy.getMessageCode());
         assertEquals("messageText", copy.getMessageText());
         assertEquals(MessageSeverity.WARNING, copy.getMessageSeverity());
@@ -232,19 +229,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         rule.setMessageCode("code");
         list = rule.validate(ipsSrcFile.getIpsProject());
         assertNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
-    }
-
-    /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            rule.newPart(PolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
     }
 
     public void testValidateMessageText() throws Exception {

@@ -48,7 +48,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
-        assertEquals(5, xmlElement.getChildNodes().getLength());
+        assertEquals(4, xmlElement.getChildNodes().getLength());
         Element enumValue = XmlUtil.getFirstElement(xmlElement, IEnumValue.XML_TAG);
         Element descriptionElement = XmlUtil.getFirstElement(enumValue, DescriptionHelper.XML_ELEMENT_NAME);
         assertNull(descriptionElement);

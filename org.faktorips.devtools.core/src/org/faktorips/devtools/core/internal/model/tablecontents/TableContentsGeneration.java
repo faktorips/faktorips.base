@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -38,11 +39,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
 
     public TableContentsGeneration(TableContents parent, String id) {
         super(parent, id);
-    }
-
-    @Override
-    public IIpsElement[] getChildren() {
-        return getRows();
     }
 
     @Override
@@ -119,28 +115,44 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     @Override
+    public IIpsElement[] getChildren() {
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+        childrenList.addAll(Arrays.asList(getRows()));
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    }
+
+    @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(Row.TAG_NAME)) {
             return newRowInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
+        return super.newPart(xmlTag, id);
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+        if (partType.equals(IRow.class)) {
+            return newRowInternal(getNextPartId());
+        }
+        return super.newPart(partType);
+    }
+
+    @Override
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof IRow) {
             rows.add((Row)part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        return super.addPart(part);
     }
 
     /**
      * Removes the given row from the list of rows and updates the rownumbers of all following rows.
      */
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (part instanceof IRow) {
             Row row = (Row)part;
             int delIndex = rows.indexOf(row);
@@ -153,23 +165,16 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
                 }
                 removeUniqueKeyCacheFor(row);
             }
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+
+        return super.removePart(part);
     }
 
     @Override
     protected void reinitPartCollections() {
+        super.reinitPartCollections();
         rows.clear();
-    }
-
-    @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        if (partType.equals(IRow.class)) {
-            return newRowInternal(getNextPartId());
-        }
-
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
     @Override

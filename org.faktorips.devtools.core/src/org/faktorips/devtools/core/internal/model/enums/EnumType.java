@@ -865,9 +865,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                     new QualifiedNameType(superEnumType, IpsObjectType.ENUM_TYPE));
             addDetails(details, superEnumTypeDependency, this, PROPERTY_SUPERTYPE);
             return new IDependency[] { superEnumTypeDependency };
-        } else {
-            return new IDependency[0];
         }
+        return new IDependency[0];
     }
 
     @Override
@@ -915,7 +914,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        ArgumentCheck.notNull(xmlTag);
         if (xmlTag.getTagName().equals(IEnumLiteralNameAttribute.XML_TAG)) {
             return newPart(EnumLiteralNameAttribute.class);
         }
@@ -946,9 +944,15 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return !isAbstract && containingValues;
     }
 
+    @Override
+    public boolean hasLabelSupport() {
+        return true;
+    }
+
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierachyVisitor {
 
         private IEnumType superEnumTypeCandidate;
+
         private boolean subEnumType = false;
 
         public IsSubEnumTypeOfVisitor(IIpsProject ipsProject, IEnumType superEnumTypeCandidate) {

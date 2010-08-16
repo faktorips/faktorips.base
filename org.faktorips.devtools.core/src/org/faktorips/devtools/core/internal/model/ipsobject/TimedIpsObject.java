@@ -38,7 +38,8 @@ import org.w3c.dom.Element;
 
 public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObject {
 
-    private List<IIpsObjectGeneration> generations = new ArrayList<IIpsObjectGeneration>();
+    private final List<IIpsObjectGeneration> generations = new ArrayList<IIpsObjectGeneration>();
+
     private GregorianCalendar validTo;
 
     public TimedIpsObject(IIpsSrcFile file) {
@@ -172,10 +173,51 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    public final IIpsElement[] getChildren() {
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+        IIpsObjectGeneration[] generationsOrderedByValidDate = getGenerationsOrderedByValidDate();
+        childrenList.addAll(Arrays.asList(generationsOrderedByValidDate));
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    }
+
+    @Override
+    protected final boolean addPart(IIpsObjectPart part) {
+        if (part instanceof IIpsObjectGeneration) {
+            generations.add((IIpsObjectGeneration)part);
+            return true;
+        }
+        return super.addPart(part);
+    }
+
+    @Override
+    protected final boolean removePart(IIpsObjectPart part) {
         if (part instanceof IIpsObjectGeneration) {
             generations.remove(part);
+            return true;
         }
+        return super.removePart(part);
+    }
+
+    @Override
+    protected final IIpsObjectPart newPart(Element xmlTag, String id) {
+        String xmlTagName = xmlTag.getNodeName();
+        if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
+            return newGenerationInternal(id);
+        }
+        return super.newPart(xmlTag, id);
+    }
+
+    @Override
+    public
+    final IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+        return super.newPart(partType);
+    }
+
+    @Override
+    protected final void reinitPartCollections() {
+        super.reinitPartCollections();
+        generations.clear();
     }
 
     /**
@@ -185,14 +227,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      * @param id the unique id for the new generation.
      */
     protected abstract IpsObjectGeneration createNewGeneration(String id);
-
-    /**
-     * Returns the object's generations.
-     */
-    @Override
-    public IIpsElement[] getChildren() {
-        return getGenerationsOrderedByValidDate();
-    }
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
@@ -205,16 +239,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
-    protected final IIpsObjectPart newPart(Element xmlTag, String id) {
-        String xmlTagName = xmlTag.getNodeName();
-
-        if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
-            return newGenerationInternal(id);
-        }
-        return null;
-    }
-
-    @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         if (validTo == null) {
@@ -223,20 +247,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             ValueToXmlHelper.addValueToElement(XmlUtil.gregorianCalendarToXmlDateString(validTo), element,
                     PROPERTY_VALID_TO);
         }
-    }
-
-    @Override
-    protected final void addPart(IIpsObjectPart part) {
-        if (part instanceof IIpsObjectGeneration) {
-            generations.add((IIpsObjectGeneration)part);
-            return;
-        }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
-    }
-
-    @Override
-    protected final void reinitPartCollections() {
-        generations.clear();
     }
 
     @Override

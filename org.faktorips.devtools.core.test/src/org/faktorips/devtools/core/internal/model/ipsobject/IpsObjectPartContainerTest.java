@@ -13,6 +13,13 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
@@ -21,13 +28,20 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -35,6 +49,7 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.CDATASection;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -45,13 +60,90 @@ import org.w3c.dom.Element;
 public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private TestIpsObjectPartContainer container;
+
+    private IIpsProject ipsProject;
+
     private IpsModel model;
+
+    private IDescription usDescription;
+
+    private IDescription germanDescription;
+
+    private ILabel usLabel;
+
+    private ILabel germanLabel;
+
+    private ContentChangeEvent lastEvent;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
+        ipsProject = newIpsProject();
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.addSupportedLanguage(Locale.GERMAN);
+        properties.addSupportedLanguage(Locale.US);
+        properties.setDefaultLanguage(properties.getSupportedLanguage(Locale.GERMAN));
+        ipsProject.setProperties(properties);
+
         container = new TestIpsObjectPartContainer();
         model = (IpsModel)container.getIpsModel();
+
+        usDescription = container.newDescription();
+        usDescription.setLocale(Locale.US);
+        germanDescription = container.newDescription();
+        germanDescription.setLocale(Locale.GERMAN);
+
+        usLabel = container.newLabel();
+        usLabel.setLocale(Locale.US);
+        germanLabel = container.newLabel();
+        germanLabel.setLocale(Locale.GERMAN);
+    }
+
+    // OK to suppress deprecation warnings as this is a test for a deprecated method.
+    @SuppressWarnings("deprecation")
+    public void testSetDescription() throws CoreException {
+        IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
+        container.getIpsModel().addChangeListener(new ContentsChangeListener() {
+            @Override
+            public void contentsChanged(ContentChangeEvent event) {
+                lastEvent = event;
+            }
+        });
+        policyContainer.setDescription("new description");
+        assertEquals("new description", policyContainer.getDescription());
+        assertTrue(policyContainer.getIpsSrcFile().isDirty());
+        assertEquals(policyContainer.getIpsSrcFile(), lastEvent.getIpsSrcFile());
+
+        try {
+            container.setDescription(null);
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
+
+        container.descriptionSupport = false;
+        try {
+            container.setDescription("lalala");
+            fail();
+        } catch (UnsupportedOperationException e) {
+        }
+    }
+
+    // OK to suppress deprecation warnings as this is a test for a deprecated method.
+    @SuppressWarnings("deprecation")
+    public void testGetDescriptionDeprecatedVersion() throws CoreException {
+        IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
+        assertEquals("", policyContainer.getDescription());
+        usDescription.setText("blub");
+        assertEquals("blub", container.getDescription());
+    }
+
+    // OK to suppress deprecation warnings as this is a test for a deprecated method.
+    @SuppressWarnings("deprecation")
+    public void testIsDescriptionChangeable() {
+        assertTrue(container.isDescriptionChangable());
+        container.descriptionSupport = false;
+        assertFalse(container.isDescriptionChangable());
     }
 
     public void testGetExtProperty() {
@@ -251,14 +343,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     public void testSetState() throws CoreException {
-        container.setDescription("blabla");
+        germanDescription.setText("blabla");
         Memento memento = container.newMemento();
-        container.setDescription("newDescription");
+        germanDescription.setText("newDescription");
         container.setState(memento);
-        assertEquals("blabla", container.getDescription());
+        assertEquals("blabla", germanDescription.getText());
 
         // test if new parts are removed when the state is restored from the memento
-        IIpsProject ipsProject = this.newIpsProject("TestProject");
         IIpsPackageFragmentRoot rootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
         IPolicyCmptType type = this.newPolicyCmptType(rootFolder, "folder.TestProduct");
         memento = type.newMemento();
@@ -282,15 +373,14 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
      */
     public void testValidate() throws CoreException {
         // create srcfile with contents
-        IIpsProject proj = newIpsProject("TestProject");
-        IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
         generation.newConfigElement();
         generation.newLink("");
 
         // validate
-        MessageList messages = product.getIpsSrcFile().getIpsObject().validate(proj);
+        MessageList messages = product.getIpsSrcFile().getIpsObject().validate(ipsProject);
         assertNotNull(messages);
         assertFalse(messages.isEmpty());
         assertNotNull(messages.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
@@ -302,15 +392,156 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IFile file = product.getIpsSrcFile().getCorrespondingFile();
         IpsSrcFileImmutable srcFileImmutable = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file
                 .getContents());
-        MessageList messagesImmutable = srcFileImmutable.getIpsObject().validate(proj);
+        MessageList messagesImmutable = srcFileImmutable.getIpsObject().validate(ipsProject);
         assertNotNull(messagesImmutable);
         assertTrue(messagesImmutable.isEmpty());
     }
 
-    class TestIpsObjectPartContainer extends AtomicIpsObjectPart {
+    public void testGetChildren() {
+        IIpsElement[] children = container.getChildren();
+        assertEquals(4, children.length);
+
+        List<IIpsElement> childrenList = Arrays.asList(children);
+        assertTrue(childrenList.contains(usDescription));
+        assertTrue(childrenList.contains(germanDescription));
+        assertTrue(childrenList.contains(usLabel));
+        assertTrue(childrenList.contains(germanLabel));
+    }
+
+    public void testReinitPartCollections() {
+        assertEquals(2, container.getLabels().size());
+        assertEquals(2, container.getDescriptions().size());
+        container.reinitPartCollections();
+        assertEquals(0, container.getLabels().size());
+        assertEquals(0, container.getDescriptions().size());
+    }
+
+    public void testAddRemovePart() {
+        ILabel labelToAdd = container.newLabel();
+        assertEquals(3, container.getLabels().size());
+        container.removePart(labelToAdd);
+        assertEquals(2, container.getLabels().size());
+        container.addPart(labelToAdd);
+        assertEquals(3, container.getLabels().size());
+
+        IDescription descriptionToAdd = container.newDescription();
+        assertEquals(3, container.getDescriptions().size());
+        container.removePart(descriptionToAdd);
+        assertEquals(2, container.getDescriptions().size());
+        container.addPart(descriptionToAdd);
+        assertEquals(3, container.getDescriptions().size());
+    }
+
+    public void testNewPartXml() throws DOMException, ParserConfigurationException {
+        Document xmlDoc = createXmlDocument("Blub");
+        Element element = xmlDoc.createElement(ILabel.XML_TAG_NAME);
+        assertTrue(container.newPart(element, "blub") instanceof ILabel);
+        assertEquals(3, container.getLabels().size());
+
+        element = xmlDoc.createElement(IDescription.XML_TAG_NAME);
+        assertTrue(container.newPart(element, "blub") instanceof IDescription);
+        assertEquals(3, container.getDescriptions().size());
+
+        element = xmlDoc.createElement("foobar");
+        assertNull(container.newPart(element, "xyz"));
+    }
+
+    public void testNewPartReflection() {
+        assertTrue(container.newPart(Label.class) instanceof ILabel);
+        assertEquals(3, container.getLabels().size());
+
+        assertTrue(container.newPart(Description.class) instanceof IDescription);
+        assertEquals(3, container.getDescriptions().size());
+    }
+
+    public void testNewDescription() {
+        assertEquals(2, container.getDescriptions().size());
+        assertNotNull(container.newDescription());
+        assertEquals(3, container.getDescriptions().size());
+    }
+
+    public void testNewLabel() {
+        assertEquals(2, container.getLabels().size());
+        assertNotNull(container.newLabel());
+        assertEquals(3, container.getLabels().size());
+    }
+
+    public void testGetDescription() {
+        assertEquals(usDescription, container.getDescription(Locale.US));
+        assertEquals(germanDescription, container.getDescription(Locale.GERMAN));
+        assertNull(container.getDescription(Locale.KOREAN));
+    }
+
+    public void testGetLabel() {
+        assertEquals(usLabel, container.getLabel(Locale.US));
+        assertEquals(germanLabel, container.getLabel(Locale.GERMAN));
+        assertNull(container.getLabel(Locale.KOREAN));
+    }
+
+    public void testGetDescriptions() {
+        Set<IDescription> descriptionSet = container.getDescriptions();
+        assertEquals(2, descriptionSet.size());
+        assertTrue(descriptionSet.contains(usDescription));
+        assertTrue(descriptionSet.contains(germanDescription));
+        try {
+            descriptionSet.remove(germanDescription);
+            fail();
+        } catch (UnsupportedOperationException e) {
+        }
+    }
+
+    public void testGetLabels() {
+        Set<ILabel> labelSet = container.getLabels();
+        assertEquals(2, labelSet.size());
+        assertTrue(labelSet.contains(usLabel));
+        assertTrue(labelSet.contains(germanLabel));
+        try {
+            labelSet.remove(germanLabel);
+            fail();
+        } catch (UnsupportedOperationException e) {
+        }
+    }
+
+    public void testGetDescriptionForIpsModelLocale() {
+        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        assertEquals(ipsModelLocale.getLanguage(), container.getDescriptionForIpsModelLocale().getLocale()
+                .getLanguage());
+    }
+
+    public void testGetLabelForIpsModelLocale() {
+        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        assertEquals(ipsModelLocale.getLanguage(), container.getLabelForIpsModelLocale().getLocale().getLanguage());
+    }
+
+    public void testGetDescriptionForDefaultLocale() {
+        Locale defaultLocale = Locale.GERMAN;
+        assertEquals(defaultLocale, container.getDescriptionForDefaultLocale().getLocale());
+    }
+
+    public void testGetLabelForDefaultLocale() {
+        Locale defaultLocale = Locale.GERMAN;
+        assertEquals(defaultLocale, container.getLabelForDefaultLocale().getLocale());
+    }
+
+    public void testHasDescriptionSupport() {
+        assertTrue(container.hasDescriptionSupport());
+    }
+
+    public void testHasLabelSupport() {
+        assertTrue(container.hasLabelSupport());
+    }
+
+    class TestIpsObjectPartContainer extends IpsObjectPart {
 
         private String name;
-        private int numOfUpdateSrcFileCalls = 0;
+
+        private int numOfUpdateSrcFileCalls;
+
+        private boolean descriptionSupport = true;
+
+        public TestIpsObjectPartContainer() throws CoreException {
+            super(newPolicyCmptType(ipsProject, "Parent"), "someId");
+        }
 
         @Override
         protected void objectHasChanged() {
@@ -319,11 +550,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         protected int numOfUpdateSrcFileCalls() {
             return numOfUpdateSrcFileCalls;
-        }
-
-        @Override
-        protected Element createElement(Document doc) {
-            return doc.createElement("TestPart");
         }
 
         @Override
@@ -336,12 +562,59 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             this.name = name;
         }
 
+        @Override
+        protected Element createElement(Document doc) {
+            return doc.createElement("TestPart");
+        }
+
+        // Overridden so the method can be called by this test case.
+        @Override
+        public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+            return super.newPart(partType);
+        }
+
+        // Overridden so the method can be called by this test case.
+        @Override
+        protected void reinitPartCollections() {
+            super.reinitPartCollections();
+        }
+
+        // Overridden so the method can be called by this test case.
+        @Override
+        protected boolean addPart(IIpsObjectPart part) {
+            return super.addPart(part);
+        }
+
+        // Overridden so the method can be called by this test case.
+        @Override
+        protected boolean removePart(IIpsObjectPart part) {
+            return super.removePart(part);
+        }
+
+        // Overridden so the method can be called by this test case.
+        @Override
+        protected IIpsObjectPart newPart(Element xmlTag, String id) {
+            return super.newPart(xmlTag, id);
+        }
+
+        @Override
+        public boolean hasDescriptionSupport() {
+            return descriptionSupport;
+        }
+
+        @Override
+        public boolean hasLabelSupport() {
+            return true;
+        }
+
     }
 
     class TestExtProperty extends StringExtensionPropertyDefinition {
 
         int beforeSetCounter = 0;
+
         int afterSetCounter = 0;
+
         boolean allowValueToBeSet = true;
 
         @Override

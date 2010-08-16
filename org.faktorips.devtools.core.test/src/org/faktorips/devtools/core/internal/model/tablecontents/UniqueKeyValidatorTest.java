@@ -784,8 +784,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
     private void assertRowInValidationMsg(MessageList messageList, int row) throws CoreException {
         assertEquals(table.getNumOfGenerations(), 1);
-        assertEquals(1, messageList.getMessagesFor(((IRow[])table.getGeneration(0).getChildren())[row - 1])
-                .getNoOfMessages());
+        assertEquals(1, messageList.getMessagesFor((table.getGeneration(0).getChildren())[row - 1]).getNoOfMessages());
     }
 
     /**

@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
  * 
  * @author Thorsten Guenther
  */
-public class TableContentUsage extends AtomicIpsObjectPart implements ITableContentUsage {
+public class TableContentUsage extends IpsObjectPart implements ITableContentUsage {
 
     /**
      * The full quallified name of the table content this usage defines.

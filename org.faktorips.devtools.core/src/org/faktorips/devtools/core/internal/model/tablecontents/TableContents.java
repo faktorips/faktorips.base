@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -160,11 +159,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-    }
-
-    @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_TABLESTRUCTURE, structure);
@@ -250,6 +244,11 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     @Override
     public String getMetaClass() {
         return getTableStructure();
+    }
+
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
     }
 
 }

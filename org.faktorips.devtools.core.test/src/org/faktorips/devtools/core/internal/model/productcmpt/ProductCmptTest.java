@@ -403,19 +403,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            productCmpt.newPart(IPolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
-    }
-
-    /**
      * Test method for
      * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(IIpsProject)}
      * .

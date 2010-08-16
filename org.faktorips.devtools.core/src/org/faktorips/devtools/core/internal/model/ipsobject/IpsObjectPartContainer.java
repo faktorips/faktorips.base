@@ -14,9 +14,12 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -35,14 +38,18 @@ import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
 import org.faktorips.util.message.MessageList;
@@ -52,7 +59,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * A container for IPS object parts.
+ * Implementation of {@link IIpsObjectPartContainer}.
+ * 
+ * @see IIpsObjectPartContainer
  * 
  * @author Jan Ortmann
  */
@@ -73,6 +82,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * <code>null</code> or not.
      */
     protected final static String XML_ATTRIBUTE_ISNULL = "isNull"; //$NON-NLS-1$
+
+    /** Set containing all labels attached to the object part container. */
+    private final Set<ILabel> labels = new LinkedHashSet<ILabel>();
+
+    /** Set containing all descriptions attached to the object part container. */
+    private final Set<IDescription> descriptions = new LinkedHashSet<IDescription>();
 
     /** Map containing extension property IDs as keys and their values. */
     private HashMap<String, Object> extPropertyValues = null;
@@ -101,13 +116,17 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * The IpsObjectPartContainer version does not throw an exception as no resource access is
-     * necessary.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+     * This implementation returns the labels and descriptions of the IPS object part container.
+     * Subclasses must not forget to call <tt>super.getChildren()</tt> and add the returned elements
+     * to their return array.
      */
     @Override
-    public abstract IIpsElement[] getChildren();
+    public IIpsElement[] getChildren() {
+        List<IIpsElement> children = new ArrayList<IIpsElement>(labels.size() + descriptions.size());
+        children.addAll(labels);
+        children.addAll(descriptions);
+        return children.toArray(new IIpsElement[children.size()]);
+    }
 
     /**
      * Returns the id that can be used for a new part, so that its id is unique.
@@ -449,10 +468,13 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             if (part == null) {
                 part = newPart(partEl, getNextPartId());
             } else {
-                addPart(part);
+                boolean added = addPart(part);
+                if (!(added)) {
+                    throw new IllegalArgumentException("Could not re-add part " + part); //$NON-NLS-1$
+                }
             }
+            // part might be null if the element does not represent a part!
             if (part != null) {
-                // part might may be null if the element does not represent a part!
                 part.initFromXml(partEl);
                 if (!idSet.add(part.getId())) {
                     throw new RuntimeException("Duplicated Part-ID in Object " + part.getParent().getName() + ", ID: " //$NON-NLS-1$ //$NON-NLS-2$
@@ -477,26 +499,55 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * This method is called during the initFromXml processing. Subclasses should clear all
      * collections that hold references to parts, e.g. for IPolicyCmptType: Collections for
      * attributes, methods and so on have to be cleared.
+     * <p>
+     * Subclasses must not forget to call <tt>super.reinitPartCollections()</tt>.
      */
-    protected abstract void reinitPartCollections();
+    protected void reinitPartCollections() {
+        labels.clear();
+        descriptions.clear();
+    }
 
     /**
-     * Add the part top the container.
+     * Add the part to the container.
      * <p>
      * This method is called during the initFromXml processing. When the part has been part of the
      * parent before the xml initialization and is still be found in the xml (the part's id is found
      * in the xml). Subclasses must override this method so that the part is added to the correct
      * collection, e.g. for IPolicyCmptType: if the part is an IAttribute, the part must be added to
      * the <code>attributes</code> list.
-     * 
-     * @throws RuntimeException if the part can't be read, e.g. because it's type is unknown.
+     * <p>
+     * Subclasses must not forget to call <tt>super.addPart(part)</tt>.
      */
-    protected abstract void addPart(IIpsObjectPart part);
+    protected boolean addPart(IIpsObjectPart part) {
+        if (part instanceof ILabel && hasLabelSupport()) {
+            labels.add((ILabel)part);
+            return true;
+
+        } else if (part instanceof IDescription && hasDescriptionSupport()) {
+            descriptions.add((IDescription)part);
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Removes the given part from the container.
+     * <p>
+     * Subclasses must not forget to call <tt>super.removePart(part)</tt>.
      */
-    protected abstract void removePart(IIpsObjectPart part);
+    protected boolean removePart(IIpsObjectPart part) {
+        if (part instanceof ILabel && hasLabelSupport()) {
+            labels.remove(part);
+            return true;
+
+        } else if (part instanceof IDescription && hasDescriptionSupport()) {
+            descriptions.remove(part);
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * This method is called during the initFromXml processing to create a new part object for the
@@ -506,10 +557,41 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * <p>
      * Note: It is <strong>NOT</strong> necessary to fully initialize the part, this is done later
      * by the caller calling initFromXml().
+     * <p>
+     * Subclasses must not forget to call <tt>super.newPart(xmlTag, id)</tt>.
      * 
      * @return a new part with the given id, or <code>null</code> if the xml tag name is unknown.
      */
-    protected abstract IIpsObjectPart newPart(Element xmlTag, String id);
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        String nodeName = xmlTag.getNodeName();
+        if (nodeName.equals(ILabel.XML_TAG_NAME) && hasLabelSupport()) {
+            return newLabel(id);
+
+        } else if (nodeName.equals(IDescription.XML_TAG_NAME) && hasDescriptionSupport()) {
+            return newDescription(id);
+        }
+
+        return null;
+    }
+
+    /**
+     * Creates a new {@link IIpsObjectPart} of the given type. If the type is not supported,
+     * <tt>null</tt> is returned.
+     * <p>
+     * Subclasses must not forget to call <tt>super.newPart(partType)</tt>.
+     * 
+     * @param partType The published interface of the IPS object part that should be created.
+     */
+    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+        if (partType == Label.class && hasLabelSupport()) {
+            return newLabel();
+
+        } else if (partType == Description.class && hasDescriptionSupport()) {
+            return newDescription();
+        }
+
+        return null;
+    }
 
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
@@ -684,6 +766,166 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             details.put(dependency, detailList);
         }
         detailList.add(new DependencyDetail(part, propertyName));
+    }
+
+    private ILabel newLabel(String id) {
+        ILabel newLabel = new Label(this, id);
+        labels.add(newLabel);
+        return newLabel;
+    }
+
+    private IDescription newDescription(String id) {
+        IDescription newDescription = new Description(this, id);
+        descriptions.add(newDescription);
+        return newDescription;
+    }
+
+    /**
+     * The default implementation always returns <tt>false</tt>.
+     */
+    @Override
+    public boolean hasDescriptionSupport() {
+        return false;
+    }
+
+    /**
+     * The default implementation always returns <tt>false</tt>.
+     */
+    @Override
+    public boolean hasLabelSupport() {
+        return false;
+    }
+
+    @Override
+    public boolean isPluralLabelSupported() {
+        return false;
+    }
+
+    @Override
+    public ILabel getLabel(Locale locale) {
+        ArgumentCheck.notNull(locale);
+        for (ILabel label : labels) {
+            Locale labelLocale = label.getLocale();
+            if (labelLocale == null) {
+                continue;
+            }
+            if (locale.getLanguage().equals(labelLocale.getLanguage())) {
+                return label;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Set<ILabel> getLabels() {
+        return Collections.unmodifiableSet(labels);
+    }
+
+    @Override
+    public ILabel getLabelForIpsModelLocale() {
+        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        return getLabel(ipsModelLocale);
+    }
+
+    @Override
+    public ILabel getLabelForDefaultLocale() {
+        ILabel defaultLabel = null;
+        ISupportedLanguage defaultLanguage = getIpsProject().getProperties().getDefaultLanguage();
+        if (defaultLanguage != null) {
+            defaultLabel = getLabel(defaultLanguage.getLocale());
+        }
+        return defaultLabel;
+    }
+
+    @Override
+    public ILabel newLabel() {
+        if (!(hasLabelSupport())) {
+            throw new UnsupportedOperationException("This IPS object part container does not support labels."); //$NON-NLS-1$
+        }
+        return newLabel(getNextPartId());
+    }
+
+    @Override
+    public IDescription getDescription(Locale locale) {
+        ArgumentCheck.notNull(locale);
+        for (IDescription description : descriptions) {
+            Locale descriptionLocale = description.getLocale();
+            if (descriptionLocale == null) {
+                continue;
+            }
+            if (locale.getLanguage().equals(descriptionLocale.getLanguage())) {
+                return description;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Set<IDescription> getDescriptions() {
+        return Collections.unmodifiableSet(descriptions);
+    }
+
+    @Override
+    public IDescription getDescriptionForIpsModelLocale() {
+        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        return getDescription(ipsModelLocale);
+    }
+
+    @Override
+    public IDescription getDescriptionForDefaultLocale() {
+        IDescription defaultDescription = null;
+        ISupportedLanguage defaultLanguage = getIpsProject().getProperties().getDefaultLanguage();
+        if (defaultLanguage != null) {
+            defaultDescription = getDescription(defaultLanguage.getLocale());
+        }
+        return defaultDescription;
+    }
+
+    @Override
+    public IDescription newDescription() {
+        if (!(hasDescriptionSupport())) {
+            throw new UnsupportedOperationException("This IPS object part container does not support descriptions."); //$NON-NLS-1$
+        }
+        return newDescription(getNextPartId());
+    }
+
+    @Deprecated
+    @Override
+    public String getDescription() {
+        String description = ""; //$NON-NLS-1$
+        Set<IDescription> descriptionSet = getDescriptions();
+        if (descriptionSet.size() > 0) {
+            IDescription firstDescription = descriptionSet.toArray(new IDescription[descriptionSet.size()])[0];
+            description = firstDescription.getText();
+        }
+        return description;
+    }
+
+    @Deprecated
+    @Override
+    public void setDescription(String newDescription) {
+        if (!(isDescriptionChangable())) {
+            throw new UnsupportedOperationException();
+        }
+        if (newDescription == null) {
+            // Throw exception as specified by the contract.
+            throw new IllegalArgumentException();
+        }
+
+        Set<IDescription> descriptionSet = getDescriptions();
+        IDescription firstDescription;
+        if (descriptionSet.size() == 0) {
+            firstDescription = newDescription();
+        } else {
+            firstDescription = descriptionSet.toArray(new IDescription[descriptionSet.size()])[0];
+        }
+        firstDescription.setText(newDescription);
+    }
+
+    @Deprecated
+    @Override
+    public final boolean isDescriptionChangable() {
+        return hasDescriptionSupport();
     }
 
     /**

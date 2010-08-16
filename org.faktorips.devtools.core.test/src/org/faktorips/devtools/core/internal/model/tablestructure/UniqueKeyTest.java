@@ -17,7 +17,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -213,19 +212,6 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         assertEquals(2, key.getNumOfKeyItems());
         assertEquals("age", key.getKeyItemNames()[0]);
         assertEquals("gender", key.getKeyItemNames()[1]);
-    }
-
-    /**
-     * Tests for the correct type of exception to be thrown - no part of any type could ever be
-     * created.
-     */
-    public void testNewPart() {
-        try {
-            key.newPart(IPolicyCmptTypeAttribute.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
     }
 
     public void testContainsTwoColumnRanges() {

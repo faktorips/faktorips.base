@@ -60,7 +60,6 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      */
     public EnumValue(IEnumValueContainer parent, String id) {
         super(parent, id);
-        descriptionChangable = false;
         enumAttributeValues = new IpsObjectPartCollection<IEnumAttributeValue>(this, EnumAttributeValue.class,
                 IEnumAttributeValue.class, IEnumAttributeValue.XML_TAG);
     }

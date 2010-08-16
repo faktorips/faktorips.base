@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.util.CollectionUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public abstract class Key extends AtomicIpsObjectPart implements IKey {
+public abstract class Key extends IpsObjectPart implements IKey {
 
     final static String KEY_ITEM_TAG_NAME = "Item"; //$NON-NLS-1$
 

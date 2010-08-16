@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -239,11 +238,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-    }
-
-    @Override
     public IProductCmptTreeStructure getStructure(IIpsProject ipsProject) throws CycleInProductStructureException {
         return new ProductCmptTreeStructure(this, ipsProject);
     }
@@ -318,6 +312,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public String getMetaClass() {
         return getProductCmptType();
+    }
+
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
     }
 
 }

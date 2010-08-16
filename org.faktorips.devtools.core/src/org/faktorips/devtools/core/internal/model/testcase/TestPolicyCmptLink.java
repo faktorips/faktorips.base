@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -39,7 +43,6 @@ import org.w3c.dom.Element;
  */
 public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmptLink {
 
-    /** Tags */
     static final String TAG_NAME = "Link"; //$NON-NLS-1$
 
     private String testPolicyCmptTypeParameter = ""; //$NON-NLS-1$
@@ -116,14 +119,6 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         element.setAttribute(PROPERTY_TARGET, target);
     }
 
-    /**
-     * This object has no parts.
-     */
-    @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-    }
-
     @Override
     public ITestPolicyCmpt newTargetTestPolicyCmptChild() {
         ITestPolicyCmpt param = newTargetTestPolicyCmptChildInternal(getNextPartId());
@@ -151,41 +146,40 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
 
     @Override
     public IIpsElement[] getChildren() {
-        IIpsElement[] childrenArray = null;
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
         if (targetChild != null) {
-            childrenArray = new IIpsElement[1];
-            childrenArray[0] = targetChild;
-        } else {
-            childrenArray = new IIpsElement[0];
+            childrenList.add(targetChild);
         }
-        return childrenArray;
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override
     protected void reinitPartCollections() {
+        super.reinitPartCollections();
         targetChild = null;
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof TestPolicyCmpt) {
             targetChild = (TestPolicyCmpt)part;
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type: " + part.getClass()); //$NON-NLS-1$
+        return super.addPart(part);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (targetChild != null && part == targetChild) {
             if (!targetChild.isRoot()) {
                 // delete also this link that refers to test policy component
                 delete();
             }
             targetChild = null;
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type: " + part.getClass()); //$NON-NLS-1$
+        return super.removePart(part);
     }
 
     @Override
@@ -194,7 +188,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         if (xmlTagName.equals(TestPolicyCmpt.TAG_NAME)) {
             return newTargetTestPolicyCmptChildInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
+        return super.newPart(xmlTag, id);
     }
 
     @Override

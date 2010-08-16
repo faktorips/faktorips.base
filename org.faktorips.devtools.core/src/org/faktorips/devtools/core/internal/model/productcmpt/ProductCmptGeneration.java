@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -92,19 +93,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return getProductCmpt().findProductCmptType(ipsProject);
-    }
-
-    @Override
-    public IIpsElement[] getChildren() {
-        int numOfChildren = getNumOfAttributeValues() + getNumOfConfigElements() + getNumOfLinks()
-                + getNumOfTableContentUsages() + getNumOfFormulas();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(numOfChildren);
-        childrenList.addAll(attributeValues);
-        childrenList.addAll(configElements);
-        childrenList.addAll(tableContentUsages);
-        childrenList.addAll(formulas);
-        childrenList.addAll(links);
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {
@@ -572,11 +560,22 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
+    public IIpsElement[] getChildren() {
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+        childrenList.addAll(attributeValues);
+        childrenList.addAll(configElements);
+        childrenList.addAll(tableContentUsages);
+        childrenList.addAll(formulas);
+        childrenList.addAll(links);
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    }
+
+    @Override
+    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
         if (partType.equals(IAttributeValue.class)) {
             return newAttributeValue();
-        }
-        if (partType.equals(IConfigElement.class)) {
+        } else if (partType.equals(IConfigElement.class)) {
             return newConfigElement();
         } else if (partType.equals(IPolicyCmptTypeAssociation.class)) {
             return newLink();
@@ -585,7 +584,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         } else if (partType.equals(IFormula.class)) {
             return newFormula();
         }
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+
+        return super.newPart(partType);
     }
 
     @Override
@@ -602,53 +602,58 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         } else if (xmlTagName.equals(Formula.TAG_NAME)) {
             return newFormulaInternal(id, null);
         }
-        throw new RuntimeException("Could not create part for tag " + xmlTagName); //$NON-NLS-1$
+
+        return super.newPart(xmlTag, id);
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof IAttributeValue) {
             attributeValues.add((IAttributeValue)part);
-            return;
+            return true;
         } else if (part instanceof IConfigElement) {
             configElements.add((IConfigElement)part);
-            return;
+            return true;
         } else if (part instanceof IProductCmptLink) {
             links.add((IProductCmptLink)part);
-            return;
+            return true;
         } else if (part instanceof ITableContentUsage) {
             tableContentUsages.add((ITableContentUsage)part);
-            return;
+            return true;
         } else if (part instanceof IFormula) {
             formulas.add((IFormula)part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+
+        return super.addPart(part);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (part instanceof IAttributeValue) {
             attributeValues.remove(part);
-            return;
+            return true;
         } else if (part instanceof IConfigElement) {
             configElements.remove(part);
-            return;
+            return true;
         } else if (part instanceof IProductCmptLink) {
             links.remove(part);
-            return;
+            return true;
         } else if (part instanceof ITableContentUsage) {
             tableContentUsages.remove(part);
-            return;
+            return true;
         } else if (part instanceof IFormula) {
             formulas.remove(part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+
+        return super.removePart(part);
     }
 
     @Override
     protected void reinitPartCollections() {
+        super.reinitPartCollections();
+
         attributeValues.clear();
         configElements.clear();
         links.clear();

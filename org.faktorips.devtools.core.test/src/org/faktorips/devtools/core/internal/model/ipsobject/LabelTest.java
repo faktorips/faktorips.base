@@ -90,17 +90,13 @@ public class LabelTest extends AbstractIpsPluginTest {
         assertEquals(0, validationMessages.getNoOfMessages());
     }
 
-    public void testIsDescriptionChangeable() {
-        assertFalse(label.isDescriptionChangable());
-    }
-
     public void testXml() throws ParserConfigurationException, CoreException {
         label.setLocale(Locale.ENGLISH);
         label.setValue("foo");
         label.setPluralValue("bar");
 
         Element xmlElement = policyCmptType.toXml(createXmlDocument(ILabel.XML_TAG_NAME));
-        NamedNodeMap labelAttributes = xmlElement.getChildNodes().item(2).getChildNodes().item(3).getAttributes();
+        NamedNodeMap labelAttributes = xmlElement.getChildNodes().item(1).getChildNodes().item(2).getAttributes();
         assertEquals(Locale.ENGLISH.getLanguage(), labelAttributes.getNamedItem(ILabel.PROPERTY_LOCALE)
                 .getTextContent());
         assertEquals("foo", labelAttributes.getNamedItem(ILabel.PROPERTY_VALUE).getTextContent());

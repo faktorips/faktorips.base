@@ -22,13 +22,11 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -264,37 +262,6 @@ public class BFElement extends IpsObjectPart implements IBFElement {
             controlFlowEl.setAttribute("type", "in"); //$NON-NLS-1$ //$NON-NLS-2$
             controlFlowEl.setAttribute("id", String.valueOf(controlFlowId)); //$NON-NLS-1$
         }
-    }
-
-    @Override
-    public IIpsElement[] getChildren() {
-        return new IIpsElement[0];
-    }
-
-    @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        return null;
-    }
-
-    @Override
-    protected void addPart(IIpsObjectPart part) {
-        // Nothing to do.
-    }
-
-    @Override
-    protected void reinitPartCollections() {
-        // Nothing to do.
-    }
-
-    @Override
-    protected void removePart(IIpsObjectPart part) {
-        // Nothing to do.
-
-    }
-
-    @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        return null;
     }
 
     /**

@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -333,29 +334,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    protected void reinitPartCollections() {
-        // Nothing to do
-    }
-
-    @Override
-    protected void addPart(IIpsObjectPart part) {
-        if (part instanceof IValueSet) {
-            valueSet = (IValueSet)part;
-            return;
-        }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
-    }
-
-    @Override
-    protected void removePart(IIpsObjectPart part) {
-        if (part instanceof IValueSet) {
-            valueSet = null;
-            return;
-        }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
-    }
-
-    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
 
@@ -373,31 +351,53 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public IIpsObjectPart newPart(Class partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-    }
-
-    @Override
     public IIpsElement[] getChildren() {
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(1);
-        if (valueSet != null) {
-            childrenList.add(valueSet);
+        IIpsElement[] children = super.getChildren();
+        if (valueSet == null) {
+            return children;
         }
-        return childrenList.toArray(new IIpsElement[0]);
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+        childrenList.add(valueSet);
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element partEl, String id) {
-        String xmlTagName = partEl.getNodeName();
+    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        String xmlTagName = xmlTag.getNodeName();
         if (ValueSet.XML_TAG.equals(xmlTagName)) {
-            valueSet = ValueSetType.newValueSet(partEl, this, id);
+            valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
+
         } else if (PROPERTY_VALUE.equalsIgnoreCase(xmlTagName)) {
             // ignore value nodes, will be parsed in the this#initPropertiesFromXml method
             return null;
         }
-        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
+
+        return super.newPart(xmlTag, id);
+    }
+
+    @Override
+    protected void reinitPartCollections() {
+        super.reinitPartCollections();
+        // TODO AW: Reset value set?
+    }
+
+    @Override
+    protected boolean addPart(IIpsObjectPart part) {
+        if (part instanceof IValueSet) {
+            valueSet = (IValueSet)part;
+            return true;
+        }
+        return super.addPart(part);
+    }
+
+    @Override
+    protected boolean removePart(IIpsObjectPart part) {
+        if (part instanceof IValueSet) {
+            valueSet = null;
+            return true;
+        }
+        return super.removePart(part);
     }
 
     public ValueDatatype getValueDatatype() {

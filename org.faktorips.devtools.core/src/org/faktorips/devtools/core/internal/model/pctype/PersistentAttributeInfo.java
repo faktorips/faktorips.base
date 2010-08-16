@@ -17,7 +17,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
  * 
  * @author Roman Grutza
  */
-public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPersistentAttributeInfo {
+public class PersistentAttributeInfo extends IpsObjectPart implements IPersistentAttributeInfo {
 
     private boolean transientAttribute = false;
     private String tableColumnName = ""; //$NON-NLS-1$

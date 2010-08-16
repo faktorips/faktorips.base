@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
  * 
  * @author Roman Grutza
  */
-public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersistentTypeInfo {
+public class PersistentTypeInfo extends IpsObjectPart implements IPersistentTypeInfo {
 
     private String tableName = ""; //$NON-NLS-1$
 
@@ -657,13 +657,29 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private String objectPropertyAsString(ObjectProperty objectProperty) {
-        return NLS.bind(" {0}#{1}, ", getPolicyCmptTypeFromObjectProperty(objectProperty).getUnqualifiedName(),
+        return NLS.bind(" {0}#{1}, ", getPolicyCmptTypeFromObjectProperty(objectProperty).getUnqualifiedName(), //$NON-NLS-1$
                 objectProperty.getProperty());
     }
 
+    // TODO AW: Internationalize message
     private void addMessageDuplicateColumnName(MessageList msgList, ObjectProperty objectProperty, String detailText) {
         msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, NLS.bind("Duplicate column name {0}",
                 detailText), Message.ERROR, objectProperty));
+    }
+
+    private boolean isRootEntity() throws CoreException {
+        RooEntityFinder rootEntityFinder = new RooEntityFinder();
+        rootEntityFinder.start(getPolicyCmptType());
+        return isRootEntity(rootEntityFinder.rooEntity);
+    }
+
+    private boolean isRootEntity(IPolicyCmptType rootEntity) {
+        return getPolicyCmptType() == rootEntity;
+    }
+
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
     }
 
     private static class ColumnNameCollector extends PolicyCmptTypeHierarchyVisitor {
@@ -744,13 +760,4 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
-    private boolean isRootEntity() throws CoreException {
-        RooEntityFinder rootEntityFinder = new RooEntityFinder();
-        rootEntityFinder.start(getPolicyCmptType());
-        return isRootEntity(rootEntityFinder.rooEntity);
-    }
-
-    private boolean isRootEntity(IPolicyCmptType rootEntity) {
-        return getPolicyCmptType() == rootEntity;
-    }
 }

@@ -14,13 +14,13 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -67,29 +67,24 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        return tableStructures.toArray(new IIpsElement[tableStructures.size()]);
-    }
-
-    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        if (partType.equals(TableStructureReference.class)) {
-            return newTableStructureReference();
-        }
-        throw new RuntimeException("Unknown part type " + partType); //$NON-NLS-1$
+    public IIpsElement[] getChildren() {
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+        childrenList.addAll(tableStructures);
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
-        if (part instanceof TableStructureReference) {
-            tableStructures.remove(part);
+    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+        if (partType.equals(TableStructureReference.class)) {
+            return newTableStructureReference();
         }
-        throw new RuntimeException("Unknown part type " + part.getClass()); //$NON-NLS-1$
+        return super.newPart(partType);
     }
 
     @Override
@@ -98,21 +93,30 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         if (xmlTagName.equals(TAG_NAME_TABLE_STRUCTURE)) {
             return newTableStructureReferenceInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
+        return super.newPart(xmlTag, id);
+    }
+
+    @Override
+    protected boolean addPart(IIpsObjectPart part) {
+        if (part instanceof TableStructureReference) {
+            tableStructures.add((TableStructureReference)part);
+            return true;
+        }
+        return super.addPart(part);
+    }
+
+    @Override
+    protected boolean removePart(IIpsObjectPart part) {
+        if (part instanceof TableStructureReference) {
+            tableStructures.remove(part);
+        }
+        return super.removePart(part);
     }
 
     @Override
     protected void reinitPartCollections() {
+        super.reinitPartCollections();
         tableStructures.clear();
-    }
-
-    @Override
-    protected void addPart(IIpsObjectPart part) {
-        if (part instanceof TableStructureReference) {
-            tableStructures.add((TableStructureReference)part);
-            return;
-        }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
     @Override
@@ -298,7 +302,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return ""; //$NON-NLS-1$
     }
 
-    public class TableStructureReference extends AtomicIpsObjectPart {
+    public class TableStructureReference extends IpsObjectPart {
 
         private String tableStructure = ""; //$NON-NLS-1$
 

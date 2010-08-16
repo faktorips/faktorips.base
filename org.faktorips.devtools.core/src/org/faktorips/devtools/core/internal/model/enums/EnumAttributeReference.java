@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.util.ArgumentCheck;
@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * 
  * @since 2.4
  */
-public class EnumAttributeReference extends AtomicIpsObjectPart implements IEnumAttributeReference {
+public class EnumAttributeReference extends IpsObjectPart implements IEnumAttributeReference {
 
     /**
      * Creates a new <tt>IEnumAttributeReference</tt>.
@@ -68,11 +68,6 @@ public class EnumAttributeReference extends AtomicIpsObjectPart implements IEnum
         super.propertiesToXml(element);
 
         element.setAttribute(PROPERTY_NAME, name);
-    }
-
-    @Override
-    public boolean isDescriptionChangable() {
-        return false;
     }
 
 }

@@ -504,7 +504,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        ArgumentCheck.notNull(xmlTag);
         if (xmlTag.getTagName().equals(IPersistentTypeInfo.XML_TAG)) {
             return newPersistentTypeInfoInternal(id);
         }
@@ -512,7 +511,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
+    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
         if (partType == PersistentTypeInfo.class) {
             return newPersistentTypeInfoInternal(getNextPartId());
         }
@@ -528,12 +527,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (IPersistentTypeInfo.class.isAssignableFrom(part.getClass())) {
             persistenceTypeInfo = part;
-        } else {
-            super.addPart(part);
+            return true;
         }
+        return super.addPart(part);
     }
 
     @Override
@@ -543,22 +542,25 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (PersistentTypeInfo.class.isAssignableFrom(part.getClass())) {
             persistenceTypeInfo = newPart(PersistentTypeInfo.class);
-        } else {
-            super.removePart(part);
+            return true;
         }
+        return super.removePart(part);
     }
 
     @Override
     public IIpsElement[] getChildren() {
-        List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(super.getChildren()));
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+
         // This is the only time, the model element could be null at instantiation time
         if (persistenceTypeInfo != null) {
-            children.add(persistenceTypeInfo);
+            childrenList.add(persistenceTypeInfo);
         }
-        return children.toArray(new IIpsElement[children.size()]);
+
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override

@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -81,43 +82,46 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     public IIpsElement[] getChildren() {
-        int numOfChildren = testAttributes.size() + testPolicyCmptTypeChilds.size();
-        IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
-        List<IIpsObjectPart> childrenList = new ArrayList<IIpsObjectPart>(numOfChildren);
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
         childrenList.addAll(testAttributes);
         childrenList.addAll(testPolicyCmptTypeChilds);
-        childrenList.toArray(childrenArray);
-        return childrenArray;
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override
     protected void reinitPartCollections() {
+        super.reinitPartCollections();
         testAttributes = new ArrayList<ITestAttribute>();
         testPolicyCmptTypeChilds = new ArrayList<ITestPolicyCmptTypeParameter>();
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof ITestAttribute) {
             testAttributes.add((ITestAttribute)part);
-            return;
+            return true;
+
         } else if (part instanceof TestPolicyCmptTypeParameter) {
             testPolicyCmptTypeChilds.add((TestPolicyCmptTypeParameter)part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+
+        return super.addPart(part);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (part instanceof TestAttribute) {
             testAttributes.remove(part);
-            return;
+            return true;
+
         } else if (part instanceof TestPolicyCmptTypeParameter) {
             testPolicyCmptTypeChilds.remove(part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+
+        return super.removePart(part);
     }
 
     @Override
@@ -128,7 +132,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         } else if (xmlTagName.equals(TAG_NAME)) {
             return newTestPolicyCmptTypeParamChildInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
+        return super.newPart(xmlTag, id);
     }
 
     @Override

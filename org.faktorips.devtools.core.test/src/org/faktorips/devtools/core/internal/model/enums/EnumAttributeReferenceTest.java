@@ -42,8 +42,8 @@ public class EnumAttributeReferenceTest extends AbstractIpsEnumPluginTest {
 
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumAttributeReference.XML_TAG));
-        assertEquals(5, xmlElement.getChildNodes().getLength());
-        NamedNodeMap attributesIdReference = xmlElement.getChildNodes().item(3).getAttributes();
+        assertEquals(4, xmlElement.getChildNodes().getLength());
+        NamedNodeMap attributesIdReference = xmlElement.getChildNodes().item(2).getAttributes();
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributesIdReference.getNamedItem(IIpsElement.PROPERTY_NAME)
                 .getTextContent());
 
@@ -52,10 +52,6 @@ public class EnumAttributeReferenceTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, loadedEnumContent.getEnumAttributeReferencesCount());
         assertEquals(genderIdReference.getName(), loadedEnumContent.getEnumAttributeReferences().get(0).getName());
         assertEquals(genderNameReference.getName(), loadedEnumContent.getEnumAttributeReferences().get(1).getName());
-    }
-
-    public void testIsDescriptionChangable() {
-        assertFalse(genderIdReference.isDescriptionChangable());
     }
 
 }

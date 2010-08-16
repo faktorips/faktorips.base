@@ -26,7 +26,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumAttributeProcessor;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
  * 
  * @since 2.3
  */
-public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute {
+public class EnumAttribute extends IpsObjectPart implements IEnumAttribute {
 
     /** The data type of this <tt>IEnumAttribute</tt>. */
     protected String datatype;
@@ -423,9 +423,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 return null;
             }
             return superEnumAttribute.isUnique();
-        } else {
-            return isUnique();
         }
+        return isUnique();
     }
 
     @Override
@@ -462,9 +461,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 return null;
             }
             return superEnumAttribute.isIdentifier();
-        } else {
-            return isIdentifier();
         }
+        return isIdentifier();
     }
 
     @Override
@@ -477,9 +475,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 return null;
             }
             return superEnumAttribute.isUsedAsNameInFaktorIpsUi();
-        } else {
-            return isUsedAsNameInFaktorIpsUi();
         }
+        return isUsedAsNameInFaktorIpsUi();
     }
 
     @Override

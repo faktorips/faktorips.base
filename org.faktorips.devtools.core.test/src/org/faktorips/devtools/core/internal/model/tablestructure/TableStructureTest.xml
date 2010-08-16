@@ -3,7 +3,7 @@
 <!--
  Test data for TableImplTest.java
 -->
-<TableStructure description="blabla" multipleContentsAllowed="true">
+<TableStructure multipleContentsAllowed="true">
     <Column id="0" name="ageFrom" datatype="int"/>
     <Column id="1" name="ageTo" datatype="int"/>
     <Column id="2" name="rate" datatype="Decimal"/>

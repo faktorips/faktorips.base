@@ -131,14 +131,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertFalse(id0.equals(id1));
         assertEquals(1, row1.getRowNumber());
 
-        try {
-            assertTrue(generation.newPart(IRow.class) instanceof IRow);
-
-            generation.newPart(Object.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // nothing to do :-)
-        }
+        assertTrue(generation.newPart(IRow.class) instanceof IRow);
     }
 
     public void testClear() {

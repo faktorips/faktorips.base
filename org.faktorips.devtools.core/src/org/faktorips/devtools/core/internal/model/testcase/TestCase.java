@@ -82,34 +82,40 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public IIpsElement[] getChildren() {
-        return testObjects.toArray(new IIpsElement[0]);
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+        childrenList.addAll(testObjects);
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override
     protected void reinitPartCollections() {
-        testObjects = new ArrayList<IIpsObjectPart>();
+        super.reinitPartCollections();
+        testObjects.clear();
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof ITestObject) {
             testObjects.add(part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+
+        return super.addPart(part);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (part instanceof ITestObject) {
             try {
                 removeTestObject((ITestObject)part);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+
+        return super.removePart(part);
     }
 
     @Override
@@ -122,17 +128,13 @@ public class TestCase extends IpsObject implements ITestCase {
         } else if (TestRule.TAG_NAME.equals(xmlTagName)) {
             return newTestRuleInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
+
+        return super.newPart(xmlTag, id);
     }
 
     @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TEST_CASE;
-    }
-
-    @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
-        throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
     }
 
     @Override
@@ -1055,6 +1057,11 @@ public class TestCase extends IpsObject implements ITestCase {
     @Override
     public String getMetaClass() {
         return getTestCaseType();
+    }
+
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
     }
 
 }

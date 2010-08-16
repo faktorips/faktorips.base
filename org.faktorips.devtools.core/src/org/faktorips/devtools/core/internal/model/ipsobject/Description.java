@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * 
  * @author Alexander Weickmann
  */
-public class Description extends AtomicIpsObjectPart implements IDescription {
+public class Description extends IpsObjectPart implements IDescription {
 
     private Locale locale;
 

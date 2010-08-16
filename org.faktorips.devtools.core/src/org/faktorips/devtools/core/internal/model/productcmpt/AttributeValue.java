@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class AttributeValue extends AtomicIpsObjectPart implements IAttributeValue {
+public class AttributeValue extends IpsObjectPart implements IAttributeValue {
 
     final static String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
@@ -46,13 +46,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     public AttributeValue(IIpsObjectPart parent, String id) {
         super(parent, id);
-        descriptionChangable = false;
     }
 
     public AttributeValue(IIpsObjectPart parent, String id, String attribute, String value) {
         super(parent, id);
         ArgumentCheck.notNull(attribute);
-        descriptionChangable = false;
         this.attribute = attribute;
         this.value = value;
     }

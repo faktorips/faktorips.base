@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.faktorips.devtools.core.model.Described;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 
 /**
@@ -21,7 +22,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
  * 
  * @author Jan Ortmann
  */
-public interface IProdDefProperty extends Described {
+public interface IProdDefProperty extends Described, IDescribedElement {
 
     /**
      * Returns the type of the property. The different types of product definition properties are

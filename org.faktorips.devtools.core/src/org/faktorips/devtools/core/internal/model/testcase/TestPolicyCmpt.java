@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -76,43 +77,42 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     public IIpsElement[] getChildren() {
-        int numOfChildren = testAttributeValues.size() + testPolicyCmptLinks.size();
-        IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(numOfChildren);
+        IIpsElement[] children = super.getChildren();
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
         childrenList.addAll(testAttributeValues);
         childrenList.addAll(testPolicyCmptLinks);
-        childrenList.toArray(childrenArray);
-        return childrenArray;
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     @Override
     protected void reinitPartCollections() {
+        super.reinitPartCollections();
         testAttributeValues = new ArrayList<ITestAttributeValue>();
         testPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>();
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof TestAttributeValue) {
             testAttributeValues.add((TestAttributeValue)part);
-            return;
+            return true;
         } else if (part instanceof TestPolicyCmptLink) {
             testPolicyCmptLinks.add((TestPolicyCmptLink)part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        return super.addPart(part);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (part instanceof TestAttributeValue) {
             testAttributeValues.remove(part);
-            return;
+            return true;
         } else if (part instanceof TestPolicyCmptLink) {
             testPolicyCmptLinks.remove(part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        return super.removePart(part);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         } else if (xmlTagName.equals(TestPolicyCmptLink.TAG_NAME)) {
             return newTestPcTypeLinkInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
+        return super.newPart(xmlTag, id);
     }
 
     @Override
@@ -751,11 +751,10 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             // "find" using the given policy cmpt type
             if (!StringUtils.isEmpty(policyCmptType)) {
                 return policyCmptType;
-            } else {
-                ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = findTestPolicyCmptTypeParameter(ipsProject);
-                if (testPolicyCmptTypeParam != null) {
-                    return testPolicyCmptTypeParam.getPolicyCmptType();
-                }
+            }
+            ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = findTestPolicyCmptTypeParameter(ipsProject);
+            if (testPolicyCmptTypeParam != null) {
+                return testPolicyCmptTypeParam.getPolicyCmptType();
             }
         }
         return null;
@@ -802,15 +801,13 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             if (parentPolicyCmpt == null) {
                 // no further validation possible because parent policy cmpt not found
                 return;
-            } else {
-                IPolicyCmptType parentPolicyCmptType = parentPolicyCmpt.findPolicyCmptType();
-                if (!parentPolicyCmptType.isConfigurableByProductCmptType()) {
-                    /*
-                     * No further validation possible as parent policyCmptType is not product
-                     * relevant
-                     */
-                    return;
-                }
+            }
+            IPolicyCmptType parentPolicyCmptType = parentPolicyCmpt.findPolicyCmptType();
+            if (!parentPolicyCmptType.isConfigurableByProductCmptType()) {
+                /*
+                 * No further validation possible as parent policyCmptType is not product relevant
+                 */
+                return;
             }
 
             ITestPolicyCmptTypeParameter parentParameter = param.getParentTestPolicyCmptTypeParam();

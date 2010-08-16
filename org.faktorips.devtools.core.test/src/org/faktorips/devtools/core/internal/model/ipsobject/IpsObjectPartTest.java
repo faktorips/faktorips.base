@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -27,7 +26,6 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IProductCmpt productCmpt;
-    private IIpsSrcFile pdSrcFile;
     private IIpsObjectPart part;
     private IIpsObjectPart subpart;
 
@@ -36,7 +34,7 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
         super.setUp();
         project = newIpsProject("TestProject");
         productCmpt = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "Product");
-        pdSrcFile = productCmpt.getIpsSrcFile();
+        productCmpt.getIpsSrcFile();
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         part = generation;
         subpart = generation.newConfigElement();
@@ -45,12 +43,6 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
     public void testGetIpsObject() {
         assertEquals(productCmpt, part.getIpsObject());
         assertEquals(productCmpt, subpart.getIpsObject());
-    }
-
-    public void testSetDescription() {
-        part.setDescription("newDescription");
-        assertEquals("newDescription", part.getDescription());
-        assertTrue(pdSrcFile.isDirty());
     }
 
     public void testEquals() throws CoreException {

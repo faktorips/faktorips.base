@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * 
  * @author Joerg Ortmann
  */
-public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttributeValue {
+public class TestAttributeValue extends IpsObjectPart implements ITestAttributeValue {
 
     /**
      * Specifies the default type, will be used if the corresponding test case type parameter is not
@@ -62,7 +62,6 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
 
     public TestAttributeValue(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
-        descriptionChangable = false;
     }
 
     /**
@@ -115,9 +114,8 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
 
         if (!testPolicyCmpt.isProductRelevant()) {
             return testAttr.findAttribute(ipsProject);
-        } else {
-            return testPolicyCmpt.findProductCmptTypeAttribute(testAttr.getAttribute(), ipsProject);
         }
+        return testPolicyCmpt.findProductCmptTypeAttribute(testAttr.getAttribute(), ipsProject);
     }
 
     @Override

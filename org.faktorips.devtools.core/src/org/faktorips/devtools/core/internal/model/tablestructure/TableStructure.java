@@ -43,9 +43,13 @@ import org.w3c.dom.Element;
 public class TableStructure extends IpsObject implements ITableStructure {
 
     private TableStructureType type = TableStructureType.SINGLE_CONTENT;
+
     private List<IColumn> columns = new ArrayList<IColumn>(2);
+
     private List<IColumnRange> ranges = new ArrayList<IColumnRange>(0);
+
     private List<IUniqueKey> uniqueKeys = new ArrayList<IUniqueKey>(1);
+
     private List<IForeignKey> foreignKeys = new ArrayList<IForeignKey>(0);
 
     public TableStructure(IIpsSrcFile file) {
@@ -57,19 +61,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public TableStructure() {
         super();
-    }
-
-    @Override
-    public IIpsElement[] getChildren() {
-        int numOfChildren = getNumOfColumns() + getNumOfRanges() + getNumOfUniqueKeys() + getNumOfForeignKeys();
-        IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(numOfChildren);
-        childrenList.addAll(columns);
-        childrenList.addAll(ranges);
-        childrenList.addAll(uniqueKeys);
-        childrenList.addAll(foreignKeys);
-        childrenList.toArray(childrenArray);
-        return childrenArray;
     }
 
     @Override
@@ -389,7 +380,22 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
+    public IIpsElement[] getChildren() {
+        IIpsElement[] children = super.getChildren();
+
+        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+        childrenList.addAll(columns);
+        childrenList.addAll(ranges);
+        childrenList.addAll(uniqueKeys);
+        childrenList.addAll(foreignKeys);
+
+        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    }
+
+    @Override
     protected void reinitPartCollections() {
+        super.reinitPartCollections();
+
         columns.clear();
         ranges.clear();
         uniqueKeys.clear();
@@ -397,45 +403,46 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    protected void addPart(IIpsObjectPart part) {
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof IColumn) {
             columns.add((IColumn)part);
-            return;
+            return true;
         } else if (part instanceof IColumnRange) {
             ranges.add((IColumnRange)part);
-            return;
+            return true;
         } else if (part instanceof IUniqueKey) {
             uniqueKeys.add((IUniqueKey)part);
-            return;
+            return true;
         } else if (part instanceof IForeignKey) {
             foreignKeys.add((IForeignKey)part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+
+        return super.addPart(part);
     }
 
     @Override
-    protected void removePart(IIpsObjectPart part) {
+    protected boolean removePart(IIpsObjectPart part) {
         if (part instanceof IColumn) {
             columns.remove(part);
-            return;
+            return true;
         } else if (part instanceof IColumnRange) {
             ranges.remove(part);
-            return;
+            return true;
         } else if (part instanceof IUniqueKey) {
             uniqueKeys.remove(part);
-            return;
+            return true;
         } else if (part instanceof IForeignKey) {
             foreignKeys.remove(part);
-            return;
+            return true;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+
+        return super.removePart(part);
     }
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
-
         if (xmlTagName.equals(Column.TAG_NAME)) {
             return newColumnInternal(id);
         } else if (xmlTagName.equals(ColumnRange.TAG_NAME)) {
@@ -445,11 +452,12 @@ public class TableStructure extends IpsObject implements ITableStructure {
         } else if (xmlTagName.equals(ForeignKey.TAG_NAME)) {
             return newForeignKeyInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
+
+        return super.newPart(xmlTag, id);
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<?> partType) {
+    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
         if (partType.equals(IColumn.class)) {
             return newColumnInternal(getNextPartId());
         } else if (partType.equals(IColumnRange.class)) {
@@ -459,7 +467,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
         } else if (partType.equals(IForeignKey.class)) {
             return newForeignKeyInternal(getNextPartId());
         }
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+
+        return super.newPart(partType);
     }
 
     @Override
@@ -487,6 +496,16 @@ public class TableStructure extends IpsObject implements ITableStructure {
             result.addAll(Arrays.asList(project.findAllTableContentsSrcFiles(this)));
         }
         return result.toArray(new IIpsSrcFile[result.size()]);
+    }
+
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
+    @Override
+    public boolean hasLabelSupport() {
+        return true;
     }
 
 }

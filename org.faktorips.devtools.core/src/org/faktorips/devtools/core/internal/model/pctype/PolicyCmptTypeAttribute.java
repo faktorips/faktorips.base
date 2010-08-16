@@ -314,48 +314,43 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
     }
 
-    @Override
-    protected void addPart(IIpsObjectPart part) {
-        int childrenCount = getChildren().length;
-        super.addPart(part);
-        if (getChildren().length > childrenCount) {
-            return;
-        }
+    private IIpsObjectPart newPersistentAttributeInfoInternal(PolicyCmptTypeAttribute policyCmptTypeAttribute, String id) {
+        persistenceAttributeInfo = new PersistentAttributeInfo(this, id);
+        return persistenceAttributeInfo;
+    }
 
+    @Override
+    protected boolean addPart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
-        } else {
+            return true;
+
+        } else if (part instanceof IPersistentAttributeInfo) {
             persistenceAttributeInfo = part;
+            return true;
         }
+
+        return super.addPart(part);
     }
 
     @Override
     protected IIpsObjectPart newPart(Element xmlTag, String id) {
-        IIpsObjectPart part = super.newPart(xmlTag, id);
-        if (part != null) {
-            return part;
-        }
-
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
-        }
-        if (xmlTag.getTagName().equals(IPersistentAttributeInfo.XML_TAG)) {
+
+        } else if (xmlTag.getTagName().equals(IPersistentAttributeInfo.XML_TAG)) {
             return newPersistentAttributeInfoInternal(this, id);
         }
-        return null;
-    }
 
-    private IIpsObjectPart newPersistentAttributeInfoInternal(PolicyCmptTypeAttribute policyCmptTypeAttribute, String id) {
-        persistenceAttributeInfo = new PersistentAttributeInfo(this, id);
-        return persistenceAttributeInfo;
+        return super.newPart(xmlTag, id);
     }
 
     // TODO Joerg Merge Persistence Branch: warum ueber Reflection und nicht
     // instanceof wie z.B. in
     // org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType.newPart(Class)
     @Override
-    public IIpsObjectPart newPart(Class partType) {
+    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
         try {
             Constructor<? extends IIpsObjectPart> constructor = partType.getConstructor(IIpsObjectPart.class,
                     String.class);
@@ -365,7 +360,22 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             // TODO needs to be documented properly or specialized
             IpsPlugin.log(e);
         }
-        throw new IllegalArgumentException("Unsupported part type: " + partType); //$NON-NLS-1$
+        return super.newPart(partType);
+    }
+
+    @Override
+    protected void reinitPartCollections() {
+        super.reinitPartCollections();
+        // TODO Joerg Merge PersistenceBranch: wirklich nicht valueSet neu anlegen?
+    }
+
+    @Override
+    protected boolean removePart(IIpsObjectPart part) {
+        if (part instanceof IValueSet) {
+            valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        }
+        // TODO AW: Isn't it necessary to reset the IPersistentAttributeInfo?
+        return super.removePart(part);
     }
 
     @Override
@@ -411,20 +421,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         IValueSet oldset = valueSet;
         valueSet = source.copy(this, getNextPartId());
         valueChanged(oldset, valueSet);
-    }
-
-    @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
-        // TODO Joerg Merge PersistenceBranch: wirklich nicht valueSet neu anlegen?
-    }
-
-    @Override
-    protected void removePart(IIpsObjectPart part) {
-        super.removePart(part);
-        if (part instanceof IValueSet) {
-            valueSet = new UnrestrictedValueSet(this, getNextPartId());
-        }
     }
 
     @Override
