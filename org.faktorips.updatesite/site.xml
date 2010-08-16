@@ -536,4 +536,22 @@
 <feature url="features/org.faktorips.uml.feature.source_3.0.0.rc1.jar" id="org.faktorips.uml.feature.source" version="3.0.0.rc1">
 <category name="Faktor-IPS 3.0"/>
 </feature>
+<feature url="features/org.faktorips.feature_2.5.3.rfinal.jar" id="org.faktorips.feature" version="2.5.3.rfinal">
+<category name="Faktor-IPS 2.5"/>
+</feature>
+<feature url="features/org.faktorips.feature.nls1_2.5.3.rfinal.jar" id="org.faktorips.feature.nls1" version="2.5.3.rfinal">
+<category name="Faktor-IPS 2.5"/>
+</feature>
+<feature url="features/org.faktorips.feature.source_2.5.3.rfinal.jar" id="org.faktorips.feature.source" version="2.5.3.rfinal">
+<category name="Faktor-IPS 2.5"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature_2.5.3.rfinal.jar" id="org.faktorips.uml.feature" version="2.5.3.rfinal">
+<category name="Faktor-IPS 2.5"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.nls1_2.5.3.rfinal.jar" id="org.faktorips.uml.feature.nls1" version="2.5.3.rfinal">
+<category name="Faktor-IPS 2.5"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.source_2.5.3.rfinal.jar" id="org.faktorips.uml.feature.source" version="2.5.3.rfinal">
+<category name="Faktor-IPS 2.5"/>
+</feature>
 </site>
