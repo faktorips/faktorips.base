@@ -218,7 +218,10 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
             list.add(new Message(MSGCODE_INVALID_VALID_FROM, msg, Message.ERROR, this, PROPERTY_VALID_FROM));
         }
-
     }
 
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
 }

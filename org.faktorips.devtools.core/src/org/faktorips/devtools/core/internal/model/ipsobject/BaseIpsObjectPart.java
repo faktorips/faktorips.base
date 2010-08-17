@@ -89,7 +89,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
                 return newPart;
             }
         }
-        throw new IllegalArgumentException("Could not create a new part for class " + partType); //$NON-NLS-1$
+        return super.newPart(partType);
     }
 
     @Override

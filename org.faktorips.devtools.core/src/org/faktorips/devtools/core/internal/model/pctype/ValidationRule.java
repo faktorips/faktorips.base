@@ -404,4 +404,9 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
         valueChanged(oldValue, isAttributeValueValidationRule);
     }
 
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
 }
