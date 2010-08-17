@@ -18,18 +18,6 @@
 <feature url="features/org.faktorips.feature.nls1_2.0.1.jar" id="org.faktorips.feature.nls1" version="2.0.1">
 <category name="Faktor-IPS 2.0"/>
 </feature>
-<feature url="features/org.faktorips.feature_2.1.0.ms1.jar" id="org.faktorips.feature" version="2.1.0.ms1">
-<category name="Faktor-IPS 2.1"/>
-</feature>
-<feature url="features/org.faktorips.feature.nls1_2.1.0.ms1.jar" id="org.faktorips.feature.nls1" version="2.1.0.ms1">
-<category name="Faktor-IPS 2.1"/>
-</feature>
-<feature url="features/org.faktorips.feature_2.1.0.ms2.jar" id="org.faktorips.feature" version="2.1.0.ms2">
-<category name="Faktor-IPS 2.1"/>
-</feature>
-<feature url="features/org.faktorips.feature.nls1_2.1.0.ms2.jar" id="org.faktorips.feature.nls1" version="2.1.0.ms2">
-<category name="Faktor-IPS 2.1"/>
-</feature>
 <feature url="features/org.faktorips.feature_2.1.0.rfinal.jar" id="org.faktorips.feature" version="2.1.0.rfinal">
 <category name="Faktor-IPS 2.1"/>
 </feature>
