@@ -510,13 +510,6 @@
 <feature url="features/org.faktorips.uml.feature.source_2.5.2.rfinal.jar" id="org.faktorips.uml.feature.source" version="2.5.2.rfinal">
 <category name="Faktor-IPS 2.5"/>
 </feature>
-<category-def name="Faktor-IPS M2Eclipse Extension" label="Faktor-IPS M2Eclipse Extension"/>
-<category-def name="Faktor-IPS 2.0" label="Faktor-IPS 2.0"/>
-<category-def name="Faktor-IPS 2.1" label="Faktor-IPS 2.1"/>
-<category-def name="Faktor-IPS 2.2" label="Faktor-IPS 2.2"/>
-<category-def name="Faktor-IPS 2.3" label="Faktor-IPS 2.3"/>
-<category-def name="Faktor-IPS 2.4" label="Faktor-IPS 2.4"/>
-<category-def name="Faktor-IPS 2.5" label="Faktor-IPS 2.5"/>
 <feature url="features/org.faktorips.feature_3.0.0.rc1.jar" id="org.faktorips.feature" version="3.0.0.rc1">
 <category name="Faktor-IPS 3.0"/>
 </feature>
@@ -572,4 +565,11 @@
 <feature url="features/org.faktorips.uml.feature.source_2.5.4.rfinal.jar" id="org.faktorips.uml.feature.source" version="2.5.4.rfinal">
 <category name="Faktor-IPS 2.5"/>
 </feature>
+<category-def name="Faktor-IPS M2Eclipse Extension" label="Faktor-IPS M2Eclipse Extension"/>
+<category-def name="Faktor-IPS 2.0" label="Faktor-IPS 2.0"/>
+<category-def name="Faktor-IPS 2.1" label="Faktor-IPS 2.1"/>
+<category-def name="Faktor-IPS 2.2" label="Faktor-IPS 2.2"/>
+<category-def name="Faktor-IPS 2.3" label="Faktor-IPS 2.3"/>
+<category-def name="Faktor-IPS 2.4" label="Faktor-IPS 2.4"/>
+<category-def name="Faktor-IPS 2.5" label="Faktor-IPS 2.5"/>
 </site>
