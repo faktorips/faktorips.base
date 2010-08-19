@@ -63,43 +63,47 @@ public class Migration_3_0_0_rc1 extends DefaultMigration {
     @Override
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
         IIpsObject ipsObject = srcFile.getIpsObject();
-        if (ipsObject instanceof ILabeledElement) {
-            addLabelForGeneratorLocale((ILabeledElement)ipsObject);
+        if (ipsObject.hasLabelSupport()) {
+            addLabelForGeneratorLocale(ipsObject);
         }
-        associateDescriptionToGeneratorLocale(ipsObject);
+        if (ipsObject.hasDescriptionSupport()) {
+            associateDescriptionToGeneratorLocale(ipsObject);
+        }
         migrateChildren(ipsObject);
     }
 
     private void migrateChildren(IIpsObjectPartContainer container) throws CoreException {
         for (IIpsElement child : container.getChildren()) {
-            if (child instanceof ILabeledElement) {
-                addLabelForGeneratorLocale((ILabeledElement)child);
-            }
             if (child instanceof IIpsObjectPartContainer) {
                 IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)child;
                 migrateChildren(ipsObjectPartContainer);
-                associateDescriptionToGeneratorLocale(ipsObjectPartContainer);
+                if (ipsObjectPartContainer.hasDescriptionSupport()) {
+                    associateDescriptionToGeneratorLocale(ipsObjectPartContainer);
+                }
+                if (ipsObjectPartContainer.hasLabelSupport()) {
+                    addLabelForGeneratorLocale(ipsObjectPartContainer);
+                }
+                continue;
+            }
+            if (child instanceof ILabeledElement) {
+                addLabelForGeneratorLocale((ILabeledElement)child);
             }
         }
     }
 
-    private void associateDescriptionToGeneratorLocale(IIpsObjectPartContainer ipsObjectPartContainer) {
-        if (ipsObjectPartContainer instanceof IDescribedElement) {
-            IDescribedElement describedElement = (IDescribedElement)ipsObjectPartContainer;
-
-            /*
-             * There is exactly one description or none, it has already been loaded by XML
-             * initialization.
-             */
-            IDescription description;
-            Set<IDescription> descriptionSet = describedElement.getDescriptions();
-            if (descriptionSet.size() > 0) {
-                description = descriptionSet.toArray(new IDescription[1])[0];
-            } else {
-                description = describedElement.newDescription();
-            }
-            description.setLocale(generatorLocale);
+    private void associateDescriptionToGeneratorLocale(IDescribedElement describedElement) {
+        /*
+         * There is exactly one description or none, it has already been loaded by the XML
+         * initialization process.
+         */
+        Set<IDescription> descriptionSet = describedElement.getDescriptions();
+        IDescription description;
+        if (descriptionSet.size() > 0) {
+            description = descriptionSet.toArray(new IDescription[1])[0];
+        } else {
+            description = describedElement.newDescription();
         }
+        description.setLocale(generatorLocale);
     }
 
     private void addLabelForGeneratorLocale(ILabeledElement labeledElement) {
