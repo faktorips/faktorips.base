@@ -33,7 +33,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
 
     @Override
     protected Composite createWorkAreaThis(Composite parent) {
-        Composite c = super.createWorkArea(parent);
+        Composite c = super.createWorkAreaThis(parent);
 
         nameText.addFocusListener(new FocusAdapter() {
             @Override
