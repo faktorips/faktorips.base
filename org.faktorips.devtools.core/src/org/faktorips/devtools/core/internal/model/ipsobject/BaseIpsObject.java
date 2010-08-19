@@ -98,8 +98,7 @@ public abstract class BaseIpsObject extends IpsObject {
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         for (IpsObjectPartCollection<?> container : partCollections) {
             container.clear();
         }

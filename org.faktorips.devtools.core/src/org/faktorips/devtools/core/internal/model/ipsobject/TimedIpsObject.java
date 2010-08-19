@@ -210,8 +210,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
-    protected final void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected final void reinitPartCollectionsThis() {
         generations.clear();
     }
 

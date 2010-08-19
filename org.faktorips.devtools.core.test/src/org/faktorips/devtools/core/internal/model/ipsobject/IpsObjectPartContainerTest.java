@@ -411,7 +411,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testReinitPartCollections() {
         assertEquals(2, container.getLabels().size());
         assertEquals(2, container.getDescriptions().size());
-        container.reinitPartCollections();
+        container.reinitPartCollectionsAccessor();
         assertEquals(0, container.getLabels().size());
         assertEquals(0, container.getDescriptions().size());
     }
@@ -567,16 +567,18 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             return doc.createElement("TestPart");
         }
 
-        // Overridden so the method can be called by this test case.
-        @Override
-        public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
-            return super.newPart(partType);
+        /*
+         * Calls the protected method reinitPartCollections() so that it can be accessed by this
+         * test case.
+         */
+        private void reinitPartCollectionsAccessor() {
+            super.reinitPartCollections();
         }
 
         // Overridden so the method can be called by this test case.
         @Override
-        protected void reinitPartCollections() {
-            super.reinitPartCollections();
+        public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+            return super.newPart(partType);
         }
 
         // Overridden so the method can be called by this test case.

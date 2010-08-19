@@ -373,8 +373,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         // TODO AW: Reset value set?
     }
 

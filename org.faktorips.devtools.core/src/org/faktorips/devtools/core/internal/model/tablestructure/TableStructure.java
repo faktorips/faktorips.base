@@ -391,9 +391,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
-
+    protected void reinitPartCollectionsThis() {
         columns.clear();
         ranges.clear();
         uniqueKeys.clear();

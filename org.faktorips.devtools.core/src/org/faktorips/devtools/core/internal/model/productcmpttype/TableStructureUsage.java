@@ -110,8 +110,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         tableStructures.clear();
     }
 

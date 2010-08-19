@@ -506,15 +506,22 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * This method is called during the initFromXml processing. Subclasses should clear all
-     * collections that hold references to parts, e.g. for IPolicyCmptType: Collections for
-     * attributes, methods and so on have to be cleared.
-     * <p>
-     * Subclasses must not forget to call <tt>super.reinitPartCollections()</tt>.
+     * This method is called during the process of initialization from XML. All collections that
+     * hold references to {@link IIpsObjectPart}s need to be cleared. It might be extended by
+     * subclasses by overriding the method {@link #reinitPartCollectionsThis()}.
      */
-    protected void reinitPartCollections() {
+    protected final void reinitPartCollections() {
         labels.clear();
         descriptions.clear();
+        reinitPartCollectionsThis();
+    }
+
+    /**
+     * Subclass implementation that can be used to extend the method
+     * {@link #reinitPartCollections()}. The default implementation of this method does nothing.
+     */
+    protected void reinitPartCollectionsThis() {
+        // Empty default implementation
     }
 
     /**

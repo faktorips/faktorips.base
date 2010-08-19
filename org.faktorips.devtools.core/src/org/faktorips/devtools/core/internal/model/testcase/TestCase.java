@@ -86,8 +86,7 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         testObjects.clear();
     }
 

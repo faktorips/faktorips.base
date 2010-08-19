@@ -168,8 +168,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         rows.clear();
     }
 

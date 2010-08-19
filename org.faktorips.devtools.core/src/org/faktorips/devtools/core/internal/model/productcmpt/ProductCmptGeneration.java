@@ -651,9 +651,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
-
+    protected void reinitPartCollectionsThis() {
         attributeValues.clear();
         configElements.clear();
         links.clear();

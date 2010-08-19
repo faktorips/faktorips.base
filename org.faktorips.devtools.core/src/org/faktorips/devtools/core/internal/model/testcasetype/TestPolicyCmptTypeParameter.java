@@ -89,8 +89,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         testAttributes = new ArrayList<ITestAttribute>();
         testPolicyCmptTypeChilds = new ArrayList<ITestPolicyCmptTypeParameter>();
     }

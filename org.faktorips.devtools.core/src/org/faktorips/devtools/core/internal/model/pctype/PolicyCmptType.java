@@ -536,8 +536,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
+        super.reinitPartCollectionsThis();
         internalInitPersistenceTypeInfo();
     }
 

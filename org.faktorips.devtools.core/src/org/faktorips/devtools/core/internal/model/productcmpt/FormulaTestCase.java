@@ -69,8 +69,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         formulaTestInputValues.clear();
     }
 

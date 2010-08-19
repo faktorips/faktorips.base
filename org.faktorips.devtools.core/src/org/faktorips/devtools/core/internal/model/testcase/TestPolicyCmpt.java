@@ -84,8 +84,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         testAttributeValues = new ArrayList<ITestAttributeValue>();
         testPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>();
     }

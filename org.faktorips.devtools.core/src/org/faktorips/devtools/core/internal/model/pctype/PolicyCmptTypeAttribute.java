@@ -363,8 +363,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         // TODO Joerg Merge PersistenceBranch: wirklich nicht valueSet neu anlegen?
     }
 

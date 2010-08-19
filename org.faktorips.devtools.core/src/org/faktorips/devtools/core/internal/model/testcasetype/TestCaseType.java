@@ -68,8 +68,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    protected void reinitPartCollections() {
-        super.reinitPartCollections();
+    protected void reinitPartCollectionsThis() {
         testParameters.clear();
     }
 
