@@ -147,6 +147,11 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
+    protected boolean addPartThis(IIpsObjectPart part) {
+        return false;
+    }
+
+    @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         return false;
     }

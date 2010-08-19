@@ -90,7 +90,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof TestAttributeValue) {
             testAttributeValues.add((TestAttributeValue)part);
             return true;
@@ -98,7 +98,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             testPolicyCmptLinks.add((TestPolicyCmptLink)part);
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override

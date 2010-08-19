@@ -399,7 +399,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof IColumn) {
             columns.add((IColumn)part);
             return true;
@@ -413,8 +413,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
             foreignKeys.add((IForeignKey)part);
             return true;
         }
-
-        return super.addPart(part);
+        return false;
     }
 
     @Override

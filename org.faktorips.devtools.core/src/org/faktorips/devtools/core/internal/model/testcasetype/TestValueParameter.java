@@ -140,6 +140,11 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
     }
 
     @Override
+    protected boolean addPartThis(IIpsObjectPart part) {
+        return false;
+    }
+
+    @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         return false;
     }

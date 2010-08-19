@@ -197,6 +197,11 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
+    protected boolean addPartThis(IIpsObjectPart part) {
+        return false;
+    }
+
+    @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         return false;
     }

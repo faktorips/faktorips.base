@@ -527,12 +527,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (IPersistentTypeInfo.class.isAssignableFrom(part.getClass())) {
             persistenceTypeInfo = part;
             return true;
         }
-        return super.addPart(part);
+        return super.addPartThis(part);
     }
 
     @Override

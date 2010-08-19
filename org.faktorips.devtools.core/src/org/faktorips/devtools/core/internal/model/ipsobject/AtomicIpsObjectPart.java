@@ -43,8 +43,13 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
     }
 
     @Override
+    protected final boolean addPartThis(IIpsObjectPart part) {
+        return false;
+    }
+
+    @Override
     protected final boolean removePartThis(IIpsObjectPart part) {
-        throw new UnsupportedOperationException("Atomic IPS object parts do not contain any other parts."); //$NON-NLS-1$
+        return false;
     }
 
 }

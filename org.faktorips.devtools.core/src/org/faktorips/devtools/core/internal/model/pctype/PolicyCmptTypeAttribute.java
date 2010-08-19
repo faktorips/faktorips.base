@@ -319,7 +319,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
             return true;
@@ -328,8 +328,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             persistenceAttributeInfo = part;
             return true;
         }
-
-        return super.addPart(part);
+        return false;
     }
 
     @Override

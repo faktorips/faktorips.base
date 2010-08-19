@@ -94,12 +94,12 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof TableStructureReference) {
             tableStructures.add((TableStructureReference)part);
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override

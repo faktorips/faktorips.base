@@ -43,6 +43,11 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
     }
 
     @Override
+    protected boolean addPartThis(IIpsObjectPart part) {
+        return false;
+    }
+
+    @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         return false;
     }

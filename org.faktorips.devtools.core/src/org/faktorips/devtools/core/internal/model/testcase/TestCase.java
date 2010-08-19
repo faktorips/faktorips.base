@@ -91,13 +91,12 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof ITestObject) {
             testObjects.add(part);
             return true;
         }
-
-        return super.addPart(part);
+        return false;
     }
 
     @Override

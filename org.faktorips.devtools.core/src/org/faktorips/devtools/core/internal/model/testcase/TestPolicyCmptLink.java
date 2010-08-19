@@ -154,12 +154,12 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof TestPolicyCmpt) {
             targetChild = (TestPolicyCmpt)part;
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override

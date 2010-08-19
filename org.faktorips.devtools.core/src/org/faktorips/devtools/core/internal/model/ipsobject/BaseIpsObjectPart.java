@@ -89,13 +89,13 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.addPart(part)) {
                 return true;
             }
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override

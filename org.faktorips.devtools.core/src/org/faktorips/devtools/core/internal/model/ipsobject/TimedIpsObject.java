@@ -178,12 +178,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
-    protected final boolean addPart(IIpsObjectPart part) {
+    protected final boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof IIpsObjectGeneration) {
             generations.add((IIpsObjectGeneration)part);
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override

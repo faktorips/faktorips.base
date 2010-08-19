@@ -88,12 +88,12 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof IFormulaTestInputValue) {
             formulaTestInputValues.add((IFormulaTestInputValue)part);
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override

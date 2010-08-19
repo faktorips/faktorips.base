@@ -136,12 +136,12 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof IRow) {
             rows.add((Row)part);
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     /**

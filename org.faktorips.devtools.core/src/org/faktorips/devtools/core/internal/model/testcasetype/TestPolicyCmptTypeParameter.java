@@ -95,7 +95,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof ITestAttribute) {
             testAttributes.add((ITestAttribute)part);
             return true;
@@ -104,8 +104,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             testPolicyCmptTypeChilds.add((TestPolicyCmptTypeParameter)part);
             return true;
         }
-
-        return super.addPart(part);
+        return false;
     }
 
     @Override

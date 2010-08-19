@@ -521,17 +521,16 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected abstract void reinitPartCollectionsThis();
 
     /**
-     * Add the part to the container.
+     * Adds the given part to the container. Returns <tt>true</tt> if successfully added,
+     * <tt>false</tt> otherwise.
      * <p>
-     * This method is called during the initFromXml processing. When the part has been part of the
-     * parent before the xml initialization and is still be found in the xml (the part's id is found
-     * in the xml). Subclasses must override this method so that the part is added to the correct
-     * collection, e.g. for IPolicyCmptType: if the part is an IAttribute, the part must be added to
-     * the <code>attributes</code> list.
-     * <p>
-     * Subclasses must not forget to call <tt>super.addPart(part)</tt>.
+     * This method is called during the process of initialization from XML when the part has been
+     * part of the parent before the XML initialization and is still found in the XML file (the
+     * part's id is found in the XML file).
+     * 
+     * @param part The {@link IIpsObjectPart} to add to this container.
      */
-    protected boolean addPart(IIpsObjectPart part) {
+    protected final boolean addPart(IIpsObjectPart part) {
         if (part instanceof ILabel && hasLabelSupport()) {
             labels.add((ILabel)part);
             return true;
@@ -540,9 +539,18 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             descriptions.add((IDescription)part);
             return true;
         }
-
-        return false;
+        return addPartThis(part);
     }
+
+    /**
+     * Subclass implementation that can be used to extend the method
+     * {@link #addPart(IIpsObjectPart)}.
+     * <p>
+     * The given part must be added to the correct collection.
+     * 
+     * @param part The {@link IIpsObjectPart} to add to this container.
+     */
+    protected abstract boolean addPartThis(IIpsObjectPart part);
 
     /**
      * Removes the given part from the container. Returns <tt>true</tt> if removed, <tt>false</tt>
@@ -561,7 +569,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             descriptions.remove(part);
             return true;
         }
-
         return removePartThis(part);
     }
 

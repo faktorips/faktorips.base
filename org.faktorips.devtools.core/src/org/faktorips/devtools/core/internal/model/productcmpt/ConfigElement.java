@@ -378,12 +378,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override

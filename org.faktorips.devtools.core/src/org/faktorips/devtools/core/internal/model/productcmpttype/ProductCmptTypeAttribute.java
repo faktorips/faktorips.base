@@ -141,12 +141,12 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override

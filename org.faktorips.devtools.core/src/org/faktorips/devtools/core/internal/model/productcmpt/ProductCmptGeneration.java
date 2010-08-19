@@ -607,7 +607,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof IAttributeValue) {
             attributeValues.add((IAttributeValue)part);
             return true;
@@ -624,8 +624,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             formulas.add((IFormula)part);
             return true;
         }
-
-        return super.addPart(part);
+        return false;
     }
 
     @Override

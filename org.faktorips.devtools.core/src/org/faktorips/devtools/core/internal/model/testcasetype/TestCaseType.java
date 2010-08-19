@@ -73,12 +73,12 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof ITestParameter) {
             testParameters.add((ITestParameter)part);
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override

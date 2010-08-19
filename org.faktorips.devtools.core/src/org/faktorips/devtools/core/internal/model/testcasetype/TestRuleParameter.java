@@ -111,6 +111,11 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
     }
 
     @Override
+    protected boolean addPartThis(IIpsObjectPart part) {
+        return false;
+    }
+
+    @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         return false;
     }

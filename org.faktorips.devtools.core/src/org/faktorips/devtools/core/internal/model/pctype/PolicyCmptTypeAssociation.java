@@ -464,12 +464,12 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    protected boolean addPart(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof PersistentAssociationInfo) {
             persistenceAssociationInfo = part;
             return true;
         }
-        return super.addPart(part);
+        return false;
     }
 
     @Override
