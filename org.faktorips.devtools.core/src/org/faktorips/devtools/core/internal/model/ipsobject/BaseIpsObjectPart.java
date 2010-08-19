@@ -99,13 +99,13 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         for (IpsObjectPartCollection<?> container : partCollections) {
             if (container.removePart(part)) {
                 return true;
             }
         }
-        return super.removePart(part);
+        return false;
     }
 
     @Override

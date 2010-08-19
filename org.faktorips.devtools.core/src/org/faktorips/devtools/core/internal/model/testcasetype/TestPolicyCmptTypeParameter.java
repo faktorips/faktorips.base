@@ -109,7 +109,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof TestAttribute) {
             testAttributes.remove(part);
             return true;
@@ -118,8 +118,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             testPolicyCmptTypeChilds.remove(part);
             return true;
         }
-
-        return super.removePart(part);
+        return false;
     }
 
     @Override

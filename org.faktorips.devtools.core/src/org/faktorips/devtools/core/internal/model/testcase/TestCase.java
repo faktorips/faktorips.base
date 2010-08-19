@@ -101,7 +101,7 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof ITestObject) {
             try {
                 removeTestObject((ITestObject)part);
@@ -110,8 +110,7 @@ public class TestCase extends IpsObject implements ITestCase {
             }
             return true;
         }
-
-        return super.removePart(part);
+        return false;
     }
 
     @Override

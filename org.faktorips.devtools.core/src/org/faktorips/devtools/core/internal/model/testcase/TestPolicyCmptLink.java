@@ -163,7 +163,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (targetChild != null && part == targetChild) {
             if (!targetChild.isRoot()) {
                 // delete also this link that refers to test policy component
@@ -172,7 +172,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
             targetChild = null;
             return true;
         }
-        return super.removePart(part);
+        return false;
     }
 
     @Override

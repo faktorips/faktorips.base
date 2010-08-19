@@ -509,4 +509,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         // Nothing to do
     }
 
+    @Override
+    protected boolean removePartThis(IIpsObjectPart part) {
+        return false;
+    }
+
 }

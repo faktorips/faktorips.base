@@ -629,7 +629,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IAttributeValue) {
             attributeValues.remove(part);
             return true;
@@ -647,7 +647,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return true;
         }
 
-        return super.removePart(part);
+        return false;
     }
 
     @Override

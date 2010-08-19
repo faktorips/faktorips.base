@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -477,6 +478,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         @Override
         protected void reinitPartCollectionsThis() {
             // Nothing to do
+        }
+
+        @Override
+        protected boolean removePartThis(IIpsObjectPart part) {
+            return false;
         }
 
         @Override

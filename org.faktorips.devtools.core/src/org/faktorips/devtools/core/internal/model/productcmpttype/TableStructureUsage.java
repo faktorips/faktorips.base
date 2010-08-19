@@ -103,11 +103,12 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof TableStructureReference) {
             tableStructures.remove(part);
+            return true;
         }
-        return super.removePart(part);
+        return false;
     }
 
     @Override

@@ -97,12 +97,12 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IFormulaTestInputValue) {
             formulaTestInputValues.remove(part);
             return true;
         }
-        return super.removePart(part);
+        return false;
     }
 
     @Override

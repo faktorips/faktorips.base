@@ -102,7 +102,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof TestAttributeValue) {
             testAttributeValues.remove(part);
             return true;
@@ -110,7 +110,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             testPolicyCmptLinks.remove(part);
             return true;
         }
-        return super.removePart(part);
+        return false;
     }
 
     @Override

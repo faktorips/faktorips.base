@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.businessfct;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 
@@ -39,6 +40,11 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
     @Override
     protected void reinitPartCollectionsThis() {
         // Nothing to do
+    }
+
+    @Override
+    protected boolean removePartThis(IIpsObjectPart part) {
+        return false;
     }
 
 }

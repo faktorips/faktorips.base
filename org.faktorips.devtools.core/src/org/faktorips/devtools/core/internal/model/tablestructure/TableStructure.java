@@ -418,7 +418,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IColumn) {
             columns.remove(part);
             return true;
@@ -432,8 +432,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
             foreignKeys.remove(part);
             return true;
         }
-
-        return super.removePart(part);
+        return false;
     }
 
     @Override

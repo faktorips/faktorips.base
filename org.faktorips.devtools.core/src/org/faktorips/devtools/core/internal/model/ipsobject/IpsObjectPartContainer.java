@@ -545,11 +545,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * Removes the given part from the container.
+     * Removes the given part from the container. Returns <tt>true</tt> if removed, <tt>false</tt>
+     * otherwise.
      * <p>
-     * Subclasses must not forget to call <tt>super.removePart(part)</tt>.
+     * Subclasses may extend this method by using the method {@link #removePartThis(IIpsObjectPart)}.
+     * 
+     * @param part The {@link IIpsObjectPart} to remove from this container.
      */
-    protected boolean removePart(IIpsObjectPart part) {
+    protected final boolean removePart(IIpsObjectPart part) {
         if (part instanceof ILabel && hasLabelSupport()) {
             labels.remove(part);
             return true;
@@ -559,8 +562,16 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             return true;
         }
 
-        return false;
+        return removePartThis(part);
     }
+
+    /**
+     * Subclass implementation that can be used to extend the method
+     * {@link #removePart(IIpsObjectPart)}.
+     * 
+     * @param part The {@link IIpsObjectPart} to remove from this container.
+     */
+    protected abstract boolean removePartThis(IIpsObjectPart part);
 
     /**
      * This method is called during the initFromXml processing to create a new part object for the

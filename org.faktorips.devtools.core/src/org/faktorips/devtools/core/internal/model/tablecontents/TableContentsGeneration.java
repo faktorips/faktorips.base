@@ -145,10 +145,11 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     /**
-     * Removes the given row from the list of rows and updates the rownumbers of all following rows.
+     * Removes the given row from the list of rows and updates the row numbers of all following
+     * rows.
      */
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IRow) {
             Row row = (Row)part;
             int delIndex = rows.indexOf(row);
@@ -163,8 +164,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             }
             return true;
         }
-
-        return super.removePart(part);
+        return false;
     }
 
     @Override

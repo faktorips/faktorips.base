@@ -419,14 +419,14 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testAddRemovePart() {
         ILabel labelToAdd = container.newLabel();
         assertEquals(3, container.getLabels().size());
-        container.removePart(labelToAdd);
+        container.removePartAccessor(labelToAdd);
         assertEquals(2, container.getLabels().size());
         container.addPart(labelToAdd);
         assertEquals(3, container.getLabels().size());
 
         IDescription descriptionToAdd = container.newDescription();
         assertEquals(3, container.getDescriptions().size());
-        container.removePart(descriptionToAdd);
+        container.removePartAccessor(descriptionToAdd);
         assertEquals(2, container.getDescriptions().size());
         container.addPart(descriptionToAdd);
         assertEquals(3, container.getDescriptions().size());
@@ -587,9 +587,10 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             return super.addPart(part);
         }
 
-        // Overridden so the method can be called by this test case.
-        @Override
-        protected boolean removePart(IIpsObjectPart part) {
+        /*
+         * Calls the protected method removePart() so that it can be accessed by this test case.
+         */
+        protected boolean removePartAccessor(IIpsObjectPart part) {
             return super.removePart(part);
         }
 

@@ -187,12 +187,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
-    protected final boolean removePart(IIpsObjectPart part) {
+    protected final boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IIpsObjectGeneration) {
             generations.remove(part);
             return true;
         }
-        return super.removePart(part);
+        return false;
     }
 
     @Override

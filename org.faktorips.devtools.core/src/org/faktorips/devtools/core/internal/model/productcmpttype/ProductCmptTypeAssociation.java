@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -143,6 +144,11 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     @Override
     protected void reinitPartCollectionsThis() {
         // Nothing to do
+    }
+
+    @Override
+    protected boolean removePartThis(IIpsObjectPart part) {
+        return false;
     }
 
 }

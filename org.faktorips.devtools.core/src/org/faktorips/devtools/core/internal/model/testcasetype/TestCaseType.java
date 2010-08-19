@@ -82,12 +82,12 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof ITestParameter) {
             testParameters.remove(part);
             return true;
         }
-        return super.removePart(part);
+        return false;
     }
 
     @Override

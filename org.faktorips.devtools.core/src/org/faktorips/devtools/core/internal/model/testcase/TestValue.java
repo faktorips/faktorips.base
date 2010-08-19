@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -193,6 +194,11 @@ public class TestValue extends TestObject implements ITestValue {
     @Override
     protected void reinitPartCollectionsThis() {
         // Nothing to do
+    }
+
+    @Override
+    protected boolean removePartThis(IIpsObjectPart part) {
+        return false;
     }
 
 }

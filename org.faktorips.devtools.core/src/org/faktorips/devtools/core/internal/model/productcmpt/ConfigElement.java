@@ -387,12 +387,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    protected boolean removePart(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = null;
             return true;
         }
-        return super.removePart(part);
+        return false;
     }
 
     public ValueDatatype getValueDatatype() {

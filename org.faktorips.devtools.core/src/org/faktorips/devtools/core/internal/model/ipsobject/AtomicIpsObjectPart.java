@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 /**
@@ -23,11 +24,11 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
  */
 public abstract class AtomicIpsObjectPart extends IpsObjectPart {
 
-    public AtomicIpsObjectPart(IIpsObjectPartContainer parent, String id) {
+    protected AtomicIpsObjectPart(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
     }
 
-    public AtomicIpsObjectPart() {
+    protected AtomicIpsObjectPart() {
         super();
     }
 
@@ -39,6 +40,11 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
     @Override
     protected final void reinitPartCollectionsThis() {
         // Nothing to do
+    }
+
+    @Override
+    protected final boolean removePartThis(IIpsObjectPart part) {
+        throw new UnsupportedOperationException("Atomic IPS object parts do not contain any other parts."); //$NON-NLS-1$
     }
 
 }
