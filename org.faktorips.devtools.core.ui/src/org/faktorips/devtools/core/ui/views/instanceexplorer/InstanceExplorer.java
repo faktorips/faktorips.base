@@ -497,6 +497,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         }
 
         @Override
+        protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+            return null;
+        }
+
+        @Override
         public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
             return new IIpsSrcFile[] { metaObject.getIpsSrcFile() };
         }

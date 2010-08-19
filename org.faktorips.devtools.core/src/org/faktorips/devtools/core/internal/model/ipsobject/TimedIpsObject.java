@@ -205,8 +205,8 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
-    public final IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
-        return super.newPart(partType);
+    protected final IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
     }
 
     @Override

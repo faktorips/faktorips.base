@@ -614,21 +614,28 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Creates a new {@link IIpsObjectPart} of the given type. If the type is not supported,
      * <tt>null</tt> is returned.
-     * <p>
-     * Subclasses must not forget to call <tt>super.newPart(partType)</tt>.
      * 
      * @param partType The published interface of the IPS object part that should be created.
      */
-    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    public final IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
         if (partType == Label.class && hasLabelSupport()) {
             return newLabel();
 
         } else if (partType == Description.class && hasDescriptionSupport()) {
             return newDescription();
         }
-
-        return null;
+        return newPartThis(partType);
     }
+
+    /**
+     * Subclass implementation that must create and return the right part based on the given
+     * published interface class.
+     * <p>
+     * Should return <tt>null</tt> if the type is unknown.
+     * 
+     * @param partType The published interface of the IPS object part that should be created.
+     */
+    protected abstract IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType);
 
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {

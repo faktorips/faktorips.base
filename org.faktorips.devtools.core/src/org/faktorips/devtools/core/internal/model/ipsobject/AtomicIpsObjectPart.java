@@ -58,4 +58,9 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
         return null;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
+    }
+
 }

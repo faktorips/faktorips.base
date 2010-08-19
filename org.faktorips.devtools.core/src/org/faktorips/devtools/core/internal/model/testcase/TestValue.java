@@ -211,4 +211,9 @@ public class TestValue extends TestObject implements ITestValue {
         return null;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
+    }
+
 }

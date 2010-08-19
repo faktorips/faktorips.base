@@ -373,6 +373,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
+    }
+
+    @Override
     protected void reinitPartCollectionsThis() {
         // Nothing to do
     }

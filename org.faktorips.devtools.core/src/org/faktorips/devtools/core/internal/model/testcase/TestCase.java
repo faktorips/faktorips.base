@@ -126,6 +126,11 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
+    }
+
+    @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TEST_CASE;
     }

@@ -77,11 +77,11 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         if (partType.equals(TableStructureReference.class)) {
             return newTableStructureReference();
         }
-        return super.newPart(partType);
+        return null;
     }
 
     @Override

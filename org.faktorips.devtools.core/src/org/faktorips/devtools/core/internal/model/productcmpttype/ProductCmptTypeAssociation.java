@@ -161,4 +161,9 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         return null;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
+    }
+
 }

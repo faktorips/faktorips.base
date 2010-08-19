@@ -159,6 +159,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
+    }
+
+    @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = new UnrestrictedValueSet(this, getNextPartId());

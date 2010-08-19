@@ -482,7 +482,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         // TODO AW: I don't think this implementation is reasonable as it only should create those
         // instances that can actually be part of the association.
         try {
@@ -493,7 +493,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         } catch (Exception e) {
             IpsPlugin.log(e);
         }
-        return super.newPart(partType);
+        return null;
     }
 
     @Override

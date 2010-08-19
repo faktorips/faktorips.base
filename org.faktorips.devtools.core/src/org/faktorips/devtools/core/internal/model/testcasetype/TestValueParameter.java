@@ -154,4 +154,9 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
         return null;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
+    }
+
 }

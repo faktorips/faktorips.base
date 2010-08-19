@@ -58,4 +58,9 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
         return null;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
+    }
+
 }

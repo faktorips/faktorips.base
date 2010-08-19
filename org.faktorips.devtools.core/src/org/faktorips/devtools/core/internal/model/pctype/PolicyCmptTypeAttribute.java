@@ -346,9 +346,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     // TODO Joerg Merge Persistence Branch: warum ueber Reflection und nicht
     // instanceof wie z.B. in
-    // org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType.newPart(Class)
+    // org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType.newPartThis(Class)
     @Override
-    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         try {
             Constructor<? extends IIpsObjectPart> constructor = partType.getConstructor(IIpsObjectPart.class,
                     String.class);
@@ -358,7 +358,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             // TODO needs to be documented properly or specialized
             IpsPlugin.log(e);
         }
-        return super.newPart(partType);
+        return null;
     }
 
     @Override

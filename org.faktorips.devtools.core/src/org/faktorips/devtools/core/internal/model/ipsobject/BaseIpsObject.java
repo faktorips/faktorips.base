@@ -67,14 +67,14 @@ public abstract class BaseIpsObject extends IpsObject {
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         for (IpsObjectPartCollection<?> container : partCollections) {
             IIpsObjectPart part = container.newPart(partType);
             if (part != null) {
                 return part;
             }
         }
-        return super.newPart(partType);
+        return null;
     }
 
     @Override

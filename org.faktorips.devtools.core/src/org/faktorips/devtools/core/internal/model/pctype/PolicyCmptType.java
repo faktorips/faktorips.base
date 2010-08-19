@@ -511,11 +511,11 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         if (partType == PersistentTypeInfo.class) {
             return newPersistentTypeInfoInternal(getNextPartId());
         }
-        return super.newPart(partType);
+        return super.newPartThis(partType);
     }
 
     /**

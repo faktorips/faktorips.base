@@ -450,7 +450,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         if (partType.equals(IColumn.class)) {
             return newColumnInternal(getNextPartId());
         } else if (partType.equals(IColumnRange.class)) {
@@ -460,14 +460,13 @@ public class TableStructure extends IpsObject implements ITableStructure {
         } else if (partType.equals(IForeignKey.class)) {
             return newForeignKeyInternal(getNextPartId());
         }
-
-        return super.newPart(partType);
+        return null;
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public boolean isModelEnumType() {
-        // Ok to use the deprecated constant here as the method itself is deprecated.
+        // OK to use the deprecated constant here as the method itself is deprecated.
         return type == TableStructureType.ENUMTYPE_MODEL;
     }
 

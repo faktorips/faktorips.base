@@ -572,7 +572,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         if (partType.equals(IAttributeValue.class)) {
             return newAttributeValue();
         } else if (partType.equals(IConfigElement.class)) {
@@ -584,8 +584,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         } else if (partType.equals(IFormula.class)) {
             return newFormula();
         }
-
-        return super.newPart(partType);
+        return null;
     }
 
     @Override
@@ -602,7 +601,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         } else if (xmlTagName.equals(Formula.TAG_NAME)) {
             return newFormulaInternal(id, null);
         }
-
         return null;
     }
 

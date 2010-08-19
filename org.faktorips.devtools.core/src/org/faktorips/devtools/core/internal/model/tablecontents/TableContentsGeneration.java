@@ -128,11 +128,11 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     @Override
-    public IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         if (partType.equals(IRow.class)) {
             return newRowInternal(getNextPartId());
         }
-        return super.newPart(partType);
+        return null;
     }
 
     @Override

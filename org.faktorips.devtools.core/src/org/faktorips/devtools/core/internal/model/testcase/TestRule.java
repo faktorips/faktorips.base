@@ -220,4 +220,9 @@ public class TestRule extends TestObject implements ITestRule {
         return null;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        return null;
+    }
+
 }
