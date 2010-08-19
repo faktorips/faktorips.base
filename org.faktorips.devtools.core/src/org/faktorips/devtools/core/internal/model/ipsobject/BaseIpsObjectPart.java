@@ -62,19 +62,17 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         if (tagsToIgnore.contains(xmlTag.getNodeName())) {
             return null;
         }
-
         for (IpsObjectPartCollection<?> container : partCollections) {
             IIpsObjectPart part = container.newPart(xmlTag, id);
             if (part != null) {
                 return part;
             }
         }
-
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

@@ -120,4 +120,9 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
         return false;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        return null;
+    }
+
 }

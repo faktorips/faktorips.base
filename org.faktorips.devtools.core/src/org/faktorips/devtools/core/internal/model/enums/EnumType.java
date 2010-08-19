@@ -913,11 +913,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         if (xmlTag.getTagName().equals(IEnumLiteralNameAttribute.XML_TAG)) {
             return newPart(EnumLiteralNameAttribute.class);
         }
-        return super.newPart(xmlTag, id);
+        return super.newPartThis(xmlTag, id);
     }
 
     @Override

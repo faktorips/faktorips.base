@@ -91,7 +91,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (TestPolicyCmptTypeParameter.TAG_NAME.equals(xmlTagName)) {
             return newTestPolicyCmptTypeParameterInternal(id);
@@ -100,8 +100,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         } else if (TestRuleParameter.TAG_NAME.equals(xmlTagName)) {
             return newTestRuleParameterInternal(id);
         }
-
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

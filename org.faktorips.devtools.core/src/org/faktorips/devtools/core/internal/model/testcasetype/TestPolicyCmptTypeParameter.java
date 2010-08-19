@@ -121,14 +121,14 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(TestAttribute.TAG_NAME)) {
             return newTestAttributeInternal(id);
         } else if (xmlTagName.equals(TAG_NAME)) {
             return newTestPolicyCmptTypeParamChildInternal(id);
         }
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

@@ -56,14 +56,14 @@ public abstract class BaseIpsObject extends IpsObject {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         for (IpsObjectPartCollection<?> container : partCollections) {
             IIpsObjectPart part = container.newPart(xmlTag, id);
             if (part != null) {
                 return part;
             }
         }
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

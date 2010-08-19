@@ -74,7 +74,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (FormulaTestInputValue.TAG_NAME.equals(xmlTagName)) {
             return newFormulaTestInputValueInternal(id);
@@ -84,7 +84,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
             return null;
         }
 
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

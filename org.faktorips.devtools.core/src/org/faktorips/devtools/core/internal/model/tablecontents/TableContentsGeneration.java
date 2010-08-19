@@ -119,12 +119,12 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(Row.TAG_NAME)) {
             return newRowInternal(id);
         }
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

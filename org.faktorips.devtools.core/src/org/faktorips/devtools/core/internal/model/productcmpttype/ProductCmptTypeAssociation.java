@@ -156,4 +156,9 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         return false;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        return null;
+    }
+
 }

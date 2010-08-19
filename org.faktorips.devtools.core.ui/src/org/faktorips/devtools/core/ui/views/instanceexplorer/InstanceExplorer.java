@@ -62,6 +62,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
+import org.w3c.dom.Element;
 
 /**
  * <p>
@@ -488,6 +489,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         @Override
         protected boolean removePartThis(IIpsObjectPart part) {
             return false;
+        }
+
+        @Override
+        protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+            return null;
         }
 
         @Override

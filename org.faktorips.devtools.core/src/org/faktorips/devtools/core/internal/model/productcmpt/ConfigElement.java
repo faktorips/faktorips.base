@@ -358,7 +358,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (ValueSet.XML_TAG.equals(xmlTagName)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
@@ -369,12 +369,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return null;
         }
 
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override
     protected void reinitPartCollectionsThis() {
-        // TODO AW: Reset value set?
+        // Nothing to do
     }
 
     @Override

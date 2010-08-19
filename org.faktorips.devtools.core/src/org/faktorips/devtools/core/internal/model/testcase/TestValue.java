@@ -206,4 +206,9 @@ public class TestValue extends TestObject implements ITestValue {
         return false;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        return null;
+    }
+
 }

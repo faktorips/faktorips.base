@@ -503,11 +503,11 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     // IIpsObjectPartCollection and not a single IIpsObjectPart.
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         if (xmlTag.getTagName().equals(IPersistentTypeInfo.XML_TAG)) {
             return newPersistentTypeInfoInternal(id);
         }
-        return super.newPart(xmlTag, id);
+        return super.newPartThis(xmlTag, id);
     }
 
     @Override

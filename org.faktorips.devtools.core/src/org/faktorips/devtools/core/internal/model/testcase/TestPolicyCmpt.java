@@ -114,14 +114,14 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(TestAttributeValue.TAG_NAME)) {
             return newTestAttributeValueInternal(id);
         } else if (xmlTagName.equals(TestPolicyCmptLink.TAG_NAME)) {
             return newTestPcTypeLinkInternal(id);
         }
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

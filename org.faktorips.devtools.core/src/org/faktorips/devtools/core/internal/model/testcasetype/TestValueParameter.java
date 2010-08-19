@@ -149,4 +149,9 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
         return false;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        return null;
+    }
+
 }

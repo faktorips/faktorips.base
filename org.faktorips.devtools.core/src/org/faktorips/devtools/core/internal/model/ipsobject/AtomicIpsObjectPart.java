@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.w3c.dom.Element;
 
 /**
  * A part that does not contain any other parts (aside from descriptions and labels).
@@ -50,6 +51,11 @@ public abstract class AtomicIpsObjectPart extends IpsObjectPart {
     @Override
     protected final boolean removePartThis(IIpsObjectPart part) {
         return false;
+    }
+
+    @Override
+    protected final IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        return null;
     }
 
 }

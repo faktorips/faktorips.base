@@ -589,7 +589,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(AttributeValue.TAG_NAME)) {
             return newAttributeValueInternal(id);
@@ -603,7 +603,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return newFormulaInternal(id, null);
         }
 
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

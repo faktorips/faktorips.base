@@ -150,12 +150,12 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
         }
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

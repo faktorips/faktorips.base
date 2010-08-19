@@ -332,7 +332,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
             valueSet = ValueSetType.newValueSet(xmlTag, this, id);
             return valueSet;
@@ -341,7 +341,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             return newPersistentAttributeInfoInternal(this, id);
         }
 
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     // TODO Joerg Merge Persistence Branch: warum ueber Reflection und nicht

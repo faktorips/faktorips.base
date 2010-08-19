@@ -435,7 +435,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(Column.TAG_NAME)) {
             return newColumnInternal(id);
@@ -446,8 +446,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         } else if (xmlTagName.equals(ForeignKey.TAG_NAME)) {
             return newForeignKeyInternal(id);
         }
-
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

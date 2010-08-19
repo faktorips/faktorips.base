@@ -113,7 +113,7 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (TestPolicyCmpt.TAG_NAME.equals(xmlTagName)) {
             return newTestPolicyCmptInternal(id);
@@ -122,8 +122,7 @@ public class TestCase extends IpsObject implements ITestCase {
         } else if (TestRule.TAG_NAME.equals(xmlTagName)) {
             return newTestRuleInternal(id);
         }
-
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

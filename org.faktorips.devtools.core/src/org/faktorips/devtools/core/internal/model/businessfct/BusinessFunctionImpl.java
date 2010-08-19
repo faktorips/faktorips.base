@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.w3c.dom.Element;
 
 // TODO AW: Is this class obsolete?
 public class BusinessFunctionImpl extends IpsObject implements BusinessFunction {
@@ -50,6 +51,11 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         return false;
+    }
+
+    @Override
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        return null;
     }
 
 }

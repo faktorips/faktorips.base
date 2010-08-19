@@ -95,11 +95,11 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         if (xmlTag.getTagName().equals(IEnumLiteralNameAttributeValue.XML_TAG)) {
             return newPart(EnumLiteralNameAttributeValue.class);
         }
-        return super.newPart(xmlTag, id);
+        return super.newPartThis(xmlTag, id);
     }
 
     @Override

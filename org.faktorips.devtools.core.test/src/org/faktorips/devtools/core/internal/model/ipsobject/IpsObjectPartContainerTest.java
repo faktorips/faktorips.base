@@ -435,15 +435,15 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testNewPartXml() throws DOMException, ParserConfigurationException {
         Document xmlDoc = createXmlDocument("Blub");
         Element element = xmlDoc.createElement(ILabel.XML_TAG_NAME);
-        assertTrue(container.newPart(element, "blub") instanceof ILabel);
+        assertTrue(container.newPartAccessor(element, "blub") instanceof ILabel);
         assertEquals(3, container.getLabels().size());
 
         element = xmlDoc.createElement(IDescription.XML_TAG_NAME);
-        assertTrue(container.newPart(element, "blub") instanceof IDescription);
+        assertTrue(container.newPartAccessor(element, "blub") instanceof IDescription);
         assertEquals(3, container.getDescriptions().size());
 
         element = xmlDoc.createElement("foobar");
-        assertNull(container.newPart(element, "xyz"));
+        assertNull(container.newPartAccessor(element, "xyz"));
     }
 
     public void testNewPartReflection() {
@@ -597,9 +597,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             return super.removePart(part);
         }
 
-        // Overridden so the method can be called by this test case.
-        @Override
-        protected IIpsObjectPart newPart(Element xmlTag, String id) {
+        /*
+         * Calls the protected method newPart(Element, String) so that it can be accessed by this
+         * test case.
+         */
+        private IIpsObjectPart newPartAccessor(Element xmlTag, String id) {
             return super.newPart(xmlTag, id);
         }
 

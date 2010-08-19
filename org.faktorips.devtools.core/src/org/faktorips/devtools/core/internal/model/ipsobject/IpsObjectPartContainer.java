@@ -581,19 +581,13 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected abstract boolean removePartThis(IIpsObjectPart part);
 
     /**
-     * This method is called during the initFromXml processing to create a new part object for the
-     * given element with the given id. Subclasses must create the right part based on the XML
-     * element, e.g. for IPolicyCmptType: if the element name is <code>Attribute</code> an
-     * <code>IAttribute</code> is created.
-     * <p>
-     * Note: It is <strong>NOT</strong> necessary to fully initialize the part, this is done later
-     * by the caller calling initFromXml().
-     * <p>
-     * Subclasses must not forget to call <tt>super.newPart(xmlTag, id)</tt>.
+     * This method is called during the process of initialization from XML to create a new part
+     * object for the given element with the given id.
      * 
-     * @return a new part with the given id, or <code>null</code> if the xml tag name is unknown.
+     * @param xmlTag The XML tag that describes the part to create.
+     * @param id The unique id for the new part.
      */
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected final IIpsObjectPart newPart(Element xmlTag, String id) {
         String nodeName = xmlTag.getNodeName();
         if (nodeName.equals(ILabel.XML_TAG_NAME) && hasLabelSupport()) {
             return newLabel(id);
@@ -601,9 +595,21 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         } else if (nodeName.equals(IDescription.XML_TAG_NAME) && hasDescriptionSupport()) {
             return newDescription(id);
         }
-
-        return null;
+        return newPartThis(xmlTag, id);
     }
+
+    /**
+     * Subclass implementation that must create and return the right part based on the XML element.
+     * <p>
+     * <strong>Note:</strong> It is <strong>NOT</strong> necessary to fully initialize the part,
+     * this is done later by the caller calling initFromXml().
+     * <p>
+     * Should return <tt>null</tt> if the XML tag is unknown.
+     * 
+     * @param xmlTag The XML tag that describes the part to create.
+     * @param id The unique id for the new part.
+     */
+    protected abstract IIpsObjectPart newPartThis(Element xmlTag, String id);
 
     /**
      * Creates a new {@link IIpsObjectPart} of the given type. If the type is not supported,

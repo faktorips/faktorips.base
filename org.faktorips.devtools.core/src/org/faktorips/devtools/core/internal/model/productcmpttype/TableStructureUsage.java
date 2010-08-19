@@ -85,12 +85,12 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    protected IIpsObjectPart newPart(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(TAG_NAME_TABLE_STRUCTURE)) {
             return newTableStructureReferenceInternal(id);
         }
-        return super.newPart(xmlTag, id);
+        return null;
     }
 
     @Override

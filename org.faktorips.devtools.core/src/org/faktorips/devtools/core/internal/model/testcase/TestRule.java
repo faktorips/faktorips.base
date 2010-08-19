@@ -215,4 +215,9 @@ public class TestRule extends TestObject implements ITestRule {
         return false;
     }
 
+    @Override
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        return null;
+    }
+
 }
