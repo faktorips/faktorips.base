@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -33,7 +32,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) throws CoreException {
+    protected Composite createWorkArea(Composite parent) {
         Composite c = super.createWorkArea(parent);
 
         nameText.addFocusListener(new FocusAdapter() {

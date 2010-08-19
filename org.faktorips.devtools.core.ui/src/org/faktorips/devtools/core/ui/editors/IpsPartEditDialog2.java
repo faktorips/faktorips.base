@@ -170,7 +170,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
 
         IIpsProject ipsProject = part.getIpsProject();
-        IDescribedElement describedElement = (IDescribedElement)part;
+        IDescribedElement describedElement = part;
         Composite editComposite = new DescriptionEditComposite(folder, describedElement, ipsProject, uiToolkit);
 
         TabItem item = new TabItem(folder, SWT.NONE);
@@ -186,7 +186,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
                     + "' does not implement the interface '" + ILabeledElement.class + "'."); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        Composite editComposite = new LabelEditComposite(folder, (ILabeledElement)part);
+        Composite editComposite = new LabelEditComposite(folder, part);
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog2_tabItemLabel);

@@ -122,7 +122,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) throws CoreException {
+    protected Composite createWorkArea(Composite parent) {
         TabFolder tabFolder = (TabFolder)parent;
 
         TabItem page = new TabItem(tabFolder, SWT.NONE);

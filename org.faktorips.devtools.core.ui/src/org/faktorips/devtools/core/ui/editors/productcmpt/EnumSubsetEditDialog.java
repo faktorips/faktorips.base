@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -59,7 +58,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) throws CoreException {
+    protected Composite createWorkArea(Composite parent) {
         TabFolder folder = (TabFolder)parent;
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.PolicyAttributeEditDialog_properties);

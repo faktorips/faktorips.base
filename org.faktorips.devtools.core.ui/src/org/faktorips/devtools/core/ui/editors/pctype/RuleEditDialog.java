@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -64,7 +63,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) throws CoreException {
+    protected Composite createWorkArea(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem msgPage = new TabItem(folder, SWT.NONE);

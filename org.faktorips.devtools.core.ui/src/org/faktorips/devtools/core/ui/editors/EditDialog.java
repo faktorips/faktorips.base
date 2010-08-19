@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -105,14 +104,10 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
             layout.marginWidth = 10;
             panel.setLayout(layout);
         }
-        try {
-            Composite workArea = createWorkArea(panel);
-            uiToolkit.setDataChangeable(workArea, dataChangeable);
-            if (workArea.getLayoutData() == null) {
-                workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+        Composite workArea = createWorkArea(panel);
+        uiToolkit.setDataChangeable(workArea, dataChangeable);
+        if (workArea.getLayoutData() == null) {
+            workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         }
 
         setDataChangeable(dataChangeable);
@@ -124,10 +119,8 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
      * dialog.
      * 
      * @param parent The parent UI composite.
-     * 
-     * @throws CoreException May be thrown at any time.
      */
-    protected abstract Composite createWorkArea(Composite parent) throws CoreException;
+    protected abstract Composite createWorkArea(Composite parent);
 
     /**
      * Allows sub classes to change the title area's content during dialog creation.

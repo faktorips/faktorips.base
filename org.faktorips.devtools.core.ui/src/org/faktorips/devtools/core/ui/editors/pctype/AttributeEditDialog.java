@@ -195,7 +195,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) throws CoreException {
+    protected Composite createWorkArea(Composite parent) {
         tabFolder = (TabFolder)parent;
 
         TabItem page = new TabItem(tabFolder, SWT.NONE);
@@ -204,7 +204,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         page = new TabItem(tabFolder, SWT.NONE);
         page.setText(Messages.AttributeEditDialog_valuesetTitle);
-        page.setControl(createValueSetPage(tabFolder));
+        try {
+            page.setControl(createValueSetPage(tabFolder));
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
 
         final TabItem validationRulePage = new TabItem(tabFolder, SWT.NONE);
         validationRulePage.setText(Messages.AttributeEditDialog_validationRuleTitle);

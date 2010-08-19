@@ -92,12 +92,16 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) throws CoreException {
+    protected Composite createWorkArea(Composite parent) {
         folder = (TabFolder)parent;
 
         TabItem generalItem = new TabItem(folder, SWT.NONE);
         generalItem.setText(Messages.AttributeEditDialog_general);
-        generalItem.setControl(createGeneralPage(folder));
+        try {
+            generalItem.setControl(createGeneralPage(folder));
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
 
         createNewDescriptionTabItem(folder);
         createLabelTabItem(folder);

@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -52,7 +51,7 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) throws CoreException {
+    protected Composite createWorkArea(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem page = new TabItem(folder, SWT.NONE);

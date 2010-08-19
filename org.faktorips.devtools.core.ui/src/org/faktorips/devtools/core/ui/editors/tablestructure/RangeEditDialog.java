@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.editors.tablestructure;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -71,7 +70,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) throws CoreException {
+    protected Composite createWorkArea(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem page = new TabItem(folder, SWT.NONE);
