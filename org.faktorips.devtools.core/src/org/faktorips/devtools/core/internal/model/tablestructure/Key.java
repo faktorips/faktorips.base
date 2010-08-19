@@ -161,7 +161,6 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
 
     @Override
     public int getIndexForKeyItemName(String itemName) {
-
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).equals(itemName)) {
                 return i;
@@ -180,6 +179,11 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     @Override
     public String getNameOfKeyItemAt(int index) {
         return items.get(index);
+    }
+
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
     }
 
 }

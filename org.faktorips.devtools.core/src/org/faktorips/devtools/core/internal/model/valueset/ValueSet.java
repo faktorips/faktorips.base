@@ -285,4 +285,9 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         list.add(msg);
     }
 
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
 }

@@ -271,4 +271,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return getMaxCardinality() > 1;
     }
 
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
 }

@@ -233,4 +233,9 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         return columns.toArray(new IColumn[columns.size()]);
     }
 
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
 }

@@ -109,4 +109,9 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
         return ipsProject.findValueDatatype(datatype);
     }
 
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
 }
