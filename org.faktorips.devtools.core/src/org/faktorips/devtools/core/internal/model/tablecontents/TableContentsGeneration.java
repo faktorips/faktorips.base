@@ -21,7 +21,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -226,9 +228,18 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
 
         IIpsElement[] children = getChildren();
         for (IIpsElement element : children) {
-            Row row = (Row)element;
-            MessageList list = row.validateThis(tableStructure, datatypes, ipsProject);
-            result.add(list);
+            // TODO AW validateChildren should be final in IpsObjectPartContainer
+            if (element instanceof Row) {
+                Row row = (Row)element;
+                MessageList list = row.validateThis(tableStructure, datatypes, ipsProject);
+                result.add(list);
+            } else if (element instanceof IDescription) {
+                IDescription description = (IDescription)element;
+                result.add(description.validate(ipsProject));
+            } else if (element instanceof ILabel) {
+                ILabel label = (ILabel)element;
+                result.add(label.validate(ipsProject));
+            }
         }
 
         validateUniqueKeys(result, tableStructure, datatypes);
