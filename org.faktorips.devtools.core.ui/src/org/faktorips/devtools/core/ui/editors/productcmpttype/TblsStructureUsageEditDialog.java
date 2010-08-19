@@ -79,14 +79,12 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.TblsStructureUsageEditDialog_propertiesPageTtitle);
         page.setControl(createGeneralPage(folder));
-
-        createDescriptionTabItem(folder);
 
         nameField.getControl().setFocus();
         nameField.addChangeListener(new ValueChangeListener() {

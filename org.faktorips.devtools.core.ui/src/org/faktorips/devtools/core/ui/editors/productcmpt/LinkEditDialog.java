@@ -57,12 +57,11 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.RelationEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
-        createDescriptionTabItem(folder);
         return folder;
     }
 

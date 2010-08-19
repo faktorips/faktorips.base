@@ -58,12 +58,11 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.GenerationEditDialog_pagetitleValidFromDate);
         firstPage.setControl(createFirstPage(folder));
-        createDescriptionTabItem(folder);
         return folder;
     }
 

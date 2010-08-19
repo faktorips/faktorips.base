@@ -40,14 +40,13 @@ public class ColumnEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.ColumnEditDialog_pageTitle);
         page.setControl(createGeneralPage(folder));
 
-        createDescriptionTabItem(folder);
         return folder;
     }
 

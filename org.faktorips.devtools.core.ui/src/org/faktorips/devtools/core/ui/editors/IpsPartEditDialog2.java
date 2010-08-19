@@ -26,14 +26,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -149,47 +147,40 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         updateMessageArea();
     }
 
-    /**
-     * Creates the description tab.
-     */
-    protected TabItem createDescriptionTabItem(TabFolder folder) {
-        Composite c = createTabItemComposite(folder, 1, false);
-        Text text = uiToolkit.createMultilineText(c);
-        bindingContext.bindContent(text, getIpsPart(), IIpsObjectPart.PROPERTY_DESCRIPTION);
-        TabItem item = new TabItem(folder, SWT.NONE);
-        item.setText(Messages.IpsPartEditDialog_description);
-        item.setControl(c);
-
-        return item;
+    @Override
+    protected final Composite createWorkArea(Composite parent) {
+        Composite composite = createWorkAreaThis(parent);
+        if (isTabFolderUsed()) {
+            TabFolder tabFolder = (TabFolder)parent;
+            if (part.hasDescriptionSupport()) {
+                createDescriptionTabItem(tabFolder);
+            }
+            if (part.hasLabelSupport()) {
+                createLabelTabItem(tabFolder);
+            }
+        }
+        return composite;
     }
 
-    protected TabItem createNewDescriptionTabItem(TabFolder folder) {
-        if (!(part instanceof IDescribedElement)) {
-            throw new RuntimeException("The IPS object part '" + part.getClass() //$NON-NLS-1$
-                    + "' does not implement the interface '" + IDescribedElement.class + "'."); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+    protected abstract Composite createWorkAreaThis(Composite parent);
 
+    private TabItem createDescriptionTabItem(TabFolder folder) {
         IIpsProject ipsProject = part.getIpsProject();
         IDescribedElement describedElement = part;
         Composite editComposite = new DescriptionEditComposite(folder, describedElement, ipsProject, uiToolkit);
 
         TabItem item = new TabItem(folder, SWT.NONE);
-        item.setText(Messages.IpsPartEditDialog_description);
+        item.setText(Messages.IpsPartEditDialog_tabItemDescription);
         item.setControl(editComposite);
 
         return item;
     }
 
-    protected TabItem createLabelTabItem(TabFolder folder) {
-        if (!(part instanceof ILabeledElement)) {
-            throw new RuntimeException("The IPS object part '" + part.getClass() //$NON-NLS-1$
-                    + "' does not implement the interface '" + ILabeledElement.class + "'."); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-
+    private TabItem createLabelTabItem(TabFolder folder) {
         Composite editComposite = new LabelEditComposite(folder, part);
 
         TabItem item = new TabItem(folder, SWT.NONE);
-        item.setText(Messages.IpsPartEditDialog2_tabItemLabel);
+        item.setText(Messages.IpsPartEditDialog_tabItemLabel);
         item.setControl(editComposite);
 
         return item;

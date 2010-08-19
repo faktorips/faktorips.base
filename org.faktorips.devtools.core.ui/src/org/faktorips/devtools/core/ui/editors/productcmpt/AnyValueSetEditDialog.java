@@ -59,13 +59,12 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.PolicyAttributeEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
 
-        createDescriptionTabItem(folder);
         super.setEnabledDescription(!viewOnly);
 
         return folder;

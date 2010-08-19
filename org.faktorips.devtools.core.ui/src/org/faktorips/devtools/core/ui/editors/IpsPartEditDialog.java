@@ -22,10 +22,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -93,13 +94,42 @@ public abstract class IpsPartEditDialog extends EditDialog {
         return control;
     }
 
-    protected TabItem createDescriptionTabItem(TabFolder folder) {
-        Composite c = createTabItemComposite(folder, 1, false);
-        Text text = uiToolkit.createMultilineText(c);
-        descriptionField = new TextField(text);
+    @Override
+    protected final Composite createWorkArea(Composite parent) {
+        Composite composite = createWorkAreaThis(parent);
+        if (isTabFolderUsed()) {
+            TabFolder tabFolder = (TabFolder)parent;
+            if (part.hasDescriptionSupport()) {
+                createDescriptionTabItem(tabFolder);
+            }
+            if (part.hasLabelSupport()) {
+                createLabelTabItem(tabFolder);
+            }
+        }
+        return composite;
+    }
+
+    protected abstract Composite createWorkAreaThis(Composite parent);
+
+    private TabItem createLabelTabItem(TabFolder folder) {
+        Composite editComposite = new LabelEditComposite(folder, part);
+
         TabItem item = new TabItem(folder, SWT.NONE);
-        item.setText(Messages.IpsPartEditDialog_description);
-        item.setControl(c);
+        item.setText(Messages.IpsPartEditDialog_tabItemLabel);
+        item.setControl(editComposite);
+
+        return item;
+    }
+
+    private TabItem createDescriptionTabItem(TabFolder folder) {
+        IIpsProject ipsProject = part.getIpsProject();
+        IDescribedElement describedElement = part;
+        Composite editComposite = new DescriptionEditComposite(folder, describedElement, ipsProject, uiToolkit);
+
+        TabItem item = new TabItem(folder, SWT.NONE);
+        item.setText(Messages.IpsPartEditDialog_tabItemDescription);
+        item.setControl(editComposite);
+
         return item;
     }
 
@@ -145,4 +175,5 @@ public abstract class IpsPartEditDialog extends EditDialog {
             descriptionField.getControl().setEnabled(enabled);
         }
     }
+
 }

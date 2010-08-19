@@ -122,15 +122,13 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder tabFolder = (TabFolder)parent;
 
         TabItem page = new TabItem(tabFolder, SWT.NONE);
         page.setText(Messages.EnumAttributeEditDialog_generalTitle);
         Control generalPage = createGeneralPage(tabFolder);
         page.setControl(generalPage);
-
-        createDescriptionTabItem(tabFolder);
 
         return tabFolder;
     }

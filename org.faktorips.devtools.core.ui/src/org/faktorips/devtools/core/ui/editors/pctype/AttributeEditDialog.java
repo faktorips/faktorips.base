@@ -195,7 +195,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         tabFolder = (TabFolder)parent;
 
         TabItem page = new TabItem(tabFolder, SWT.NONE);
@@ -222,8 +222,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         createPersistenceTabItemIfNecessary(tabFolder);
-        createDescriptionTabItem(tabFolder);
-        createLabelTabItem(tabFolder);
 
         tabFolder.addSelectionListener(new SelectionListener() {
             @Override

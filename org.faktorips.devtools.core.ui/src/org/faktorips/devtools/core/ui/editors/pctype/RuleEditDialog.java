@@ -63,7 +63,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem msgPage = new TabItem(folder, SWT.NONE);
@@ -77,8 +77,6 @@ public class RuleEditDialog extends IpsPartEditDialog {
         TabItem attributesPage = new TabItem(folder, SWT.NONE);
         attributesPage.setText(Messages.RuleEditDialog_attrTitle);
         attributesPage.setControl(createAttributesPage(folder));
-
-        createDescriptionTabItem(folder);
         /*
          * the update cycle for changes to model objects is extended so that the gui will be updated
          * due to model changes. The update cycle gui -> model -> gui is currently not implemented

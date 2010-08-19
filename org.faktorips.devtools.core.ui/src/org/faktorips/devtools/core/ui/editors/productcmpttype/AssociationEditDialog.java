@@ -56,15 +56,12 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.AssociationEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
-
-        createDescriptionTabItem(folder);
-        createLabelTabItem(folder);
 
         return folder;
     }

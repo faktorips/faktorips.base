@@ -188,7 +188,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem firstPage = new TabItem(folder, SWT.NONE);
@@ -196,8 +196,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         firstPage.setControl(createFirstPage(folder));
 
         createFormulaTestCasesTab(folder);
-
-        createDescriptionTabItem(folder);
 
         return folder;
     }

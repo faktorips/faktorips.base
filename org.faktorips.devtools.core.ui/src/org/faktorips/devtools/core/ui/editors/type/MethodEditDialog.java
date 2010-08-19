@@ -51,14 +51,13 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.MethodEditDialog_signatureTitle);
         page.setControl(createGeneralPage(folder));
 
-        createDescriptionTabItem(folder);
         return folder;
     }
 

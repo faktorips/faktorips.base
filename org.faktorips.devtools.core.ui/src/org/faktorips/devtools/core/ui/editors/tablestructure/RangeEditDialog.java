@@ -70,14 +70,13 @@ public class RangeEditDialog extends IpsPartEditDialog {
     }
 
     @Override
-    protected Composite createWorkArea(Composite parent) {
+    protected Composite createWorkAreaThis(Composite parent) {
         TabFolder folder = (TabFolder)parent;
 
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.RangeEditDialog_generalTitle);
         page.setControl(createGeneralPage(folder));
 
-        createDescriptionTabItem(folder);
         return folder;
     }
 

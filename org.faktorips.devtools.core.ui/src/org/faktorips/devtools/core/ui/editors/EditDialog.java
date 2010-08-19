@@ -148,4 +148,8 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
         }
     }
 
+    protected boolean isTabFolderUsed() {
+        return tabFolderUsed;
+    }
+
 }
