@@ -267,4 +267,14 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         return null;
     }
 
+    @Override
+    public boolean hasDescriptionSupport() {
+        return true;
+    }
+
+    @Override
+    public boolean hasLabelSupport() {
+        return true;
+    }
+
 }
