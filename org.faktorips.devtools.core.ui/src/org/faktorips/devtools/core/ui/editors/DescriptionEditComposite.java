@@ -96,7 +96,7 @@ public class DescriptionEditComposite extends Composite {
             String languageName = language.getLanguageName();
             String languageCode = languageCodes.get(languageName);
             if (languageCode != null) {
-                combo.add(languageName);
+                combo.add(languageName + " (" + languageCode + ")"); //$NON-NLS-1$ //$NON-NLS-2$
             }
             if (language.isDefaultLanguage()) {
                 defaultIndex = i;
@@ -127,6 +127,7 @@ public class DescriptionEditComposite extends Composite {
         }
 
         String currentLanguage = languageCombo.getItem(currentSelectionIndex);
+        currentLanguage = currentLanguage.substring(0, currentLanguage.indexOf(" (")); //$NON-NLS-1$
         String currentLanguageCode = languageCodes.get(currentLanguage);
         Locale currentLocale = new Locale(currentLanguageCode);
 
