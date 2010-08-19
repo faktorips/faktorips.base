@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -297,7 +298,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return ""; //$NON-NLS-1$
     }
 
-    public class TableStructureReference extends IpsObjectPart {
+    public class TableStructureReference extends AtomicIpsObjectPart {
 
         private String tableStructure = ""; //$NON-NLS-1$
 

@@ -24,7 +24,7 @@ import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class ControlFlow extends IpsObjectPart implements IControlFlow {
+public class ControlFlow extends AtomicIpsObjectPart implements IControlFlow {
 
     private String conditionValue = ""; //$NON-NLS-1$
 

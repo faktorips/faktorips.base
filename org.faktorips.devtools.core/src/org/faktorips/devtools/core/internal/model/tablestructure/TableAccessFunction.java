@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class TableAccessFunction extends IpsObjectPart implements ITableAccessFunction {
+public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAccessFunction {
 
     private String accessedColumn;
     private String type;

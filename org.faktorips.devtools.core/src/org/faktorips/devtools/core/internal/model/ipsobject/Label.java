@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * 
  * @author Alexander Weickmann
  */
-public class Label extends IpsObjectPart implements ILabel {
+public class Label extends AtomicIpsObjectPart implements ILabel {
 
     private Locale locale;
 

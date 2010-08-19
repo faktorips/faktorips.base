@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 
 /**
  * Test policy component link. Defines a link for a policy component class within a test case
- * defination.
+ * definition.
  * 
  * @author Joerg Ortmann
  */
@@ -145,7 +145,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         if (targetChild != null) {
             return new IIpsElement[] { targetChild };
         }
-        return super.getChildrenThis();
+        return new IIpsElement[0];
     }
 
     @Override

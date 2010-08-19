@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -31,7 +31,7 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class ProductCmptLink extends IpsObjectPart implements IProductCmptLink {
+public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmptLink {
 
     /**
      * @param target The product component that will be used as target for the new relation.

@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.util.message.Message;
@@ -27,7 +27,7 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class Column extends IpsObjectPart implements IColumn {
+public class Column extends AtomicIpsObjectPart implements IColumn {
 
     final static String TAG_NAME = "Column"; //$NON-NLS-1$
 

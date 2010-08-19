@@ -131,12 +131,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * Subclass implementation that can be used to extend the method {@link #getChildren()}. The
-     * default implementation of this method returns an empty array.
+     * Subclass implementation that can be used to extend the method {@link #getChildren()}. Must
+     * not return <tt>null</tt>.
      */
-    protected IIpsElement[] getChildrenThis() {
-        return new IIpsElement[0];
-    }
+    protected abstract IIpsElement[] getChildrenThis();
 
     /**
      * Returns the id that can be used for a new part, so that its id is unique.
@@ -518,11 +516,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * Subclass implementation that can be used to extend the method
-     * {@link #reinitPartCollections()}. The default implementation of this method does nothing.
+     * {@link #reinitPartCollections()}.
      */
-    protected void reinitPartCollectionsThis() {
-        // Empty default implementation
-    }
+    protected abstract void reinitPartCollectionsThis();
 
     /**
      * Add the part to the container.

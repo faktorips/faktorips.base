@@ -471,7 +471,12 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             if (metaObject != null) {
                 return new IIpsElement[] { metaObject };
             }
-            return super.getChildrenThis();
+            return new IIpsElement[0];
+        }
+
+        @Override
+        protected void reinitPartCollectionsThis() {
+            // Nothing to do
         }
 
         @Override

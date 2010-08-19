@@ -19,7 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-public class Row extends IpsObjectPart implements IRow {
+public class Row extends AtomicIpsObjectPart implements IRow {
 
     final static String TAG_NAME = "Row"; //$NON-NLS-1$
     final static String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
@@ -185,7 +185,7 @@ public class Row extends IpsObjectPart implements IRow {
     private void validateThis(MessageList result,
             ITableStructure tableStructure,
             ValueDatatype[] datatypes,
-            boolean uniqueKeyCheck) throws CoreException {
+            boolean uniqueKeyCheck) {
 
         IUniqueKey[] uniqueKeys = tableStructure.getUniqueKeys();
         validateMissingAndInvalidUniqueKeyValue(result, datatypes, tableStructure, uniqueKeys);
@@ -195,8 +195,7 @@ public class Row extends IpsObjectPart implements IRow {
         }
     }
 
-    private void validateUniqueKey(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes)
-            throws CoreException {
+    private void validateUniqueKey(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
         getTableContentsGeneration().validateUniqueKeys(list, tableStructure, datatypes);
     }
 

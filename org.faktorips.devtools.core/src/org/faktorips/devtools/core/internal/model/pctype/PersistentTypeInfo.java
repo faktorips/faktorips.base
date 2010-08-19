@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
  * 
  * @author Roman Grutza
  */
-public class PersistentTypeInfo extends IpsObjectPart implements IPersistentTypeInfo {
+public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersistentTypeInfo {
 
     private String tableName = ""; //$NON-NLS-1$
 

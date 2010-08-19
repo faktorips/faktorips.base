@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -96,6 +97,16 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
                     PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);
         }
+    }
+
+    @Override
+    protected IIpsElement[] getChildrenThis() {
+        return new IIpsElement[0];
+    }
+
+    @Override
+    protected void reinitPartCollectionsThis() {
+        // Nothing to do
     }
 
 }

@@ -20,7 +20,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -46,7 +46,7 @@ import org.w3c.dom.Text;
  * 
  * @since 2.3
  */
-public class EnumAttributeValue extends IpsObjectPart implements IEnumAttributeValue {
+public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttributeValue {
 
     /** The actual value that is being stored by this object. */
     private String value;

@@ -137,7 +137,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         if (valueSet != null) {
             return new IIpsElement[] { valueSet };
         }
-        return super.getChildrenThis();
+        return new IIpsElement[0];
     }
 
     @Override
@@ -165,6 +165,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             return true;
         }
         return super.removePart(part);
+    }
+
+    @Override
+    protected void reinitPartCollectionsThis() {
+        // Nothing to do
     }
 
 }

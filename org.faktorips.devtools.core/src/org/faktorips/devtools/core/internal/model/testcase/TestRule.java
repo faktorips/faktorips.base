@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -191,6 +192,16 @@ public class TestRule extends TestObject implements ITestRule {
     @Override
     public String getName() {
         return getTestRuleParameter() + "/" + getValidationRule(); //$NON-NLS-1$
+    }
+
+    @Override
+    protected IIpsElement[] getChildrenThis() {
+        return new IIpsElement[0];
+    }
+
+    @Override
+    protected void reinitPartCollectionsThis() {
+        // Nothing to do
     }
 
 }

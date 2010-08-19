@@ -17,7 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IParameterContainer;
@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class Parameter extends IpsObjectPart implements IParameter {
+public class Parameter extends AtomicIpsObjectPart implements IParameter {
 
     final static String TAG_NAME = "Parameter"; //$NON-NLS-1$
 

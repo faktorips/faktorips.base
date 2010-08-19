@@ -11,33 +11,33 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.businessfct;
+package org.faktorips.devtools.core.internal.model.ipsobject;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
-// TODO AW: Is this class obsolete?
-public class BusinessFunctionImpl extends IpsObject implements BusinessFunction {
+/**
+ * A part that does not contain any other parts (aside from descriptions and labels).
+ * 
+ * @author Jan Ortmann
+ */
+public abstract class AtomicIpsObjectPart extends IpsObjectPart {
 
-    public BusinessFunctionImpl(IIpsSrcFile file) {
-        super(file);
+    public AtomicIpsObjectPart(IIpsObjectPartContainer parent, String id) {
+        super(parent, id);
+    }
+
+    public AtomicIpsObjectPart() {
+        super();
     }
 
     @Override
-    public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.BUSINESS_FUNCTION;
-    }
-
-    @Override
-    protected IIpsElement[] getChildrenThis() {
+    public final IIpsElement[] getChildrenThis() {
         return new IIpsElement[0];
     }
 
     @Override
-    protected void reinitPartCollectionsThis() {
+    protected final void reinitPartCollectionsThis() {
         // Nothing to do
     }
 

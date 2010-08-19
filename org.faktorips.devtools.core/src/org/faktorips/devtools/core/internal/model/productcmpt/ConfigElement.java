@@ -354,7 +354,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         if (valueSet != null) {
             return new IIpsElement[] { valueSet };
         }
-        return super.getChildrenThis();
+        return new IIpsElement[0];
     }
 
     @Override

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class BFElement extends IpsObjectPart implements IBFElement {
+public class BFElement extends AtomicIpsObjectPart implements IBFElement {
 
     Point location;
 
@@ -48,11 +48,6 @@ public class BFElement extends IpsObjectPart implements IBFElement {
 
     public BFElement(IIpsObject parent, String id) {
         super(parent, id);
-    }
-
-    @Override
-    public void delete() {
-        super.delete();
     }
 
     @Override

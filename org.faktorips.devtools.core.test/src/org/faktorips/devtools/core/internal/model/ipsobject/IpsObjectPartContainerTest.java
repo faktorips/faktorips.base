@@ -531,7 +531,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertTrue(container.hasLabelSupport());
     }
 
-    class TestIpsObjectPartContainer extends IpsObjectPart {
+    class TestIpsObjectPartContainer extends AtomicIpsObjectPart {
 
         private String name;
 

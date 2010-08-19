@@ -501,7 +501,12 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (persistenceAssociationInfo != null) {
             return new IIpsElement[] { persistenceAssociationInfo };
         }
-        return super.getChildrenThis();
+        return new IIpsElement[0];
+    }
+
+    @Override
+    protected void reinitPartCollectionsThis() {
+        // Nothing to do
     }
 
 }
