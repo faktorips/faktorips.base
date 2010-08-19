@@ -178,6 +178,11 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
     }
 
+    @Override
+    public boolean hasLabelSupport() {
+        return true;
+    }
+
     /**
      * Looks for a formula in the supertype hierarchy with the same name than the formula name of
      * this formula. It stops looking when the first formula method is found that meets this

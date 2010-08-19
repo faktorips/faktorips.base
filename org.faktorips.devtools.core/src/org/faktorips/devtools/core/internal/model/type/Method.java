@@ -371,11 +371,6 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return true;
     }
 
-    @Override
-    public boolean hasLabelSupport() {
-        return true;
-    }
-
     class OverridingMethodFinder extends TypeHierarchyVisitor {
 
         private IMethod overridingMethod;
