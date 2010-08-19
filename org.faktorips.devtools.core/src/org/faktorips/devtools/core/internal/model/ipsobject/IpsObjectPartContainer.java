@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -116,16 +117,25 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * This implementation returns the labels and descriptions of the IPS object part container.
-     * Subclasses must not forget to call <tt>super.getChildren()</tt> and add the returned elements
-     * to their return array.
+     * This implementation returns the labels and descriptions of the IPS object part container. It
+     * might be extended by subclasses using the method {@link #getChildrenThis()}.
      */
     @Override
-    public IIpsElement[] getChildren() {
+    public final IIpsElement[] getChildren() {
         List<IIpsElement> children = new ArrayList<IIpsElement>(labels.size() + descriptions.size());
         children.addAll(labels);
         children.addAll(descriptions);
+        IIpsElement[] subclassChildren = getChildrenThis();
+        children.addAll(Arrays.asList(subclassChildren));
         return children.toArray(new IIpsElement[children.size()]);
+    }
+
+    /**
+     * Subclass implementation that can be used to extend the method {@link #getChildren()}. The
+     * default implementation of this method returns an empty array.
+     */
+    protected IIpsElement[] getChildrenThis() {
+        return new IIpsElement[0];
     }
 
     /**

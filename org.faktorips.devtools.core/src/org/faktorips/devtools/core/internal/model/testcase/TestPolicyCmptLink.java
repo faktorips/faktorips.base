@@ -13,10 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -145,13 +141,11 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+    protected IIpsElement[] getChildrenThis() {
         if (targetChild != null) {
-            childrenList.add(targetChild);
+            return new IIpsElement[] { targetChild };
         }
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+        return super.getChildrenThis();
     }
 
     @Override

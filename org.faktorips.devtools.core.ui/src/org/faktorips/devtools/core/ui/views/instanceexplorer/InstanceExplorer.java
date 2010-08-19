@@ -13,10 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -471,11 +467,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         }
 
         @Override
-        public IIpsElement[] getChildren() {
-            IIpsElement[] children = super.getChildren();
-            List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-            childrenList.add(metaObject);
-            return childrenList.toArray(new IIpsElement[childrenList.size()]);
+        protected IIpsElement[] getChildrenThis() {
+            if (metaObject != null) {
+                return new IIpsElement[] { metaObject };
+            }
+            return super.getChildrenThis();
         }
 
         @Override

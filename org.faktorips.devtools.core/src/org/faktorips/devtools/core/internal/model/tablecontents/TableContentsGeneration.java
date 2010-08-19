@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -115,11 +114,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        childrenList.addAll(Arrays.asList(getRows()));
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    protected IIpsElement[] getChildrenThis() {
+        return getRows();
     }
 
     @Override

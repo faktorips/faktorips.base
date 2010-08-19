@@ -81,11 +81,8 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        childrenList.addAll(testObjects);
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    protected IIpsElement[] getChildrenThis() {
+        return testObjects.toArray(new IIpsElement[testObjects.size()]);
     }
 
     @Override

@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -72,11 +71,8 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        childrenList.addAll(tableStructures);
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    protected IIpsElement[] getChildrenThis() {
+        return tableStructures.toArray(new IIpsElement[tableStructures.size()]);
     }
 
     @Override

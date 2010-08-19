@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -351,14 +350,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        if (valueSet == null) {
-            return children;
+    protected IIpsElement[] getChildrenThis() {
+        if (valueSet != null) {
+            return new IIpsElement[] { valueSet };
         }
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        childrenList.add(valueSet);
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+        return super.getChildrenThis();
     }
 
     @Override

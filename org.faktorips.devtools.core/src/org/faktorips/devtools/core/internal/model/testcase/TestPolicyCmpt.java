@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -76,12 +75,12 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        childrenList.addAll(testAttributeValues);
-        childrenList.addAll(testPolicyCmptLinks);
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    protected IIpsElement[] getChildrenThis() {
+        int size = testAttributeValues.size() + testPolicyCmptLinks.size();
+        List<IIpsElement> children = new ArrayList<IIpsElement>(size);
+        children.addAll(testAttributeValues);
+        children.addAll(testPolicyCmptLinks);
+        return children.toArray(new IIpsElement[children.size()]);
     }
 
     @Override

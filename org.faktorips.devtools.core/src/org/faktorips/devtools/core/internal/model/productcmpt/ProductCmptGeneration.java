@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -560,15 +559,16 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        childrenList.addAll(attributeValues);
-        childrenList.addAll(configElements);
-        childrenList.addAll(tableContentUsages);
-        childrenList.addAll(formulas);
-        childrenList.addAll(links);
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    protected IIpsElement[] getChildrenThis() {
+        int size = attributeValues.size() + configElements.size() + tableContentUsages.size() + formulas.size()
+                + links.size();
+        List<IIpsElement> children = new ArrayList<IIpsElement>(size);
+        children.addAll(attributeValues);
+        children.addAll(configElements);
+        children.addAll(tableContentUsages);
+        children.addAll(formulas);
+        children.addAll(links);
+        return children.toArray(new IIpsElement[children.size()]);
     }
 
     @Override

@@ -173,12 +173,8 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
-    public final IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        IIpsObjectGeneration[] generationsOrderedByValidDate = getGenerationsOrderedByValidDate();
-        childrenList.addAll(Arrays.asList(generationsOrderedByValidDate));
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    protected final IIpsElement[] getChildrenThis() {
+        return getGenerationsOrderedByValidDate();
     }
 
     @Override
@@ -209,8 +205,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
-    public
-    final IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
+    public final IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
         return super.newPart(partType);
     }
 

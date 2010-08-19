@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -135,14 +133,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] superChildren = super.getChildren();
+    protected IIpsElement[] getChildrenThis() {
         if (valueSet != null) {
-            List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
-            children.add(valueSet);
-            return children.toArray(new IIpsElement[children.size()]);
+            return new IIpsElement[] { valueSet };
         }
-        return superChildren;
+        return super.getChildrenThis();
     }
 
     @Override

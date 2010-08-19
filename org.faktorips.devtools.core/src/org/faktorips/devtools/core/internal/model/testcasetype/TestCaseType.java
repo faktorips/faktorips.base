@@ -63,11 +63,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        childrenList.addAll(testParameters);
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    protected IIpsElement[] getChildrenThis() {
+        return testParameters.toArray(new IIpsElement[testParameters.size()]);
     }
 
     @Override

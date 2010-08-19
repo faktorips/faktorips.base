@@ -551,16 +551,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-
-        // This is the only time, the model element could be null at instantiation time
+    protected IIpsElement[] getChildrenThis() {
+        IIpsElement[] superChildren = super.getChildrenThis();
         if (persistenceTypeInfo != null) {
-            childrenList.add(persistenceTypeInfo);
+            List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
+            children.add(persistenceTypeInfo);
+            return children.toArray(new IIpsElement[children.size()]);
         }
-
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+        return superChildren;
     }
 
     @Override

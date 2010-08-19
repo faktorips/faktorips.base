@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -81,12 +80,12 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        childrenList.addAll(testAttributes);
-        childrenList.addAll(testPolicyCmptTypeChilds);
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    protected IIpsElement[] getChildrenThis() {
+        int size = testAttributes.size() + testPolicyCmptTypeChilds.size();
+        List<IIpsElement> children = new ArrayList<IIpsElement>(size);
+        children.addAll(testAttributes);
+        children.addAll(testPolicyCmptTypeChilds);
+        return children.toArray(new IIpsElement[children.size()]);
     }
 
     @Override

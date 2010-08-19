@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -379,9 +378,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] superChildren = super.getChildren();
-        List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
+    protected IIpsElement[] getChildrenThis() {
+        List<IIpsElement> children = new ArrayList<IIpsElement>(2);
         if (valueSet != null) {
             children.add(valueSet);
         }

@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -51,18 +50,15 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
+    protected IIpsElement[] getChildrenThis() {
+        List<IIpsElement> children = new ArrayList<IIpsElement>();
         for (IpsObjectPartCollection<?> container : partCollections) {
             int size = container.size();
             for (int i = 0; i < size; i++) {
-                childrenList.add(container.getPart(i));
+                children.add(container.getPart(i));
             }
         }
-
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+        return children.toArray(new IIpsElement[children.size()]);
     }
 
     @Override

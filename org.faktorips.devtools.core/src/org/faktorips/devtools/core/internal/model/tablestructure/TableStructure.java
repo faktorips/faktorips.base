@@ -380,16 +380,14 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    public IIpsElement[] getChildren() {
-        IIpsElement[] children = super.getChildren();
-
-        List<IIpsElement> childrenList = new ArrayList<IIpsElement>(Arrays.asList(children));
-        childrenList.addAll(columns);
-        childrenList.addAll(ranges);
-        childrenList.addAll(uniqueKeys);
-        childrenList.addAll(foreignKeys);
-
-        return childrenList.toArray(new IIpsElement[childrenList.size()]);
+    protected IIpsElement[] getChildrenThis() {
+        int size = columns.size() + ranges.size() + uniqueKeys.size() + foreignKeys.size();
+        List<IIpsElement> children = new ArrayList<IIpsElement>(size);
+        children.addAll(columns);
+        children.addAll(ranges);
+        children.addAll(uniqueKeys);
+        children.addAll(foreignKeys);
+        return children.toArray(new IIpsElement[children.size()]);
     }
 
     @Override
