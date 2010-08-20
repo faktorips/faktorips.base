@@ -20,7 +20,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
@@ -76,7 +75,6 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
                 Messages.TestCaseEditor_Combined_SectionTitle, Messages.TestCaseEditor_Combined_Description);
 
         addPage(editorPage);
-        addPage(new DescriptionPage(this));
     }
 
     /**

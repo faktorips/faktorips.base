@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 
@@ -37,7 +36,6 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
     protected void addPagesForParsableSrcFile() throws PartInitException {
         contentsPage = new ContentPage(this);
         addPage(contentsPage);
-        addPage(new DescriptionPage(this));
     }
 
     @Override

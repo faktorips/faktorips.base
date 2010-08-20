@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
@@ -91,7 +90,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         generationPropertiesPage = new GenerationPropertiesPage(this);
         addPage(generationPropertiesPage);
         addPage(new ProductCmptPropertiesPage(this));
-        addPage(new DescriptionPage(this));
         IIpsObjectGeneration gen = getGenerationEffectiveOnCurrentEffectiveDate();
         if (gen == null) {
             gen = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt().getNumOfGenerations() - 1];

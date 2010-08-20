@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 /**
@@ -34,10 +33,6 @@ public abstract class TypeEditor extends IpsObjectEditor {
             addAllInOneSinglePage();
         } else if (IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
             addSplittedInMorePages();
-        }
-
-        if (hasDescriptionPage()) {
-            addPage(new DescriptionPage(this));
         }
     }
 
@@ -56,14 +51,5 @@ public abstract class TypeEditor extends IpsObjectEditor {
     // The method name is wrong: only structure and behaviour page are meant
     // Please fix if you add another page to the type editor
     protected abstract void addSplittedInMorePages() throws PartInitException;
-
-    /**
-     * Returns whether this editor should have a description page. May be overridden by subclasses.
-     * <p>
-     * Returns <tt>true</tt> by default.
-     */
-    protected boolean hasDescriptionPage() {
-        return true;
-    }
 
 }
