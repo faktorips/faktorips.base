@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -55,6 +57,9 @@ public class DescriptionEditComposite extends Composite {
     /** A map that associates language names to their language codes. */
     private final Map<String, String> languageCodes;
 
+    /** The description that is currently being edited. */
+    private IDescription currentDescription;
+
     public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, IIpsProject ipsProject,
             UIToolkit uiToolkit) {
 
@@ -78,10 +83,11 @@ public class DescriptionEditComposite extends Composite {
         languageCombo = createLanguageCombo();
         textArea = createTextArea();
 
-        updateTextArea();
+        refresh();
     }
 
     public void refresh() {
+        updateCurrentDescription();
         updateTextArea();
     }
 
@@ -116,31 +122,43 @@ public class DescriptionEditComposite extends Composite {
     }
 
     private Text createTextArea() {
-        return uiToolkit.createMultilineText(this);
+        final Text text = uiToolkit.createMultilineText(this);
+        text.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                if (currentDescription != null) {
+                    currentDescription.setText(text.getText());
+                }
+            }
+
+        });
+        return text;
     }
 
-    private void updateTextArea() {
+    private void updateCurrentDescription() {
         int currentSelectionIndex = languageCombo.getSelectionIndex();
         if (currentSelectionIndex == -1) {
-            textArea.setEnabled(false);
+            currentDescription = null;
             return;
-        }
-
-        if (!(textArea.isEnabled())) {
-            textArea.setEnabled(true);
         }
 
         String currentLanguage = languageCombo.getItem(currentSelectionIndex);
         currentLanguage = currentLanguage.substring(0, currentLanguage.indexOf(" (")); //$NON-NLS-1$
         String currentLanguageCode = languageCodes.get(currentLanguage);
         Locale currentLocale = new Locale(currentLanguageCode);
+        currentDescription = describedElement.getDescription(currentLocale);
+    }
 
-        IDescription description = describedElement.getDescription(currentLocale);
-        if (description == null) {
+    private void updateTextArea() {
+        if (currentDescription == null) {
+            textArea.setEnabled(false);
             return;
         }
 
-        textArea.setText(description.getText());
+        textArea.setEnabled(true);
+
+        textArea.setText(currentDescription.getText());
     }
 
 }
