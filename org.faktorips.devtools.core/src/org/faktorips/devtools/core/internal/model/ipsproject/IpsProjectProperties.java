@@ -965,8 +965,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + SystemUtils.LINE_SEPARATOR
                 + "Exactly one supported language must be marked as default language. The default language " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "will be used if a language is requested that is not supported by this IPS project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "If there is no supported language the names of the model elements will be " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "used directly." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "<SupportedLanguages>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <SupportedLanguage locale=\"en\" defaultLanguage=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
