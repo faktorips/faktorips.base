@@ -114,4 +114,9 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
         return true;
     }
 
+    @Override
+    public boolean hasLabelSupport() {
+        return true;
+    }
+
 }
