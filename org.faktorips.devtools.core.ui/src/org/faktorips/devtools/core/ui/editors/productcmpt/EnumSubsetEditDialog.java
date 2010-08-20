@@ -55,6 +55,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
         this.source = source;
         valueDatatype = datatype;
         this.viewOnly = viewOnly;
+        setDescriptionEnabled(!(viewOnly));
     }
 
     @Override
@@ -63,8 +64,6 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.PolicyAttributeEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
-
-        super.setEnabledDescription(!viewOnly);
 
         return folder;
     }

@@ -56,6 +56,7 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
         this.configElement = configElement;
         this.viewOnly = viewOnly;
         allowedValuesSetTypes = allowedTypes;
+        setDescriptionEnabled(!(viewOnly));
     }
 
     @Override
@@ -64,8 +65,6 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.PolicyAttributeEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
-
-        super.setEnabledDescription(!viewOnly);
 
         return folder;
     }

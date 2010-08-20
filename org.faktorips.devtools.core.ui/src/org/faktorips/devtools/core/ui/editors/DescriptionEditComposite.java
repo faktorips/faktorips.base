@@ -60,6 +60,8 @@ public class DescriptionEditComposite extends Composite {
     /** The description that is currently being edited. */
     private IDescription currentDescription;
 
+    private boolean viewOnly;
+
     public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, IIpsProject ipsProject,
             UIToolkit uiToolkit) {
 
@@ -155,10 +157,15 @@ public class DescriptionEditComposite extends Composite {
             textArea.setEnabled(false);
             return;
         }
-
-        textArea.setEnabled(true);
-
+        if (!(viewOnly)) {
+            textArea.setEnabled(true);
+        }
         textArea.setText(currentDescription.getText());
+    }
+
+    void setViewOnly(boolean viewOnly) {
+        this.viewOnly = viewOnly;
+        textArea.setEnabled(!(viewOnly));
     }
 
 }

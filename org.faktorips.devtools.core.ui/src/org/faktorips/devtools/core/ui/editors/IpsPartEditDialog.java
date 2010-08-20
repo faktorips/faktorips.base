@@ -29,17 +29,20 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
 public abstract class IpsPartEditDialog extends EditDialog {
 
     protected IpsObjectUIController uiController;
-    private TextField descriptionField;
+
     private Memento oldState;
+
     private IIpsObjectPart part;
+
     private boolean dirty = false;
+
+    private boolean descriptionEnabled;
 
     public IpsPartEditDialog(IIpsObjectPart part, Shell parentShell, String windowTitle) {
         this(part, parentShell, windowTitle, false);
@@ -124,11 +127,13 @@ public abstract class IpsPartEditDialog extends EditDialog {
     private TabItem createDescriptionTabItem(TabFolder folder) {
         IIpsProject ipsProject = part.getIpsProject();
         IDescribedElement describedElement = part;
-        Composite editComposite = new DescriptionEditComposite(folder, describedElement, ipsProject, uiToolkit);
+        DescriptionEditComposite descriptionEditComposite = new DescriptionEditComposite(folder, describedElement,
+                ipsProject, uiToolkit);
+        descriptionEditComposite.setViewOnly(!(descriptionEnabled));
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemDescription);
-        item.setControl(editComposite);
+        item.setControl(descriptionEditComposite);
 
         return item;
     }
@@ -165,15 +170,11 @@ public abstract class IpsPartEditDialog extends EditDialog {
     }
 
     protected void connectToModel() {
-        if (descriptionField != null) {
-            uiController.add(descriptionField, getIpsPart(), IIpsObjectPart.PROPERTY_DESCRIPTION);
-        }
+        // Empty default implementation
     }
 
-    protected void setEnabledDescription(boolean enabled) {
-        if (descriptionField != null) {
-            descriptionField.getControl().setEnabled(enabled);
-        }
+    protected void setDescriptionEnabled(boolean descriptionEnabled) {
+        this.descriptionEnabled = descriptionEnabled;
     }
 
 }
