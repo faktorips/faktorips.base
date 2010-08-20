@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -175,8 +175,10 @@ public class PcTypePage extends TypePage {
     }
 
     @Override
-    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
-        super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
+            throws CoreException {
+
+        super.finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
         IPolicyCmptType type = (IPolicyCmptType)newIpsObject;
         if (isPolicyCmptTypeConfigurable()) {
             type.setConfigurableByProductCmptType(true);

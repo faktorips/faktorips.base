@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -158,7 +158,9 @@ public abstract class TypePage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
+            throws CoreException {
+
         IType type = (IType)newIpsObject;
         String supertypeName = getSuperType();
         type.setSupertype(supertypeName);

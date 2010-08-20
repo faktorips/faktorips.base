@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.testcase;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
@@ -98,7 +98,9 @@ public class TestCasePage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
+            throws CoreException {
+
         // fill the default content of the test case bases on the test case type
         ITestCase testCase = (ITestCase)newIpsObject;
         testCase.setTestCaseType(getSuperType());

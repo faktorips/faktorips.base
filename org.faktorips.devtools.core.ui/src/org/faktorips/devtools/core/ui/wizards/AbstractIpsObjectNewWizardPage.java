@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -26,12 +26,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 
 /**
@@ -47,7 +50,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
  * {@link #createIpsSrcFile(IProgressMonitor)} to create it.</li>
  * <li>The wizard calls the {@link #getIpsObjectName()} and {@link #getIpsObjectType()} to display
  * these in the title area.</li>
- * <li>The wizard calls the {@link #finishIpsObjects(IIpsObject, List)} after the creation of the
+ * <li>The wizard calls the {@link #finishIpsObjects(IIpsObject, Set)} after the creation of the
  * {@link IIpsSrcFile} where it expects the {@link IIpsObject} to be set into a valid state that can
  * be used for further editing.</li>
  * <li>The wizard calls {@link #pageEntered()} when this page is entered. By default this method
@@ -242,17 +245,58 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
 
     /**
      * The wizard calls this method after the {@link IIpsSrcFile} is created to give the page the
-     * chance to state the {@link IIpsObject} in a valid state before leaving the wizard. The
-     * default implementation is empty.
+     * chance to state the {@link IIpsObject} in a valid state before leaving the wizard.
+     * <p>
+     * This implementation creates an {@link IDescription} and an {@link ILabel} for every language
+     * the IPS project supports if the IPS object in question has description or label support
+     * respectively.
      * 
      * @param newIpsObject the {@link IIpsObject} to that is created by this page
      * @param modifiedIpsObjects {@link IIpsObject}s that have being modified during the finishing
-     *            of the new {@link IIpsObject} need to be registered in this list so that the
-     *            wizard can also save the changed state of these objects.
+     *            of the new {@link IIpsObject} need to be registered in this set so that the wizard
+     *            can also save the changed state of these objects.
+     * 
      * @throws CoreException if an exception occurs during finishing
      */
-    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
-        // subclasses may override
+    public final void finishIpsObjects(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
+            throws CoreException {
+
+        IIpsProject ipsProject = newIpsObject.getIpsProject();
+        Set<ISupportedLanguage> supportedLanguages = ipsProject.getProperties().getSupportedLanguages();
+        for (ISupportedLanguage language : supportedLanguages) {
+            boolean modified = false;
+            if (newIpsObject.hasDescriptionSupport()) {
+                IDescription description = newIpsObject.newDescription();
+                description.setLocale(language.getLocale());
+                modified = true;
+            }
+            if (newIpsObject.hasLabelSupport()) {
+                ILabel label = newIpsObject.newLabel();
+                label.setLocale(language.getLocale());
+                modified = true;
+            }
+            if (modified) {
+                modifiedIpsObjects.add(newIpsObject);
+            }
+        }
+        finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
+    }
+
+    /**
+     * This method may be overridden by subclasses to extend the method
+     * {@link #finishIpsObjects(IIpsObject, Set)}.
+     * 
+     * @param newIpsObject the {@link IIpsObject} to that is created by this page
+     * @param modifiedIpsObjects {@link IIpsObject}s that have being modified during the finishing
+     *            of the new {@link IIpsObject} need to be registered in this set so that the wizard
+     *            can also save the changed state of these objects.
+     * 
+     * @throws CoreException if an exception occurs during finishing
+     */
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
+            throws CoreException {
+
+        // Empty default implementation, subclasses may override
     }
 
     /**

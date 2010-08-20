@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.bf;
 
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.geometry.Point;
@@ -39,7 +39,9 @@ public class BFPage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
+            throws CoreException {
+
         IBusinessFunction bf = (IBusinessFunction)newIpsObject;
         bf.newStart(new Point(200, 20));
         bf.newEnd(new Point(200, 120));

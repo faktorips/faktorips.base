@@ -14,7 +14,8 @@
 package org.faktorips.devtools.core.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -142,9 +143,10 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
                         if (page.canCreateIpsSrcFile()) {
                             IIpsSrcFile srcFile = page.createIpsSrcFile(new SubProgressMonitor(monitor, 2));
                             if (srcFile == null) {
-                                IpsPlugin.logAndShowErrorDialog(new IpsStatus(Messages.NewIpsObjectWizard_error_unableToCreateIpsSrcFile));
+                                IpsPlugin.logAndShowErrorDialog(new IpsStatus(
+                                        Messages.NewIpsObjectWizard_error_unableToCreateIpsSrcFile));
                             } else {
-                                ArrayList<IIpsObject> modifiedIpsObjects = new ArrayList<IIpsObject>(0);
+                                Set<IIpsObject> modifiedIpsObjects = new HashSet<IIpsObject>(0);
                                 page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);
                                 srcFile.save(true, new SubProgressMonitor(monitor, 1));
                                 SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);

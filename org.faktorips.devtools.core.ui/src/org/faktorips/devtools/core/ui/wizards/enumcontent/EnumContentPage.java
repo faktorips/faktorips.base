@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.enumcontent;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -190,7 +190,9 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     @Override
-    public void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
+            throws CoreException {
+
         IEnumContent newEnumContent = (IEnumContent)newIpsObject;
         newEnumContent.setEnumType(enumTypeField.getText());
 

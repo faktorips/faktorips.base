@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.enumimport;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -231,11 +231,10 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     private IEnumValueContainer getEnumValueContainer() throws CoreException {
         if (startingPage.isImportIntoExisting()) {
             return (IEnumValueContainer)selectContentsPage.getTargetForImport();
-        } else {
-            IIpsSrcFile ipsSrcFile = newEnumContentPage.createIpsSrcFile(new NullProgressMonitor());
-            newEnumContentPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new ArrayList<IIpsObject>());
-            return newEnumContentPage.getCreatedEnumContent();
         }
+        IIpsSrcFile ipsSrcFile = newEnumContentPage.createIpsSrcFile(new NullProgressMonitor());
+        newEnumContentPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new HashSet<IIpsObject>());
+        return newEnumContentPage.getCreatedEnumContent();
     }
 
 }

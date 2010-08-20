@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.enumtype;
 
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -262,7 +262,9 @@ public class EnumTypePage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjects(IIpsObject newIpsObject, List<IIpsObject> modifiedIpsObjects) throws CoreException {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
+            throws CoreException {
+
         IEnumType newEnumType = (IEnumType)newIpsObject;
 
         // Set properties.

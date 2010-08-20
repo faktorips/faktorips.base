@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.ui.wizards.tableimport;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -234,11 +234,10 @@ public class TableImportWizard extends IpsObjectImportWizard {
     private ITableContents getTableContents() throws CoreException {
         if (startingPage.isImportIntoExisting()) {
             return (ITableContents)selectContentsPage.getTargetForImport();
-        } else {
-            IIpsSrcFile ipsSrcFile = newTableContentsPage.createIpsSrcFile(new NullProgressMonitor());
-            newTableContentsPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new ArrayList<IIpsObject>());
-            return newTableContentsPage.getCreatedTableContents();
         }
+        IIpsSrcFile ipsSrcFile = newTableContentsPage.createIpsSrcFile(new NullProgressMonitor());
+        newTableContentsPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new HashSet<IIpsObject>());
+        return newTableContentsPage.getCreatedTableContents();
     }
 
 }
