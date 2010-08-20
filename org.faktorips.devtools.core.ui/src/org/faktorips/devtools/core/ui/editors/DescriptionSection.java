@@ -13,87 +13,56 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.model.Described;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * A section to edit a description.
+ * A section that allows to edit the {@link IDescription}s of {@link IDescribedElement}s.
  * 
  * @author Jan Ortmann
+ * @author Alexander Weickmann
  */
 public class DescriptionSection extends IpsSection {
 
-    private Text descriptionText;
-    private Described describedObj;
+    private final IDescribedElement describedElement;
 
-    public DescriptionSection(Described described, Composite parent, UIToolkit toolkit) {
-        super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
-        this.describedObj = described;
-        initControls();
-        setText(Messages.DescriptionSection_description);
+    private final IIpsProject ipsProject;
+
+    private DescriptionEditComposite descriptionEditComposite;
+
+    public DescriptionSection(IDescribedElement described, IIpsProject ipsProject, Composite parent, UIToolkit toolkit) {
+        this(described, ipsProject, parent, Section.TITLE_BAR, toolkit);
     }
 
-    public DescriptionSection(Described described, Composite parent, int style, UIToolkit toolkit) {
+    public DescriptionSection(IDescribedElement described, IIpsProject ipsProject, Composite parent, int style,
+            UIToolkit toolkit) {
+
         super(parent, style, GridData.FILL_BOTH, toolkit);
-        this.describedObj = described;
+
+        this.describedElement = described;
+        this.ipsProject = ipsProject;
+
         initControls();
         setText(Messages.DescriptionSection_description);
     }
 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
-        GridLayout layout = new GridLayout(1, true);
-        layout.marginHeight = 2;
-        layout.marginWidth = 1;
-        client.setLayout(layout);
-        descriptionText = toolkit.getFormToolkit().createText(client,
-                "", SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.FLAT); //$NON-NLS-1$
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = 100;
-        descriptionText.setLayoutData(data);
-        // following line forces the paint listener to draw a light grey border around
-        // the text control. Can only be understood by looking at the FormToolkit.PaintBorder class.
-        descriptionText.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-        descriptionText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(ModifyEvent e) {
-                if (isRefreshing()) {
-                    return;
-                }
-                if (!ObjectUtils.equals(describedObj.getDescription(), descriptionText.getText())) {
-                    describedObj.setDescription(descriptionText.getText());
-                }
-            }
-
-        });
+        descriptionEditComposite = new DescriptionEditComposite(client, describedElement, ipsProject, toolkit);
     }
 
     @Override
     protected void performRefresh() {
-        if (describedObj == null) {
+        if (describedElement == null) {
             return;
         }
-        if (ObjectUtils.equals(descriptionText.getText(), describedObj.getDescription())) {
-            return;
-        }
-        descriptionText.setText(describedObj.getDescription());
-    }
-
-    public void setDescribedObject(Described object) {
-        describedObj = object;
-        performRefresh();
+        descriptionEditComposite.refresh();
     }
 
 }

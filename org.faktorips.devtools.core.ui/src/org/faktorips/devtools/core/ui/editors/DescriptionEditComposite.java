@@ -81,10 +81,14 @@ public class DescriptionEditComposite extends Composite {
         updateTextArea();
     }
 
+    public void refresh() {
+        updateTextArea();
+    }
+
     private void createLayout() {
-        Layout layout = new GridLayout();
+        Layout layout = new GridLayout(1, true);
         setLayout(layout);
-        setLayoutData(new GridData(1, 2));
+        setLayoutData(new GridData(GridData.FILL_BOTH));
     }
 
     private Combo createLanguageCombo() {

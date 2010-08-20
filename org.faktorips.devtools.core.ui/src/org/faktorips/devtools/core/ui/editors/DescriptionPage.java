@@ -30,7 +30,7 @@ public class DescriptionPage extends IpsObjectEditorPage {
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
-        new DescriptionSection(getIpsObject(), formBody, toolkit);
+        new DescriptionSection(getIpsObject(), getIpsObject().getIpsProject(), formBody, toolkit);
     }
 
 }
