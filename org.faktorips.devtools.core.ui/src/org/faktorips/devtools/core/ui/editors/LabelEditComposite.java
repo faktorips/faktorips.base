@@ -65,9 +65,14 @@ public class LabelEditComposite extends Composite {
         configureTable();
     }
 
+    public void refresh() {
+        tableViewer.refresh();
+    }
+
     private void createLayout() {
         Layout layout = new GridLayout();
         setLayout(layout);
+        setLayoutData(new GridData(GridData.FILL_BOTH));
     }
 
     private TableViewer createTableViewer() {

@@ -318,6 +318,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             if (ipsObject.hasDescriptionSupport()) {
                 addPage(new DescriptionPage(this));
             }
+            if (ipsObject.hasLabelSupport()) {
+                addPage(new LabelPage(this));
+            }
 
             if (TRACE) {
                 logMethodFinished("addPagesForParsableSrcFile()"); //$NON-NLS-1$

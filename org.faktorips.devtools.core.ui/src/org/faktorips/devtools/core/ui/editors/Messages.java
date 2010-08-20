@@ -31,19 +31,30 @@ public class Messages extends NLS {
     public static String IpsObjectEditor_fileHasChangesOnDiskNoButton;
     public static String IpsObjectEditor_fileHasChangesOnDiskTitle;
     public static String IpsObjectEditor_fileHasChangesOnDiskYesButton;
+
     public static String IpsPartEditDialog_tabItemLabel;
     public static String IpsPartEditDialog_tabItemDescription;
+
     public static String IpsPartsComposite_buttonNew;
     public static String IpsPartsComposite_buttonEdit;
     public static String IpsPartsComposite_buttonShow;
     public static String IpsPartsComposite_buttonDelete;
     public static String IpsPartsComposite_buttonUp;
     public static String IpsPartsComposite_buttonDown;
-    public static String DescriptionPage_description;
-    public static String DescriptionSection_description;
+
     public static String TimedIpsObjectEditor_actualWorkingDate;
+
     public static String UnparsableFilePage_fileContentIsNotParsable;
+
     public static String UnreachableFilePage_msgUnreachableFile;
+
+    public static String DescriptionPage_description;
+
+    public static String DescriptionSection_description;
+
+    public static String LabelPage_label;
+
+    public static String LabelSection_label;
 
     public static String LabelEditComposite_tableColumnHeaderLanguage;
     public static String LabelEditComposite_tableColumnHeaderLabel;
