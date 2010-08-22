@@ -60,18 +60,18 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
     private static final Map<Integer, AttrPropertyAndLabel> columnProperties = new HashMap<Integer, AttrPropertyAndLabel>();
 
     static {
-        columnProperties.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET, "Association Target")); //$NON-NLS-1$
+        columnProperties.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET, Messages.PersistentAssociationSection_labelAssociationTarget));
         columnProperties.put(1, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME,
-                "Join Table Name")); //$NON-NLS-1$
+                Messages.PersistentAssociationSection_labelJoinTableName));
         columnProperties.put(2, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
-                "Source Column Name")); //$NON-NLS-1$
+                Messages.PersistentAssociationSection_labelSourceColumnName));
         columnProperties.put(3, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
-                "Target Column Name")); //$NON-NLS-1$
+                Messages.PersistentAssociationSection_labelTargetColumnName));
         columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME,
-                "Join Column Name")); //$NON-NLS-1$
-        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE, "Fetch Type")); //$NON-NLS-1$
+                Messages.PersistentAssociationSection_labelJoinColumnName));
+        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE, Messages.PersistentAssociationSection_labelFetchType));
         columnProperties.put(6, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL,
-                "Orphan Removal")); //$NON-NLS-1$
+                Messages.PersistentAssociationSection_labelOrphanRemoval));
     }
 
     private static class AttrPropertyAndLabel {
@@ -85,7 +85,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
     }
 
     public PersistentAssociationSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
-        super(ipsObject, parent, "Associations", toolkit); //$NON-NLS-1$
+        super(ipsObject, parent, Messages.PersistentAssociationSection_titleAssociations, toolkit);
     }
 
     @Override

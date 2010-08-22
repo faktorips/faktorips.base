@@ -59,7 +59,7 @@ public class PersistentTypeInfoSection extends IpsSection {
         this.ipsObject = ipsObject;
 
         initControls();
-        setText("JPA Entity Information"); //$NON-NLS-1$
+        setText(Messages.PersistentTypeInfoSection_sectionTitleJpaEntityInformation);
         setExpanded(false);
     }
 
@@ -106,12 +106,12 @@ public class PersistentTypeInfoSection extends IpsSection {
         client.setLayout(new GridLayout(1, false));
 
         Composite detailComposite = toolkit.createLabelEditColumnComposite(client);
-        toolkit.createLabel(detailComposite, "Persistent type"); //$NON-NLS-1$
+        toolkit.createLabel(detailComposite, Messages.PersistentTypeInfoSection_labelPersistentType);
         Combo persistentTypeCombo = toolkit.createCombo(detailComposite);
         setComboItems(persistentTypeCombo, PersistentType.class);
         ComboField persistentTypeField = new EnumField<PersistentType>(persistentTypeCombo, PersistentType.class);
 
-        Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite, "Inheritance Strategy"); //$NON-NLS-1$
+        Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite, Messages.PersistentTypeInfoSection_labelInheritanceStrategy);
         Combo inheritanceStrategyCombo = toolkit.createCombo(detailComposite);
         setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
         ComboField inheritanceStrategyField = new EnumField<InheritanceStrategy>(inheritanceStrategyCombo,
@@ -122,34 +122,34 @@ public class PersistentTypeInfoSection extends IpsSection {
         Composite tableAndDiscrComposite = uiToolkit.createGridComposite(client, 2, true, false);
 
         // create table group
-        Group tableGroup = toolkit.createGroup(tableAndDiscrComposite, "Table"); //$NON-NLS-1$
+        Group tableGroup = toolkit.createGroup(tableAndDiscrComposite, Messages.PersistentTypeInfoSection_labelTable);
         persistentComposites.add(tableGroup);
         Checkbox checkboxTableDefinedInSuperclass = toolkit.createCheckbox(tableGroup);
-        checkboxTableDefinedInSuperclass.setText("Use table defined in supertype"); //$NON-NLS-1$
+        checkboxTableDefinedInSuperclass.setText(Messages.PersistentTypeInfoSection_labelUseTableDefinedInSupertype);
 
         Composite tableNameComposite = toolkit.createLabelEditColumnComposite(tableGroup);
-        toolkit.createLabel(tableNameComposite, "Table Name"); //$NON-NLS-1$
+        toolkit.createLabel(tableNameComposite, Messages.PersistentTypeInfoSection_labelTableName);
         final Text tableNameText = toolkit.createText(tableNameComposite);
 
         // create discriminator group
-        Group discriminatorGroup = toolkit.createGroup(tableAndDiscrComposite, "Descriminator"); //$NON-NLS-1$
+        Group discriminatorGroup = toolkit.createGroup(tableAndDiscrComposite, Messages.PersistentTypeInfoSection_labelDescriminator);
         persistentComposites.add(discriminatorGroup);
 
         Checkbox defineDiscriminatorColumn = toolkit.createCheckbox(discriminatorGroup);
-        defineDiscriminatorColumn.setText("This type defines the dicriminator column"); //$NON-NLS-1$
+        defineDiscriminatorColumn.setText(Messages.PersistentTypeInfoSection_labelThisTypeDefinesTheDiscriminatorColumn);
 
         Composite discriminatorDefComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
 
-        toolkit.createLabel(discriminatorDefComposite, "Column Name"); //$NON-NLS-1$
+        toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnName);
         Text descriminatorColumnNameText = toolkit.createText(discriminatorDefComposite);
 
-        toolkit.createLabel(discriminatorDefComposite, "Datatype"); //$NON-NLS-1$
+        toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelDatatype);
         Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
         setComboItems(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
         ComboField descriminatorDatatypeField = new EnumField<DiscriminatorDatatype>(descriminatorDatatypeCombo,
                 DiscriminatorDatatype.class);
 
-        toolkit.createLabel(discriminatorDefComposite, "Column Value"); //$NON-NLS-1$
+        toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnValue);
         Text descriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
 
         if (ipsObject.getPersistenceTypeInfo() != null) {
@@ -187,9 +187,9 @@ public class PersistentTypeInfoSection extends IpsSection {
                             IPolicyCmptType rootEntity = persistenceTypeInfo.findRootEntity();
                             IType superType = ipsObject.findSupertype(ipsObject.getIpsProject());
                             if (superType == null) {
-                                tableNameText.setText("Super type not found");
+                                tableNameText.setText(Messages.PersistentTypeInfoSection_textSupertypeNotFound);
                             } else if (rootEntity == null) {
-                                tableNameText.setText("Root entity not found");
+                                tableNameText.setText(Messages.PersistentTypeInfoSection_textRootEntityNotFound);
                             } else {
                                 tableNameText.setText(rootEntity.getPersistenceTypeInfo().getTableName());
                             }

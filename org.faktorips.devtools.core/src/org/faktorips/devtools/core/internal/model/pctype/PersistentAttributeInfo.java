@@ -244,7 +244,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         element.setAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME, "" + converterQualifiedClassName); //$NON-NLS-1$
     }
 
-    // TODO Internationalize messages
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (!isPersistentAttribute() || isTransient()
@@ -253,24 +252,27 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         }
 
         if (StringUtils.isBlank(tableColumnName) && !getPolicyComponentTypeAttribute().isOverwrite()) {
-            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME, "Empty column name.", Message.ERROR, this,
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME,
+                    Messages.PersistentAttributeInfo_msgEmptyColumnName, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
         }
 
         if (tableColumnSize < MIN_TABLE_COLUMN_SIZE || tableColumnSize > MAX_TABLE_COLUMN_SIZE) {
-            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, "The column size exceeds the limit ["
-                    + MIN_TABLE_COLUMN_SIZE + ".." + MAX_TABLE_COLUMN_SIZE + "]", Message.ERROR, this,
+            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnSizeExceedsTheLimit, new Object[] {
+                    MIN_TABLE_COLUMN_SIZE, MAX_TABLE_COLUMN_SIZE });
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE));
         }
         if (tableColumnPrecision < MIN_TABLE_COLUMN_PRECISION || tableColumnPrecision > MAX_TABLE_COLUMN_PRECISION) {
-            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS,
-                    "The column precision exceeds the limit [" + MIN_TABLE_COLUMN_PRECISION + ".."
-                            + MAX_TABLE_COLUMN_PRECISION + "]", Message.ERROR, this,
+            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnPrecisionExceedsTheLimit, new Object[] {
+                    MIN_TABLE_COLUMN_PRECISION, MAX_TABLE_COLUMN_PRECISION });
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION));
         }
         if (tableColumnScale < MIN_TABLE_COLUMN_SCALE || tableColumnScale > MAX_TABLE_COLUMN_SCALE) {
-            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, "The column scale exceeds the limit ["
-                    + MIN_TABLE_COLUMN_SCALE + ".." + MAX_TABLE_COLUMN_SCALE + "]", Message.ERROR, this,
+            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnScaleExceedsTheLimit, new Object[] {
+                    MIN_TABLE_COLUMN_SCALE, MAX_TABLE_COLUMN_SCALE });
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE));
         }
 
@@ -281,14 +283,9 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
          */
         int maxColumnNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxColumnNameLenght();
         if (StringUtils.isNotBlank(tableColumnName) && tableColumnName.length() > maxColumnNameLenght) {
-            msgList
-                    .add(new Message(
-                            MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH,
-                            NLS
-                                    .bind(
-                                            "The column name length exceeds the maximum length defined in the persistence options. The column name length is {0} and the maximum defined length is {1}.",
-                                            tableColumnName.length(), maxColumnNameLenght), Message.ERROR, this,
-                            IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+            msgList.add(new Message(MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH, NLS.bind(
+                    Messages.PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength, tableColumnName.length(),
+                    maxColumnNameLenght), Message.ERROR, this, IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
         }
     }
 }

@@ -471,7 +471,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (relType == RelationshipType.MANY_TO_ONE) {
             return true;
         }
-        throw new RuntimeException("'Unsupported relationship type: " + relType.toString());
+        throw new RuntimeException("'Unsupported relationship type: " + relType.toString()); //$NON-NLS-1$
     }
 
     @Override
@@ -574,9 +574,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         }
 
         if (manuallyCodeFixNecessary) {
-            String textManualFixNecessary = "It is necessary to fix the annotation manually on the field '"
-                    + getPolicyComponentTypeAssociation().getName()
-                    + "' in the corresponding java class, because the merging of annotaion changes in java code doesn't work correctly yet.";
+            String textManualFixNecessary = NLS.bind(
+                    Messages.PersistentAssociationInfo_msgWarningManualyCodeMergeNecessary,
+                    getPolicyComponentTypeAssociation().getName());
             msgList
                     .add(new Message(MSGCODE_MANUALLY_CODE_FIX_NECESSARY, textManualFixNecessary, Message.WARNING, this));
         }
@@ -610,7 +610,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if ((relationshipType == RelationshipType.MANY_TO_ONE || relationshipType == RelationshipType.ONE_TO_ONE)
                 && FetchType.LAZY == getFetchType()) {
             msgList.add(new Message(MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED,
-                    "The lazy fetch type is not supported on single valued associations sides.", Message.ERROR, this, //$NON-NLS-1$
+                    Messages.PersistentAssociationInfo_msgLazyFetchNotSupported, Message.ERROR, this,
                     IPersistentAssociationInfo.PROPERTY_FETCH_TYPE));
         }
     }
@@ -651,7 +651,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             msgList
                     .add(new Message(
                             MSGCODE_TRANSIENT_MISMATCH,
-                            "If the association is marked as transient or if the persistent type is not entity, then target side must also be marked as transient and vise versa.", //$NON-NLS-1$
+                            Messages.PersistentAssociationInfo_msgTransientMismatch,
                             Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
             return;
         }
@@ -672,7 +672,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             msgList
                     .add(new Message(
                             MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN,
-                            "Must not be marked as owning side of many-to-many association because an join table is not required.", //$NON-NLS-1$
+                            Messages.PersistentAssociationInfo_msgOwningSideManyToManyNotAllowed,
                             Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
             return;
         }
@@ -691,12 +691,12 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (isJoinTableRequired(inverseAssociation) && !isOwnerOfManyToManyAssociation()
                 && !inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
             msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
-                    "At least one assocition must be marked as the owning side of the relationship.", Message.ERROR, //$NON-NLS-1$
+                    Messages.PersistentAssociationInfo_msgOwningSideMissing, Message.ERROR,
                     this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         } else if (isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()
                 && inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
             msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
-                    "The owning side of the relationship is marked on both sides.", Message.ERROR, this, //$NON-NLS-1$
+                    Messages.PersistentAssociationInfo_msgOwningSideManyToManyMarkedOnBothSides, Message.ERROR, this,
                     IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         }
     }
@@ -704,30 +704,30 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private void validateJoinColumn(MessageList msgList, boolean mustBeEmpty) {
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_COLUMN_NAME_EMPTY,
                 MSGCODE_JOIN_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME, joinColumnName,
-                "join column name");
+                Messages.PersistentAssociationInfo_joinColumnName);
         if (!mustBeEmpty) {
             // validate max join column name length
-            validateMaxColumnNameLength(msgList, joinColumnName, "join column name", MSGCODE_JOIN_COLUMN_NAME_INVALID,
-                    PROPERTY_JOIN_COLUMN_NAME);
+            validateMaxColumnNameLength(msgList, joinColumnName, Messages.PersistentAssociationInfo_joinColumnName,
+                    MSGCODE_JOIN_COLUMN_NAME_INVALID, PROPERTY_JOIN_COLUMN_NAME);
         }
     }
 
     private void validateJoinTableDetails(MessageList msgList, boolean mustBeEmpty) {
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_TABLE_NAME_EMPTY,
                 MSGCODE_JOIN_TABLE_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME, joinTableName,
-                "join table name");
+                Messages.PersistentAssociationInfo_joinTableName);
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_SOURCE_COLUMN_NAME_EMPTY,
                 MSGCODE_SOURCE_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
-                sourceColumnName, "source column name");
+                sourceColumnName, Messages.PersistentAssociationInfo_sourceColumnName);
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_TARGET_COLUMN_NAME_EMPTY,
                 MSGCODE_TARGET_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
-                targetColumnName, "target column name");
+                targetColumnName, Messages.PersistentAssociationInfo_tagetColumnName);
 
         // validate max join table columns name source and target length
         if (!mustBeEmpty) {
-            validateMaxColumnNameLength(msgList, sourceColumnName, "source column name",
+            validateMaxColumnNameLength(msgList, sourceColumnName, Messages.PersistentAssociationInfo_sourceColumnName,
                     MSGCODE_SOURCE_COLUMN_NAME_INVALID, PROPERTY_SOURCE_COLUMN_NAME);
-            validateMaxColumnNameLength(msgList, targetColumnName, "target column name",
+            validateMaxColumnNameLength(msgList, targetColumnName, Messages.PersistentAssociationInfo_tagetColumnName,
                     MSGCODE_TARGET_COLUMN_NAME_INVALID, PROPERTY_TARGET_COLUMN_NAME);
         }
 
@@ -735,14 +735,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (!mustBeEmpty) {
             int maxTableNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxTableNameLength();
             if (joinTableName.length() > maxTableNameLenght) {
-                msgList
-                        .add(new Message(
-                                MSGCODE_JOIN_TABLE_NAME_INVALID,
-                                NLS
-                                        .bind(
-                                                "The join table name length exceeds the maximum length defined in the persistence options. The join table name length is {0} and the maximum length is {1}.", //$NON-NLS-1$
-                                                joinTableName.length(), maxTableNameLenght), Message.ERROR, this,
-                                IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
+                msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_INVALID, NLS.bind(
+                        Messages.PersistentAssociationInfo_msgJoinTableNameExceedsMaximumLength,
+                        joinTableName.length(), maxTableNameLenght), Message.ERROR, this,
+                        IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
             }
         }
     }
@@ -760,7 +756,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
                             messageCode,
                             NLS
                                     .bind(
-                                            "The {0} length exceeds the maximum length defined in the persistence options. The length is {1} and the maximum column length is {2}.", //$NON-NLS-1$
+                                            Messages.PersistentAssociationInfo_msgMaxLengthExceeds,
                                             new Object[] { propertyName, columnName.length(), maxColumnNameLenght }),
                             Message.ERROR, this, property));
         }
@@ -774,8 +770,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String value,
             String propertyName) {
 
-        String emptyText = "The " + propertyName + " must" + (mustBeEmpty ? "" : " not") + " be empty"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-        String invalidText = propertyName + " is invalid."; //$NON-NLS-1$
+        String emptyText = NLS.bind(Messages.PersistentAssociationInfo_msgMustBeEmpty, new Object[] { propertyName,
+                (mustBeEmpty ? "" : Messages.PersistentAssociationInfo_msgNot) }); //$NON-NLS-1$
+        String invalidText = NLS.bind(Messages.PersistentAssociationInfo_msgIsInvalid, propertyName);
         if (mustBeEmpty && !StringUtils.isEmpty(value) || !mustBeEmpty && StringUtils.isEmpty(value)) {
             msgList.add(new Message(msgCodeEmpty, emptyText, Message.ERROR, this, property));
         } else if (!mustBeEmpty && !PersistenceUtil.isValidDatabaseIdentifier(value)) {
