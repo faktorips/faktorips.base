@@ -67,7 +67,6 @@ public class Messages extends NLS {
     public static String PersistentTypeInfo_msgTableNameMustBeEmptyNotRootEntityAndInhStrategyIs;
     public static String PersistentTypeInfo_msgTableNameOfRootEntityMustBeUsed;
     public static String PersistentTypeInfo_msgUseTableDefInSupertypIsNotAllowed;
-    public static String PersistentTypeInfo_textEnabled;
     public static String PolicyCmptType_msg_IfTheSupertypeIsNotConfigurableTheTypeCanBeConfigurable;
     public static String PolicyCmptType_msg_ProductCmptTypeNameMissing;
     public static String PolicyCmptType_msgSubtypeConfigurableWhenSupertypeConfigurable;

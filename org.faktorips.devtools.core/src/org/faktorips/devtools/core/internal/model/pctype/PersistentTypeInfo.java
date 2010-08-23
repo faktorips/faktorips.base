@@ -252,10 +252,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         if (!isRootEntity(rooEntity) && InheritanceStrategy.SINGLE_TABLE.equals(inheritanceStrategy)
                 && !useTableDefinedInSupertype) {
-            String text = NLS
-                    .bind(
-                            Messages.PersistentTypeInfo_msgTableNameOfRootEntityMustBeUsed,
-                            inheritanceStrategy.toString());
+            String text = NLS.bind(Messages.PersistentTypeInfo_msgTableNameOfRootEntityMustBeUsed, inheritanceStrategy
+                    .toString());
             msgList.add(new Message(MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
         }
@@ -268,8 +266,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             // in case of mapped superclass the table names must be empty
             if (!StringUtils.isEmpty(tableName)) {
                 msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID,
-                        Messages.PersistentTypeInfo_msgTableNameMustBeEmptyMappedSuperclass,
-                        Message.ERROR, this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
+                        Messages.PersistentTypeInfo_msgTableNameMustBeEmptyMappedSuperclass, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_TABLE_NAME));
             }
             return;
         }
@@ -278,16 +276,14 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (isUseTableDefinedInSupertype()) {
             if (StringUtils.isEmpty(getPolicyCmptType().getSupertype())) {
                 msgList.add(new Message(MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED,
-                        Messages.PersistentTypeInfo_msgUseTableDefInSupertypIsNotAllowed,
-                        Message.ERROR, this, IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
+                        Messages.PersistentTypeInfo_msgUseTableDefInSupertypIsNotAllowed, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
                 return;
             }
             if (!StringUtils.isEmpty(tableName)) {
-                msgList
-                        .add(new Message(
-                                MSGCODE_PERSISTENCE_TABLE_NAME_INVALID,
-                                Messages.PersistentTypeInfo_msgTableNameMustBeEmptyBecauseNameDefinedInSupertypeShouldBeUsed,
-                                Message.ERROR, this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
+                msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID,
+                        Messages.PersistentTypeInfo_msgTableNameMustBeEmptyBecauseNameDefinedInSupertypeShouldBeUsed,
+                        Message.ERROR, this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
                 return;
             }
         }
@@ -295,14 +291,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         // validate max table name length
         int maxTableNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxTableNameLength();
         if (StringUtils.isNotBlank(tableName) && tableName.length() > maxTableNameLenght) {
-            msgList
-                    .add(new Message(
-                            MSGCODE_PERSISTENCE_TABLE_NAME_INVALID,
-                            NLS
-                                    .bind(
-                                            Messages.PersistentTypeInfo_msgTableNameExceedsMaximumLength,
-                                            tableName.length(), maxTableNameLenght), Message.ERROR, this,
-                            IPersistentTypeInfo.PROPERTY_TABLE_NAME));
+            msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, NLS.bind(
+                    Messages.PersistentTypeInfo_msgTableNameExceedsMaximumLength, tableName.length(),
+                    maxTableNameLenght), Message.ERROR, this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
         }
 
         // validate none single table strategy
@@ -324,10 +315,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         // in single table inheritance all not root entity table names must be empty
         if (!StringUtils.isEmpty(tableName)) {
-            String text = NLS
-                    .bind(
-                            Messages.PersistentTypeInfo_msgTableNameMustBeEmptyNotRootEntityAndInhStrategyIs,
-                            inheritanceStrategy.toString());
+            String text = NLS.bind(Messages.PersistentTypeInfo_msgTableNameMustBeEmptyNotRootEntityAndInhStrategyIs,
+                    inheritanceStrategy.toString());
             msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_TABLE_NAME));
         }
@@ -339,8 +328,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         if (!PersistenceUtil.isValidDatabaseIdentifier(tableName)) {
-            msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID, Messages.PersistentTypeInfo_msgTableNameInvalid, Message.ERROR,
-                    this, IPersistentTypeInfo.PROPERTY_TABLE_NAME));
+            msgList.add(new Message(MSGCODE_PERSISTENCE_TABLE_NAME_INVALID,
+                    Messages.PersistentTypeInfo_msgTableNameInvalid, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_TABLE_NAME));
         }
     }
 
@@ -503,7 +493,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (StringUtils.isNotEmpty(attrPersistentType)) {
             persistentType = PersistentType.valueOf(attrPersistentType);
         } else {
-            if (Boolean.valueOf(element.getAttribute(Messages.PersistentTypeInfo_textEnabled))) {
+            if (Boolean.valueOf(element.getAttribute("enabled"))) {
                 persistentType = PersistentType.ENTITY;
             } else {
                 persistentType = PersistentType.NONE;
@@ -534,11 +524,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 return true;
             }
 
-            String text = NLS
-                    .bind(
-                            Messages.PersistentTypeInfo_msgInvalidInheritanceStratedyCombination,
-                            new Object[] { currentType.getUnqualifiedName(), supertypeStrategy,
-                                    persistentTypeInfo.getIpsObject().getUnqualifiedName(), inheritanceStrategy });
+            String text = NLS.bind(Messages.PersistentTypeInfo_msgInvalidInheritanceStratedyCombination, new Object[] {
+                    currentType.getUnqualifiedName(), supertypeStrategy,
+                    persistentTypeInfo.getIpsObject().getUnqualifiedName(), inheritanceStrategy });
             msgList.add(new Message(MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID, text, Message.ERROR,
                     persistentTypeInfo, IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY));
             return false;
@@ -579,8 +567,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             // - discriminator values must be unique
             if (discriminatorValues.contains(currentTypeInfo.getDiscriminatorValue())) {
                 conflictingTypeInfo = currentTypeInfo;
-                errorMessage = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorAlreadyDefined,
-                        currentTypeInfo.getDiscriminatorValue(), currentType.getUnqualifiedName());
+                errorMessage = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorAlreadyDefined, currentTypeInfo
+                        .getDiscriminatorValue(), currentType.getUnqualifiedName());
                 errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE;
                 return false;
             } else {
@@ -663,8 +651,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private void addMessageDuplicateColumnName(MessageList msgList, ObjectProperty objectProperty, String detailText) {
-        msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, NLS.bind(Messages.PersistentTypeInfo_msgDuplicateColumnName,
-                detailText), Message.ERROR, objectProperty));
+        msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, NLS.bind(
+                Messages.PersistentTypeInfo_msgDuplicateColumnName, detailText), Message.ERROR, objectProperty));
     }
 
     private static class ColumnNameCollector extends PolicyCmptTypeHierarchyVisitor {
