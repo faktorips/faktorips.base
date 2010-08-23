@@ -105,7 +105,8 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
     @SuppressWarnings("unchecked")
     // IWorkbenchAdapter is not generic
     public Class[] getAdapterList() {
-        return new Class[] { IWorkbenchAdapter.class, IWorkbenchAdapter2.class, IPluralLabelWorkbenchAdapter.class };
+        return new Class[] { IWorkbenchAdapter.class, IWorkbenchAdapter2.class, IPluralLabelWorkbenchAdapter.class,
+                IDescriptionWorkbenchAdapter.class };
     }
 
 }

@@ -21,6 +21,8 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 
@@ -88,6 +90,18 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
             labelValue = pluralValue ? label.getPluralValue() : label.getValue();
         }
         return labelValue;
+    }
+
+    protected String getMostSuitableDescriptionText(IDescribedElement describedElement) {
+        IDescription description = describedElement.getDescriptionForIpsModelLocale();
+        if (description == null) {
+            description = describedElement.getDescriptionForDefaultLocale();
+        }
+        String descriptionText = ""; //$NON-NLS-1$
+        if (description != null) {
+            descriptionText = description.getText();
+        }
+        return descriptionText;
     }
 
     @Override

@@ -101,6 +101,7 @@ import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsOb
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
+import org.faktorips.devtools.core.ui.workbenchadapters.IDescriptionWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IPluralLabelWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
@@ -657,6 +658,15 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     + ipsElement.getClass()));
             return getLabel(ipsElement);
         }
+    }
+
+    public final static String getDescription(IIpsElement ipsElement) {
+        IDescriptionWorkbenchAdapter adapter = (IDescriptionWorkbenchAdapter)ipsElement
+                .getAdapter(IDescriptionWorkbenchAdapter.class);
+        if (adapter == null) {
+            return ""; //$NON-NLS-1$
+        }
+        return adapter.getDescription(ipsElement);
     }
 
     /**
