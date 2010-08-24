@@ -127,8 +127,20 @@ public class MessageList implements Serializable, Iterable<Message> {
 
     /**
      * Returns the number of messages in the list.
+     * 
+     * @deprecated use #size() instead
      */
+    @Deprecated
     public int getNoOfMessages() {
+        return size();
+    }
+
+    /**
+     * Returns the number of messages in the list.
+     * 
+     * @return The size of the message list
+     */
+    public int size() {
         return messages.size();
     }
 
@@ -299,19 +311,31 @@ public class MessageList implements Serializable, Iterable<Message> {
         return s.toString();
     }
 
-    /**
-     * Returns true if o is a MessageList that contains the same messages in the same order.
-     */
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof MessageList)) {
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((messages == null) ? 0 : messages.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        MessageList other = (MessageList)o;
-        if (this.getNoOfMessages() != other.getNoOfMessages()) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        if (!this.messages.equals(other.messages)) {
+        MessageList other = (MessageList)obj;
+        if (messages == null) {
+            if (other.messages != null) {
+                return false;
+            }
+        } else if (!messages.equals(other.messages)) {
             return false;
         }
         return true;
