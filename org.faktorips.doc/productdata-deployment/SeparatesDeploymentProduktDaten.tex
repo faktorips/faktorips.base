@@ -119,7 +119,12 @@ befindet, immernoch eine Exception auslösen muss.
 
 \subsection{Überblick der Architektur}
 
-Wie bereits in der Anleitung erwähnt, betrachten wir die Auslieferung in einem
+Um die im folgenden vorgestellte Lösung zu verwenden, werden
+die Runtime Addons\footnote{Dateiname des Archivs:
+faktorips-runtime-addons-[version].zip} von Faktor-IPS beötigt. Das Archiv kann
+über die Download-Site\footnote{http://update.faktorzehn.org/faktorips/cgi/download.pl?subfolder=v3} heruntergeladen werden.
+
+Wie bereits in der Einleitung erwähnt, betrachten wir die Auslieferung in einem
 Java EE Umfeld. Die verschiedenen Programmteile werden als Services implementiert
 und in einem EAR ausgeliefert.
 
@@ -219,7 +224,17 @@ Optional kann man im Builder weitere Voreinstellungen treffen.
 Insbesondere eine Implementierung von $IFormulaEvaluatorFactory$\footnote{z.B.
 GroovyFormulaEvaluatorFactory} zum ausführen der Formeln sollte gesetzt werden.
 Ist der Builder fertig konfiguriert, wird die Methode $build()$ aufgerufen - als
-Ergebnis erhält man einen $DetachedContentRuntimeRepositoryManager$.
+Ergebnis erhält man einen $DetachedContentRuntimeRepositoryManager$. Ein
+Beispiel zur Instantiierung des Managers ist in Listing \ref{initManager}
+gegeben.
+
+\begin{lstlisting}[caption=Initialize DetachedContentRuntimeRepositoryManager,
+label=initManager]
+repositoryManager = new DetachedContentRuntimeRepositoryManager
+	.Builder(pdpFactory)
+	.setFormulaEvaluatorFactory(new GroovyFormulaEvaluatorFactory())
+	.build();
+\end{lstlisting}
 
 \subsubsection{Verknüpfen mehrerer Repositories}
 
@@ -278,7 +293,6 @@ folgende Implementierungen erstellt werden:
 	\item Optional eine eigene Implementierung von $IVersionChecker$
 \end{itemize}
 
-\section{Literatur}
 
 \bibliography{literatur}
 
