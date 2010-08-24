@@ -185,14 +185,15 @@ keine Daten ändern arbeitet er auf dem gleichen Repository weiter.}
 \label{clientSequenceEasy}
 \end{figure}
 
-Werden während der Anfrage die Produktdaten ausgetauscht, liefert das Runtime
-Repository beim nächsten Abruf von Produktdaten einen Fehler. Der Client muss
-dadurch seine Anfrage abbrechen.
+Werden während der Anfrage die Produktdaten ausgetauscht wirft das Runtime
+Repository beim nächsten Abruf von
+Produktdaten eine $DataModifiedRuntimeException$. Der Client muss
+daraufhin seine Anfrage abbrechen.
 
-Wiederholt der Client die Anfrage oder startet eine neue Anfrage, nachdem sich
-die Produktdaten geändert haben, stellt der Manager die geänderten Produktdaten
-fest. Es wird ein neues Runtime Repository erzeugt und an den Client zurück
-gegeben. Der Client arbeitet nun auf den neuen Produktdaten. Dieses Verhalten ist
+Um eine neue Anfrage mit geänderten Produktdaten zu starten wird vom Manager ein
+neues Repository geholt. Der Manager stellt die geänderten Produktdaten
+fest und erzezgt ein neues Runtime Repository. Der Client arbeitet nun auf
+den neuen Produktdaten. Dieses Verhalten ist
 im Sequenzdiagramm in Abbildung \ref{clientSequenceChange} dargestellt.
 
 \begin{figure}[htb] \centering
