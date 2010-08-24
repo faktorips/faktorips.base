@@ -129,9 +129,9 @@ Java EE Umfeld. Die verschiedenen Programmteile werden als Services implementier
 und in einem EAR ausgeliefert.
 
 Wie bisher wird der Programmcode mit den Modellklassen in einem Archiv gekapselt.
-Anstatt des $ClassloaderRuntimeRepositorie$s wird eine neue Implementierung von
-$IRuntimeRepository$ verwendet: das $DerivedContentRuntimeRepository$. Dieses
-ruft zum Laden der Produktdaten einen separaten Service auf, den
+Anstatt des $ClassloaderRuntimeRepositorie$s wird eine neue Implementierung des
+Interfaces $IRuntimeRepository$ verwendet: das
+$DerivedContentRuntimeRepository$. Dieses ruft zum Laden der Produktdaten einen separaten Service auf, den
 Product-Data-Service. Im Klassenpfad des Product-Data-Service sind die
 Produktdaten weiterhin als XML-Ressourcen enthalten und können vom Service als
 Ressourcen geladen werden.
@@ -216,15 +216,14 @@ genutzte Cache müssen Threadsicher implementiert werden.
 In der Client-Implementierung ist es sinnvoll, einen Manager an zentraler Stelle
 zu konfigurieren, damit alle Clients auf den gleichen Manager zugreifen. Zur
 Instantiierung des $DetachedContentRuntimeRepositoryManager$ wird ein
-Builder\footnote{siehe Item 2 im Buch "`Effective Java"' von Joshua Bloch 
-\cite{effectiveJava}} verwendet. Der Builder ist als innere Klasse des
-Repositories realisiert und erwartet eine Implementierung von
-$IProductDataProviderFactory$ zum instantiieren des Product-Data-Providers.
-Optional kann man im Builder weitere Voreinstellungen treffen.
+Builder\footnote{Dieser Builder ist nach Item 2 im Buch "`Effective Java"' von
+Joshua Bloch \cite{effectiveJava} erstellt und weicht vom bekannten Builder
+Design Pattern ab.} verwendet. Der Builder ist als innere Klasse des
+Repositories realisiert und erwartet eine Implementierung von $IProductDataProviderFactory$ zum instantiieren des Product-Data-Providers. Optional kann man im Builder weitere Voreinstellungen treffen.
 Insbesondere eine Implementierung von $IFormulaEvaluatorFactory$\footnote{z.B.
-GroovyFormulaEvaluatorFactory} zum ausführen der Formeln sollte gesetzt werden.
-Ist der Builder fertig konfiguriert, wird die Methode $build()$ aufgerufen - als
-Ergebnis erhält man einen $DetachedContentRuntimeRepositoryManager$. Ein
+GroovyFormulaEvaluatorFactory zur Ausführen der Formeln mit Groovy (in den
+Addons enthalten)} zum ausführen der Formeln sollte gesetzt werden. Ist der
+Builder fertig konfiguriert, wird die Methode $build()$ aufgerufen - als Ergebnis erhält man einen $DetachedContentRuntimeRepositoryManager$. Ein
 Beispiel zur Instantiierung des Managers ist in Listing \ref{initManager}
 gegeben.
 
