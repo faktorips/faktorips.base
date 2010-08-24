@@ -31,31 +31,16 @@ public class ListPageElement extends AbstractCompositePageElement {
         super();
     }
 
-    /**
-     * @param listElements
-     */
     public ListPageElement(List<? extends PageElement> listElements) {
         super();
         getSubElements().addAll(listElements);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#build()
-     */
     @Override
     public void build() {
+        // could be overridden
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#acceptLayouter
-     * (org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutListPageElement(this);
@@ -71,18 +56,11 @@ public class ListPageElement extends AbstractCompositePageElement {
     /**
      * sets list ordered if ordered is true
      * 
-     * @param ordered
      */
     public void setOrdered(boolean ordered) {
         this.ordered = ordered;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#
-     * visitSubElements(org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void visitSubElements(ILayouter layouter) {
         for (PageElement subElement : getSubElements()) {

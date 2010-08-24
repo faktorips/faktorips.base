@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -38,8 +39,6 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
      * 
      * creates a page, which represents the given enumContent according to the given config
      * 
-     * @param object
-     * @param config
      */
     protected EnumContentContentPageElement(IEnumContent object, DocumentorConfiguration config) {
         super(object, config);
@@ -50,12 +49,6 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -72,7 +65,7 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
      * adds a table with the values of the enumContent
      */
     protected void addValuesTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.EnumContentContentPageElement_values, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getDocumentedIpsObject()),
@@ -84,7 +77,6 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
     /**
      * returns the enumType
      * 
-     * @return
      */
     protected IEnumType getEnumType() {
         return enumType;

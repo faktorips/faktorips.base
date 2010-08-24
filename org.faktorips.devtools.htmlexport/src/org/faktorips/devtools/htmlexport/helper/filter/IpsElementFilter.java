@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
  */
 public interface IpsElementFilter {
     /**
-     * @param element
+     * @param element filtered {@link IIpsElement}
      * @return true, if the given IIpsElement fullfills the conditions of the filter
      */
     public boolean accept(IIpsElement element);

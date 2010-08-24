@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -44,19 +45,11 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
     /**
      * creates a page for the given {@link IProductCmpt} with the given config
      * 
-     * @param object
-     * @param config
      */
     protected ProductCmptContentPageElement(IProductCmpt object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.AbstractObjectContentPageElement#
-     * addStructureData()
-     */
     @Override
     protected void addStructureData() {
         IProductCmptType productCmptType = getProductCmptType();
@@ -70,7 +63,6 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
     /**
      * returns the {@link IProductCmptType} for the productCmpt
      * 
-     * @return
      */
     protected IProductCmptType getProductCmptType() {
         try {
@@ -80,12 +72,6 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -99,7 +85,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
      *adds a table with the attributes of the generations
      */
     private void addGenerationAttributeTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_attributes,
                 TextType.HEADING_2));
 
@@ -114,7 +100,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
     private void addGenerationsList() {
         IIpsObjectGeneration[] generations = getDocumentedIpsObject().getGenerationsOrderedByValidDate();
 
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_generations,
                 TextType.HEADING_2));
 

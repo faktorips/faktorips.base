@@ -17,6 +17,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.htmlexport.pages.standard.messages"; //$NON-NLS-1$
+    public static String AbstractIpsObjectContentPageElement_extensionProperties;
     public static String AbstractObjectContentPageElement_description;
     public static String AbstractObjectContentPageElement_noDescription;
     public static String AbstractObjectContentPageElement_overviewProject;
@@ -111,5 +112,6 @@ public class Messages extends NLS {
     }
 
     private Messages() {
+        //
     }
 }

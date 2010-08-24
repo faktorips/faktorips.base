@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -47,18 +48,12 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     /**
      * a page for the overview of an IpsProject, which is defined in the config
      * 
-     * @param config
      */
     public ProjectOverviewPageElement(DocumentorConfiguration config) {
         this.config = config;
         setTitle(Messages.ProjectOverviewPageElement_project + " " + getProject().getName()); //$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement #build()
-     */
     @Override
     public void build() {
         super.build();
@@ -86,7 +81,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
      * adds the paths of the IpsObjects
      */
     private void addIpsObjectPaths() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_paths, TextType.HEADING_2));
         IIpsObjectPath objectPath;
         try {
@@ -104,7 +99,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private PageElement createArchiveEntriesList(IIpsObjectPath objectPath) {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_archiveEntries,
                 TextType.HEADING_3));
 
@@ -119,7 +114,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private PageElement createReferencedIpsProjectList(IIpsObjectPath objectPath) {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_referencedProjects,
                 TextType.HEADING_3));
         if (objectPath.getReferencedIpsProjects().length == 0) {
@@ -137,7 +132,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private PageElement createReferencingIpsProjectList(IIpsObjectPath objectPath) {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_referencingProjects,
                 TextType.HEADING_3));
         IIpsProject[] referencingProjectLeavesOrSelf;
@@ -166,7 +161,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private PageElement createSourceFolders(IIpsObjectPath objectPath) {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProjectOverviewPageElement_sourceFolder,
                 TextType.HEADING_3));
         if (objectPath.getReferencedIpsProjects().length == 0) {
@@ -207,12 +202,6 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         return ml;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement
-     * #getPathToRoot()
-     */
     @Override
     public String getPathToRoot() {
         return PathUtilFactory.createPathUtil(getProject()).getPathToRoot();
@@ -221,7 +210,6 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     /**
      * returns the configurated IpsProject
      * 
-     * @return
      */
     protected IIpsProject getProject() {
         return getConfig().getIpsProject();
@@ -230,7 +218,6 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     /**
      * returns the config
      * 
-     * @return
      */
     protected DocumentorConfiguration getConfig() {
         return config;

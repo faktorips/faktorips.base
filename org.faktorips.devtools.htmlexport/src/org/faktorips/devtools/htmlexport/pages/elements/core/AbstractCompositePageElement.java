@@ -33,7 +33,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     protected List<PageElement> subElements = new ArrayList<PageElement>();
 
     protected String title;
-    protected final WrapperType wrapperType = WrapperType.NONE;
+    private WrapperType wrapperType = WrapperType.NONE;
 
     @Override
     public abstract void acceptLayouter(ILayouter layouter);
@@ -48,7 +48,6 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     /**
      * sets title of the CompositePageElement
      * 
-     * @param title
      */
     public void setTitle(String title) {
         this.title = title;
@@ -58,9 +57,8 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     public abstract void build();
 
     /**
-     * adds new {@link PageElement}s
+     * adds the given {@link PageElement}s
      * 
-     * @param pageElements
      * @return a reference to this ipsObject.
      * @throws ClassCastException if the given pageElements don't match restrictions for the
      *             CompositePageElement
@@ -74,9 +72,9 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     }
 
     /**
-     * adds a {@link PageElement}. Overwrite to check restrictions for subelements
+     * adds a {@link PageElement}. Overwrite to check restrictions for subelements (e.g. a table
+     * just should take tableRows)
      * 
-     * @param pageElement
      */
     protected void addSubElement(PageElement pageElement) {
         subElements.add(pageElement);
@@ -93,9 +91,16 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     /**
      * returns a list of the subelements
      * 
-     * @return
      */
     public List<PageElement> getSubElements() {
         return subElements;
+    }
+
+    public WrapperType getWrapperType() {
+        return wrapperType;
+    }
+
+    protected void setWrapperType(WrapperType wrapperType) {
+        this.wrapperType = wrapperType;
     }
 }

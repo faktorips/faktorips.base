@@ -18,6 +18,14 @@ import java.io.File;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 
+/**
+ * Layouter to put the whole documentation in one page
+ * 
+ * TODO still in developement
+ * 
+ * 
+ * @author dicker
+ */
 public class HtmlOnePageLayouter extends HtmlLayouter {
 
     public HtmlOnePageLayouter(String resourcePath) {
@@ -26,7 +34,7 @@ public class HtmlOnePageLayouter extends HtmlLayouter {
 
     @Override
     protected void initRootPage(AbstractRootPageElement pageElement) {
-        setPathToRoot("");
+        setPathToRoot(""); //$NON-NLS-1$
     }
 
     @Override
@@ -34,10 +42,6 @@ public class HtmlOnePageLayouter extends HtmlLayouter {
         return '.' + createInternalPath(pageElement.getPathFromRoot());
     }
 
-    /**
-     * @param pageElement
-     * @return
-     */
     private String createInternalPath(String pathFromRoot) {
         return pathFromRoot.replace(File.separatorChar, '.');
     }
@@ -46,10 +50,10 @@ public class HtmlOnePageLayouter extends HtmlLayouter {
     public void layoutRootPageElement(AbstractRootPageElement pageElement) {
         initRootPage(pageElement);
 
-        append("<hr />");
+        append("<hr />"); //$NON-NLS-1$
 
         if (pageElement.hasId()) {
-            append("<a name=\"" + createInternalPath(pageElement.getId()) + "\">");
+            append("<a name=\"" + createInternalPath(pageElement.getId()) + "\">"); //$NON-NLS-1$//$NON-NLS-2$
         }
 
         visitSubElements(pageElement);

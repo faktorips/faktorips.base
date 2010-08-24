@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -43,28 +44,20 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
     /**
      * creates a page for the given object according to the given config
      * 
-     * @param object
-     * @param config
      */
     PolicyCmptTypeContentPageElement(IPolicyCmptType object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard. AbstractTypeContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
 
-        // Regeln hinzufügen
         addValidationRuleTable();
     }
 
     private void addValidationRuleTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper
                 .addPageElements(new TextPageElement(Messages.PolicyCmptTypeContentPageElement_rules,
                         TextType.HEADING_2));
@@ -75,12 +68,6 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         addPageElements(wrapper);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractTypeContentPageElement#getAttributesTablePageElement()
-     */
     @Override
     AttributesTablePageElement getAttributesTablePageElement() {
         return new AttributesTablePageElement(getDocumentedIpsObject()) {
@@ -99,8 +86,8 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
             }
 
             @Override
-            protected List<String> getHeadline() {
-                List<String> headline = super.getHeadline();
+            protected List<String> getHeadlineWithIpsObjectPart() {
+                List<String> headline = super.getHeadlineWithIpsObjectPart();
 
                 addHeadlineAndColumnLayout(headline, Messages.PolicyCmptTypeContentPageElement_productRelevant,
                         Style.CENTER);
@@ -115,13 +102,6 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         };
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.standard.AbstractTypeContentPageElement#addStructureData
-     * ()
-     */
     @Override
     protected void addStructureData() {
         super.addStructureData();

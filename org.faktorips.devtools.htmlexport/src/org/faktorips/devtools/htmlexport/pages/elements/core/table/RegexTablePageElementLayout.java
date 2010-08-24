@@ -43,8 +43,6 @@ public class RegexTablePageElementLayout extends DefaultTablePageElementLayout {
      * creates a {@link RegexTablePageElementLayout} with the pattern regex and adds the given
      * {@link Style}s to the matching cells
      * 
-     * @param regex
-     * @param styles
      */
     public RegexTablePageElementLayout(String regex, Style... styles) {
         super();
@@ -52,14 +50,6 @@ public class RegexTablePageElementLayout extends DefaultTablePageElementLayout {
         this.styles = styles;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.table.DefaultTablePageElementLayout
-     * #layoutCell(int, int,
-     * org.faktorips.devtools.htmlexport.pages.elements.core.table.TableCellPageElement)
-     */
     @Override
     public void layoutCell(int row, int column, TableCellPageElement cellPageElement) {
         if (cellMatches(cellPageElement)) {

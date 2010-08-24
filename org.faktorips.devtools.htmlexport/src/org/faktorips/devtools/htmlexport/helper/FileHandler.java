@@ -37,9 +37,6 @@ public class FileHandler {
      * writes the content into a file. The filename is the path of the given
      * {@link DocumentorConfiguration} and relativPath.
      * 
-     * @param config
-     * @param relativPath
-     * @param content
      */
     public static void writeFile(DocumentorConfiguration config, String relativPath, byte[] content) {
         writeFile(config.getPath() + File.separator + relativPath, content);
@@ -48,8 +45,6 @@ public class FileHandler {
     /**
      * writes the content into a file with the given filename.
      * 
-     * @param filename
-     * @param content
      */
     public static void writeFile(String filename, byte[] content) {
         try {
@@ -71,7 +66,7 @@ public class FileHandler {
      * @param bundleName name of the bundle
      * @param fileName name of the file
      * @return content of the file
-     * @throws IOException
+     * @throws IOException if an IOException occurs
      */
     public static byte[] readFile(String bundleName, String fileName) throws IOException {
         if (Platform.getBundle(bundleName) == null) {

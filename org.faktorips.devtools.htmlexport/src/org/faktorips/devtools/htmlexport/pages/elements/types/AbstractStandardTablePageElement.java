@@ -41,11 +41,12 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
  * @author dicker
  * 
  */
-public abstract class AbstractSpecificTablePageElement extends TablePageElement implements DataPageElement {
+public abstract class AbstractStandardTablePageElement extends TablePageElement implements DataPageElement {
+
     /**
      * Creates an AbstractSpecificTablePageElement
      */
-    public AbstractSpecificTablePageElement() {
+    public AbstractStandardTablePageElement() {
         super();
         addLayouts(new RowTablePageElementLayout(0, Style.TABLE_HEADLINE));
         addLayouts(new AlternateRowTablePageElementLayout(true));
@@ -54,7 +55,6 @@ public abstract class AbstractSpecificTablePageElement extends TablePageElement 
     /**
      * returns the headlines as List of Strings
      * 
-     * @return
      */
     protected abstract List<String> getHeadline();
 
@@ -66,7 +66,12 @@ public abstract class AbstractSpecificTablePageElement extends TablePageElement 
     @Override
     public void build() {
         addHeadline();
+        addDataRowsWithExtensionPoints();
+    }
+
+    private void addDataRowsWithExtensionPoints() {
         addDataRows();
+
     }
 
     /**
@@ -93,12 +98,9 @@ public abstract class AbstractSpecificTablePageElement extends TablePageElement 
      * Useful e.g. for center the tablecell for boolean values
      * </p>
      * 
-     * @param headline
-     * @param item
-     * @param styles
      */
     protected void addHeadlineAndColumnLayout(List<String> headline, String item, Style... styles) {
-        addLayouts(new ColumnTablePageElementLayout(new int[] { headline.size() }, Style.CENTER));
+        addLayouts(new ColumnTablePageElementLayout(new int[] { headline.size() }, styles));
         headline.add(item);
     }
 }

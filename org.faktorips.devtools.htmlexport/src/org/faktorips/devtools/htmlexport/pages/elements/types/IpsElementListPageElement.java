@@ -41,23 +41,11 @@ public class IpsElementListPageElement extends AbstractListPageElement {
 
     private final boolean shownTypeChooser;
 
-    /**
-     * @param baseIpsElement
-     * @param srcFiles
-     * @param config
-     */
     public IpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
             DocumentorConfiguration config) {
         this(baseIpsElement, srcFiles, ALL_FILTER, config, false);
     }
 
-    /**
-     * @param baseIpsElement
-     * @param srcFiles
-     * @param filter
-     * @param config
-     * @param shownTypeChooser
-     */
     public IpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
             DocumentorConfiguration config, boolean shownTypeChooser) {
         super(baseIpsElement, srcFiles, filter, config);
@@ -65,11 +53,6 @@ public class IpsElementListPageElement extends AbstractListPageElement {
         setTitle(Messages.IpsObjectListPageElement_objects);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -114,5 +97,6 @@ public class IpsElementListPageElement extends AbstractListPageElement {
 
     @Override
     protected void createId() {
+        // could be overridden
     }
 }

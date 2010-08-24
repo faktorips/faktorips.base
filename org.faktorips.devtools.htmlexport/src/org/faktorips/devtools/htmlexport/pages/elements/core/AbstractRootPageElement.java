@@ -28,24 +28,12 @@ public abstract class AbstractRootPageElement extends AbstractCompositePageEleme
 
     private String id;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.core.
-     * AbstractCompositePageElement#build()
-     */
     @Override
     public void build() {
         createId();
         subElements = new ArrayList<PageElement>();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.core. AbstractCompositePageElement
-     * #acceptLayouter(org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutRootPageElement(this);
@@ -61,7 +49,8 @@ public abstract class AbstractRootPageElement extends AbstractCompositePageEleme
      * 
      */
     protected void createId() {
-    };
+        // could be overridden
+    }
 
     public boolean hasId() {
         return StringUtils.isNotBlank(getId());

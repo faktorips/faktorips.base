@@ -14,6 +14,7 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -36,8 +38,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 
 /**
  * A complete page representing an {@link IEnumType}
@@ -47,59 +48,45 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTa
  */
 public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElement<IEnumType> {
 
+    private static List<IEnumAttribute> findAllEnumAttributes(IEnumType type) {
+        try {
+            return type.findAllEnumAttributesIncludeSupertypeOriginals(true, type.getIpsProject());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * a table representing {@link IEnumAttribute}s of a given {@link IEnumType}
      * 
      * @author dicker
      * 
      */
-    private class EnumAttributesTablePageElement extends AbstractSpecificTablePageElement {
-
-        protected IEnumType type;
-        private List<IEnumAttribute> attributes;
+    private class EnumAttributesTablePageElement extends
+            AbstractIpsObjectPartsContainerTablePageElement<IEnumAttribute> {
 
         public EnumAttributesTablePageElement(IEnumType type) {
-            super();
-            this.type = type;
-            this.attributes = findAllEnumAttributes();
+            super(findAllEnumAttributes(type));
         }
 
         @Override
-        protected void addDataRows() {
-            for (IEnumAttribute attribute : attributes) {
-                addAttributeRow(attribute);
-            }
-        }
+        protected List<? extends PageElement> createRowWithIpsObjectPart(IEnumAttribute rowData) {
+            List<String> attributeData1 = new ArrayList<String>();
 
-        private List<IEnumAttribute> findAllEnumAttributes() {
-            try {
-                return type.findAllEnumAttributesIncludeSupertypeOriginals(true, type.getIpsProject());
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
+            attributeData1.add(rowData.getName());
+            attributeData1.add(rowData.getDatatype());
+            attributeData1.add(rowData.isIdentifier() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+            attributeData1.add(rowData.isUsedAsNameInFaktorIpsUi() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+            attributeData1.add(rowData.isUnique() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+            attributeData1.add(rowData.isInherited() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        protected void addAttributeRow(IEnumAttribute attribute) {
-            addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getAttributeData(attribute))));
-        }
-
-        protected List<String> getAttributeData(IEnumAttribute attribute) {
-            List<String> attributeData = new ArrayList<String>();
-
-            attributeData.add(attribute.getName());
-            attributeData.add(attribute.getDatatype());
-            attributeData.add(attribute.isIdentifier() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-            attributeData.add(attribute.isUsedAsNameInFaktorIpsUi() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-            attributeData.add(attribute.isUnique() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-            attributeData.add(attribute.isInherited() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-
-            attributeData.add(attribute.getDescription());
-
-            return attributeData;
+            attributeData1.add(rowData.getDescription());
+            List<String> attributeData = attributeData1;
+            return Arrays.asList(PageElementUtils.createTextPageElements(attributeData));
         }
 
         @Override
-        protected List<String> getHeadline() {
+        protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
             headline.add(Messages.EnumTypeContentPageElement_headlineName);
@@ -112,11 +99,6 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             headline.add(Messages.EnumTypeContentPageElement_headlineDescription);
 
             return headline;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return attributes.isEmpty();
         }
     }
 
@@ -150,19 +132,11 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * 
      * creates a page, which represents the given enumType according to the given config
      * 
-     * @param object
-     * @param config
      */
     protected EnumTypeContentPageElement(IEnumType object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#addTypeHierarchy()
-     */
     @Override
     protected void addTypeHierarchy() {
         addSuperTypeHierarchy();
@@ -225,19 +199,13 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                 break;
             }
             TreeNodePageElement subElement = new TreeNodePageElement(PageElementUtils.createLinkPageElement(
-                    getConfig(), superTypes.get(i), "content", superTypes.get(i).getName(), true));
+                    getConfig(), superTypes.get(i), "content", superTypes.get(i).getName(), true)); //$NON-NLS-1$
             element.addPageElements(subElement);
             element = subElement;
         }
         addPageElements(baseElement);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -256,7 +224,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * adds table representing the attributes of the enumType
      */
     protected void addAttributesTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper
                 .addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_attributes, TextType.HEADING_2));
 
@@ -296,7 +264,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * adds table representing the values of the enumType
      */
     protected void addValuesTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_values, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getDocumentedIpsObject()),

@@ -26,6 +26,7 @@ import javax.swing.text.html.HTMLEditorKit;
  */
 @SuppressWarnings("unchecked")
 // ugly designed
+// fliegt demnaechst raus
 public class Spider {
 
     /**
@@ -160,12 +161,6 @@ public class Spider {
         getWorkloadWaiting().remove(url);
         getWorkloadProcessed().add(url);
         log("Complete: " + url);
-
-    }
-
-    private void stopProcessing(URL url, String contentType) {
-        getWorkloadWaiting().remove(url);
-        getWorkloadProcessed().add(url);
 
     }
 

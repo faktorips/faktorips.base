@@ -26,11 +26,6 @@ import java.io.UnsupportedEncodingException;
  */
 public abstract class AbstractTextGenerator implements IGenerator {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.generators.IGenerator#generate()
-     */
     @Override
     public final byte[] generate() {
         try {
@@ -42,8 +37,6 @@ public abstract class AbstractTextGenerator implements IGenerator {
 
     /**
      * returns the generated String
-     * 
-     * @return
      */
     public abstract String generateText();
 

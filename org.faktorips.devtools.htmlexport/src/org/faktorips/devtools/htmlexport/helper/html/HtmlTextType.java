@@ -32,10 +32,8 @@ public enum HtmlTextType {
     SPAN;
 
     /**
-     * returns the HtmlTextType, which represents the {@link TextType}
+     * returns the HtmlTextType, which represents the given {@link TextType}
      * 
-     * @param textType
-     * @return
      */
     public static HtmlTextType getHtmlTextTypeByTextType(TextType textType) {
         if (textType == TextType.HEADING_1) {
@@ -68,7 +66,6 @@ public enum HtmlTextType {
     /**
      * returns tagName of the HtmlTextType
      * 
-     * @return
      */
     public String getTagName() {
         return name().toLowerCase();

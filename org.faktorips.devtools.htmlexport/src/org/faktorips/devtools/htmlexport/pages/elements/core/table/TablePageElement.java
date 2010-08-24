@@ -36,13 +36,6 @@ public class TablePageElement extends AbstractCompositePageElement {
      */
     private Set<TablePageElementLayout> tableLayouts = new HashSet<TablePageElementLayout>();
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#acceptLayouter
-     * (org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layoutVisitor) {
         layoutVisitor.layoutTablePageElement(this);
@@ -80,14 +73,9 @@ public class TablePageElement extends AbstractCompositePageElement {
         setBorder(border);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#build()
-     */
     @Override
     public void build() {
+        // could be overridden
     }
 
     /**
@@ -100,7 +88,6 @@ public class TablePageElement extends AbstractCompositePageElement {
     /**
      * sets, whether the table has a border or not
      * 
-     * @param border
      */
     public void setBorder(boolean border) {
         if (border) {
@@ -110,12 +97,6 @@ public class TablePageElement extends AbstractCompositePageElement {
         styles.remove(Style.BORDER);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#
-     * visitSubElements(org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void visitSubElements(ILayouter layouter) {
         List<PageElement> subElements = getSubElements();
@@ -130,8 +111,6 @@ public class TablePageElement extends AbstractCompositePageElement {
     /**
      * layouts the given {@link TableRowPageElement} using all added {@link TablePageElementLayout}s
      * 
-     * @param i
-     * @param rowPageElement
      */
     protected void layoutTableRow(int i, TableRowPageElement rowPageElement) {
         for (TablePageElementLayout tableLayout : tableLayouts) {
@@ -147,9 +126,8 @@ public class TablePageElement extends AbstractCompositePageElement {
     }
 
     /**
-     * adds {@link TablePageElementLayout}
+     * adds {@link TablePageElementLayout}s
      * 
-     * @param layouts
      */
     public void addLayouts(TablePageElementLayout... layouts) {
         tableLayouts.addAll(Arrays.asList(layouts));
@@ -158,7 +136,6 @@ public class TablePageElement extends AbstractCompositePageElement {
     /**
      * remove {@link TablePageElementLayout}s
      * 
-     * @param layouts
      */
     public void removeLayouts(TablePageElementLayout... layouts) {
         tableLayouts.removeAll(Arrays.asList(layouts));

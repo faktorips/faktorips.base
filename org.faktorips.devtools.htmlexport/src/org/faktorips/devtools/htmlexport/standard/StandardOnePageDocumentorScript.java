@@ -30,7 +30,7 @@ public class StandardOnePageDocumentorScript implements IDocumentorScript {
 
         // TODO HIER WEITERMACHEN!!!;
 
-        FileHandler.writeFile("complete.html", config.getLayouter().generate());
+        FileHandler.writeFile("complete.html", config.getLayouter().generate()); //$NON-NLS-1$
     }
 
     private void writeProjectOverviewPage(DocumentorConfiguration config) {

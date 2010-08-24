@@ -17,7 +17,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 
 /**
  * The {@link AlternateRowTablePageElementLayout} layouts the even and uneven rows of a table with
- * different {@link Style}s
+ * different {@link Style}s The first row can be ignored.
  * 
  * @author dicker
  * 
@@ -25,28 +25,19 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 public class AlternateRowTablePageElementLayout extends DefaultTablePageElementLayout {
 
     /**
-     * true if first row should be ignored
+     * true if first row should be ignored (e.g. when first line is a headline!)
      */
     protected boolean ignoreFirstRow;
 
     /**
      * creates an {@link AlternateRowTablePageElementLayout}
      * 
-     * @param ignoreFirstRow
      */
     public AlternateRowTablePageElementLayout(boolean ignoreFirstRow) {
         super();
         this.ignoreFirstRow = ignoreFirstRow;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.table.DefaultTablePageElementLayout
-     * #layoutRow(int,
-     * org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement)
-     */
     @Override
     public void layoutRow(int row, TableRowPageElement rowPageElement) {
         if (ignoreFirstRow && row == 0) {
@@ -55,9 +46,8 @@ public class AlternateRowTablePageElementLayout extends DefaultTablePageElementL
         rowPageElement.addStyles(getStyle(row));
     }
 
-    // TODO change algorithm: use ignoreFirstRow to calculate even or uneven
     private Style getStyle(int row) {
-        if (row % 2 == 0) {
+        if (row % 2 == (ignoreFirstRow ? 1 : 0)) {
             return Style.TABLE_ROW_EVEN;
         }
         return Style.TABLE_ROW_UNEVEN;

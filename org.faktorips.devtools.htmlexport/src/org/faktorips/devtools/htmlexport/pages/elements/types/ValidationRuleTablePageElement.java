@@ -14,15 +14,15 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 /**
  * Represents a table with the {@link ValidationRule}s of an {@link IPolicyCmptType} as rows and the
@@ -31,39 +31,18 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
  * @author dicker
  * 
  */
-public class ValidationRuleTablePageElement extends AbstractSpecificTablePageElement {
-    protected IPolicyCmptType policyCmptType;
+public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IValidationRule> {
 
     /**
      * Creates a {@link ValidationRuleTablePageElement} for the specified {@link IPolicyCmptType}
      * 
-     * @param policyCmptType
      */
     public ValidationRuleTablePageElement(IPolicyCmptType policyCmptType) {
-        super();
-        this.policyCmptType = policyCmptType;
+        super(Arrays.asList(policyCmptType.getRules()));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * addDataRows()
-     */
     @Override
-    protected void addDataRows() {
-        IValidationRule[] rules = policyCmptType.getRules();
-        for (IValidationRule rule : rules) {
-            addValidationRule(rule);
-        }
-    }
-
-    /**
-     * adds a row for the given validation rule
-     * 
-     * @param rule
-     */
-    protected void addValidationRule(IValidationRule rule) {
+    protected List<? extends PageElement> createRowWithIpsObjectPart(IValidationRule rule) {
         List<String> ruleData = new ArrayList<String>();
 
         ruleData.add(rule.getName());
@@ -73,18 +52,12 @@ public class ValidationRuleTablePageElement extends AbstractSpecificTablePageEle
         ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));
         ruleData.add(rule.getDescription());
 
-        addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(ruleData)));
+        return Arrays.asList(PageElementUtils.createTextPageElements(ruleData));
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * getHeadline()
-     */
     @Override
-    protected List<String> getHeadline() {
+    protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
         headline.add(Messages.ValidationRuleTablePageElement_headlineName);
@@ -96,15 +69,4 @@ public class ValidationRuleTablePageElement extends AbstractSpecificTablePageEle
 
         return headline;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
-     */
-    @Override
-    public boolean isEmpty() {
-        return ArrayUtils.isEmpty(policyCmptType.getRules());
-    }
-
 }

@@ -27,21 +27,14 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 public class TableCellPageElement extends WrapperPageElement {
 
     /**
-     * creates a {@link TableCellPageElement} with the given {@link PageElement}s as content
+     * creates a {@link TableCellPageElement} with the given {@link PageElement}s as content of the
+     * cell
      * 
-     * @param pageElements
      */
     public TableCellPageElement(PageElement... pageElements) {
         super(WrapperType.TABLECELL, pageElements);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement#acceptLayouter(org
-     * .faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutWrapperPageElement(this);

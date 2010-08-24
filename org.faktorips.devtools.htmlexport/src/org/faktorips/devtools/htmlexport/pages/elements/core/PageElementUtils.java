@@ -25,6 +25,7 @@ import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 
 /**
  * Utility for {@link PageElement}s
@@ -38,9 +39,6 @@ public class PageElementUtils {
      * creates {@link PageElement}s from the given {@link String}s with {@link Style}s and
      * {@link TextType}s
      * 
-     * @param texts
-     * @param styles
-     * @param type
      * @return array of {@link PageElement}s. To enable storing of other types of PageElements like
      *         LinkPageElement, the return type is not TextPageElement[]
      */
@@ -57,7 +55,6 @@ public class PageElementUtils {
     /**
      * creates {@link PageElement}s from the given {@link String}s
      * 
-     * @param texts
      * @return array of {@link PageElement}s
      */
     public static PageElement[] createTextPageElements(List<String> texts) {
@@ -68,10 +65,6 @@ public class PageElementUtils {
      * creates a {@link List} with link to the given {@link IIpsObject}s with the given target and
      * {@link Style}s
      * 
-     * @param srcFiles
-     * @param target
-     * @param styles
-     * @param config
      * @return {@link List} of {@link LinkPageElement}s
      */
     public static List<PageElement> createLinkPageElements(List<? extends IIpsSrcFile> srcFiles,
@@ -91,13 +84,7 @@ public class PageElementUtils {
     }
 
     /**
-     * @param config
-     * @param to
-     * @param target
-     * @param text
-     * @param useImage
-     * @param styles
-     * @return
+     * creates a LinkPageElement for an IpsElement
      */
     public static PageElement createLinkPageElement(DocumentorConfiguration config,
             IIpsElement to,
@@ -107,7 +94,7 @@ public class PageElementUtils {
             Style... styles) {
         IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(config);
 
-        PageElement element = createIpsElementReference(to, text, useImage);
+        PageElement element = createIpsElementRepresentation(to, text, useImage);
 
         if (filter.accept(to)) {
             return createLinkPageElementToIpsElement(to, target, element).addStyles(styles);
@@ -115,13 +102,7 @@ public class PageElementUtils {
         return element.addStyles(Style.DEAD_LINK);
     }
 
-    /**
-     * @param ipsElement
-     * @param text
-     * @param useImage
-     * @return
-     */
-    public static PageElement createIpsElementReference(IIpsElement ipsElement, String text, boolean useImage) {
+    private static PageElement createIpsElementRepresentation(IIpsElement ipsElement, String text, boolean useImage) {
         if (useImage) {
             return new WrapperPageElement(WrapperType.NONE).addPageElements(new IpsElementImagePageElement(ipsElement))
                     .addPageElements(new TextPageElement('\u00A0' + text));
@@ -130,15 +111,17 @@ public class PageElementUtils {
     }
 
     /**
-     * @param ipsElement
-     * @param text
-     * @param useImage
-     * @return
+     * creates a representation of the given {@link IIpsElement}. It uses the name of the ipselement
+     * and adds an image if useImage is true.
+     * 
      */
-    public static PageElement createIpsElementReference(IIpsElement ipsElement, boolean useImage) {
-        return createIpsElementReference(ipsElement, ipsElement.getName(), useImage);
+    public static PageElement createIpsElementRepresentation(IIpsElement ipsElement, boolean useImage) {
+        return createIpsElementRepresentation(ipsElement, ipsElement.getName(), useImage);
     }
 
+    /**
+     * creates a Link to the given {@link IIpsElement}
+     */
     public static PageElement createLinkPageElement(DocumentorConfiguration config,
             IIpsElement to,
             String target,
@@ -147,12 +130,6 @@ public class PageElementUtils {
         return createLinkPageElement(config, to, target, text, useImage, new Style[0]);
     }
 
-    /**
-     * @param to
-     * @param target
-     * @param element
-     * @return
-     */
     public static LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, String target, PageElement element) {
         String path = PathUtilFactory.createPathUtil(to).getPathFromRoot(
                 LinkedFileType.getLinkedFileTypeByIpsElement(to));

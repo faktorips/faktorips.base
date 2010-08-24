@@ -24,12 +24,10 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
  */
 public interface IDocumentorScript {
     /**
-     * executes the script using the {@link DocumentorConfiguration} <br/>
+     * executes the script using the given {@link DocumentorConfiguration} and the ProgressMonitor<br/>
      * 
      * should only called by the {@link HtmlExportOperation}
      * 
-     * @param config
-     * @param monitor ProgressMonitor
      */
     public void execute(DocumentorConfiguration config, IProgressMonitor monitor);
 }

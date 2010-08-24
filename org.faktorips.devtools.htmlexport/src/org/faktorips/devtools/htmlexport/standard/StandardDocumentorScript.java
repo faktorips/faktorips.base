@@ -42,20 +42,12 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private static final String STANDARD_PATH = ""; //$NON-NLS-1$
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.IDocumentorScript#execute(org.faktorips.devtools.htmlexport
-     * .documentor.DocumentorConfiguration)
-     */
     @Override
     public void execute(DocumentorConfiguration config, IProgressMonitor monitor) {
         List<IIpsSrcFile> srcFiles = config.getDocumentedSourceFiles();
         Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(srcFiles);
 
-        System.out.println("Anzahl Steps: " + (5 + srcFiles.size() + relatedPackageFragments.size()));
-        monitor.beginTask("Write Html Export", 5 + srcFiles.size() + relatedPackageFragments.size());
+        monitor.beginTask("Write Html Export", 5 + srcFiles.size() + relatedPackageFragments.size()); //$NON-NLS-1$
 
         // Reihenfolge fuer anlauf des balkens im exportwizard ungemein wichtig
 
@@ -74,19 +66,21 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeResources(DocumentorConfiguration config, IProgressMonitor monitor) {
+        monitor.beginTask("", 1); //$NON-NLS-1$
+
         ILayouter layouter = config.getLayouter();
         Set<LayoutResource> resources = layouter.getLayoutResources();
         for (LayoutResource layoutResource : resources) {
-            System.out.println(layoutResource.getName() + ": " + layoutResource.getContent().length);
             FileHandler.writeFile(config, STANDARD_PATH + layoutResource.getName(), layoutResource.getContent());
         }
+        monitor.done();
     }
 
     private void writeClassesContentPages(DocumentorConfiguration config,
             List<IIpsSrcFile> srcFiles,
             IProgressMonitor monitor) {
 
-        monitor.beginTask("Classes", srcFiles.size());
+        monitor.beginTask("Classes", srcFiles.size()); //$NON-NLS-1$
 
         for (IIpsSrcFile ipsObject : srcFiles) {
             writeClassContentPage(config, ipsObject);
@@ -115,7 +109,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
             Set<IIpsPackageFragment> relatedPackageFragments,
             IProgressMonitor monitor) {
 
-        monitor.beginTask("Packages Overview", relatedPackageFragments.size());
+        monitor.beginTask("Packages Overview", relatedPackageFragments.size()); //$NON-NLS-1$
         for (IIpsPackageFragment ipsPackageFragment : relatedPackageFragments) {
             writePackagesClassesPage(config, ipsPackageFragment, srcFiles);
             monitor.worked(1);
@@ -147,7 +141,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writeAllClassesPage(DocumentorConfiguration config,
             List<IIpsSrcFile> srcFiles,
             IProgressMonitor monitor) {
-        monitor.beginTask("", 1);
+        monitor.beginTask("", 1); //$NON-NLS-1$
 
         IpsElementListPageElement allClassesPage = new IpsElementListPageElement(config.getIpsProject(), srcFiles,
                 config);
@@ -159,7 +153,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeOverviewPage(DocumentorConfiguration config, List<IIpsSrcFile> srcFiles, IProgressMonitor monitor) {
-        monitor.beginTask("", 1);
+        monitor.beginTask("", 1); //$NON-NLS-1$
 
         IpsPackagesListPageElement allPackagesPage = new IpsPackagesListPageElement(config.getIpsProject(), srcFiles,
                 config);
@@ -175,17 +169,11 @@ public class StandardDocumentorScript implements IDocumentorScript {
             String filePath) {
         byte[] pageContent = getPageContent(config, allPackagesPage);
 
-        /*
-         * System.out.println("=======================================");
-         * System.out.println(filePath); System.out.println(); System.out.println(new
-         * String(pageContent));
-         */
-
         FileHandler.writeFile(config, filePath, pageContent);
     }
 
     private void writeBaseFrameDefinition(DocumentorConfiguration config, IProgressMonitor monitor) {
-        monitor.beginTask("", 1);
+        monitor.beginTask("", 1); //$NON-NLS-1$
 
         IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(Messages.StandardDocumentorScript_documentation
                 + " " + config.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ 
@@ -195,7 +183,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeProjectOverviewPage(DocumentorConfiguration config, IProgressMonitor monitor) {
-        monitor.beginTask("", 1);
+        monitor.beginTask("", 1); //$NON-NLS-1$
 
         AbstractPageElement projectOverviewHtml = new ProjectOverviewPageElement(config);
         projectOverviewHtml.build();

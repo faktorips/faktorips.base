@@ -45,6 +45,7 @@ public class LinkTest extends AbstractFipsDocTest {
 
             @Override
             public void spiderFoundEMail(String email) {
+                //
             }
         });
 

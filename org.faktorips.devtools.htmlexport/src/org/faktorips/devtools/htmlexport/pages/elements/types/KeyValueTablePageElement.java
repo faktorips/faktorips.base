@@ -33,7 +33,7 @@ public class KeyValueTablePageElement extends TablePageElement {
      * Adds Rows to the {@link KeyValueTablePageElement}. One Row consists of two
      * {@link PageElement}s.
      * 
-     * @param an array of {@link PageElement}
+     * @param pageElements an array of {@link PageElement}
      * @throws IllegalArgumentException if the number of elements is uneven
      * @return a reference of this
      */
@@ -54,33 +54,25 @@ public class KeyValueTablePageElement extends TablePageElement {
     }
 
     /**
-     * adds a row to the table
+     * adds a row to the table with a key and a value and returns this
      * 
-     * @param key
-     * @param value
-     * @return this
      */
     public KeyValueTablePageElement addKeyValueRow(String key, String value) {
         return addKeyValueRow(new TextPageElement(key), new TextPageElement(value));
     }
 
     /**
-     * adds a row to the table
+     * adds a row to the table with a key and a {@link PageElement} as value and returns this
      * 
-     * @param key
-     * @param valuePageElement
-     * @return
      */
     public KeyValueTablePageElement addKeyValueRow(String key, PageElement valuePageElement) {
         return addKeyValueRow(new TextPageElement(key), valuePageElement);
     }
 
     /**
-     * adds a row to the table
+     * adds a row to the table with a {@link PageElement} as key and a {@link PageElement} as value
+     * and returns this
      * 
-     * @param keyPageElement
-     * @param valuePageElement
-     * @return
      */
     public KeyValueTablePageElement addKeyValueRow(PageElement keyPageElement, PageElement valuePageElement) {
         addSubElement(new TableRowPageElement(new PageElement[] { keyPageElement, valuePageElement }));

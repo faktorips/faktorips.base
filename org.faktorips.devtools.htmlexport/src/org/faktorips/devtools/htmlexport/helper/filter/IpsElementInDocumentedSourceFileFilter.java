@@ -19,6 +19,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 
+/**
+ * {@link IpsElementFilter}, which accepts an {@link IIpsElement}, if it is documented according to
+ * the given {@link DocumentorConfiguration}
+ * 
+ * @author dicker
+ */
 public class IpsElementInDocumentedSourceFileFilter implements IpsElementFilter {
 
     private final DocumentorConfiguration config;

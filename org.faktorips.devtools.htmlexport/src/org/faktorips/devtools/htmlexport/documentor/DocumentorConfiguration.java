@@ -34,7 +34,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
  * Configuration for the Documentator
  * 
  * 
- * TODO: Refactoring zu Value-Object
+ * This class contains options for the HtmlExport as well as a List of all data to be documented
  * 
  * 
  * @author dicker
@@ -70,6 +70,10 @@ public class DocumentorConfiguration {
     private ILayouter layouter;
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy"); //$NON-NLS-1$
+
+    /**
+     * All {@link IIpsSrcFile}s, which should be documented within the Export
+     */
     private List<IIpsSrcFile> documentedSrcFiles;
 
     public DocumentorConfiguration() {
@@ -113,27 +117,6 @@ public class DocumentorConfiguration {
         return documentedSrcFiles;
 
     }
-
-    /*
-     * public List<IIpsObject> getLinkedObjects() { if (linkedObjects == null) { linkedObjects =
-     * getLinkedObjects(getLinkedIpsObjectTypes()); }
-     * 
-     * return linkedObjects;
-     * 
-     * }
-     * 
-     * private List<IIpsObject> getLinkedObjects(IpsObjectType... ipsObjectTypes) {
-     * 
-     * List<IIpsObject> objects = new ArrayList<IIpsObject>();
-     * 
-     * List<IIpsSrcFile> srcFiles = getLinkedSource(ipsObjectTypes); for (IIpsSrcFile ipsSrcFile :
-     * srcFiles) {
-     * 
-     * try { objects.add(ipsSrcFile.getIpsObject()); } catch (CoreException e) {
-     * e.printStackTrace(); } }
-     * 
-     * return objects; }
-     */
 
     /**
      * returns all {@link IIpsSrcFile} within the {@link IpsProject}, which type is within the given

@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -40,7 +41,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageEl
  * 
  * @author dicker
  * 
- * @param <T>
  */
 public abstract class AbstractTypeContentPageElement<T extends IType> extends AbstractIpsObjectContentPageElement<T> {
 
@@ -73,19 +73,11 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     /**
      * creates a page, which represents the given type according to the given config
      * 
-     * @param object
-     * @param config
      */
     public AbstractTypeContentPageElement(T object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -101,7 +93,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * adds a table which represents the methods of the type
      */
     protected void addMethodsTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper
                 .addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_methods,
                         TextType.HEADING_2));
@@ -115,18 +107,11 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     /**
      * returns a {@link MethodsTablePageElement} for the type
      * 
-     * @return
      */
     MethodsTablePageElement getMethodsTablePageElement() {
         return new MethodsTablePageElement(getDocumentedIpsObject());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#addTypeHierarchy()
-     */
     @Override
     protected void addTypeHierarchy() {
         addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_hierarchy, TextType.HEADING_2));
@@ -193,19 +178,13 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 break;
             }
             TreeNodePageElement subElement = new TreeNodePageElement(PageElementUtils.createLinkPageElement(
-                    getConfig(), superTypes.get(i), "content", superTypes.get(i).getName(), true));
+                    getConfig(), superTypes.get(i), "content", superTypes.get(i).getName(), true)); //$NON-NLS-1$
             element.addPageElements(subElement);
             element = subElement;
         }
         addPageElements(baseElement);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#addStructureData()
-     */
     @Override
     protected void addStructureData() {
         super.addStructureData();
@@ -229,7 +208,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * adds a table with the associations of the type
      */
     protected void addAssociationsTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_associations,
                 TextType.HEADING_2));
 
@@ -243,7 +222,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * adds a table with the attributes of the type
      */
     protected void addAttributesTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_attributes,
                 TextType.HEADING_2));
 
@@ -256,7 +235,6 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     /**
      * returns a table with the attributes of the type
      * 
-     * @return
      */
     AttributesTablePageElement getAttributesTablePageElement() {
         return new AttributesTablePageElement(getDocumentedIpsObject());
