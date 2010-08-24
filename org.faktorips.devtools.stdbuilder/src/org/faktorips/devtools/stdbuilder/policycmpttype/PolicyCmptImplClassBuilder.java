@@ -381,7 +381,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * 
      */
     protected void generateMethodCopyProperties(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(null, ANNOTATION_GENERATED);
+        String javaDoc = getLocalizedText(getPcType(), "METHOD_COPY_PROPERTIES");
+        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         String paramName = "copy";
         String varCopyMap = "copyMap";
         methodsBuilder.addImport(Map.class);
@@ -1225,7 +1226,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation association2 : associations) {
             IPolicyCmptTypeAssociation association = association2;
-            if (!association.isCompositionMasterToDetail() || association.isDerivedUnion() || !association.isValid(getIpsProject())) {
+            if (!association.isCompositionMasterToDetail() || association.isDerivedUnion()
+                    || !association.isValid(getIpsProject())) {
                 continue;
             }
             builder.append("if (");
