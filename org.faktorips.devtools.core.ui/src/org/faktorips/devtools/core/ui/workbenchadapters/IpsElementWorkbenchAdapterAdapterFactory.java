@@ -46,8 +46,12 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
 
     @Override
     @SuppressWarnings("unchecked")
-    // IWorkbenchAdapter is not generic
+    // eclipse api is not type safe
     public Object getAdapter(Object adaptableObject, Class adapterType) {
+        if (!adapterType.isAssignableFrom(IpsElementWorkbenchAdapter.class)) {
+            return null;
+        }
+
         if (adaptableObject instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptableObject;
             try {
@@ -75,6 +79,10 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
         }
     }
 
+    /**
+     * Getting the workbench adapter by class.
+     * 
+     */
     public IpsElementWorkbenchAdapter getAdapterByClass(Class<? extends IpsElement> adaptableClass) {
         IpsElementWorkbenchAdapter result = null;
         while (result == null) {
