@@ -65,6 +65,7 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * 
      * @see #hasDescriptionSupport()
      */
+    @Override
     public IDescription newDescription();
 
     /**
@@ -73,6 +74,7 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * 
      * @see #hasLabelSupport()
      */
+    @Override
     public ILabel newLabel();
 
 }
