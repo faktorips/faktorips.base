@@ -141,11 +141,13 @@ public class TestConfigurationElement implements IConfigurationElement {
     }
 
     // @since Eclipse 3.6 (Helios)
+    // do not add @Override until 3.6 is the default target platform
     public String getAttribute(String attrName, String locale) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
 
     // @since Eclipse 3.6 (Helios)
+    // do not add @Override until 3.6 is the default target platform
     public String getValue(String locale) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
     }
