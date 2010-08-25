@@ -320,6 +320,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, ownerOfManyToManyAssociation);
     }
 
+    @Override
     public void setOrphanRemoval(boolean orphanRemoval) {
         boolean oldValue = this.orphanRemoval;
         this.orphanRemoval = orphanRemoval;
@@ -577,8 +578,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String textManualFixNecessary = NLS.bind(
                     Messages.PersistentAssociationInfo_msgWarningManualyCodeMergeNecessary,
                     getPolicyComponentTypeAssociation().getName());
-            msgList
-                    .add(new Message(MSGCODE_MANUALLY_CODE_FIX_NECESSARY, textManualFixNecessary, Message.WARNING, this));
+            msgList.add(new Message(MSGCODE_MANUALLY_CODE_FIX_NECESSARY, textManualFixNecessary, Message.WARNING, this));
         }
 
         IPolicyCmptTypeAssociation inverseAssociation = null;
@@ -648,11 +648,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             }
         }
         if (transientMismatch) {
-            msgList
-                    .add(new Message(
-                            MSGCODE_TRANSIENT_MISMATCH,
-                            Messages.PersistentAssociationInfo_msgTransientMismatch,
-                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
+            msgList.add(new Message(MSGCODE_TRANSIENT_MISMATCH,
+                    Messages.PersistentAssociationInfo_msgTransientMismatch, Message.ERROR, this,
+                    IPersistentAssociationInfo.PROPERTY_TRANSIENT));
             return;
         }
     }
@@ -669,11 +667,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
         // if no join table is required then mark as owner is invalid
         if (!isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()) {
-            msgList
-                    .add(new Message(
-                            MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN,
-                            Messages.PersistentAssociationInfo_msgOwningSideManyToManyNotAllowed,
-                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
+            msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN,
+                    Messages.PersistentAssociationInfo_msgOwningSideManyToManyNotAllowed, Message.ERROR, this,
+                    IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
             return;
         }
 
@@ -691,8 +687,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (isJoinTableRequired(inverseAssociation) && !isOwnerOfManyToManyAssociation()
                 && !inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
             msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
-                    Messages.PersistentAssociationInfo_msgOwningSideMissing, Message.ERROR,
-                    this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
+                    Messages.PersistentAssociationInfo_msgOwningSideMissing, Message.ERROR, this,
+                    IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         } else if (isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()
                 && inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
             msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
@@ -751,14 +747,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
         int maxColumnNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxColumnNameLenght();
         if (columnName.length() > maxColumnNameLenght) {
-            msgList
-                    .add(new Message(
-                            messageCode,
-                            NLS
-                                    .bind(
-                                            Messages.PersistentAssociationInfo_msgMaxLengthExceeds,
-                                            new Object[] { propertyName, columnName.length(), maxColumnNameLenght }),
-                            Message.ERROR, this, property));
+            msgList.add(new Message(messageCode, NLS.bind(Messages.PersistentAssociationInfo_msgMaxLengthExceeds,
+                    new Object[] { propertyName, columnName.length(), maxColumnNameLenght }), Message.ERROR, this,
+                    property));
         }
     }
 
