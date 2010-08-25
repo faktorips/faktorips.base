@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
@@ -34,6 +35,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -599,7 +601,9 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
     public void testToXml() throws CoreException {
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType("Product");
-        policyCmptType.setDescription("blabla");
+        IDescription description = policyCmptType.newDescription();
+        description.setText("blabla");
+        description.setLocale(Locale.US);
         policyCmptType.setAbstract(true);
         policyCmptType.setSupertype("NewSuperType");
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
@@ -628,7 +632,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertEquals("Product", copy.getProductCmptType());
         assertEquals("NewSuperType", copy.getSupertype());
         assertTrue(copy.isAbstract());
-        assertEquals("blabla", copy.getDescription());
+        assertEquals("blabla", copy.getDescription(Locale.US));
         IPolicyCmptTypeAttribute[] attributes = copy.getPolicyCmptTypeAttributes();
         assertEquals(2, attributes.length);
         assertEquals("a1", attributes[0].getName());

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -279,7 +281,9 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IIpsSrcFile sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         IPolicyCmptType object = (PolicyCmptType)sourceFile.getIpsObject();
         IPolicyCmptTypeAttribute attribute = object.newPolicyCmptTypeAttribute();
-        attribute.setDescription("blabla");
+        IDescription description = attribute.newDescription();
+        description.setText("blabla");
+        description.setLocale(Locale.US);
         sourceFile.save(true, null);
 
         IFile file = sourceFile.getCorrespondingFile();
@@ -292,7 +296,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         object = (IPolicyCmptType)sourceFile.getIpsObject();
         attribute = object.getPolicyCmptTypeAttributes()[0];
-        assertEquals("something serious", attribute.getDescription());
+        assertEquals("something serious", attribute.getDescription(Locale.US).getText());
     }
 
     public void testGetIpsObjectExtensionProperties() {
@@ -438,18 +442,22 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     public void testRunAndQueueChangeEvents() throws CoreException {
         IIpsProject project = newIpsProject();
         final IPolicyCmptType typeA = newPolicyCmptType(project, "A");
+        final IDescription typeADescription = typeA.newDescription();
+        typeADescription.setLocale(Locale.US);
         final IPolicyCmptType typeB = newPolicyCmptType(project, "B");
+        final IDescription typeBDescription = typeB.newDescription();
+        typeBDescription.setLocale(Locale.US);
 
         IWorkspaceRunnable action = new IWorkspaceRunnable() {
 
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
-                typeA.setDescription("blabla");
+                typeADescription.setText("blabla");
                 typeA.setSupertype(typeB.getQualifiedName());
                 typeA.getIpsSrcFile().save(true, monitor);
-                typeB.setDescription("blabla");
+                typeBDescription.setText("blabla");
                 typeB.getIpsSrcFile().save(true, monitor);
-                typeA.setDescription("New blabla");
+                typeADescription.setText("New blabla");
                 typeA.getIpsSrcFile().save(true, monitor);
             }
 

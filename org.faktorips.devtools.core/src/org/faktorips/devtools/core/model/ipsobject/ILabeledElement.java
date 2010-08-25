@@ -18,6 +18,8 @@ import java.util.Set;
 
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.type.IAttribute;
 
 /**
  * A labeled element is an element that supports attaching {@link ILabel}s in different languages to
@@ -74,5 +76,32 @@ public interface ILabeledElement {
      * Creates a new label for this element.
      */
     public ILabel newLabel();
+
+    /**
+     * Returns the element's current label. That is primarily the value of the {@link ILabel} for
+     * the IPS model locale as returned by {@link #getLabelForIpsModelLocale()}.
+     * <p>
+     * Should no {@link ILabel} exist for that locale, the next in question is the {@link ILabel}
+     * for the default locale as returned by {@link #getLabelForDefaultLocale()}.
+     * <p>
+     * Should no {@link ILabel} exist for that locale as well, a last-resort label is returned that
+     * is specific to the element (e.g. the capitalized name for attributes).
+     * <p>
+     * Note that it might also be the case that the element has to use the {@link ILabel}s of
+     * another {@link ILabeledElement} to obtain it's own current label. For example,
+     * {@link IAttributeValue} objects do not have {@link ILabel}s themselves but their current
+     * label is obtained from the {@link ILabel}s of the {@link IAttribute} they are based upon.
+     * 
+     * @see #getCurrentPluralLabel()
+     */
+    public String getCurrentLabel();
+
+    /**
+     * Returns the element's current plural label. See {@link #getCurrentLabel()} for more
+     * information.
+     * 
+     * @see #getCurrentLabel()
+     */
+    public String getCurrentPluralLabel();
 
 }

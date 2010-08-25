@@ -70,11 +70,29 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
 
     /**
      * @throws UnsupportedOperationException If this IPS object part container does not support
+     *             descriptions.
+     * 
+     * @see #hasDescriptionSupport()
+     */
+    @Override
+    public String getCurrentDescription();
+
+    /**
+     * @throws UnsupportedOperationException If this IPS object part container does not support
      *             labels.
      * 
      * @see #hasLabelSupport()
      */
     @Override
     public ILabel newLabel();
+
+    /**
+     * @throws UnsupportedOperationException If this IPS object part container does not support
+     *             plural labels.
+     * 
+     * @see #isPluralLabelSupported()
+     */
+    @Override
+    public String getCurrentPluralLabel();
 
 }

@@ -110,6 +110,14 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
                 lastEvent = event;
             }
         });
+
+        policyContainer.getIpsSrcFile().markAsClean();
+        policyContainer.setDescription("new description");
+        assertEquals("", policyContainer.getDescription());
+        assertFalse(policyContainer.getIpsSrcFile().isDirty());
+
+        IDescription description = policyContainer.newDescription();
+        description.setLocale(Locale.US);
         policyContainer.setDescription("new description");
         assertEquals("new description", policyContainer.getDescription());
         assertTrue(policyContainer.getIpsSrcFile().isDirty());

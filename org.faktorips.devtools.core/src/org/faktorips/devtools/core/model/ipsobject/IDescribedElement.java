@@ -70,4 +70,16 @@ public interface IDescribedElement {
      */
     public IDescription newDescription();
 
+    /**
+     * Returns the text of the element's current {@link IDescription}. That is primarily the
+     * description for the IPS model locale as returned by
+     * {@link #getDescriptionForIpsModelLocale()}.
+     * <p>
+     * Should no {@link IDescription} exist for that locale, the next in question is the description
+     * for the default locale as returned by {@link #getDescriptionForDefaultLocale()}.
+     * <p>
+     * Should no description exist for that locale as well, an empty string is returned.
+     */
+    public String getCurrentDescription();
+
 }

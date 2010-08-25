@@ -31,10 +31,14 @@ public interface IIpsElement extends IAdaptable {
     /** The name of the <tt>name</tt> property. */
     public final static String PROPERTY_NAME = "name"; //$NON-NLS-1$
 
-    /** Returns the element's unqualified name. */
+    /**
+     * Returns the element's unqualified name.
+     */
     public String getName();
 
-    /** Returns the model this <tt>IIpsElement</tt> belongs to. */
+    /**
+     * Returns the model this <tt>IIpsElement</tt> belongs to.
+     */
     public IIpsModel getIpsModel();
 
     /**

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.util.Locale;
+
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -48,7 +50,7 @@ public interface Described {
      * @deprecated In version 3.1 another interface called {@link IDescribedElement} was introduced.
      *             This method now sets the text of the first {@link IDescription} retrieved via
      *             {@link IIpsObjectPartContainer#getDescriptions()}. If there is no
-     *             {@link IDescription} at all, then one is created. In addition, an
+     *             {@link IDescription} at all, then nothing is done at all. In addition, an
      *             {@link UnsupportedOperationException} is thrown, should
      *             {@link #isDescriptionChangable()} return <tt>false</tt> at the moment this
      *             operation is called.
@@ -58,12 +60,13 @@ public interface Described {
     public abstract void setDescription(String newDescription);
 
     /**
-     * Returns the object's description. This method never returns null.
+     * Returns the element's description.
      * 
      * @deprecated In version 3.1 another interface called {@link IDescribedElement} was introduced.
-     *             This method now returns the text of the first description retrieved via
-     *             {@link IIpsObjectPartContainer#getDescriptions()} or returns the empty string if
-     *             none is available.
+     *             Use {@link IDescribedElement#getDescription(Locale)} or
+     *             {@link IDescribedElement#getCurrentDescription()} instead. This method now
+     *             returns the text of the first description it can find or an empty string if it
+     *             can't find any description.
      */
     // Deprecated since 3.1
     @Deprecated

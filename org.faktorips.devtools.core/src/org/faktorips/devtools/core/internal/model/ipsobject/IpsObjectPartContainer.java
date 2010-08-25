@@ -846,6 +846,51 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     @Override
+    public String getCurrentLabel() {
+        return getCurrentLabel(false);
+    }
+
+    @Override
+    public String getCurrentPluralLabel() {
+        if (!(isPluralLabelSupported())) {
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Plural Labels."); //$NON-NLS-1$
+        }
+        return getCurrentLabel(true);
+    }
+
+    private String getCurrentLabel(boolean plural) {
+        ILabel label = getLabelForIpsModelLocale();
+        if (label == null) {
+            label = getLabelForDefaultLocale();
+        }
+        String labelValue = plural ? getLastResortPluralLabel() : getLastResortLabel();
+        if (label != null) {
+            labelValue = plural ? label.getPluralValue() : label.getValue();
+        }
+        return labelValue;
+    }
+
+    /**
+     * Called by {@link #getCurrentLabel()} if no {@link ILabel} for the IPS model locale or the
+     * default locale exists.
+     * <p>
+     * This implementation returns the IPS Object Part Container's name.
+     */
+    protected String getLastResortLabel() {
+        return getName();
+    }
+
+    /**
+     * Called by {@link #getCurrentLabel()} if no {@link ILabel} for the IPS model locale or the
+     * default locale exists.
+     * <p>
+     * This implementation returns an empty string.
+     */
+    protected String getLastResortPluralLabel() {
+        return ""; //$NON-NLS-1$
+    }
+
+    @Override
     public ILabel getLabel(Locale locale) {
         ArgumentCheck.notNull(locale);
         for (ILabel label : labels) {
@@ -884,7 +929,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public ILabel newLabel() {
         if (!(hasLabelSupport())) {
-            throw new UnsupportedOperationException("This IPS object part container does not support labels."); //$NON-NLS-1$
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Labels."); //$NON-NLS-1$
         }
         return newLabel(getNextPartId());
     }
@@ -928,7 +973,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public IDescription newDescription() {
         if (!(hasDescriptionSupport())) {
-            throw new UnsupportedOperationException("This IPS object part container does not support descriptions."); //$NON-NLS-1$
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
         }
         return newDescription(getNextPartId());
     }
@@ -945,6 +990,23 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         return description;
     }
 
+    @Override
+    public String getCurrentDescription() {
+        if (!(hasDescriptionSupport())) {
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
+        }
+
+        String descriptionText = ""; //$NON-NLS-1$
+        IDescription description = getDescriptionForIpsModelLocale();
+        if (description == null) {
+            description = getDescriptionForDefaultLocale();
+        }
+        if (description != null) {
+            descriptionText = description.getText();
+        }
+        return descriptionText;
+    }
+
     @Deprecated
     @Override
     public void setDescription(String newDescription) {
@@ -957,12 +1019,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
 
         Set<IDescription> descriptionSet = getDescriptions();
-        IDescription firstDescription;
         if (descriptionSet.size() == 0) {
-            firstDescription = newDescription();
-        } else {
-            firstDescription = descriptionSet.toArray(new IDescription[descriptionSet.size()])[0];
+            return;
         }
+        IDescription firstDescription = descriptionSet.toArray(new IDescription[descriptionSet.size()])[0];
         firstDescription.setText(newDescription);
     }
 

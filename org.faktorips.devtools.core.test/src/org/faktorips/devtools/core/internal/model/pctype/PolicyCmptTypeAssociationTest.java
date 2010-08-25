@@ -13,8 +13,11 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -305,7 +308,9 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association.setInverseAssociation("reverse");
         association.setMinCardinality(2);
         association.setMaxCardinality(3);
-        association.setDescription("blabla");
+        IDescription description = association.newDescription();
+        description.setLocale(Locale.US);
+        description.setText("blabla");
 
         Element element = association.toXml(newDocument());
 
@@ -321,7 +326,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals("reverse", copy.getInverseAssociation());
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
-        assertEquals("blabla", copy.getDescription());
+        assertEquals("blabla", copy.getDescription(Locale.US).getText());
     }
 
     // TODO

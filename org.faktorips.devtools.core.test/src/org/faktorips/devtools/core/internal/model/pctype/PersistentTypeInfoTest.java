@@ -13,8 +13,11 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
@@ -197,19 +200,21 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persTypeInfo.setPersistentType(PersistentType.ENTITY);
         persTypeInfo.setDefinesDiscriminatorColumn(true);
         persTypeInfo.setUseTableDefinedInSupertype(true);
-        persTypeInfo.setDescription("persistence descr");
         persTypeInfo.setDiscriminatorColumnName("D_COLUMN");
         persTypeInfo.setDiscriminatorDatatype(DiscriminatorDatatype.CHAR);
         persTypeInfo.setDiscriminatorValue("A");
         persTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
         persTypeInfo.setTableName("Table1");
+        IDescription description = persTypeInfo.newDescription();
+        description.setLocale(Locale.US);
+        description.setText("persistence descr");
         Element element = policyCmptType.toXml(newDocument());
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
         copyOfPcType.initFromXml(element);
         IPersistentTypeInfo copy = copyOfPcType.getPersistenceTypeInfo();
 
-        assertEquals("persistence descr", copy.getDescription());
+        assertEquals("persistence descr", copy.getDescription(Locale.US).getText());
         assertEquals("D_COLUMN", copy.getDiscriminatorColumnName());
         assertEquals(DiscriminatorDatatype.CHAR, copy.getDiscriminatorDatatype());
         assertEquals("A", copy.getDiscriminatorValue());
