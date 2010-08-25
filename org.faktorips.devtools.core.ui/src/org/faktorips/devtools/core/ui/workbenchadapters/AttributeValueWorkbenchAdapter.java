@@ -19,13 +19,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.type.IAttribute;
 
-public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter implements
-        IDescriptionWorkbenchAdapter {
+public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
@@ -66,25 +64,4 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
         }
     }
 
-    @Override
-    public String getDescription(IIpsElement ipsElement) {
-        if (!(ipsElement instanceof IAttributeValue)) {
-            return ""; //$NON-NLS-1$
-        }
-
-        IAttributeValue attributeValue = (IAttributeValue)ipsElement;
-        IAttribute attribute;
-        try {
-            attribute = attributeValue.findAttribute(ipsElement.getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-        if (attribute == null) {
-            IpsPlugin.log(new IpsStatus(IStatus.WARNING,
-                    "Could not find the attribute the attribute value is based on.")); //$NON-NLS-1$ 
-            return ""; //$NON-NLS-1$
-        }
-
-        return getMostSuitableDescriptionText(attribute);
-    }
 }

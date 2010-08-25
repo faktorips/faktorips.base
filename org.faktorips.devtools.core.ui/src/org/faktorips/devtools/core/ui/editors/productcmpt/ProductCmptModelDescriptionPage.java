@@ -110,8 +110,7 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
                 if (value instanceof IIpsElement) {
                     label = IpsUIPlugin.getLabel((IIpsElement)value);
                 }
-                String description = IpsUIPlugin.getDescription((IIpsElement)value);
-                DescriptionItem item = new DescriptionItem(label, description);
+                DescriptionItem item = new DescriptionItem(label, property.getCurrentDescription());
                 descriptions.add(item);
             }
         }

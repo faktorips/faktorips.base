@@ -19,13 +19,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.type.IAttribute;
 
-public class ConfigElementWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter implements
-        IDescriptionWorkbenchAdapter {
+public class ConfigElementWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
@@ -64,28 +62,6 @@ public class ConfigElementWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public String getDescription(IIpsElement ipsElement) {
-        if (!(ipsElement instanceof IConfigElement)) {
-            return ""; //$NON-NLS-1$
-        }
-
-        IConfigElement configElement = (IConfigElement)ipsElement;
-        IAttribute attribute;
-        try {
-            attribute = configElement.findPcTypeAttribute(ipsElement.getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-        if (attribute == null) {
-            IpsPlugin
-                    .log(new IpsStatus(IStatus.WARNING, "Could not find the attribute the config element is based on.")); //$NON-NLS-1$ 
-            return ""; //$NON-NLS-1$
-        }
-
-        return getMostSuitableDescriptionText(attribute);
     }
 
 }
