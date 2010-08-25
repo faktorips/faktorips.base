@@ -379,7 +379,7 @@
                  tooltip="%createMissingEnumContentsAction.tooltip">
            </action>
         </objectContribution>  
-		<objectContribution adaptable="true" id="addIpsNature" objectClass="org.eclipse.core.resources.IProject">
+		<objectContribution id="addIpsNature" objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
 			    <separator name="faktorIpsGroup"/>
             </menu>
@@ -390,6 +390,16 @@
 		    id="addIpsNatureAction"
 		    label="%addIpsNatureAction"
 		    menubarPath="faktorIPSMenu/faktorIpsGroup"/>
+   <visibility>
+      <or>
+         <objectClass
+               name="org.eclipse.jdt.core.IJavaProject">
+         </objectClass>
+         <objectClass
+               name="org.eclipse.core.resources.IProject">
+         </objectClass>
+      </or>
+   </visibility>
 		  		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
 		</objectContribution>
     	<objectContribution id="fixDifferencesAction" objectClass="org.eclipse.core.runtime.IAdaptable">
@@ -420,7 +430,7 @@
 		      </visibility> 
     	</objectContribution>
         <objectContribution id="migrateIpsProject"
-            objectClass="org.eclipse.jdt.core.IJavaProject">
+            objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
 			    <separator name="faktorIpsGroup"/>
             </menu>            
@@ -432,6 +442,15 @@
             label="%org.faktorips.devtools.core.Migrate.label"
             menubarPath="faktorIPSMenu/faktorIpsGroup"
             tooltip="%org.faktorips.devtools.core.Migrate.tooltip"/>
+            <visibility>
+               <or>
+                  <objectClass
+                        name="org.eclipse.core.resources.IResource">
+                  </objectClass>
+                  <objectClass
+                        name="org.eclipse.jdt.core.IJavaProject">
+                  </objectClass></or>
+            </visibility>
         </objectContribution>
 
   </extension>
