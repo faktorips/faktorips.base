@@ -258,6 +258,70 @@ Repositories miteinander verknüpft. Ein Manager kann dadurch alle verbundenen
 Manager nach dem aktuellen Repository fragen und entsprechend das eigene
 Repository zusammen bauen.
 
+\subsection{Konfiguration des EJB Product-Data-Providers}
+
+Der EJB Product-Data-Provider wird mit den Runtime-Addons von Faktor-IPS zur Verfügung gestellt und
+kann von der Faktor-IPS Downloadsite\footnote{http://update.faktorzehn.org/faktorips/cgi/download.pl?subfolder=v3} heruntergeladen werden.
+
+Der Product-Data-Provider muss zusammen mit den Produktdaten als eigenes EAR (oder WAR) gebündelt werden.
+Dazu werden folgende Bibliotheken benötigt:
+\begin{itemize}
+	\item faktorips-runtime.productdataservice.jar
+	\item faktorips-runtime.productdataservice.common.jar
+\end{itemize}
+
+Um auf den Service zuzugreifen müssen auf der Seite des Runtime Repositories
+folgende Bibliotheken eingebunden werden:
+
+\begin{itemize}
+	\item faktorips-runtime.productdataprovider.ejbclient
+	\item faktorips-runtime.productdataservice.common.jar
+\end{itemize}
+
+Der Product-Data-Provider wird über die $ejb-jar.xml$\footnote{Die EJB-Konfiguration liegt im Ordner META-INF} konfiguriert. Das Beispiel in Listing \ref{ejb-jar.xml}
+konfiguriert einen Produktdatenservice mit dem EJB-Namen $ProductDataService$. Das TOC-File wird über den Classpath geladen und muss daher im Bundle
+vorliegen; der Pfad wird per Dependency Injection in die Variable $tocFileName$ gesetzt.
+
+\begin{lstlisting}[caption=Beispiel einer ejb-jar.xml, label=ejb-jar.xml,language=XML]{ejb-jar.xml}
+<ejb-jar>
+	<enterprise-beans>
+		<session>
+			<ejb-name>
+				ProductDataService
+			</ejb-name>
+			<business-remote>
+				org.faktorips.productdataservice.IProductDataService
+			</business-remote>
+			<ejb-class>
+				org.faktorips.productdataservice.ProductDataService
+			</ejb-class>
+			<session-type>
+				Stateless
+			</session-type>
+			<env-entry>
+				<env-entry-name>
+					tocFileName
+				</env-entry-name>
+				<env-entry-type>
+					java.lang.String
+				</env-entry-type>
+				<env-entry-value>
+					org/faktorips/model/faktorips-repository-toc.xml
+				</env-entry-value>
+				<injection-target>
+					<injection-target-class>
+						org.faktorips.productdataservice.ProductDataService
+					</injection-target-class>
+					<injection-target-name>
+						tocFileName
+					</injection-target-name>
+				</injection-target>
+			</env-entry>
+		</session>
+	</enterprise-beans>
+</ejb-jar>
+\end{lstlisting}
+
 \subsection{Implementierung eigener Product-Data-Providers}
 
 Ziel des Separaten Deployments von Produktdaten war es, die Produktdaten
