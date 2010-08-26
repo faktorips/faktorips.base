@@ -174,8 +174,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /**
      * This method is public for test purposes only.
      */
-    public static void setExtensionRegistry(IExtensionRegistry registry) {
+    public void setExtensionRegistry(IExtensionRegistry registry) {
         IpsUIPlugin.registry = registry;
+        extensionPropertyEditFieldFactoryMap = null;
+
     }
 
     @Override

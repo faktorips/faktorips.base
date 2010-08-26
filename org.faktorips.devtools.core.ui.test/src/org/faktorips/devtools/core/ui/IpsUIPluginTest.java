@@ -39,6 +39,8 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     private Map<String, String> editFieldFactoryAttributes;
 
+    private IExtensionPropertyEditFieldFactory editFieldFactory2;
+
     @Override
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
@@ -46,6 +48,14 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
         // PropertyEditFieldFactory setup code
         editFieldFactory = new IExtensionPropertyEditFieldFactory() {
+            @Override
+            public EditField newEditField(IIpsObjectPartContainer ipsObjectPart,
+                    Composite extensionArea,
+                    UIToolkit toolkit) {
+                return null;
+            }
+        };
+        editFieldFactory2 = new IExtensionPropertyEditFieldFactory() {
             @Override
             public EditField newEditField(IIpsObjectPartContainer ipsObjectPart,
                     Composite extensionArea,
@@ -61,8 +71,18 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
                 new IConfigurationElement[0], execAttr);
         TestExtension extension = new TestExtension(new IConfigurationElement[] { configEl }, IpsUIPlugin.PLUGIN_ID,
                 IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY);
-        TestExtensionPoint extPoint = new TestExtensionPoint(new IExtension[] { extension }, IpsUIPlugin.PLUGIN_ID,
+
+        HashMap execAttr2 = new HashMap();
+        execAttr2.put("class", editFieldFactory2);
+        Map<String, String> editFieldFactory2Attributes = new HashMap<String, String>();
+        editFieldFactory2Attributes.put("propertyId", "additionalProperty2");
+        TestConfigurationElement configEl2 = new TestConfigurationElement("", editFieldFactory2Attributes, "",
+                new IConfigurationElement[0], execAttr2);
+        TestExtension extension2 = new TestExtension(new IConfigurationElement[] { configEl2 }, IpsUIPlugin.PLUGIN_ID,
                 IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY);
+
+        TestExtensionPoint extPoint = new TestExtensionPoint(new IExtension[] { extension, extension2 },
+                IpsUIPlugin.PLUGIN_ID, IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY);
 
         // TableFormatPropertiesControlFactory setup code
         TableFormatConfigurationCompositeFactory tableFormatPropertiesFactory = new TableFormatConfigurationCompositeFactory() {
@@ -100,17 +120,18 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
                 "externalTableFormat");
         TestExtensionPoint tableFormatExtPoint = new TestExtensionPoint(new IExtension[] { extension },
                 IpsPlugin.PLUGIN_ID, "externalTableFormat");
-        IpsUIPlugin.setExtensionRegistry(new TestExtensionRegistry(new IExtensionPoint[] { extPoint,
-                tableFormatExtPoint }));
+        IpsUIPlugin.getDefault().setExtensionRegistry(
+                new TestExtensionRegistry(new IExtensionPoint[] { extPoint, tableFormatExtPoint }));
     }
 
     // FIXME out-commented test as it currently always fails in the HEAD build and we don't know why
-    // public void testGetExtensionPropertyEditFieldFactory() throws Exception {
-    // IExtensionPropertyEditFieldFactory resultFactory = IpsUIPlugin.getDefault()
-    // .getExtensionPropertyEditFieldFactory("additionalProperty");
-    // assertEquals(editFieldFactory, resultFactory);
-    //
-    // }
+    public void testGetExtensionPropertyEditFieldFactory() throws Exception {
+        IExtensionPropertyEditFieldFactory resultFactory = IpsUIPlugin.getDefault()
+                .getExtensionPropertyEditFieldFactory("additionalProperty");
+        assertEquals("False factory for additionalProperty", editFieldFactory, resultFactory);
+        resultFactory = IpsUIPlugin.getDefault().getExtensionPropertyEditFieldFactory("additionalProperty2");
+        assertEquals("False factory for additionalProperty2", editFieldFactory2, resultFactory);
+    }
 
     public void testGetExtensionPropertyEditFieldFactoryNotRegistered() throws Exception {
         IExtensionPropertyEditFieldFactory resultFactory = IpsUIPlugin.getDefault()
