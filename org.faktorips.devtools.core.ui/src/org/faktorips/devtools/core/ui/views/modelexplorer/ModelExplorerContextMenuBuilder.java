@@ -59,6 +59,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
@@ -392,13 +393,20 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {
         if (selected instanceof IIpsElement) {
             if (selected instanceof IIpsProject) {
-                manager.add(openCloseAction((IProject)((IIpsProject)selected).getCorrespondingResource()));
-                try {
-                    if (!IpsPlugin.getDefault().getMigrationOperation(((IIpsProject)selected)).isEmpty()) {
-                        manager.add(new MigrateProjectAction(viewSite.getWorkbenchWindow(), selection));
+                IIpsProject ipsProject = (IIpsProject)selected;
+                manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource()));
+                // Show migration option only for the model explorer
+                if (modelExplorer.isModelExplorer()) {
+                    try {
+                        AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
+                                .getMigrationOperation(ipsProject);
+                        MigrateProjectAction migrateAction = new MigrateProjectAction(viewSite.getWorkbenchWindow(),
+                                selection);
+                        migrateAction.setEnabled(!(migrationOperation.isEmpty()));
+                        manager.add(migrateAction);
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
                     }
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
                 }
             }
         } else {
