@@ -91,6 +91,16 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
     }
 
     @Override
+    protected String getLastResortLabel() {
+        return targetRoleSingular;
+    }
+
+    @Override
+    protected String getLastResortPluralLabel() {
+        return targetRolePlural;
+    }
+
+    @Override
     public boolean isDerived() {
         return isDerivedUnion();
     }

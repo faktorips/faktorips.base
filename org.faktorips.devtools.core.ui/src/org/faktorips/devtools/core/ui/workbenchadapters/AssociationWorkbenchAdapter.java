@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
@@ -68,7 +67,8 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter i
         if (!(ipsObjectPart instanceof IAssociation)) {
             return super.getLabel(ipsObjectPart);
         }
-        return getLabel((IAssociation)ipsObjectPart, false);
+        IAssociation association = (IAssociation)ipsObjectPart;
+        return association.getCurrentLabel();
     }
 
     @Override
@@ -76,16 +76,8 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter i
         if (!(element instanceof IAssociation)) {
             return null;
         }
-        return getLabel((IAssociation)element, true);
-    }
-
-    private String getLabel(IAssociation association, boolean plural) {
-        String labelValue = getMostSuitableLabelValue(association, plural);
-        if (StringUtils.isEmpty(labelValue)) {
-            return plural ? association.getTargetRolePlural() : association.getTargetRoleSingular();
-        } else {
-            return labelValue;
-        }
+        IAssociation association = (IAssociation)element;
+        return association.getCurrentPluralLabel();
     }
 
 }

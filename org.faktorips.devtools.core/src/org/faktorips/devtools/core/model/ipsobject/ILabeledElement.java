@@ -91,6 +91,8 @@ public interface ILabeledElement {
      * another {@link ILabeledElement} to obtain it's own current label. For example,
      * {@link IAttributeValue} objects do not have {@link ILabel}s themselves but their current
      * label is obtained from the {@link ILabel}s of the {@link IAttribute} they are based upon.
+     * <p>
+     * This operation never returns <tt>null</tt>.
      * 
      * @see #getCurrentPluralLabel()
      */
@@ -99,6 +101,8 @@ public interface ILabeledElement {
     /**
      * Returns the element's current plural label. See {@link #getCurrentLabel()} for more
      * information.
+     * <p>
+     * This operation never returns <tt>null</tt>.
      * 
      * @see #getCurrentLabel()
      */

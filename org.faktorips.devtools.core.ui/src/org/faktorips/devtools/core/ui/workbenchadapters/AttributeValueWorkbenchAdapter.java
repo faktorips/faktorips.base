@@ -13,15 +13,9 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.type.IAttribute;
 
 public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
@@ -44,24 +38,7 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
         }
 
         IAttributeValue attributeValue = (IAttributeValue)ipsObjectPart;
-        try {
-            IAttribute attribute = attributeValue.findAttribute(ipsObjectPart.getIpsProject());
-            if (attribute == null) {
-                IpsPlugin.log(new IpsStatus(IStatus.WARNING,
-                        "Could not find the attribute the attribute value is based on.")); //$NON-NLS-1$ 
-                return ""; //$NON-NLS-1$
-            }
-
-            String labelValue = getMostSuitableLabelValue(attribute, false);
-            if (StringUtils.isEmpty(labelValue)) {
-                return StringUtils.capitalize(attribute.getName());
-            } else {
-                return labelValue;
-            }
-
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return attributeValue.getCurrentLabel();
     }
 
 }

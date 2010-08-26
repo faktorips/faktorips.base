@@ -47,8 +47,11 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
@@ -859,22 +862,51 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private String getCurrentLabel(boolean plural) {
-        ILabel label = getLabelForIpsModelLocale();
-        if (label == null) {
-            label = getLabelForDefaultLocale();
+        ILabeledElement currentLabelProvider = null;
+        try {
+            currentLabelProvider = getCurrentLabelProvider();
+        } catch (CoreException e) {
+            // Exception is not so critical, we log it so the user can check back about it.
+            // If the exception occurs, the last resort label will be returned.
+            IpsPlugin.log(e);
         }
-        String labelValue = plural ? getLastResortPluralLabel() : getLastResortLabel();
+
+        ILabel label = null;
+        if (currentLabelProvider != null) {
+            label = currentLabelProvider.getLabelForIpsModelLocale();
+            if (label == null) {
+                label = currentLabelProvider.getLabelForDefaultLocale();
+            }
+        }
         if (label != null) {
-            labelValue = plural ? label.getPluralValue() : label.getValue();
+            String value = plural ? label.getPluralValue() : label.getValue();
+            if (!(StringUtils.isEmpty(value))) {
+                return value;
+            }
         }
-        return labelValue;
+        return plural ? getLastResortPluralLabel() : getLastResortLabel();
+    }
+
+    /**
+     * This operation is called by {@link #getCurrentLabel()} and {@link #getCurrentPluralLabel()}
+     * to obtain a reference to the {@link ILabeledElement} that provides the {@link ILabel}.
+     * <p>
+     * This implementation returns this container itself. It can be overridden by subclasses as
+     * necessary. For example, an {@link IAttributeValue} needs to refer to the {@link ILabel} of
+     * it's {@link IAttribute} in order to obtain it's label.
+     * 
+     * @throws CoreException This operation may throw this kind of exception at any time.
+     */
+    protected ILabeledElement getCurrentLabelProvider() throws CoreException {
+        return this;
     }
 
     /**
      * Called by {@link #getCurrentLabel()} if no {@link ILabel} for the IPS model locale or the
      * default locale exists.
      * <p>
-     * This implementation returns the IPS Object Part Container's name.
+     * This implementation returns the IPS Object Part Container's name. Overriding subclasses must
+     * not return <tt>null</tt>.
      */
     protected String getLastResortLabel() {
         return getName();
@@ -884,7 +916,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Called by {@link #getCurrentLabel()} if no {@link ILabel} for the IPS model locale or the
      * default locale exists.
      * <p>
-     * This implementation returns an empty string.
+     * This implementation returns an empty string. Overriding subclasses must not return
+     * <tt>null</tt>.
      */
     protected String getLastResortPluralLabel() {
         return ""; //$NON-NLS-1$
