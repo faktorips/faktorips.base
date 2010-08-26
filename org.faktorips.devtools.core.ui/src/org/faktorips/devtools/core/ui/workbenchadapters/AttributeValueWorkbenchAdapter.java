@@ -13,22 +13,37 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        // As of now, attribute values do not have an image.
-        return null;
+        if (ipsObjectPart instanceof IAttributeValue) {
+            IAttributeValue attributeValue = (IAttributeValue)ipsObjectPart;
+            try {
+                IProductCmptTypeAttribute attribute = attributeValue.findAttribute(attributeValue.getIpsProject());
+                if (attribute != null) {
+                    return IpsUIPlugin.getImageHandling().getImageDescriptor(attribute);
+                }
+            } catch (CoreException e) {
+                e.printStackTrace();
+            }
+            return getDefaultImageDescriptor();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        // As of now, attribute values do not have an image.
-        return null;
+        return IpsUIPlugin.getImageHandling().getDefaultImageDescriptor(ProductCmptTypeAttribute.class);
     }
 
     @Override
