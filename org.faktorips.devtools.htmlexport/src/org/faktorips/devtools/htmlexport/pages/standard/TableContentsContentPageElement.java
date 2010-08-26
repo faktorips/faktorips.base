@@ -135,8 +135,13 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             wrapper.addPageElements(new TextPageElement(Messages.TableContentsContentPageElement_generation
                     + " " + tableContentsGeneration.getName(), //$NON-NLS-1$
                     TextType.HEADING_3));
+            /*
+             * TODO AW: What is the right description to use as model elements can now have
+             * descriptions in different languages?
+             */
+            String description = tableContentsGeneration.getDescription();
             wrapper.addPageElements(new TextPageElement(Messages.TableContentsContentPageElement_description + ": " //$NON-NLS-1$
-                    + tableContentsGeneration.getDescription()));
+                    + description));
 
             wrapper.addPageElements(getTableOrAlternativeText(new ContentTablePageElement(tableContentsGeneration),
                     Messages.TableContentsContentPageElement_noContent));

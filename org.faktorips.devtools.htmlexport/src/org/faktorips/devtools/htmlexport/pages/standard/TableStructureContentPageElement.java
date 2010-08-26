@@ -63,6 +63,10 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", "))); //$NON-NLS-1$
             cells.add(link);
             cells.add(new TextPageElement(foreignKey.getReferencedUniqueKey()));
+            /*
+             * TODO AW: What is the right description to use as model elements can now have
+             * descriptions in different languages?
+             */
             cells.add(new TextPageElement(foreignKey.getDescription()));
 
             return cells;

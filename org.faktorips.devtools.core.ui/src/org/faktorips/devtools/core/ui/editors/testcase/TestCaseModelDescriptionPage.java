@@ -87,7 +87,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             uniqueTestObjects.add(ipsObjectPart);
         }
         String desrcItemName = name.equals(parameterName) ? name : parameterName + " : " + name; //$NON-NLS-1$
-        desrList.add(new DescriptionItem(desrcItemName, ipsObjectPart.getDescription()));
+        desrList.add(new DescriptionItem(desrcItemName, ipsObjectPart.getCurrentDescription()));
     }
 
     private void addChildTestObjetcs(IIpsProject ipsProject,

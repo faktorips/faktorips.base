@@ -59,7 +59,7 @@ public class ValidatedAttributesCompletionProcessor extends AbstractCompletionPr
     private void addToResult(List<ICompletionProposal> result, IPolicyCmptTypeAttribute attribute, int documentOffset) {
         String name = attribute.getName();
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                .getImageHandling().getImage(attribute), name, null, attribute.getDescription());
+                .getImageHandling().getImage(attribute), name, null, attribute.getCurrentDescription());
         result.add(proposal);
     }
 }

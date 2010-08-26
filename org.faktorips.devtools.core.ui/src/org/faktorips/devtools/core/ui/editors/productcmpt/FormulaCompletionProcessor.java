@@ -243,7 +243,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
         ICompletionProposal proposal = new CompletionProposal(name, replacementOffset, replacementLength,
                 name.length(), IpsUIPlugin.getImageHandling().getImage(attribute), displayText, null, attribute
-                        .getDescription());
+                        .getCurrentDescription());
         result.add(proposal);
     }
 

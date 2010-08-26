@@ -53,7 +53,7 @@ public class DerivedUnionCompletionProcessor extends AbstractCompletionProcessor
         String name = relation.getName();
         String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
         ICompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                .getImageHandling().getImage(relation), displayText, null, relation.getDescription());
+                .getImageHandling().getImage(relation), displayText, null, relation.getCurrentDescription());
         result.add(proposal);
     }
 }

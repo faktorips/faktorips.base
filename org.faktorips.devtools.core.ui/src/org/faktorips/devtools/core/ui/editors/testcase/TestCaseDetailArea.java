@@ -372,7 +372,7 @@ public class TestCaseDetailArea {
                 .getTestAttribute()));
         if (testAttribute != null) {
             // use description of parameter as tooltip
-            label.setToolTipText(testAttribute.getDescription());
+            label.setToolTipText(testAttribute.getCurrentDescription());
         }
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);
 
@@ -556,8 +556,8 @@ public class TestCaseDetailArea {
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Value);
         if (param != null) {
             // use description of parameter as tooltip
-            label.setToolTipText(param.getDescription());
-            section.getChildren()[0].setToolTipText(param.getDescription());
+            label.setToolTipText(param.getCurrentDescription());
+            section.getChildren()[0].setToolTipText(param.getCurrentDescription());
         }
 
         final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null, ipsProject);
@@ -620,8 +620,8 @@ public class TestCaseDetailArea {
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Violation);
         if (testRuleParameter != null) {
             // use description of parameter as tooltip
-            label.setToolTipText(testRuleParameter.getDescription());
-            section.getChildren()[0].setToolTipText(testRuleParameter.getDescription());
+            label.setToolTipText(testRuleParameter.getCurrentDescription());
+            section.getChildren()[0].setToolTipText(testRuleParameter.getCurrentDescription());
         }
         final EditField editField = new EnumValueField(toolkit.createCombo(composite, TestRuleViolationType
                 .getEnumType()), TestRuleViolationType.getEnumType());

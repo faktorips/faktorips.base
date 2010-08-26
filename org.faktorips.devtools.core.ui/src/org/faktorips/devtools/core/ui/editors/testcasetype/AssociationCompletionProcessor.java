@@ -80,7 +80,7 @@ public class AssociationCompletionProcessor extends AbstractCompletionProcessor 
         String name = association.getName();
         String displayText = name + " - " + association.getParent().getName(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                .getImageHandling().getImage(association), displayText, null, association.getDescription());
+                .getImageHandling().getImage(association), displayText, null, association.getCurrentDescription());
         result.add(proposal);
     }
 }

@@ -63,7 +63,7 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
         String name = key.getName();
         String displayText = name;
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                .getImageHandling().getImage(key), displayText, null, key.getDescription());
+                .getImageHandling().getImage(key), displayText, null, key.getCurrentDescription());
         result.add(proposal);
     }
 

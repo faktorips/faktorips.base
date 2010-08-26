@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -227,7 +228,9 @@ public class Migration2_2_to2_3 {
 
     }
 
-    /** Adds new <tt>IEnumType</tt>s for the given enumeration table structures. */
+    /**
+     * Adds new <tt>IEnumType</tt>s for the given enumeration table structures.
+     */
     private static void addForTableStructures(List<ITableStructure> enumTableStructures,
             IProgressMonitor monitor,
             MultiStatus status) throws CoreException {
@@ -244,7 +247,12 @@ public class Migration2_2_to2_3 {
             IEnumType newEnumType = (IEnumType)newFile.getIpsObject();
             newEnumType.setAbstract(true);
             newEnumType.setContainingValues(false);
-            newEnumType.setDescription(currentTableStructure.getDescription());
+
+            @SuppressWarnings("deprecation")
+            // OK to suppress warning as there is no locale for a description in version 2.3
+            String oldDescription = currentTableStructure.getDescription();
+            IDescription description = newEnumType.newDescription();
+            description.setText(oldDescription);
 
             // Create enumeration attributes.
             // 1. key is the id, 2. key is the name.
@@ -265,7 +273,12 @@ public class Migration2_2_to2_3 {
                     newEnumAttribute.setIdentifier(true);
                 }
                 newEnumAttribute.setInherited(false);
-                newEnumAttribute.setDescription(currentColumn.getDescription());
+
+                @SuppressWarnings("deprecation")
+                // OK to suppress warning as there is no locale for a description in version 2.3
+                String columnDescription = currentColumn.getDescription();
+                IDescription attributeDescription = newEnumAttribute.newDescription();
+                attributeDescription.setText(columnDescription);
             }
 
             renameTableStructure(currentTableStructure, monitor, status);

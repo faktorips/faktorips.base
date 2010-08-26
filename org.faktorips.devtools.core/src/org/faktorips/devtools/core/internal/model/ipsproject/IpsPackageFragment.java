@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -392,7 +393,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             ProductCmpt newProductCmpt = (ProductCmpt)file.getIpsObject();
             newProductCmpt.setProductCmptType(template.getProductCmptType());
             newProductCmpt.setValidTo(template.getValidTo());
-            newProductCmpt.setDescription(template.getDescription());
+            for (IDescription description : template.getDescriptions()) {
+                IDescription newDescription = newProductCmpt.newDescription();
+                newDescription.setLocale(description.getLocale());
+                newDescription.setText(description.getText());
+            }
             newProductCmpt.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
             file.save(true, null);
         } finally {

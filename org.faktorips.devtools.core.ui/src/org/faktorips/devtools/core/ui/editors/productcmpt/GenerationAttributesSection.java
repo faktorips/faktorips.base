@@ -200,7 +200,7 @@ public class GenerationAttributesSection extends IpsSection {
             IValueSet valueset = null;
             // use description of attribute as tooltip
             if (attr != null) {
-                label.setToolTipText(attr.getDescription());
+                label.setToolTipText(attr.getCurrentDescription());
                 datatype = attr.findDatatype(ipsProject);
                 valueset = attr.getValueSet();
             }

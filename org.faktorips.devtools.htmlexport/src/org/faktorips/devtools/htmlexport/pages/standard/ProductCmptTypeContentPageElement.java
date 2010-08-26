@@ -68,6 +68,10 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             pageElements.add(new TextPageElement(tableStructureUsage.getRoleName()));
             pageElements.add(getTableStructureLinks(tableStructureUsage));
             pageElements.add(new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? "X" : "-")); //$NON-NLS-1$ //$NON-NLS-2$
+            /*
+             * TODO AW: What is the right description to use as model elements can now have
+             * descriptions in different languages?
+             */
             pageElements.add(new TextPageElement(tableStructureUsage.getDescription()));
 
             return pageElements;
