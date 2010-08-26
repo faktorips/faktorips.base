@@ -72,9 +72,9 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     @Override
-    public void initFromXml(Element element) {
+    protected void initPropertiesFromXml(Element element, String id) {
         defaultValueProviderAttribute = element.getAttribute(PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
-        super.initFromXml(element);
+        super.initPropertiesFromXml(element, id);
     }
 
     @Override

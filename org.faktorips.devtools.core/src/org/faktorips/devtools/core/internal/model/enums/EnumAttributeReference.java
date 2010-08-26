@@ -57,9 +57,8 @@ public class EnumAttributeReference extends AtomicIpsObjectPart implements IEnum
     }
 
     @Override
-    public void initFromXml(Element element) {
+    protected void initPropertiesFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
-
         super.initFromXml(element);
     }
 

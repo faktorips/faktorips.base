@@ -107,7 +107,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    protected void initFromXml(Element element, String id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         unique = Boolean.parseBoolean(element.getAttribute(PROPERTY_UNIQUE));

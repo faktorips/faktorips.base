@@ -299,7 +299,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    protected void initFromXml(Element element, String id) {
+    protected void initPropertiesFromXml(Element element, String id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         containingValues = Boolean.parseBoolean(element.getAttribute(PROPERTY_CONTAINING_VALUES));
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
