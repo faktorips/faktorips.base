@@ -47,6 +47,11 @@ public interface IIpsModel extends IIpsElement {
     public IWorkspace getWorkspace();
 
     /**
+     * Returns the object that gives access to custom model extensions.
+     */
+    public ICustomModelExtensions getCustomModelExtensions();
+
+    /**
      * Runs the given runnable/action as an atomic workspace operation like the <code>run</code>
      * method in IWorkspace. All IPS source file change events are queued until the action is
      * finished and then broadcasted. If an IPS source file is changed more than once, only one

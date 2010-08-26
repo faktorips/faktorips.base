@@ -72,12 +72,12 @@ public class ValidationResultCache {
      * Removes the data from the cache that is stale because the given IPS source file has changed.
      * Does nothing if the given file is <code>null</code>.
      * <p>
-     * Implementation note: At the moment we clear the whole cache if a file changes as due to the
+     * Implementation note: At the moment we clear the whole cache if a file changes, as due to the
      * dependencies between objects the validation result of other objects can also change if one
      * object is changed. We might use the exact dependencies between objects to solve this more
-     * efficiently.
+     * efficiently in a later version.
      * 
-     * @param file The IPS source file that has changed.
+     * @param file The ips source file that has changed.
      */
     synchronized public void removeStaleData(IIpsSrcFile file) {
         data.clear();

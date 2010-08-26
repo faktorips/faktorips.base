@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -652,9 +653,19 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
         result = new MessageList();
         validateThis(result, ipsProject);
-
+        execCustomValidations(result, ipsProject);
         afterValidateThis(result, ipsProject);
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void execCustomValidations(MessageList result, IIpsProject ipsProject) throws CoreException {
+        Class<IIpsObjectPartContainer> thisClass = (Class<IIpsObjectPartContainer>)getClass();
+        Set<ICustomValidation<IIpsObjectPartContainer>> customValidations = getIpsModel().getCustomModelExtensions()
+                .getCustomValidations(thisClass);
+        for (ICustomValidation<IIpsObjectPartContainer> validation : customValidations) {
+            result.add(validation.validate(this, ipsProject)); // add can handle null!
+        }
     }
 
     /**

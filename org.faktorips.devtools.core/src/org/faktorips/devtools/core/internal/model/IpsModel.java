@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -75,11 +73,11 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.ICustomModelExtensions;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -177,9 +175,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private List<IIpsArtefactBuilderSetInfo> builderSetInfoList = null;
 
-    /** extension properties (as list) per ips object (or part) type, e.g. IAttribute. */
-    private Map<Class<?>, List<IExtensionPropertyDefinition>> typeExtensionPropertiesMap = null;
-
     /** map containing all changes in time naming conventions by id. */
     private Map<String, IChangesOverTimeNamingConvention> changesOverTimeNamingConventionMap = null;
 
@@ -196,6 +191,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private IpsObjectType[] ipsObjectTypes;
 
+    private CustomModelExtensions customModelExtensions;
+
     /** cache sort order */
     private Map<IIpsPackageFragment, IIpsPackageFragmentSortDefinition> sortOrderCache = new HashMap<IIpsPackageFragment, IIpsPackageFragmentSortDefinition>();
 
@@ -206,9 +203,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.Constructor(): IpsModel created."); //$NON-NLS-1$
         }
+        customModelExtensions = new CustomModelExtensions(this);
         initIpsObjectTypes();
         resourceDeltaVisitor = new ResourceDeltaVisitor(); // has to be done after the ips object
         // types are initialized!
+    }
+
+    @Override
+    public ICustomModelExtensions getCustomModelExtensions() {
+        return customModelExtensions;
     }
 
     private void initIpsObjectTypes() {
@@ -1056,128 +1059,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     @Override
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces) {
-        if (typeExtensionPropertiesMap == null) {
-            initExtensionPropertiesFromConfiguration();
-        }
-        Set<IExtensionPropertyDefinition> result = new HashSet<IExtensionPropertyDefinition>();
-        getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, result);
-        IExtensionPropertyDefinition[] properties = result.toArray(new IExtensionPropertyDefinition[result.size()]);
 
-        // Sort extension property definitions by id to avoid random arrangement at return
-        Arrays.sort(properties, new Comparator<IExtensionPropertyDefinition>() {
-
-            @Override
-            public int compare(IExtensionPropertyDefinition def1, IExtensionPropertyDefinition def2) {
-                return def1.getPropertyId().compareTo(def2.getPropertyId());
-            }
-
-        });
-        return properties;
+        Set<IExtensionPropertyDefinition> props = customModelExtensions.getExtensionPropertyDefinitions(type,
+                includeSupertypesAndInterfaces);
+        return props.toArray(new IExtensionPropertyDefinition[props.size()]);
     }
 
     @Override
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class<?> type,
             String propertyId,
             boolean includeSupertypesAndInterfaces) {
-        Set<IExtensionPropertyDefinition> props = new HashSet<IExtensionPropertyDefinition>();
-        getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, props);
-        for (Object name2 : props) {
-            IExtensionPropertyDefinition prop = (IExtensionPropertyDefinition)name2;
-            if (prop.getPropertyId().equals(propertyId)) {
-                return prop;
-            }
-        }
-        return null;
-    }
 
-    private void getIpsObjectExtensionProperties(Class<?> type,
-            boolean includeSupertypesAndInterfaces,
-            Set<IExtensionPropertyDefinition> result) {
-
-        List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(type);
-        if (props != null) {
-            result.addAll(props);
-        }
-        if (!includeSupertypesAndInterfaces) {
-            return;
-        }
-        if (type.getSuperclass() != null) {
-            getIpsObjectExtensionProperties(type.getSuperclass(), true, result);
-        }
-        Class<?>[] interfaces = type.getInterfaces();
-        for (Class<?> interface1 : interfaces) {
-            getIpsObjectExtensionProperties(interface1, true, result);
-        }
-    }
-
-    private void initExtensionPropertiesFromConfiguration() {
-        typeExtensionPropertiesMap = new HashMap<Class<?>, List<IExtensionPropertyDefinition>>();
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "objectExtensionProperty"); //$NON-NLS-1$
-        IExtension[] extensions = point.getExtensions();
-
-        for (IExtension extension : extensions) {
-            IExtensionPropertyDefinition property = createExtensionProperty(extension);
-            if (property != null) {
-                List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(property.getExtendedType());
-                if (props == null) {
-                    props = new ArrayList<IExtensionPropertyDefinition>();
-                    typeExtensionPropertiesMap.put(property.getExtendedType(), props);
-                }
-                props.add(property);
-            }
-        }
-        sortExtensionProperties();
-    }
-
-    private IExtensionPropertyDefinition createExtensionProperty(IExtension extension) {
-        IConfigurationElement[] configElements = extension.getConfigurationElements();
-        if (configElements.length != 1 || !configElements[0].getName().equalsIgnoreCase("property")) { //$NON-NLS-1$
-            IpsPlugin.log(new IpsStatus("Illegal definition of external property " //$NON-NLS-1$
-                    + extension.getUniqueIdentifier()));
-            return null;
-        }
-        IConfigurationElement element = configElements[0];
-        Object propertyInstance = null;
-        try {
-            propertyInstance = element.createExecutableExtension("class"); //$NON-NLS-1$
-        } catch (CoreException e) {
-            IpsPlugin.log(new IpsStatus("Unable to create extension property " //$NON-NLS-1$
-                    + extension.getUniqueIdentifier() + ". Reason: Can't instantiate " //$NON-NLS-1$
-                    + element.getAttribute("class"), e)); //$NON-NLS-1$
-            return null;
-        }
-        if (!(propertyInstance instanceof ExtensionPropertyDefinition)) {
-            IpsPlugin.log(new IpsStatus("Unable to create extension property " //$NON-NLS-1$
-                    + extension.getUniqueIdentifier() + element.getAttribute("class") + " does not derived from " //$NON-NLS-1$ //$NON-NLS-2$
-                    + ExtensionPropertyDefinition.class));
-            return null;
-        }
-        ExtensionPropertyDefinition extProperty = (ExtensionPropertyDefinition)propertyInstance;
-        extProperty.setPropertyId(extension.getUniqueIdentifier());
-        extProperty.setName(extension.getLabel());
-        extProperty.setDefaultValue(element.getAttribute("defaultValue")); //$NON-NLS-1$
-        extProperty.setPosition(element.getAttribute("position")); //$NON-NLS-1$
-        if (StringUtils.isNotEmpty(element.getAttribute("order"))) { //$NON-NLS-1$
-            extProperty.setSortOrder(Integer.parseInt(element.getAttribute("order"))); //$NON-NLS-1$
-        }
-        String extType = element.getAttribute("extendedType"); //$NON-NLS-1$
-        try {
-            extProperty.setExtendedType(extProperty.getClass().getClassLoader().loadClass(extType));
-        } catch (ClassNotFoundException e) {
-            IpsPlugin.log(new IpsStatus("Extended type " + extType //$NON-NLS-1$
-                    + " not found for extension property " //$NON-NLS-1$
-                    + extProperty.getPropertyId(), e));
-            return null;
-        }
-        return extProperty;
-    }
-
-    private void sortExtensionProperties() {
-        Collection<List<IExtensionPropertyDefinition>> typeLists = typeExtensionPropertiesMap.values();
-        for (List<IExtensionPropertyDefinition> propList : typeLists) {
-            Collections.sort(propList);
-        }
+        return customModelExtensions.getExtensionPropertyDefinition(type, propertyId, includeSupertypesAndInterfaces);
     }
 
     /**
@@ -1185,16 +1078,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * extension properties are discovered by extension point lookup.
      */
     public void addIpsObjectExtensionProperty(IExtensionPropertyDefinition property) {
-        if (typeExtensionPropertiesMap == null) {
-            typeExtensionPropertiesMap = new HashMap<Class<?>, List<IExtensionPropertyDefinition>>();
-        }
-        List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(property.getExtendedType());
-        if (props == null) {
-            props = new ArrayList<IExtensionPropertyDefinition>();
-            typeExtensionPropertiesMap.put(property.getExtendedType(), props);
-        }
-        props.add(property);
-        Collections.sort(props);
+        customModelExtensions.addIpsObjectExtensionProperty(property);
     }
 
     private void initDatatypesDefinedViaExtension() {
@@ -1333,9 +1217,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the ClassLoaderProvider for the given ips project.
+     * Returns the ClassLoaderProvider for the given ips project. Uses the System class loader as
+     * parent of the class loader that is provided by the returned provider.
      * 
      * @throws NullPointerException if ipsProject is <code>null</code>.
+     * 
+     * @see ClassLoader#getSystemClassLoader()
      */
     public ClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
@@ -1344,8 +1231,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             // create a new classloader provider, make sure that the jars (inside the provided
             // classloader) will be copied, this fixed the problem if the classloader is used
             // to load classes for DynamicValueDatatype
-            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getReadOnlyProperties()
-                    .isJavaProjectContainsClassesForDynamicDatatypes(), true);
+            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ClassLoader.getSystemClassLoader(),
+                    ipsProject.getReadOnlyProperties().isJavaProjectContainsClassesForDynamicDatatypes(), true);
             classLoaderProviderMap.put(ipsProject, provider);
         }
         return provider;

@@ -15,6 +15,7 @@
    <extension-point id="ipsobjecttype" name="ipsObjectType" schema="schema/ipsobjecttype.exsd"/>
    <extension-point id="flFunctionResolverFactory" name="factory for formula language function resolvers" schema="schema/flFunctionResolverFactory.exsd"/>
    <extension-point id="pullUpParticipants" name="Pull Up Participants" schema="schema/pullUpParticipants.exsd"/>
+   <extension-point id="customValidation" name="Custom Validation" schema="schema/customValidation.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -168,6 +169,10 @@
       <datatypeDefinition
             datatypeClass="org.faktorips.datatype.classtypes.BigDecimalDatatype"
             helperClass="org.faktorips.codegen.dthelpers.BigDecimalHelper">
+      </datatypeDefinition>
+      <datatypeDefinition
+            datatypeClass="org.faktorips.datatype.CountryDatatype"
+            helperClass="org.faktorips.datatype.CountryHelper">
       </datatypeDefinition>
    </extension>
 
