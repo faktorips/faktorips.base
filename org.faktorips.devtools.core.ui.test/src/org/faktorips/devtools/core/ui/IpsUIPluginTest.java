@@ -100,8 +100,8 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
                 "externalTableFormat");
         TestExtensionPoint tableFormatExtPoint = new TestExtensionPoint(new IExtension[] { extension },
                 IpsPlugin.PLUGIN_ID, "externalTableFormat");
-        IpsUIPlugin.setExtensionRegistry(new TestExtensionRegistry(new IExtensionPoint[] { extPoint,
-                tableFormatExtPoint }));
+        IpsUIPlugin.getDefault().setExtensionRegistry(
+                new TestExtensionRegistry(new IExtensionPoint[] { extPoint, tableFormatExtPoint }));
     }
 
     public void testGetExtensionPropertyEditFieldFactory() throws Exception {
