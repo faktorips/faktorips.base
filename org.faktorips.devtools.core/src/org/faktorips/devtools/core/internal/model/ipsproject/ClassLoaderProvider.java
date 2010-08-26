@@ -71,9 +71,21 @@ public class ClassLoaderProvider {
      */
     private IResourceChangeListener resourceChangeListener;
 
+    /**
+     * Class loader used as parent of the class loader created by this provider.
+     */
+    private ClassLoader parentClassLoader = null;
+
     public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation, boolean copyJars) {
+        this(project, ClassLoader.getSystemClassLoader(), includeProjectsOutputLocation, copyJars);
+    }
+
+    public ClassLoaderProvider(IJavaProject project, ClassLoader parentClassLoader,
+            boolean includeProjectsOutputLocation, boolean copyJars) {
         ArgumentCheck.notNull(project);
+        ArgumentCheck.notNull(parentClassLoader);
         javaProject = project;
+        this.parentClassLoader = parentClassLoader;
         this.includeProjectsOutputLocation = includeProjectsOutputLocation;
         this.copyJars = copyJars;
     }
@@ -136,7 +148,7 @@ public class ClassLoaderProvider {
         List<URL> urlsList = new ArrayList<URL>();
         accumulateClasspath(project, urlsList);
         URL[] urls = urlsList.toArray(new URL[urlsList.size()]);
-        return new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
+        return new URLClassLoader(urls, parentClassLoader);
     }
 
     private void accumulateClasspath(IJavaProject currentProject, List<URL> urlsList) throws IOException, CoreException {
