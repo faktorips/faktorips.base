@@ -305,7 +305,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
         enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_NAME);
 
-        super.initFromXml(element, id);
+        super.initPropertiesFromXml(element, id);
     }
 
     @Override

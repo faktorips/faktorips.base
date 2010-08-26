@@ -138,7 +138,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         enumType = element.getAttribute(PROPERTY_ENUM_TYPE);
-        super.initFromXml(element, id);
+        super.initPropertiesFromXml(element, id);
     }
 
     @Override

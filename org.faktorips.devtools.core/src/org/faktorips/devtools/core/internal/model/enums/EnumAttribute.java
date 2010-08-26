@@ -115,7 +115,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         usedAsNameInFaktorIpsUi = Boolean.parseBoolean(element.getAttribute(PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI));
         inherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
 
-        super.initFromXml(element, id);
+        super.initPropertiesFromXml(element, id);
     }
 
     @Override
