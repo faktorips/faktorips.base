@@ -24,12 +24,14 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -39,6 +41,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -70,7 +73,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     }
 
     public void testGetAllowedValueSetTypes() throws CoreException {
-
         // case 1: attribute not found
         configElement.setPolicyCmptTypeAttribute("a1");
         List<ValueSetType> types = configElement.getAllowedValueSetTypes(ipsProject);
@@ -465,6 +467,23 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         newCfgElement.initFromXml(xmlElement);
 
         assertNull(newCfgElement.getValue());
+    }
+
+    public void testGetLastResortLabel() {
+        configElement.setPolicyCmptTypeAttribute("foo");
+        assertEquals("Foo", configElement.getCurrentLabel());
+    }
+
+    public void testGetCurrentLabelProvider() {
+        IAttribute policyAttribute = policyCmptType.newAttribute();
+        policyAttribute.setName("blub");
+        policyAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        configElement.setPolicyCmptTypeAttribute(policyAttribute.getName());
+
+        ILabel label = policyAttribute.newLabel();
+        label.setLocale(IpsPlugin.getDefault().getIpsModelLocale());
+        label.setValue("plantsch");
+        assertEquals(label.getValue(), configElement.getCurrentLabel());
     }
 
     private class InvalidDatatype implements ValueDatatype {
