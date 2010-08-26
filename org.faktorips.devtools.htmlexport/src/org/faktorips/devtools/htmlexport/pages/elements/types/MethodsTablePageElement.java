@@ -51,6 +51,10 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
         methodData.add(method.getModifier().toString());
         methodData.add(method.getDatatype());
         methodData.add(method.getSignatureString());
+        /*
+         * TODO AW: What is the right description to use as model elements can now have descriptions
+         * in different languages?
+         */
         methodData.add(method.getDescription());
 
         return methodData;

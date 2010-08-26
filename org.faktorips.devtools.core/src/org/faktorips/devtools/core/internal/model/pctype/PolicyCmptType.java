@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -403,7 +404,11 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 override.setName(attributes[i].getName());
                 override.setDefaultValue(attributes[i].getDefaultValue());
                 override.setValueSetCopy(attributes[i].getValueSet());
-                override.setDescription(attributes[i].getDescription());
+                for (IDescription description : attributes[i].getDescriptions()) {
+                    IDescription overrideDescription = override.newDescription();
+                    overrideDescription.setLocale(description.getLocale());
+                    overrideDescription.setText(description.getText());
+                }
             }
             override.setOverwrite(true);
             newAttributes[i] = override;

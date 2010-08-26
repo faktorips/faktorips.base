@@ -43,7 +43,7 @@ public class TableModelDescriptionPage extends DefaultModelDescriptionPage {
         ITableStructure tableStructure = tableContents.findTableStructure(tableContents.getIpsProject());
 
         DescriptionItem structureDescription = new DescriptionItem(
-                Messages.TableModelDescriptionPage_generalInformation, tableStructure.getDescription());
+                Messages.TableModelDescriptionPage_generalInformation, tableStructure.getCurrentDescription());
         columnsList.add(structureDescription);
 
         IColumn[] columns = tableStructure.getColumns();
@@ -52,7 +52,7 @@ public class TableModelDescriptionPage extends DefaultModelDescriptionPage {
          * Default sort order is same as table definition.
          */
         for (IColumn column : columns) {
-            DescriptionItem item = new DescriptionItem(column.getName(), column.getDescription());
+            DescriptionItem item = new DescriptionItem(column.getName(), column.getCurrentDescription());
             columnsList.add(item);
         }
 

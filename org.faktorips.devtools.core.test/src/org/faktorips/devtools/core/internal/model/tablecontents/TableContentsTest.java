@@ -126,7 +126,7 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     public void testInitFromXml() {
         table.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals("blabla", table.getDescription());
+        assertEquals("blabla", table.getDescription(Locale.GERMAN).getText());
         assertEquals("RateTableStructure", table.getTableStructure());
         assertEquals(2, table.getNumOfColumns());
         assertEquals(2, table.getNumOfGenerations());

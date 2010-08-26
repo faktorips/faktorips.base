@@ -79,6 +79,10 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
             addPolicyComponentAndDataType(attribute, attributeData);
 
+            /*
+             * TODO AW: What is the right description to use as model elements can now have
+             * descriptions in different languages?
+             */
             attributeData.add(new TextPageElement(attribute.getDescription()));
 
             return attributeData.toArray(new PageElement[attributeData.size()]);

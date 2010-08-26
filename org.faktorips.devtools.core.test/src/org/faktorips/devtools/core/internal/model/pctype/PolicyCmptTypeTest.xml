@@ -4,7 +4,7 @@
  Test data for AttributeImplTest.java
 -->
 <PolicyCmptType configurableByProductCmptType="true" productCmptType="Product" supertype="SuperType" abstract="true">
-	<Description>blabla</Description>
+	<Description locale="en">blabla</Description>
     <Attribute id="0" name="premium" datatype="money" productRelevant="false" attributeType="comp" defaultValue="0EUR">
         <valueset valuesetcontenttype="IntegerRANGE">
     	    <IntegerRange></IntegerRange>

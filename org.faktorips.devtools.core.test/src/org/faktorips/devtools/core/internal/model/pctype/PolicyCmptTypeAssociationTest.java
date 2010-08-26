@@ -287,7 +287,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertTrue(association.isDerivedUnion());
         assertTrue(association.isQualified());
         assertEquals("MotorPart", association.getTarget());
-        assertEquals("blabla", association.getDescription());
+        assertEquals("blabla", association.getDescription(Locale.GERMAN).getText());
         assertEquals("PolicyPart", association.getTargetRoleSingular());
         assertEquals("PolicyParts", association.getTargetRolePlural());
         assertEquals(1, association.getMinCardinality());

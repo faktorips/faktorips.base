@@ -228,7 +228,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
 
         IIpsElement[] children = getChildren();
         for (IIpsElement element : children) {
-            // TODO AW validateChildren should be final in IpsObjectPartContainer
+            // TODO AW: validateChildren should be final in IpsObjectPartContainer
             if (element instanceof Row) {
                 Row row = (Row)element;
                 MessageList list = row.validateThis(tableStructure, datatypes, ipsProject);

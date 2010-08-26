@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.Described;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
@@ -106,11 +106,11 @@ public class RulesSection extends SimpleIpsPartsSection {
                         return;
                     }
                     Object selected = ((IStructuredSelection)selection).getFirstElement();
-                    if (!(selected instanceof Described)) {
+                    if (!(selected instanceof IDescribedElement)) {
                         descriptionText.setText(""); //$NON-NLS-1$
                         return;
                     }
-                    descriptionText.setText(((Described)selected).getDescription());
+                    descriptionText.setText(((IDescribedElement)selected).getCurrentDescription());
                 }
             });
         }

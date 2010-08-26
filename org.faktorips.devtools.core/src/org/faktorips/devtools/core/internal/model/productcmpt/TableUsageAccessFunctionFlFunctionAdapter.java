@@ -89,7 +89,7 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
 
     @Override
     public String getDescription() {
-        return fct.getDescription();
+        return fct.getCurrentDescription();
     }
 
     @Override

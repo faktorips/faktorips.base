@@ -368,7 +368,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     private void initTableContentsFromTemplate(TableContents newTableContents, TableContents template) {
         newTableContents.setTableStructure(template.getTableStructure());
         newTableContents.setNumOfColumnsInternal(template.getNumOfColumns());
-        newTableContents.setDescription(template.getDescription());
+        for (IDescription description : template.getDescriptions()) {
+            IDescription newDescription = newTableContents.newDescription();
+            newDescription.setLocale(description.getLocale());
+            newDescription.setText(description.getText());
+        }
     }
 
     private IIpsSrcFile createProductCmptFromTemplateGeneration(String name,

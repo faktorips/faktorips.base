@@ -58,6 +58,10 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
         attributeData.add(attribute.getDatatype());
         attributeData.add(attribute.getModifier().toString());
         attributeData.add(attribute.getDefaultValue());
+        /*
+         * TODO AW: What is the right description to use as model elements can now have descriptions
+         * in different languages?
+         */
         attributeData.add(attribute.getDescription());
 
         return attributeData;

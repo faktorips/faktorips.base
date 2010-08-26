@@ -18,6 +18,6 @@
     <Association id="3" type="1" sourceRole="Policy" target="MotorPart" targetRole="PolicyPart" minCardinality="1" maxCardinality="1" exclusiveChoice="false">
     </Association>
     <Persistence useTableDefinedInSupertype="true" definesDiscriminatorColumn="true" enabled="true" discriminatorColumnName="D_COLUMN" discriminatorDatatype="INTEGER" discriminatorValue="422" id="0" inheritanceStrategy="SINGLE_TABLE" secondaryTableName="" tableName="POLICY1">
-        <Description>persistence descr</Description>
+        <Description locale="en">persistence descr</Description>
     </Persistence>
 </PolicyCmptType>

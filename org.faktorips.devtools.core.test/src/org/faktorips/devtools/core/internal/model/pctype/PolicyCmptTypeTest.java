@@ -571,7 +571,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertEquals("Product", policyCmptType.getProductCmptType());
         assertEquals("SuperType", policyCmptType.getSupertype());
         assertTrue(policyCmptType.isAbstract());
-        assertEquals("blabla", policyCmptType.getDescription());
+        assertEquals("blabla", policyCmptType.getDescription(Locale.US).getText());
 
         IPolicyCmptTypeAttribute[] a = policyCmptType.getPolicyCmptTypeAttributes();
         assertEquals(1, a.length);

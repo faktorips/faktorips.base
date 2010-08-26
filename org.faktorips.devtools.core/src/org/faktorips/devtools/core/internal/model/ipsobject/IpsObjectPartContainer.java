@@ -1011,6 +1011,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         return newDescription(getNextPartId());
     }
 
+    // Deprecated since 3.1
     @Deprecated
     @Override
     public String getDescription() {
@@ -1040,6 +1041,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         return descriptionText;
     }
 
+    // Deprecated since 3.1
     @Deprecated
     @Override
     public void setDescription(String newDescription) {

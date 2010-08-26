@@ -187,7 +187,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertTrue(persistenceTypeInfo.isEnabled());
         assertTrue(persistenceTypeInfo.isDefinesDiscriminatorColumn());
         assertTrue(persistenceTypeInfo.isUseTableDefinedInSupertype());
-        assertEquals("persistence descr", persistenceTypeInfo.getDescription());
+        assertEquals("persistence descr", persistenceTypeInfo.getDescription(Locale.US).getText());
         assertEquals("D_COLUMN", persistenceTypeInfo.getDiscriminatorColumnName());
         assertEquals(DiscriminatorDatatype.INTEGER, persistenceTypeInfo.getDiscriminatorDatatype());
         assertEquals("422", persistenceTypeInfo.getDiscriminatorValue());

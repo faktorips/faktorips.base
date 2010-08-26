@@ -138,7 +138,7 @@ public class ParameterMethodRefControl extends TextButtonControl {
                 if (method.getName().startsWith(match)) {
                     result.add(new CompletionProposal(method.getName(), 0, documentOffset, method.getName().length(),
                             IpsUIPlugin.getImageHandling().getImage(method), method.getSignatureString(), null, method
-                                    .getDescription()));
+                                    .getCurrentDescription()));
                 }
             }
         }

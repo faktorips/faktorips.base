@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
@@ -408,7 +410,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals(Integer.MAX_VALUE, association.getMaxCardinality());
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
-        assertEquals("blabla", association.getDescription());
+        assertEquals("blabla", association.getDescription(Locale.US).getText());
     }
 
     public void testFindTarget() throws CoreException {

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -122,7 +124,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(Integer.MAX_VALUE, association.getMaxCardinality());
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
-        assertEquals("blabla", association.getDescription());
+        assertEquals("blabla", association.getDescription(Locale.US).getText());
     }
 
     /**
