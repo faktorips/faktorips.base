@@ -91,13 +91,19 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         usDescription = container.newDescription();
         usDescription.setLocale(Locale.US);
+        usDescription.setText("US Description");
         germanDescription = container.newDescription();
         germanDescription.setLocale(Locale.GERMAN);
+        germanDescription.setText("German Description");
 
         usLabel = container.newLabel();
         usLabel.setLocale(Locale.US);
+        usLabel.setValue("foo");
+        usLabel.setPluralValue("foos");
         germanLabel = container.newLabel();
         germanLabel.setLocale(Locale.GERMAN);
+        germanLabel.setValue("bar");
+        germanLabel.setPluralValue("bars");
     }
 
     // OK to suppress deprecation warnings as this is a test for a deprecated method.
@@ -510,6 +516,93 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    public void testGetLastResortLabel() {
+        assertEquals(container.getName(), container.getLastResortLabel());
+    }
+
+    public void testGetLastResortPluralLabel() {
+        assertEquals("", container.getLastResortPluralLabel());
+    }
+
+    public void testGetCurrentLabelIpsModelLocaleLabelExistent() {
+        ILabel modelLocaleLabel = container.getLabelForIpsModelLocale();
+        if (modelLocaleLabel == null) {
+            Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+            modelLocaleLabel = container.newLabel();
+            modelLocaleLabel.setLocale(ipsModelLocale);
+            modelLocaleLabel.setValue("squishibu");
+            modelLocaleLabel.setPluralValue("squishibus");
+        }
+        assertEquals(modelLocaleLabel.getValue(), container.getCurrentLabel());
+        assertEquals(modelLocaleLabel.getPluralValue(), container.getCurrentPluralLabel());
+    }
+
+    public void testGetCurrentLabelDefaultLocaleLabelExistent() {
+        ILabel modelLocaleLabel = container.getLabelForIpsModelLocale();
+        if (modelLocaleLabel != null) {
+            modelLocaleLabel.delete();
+        }
+        ILabel defaultLocaleLabel = container.getLabelForDefaultLocale();
+        if (defaultLocaleLabel == null) {
+            defaultLocaleLabel = container.newLabel();
+            defaultLocaleLabel.setLocale(Locale.GERMAN);
+            defaultLocaleLabel.setValue("zwirgbi");
+            defaultLocaleLabel.setPluralValue("zwirgbis");
+        }
+        assertEquals(defaultLocaleLabel.getValue(), container.getCurrentLabel());
+        assertEquals(defaultLocaleLabel.getPluralValue(), container.getCurrentPluralLabel());
+    }
+
+    public void testGetCurrentLabelLastResort() {
+        ILabel modelLocaleLabel = container.getLabelForIpsModelLocale();
+        if (modelLocaleLabel != null) {
+            modelLocaleLabel.delete();
+        }
+        ILabel defaultLocaleLabel = container.getLabelForDefaultLocale();
+        if (defaultLocaleLabel != null) {
+            defaultLocaleLabel.delete();
+        }
+        assertEquals(container.getLastResortLabel(), container.getCurrentLabel());
+        assertEquals(container.getLastResortPluralLabel(), container.getCurrentPluralLabel());
+    }
+
+    public void testGetCurrentDescriptionIpsModelLocaleDescriptionExistent() {
+        IDescription modelLocaleDescription = container.getDescriptionForIpsModelLocale();
+        if (modelLocaleDescription == null) {
+            Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+            modelLocaleDescription = container.newDescription();
+            modelLocaleDescription.setLocale(ipsModelLocale);
+            modelLocaleDescription.setText("foo");
+        }
+        assertEquals(modelLocaleDescription.getText(), container.getCurrentDescription());
+    }
+
+    public void testGetCurrentDescriptionDefaultLocaleExistent() {
+        IDescription modelLocaleDescription = container.getDescriptionForIpsModelLocale();
+        if (modelLocaleDescription != null) {
+            modelLocaleDescription.delete();
+        }
+        IDescription defaultLocaleDescription = container.getDescriptionForDefaultLocale();
+        if (defaultLocaleDescription == null) {
+            defaultLocaleDescription = container.newDescription();
+            defaultLocaleDescription.setLocale(Locale.GERMAN);
+            defaultLocaleDescription.setText("schwubdibu");
+        }
+        assertEquals(defaultLocaleDescription.getText(), container.getCurrentDescription());
+    }
+
+    public void testGetCurrentDescriptionNoneExistent() {
+        IDescription modelLocaleDescription = container.getDescriptionForIpsModelLocale();
+        if (modelLocaleDescription != null) {
+            modelLocaleDescription.delete();
+        }
+        IDescription defaultLocaleDescription = container.getDescriptionForDefaultLocale();
+        if (defaultLocaleDescription != null) {
+            defaultLocaleDescription.delete();
+        }
+        assertEquals("", container.getCurrentDescription());
+    }
+
     public void testGetDescriptionForIpsModelLocale() {
         Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
         assertEquals(ipsModelLocale.getLanguage(), container.getDescriptionForIpsModelLocale().getLocale()
@@ -529,14 +622,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testGetLabelForDefaultLocale() {
         Locale defaultLocale = Locale.GERMAN;
         assertEquals(defaultLocale, container.getLabelForDefaultLocale().getLocale());
-    }
-
-    public void testHasDescriptionSupport() {
-        assertTrue(container.hasDescriptionSupport());
-    }
-
-    public void testHasLabelSupport() {
-        assertTrue(container.hasLabelSupport());
     }
 
     class TestIpsObjectPartContainer extends AtomicIpsObjectPart {
@@ -614,6 +699,24 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             return super.newPart(partType);
         }
 
+        /*
+         * Calls the protected method getLastResortLabel() so that it can be accessed by this test
+         * case.
+         */
+        @Override
+        public String getLastResortLabel() {
+            return super.getLastResortLabel();
+        }
+
+        /*
+         * Calls the protected method getLastResortPluralLabel() so that it can be accessed by this
+         * test case.
+         */
+        @Override
+        public String getLastResortPluralLabel() {
+            return super.getLastResortPluralLabel();
+        }
+
         @Override
         public boolean hasDescriptionSupport() {
             return descriptionSupport;
@@ -621,6 +724,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         public boolean hasLabelSupport() {
+            return true;
+        }
+
+        @Override
+        public boolean isPluralLabelSupported() {
             return true;
         }
 
