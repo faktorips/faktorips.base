@@ -1,0 +1,18 @@
+<PersistenceAssociation 
+transient="false" 
+fetchType="LAZY" 
+id="4711" joinTableName="joinTable1" 
+sourceColumnName="sourceColumn1" 
+targetColumnName="targetColumn1"
+joinColumnName="joinColumn1"
+ownerOfManyToManyAssociation="false"
+joinFetchType="INNER"
+orphanRemoval="true"
+cascadeTypeOverwriteDefault="true"
+cascadeTypePersist="true"
+cascadeTypeMerge="true"
+cascadeTypeRemove="true"
+cascadeTypeRefresh="true"
+>
+<Description/>
+</PersistenceAssociation>

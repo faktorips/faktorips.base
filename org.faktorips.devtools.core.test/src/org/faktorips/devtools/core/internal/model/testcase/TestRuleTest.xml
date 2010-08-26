@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+-->
+<testcases>
+
+	<RuleObject validationRule="validationRule1" testRuleParameter="testRuleParameter1" violationType="violated">
+	</RuleObject>
+	
+	<RuleObject validationRule="validationRule2" testRuleParameter="testRuleParameter2" violationType="notViolated">
+	</RuleObject>
+		
+	<RuleObject validationRule="validationRule3" testRuleParameter="testRuleParameter3" violationType="xyz">
+	</RuleObject>		
+</testcases>

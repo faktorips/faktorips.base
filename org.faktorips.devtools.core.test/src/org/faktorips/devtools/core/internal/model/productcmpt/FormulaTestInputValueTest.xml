@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FormulaTestInputValue id="42" identifier="formulaTestInputValue1">
+	<Value>4711</Value>
+</FormulaTestInputValue>

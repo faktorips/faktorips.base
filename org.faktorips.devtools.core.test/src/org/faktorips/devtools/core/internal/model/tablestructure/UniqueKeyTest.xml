@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for ColumnImplTest.java
+-->
+<UniqueKey id="42">
+	<Item name="age"/>
+	<Item name="gender"/>
+</UniqueKey>

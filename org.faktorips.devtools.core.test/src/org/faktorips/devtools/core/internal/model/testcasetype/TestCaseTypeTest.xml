@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testcases>
+	<TestCaseType>
+	
+	<!-- Input -->
+		<ValueParameter name="newSumInsured1" testParameterType="input" valueDatatype="Money"></ValueParameter>
+		<ValueParameter name="newSumInsured2" testParameterType="input" valueDatatype="Decimal"></ValueParameter>
+		<PolicyCmptTypeParameter name="policyCmptType1" testParameterType="input" policyCmptType="base.Test1"
+			minInstances="2" maxInstances="3"></PolicyCmptTypeParameter>
+		<PolicyCmptTypeParameter name="policyCmptType2" testParameterType="input" policyCmptType="base.Test2"
+			minInstances="4" maxInstances="5"></PolicyCmptTypeParameter>
+	
+	<!-- Expected Result -->
+		<ValueParameter name="newSumInsured3" testParameterType="expectedResult" valueDatatype="Test1"></ValueParameter>
+		<ValueParameter name="newSumInsured4" testParameterType="expectedResult" valueDatatype="Test2"></ValueParameter>
+		<PolicyCmptTypeParameter name="policyCmptType1" testParameterType="expectedResult" policyCmptType="base.Test3"
+			minInstances="6" maxInstances="7"></PolicyCmptTypeParameter>
+		<PolicyCmptTypeParameter name="policyCmptType2" testParameterType="expectedResult" policyCmptType="base.Test4"
+			minInstances="8" maxInstances="9"></PolicyCmptTypeParameter>	
+		<RuleParameter name="rule1" testParameterType="expectedResult">
+		</RuleParameter>
+	
+	</TestCaseType>
+</testcases>

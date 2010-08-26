@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/2.1.0/UML" xmi:id="_6MZ0cD_JEd6Jvr5L01c9sg" name="Package">
+  <elementImport xmi:id="_6PztwD_JEd6Jvr5L01c9sg">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+  </elementImport>
+  <elementImport xmi:id="_6P3_MD_JEd6Jvr5L01c9sg">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+  </elementImport>
+  <elementImport xmi:id="_6P3_MT_JEd6Jvr5L01c9sg">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#UnlimitedNatural"/>
+  </elementImport>
+  <elementImport xmi:id="_6P4mQD_JEd6Jvr5L01c9sg">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+  </elementImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_-PfPYD_JEd6Jvr5L01c9sg" name="CSVTableFormat">
+    <generalization xmi:id="_gz10QD_KEd6Jvr5L01c9sg" general="_X8ojAD_KEd6Jvr5L01c9sg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_CAlicD_KEd6Jvr5L01c9sg" name="ITableFormat" clientDependency="_KZsicD_KEd6Jvr5L01c9sg">
+    <ownedAttribute xmi:id="_xfbAwD_KEd6Jvr5L01c9sg" name="properties" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Realization" xmi:id="_KZsicD_KEd6Jvr5L01c9sg" supplier="_X8ojAD_KEd6Jvr5L01c9sg" client="_CAlicD_KEd6Jvr5L01c9sg"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_Q4smMD_KEd6Jvr5L01c9sg" name="ExcelTableFormat">
+    <generalization xmi:id="_hdo_MD_KEd6Jvr5L01c9sg" general="_X8ojAD_KEd6Jvr5L01c9sg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_X8ojAD_KEd6Jvr5L01c9sg" name="AbstractExternalTableFormat" isAbstract="true"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_KJZnMD_LEd6Jvr5L01c9sg" name="IValueConverter" clientDependency="_1Yvw0D_MEd6Jvr5L01c9sg _3HgYsD_MEd6Jvr5L01c9sg">
+    <ownedOperation xmi:id="_5t8E4D_LEd6Jvr5L01c9sg" name="getIpsValue">
+      <ownedParameter xmi:id="_9pDPkD_LEd6Jvr5L01c9sg" direction="return"/>
+      <ownedParameter xmi:id="_9pD2oD_LEd6Jvr5L01c9sg" name="Object o"/>
+    </ownedOperation>
+    <ownedOperation xmi:id="_DN-3wD_MEd6Jvr5L01c9sg" name="getExternalDataValue">
+      <ownedParameter xmi:id="_OjFHwD_MEd6Jvr5L01c9sg" direction="return"/>
+      <ownedParameter xmi:id="_OjFHwT_MEd6Jvr5L01c9sg" name="String s"/>
+    </ownedOperation>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_VmijcD_MEd6Jvr5L01c9sg" name="DateValueConverter"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_Wx0q0D_MEd6Jvr5L01c9sg" name="DoubleValueConverter"/>
+  <packagedElement xmi:type="uml:Realization" xmi:id="_1Yvw0D_MEd6Jvr5L01c9sg" supplier="_VmijcD_MEd6Jvr5L01c9sg" client="_KJZnMD_LEd6Jvr5L01c9sg"/>
+  <packagedElement xmi:type="uml:Realization" xmi:id="_3HgYsD_MEd6Jvr5L01c9sg" supplier="_Wx0q0D_MEd6Jvr5L01c9sg" client="_KJZnMD_LEd6Jvr5L01c9sg"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_X5qnMD_NEd6Jvr5L01c9sg" name="AbstractTableImportOperation" isAbstract="true"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_u0vmYD_OEd6Jvr5L01c9sg" memberEnd="_u0wNcD_OEd6Jvr5L01c9sg _u0w0gT_OEd6Jvr5L01c9sg">
+    <ownedEnd xmi:id="_u0wNcD_OEd6Jvr5L01c9sg" name="src" type="_CAlicD_KEd6Jvr5L01c9sg" association="_u0vmYD_OEd6Jvr5L01c9sg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_u0w0gD_OEd6Jvr5L01c9sg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_u0wNcT_OEd6Jvr5L01c9sg" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_u0w0gT_OEd6Jvr5L01c9sg" name="dst" type="_X5qnMD_NEd6Jvr5L01c9sg" association="_u0vmYD_OEd6Jvr5L01c9sg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_u0xbkT_OEd6Jvr5L01c9sg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_u0xbkD_OEd6Jvr5L01c9sg" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_CHNVkD_PEd6Jvr5L01c9sg" name="CSVTableImportOperation">
+    <generalization xmi:id="_GsHrMD_PEd6Jvr5L01c9sg" general="_X5qnMD_NEd6Jvr5L01c9sg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_DwAfYD_PEd6Jvr5L01c9sg" name="ExcelTableImportOperation">
+    <generalization xmi:id="_HRfpID_PEd6Jvr5L01c9sg" general="_X5qnMD_NEd6Jvr5L01c9sg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_GfwNsD_QEd6Jvr5L01c9sg" memberEnd="_Gfw0wD_QEd6Jvr5L01c9sg _GfyC4T_QEd6Jvr5L01c9sg">
+    <ownedEnd xmi:id="_Gfw0wD_QEd6Jvr5L01c9sg" name="_1" type="_CAlicD_KEd6Jvr5L01c9sg" association="_GfwNsD_QEd6Jvr5L01c9sg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_GfyC4D_QEd6Jvr5L01c9sg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Gfxb0D_QEd6Jvr5L01c9sg" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_GfyC4T_QEd6Jvr5L01c9sg" name="n" type="_KJZnMD_LEd6Jvr5L01c9sg" association="_GfwNsD_QEd6Jvr5L01c9sg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Gfyp8T_QEd6Jvr5L01c9sg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Gfyp8D_QEd6Jvr5L01c9sg" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+</uml:Package>

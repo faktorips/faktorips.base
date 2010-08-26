@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+-->
+<testcases>
+
+	<ValueObject testValueParameter="newSumInsured">
+		<value>500</value>
+	</ValueObject>
+	
+</testcases>

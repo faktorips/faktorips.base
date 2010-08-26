@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for PersistentTypeInfoTest.java
+-->
+<PolicyCmptType configurableByProductCmptType="true" productCmptType="Product" supertype="SuperType" abstract="true">
+	<Description>blabla</Description>
+    <Attribute id="0" name="premium" datatype="money" productRelevant="false" attributeType="comp" defaultValue="0EUR">
+        <valueset valuesetcontenttype="IntegerRANGE">
+    	    <IntegerRange></IntegerRange>
+        </valueset>
+    </Attribute>
+    <Method id="1" name="calcPremium" datatype="Money">
+    </Method>
+    <ValidationRuleDef id="2" name="checkAge">
+        <Message severity="30" code="f10" text="blabla"/>
+    </ValidationRuleDef>
+    <Association id="3" type="1" sourceRole="Policy" target="MotorPart" targetRole="PolicyPart" minCardinality="1" maxCardinality="1" exclusiveChoice="false">
+    </Association>
+    <Persistence useTableDefinedInSupertype="true" definesDiscriminatorColumn="true" enabled="true" discriminatorColumnName="D_COLUMN" discriminatorDatatype="INTEGER" discriminatorValue="422" id="0" inheritanceStrategy="SINGLE_TABLE" secondaryTableName="" tableName="POLICY1">
+        <Description>persistence descr</Description>
+    </Persistence>
+</PolicyCmptType>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestCases>
+	<ValueSet>
+		<Enum> 
+			<Value>
+			     <Data><![CDATA[one]]></Data>
+			</Value>
+			<Value>
+			     <Data><![CDATA[two]]></Data>
+			</Value>
+			<Value>
+			     <Data><![CDATA[three]]></Data>
+			</Value>
+		</Enum>
+	</ValueSet>
+</TestCases>

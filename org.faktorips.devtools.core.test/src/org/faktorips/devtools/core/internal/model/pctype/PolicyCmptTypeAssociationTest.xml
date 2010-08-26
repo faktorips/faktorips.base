@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Association id="42"
+          abstract="true" 
+          associationType="ass" 
+          derivedUnion="true"
+          target="MotorPart" 
+          targetRoleSingular="PolicyPart" 
+          targetRolePlural="PolicyParts" 
+          minCardinality="1" 
+          maxCardinality="*"
+          qualified="true" 
+          subsettedDerivedUnion="Parts" 
+          inverseAssociation="Policy">
+          <Description locale="de">blabla</Description>
+</Association>

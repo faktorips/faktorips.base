@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+-->
+<testcases>
+
+	<TestAttribute name="attribute1Name" attribute="attribute1" testAttributeType="input" policyCmptType="policyCmptType1">
+	</TestAttribute>
+
+	<TestAttribute name="attribute2Name" attribute="attribute2" testAttributeType="expectedResult">
+	</TestAttribute>
+	
+	<TestAttribute name="attribute3Name" attribute="attribute3" testAttributeType="combined">
+	</TestAttribute>
+	
+	<TestAttribute name="attribute4Name" attribute="attribute4" testAttributeType="xyz">
+	</TestAttribute>		
+
+		<TestAttribute name="attribute5Name" datatype="String" attribute="" testAttributeType="xyz">
+	</TestAttribute>		
+</testcases>

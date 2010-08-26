@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for ColumnImplTest.java
+-->
+<Column id="42" name="premium" datatype="Money"/>

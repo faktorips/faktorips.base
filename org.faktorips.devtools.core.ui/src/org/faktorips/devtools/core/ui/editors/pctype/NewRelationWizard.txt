@@ -1,0 +1,46 @@
+Relation Wizard:
+================
+1. Seite:
+
+Target
+Typ der Beziehung
+  Assoziation, Compostion, Reverse Composition, Abstract Container, Reverse Container
+
+2. Seite: Wenn dies eine Nicht-Container Assoziation oder Composition ist und das Target eine Containerbeziehung definiert.
+Implementiert diese Beziehung eine Containerbeziehung?
+Auswahl der Containerbeziehung
+Also zum Beispiel man legt eine Beziehung zwischen HausratVertrag und Hausratgrunddeckung an und es gibt eine Containerbez.
+zwischen Vertrag und Deckung.
+Ansonsten wird dises Seite nicht angezeigt.
+
+3. Seite
+Je nach BeziehungsTyp dafür aber auch die Attribute fuer die Produktseite, wenn erlaubt.
+
+
+a) Assoziation
+min, max, role singuluar, role plural (nur enablen, wenn max>1, rollen mit Name des Targets vorbelegen.
+
+product relevant. min, max, role singular, role plural nur enablen, wenn produt relevant=true.
+Wenn der Typ nicht product relevant ist, gar nicht anbieten.
+
+product relevant. min, max, role singular, role plural nur enablen, wenn produt relevant=true.
+Wenn der Typ nicht product relevant ist, gar nicht anbieten.
+
+b.) Composition
+min, max, role singuluar, role plural (nur enablen, wenn max>1).
+
+c.) Reverse Composition
+min=1, max=1, target role plural="" disbaled anzeigen
+target role singular
+
+
+4. Seite (Rückrichtung)
+Radio Buttons:
+New Reverse Relation
+Use existing Relation as reverse
+No Reverse Relation
+
+5.) Seite (Neue Rückrichtung)
+Typ wird wie folgt gewählt: Assoziation=Assoziation, Composition=>ReverseComp, ReverseComp=>Compostion
+Target: klar
+ansonsten wie seite 3.

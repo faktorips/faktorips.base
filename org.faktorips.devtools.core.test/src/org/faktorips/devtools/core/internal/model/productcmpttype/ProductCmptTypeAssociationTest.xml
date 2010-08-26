@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for RelationTest.java
+-->
+<testcases>
+
+	<Association id="42"
+          associationType="aggr" 
+          target="pack1.CoverageType" 
+          targetRoleSingular="CoverageType" 
+          targetRolePlural="CoverageTypes" 
+          minCardinality="1" 
+          maxCardinality="*" 
+          derivedUnion="true"
+          subsettedDerivedUnion="BaseCoverageType">
+		<Description>blabla</Description>
+	</Association>
+		
+</testcases>

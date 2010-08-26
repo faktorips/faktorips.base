@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for ProductCmptLink.java
+-->
+<root>
+<Link id="42" association="FullCoverage" target="FullCoveragePlus" minCardinality="2" maxCardinality="3">
+</Link>
+<Link id="43" association="FullCoverage" target="FullCoveragePlus" minCardinality="1" maxCardinality="*"/>
+</root>

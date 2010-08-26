@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestCases>
+	<Entry type="src" 
+		sourceFolder="ipssrc" 
+		outputFolderMergable="generated" 
+		basePackageMergable="org.sample.generated"
+		tocPath="motor.repository-toc.xml"
+		outputFolderDerived="extensions" 
+		basePackageDerived="org.sample.extensions"/>
+	<Entry type="src" sourceFolder="ipssrc/modelclasses" outputFolder ="" basePackage=""/>
+</TestCases>
