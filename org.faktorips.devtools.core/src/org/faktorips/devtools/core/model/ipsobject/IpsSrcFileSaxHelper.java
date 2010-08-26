@@ -103,6 +103,7 @@ public abstract class IpsSrcFileSaxHelper {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), handler);
         } catch (SAXFinishedException ignored) {
+            // nothing to do
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
         } finally {
@@ -111,6 +112,7 @@ public abstract class IpsSrcFileSaxHelper {
                     is.close();
                 }
             } catch (IOException ignored) {
+                // nothing to do
             }
         }
     }
