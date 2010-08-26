@@ -70,6 +70,11 @@ public interface IIpsObjectPathEntry {
     public final static String TYPE_ARCHIVE = "archive"; //$NON-NLS-1$
 
     /**
+     * Type constant indicating a source folder entry.
+     */
+    public final static String TYPE_CONTAINER = "container"; //$NON-NLS-1$
+
+    /**
      * Returns the object path this is an entry of.
      */
     public IIpsObjectPath getIpsObjectPath();
@@ -81,6 +86,11 @@ public interface IIpsObjectPathEntry {
 
     /**
      * Returns the type of this entry as one of the type constant defined in this interface.
+     * 
+     * @see #TYPE_SRC_FOLDER
+     * @see #TYPE_ARCHIVE
+     * @see #TYPE_PROJECT_REFERENCE
+     * @see #TYPE_CONTAINER
      */
     public String getType();
 

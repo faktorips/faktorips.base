@@ -6,25 +6,25 @@
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.ipsproject;
+package org.faktorips.devtools.core.model.ipsproject;
 
-import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.core.runtime.CoreException;
 
 /**
- * A listener that listens to changes to classpath contents that is either a Jar file in the
- * classpath or a directory containing class files is changed in any way.
+ * An ips object path container provides a way to indirectly reference a set of entries of type
+ * archive or project. What entries the container contains is not fixed.
  * 
- * @author Jan Ortmann
+ * @since 3.1
  */
-public interface IClasspathContentsChangeListener {
+public interface IIpsContainerEntry extends IIpsObjectPathEntry {
 
-    /**
-     * Is called when the contents of the indicated Java project's classpath has changed.
-     */
-    public void classpathContentsChanges(IJavaProject project);
+    public String getDescription();
+
+    public IIpsObjectPathEntry[] resolveEntries() throws CoreException;
+
 }

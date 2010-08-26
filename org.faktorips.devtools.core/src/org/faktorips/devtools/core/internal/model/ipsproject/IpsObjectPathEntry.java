@@ -206,6 +206,11 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
             entry.initFromXml(element, project);
             return entry;
         }
+        if (type.equals(TYPE_CONTAINER)) {
+            entry = new IpsContainerEntryBasedOnClasspathContainer(path);
+            entry.initFromXml(element, project);
+            return entry;
+        }
         throw new RuntimeException("Unknown entry type " + type); //$NON-NLS-1$
     }
 
