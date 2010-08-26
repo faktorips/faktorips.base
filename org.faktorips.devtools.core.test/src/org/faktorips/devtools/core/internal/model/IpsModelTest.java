@@ -481,7 +481,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         listener.changedFiles.clear();
         modifyListener.modifiedFiles.clear();
 
-        typeA.setDescription("blublu");
+        typeADescription.setText("blublu");
         typeA.getIpsSrcFile().save(true, null);
 
         assertEquals(1, listener.changedFiles.size());
