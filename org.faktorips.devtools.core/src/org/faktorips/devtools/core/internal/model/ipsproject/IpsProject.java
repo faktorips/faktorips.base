@@ -257,9 +257,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public ClassLoader getClassLoaderForJavaProject() throws CoreException {
-        // creates always a new classloader,
-        // don't copy the jars used in the returned classloader
-        final ClassLoaderProvider classLoaderProvider = new ClassLoaderProvider(getJavaProject(), true, false);
+        return getClassLoaderForJavaProject(ClassLoader.getSystemClassLoader());
+    }
+
+    @Override
+    public ClassLoader getClassLoaderForJavaProject(ClassLoader parent) throws CoreException {
+        ArgumentCheck.notNull(parent);
+        // always creates a new classloader,
+        final ClassLoaderProvider classLoaderProvider = new ClassLoaderProvider(getJavaProject(), parent, true, false);
         return classLoaderProvider.getClassLoader();
     }
 

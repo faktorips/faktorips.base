@@ -144,11 +144,26 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
-     * build path.
+     * build path. The parent of the new class loader is the System class loader.
      * 
      * @throws CoreException if an error occurs while creating the classloader.
+     * 
+     * @see ClassLoader#getSystemClassLoader()
      */
     public ClassLoader getClassLoaderForJavaProject() throws CoreException;
+
+    /**
+     * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
+     * build path. The parent of the new class loader is the System class loader.
+     * 
+     * @param parent The parent class loader.
+     * 
+     * @throws CoreException if an error occurs while creating the classloader.
+     * @throw {@link NullPointerException} if <code>parent</code> is <code>null</code>.
+     * 
+     * @since 3.1.0
+     */
+    public ClassLoader getClassLoaderForJavaProject(ClassLoader parent) throws CoreException;
 
     /**
      * Returns <code>true</code> if the corresponding Java Project doesn't contain any errors that
