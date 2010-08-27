@@ -855,6 +855,14 @@
             id="org.faktorips.devtools.core.ui.views.instanceexplorer"
             name="Instance-Explorer">
       </view>
+      <view
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"
+            icon="icons/IpsHierarchy.gif"
+            id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"
+            name="IPS Hierarchy"
+            restorable="true">
+      </view>
    </extension>
    
    <extension

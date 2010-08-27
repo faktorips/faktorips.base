@@ -64,12 +64,26 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
 
     /**
-     * Creates a new type hierachy containing all the given type's subtypes. Supertypes are not
+     * Creates a new type hierarchy containing all the given type's subtypes. Supertypes are not
      * resolved.
      */
     public final static TypeHierarchy getSubtypeHierarchy(IPolicyCmptType pcType) throws CoreException {
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         addSubtypes(hierarchy, pcType, null);
+        return hierarchy;
+    }
+
+    /**
+     * Creates a new type hierarchy containing all the given type's subtypes and supertypes.
+     */
+    public final static TypeHierarchy getTypeHierarchy(IPolicyCmptType pcType) throws CoreException {
+        TypeHierarchy hierarchy = getSupertypeHierarchy(pcType);
+        Node pcTypeNode = hierarchy.nodes.get(pcType);
+        List<IPolicyCmptType> subtypes = findDirectSubtypes(pcType, hierarchy);
+        for (IPolicyCmptType subtype : subtypes) {
+            addSubtypes(hierarchy, subtype, pcType);
+        }
+        pcTypeNode.subtypes = subtypes.toArray(new IPolicyCmptType[subtypes.size()]);
         return hierarchy;
     }
 
@@ -323,5 +337,4 @@ public class TypeHierarchy implements ITypeHierarchy {
         }
         return null;
     }
-
 }

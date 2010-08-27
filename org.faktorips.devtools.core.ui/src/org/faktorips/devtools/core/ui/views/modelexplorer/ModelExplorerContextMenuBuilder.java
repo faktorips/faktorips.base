@@ -88,10 +88,12 @@ import org.faktorips.devtools.core.ui.actions.NewTableStructureAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.actions.ShowHierarchyAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
+import org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
@@ -378,6 +380,9 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             }
             if (InstanceExplorer.supports(selected)) {
                 manager.add(new ShowInstanceAction((IIpsElement)selected, treeViewer));
+            }
+            if (IpsHierarchy.supports(selected)) {
+                manager.add(new ShowHierarchyAction((IIpsElement)selected, treeViewer));
             }
             // TODO not to be used in this release
             // if (selected instanceof IPolicyCmptType | selected instanceof IProductCmpt) {

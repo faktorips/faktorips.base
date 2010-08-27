@@ -21,8 +21,9 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy;
 
@@ -54,7 +55,7 @@ public class ShowHierarchyAction extends IpsAction {
     }
 
     private void initialize(IIpsElement selectedElement) {
-        if (selectedElement instanceof IIpsMetaClass) {
+        if (selectedElement instanceof IProductCmptType || selectedElement instanceof IPolicyCmptType) {
             setText(Messages.ShowHierarchyAction_nameForTypes);
             setDescription(Messages.ShowHierarchyAction_descriptionForTypes);
             setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IpsHierarchy.IMAGE));

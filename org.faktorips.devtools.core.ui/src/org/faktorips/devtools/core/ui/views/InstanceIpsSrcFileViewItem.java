@@ -32,7 +32,7 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
     private IpsSrcFileCollection collection;
 
     /**
-     * Creates an item for each ips source file and marks the itens as duplicate, if two (or more)
+     * Creates an item for each ips source file and marks the items as duplicate, if two (or more)
      * ips source files have the same unqualified name.
      * 
      * @throws NullPointerException if files is <code>null</code>

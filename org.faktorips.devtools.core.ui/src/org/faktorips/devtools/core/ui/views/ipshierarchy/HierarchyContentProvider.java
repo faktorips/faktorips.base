@@ -15,13 +15,48 @@ package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 
 public class HierarchyContentProvider implements ITreeContentProvider {
 
+    private ITypeHierarchy hierarchy;
+
+    @Override
+    public Object[] getChildren(Object parentElement) {
+        if (parentElement instanceof IPolicyCmptType) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)parentElement;
+            return hierarchy.getSubtypes(policyCmptType);
+        } else {
+            return new Object[0];
+        }
+    }
+
+    @Override
+    public Object getParent(Object element) {
+        if (element instanceof IPolicyCmptType) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)element;
+            return hierarchy.getSupertype(policyCmptType);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean hasChildren(Object element) {
+        return getChildren(element) != null || getChildren(element).length != 0;
+
+    }
+
     @Override
     public Object[] getElements(Object inputElement) {
-        // TODO Auto-generated method stub
-        return null;
+
+        IPolicyCmptType root = hierarchy.getType();
+
+        while (hierarchy.getSupertype(root) != null) {
+            root = hierarchy.getSupertype(root);
+        }
+        return new Object[] { root };
     }
 
     @Override
@@ -32,26 +67,10 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        // TODO Auto-generated method stub
+        if (newInput instanceof ITypeHierarchy) {
+            hierarchy = (ITypeHierarchy)newInput;
+        }
 
-    }
-
-    @Override
-    public Object[] getChildren(Object parentElement) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Object getParent(Object element) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean hasChildren(Object element) {
-        // TODO Auto-generated method stub
-        return false;
     }
 
 }
