@@ -156,24 +156,25 @@ abstract public class DefaultModelDescriptionPage extends Page {
 
         // Set faktorips.attribute description
         FormText client = toolkit.createFormText(excomposite, true);
-        client.setColor("gray", colorGray); //$NON-NLS-1$
 
         // don't ignore whitespaces and newlines
         client.setWhitespaceNormalized(false);
 
         StringBuffer sb = new StringBuffer();
         String description = item.getDescription().trim();
-        sb.append("<form>"); //$NON-NLS-1$
         if (StringUtils.isEmpty(description)) {
-            // if no desription is given show the default text in gray forground color
+            client.setColor("gray", colorGray); //$NON-NLS-1$
+            sb.append("<form>"); //$NON-NLS-1$
+            // if no description is given show the default text in gray foreground color
             sb.append("<p><span color=\"gray\">"); //$NON-NLS-1$
             sb.append(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable);
             sb.append("</span></p>"); //$NON-NLS-1$
+            sb.append("</form>"); //$NON-NLS-1$
+            client.setText(sb.toString(), true, true);
         } else {
             sb.append(description);
+            client.setText(sb.toString(), false, true);
         }
-        sb.append("</form>"); //$NON-NLS-1$
-        client.setText(sb.toString(), true, true);
 
         client.setBackground(excomposite.getBackground());
         client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
