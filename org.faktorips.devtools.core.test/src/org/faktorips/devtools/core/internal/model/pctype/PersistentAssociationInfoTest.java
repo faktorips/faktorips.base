@@ -73,14 +73,12 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setSourceColumnName("");
 
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH));
 
         persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
         inversePersistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
         persistenceAssociatonInfo.setJoinTableName("INVALID JOIN_TABLE");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(4, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH));
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_EMPTY));
@@ -90,38 +88,27 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         persistenceAssociatonInfo.setJoinTableName("JOIN_TABLE");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(2, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_EMPTY));
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_EMPTY));
 
         persistenceAssociatonInfo.setTargetColumnName("INVALID SOURCE_COLUMN");
         persistenceAssociatonInfo.setSourceColumnName("INVALID TARGET_COLUMN");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(2, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
 
         persistenceAssociatonInfo.setSourceColumnName("SOURCE_COLUMN");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
 
         persistenceAssociatonInfo.setTransient(true);
         inversePersistenceAssociatonInfo.setTransient(true);
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
 
         persistenceAssociatonInfo.setTransient(true);
         inversePersistenceAssociatonInfo.setTransient(false);
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
-
-        persistenceAssociatonInfo.setTransient(false);
-        inversePersistenceAssociatonInfo.setTransient(false);
-        persistenceAssociatonInfo.setTargetColumnName("TARGET_COLUMN");
-        ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
     }
 
     public void testValidateTargetSideNotTransient() throws CoreException {

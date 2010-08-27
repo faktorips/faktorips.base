@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.ObjectUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -130,8 +131,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, cascadeTypeOverwriteDefault);
     }
 
-    private void checkIfManuallyCodeFixIsNecessary(boolean oldValue, boolean newValue) {
-        if (oldValue != newValue) {
+    private void checkIfManuallyCodeFixIsNecessary(Object oldValue, Object newValue) {
+        if (!ObjectUtil.equals(oldValue, newValue)) {
             manuallyCodeFixNecessary = true;
         }
     }
@@ -263,6 +264,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(fetchType);
         FetchType oldValue = this.fetchType;
         this.fetchType = fetchType;
+        checkIfManuallyCodeFixIsNecessary(oldValue, fetchType);
         valueChanged(oldValue, fetchType);
     }
 
@@ -271,6 +273,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newJoinTableName);
         String oldValue = joinTableName;
         joinTableName = newJoinTableName;
+        checkIfManuallyCodeFixIsNecessary(oldValue, newJoinTableName);
         valueChanged(oldValue, joinTableName);
     }
 
@@ -279,6 +282,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newSourceColumnName);
         String oldValue = sourceColumnName;
         sourceColumnName = newSourceColumnName;
+        checkIfManuallyCodeFixIsNecessary(oldValue, sourceColumnName);
         valueChanged(oldValue, sourceColumnName);
     }
 
@@ -287,6 +291,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newTargetColumnName);
         String oldValue = targetColumnName;
         targetColumnName = newTargetColumnName;
+        checkIfManuallyCodeFixIsNecessary(oldValue, targetColumnName);
         valueChanged(oldValue, targetColumnName);
     }
 
@@ -295,6 +300,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newJoinColumnName);
         String oldValue = joinColumnName;
         joinColumnName = newJoinColumnName;
+        checkIfManuallyCodeFixIsNecessary(oldValue, joinColumnName);
         valueChanged(oldValue, joinColumnName);
     }
 
@@ -578,7 +584,8 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String textManualFixNecessary = NLS.bind(
                     Messages.PersistentAssociationInfo_msgWarningManualyCodeMergeNecessary,
                     getPolicyComponentTypeAssociation().getName());
-            msgList.add(new Message(MSGCODE_MANUALLY_CODE_FIX_NECESSARY, textManualFixNecessary, Message.WARNING, this));
+            msgList
+                    .add(new Message(MSGCODE_MANUALLY_CODE_FIX_NECESSARY, textManualFixNecessary, Message.WARNING, this));
         }
 
         IPolicyCmptTypeAssociation inverseAssociation = null;
