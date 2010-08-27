@@ -658,12 +658,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     private void execCustomValidations(MessageList result, IIpsProject ipsProject) throws CoreException {
-        Class<IIpsObjectPartContainer> thisClass = (Class<IIpsObjectPartContainer>)getClass();
-        Set<ICustomValidation<IIpsObjectPartContainer>> customValidations = getIpsModel().getCustomModelExtensions()
+        Class<IpsObjectPartContainer> thisClass = (Class<IpsObjectPartContainer>)getClass();
+        Set<ICustomValidation<IpsObjectPartContainer>> customValidations = getIpsModel().getCustomModelExtensions()
                 .getCustomValidations(thisClass);
-        for (ICustomValidation<IIpsObjectPartContainer> validation : customValidations) {
+        for (ICustomValidation<IpsObjectPartContainer> validation : customValidations) {
             result.add(validation.validate(this, ipsProject)); // add can handle null!
         }
     }
