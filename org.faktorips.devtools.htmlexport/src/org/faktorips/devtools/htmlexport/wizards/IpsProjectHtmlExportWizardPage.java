@@ -17,6 +17,7 @@ import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -58,7 +59,9 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     protected IpsProjectHtmlExportWizardPage(IStructuredSelection selection) {
         super(PAGE_NAME);
         this.selection = selection;
-        setTitle(Messages.IpsProjectHtmlExportWizardPage_projectName + getProject().getName());
+        IProject project = getProject();
+        String projectName = project != null ? project.getName() : "No project selected";
+        setTitle(Messages.IpsProjectHtmlExportWizardPage_projectName + projectName);
         setDescription(Messages.IpsProjectHtmlExportWizardPage_description);
 
         setPageComplete(false);
@@ -86,7 +89,8 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         // TODO includeReferencedProjects = toolkit.createCheckbox(composite,
         // "Include referenced Projects");
 
-        showValidationErrorsCheckBox = toolkit.createCheckbox(composite, Messages.IpsProjectHtmlExportWizardPage_showValidationErrors);
+        showValidationErrorsCheckBox = toolkit.createCheckbox(composite,
+                Messages.IpsProjectHtmlExportWizardPage_showValidationErrors);
 
         restoreWidgetValues();
 
@@ -139,7 +143,11 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     private IProject getProject() {
-        return (IProject)selection.getFirstElement();
+        Object selected = selection.getFirstElement();
+        if (selected instanceof IResource) {
+            return ((IResource)selected).getProject();
+        }
+        return null;
     }
 
     @Override
@@ -176,7 +184,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     private void canFinish() {
-        if (selection.size() != 1) {
+        if (selection.size() != 1 || getProject() == null) {
             setPageComplete(false);
             return;
         }
