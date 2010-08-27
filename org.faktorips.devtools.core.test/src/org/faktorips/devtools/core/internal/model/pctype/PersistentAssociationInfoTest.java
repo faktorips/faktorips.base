@@ -129,32 +129,25 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
 
         assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
-        assertEquals(0, ml.getNoOfMessages());
 
         // test target association must be transient or target policy component persist disabled
 
         sourcePersistenceAssociatonInfo.setTransient(true);
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
 
         targetPersistenceAssociatonInfo.setTransient(true);
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
 
         sourcePersistenceAssociatonInfo.setTransient(true);
         targetPersistenceAssociatonInfo.setTransient(false);
         targetPersistenceAssociatonInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
                 .getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
 
         targetPersistenceAssociatonInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
                 .getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
@@ -165,7 +158,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         pcAssociation.setMaxCardinality(1); // set to 1 we don't want a join table
         sourcePersistenceAssociatonInfo.setJoinColumnName("JoinColumn");
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
+        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
     }
 
     public void testJoinTableRequiredAssociation() throws CoreException {
