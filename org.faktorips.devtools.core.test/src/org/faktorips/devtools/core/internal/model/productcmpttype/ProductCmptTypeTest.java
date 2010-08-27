@@ -23,6 +23,7 @@ import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -83,6 +84,21 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
     @Override
     protected void tearDownExtension() throws Exception {
         ipsProject.getIpsModel().removeChangeListener(this);
+    }
+
+    public void testValidateMustHaveSupertype() throws CoreException {
+        PolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
+        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+        superPolicyCmptType.setProductCmptType(superProductCmptType.getQualifiedName());
+        superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
+
+        productCmptType.setSupertype("");
+        MessageList result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SUPERTYPE));
+
+        productCmptType.setSupertype(superProductCmptType.getQualifiedName());
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SUPERTYPE));
     }
 
     public void testValidateDuplicateFormulaName() throws CoreException {
