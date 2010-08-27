@@ -93,7 +93,7 @@ import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
-import org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy;
+import org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchyView;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
@@ -381,7 +381,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             if (InstanceExplorer.supports(selected)) {
                 manager.add(new ShowInstanceAction((IIpsElement)selected, treeViewer));
             }
-            if (IpsHierarchy.supports(selected)) {
+            if (IpsHierarchyView.supports(selected)) {
                 manager.add(new ShowHierarchyAction((IIpsElement)selected, treeViewer));
             }
             // TODO not to be used in this release

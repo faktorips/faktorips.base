@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy;
+import org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchyView;
 
 public class ShowHierarchyAction extends IpsAction {
     /**
@@ -58,7 +58,7 @@ public class ShowHierarchyAction extends IpsAction {
         if (selectedElement instanceof IProductCmptType || selectedElement instanceof IPolicyCmptType) {
             setText(Messages.ShowHierarchyAction_nameForTypes);
             setDescription(Messages.ShowHierarchyAction_descriptionForTypes);
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IpsHierarchy.IMAGE));
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IpsHierarchyView.IMAGE));
 
         } else {
             setText(NLS.bind(Messages.ShowHierarchyAction_nameForInstances, "")); //$NON-NLS-1$
@@ -72,11 +72,11 @@ public class ShowHierarchyAction extends IpsAction {
         if (ipsObject == null) {
             return;
         }
-        if (IpsHierarchy.supports(ipsObject)) {
+        if (IpsHierarchyView.supports(ipsObject)) {
             try {
                 IViewPart pse = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .showView(IpsHierarchy.EXTENSION_ID);
-                ((IpsHierarchy)pse).showInstancesOf(ipsObject);
+                        .showView(IpsHierarchyView.EXTENSION_ID);
+                ((IpsHierarchyView)pse).getHierarchy(ipsObject);
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             } catch (CoreException e) {

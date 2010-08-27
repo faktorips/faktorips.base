@@ -37,28 +37,19 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.pctype.TypeHierarchy;
-import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsMetaClass;
-import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
-import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
 import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceLabelProvider;
 import org.faktorips.devtools.core.ui.views.instanceexplorer.Messages;
-import org.w3c.dom.Element;
 
-public class IpsHierarchy extends ViewPart {
+public class IpsHierarchyView extends ViewPart {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"; //$NON-NLS-1$
     public static final String IMAGE = "IpsHierarchy.gif"; //$NON-NLS-1$
 
@@ -68,6 +59,7 @@ public class IpsHierarchy extends ViewPart {
     private ImageHyperlink selectedElementLink;
     private HierarchyContentProvider hierarchyContentProvider = new HierarchyContentProvider();
     private InstanceLabelProvider labelProvider;
+
     private DecoratingLabelProvider decoratedLabelProvider;
 
     @Override
@@ -80,6 +72,15 @@ public class IpsHierarchy extends ViewPart {
         DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
         dropTarget.addDropListener(new InstanceDropListener());
         dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
+
+        labelProvider = new InstanceLabelProvider();
+        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        decoratedLabelProvider = new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
+
+        selectedElementLink = new ImageHyperlink(panel, SWT.FILL);
+        selectedElementLink.setText(""); //$NON-NLS-1$
+        selectedElementLink.setUnderlined(true);
+        selectedElementLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
         treeViewer = new TreeViewer(panel);
         treeViewer.setLabelProvider(new DefaultLabelProvider());
@@ -101,15 +102,6 @@ public class IpsHierarchy extends ViewPart {
         errormsg = new Label(panel, SWT.WRAP);
         errormsg.setLayoutData(errorLayoutData);
 
-        labelProvider = new InstanceLabelProvider();
-        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        decoratedLabelProvider = new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
-
-        selectedElementLink = new ImageHyperlink(panel, SWT.FILL);
-        selectedElementLink.setText(""); //$NON-NLS-1$
-        selectedElementLink.setUnderlined(true);
-        selectedElementLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
         IActionBars actionBars = getViewSite().getActionBars();
         initToolBar(actionBars.getToolBarManager());
 
@@ -117,15 +109,6 @@ public class IpsHierarchy extends ViewPart {
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
-        // subtype-search action
-
-        /*
-         * SubtypeSearchAction subtypeSearchAction = new SubtypeSearchAction();
-         * subtypeSearchAction.setEnabled(false);
-         * 
-         * toolBarManager.add(subtypeSearchAction);
-         */
-
         // refresh action
 
         Action refreshAction = new Action(Messages.InstanceExplorer_tooltipRefreshContents, IpsUIPlugin
@@ -133,8 +116,13 @@ public class IpsHierarchy extends ViewPart {
 
             @Override
             public void run() {
-                setInputData(null);
-            }/* hierarchyContentProvider.getActualElement() */
+                try {
+                    getHierarchy(hierarchyContentProvider.getActualElement());
+                } catch (CoreException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 
             @Override
             public String getToolTipText() {
@@ -173,7 +161,13 @@ public class IpsHierarchy extends ViewPart {
             Object element = treeViewer.getInput();
             if (element == null) {
                 showEmptyMessage();
-            } else {
+            } else if (element instanceof TypeHierarchy) {
+
+                // IIpsObject ipsObject = (IIpsObject)element;
+                // if (selectedElementLink != null && !selectedElementLink.isDisposed()) {
+                // selectedElementLink.setText(decoratedLabelProvider.getText(ipsObject));
+                // selectedElementLink.setImage(decoratedLabelProvider.getImage(ipsObject));
+                // }
 
                 showMessgeOrTableView(MessageTableSwitch.TABLE);
                 treeViewer.refresh();
@@ -205,9 +199,15 @@ public class IpsHierarchy extends ViewPart {
         if (panel != null && !panel.isDisposed()) {
             panel.layout();
         }
-
     }
 
+    /**
+     * Check whether this HierarchyView supports this object or not. Null is also a supported type
+     * to reset the editor.
+     * 
+     * @param object the object to test
+     * @return true of the HierarchyView supports this object
+     */
     public static boolean supports(Object object) {
         if (object == null) {
             return true;
@@ -242,7 +242,7 @@ public class IpsHierarchy extends ViewPart {
             Object[] transferred = super.getTransferedElements(event.currentDataType);
             if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
                 try {
-                    showInstancesOf(((IIpsSrcFile)transferred[0]).getIpsObject());
+                    getHierarchy(((IIpsSrcFile)transferred[0]).getIpsObject());
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
@@ -262,10 +262,8 @@ public class IpsHierarchy extends ViewPart {
             if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
                 try {
-                    IIpsObject selected = ipsSrcFile.getIpsObject();
-                    if (InstanceExplorer.supports(selected)) {
-                        event.detail = DND.DROP_LINK;
-                    }
+                    IIpsObject selected = ipsSrcFile.getIpsObject(); // TODO Fragen???
+                    event.detail = DND.DROP_LINK;
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }// ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile);
@@ -274,85 +272,23 @@ public class IpsHierarchy extends ViewPart {
         }
     }
 
-    public void showInstancesOf(IIpsObject element) throws CoreException {
+    /**
+     * 
+     * Returns the hierarchy of IIpsObject
+     * 
+     */
+    public void getHierarchy(IIpsObject element) throws CoreException {
         ITypeHierarchy hierarchy = null;
         if (element != null && !element.getEnclosingResource().isAccessible()) {
             setInputData(null);
         } else if (element instanceof IProductCmptType) {
-            IProductCmptType aaa = (IProductCmptType)element;
-            // b = aaa.getSubtypeHierarchy();
+            IProductCmptType pcType = (IProductCmptType)element;
+            // hierarchy = TypeHierarchy.getTypeHierarchy(pcType);
         } else if (element instanceof IPolicyCmptType) {
             IPolicyCmptType pcType = (IPolicyCmptType)element;
+            hierarchyContentProvider.setActualElement(pcType);
             hierarchy = TypeHierarchy.getTypeHierarchy(pcType);
         }
         setInputData(hierarchy);
-    }
-
-    private static class NotFoundMetaClass extends IpsObject implements IIpsMetaClass {
-
-        private final IIpsMetaObject metaObject;
-
-        public NotFoundMetaClass(IIpsMetaObject metaObject) {
-            this.metaObject = metaObject;
-        }
-
-        @Override
-        public String getName() {
-            return Messages.InstanceExplorer_noMetaClassFound;
-        }
-
-        @Override
-        public String getQualifiedName() {
-            return getName();
-        }
-
-        @Override
-        protected IIpsElement[] getChildrenThis() {
-            if (metaObject != null) {
-                return new IIpsElement[] { metaObject };
-            }
-            return new IIpsElement[0];
-        }
-
-        @Override
-        protected void reinitPartCollectionsThis() {
-            // Nothing to do
-        }
-
-        @Override
-        protected boolean addPartThis(IIpsObjectPart part) {
-            return false;
-        }
-
-        @Override
-        protected boolean removePartThis(IIpsObjectPart part) {
-            return false;
-        }
-
-        @Override
-        protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
-            return null;
-        }
-
-        @Override
-        protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
-            return null;
-        }
-
-        @Override
-        public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
-            return new IIpsSrcFile[] { metaObject.getIpsSrcFile() };
-        }
-
-        @Override
-        public IpsObjectType getIpsObjectType() {
-            return null;
-        }
-
-        @Override
-        public IDependency[] dependsOn() throws CoreException {
-            return new IDependency[0];
-        }
-
     }
 }

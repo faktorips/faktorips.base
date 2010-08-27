@@ -857,7 +857,7 @@
       </view>
       <view
             category="org.faktorips.devtools.productDefinitionCategory"
-            class="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"
+            class="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchyView"
             icon="icons/IpsHierarchy.gif"
             id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"
             name="IPS Hierarchy"

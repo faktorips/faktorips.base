@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 public class HierarchyContentProvider implements ITreeContentProvider {
 
     private ITypeHierarchy hierarchy;
+    private IPolicyCmptType selected;
 
     @Override
     public Object[] getChildren(Object parentElement) {
@@ -73,4 +74,11 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     }
 
+    public IPolicyCmptType getActualElement() {
+        return selected;
+    }
+
+    public void setActualElement(IPolicyCmptType selected) {
+        this.selected = selected;
+    }
 }
