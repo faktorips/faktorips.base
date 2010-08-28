@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.pctype.PersistentAttributeInfo;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -116,6 +118,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Group configGroup;
 
     private Checkbox validationRuleAdded;
+
+    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
+    private boolean manuallyCodeFixNecessary;
+    private String currentMessage;
 
     /**
      * TextField to link the name input control with the rule name
@@ -747,11 +753,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         persistencePage.setControl(c);
 
         Composite checkComposite = uiToolkit.createGridComposite(c, 1, true, false);
-        Checkbox checkTransient = uiToolkit.createCheckbox(checkComposite, Messages.AttributeEditDialog_labelAttributeIsTransient);
+        Checkbox checkTransient = uiToolkit.createCheckbox(checkComposite,
+                Messages.AttributeEditDialog_labelAttributeIsTransient);
         bindingContext.bindContent(checkTransient, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TRANSIENT);
 
-        final Group group = uiToolkit.createGroup(checkComposite, Messages.AttributeEditDialog_labelPersistentProperties);
+        final Group group = uiToolkit.createGroup(checkComposite,
+                Messages.AttributeEditDialog_labelPersistentProperties);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(group);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelColumnName);
@@ -860,6 +868,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 }
             }
         });
+
     }
 
     private boolean isPersistentEnabled() {
@@ -897,6 +906,47 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             uiToolkit.setDataChangeable(temporalMappingField.getControl(), needsTemporalType);
         } catch (CoreException e) {
             // validation error, displayed in dialog message area
+        }
+    }
+
+    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
+    @Override
+    protected void updateMessageArea() {
+        super.updateMessageArea();
+        showWarningIfManuallyCodeFixWasNecessary();
+    }
+
+    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
+    @Override
+    public void setMessage(String newMessage) {
+        super.setMessage(newMessage);
+        currentMessage = newMessage; // "no getter available"
+    }
+
+    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
+    @Override
+    public void setMessage(String newMessage, int newType) {
+        super.setMessage(newMessage, newType);
+        currentMessage = newMessage;
+    }
+
+    /*
+     * Show a warning if manually code fix is necessary, see
+     * PersistentAssociationInfo.manuallyCodeFixNecessary
+     */
+    private void showWarningIfManuallyCodeFixWasNecessary() {
+        if (currentMessage != null || !ipsProject.getProperties().isPersistenceSupportEnabled()) {
+            return;
+        }
+
+        PersistentAttributeInfo persistenceAttributeInfo = (PersistentAttributeInfo)attribute
+                .getPersistenceAttributeInfo();
+        if (persistenceAttributeInfo.isManuallyCodeFixNecessary() || manuallyCodeFixNecessary) {
+            manuallyCodeFixNecessary = true;
+            String text = NLS.bind(Messages.AttributeEditDialog_msgWarningManualyCodeMergeNecessary, attribute
+                    .getName());
+            setMessage(text, IMessageProvider.WARNING);
+            persistenceAttributeInfo.resetManuallyCodeFixNecessary();
         }
     }
 

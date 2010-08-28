@@ -263,16 +263,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
             return;
         }
 
-        if (manuallyCodeFixNecessary) {
-            String textManualFixNecessary = NLS.bind(
-                    Messages.PersistentAssociationInfo_msgWarningManualyCodeMergeNecessary,
-                    getPolicyComponentTypeAttribute().getName());
-            msgList
-                    .add(new Message(
-                            org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY,
-                            textManualFixNecessary, Message.WARNING, this));
-        }
-
         if (StringUtils.isBlank(tableColumnName) && !getPolicyComponentTypeAttribute().isOverwrite()) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME,
                     Messages.PersistentAttributeInfo_msgEmptyColumnName, Message.ERROR, this,
@@ -312,10 +302,16 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     /**
-     * Only necessary for test cases.
+     * Resets the flag manually code fix necessary, workaround (MBT#280)
      */
     public void resetManuallyCodeFixNecessary() {
-        valueChanged(manuallyCodeFixNecessary, false);
         manuallyCodeFixNecessary = false;
+    }
+
+    /**
+     * Returns <code>true</code> im manually code fixing is necessary, workaround (MBT#280)
+     */
+    public boolean isManuallyCodeFixNecessary() {
+        return manuallyCodeFixNecessary;
     }
 }

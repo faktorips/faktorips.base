@@ -34,7 +34,7 @@ public class Messages extends NLS {
     public static String PersistentAssociationInfo_msgLazyFetchNotSupported;
     public static String PersistentAssociationInfo_msgMaxLengthExceeds;
     public static String PersistentAssociationInfo_msgMustBeEmpty;
-    public static String PersistentAssociationInfo_msgNot;
+    public static String PersistentAssociationInfo_msgMustNotBeEmpty;
     public static String PersistentAssociationInfo_msgOwningSideManyToManyMarkedOnBothSides;
     public static String PersistentAssociationInfo_msgOwningSideManyToManyNotAllowed;
     public static String PersistentAssociationInfo_msgOwningSideMissing;

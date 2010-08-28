@@ -580,14 +580,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             return;
         }
 
-        if (manuallyCodeFixNecessary) {
-            String textManualFixNecessary = NLS.bind(
-                    Messages.PersistentAssociationInfo_msgWarningManualyCodeMergeNecessary,
-                    getPolicyComponentTypeAssociation().getName());
-            msgList
-                    .add(new Message(MSGCODE_MANUALLY_CODE_FIX_NECESSARY, textManualFixNecessary, Message.WARNING, this));
-        }
-
         IPolicyCmptTypeAssociation inverseAssociation = null;
         if (isBidirectional()) {
             inverseAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
@@ -768,8 +760,13 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String value,
             String propertyName) {
 
-        String emptyText = NLS.bind(Messages.PersistentAssociationInfo_msgMustBeEmpty, new Object[] { propertyName,
-                (mustBeEmpty ? "" : Messages.PersistentAssociationInfo_msgNot) }); //$NON-NLS-1$
+        String emptyText = null;
+        if (mustBeEmpty) {
+            emptyText = NLS.bind(Messages.PersistentAssociationInfo_msgMustBeEmpty, propertyName);
+        } else {
+            emptyText = NLS.bind(Messages.PersistentAssociationInfo_msgMustNotBeEmpty, propertyName);
+        }
+
         String invalidText = NLS.bind(Messages.PersistentAssociationInfo_msgIsInvalid, propertyName);
         if (mustBeEmpty && !StringUtils.isEmpty(value) || !mustBeEmpty && StringUtils.isEmpty(value)) {
             msgList.add(new Message(msgCodeEmpty, emptyText, Message.ERROR, this, property));
@@ -779,10 +776,16 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     /**
-     * Only necessary for test cases.
+     * Resets the flag manually code fix necessary, workaround (MBT#280)
      */
     public void resetManuallyCodeFixNecessary() {
-        valueChanged(manuallyCodeFixNecessary, false);
         manuallyCodeFixNecessary = false;
+    }
+
+    /**
+     * Returns <code>true</code> im manually code fixing is necessary, workaround (MBT#280)
+     */
+    public boolean isManuallyCodeFixNecessary() {
+        return manuallyCodeFixNecessary;
     }
 }

@@ -454,53 +454,6 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertFalse(inversePersistenceAssociatonInfo.isOrphanRemoval());
     }
 
-    public void testManuallyCodeFixNecessary() throws CoreException {
-        MessageList msgList = null;
-        IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY));
-
-        // orphan removal
-        persistenceAssociatonInfo.setOrphanRemoval(persistenceAssociatonInfo.isOrphanRemoval());
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY));
-
-        persistenceAssociatonInfo.setOrphanRemoval(!persistenceAssociatonInfo.isOrphanRemoval());
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY));
-
-        ((PersistentAssociationInfo)persistenceAssociatonInfo).resetManuallyCodeFixNecessary();
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY));
-
-        // cascade types
-        persistenceAssociatonInfo.setCascadeTypeOverwriteDefault(!persistenceAssociatonInfo
-                .isCascadeTypeOverwriteDefault());
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY));
-        ((PersistentAssociationInfo)persistenceAssociatonInfo).resetManuallyCodeFixNecessary();
-
-        persistenceAssociatonInfo.setCascadeTypePersist(!persistenceAssociatonInfo.isCascadeTypePersist());
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY));
-        ((PersistentAssociationInfo)persistenceAssociatonInfo).resetManuallyCodeFixNecessary();
-
-        persistenceAssociatonInfo.setCascadeTypeMerge(!persistenceAssociatonInfo.isCascadeTypeMerge());
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY));
-        ((PersistentAssociationInfo)persistenceAssociatonInfo).resetManuallyCodeFixNecessary();
-
-        persistenceAssociatonInfo.setCascadeTypeRefresh(!persistenceAssociatonInfo.isCascadeTypeRefresh());
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY));
-        ((PersistentAssociationInfo)persistenceAssociatonInfo).resetManuallyCodeFixNecessary();
-
-        persistenceAssociatonInfo.setCascadeTypeRemove(!persistenceAssociatonInfo.isCascadeTypeRemove());
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IPersistentAssociationInfo.MSGCODE_MANUALLY_CODE_FIX_NECESSARY));
-        ((PersistentAssociationInfo)persistenceAssociatonInfo).resetManuallyCodeFixNecessary();
-    }
-
     public void testValidateLazyFetchForSingleValuedAssociationsAllowed() throws CoreException {
         MessageList msgList = null;
 
