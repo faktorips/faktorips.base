@@ -10066,3 +10066,6 @@ gängigen
 leuchtet
 Berufe
 sourcecode
+Persistenz
+Tabellenname
+Spaltenname

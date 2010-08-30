@@ -60,6 +60,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
+import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
@@ -193,6 +194,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
         } else if (selected instanceof ITestCase) {
             manager.add(new IpsTestCaseCopyAction(viewSite.getShell(), treeViewer));
+        } else if (selected instanceof ITableContents) {
+            manager.add(new CopyTableAction(viewSite.getShell(), treeViewer));
         }
 
         manager.add(new Separator("open")); //$NON-NLS-1$

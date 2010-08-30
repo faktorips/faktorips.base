@@ -28,11 +28,13 @@ public class Messages extends NLS {
     }
 
     public static String ProductCmptType_DuplicateFormulaName;
+    public static String ProductCmptType_iconFileCannotBeResolved;
     public static String ProductCmptType_InconsistentTypeHierarchies;
     public static String ProductCmptType_msgDuplicateFormulasNotAllowedInSameType;
     public static String ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden;
     public static String ProductCmptType_msgProductCmptTypeAbstractWhenPolicyCmptTypeAbstract;
     public static String ProductCmptType_multiplePropertyNames;
+    public static String ProductCmptType_MustInheritFromASupertype;
     public static String ProductCmptType_notMarkedAsConfigurable;
     public static String ProductCmptType_PolicyCmptTypeDoesNotExist;
     public static String ProductCmptType_policyCmptTypeDoesNotSpecifyThisType;

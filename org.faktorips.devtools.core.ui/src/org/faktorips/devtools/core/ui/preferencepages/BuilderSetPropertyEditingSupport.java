@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.table.AbstractTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
@@ -101,7 +100,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
                     }
                 });
             } else if (type.equals("enum") || type.equals("extensionPoint")) { //$NON-NLS-1$ //$NON-NLS-2$
-                DefaultEnumType propertyDefEnum = new DefaultEnumType("builderSetPropertyType", AttributeType.class); //$NON-NLS-1$
+                DefaultEnumType propertyDefEnum = new DefaultEnumType("builderSetPropertyType", DefaultEnumValue.class); //$NON-NLS-1$
                 Object[] discreteValues = propertyDef.getDiscreteValues();
                 DefaultEnumValue[] values = new DefaultEnumValue[discreteValues.length];
                 for (int i = 0; i < discreteValues.length; i++) {

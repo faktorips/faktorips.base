@@ -34,7 +34,7 @@ public class Migration_2_5_2_rfinal extends AbstractIpsProjectMigrationOperation
 
     @Override
     public String getDescription() {
-        return "";
+        return "Generated copyProperties() method: Added call to super.copyProperties().";
     }
 
     @Override

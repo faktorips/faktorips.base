@@ -71,6 +71,42 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_inverseAssociationLabel;
 
+    public static String AssociationEditDialog_labelAssociationIsOwningSideOfManyToMany;
+
+    public static String AssociationEditDialog_labelAssociationIsTransient;
+
+    public static String AssociationEditDialog_labelCascadeType;
+
+    public static String AssociationEditDialog_labelCascadeTypeMerge;
+
+    public static String AssociationEditDialog_labelCascadeTypePersist;
+
+    public static String AssociationEditDialog_labelCascadeTypeRefresh;
+
+    public static String AssociationEditDialog_labelCascadeTypeRemove;
+
+    public static String AssociationEditDialog_labelFetchType;
+
+    public static String AssociationEditDialog_labelForeignKeyColumnName;
+
+    public static String AssociationEditDialog_labelForeignKeyJoinColumn;
+
+    public static String AssociationEditDialog_labelJoinTable;
+
+    public static String AssociationEditDialog_labelJoinTableName;
+
+    public static String AssociationEditDialog_labelOrphanRemoval;
+
+    public static String AssociationEditDialog_labelOverwriteDefaultCascadeTypes;
+
+    public static String AssociationEditDialog_labelPersistence;
+
+    public static String AssociationEditDialog_labelProperties;
+
+    public static String AssociationEditDialog_labelSourceColumnName;
+
+    public static String AssociationEditDialog_labelTargetColumnName;
+
     public static String AssociationEditDialog_maximumCardinality;
 
     public static String AssociationEditDialog_minimumCardinality;
@@ -82,6 +118,10 @@ public class Messages extends NLS {
     public static String AssociationEditDialog_noteAssociationIsConstrainedByProductStructure;
 
     public static String AssociationEditDialog_noteAssociationNotConstrainedByProductStructure;
+
+    public static String AssociationEditDialog_noteForeignKeyColumnDefinedInInverseAssociation;
+
+    public static String AssociationEditDialog_noteForeignKeyIsColumnOfTheTargetEntity;
 
     public static String AssociationEditDialog_qualificationGroup;
 
@@ -98,6 +138,8 @@ public class Messages extends NLS {
     public static String AssociationEditDialog_targetRoleSingularLabel;
 
     public static String AssociationEditDialog_textFirstPage;
+
+    public static String AssociationEditDialog_textNotSupportedByPersistenceProvider;
 
     public static String AssociationEditDialog_title;
 
@@ -138,6 +180,68 @@ public class Messages extends NLS {
     public static String AttributesSection_OverrideButton;
 
     public static String PctEditor_title;
+    public static String PersistentAssociationSection_labelAssociationTarget;
+
+    public static String PersistentAssociationSection_labelFetchType;
+
+    public static String PersistentAssociationSection_labelJoinColumnName;
+
+    public static String PersistentAssociationSection_labelJoinTableName;
+
+    public static String PersistentAssociationSection_labelOrphanRemoval;
+
+    public static String PersistentAssociationSection_labelSourceColumnName;
+
+    public static String PersistentAssociationSection_labelTargetColumnName;
+
+    public static String PersistentAssociationSection_titleAssociations;
+
+    public static String PersistentAttributeSection_labelAttributeName;
+
+    public static String PersistentAttributeSection_labelColumnDefinition;
+
+    public static String PersistentAttributeSection_labelColumnName;
+
+    public static String PersistentAttributeSection_labelConverter;
+
+    public static String PersistentAttributeSection_labelNullable;
+
+    public static String PersistentAttributeSection_labelPrecision;
+
+    public static String PersistentAttributeSection_labelScale;
+
+    public static String PersistentAttributeSection_labelSize;
+
+    public static String PersistentAttributeSection_labelUnique;
+
+    public static String PersistentAttributeSection_titleAttributes;
+
+    public static String PersistentTypeInfoSection_labelColumnName;
+
+    public static String PersistentTypeInfoSection_labelColumnValue;
+
+    public static String PersistentTypeInfoSection_labelDatatype;
+
+    public static String PersistentTypeInfoSection_labelDescriminator;
+
+    public static String PersistentTypeInfoSection_labelInheritanceStrategy;
+
+    public static String PersistentTypeInfoSection_labelPersistentType;
+
+    public static String PersistentTypeInfoSection_labelTable;
+
+    public static String PersistentTypeInfoSection_labelTableName;
+
+    public static String PersistentTypeInfoSection_labelThisTypeDefinesTheDiscriminatorColumn;
+
+    public static String PersistentTypeInfoSection_labelUseTableDefinedInSupertype;
+
+    public static String PersistentTypeInfoSection_sectionTitleJpaEntityInformation;
+
+    public static String PersistentTypeInfoSection_textRootEntityNotFound;
+
+    public static String PersistentTypeInfoSection_textSupertypeNotFound;
+
     public static String AttributesSection_title;
     public static String AttributesSection_deleteMessage;
     public static String AttributesSection_deleteTitle;
@@ -161,17 +265,45 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_descriptionContent;
     public static String AttributeEditDialog_generalTitle;
     public static String AttributeEditDialog_labelActivateValidationRule;
+    public static String AttributeEditDialog_labelAttributeIsTransient;
+
     public static String AttributeEditDialog_labelAttrType;
     public static String AttributeEditDialog_labelCode;
+
+    public static String AttributeEditDialog_labelColumnName;
+    public static String AttributeEditDialog_labelColumnScale;
+
+    public static String AttributeEditDialog_labelColumnSize;
+
     public static String AttributeEditDialog_labelDatatype;
+
+    public static String AttributeEditDialog_labelDatatypeConverterClass;
     public static String AttributeEditDialog_labelDefaultValue;
     public static String AttributeEditDialog_labelModifier;
     public static String AttributeEditDialog_labelName;
+
+    public static String AttributeEditDialog_labelNullable;
+
+    public static String AttributeEditDialog_labelPersistence;
+
+    public static String AttributeEditDialog_labelPersistentProperties;
+
+    public static String AttributeEditDialog_labelPrecision;
     public static String AttributeEditDialog_labelSeverity;
+
+    public static String AttributeEditDialog_labelSqlColumnDefinition;
+    public static String AttributeEditDialog_labelTemporalType;
+
     public static String AttributeEditDialog_labelText;
+
+    public static String AttributeEditDialog_labelUnique;
     public static String AttributeEditDialog_lableOverwrites;
     public static String AttributeEditDialog_messageTitle;
+
+    public static String AttributeEditDialog_msgErrorWhileSearchingProductComponentType;
     public static String AttributeEditDialog_ruleTitle;
+    public static String AttributeEditDialog_textNotSupportedByPersistenceProvider;
+
     public static String AttributeEditDialog_title;
     public static String AttributeEditDialog_tooltipActivateValidationRule;
     public static String AttributeEditDialog_validationRuleTitle;
@@ -186,6 +318,8 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_ValuesetGroupTitle;
 
     public static String AttributeEditDialog_valuesetTitle;
+
+    public static String AttributeEditDialog_msgWarningManualyCodeMergeNecessary;
 
     public static String RuleEditDialog_attrTitle;
     public static String RuleEditDialog_contains;

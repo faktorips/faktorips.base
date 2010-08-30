@@ -27,6 +27,46 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String PersistentAssociationInfo_joinColumnName;
+    public static String PersistentAssociationInfo_joinTableName;
+    public static String PersistentAssociationInfo_msgIsInvalid;
+    public static String PersistentAssociationInfo_msgJoinTableNameExceedsMaximumLength;
+    public static String PersistentAssociationInfo_msgLazyFetchNotSupported;
+    public static String PersistentAssociationInfo_msgMaxLengthExceeds;
+    public static String PersistentAssociationInfo_msgMustBeEmpty;
+    public static String PersistentAssociationInfo_msgMustNotBeEmpty;
+    public static String PersistentAssociationInfo_msgOwningSideManyToManyMarkedOnBothSides;
+    public static String PersistentAssociationInfo_msgOwningSideManyToManyNotAllowed;
+    public static String PersistentAssociationInfo_msgOwningSideMissing;
+    public static String PersistentAssociationInfo_msgTransientMismatch;
+    public static String PersistentAssociationInfo_msgWarningManualyCodeMergeNecessary;
+    public static String PersistentAssociationInfo_sourceColumnName;
+    public static String PersistentAssociationInfo_tagetColumnName;
+    public static String PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength;
+    public static String PersistentAttributeInfo_msgColumnPrecisionExceedsTheLimit;
+    public static String PersistentAttributeInfo_msgColumnScaleExceedsTheLimit;
+    public static String PersistentAttributeInfo_msgColumnSizeExceedsTheLimit;
+    public static String PersistentAttributeInfo_msgEmptyColumnName;
+    public static String PersistentTypeInfo_msgDiscriminatorAlreadyDefined;
+    public static String PersistentTypeInfo_msgDiscriminatorColumnNameIsInvalid;
+    public static String PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedBecauseMappedSuperclass;
+    public static String PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedNotRootEntity;
+    public static String PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedTypeNotDefDiscrColumn;
+    public static String PersistentTypeInfo_msgDiscriminatorMustBeDefinedInTheRootEntity;
+    public static String PersistentTypeInfo_msgDiscriminatorValueMustBeEmpty;
+    public static String PersistentTypeInfo_msgDiscriminatorValueMustBeEmptyBecauseMappedSuperclass;
+    public static String PersistentTypeInfo_msgDiscriminatorValueMustNotBeEmpty;
+    public static String PersistentTypeInfo_msgDiscriminatorValueNotConform;
+    public static String PersistentTypeInfo_msgDuplicateColumnName;
+    public static String PersistentTypeInfo_msgFoundDuplicateColumnNameIn;
+    public static String PersistentTypeInfo_msgInvalidInheritanceStratedyCombination;
+    public static String PersistentTypeInfo_msgTableNameExceedsMaximumLength;
+    public static String PersistentTypeInfo_msgTableNameInvalid;
+    public static String PersistentTypeInfo_msgTableNameMustBeEmptyBecauseNameDefinedInSupertypeShouldBeUsed;
+    public static String PersistentTypeInfo_msgTableNameMustBeEmptyMappedSuperclass;
+    public static String PersistentTypeInfo_msgTableNameMustBeEmptyNotRootEntityAndInhStrategyIs;
+    public static String PersistentTypeInfo_msgTableNameOfRootEntityMustBeUsed;
+    public static String PersistentTypeInfo_msgUseTableDefInSupertypIsNotAllowed;
     public static String PolicyCmptType_msg_IfTheSupertypeIsNotConfigurableTheTypeCanBeConfigurable;
     public static String PolicyCmptType_msg_ProductCmptTypeNameMissing;
     public static String PolicyCmptType_msgSubtypeConfigurableWhenSupertypeConfigurable;

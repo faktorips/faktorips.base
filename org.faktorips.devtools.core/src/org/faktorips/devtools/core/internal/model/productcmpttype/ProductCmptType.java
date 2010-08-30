@@ -459,12 +459,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    // TODO internationalize messages
     private void validateIconPath(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (isUseCustomInstanceIcon()) {
             InputStream stream = ipsProject.getResourceAsStream(getInstancesIcon());
             if (stream == null) {
-                String text = "Icon file cannot be resolved. Check path: \"" + getInstancesIcon() + "\".";
+                String text = Messages.ProductCmptType_iconFileCannotBeResolved + getInstancesIcon() + "\"."; //$NON-NLS-1$
                 msgList.add(new Message(MSGCODE_ICON_PATH_INVALID, text, Message.ERROR, this,
                         PROPERTY_ICON_FOR_INSTANCES));
             } else {
@@ -518,6 +517,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return;
         }
         if (supertype == null) {
+            if (policyCmptTypeObj.hasSupertype()) {
+                String text = NLS.bind(Messages.ProductCmptType_MustInheritFromASupertype, getUnqualifiedName());
+                list.add(new Message(MSGCODE_MUST_HAVE_SUPERTYPE, text, Message.ERROR, this, new String[] {
+                        PROPERTY_SUPERTYPE, PROPERTY_POLICY_CMPT_TYPE }));
+            }
             return;
         }
         IPolicyCmptType policyCmptTypeOfSupertype = supertype.findPolicyCmptType(ipsProject);
