@@ -441,7 +441,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         settings.put(SETTINGS_KEY_LOCK_AND_SYNC, lockAndSynchronizeLiteralNames);
 
         updateCellEditorSkippedColumns();
-        renameLiteralNameRefactoringAction.setEnabled(!(lockAndSynchronizeLiteralNames));
     }
 
     /**
