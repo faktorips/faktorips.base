@@ -40,6 +40,7 @@ public class OutlinePage extends ContentOutlinePage {
         treeView.setContentProvider(new OutlineContentProvider());
         treeView.setLabelProvider(new WorkbenchLabelProvider());
         treeView.setInput(ipsSrcFile);
+        treeView.expandAll();
     }
 
     private class OutlineContentProvider extends WorkbenchContentProvider {
@@ -60,6 +61,7 @@ public class OutlinePage extends ContentOutlinePage {
             }
             return result.toArray();
         }
+
     }
 
 }
