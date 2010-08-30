@@ -170,10 +170,6 @@
             datatypeClass="org.faktorips.datatype.classtypes.BigDecimalDatatype"
             helperClass="org.faktorips.codegen.dthelpers.BigDecimalHelper">
       </datatypeDefinition>
-      <datatypeDefinition
-            datatypeClass="org.faktorips.datatype.CountryDatatype"
-            helperClass="org.faktorips.datatype.CountryHelper">
-      </datatypeDefinition>
    </extension>
 
 <!-- 
