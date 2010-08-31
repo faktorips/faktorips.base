@@ -1030,7 +1030,7 @@ ${faktoripsProductLinuxZipPath}
     </target>
               	
     <target name="-merge.updatesite.xml" unless="isSkipPublish">
-        <xslt in="${projectsRootDir}/org.faktorips.updatesite/site.xml" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" 
+        <xslt in="${projectsRootDir}/org.faktorips.updatesite/${siteXmlFileName}" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" 
         	style="${projectsRootDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="encoding" value="UTF-8"/>
@@ -1038,7 +1038,7 @@ ${faktoripsProductLinuxZipPath}
             <param name="doc2" expression="${projectsRootDir}/org.faktorips.updatesite/${site.xml}"/>
         </xslt>
         <delete file="${projectsRootDir}/org.faktorips.updatesite/${site.xml}" verbose="false"/>
-        <copy file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectsRootDir}/org.faktorips.updatesite/site.xml" verbose="false" overwrite="true"/>
+        <copy file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectsRootDir}/org.faktorips.updatesite/${siteXmlFileName}" verbose="false" overwrite="true"/>
         <delete file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" verbose="false"/>
     </target>
 
