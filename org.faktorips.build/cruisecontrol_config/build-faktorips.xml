@@ -594,6 +594,7 @@ ${faktoripsOrmextReleaseDownloadZipPath}
 ${faktoripsOrmextNls1ReleaseDownloadZipPath}
 ${faktoripsUpdateSiteZipPath}
 ${faktoripsRuntimeAndValuetypesZipPath}
+${faktoripsRuntimeAddonsZipPath}
 		</echo>
 		<echo file="${basedir}/archives_products">
 ${faktoripsProductWinZipPath}
@@ -842,8 +843,9 @@ ${faktoripsProductLinuxZipPath}
         <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
         <echo message="   5. ${faktoripsOrmextReleaseDownloadZipPath}"/>
         <echo message="   6. ${faktoripsOrmextNls1ReleaseDownloadZipPath}"/>    	
-        <echo message="   7. ${faktoripsUpdateSiteZipPath}"/>    	
+        <echo message="   7. ${faktoripsUpdateSiteZipPath}"/>	
         <echo message="   8. ${faktoripsRuntimeAndValuetypesZipPath}"/>    	
+        <echo message="   8. ${faktoripsRuntimeAddonsZipPath}"/>    	
     </target>
 	
 	<target name="-checkout.all" >

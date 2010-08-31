@@ -33,13 +33,12 @@
 #                                  : builds the product in the given project instead of building the features and plugins
 #           -resultDir             : publish directory
 #           -updatesiteDir         : updatesite directory
+#			-updatesiteFile		   : the name of the update site file
 #
 # hiden parameter:
 # ----------------
 #           -forceBuild            : force build, no resource limit check  
 #           -forceTaggingCvs       : force tagging projects (no assert if the release already exists)
-#
-#			-notVersion3		   : building a version before FIPS 3.0.x. In version 3 some changed have been done in release skripts.  
 #
 # additional functionality
 #-------------------------
@@ -91,7 +90,6 @@ NOCVS=false
 CREATE_BRANCH=false
 FORCE_BUILD=false
 FORCE_TAGCVS=false
-MIN_VERSION_3=true
 
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
@@ -112,6 +110,14 @@ DATENSCHUTZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/FaktorIPS_Datenschutzb
 initEnvironment()
 {
   # environment
+  
+  MAJOR_VERSION=`echo $BUILD_VERSION | awk -F. '{print $1}'`
+  if [ $MAJOR_VERSION -ge 3 ] ; then
+  	MIN_VERSION_3=true
+  else
+  	MIN_VERSION_3=false
+  fi
+  
   export DISPLAY=:0.0
   export ANT_OPTS=-Xmx1024m
 
@@ -151,8 +157,14 @@ initDefaultParameter()
     PROJECTSROOTDIR=$WORKINGDIR/checkout_release
   fi
   
-  PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/downloads'}
-  PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips'}
+  if [ $MAJOR_VERSION -ge 3 ] ; then
+	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/v${MAJOR_VERSION}/downloads'}
+  	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips/v${MAJOR_VERSION}'}
+  	PUBLISH_UPDATESITE_FILE=${PUBLISH_UPDATESITE_FILE:-'site_v${MAJOR_VERSION}.xml'}
+  else
+  	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/downloads'}
+  	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips'}
+  fi
   PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
   RELEASE_PROPERTY_DIR=$PLUGINBUILDER_PROJECT_DIR/releases
   RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
@@ -273,11 +285,11 @@ parseArgs()
 	  -buildProduct)  BUILDPRODUCT=$2 ; shift ;;
 	  -resultDir)     PUBLISH_DOWNLOAD_DIR=$2 ; shift ;;
 	  -updatesiteDir) PUBLISH_UPDATESITE_DIR=$2 ; shift ;;
+	  -updatesiteFile) PUBLISH_UPDATESITE_FILE=$2 ; shift ;;
 	  -noCvs)         NOCVS=true ;;
 	  -createBranch)  DO_CREATE_BRANCH=true ;;
 	  -branchRootTag) BRANCH_ROOT_TAG=$2 ; shift ;;
 	  -forceBuild)    FORCE_BUILD=true ;;
-	  -notVersion3)   MIN_VERSION_3=false ;;
 	  -?)             showUsageAndExit ;;
 	  --?)            showUsageAndExit ;;
 	  -h)             showUsageAndExit ;;
@@ -297,6 +309,7 @@ parseArgs()
 	fi
 	
 	# special functinality e.g. create branch
+	
 }
 
 showUsageAndExit()
@@ -509,6 +522,7 @@ showParameter()
     echo    "  Published result"
     echo -e "  -resultDir       : Result/Download directory \e[35m$PUBLISH_DOWNLOAD_DIR\e[0m"
     echo -e "  -updatesiteDir   : Updatesite directory \e[35m$PUBLISH_UPDATESITE_DIR\e[0m"
+    echo -e "  -updatesiteFile  : Updatesite Filename \e[35m$PUBLISH_UPDATESITE_FILE\e[0m"
   fi
   echo "  --------------------------------------------------------------------------------------"
   echo -e "=> Start release build (\e[33my\e[0m)es? <="
@@ -834,6 +848,7 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -DnoCvs=$NOCVS \
  -DdownloadDir=$DOWNLOAD_DIR \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
+ -DsiteXmlFileName=$PUBLISH_UPDATESITE_FILE \
  -DproductProject=$BUILDPRODUCT \
  -DnoBranch=$NOBRANCH \
  -Dcvsroot=$CVS_ROOT \
