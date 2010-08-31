@@ -480,6 +480,8 @@ showParameter()
   echo Release build parameter:
   echo "  --------------------------------------------------------------------------------------"
   echo -e "  Release Version=\e[35m$BUILD_VERSION\e[0m"
+  echo -e "  Major Version=\e[35m$MAJOR_VERSION\e[0m"
+  echo -e "  Min Version 3=\e[35m$MIN_VERSION_3\e[0m"
   echo -e "  Feature Category=\e[35m$BUILD_CATEGORY\e[0m"
   echo -e "  CVS Tag=\e[35m$FETCH_TAG\e[0m"
   echo "  --------------------------------------------------------------------------------------"
