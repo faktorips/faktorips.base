@@ -159,9 +159,9 @@ initDefaultParameter()
   MAJOR_VERSION=`echo $BUILD_VERSION | awk -F. '{print $1}'`
   
   if [ $MAJOR_VERSION -ge 3 ] ; then
-	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/v${MAJOR_VERSION}/downloads'}
-  	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips/v${MAJOR_VERSION}'}
-  	PUBLISH_UPDATESITE_FILE=${PUBLISH_UPDATESITE_FILE:-'site_v${MAJOR_VERSION}.xml'}
+	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/v$MAJOR_VERSION/downloads'}
+  	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips/v$MAJOR_VERSION'}
+  	PUBLISH_UPDATESITE_FILE=${PUBLISH_UPDATESITE_FILE:-'site_v$MAJOR_VERSION.xml'}
   else
   	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/downloads'}
   	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips'}
