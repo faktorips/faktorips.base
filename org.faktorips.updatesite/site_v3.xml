@@ -1,86 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-	<description name="Faktor Ips Update Site" url="http://update.faktorzehn.org/faktorips">
+<description name="Faktor Ips Update Site" url="http://update.faktorzehn.org/faktorips">
 		FaktorIPS update site
    </description>
-	<feature url="features/org.faktorips.m2eclipse.feature_1.0.0.rfinal.jar"
-		id="org.faktorips.m2eclipse.feature" version="1.0.0.rfinal">
-		<category name="Faktor-IPS M2Eclipse Extension" />
-	</feature>
-	<category-def name="Faktor-IPS M2Eclipse Extension" label="Faktor-IPS M2Eclipse Extension" />
-	<category-def name="Faktor-IPS 3.0" label="Faktor-IPS 3.0" />
-
-	<feature url="features/org.faktorips.feature_3.0.0.rc1.jar" id="org.faktorips.feature"
-		version="3.0.0.rc1">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.feature.nls1_3.0.0.rc1.jar"
-		id="org.faktorips.feature.nls1" version="3.0.0.rc1">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.feature.source_3.0.0.rc1.jar"
-		id="org.faktorips.feature.source" version="3.0.0.rc1">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.uml.feature_3.0.0.rc1.jar"
-		id="org.faktorips.uml.feature" version="3.0.0.rc1">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.uml.feature.nls1_3.0.0.rc1.jar"
-		id="org.faktorips.uml.feature.nls1" version="3.0.0.rc1">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.uml.feature.source_3.0.0.rc1.jar"
-		id="org.faktorips.uml.feature.source" version="3.0.0.rc1">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<description url="http://update.faktorzehn.org/faktorips/v3">FaktorIPS 3 update site</description>
-	<feature url="features/org.faktorips.feature_3.0.0.ms5.jar" id="org.faktorips.feature"
-		version="3.0.0.ms5">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.feature.nls1_3.0.0.ms5.jar"
-		id="org.faktorips.feature.nls1" version="3.0.0.ms5">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.uml.feature_3.0.0.ms5.jar"
-		id="org.faktorips.uml.feature" version="3.0.0.ms5">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.uml.feature.nls1_3.0.0.ms5.jar"
-		id="org.faktorips.uml.feature.nls1" version="3.0.0.ms5">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.feature_3.0.0.ms4.jar" id="org.faktorips.feature"
-		version="3.0.0.ms4">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.feature.nls1_3.0.0.ms4.jar"
-		id="org.faktorips.feature.nls1" version="3.0.0.ms4">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.uml.feature_3.0.0.ms4.jar"
-		id="org.faktorips.uml.feature" version="3.0.0.ms4">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.uml.feature.nls1_3.0.0.ms4.jar"
-		id="org.faktorips.uml.feature.nls1" version="3.0.0.ms4">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.feature_3.0.0.ms3.jar" id="org.faktorips.feature"
-		version="3.0.0.ms3">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.feature.nls1_3.0.0.ms3.jar"
-		id="org.faktorips.feature.nls1" version="3.0.0.ms3">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.uml.feature_3.0.0.ms3.jar"
-		id="org.faktorips.uml.feature" version="3.0.0.ms3">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
-	<feature url="features/org.faktorips.uml.feature.nls1_3.0.0.ms3.jar"
-		id="org.faktorips.uml.feature.nls1" version="3.0.0.ms3">
-		<category name="Faktor-IPS 3.0" />
-	</feature>
+<feature url="features/org.faktorips.m2eclipse.feature_1.0.0.rfinal.jar" id="org.faktorips.m2eclipse.feature" version="1.0.0.rfinal">
+<category name="Faktor-IPS M2Eclipse Extension"/>
+</feature>
+<category-def name="Faktor-IPS M2Eclipse Extension" label="Faktor-IPS M2Eclipse Extension"/>
+<category-def name="Faktor-IPS 3.0" label="Faktor-IPS 3.0"/>
+<feature url="features/org.faktorips.feature_3.0.0.rc1.jar" id="org.faktorips.feature" version="3.0.0.rc1">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature.nls1_3.0.0.rc1.jar" id="org.faktorips.feature.nls1" version="3.0.0.rc1">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature.source_3.0.0.rc1.jar" id="org.faktorips.feature.source" version="3.0.0.rc1">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature_3.0.0.rc1.jar" id="org.faktorips.uml.feature" version="3.0.0.rc1">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.nls1_3.0.0.rc1.jar" id="org.faktorips.uml.feature.nls1" version="3.0.0.rc1">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.source_3.0.0.rc1.jar" id="org.faktorips.uml.feature.source" version="3.0.0.rc1">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<description url="http://update.faktorzehn.org/faktorips/v3">FaktorIPS 3 update site</description>
+<feature url="features/org.faktorips.feature_3.0.0.ms5.jar" id="org.faktorips.feature" version="3.0.0.ms5">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature.nls1_3.0.0.ms5.jar" id="org.faktorips.feature.nls1" version="3.0.0.ms5">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature_3.0.0.ms5.jar" id="org.faktorips.uml.feature" version="3.0.0.ms5">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.nls1_3.0.0.ms5.jar" id="org.faktorips.uml.feature.nls1" version="3.0.0.ms5">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature_3.0.0.ms4.jar" id="org.faktorips.feature" version="3.0.0.ms4">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature.nls1_3.0.0.ms4.jar" id="org.faktorips.feature.nls1" version="3.0.0.ms4">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature_3.0.0.ms4.jar" id="org.faktorips.uml.feature" version="3.0.0.ms4">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.nls1_3.0.0.ms4.jar" id="org.faktorips.uml.feature.nls1" version="3.0.0.ms4">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature_3.0.0.ms3.jar" id="org.faktorips.feature" version="3.0.0.ms3">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature.nls1_3.0.0.ms3.jar" id="org.faktorips.feature.nls1" version="3.0.0.ms3">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature_3.0.0.ms3.jar" id="org.faktorips.uml.feature" version="3.0.0.ms3">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.nls1_3.0.0.ms3.jar" id="org.faktorips.uml.feature.nls1" version="3.0.0.ms3">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature_3.0.0.rfinal.jar" id="org.faktorips.feature" version="3.0.0.rfinal">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature.nls1_3.0.0.rfinal.jar" id="org.faktorips.feature.nls1" version="3.0.0.rfinal">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.feature.source_3.0.0.rfinal.jar" id="org.faktorips.feature.source" version="3.0.0.rfinal">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature_3.0.0.rfinal.jar" id="org.faktorips.uml.feature" version="3.0.0.rfinal">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.nls1_3.0.0.rfinal.jar" id="org.faktorips.uml.feature.nls1" version="3.0.0.rfinal">
+<category name="Faktor-IPS 3.0"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.source_3.0.0.rfinal.jar" id="org.faktorips.uml.feature.source" version="3.0.0.rfinal">
+<category name="Faktor-IPS 3.0"/>
+</feature>
 </site>
