@@ -871,7 +871,7 @@ schutz” abgerufen und ausgedruckt werden.
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.lang"
+         id="org.faktorips.apache.commons.lang"
          download-size="0"
          install-size="0"
          version="0.0.0"
