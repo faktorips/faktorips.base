@@ -15,7 +15,7 @@
 \section{Einleitung}
 
 Faktor-IPS verwaltet Produktdaten während der Produktentwicklung in XML Dateien.
-Zur Laufzeit wird bisher (Version 2.5. und frühere Versionen) ebenfalls mit XML
+Zur Laufzeit wurde bis Version 2.5 ausschließlich mit XML
 Dateien gearbeitet. Genau genommen muss man von XML-Ressourcen sprechen, da die
 einzelnen XML-Dateien meist in Bibliotheken (z.B. JAR-Dateien) zusammengefasst
 werden. Um die Produktdaten zu laden müssen sie zur Laufzeit im Classpath der
@@ -79,6 +79,8 @@ implementiert ist}
 \label{subclassing}
 \end{figure}
 
+! verweis auf Tutorial Teil 2
+
 Werden nun die Produktdaten durch einen separaten Service abgerufen, müsste nach
 diesem Ansatz auch die Implementierung über den Service abgerufen werden. Ändert
 sich in einer neuen Version der Produktdaten eine Formel, muss auch die
@@ -87,11 +89,14 @@ Austausch von Klassen während des Betriebs vor. Da Application Server im JavaEE
 Umfeld selbst diverse Anpassungen am Classloader vornehmen ist eine eigene
 Anpassung an dieser Stelle nicht möglich.
 
+! EJB speck verbietet das
+
 Eine Herausforderung im separaten Deployment ist es daher, die Formeln nicht wie
 bisher in Subklassen zu kompilieren sondern zur Laufzeit zu interpretieren. Die
 Produktdaten werden dadurch frei von Programmcode.
 
 \subsection{Abarbeiten von Anfragen}
+! besserer titel
 \label{requests}
 
 Mit dem Separaten Deployment von Produktdaten soll es möglich sein, ohne
@@ -150,6 +155,8 @@ Repository statt.
 
 \subsection{Interpretation von Formeln}
 
+! gegenwart: ... gibt es jetzt folgenden
+
 Um die Formeln nicht in Subklassen zu implementieren muss ein Mechanismus zum
 Interpretieren des Formel-Codes geschaffen werden. Da das Compilieren der Formeln
 in Java-Code bereits existiert, ist die die naheliegenste Lösung diesen
@@ -175,7 +182,7 @@ $getActualRuntimeRepository()$ am Manager auf. Der Manager liefert daraufhin ein
 Runtime Repository mit dem der Client auf den aktuell gültigen Produktdaten
 arbeiten kann. Vor der nächsten Anfrage holt sich der Client erneut das aktuelle
 Repository. Haben sich die Produktdaten nicht geändert, wird das gleiche
-Repository zurück gegeben. Dieses einfache Verhalten ist im Sequenzdiagramm in
+Repository zurück gegeben. Dieser Ablauf ist im Sequenzdiagramm in
 Abbildung \ref{clientSequenceEasy} abgebildet.
 
 \begin{figure}[htb] \centering
@@ -280,7 +287,7 @@ folgende Bibliotheken eingebunden werden:
 
 Der Product-Data-Provider wird über die $ejb-jar.xml$\footnote{Die EJB-Konfiguration liegt im Ordner META-INF} konfiguriert. Das Beispiel in Listing \ref{ejb-jar.xml}
 konfiguriert einen Produktdatenservice mit dem EJB-Namen $ProductDataService$. Das TOC-File wird über den Classpath geladen und muss daher im Bundle
-vorliegen; der Pfad wird per Dependency Injection in die Variable $tocFileName$ gesetzt.
+vorliegen; der Pfad wird per Injection in die Variable $tocFileName$ gesetzt.
 
 \begin{lstlisting}[caption=Beispiel einer ejb-jar.xml, label=ejb-jar.xml,language=XML]{ejb-jar.xml}
 <ejb-jar>
@@ -323,6 +330,8 @@ vorliegen; der Pfad wird per Dependency Injection in die Variable $tocFileName$ 
 \end{lstlisting}
 
 \subsection{Implementierung eigener Product-Data-Providers}
+
+!Gegenwart
 
 Ziel des Separaten Deployments von Produktdaten war es, die Produktdaten
 unabhängig von der Applikation ausliefern zu können. Dabei soll es nicht nur
