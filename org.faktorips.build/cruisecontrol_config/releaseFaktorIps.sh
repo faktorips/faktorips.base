@@ -111,7 +111,6 @@ initEnvironment()
 {
   # environment
   
-  MAJOR_VERSION=`echo $BUILD_VERSION | awk -F. '{print $1}'`
   if [ $MAJOR_VERSION -ge 3 ] ; then
   	MIN_VERSION_3=true
   else
@@ -156,6 +155,8 @@ initDefaultParameter()
   if [ -z $PROJECTSROOTDIR ] ; then
     PROJECTSROOTDIR=$WORKINGDIR/checkout_release
   fi
+  
+  MAJOR_VERSION=`echo $BUILD_VERSION | awk -F. '{print $1}'`
   
   if [ $MAJOR_VERSION -ge 3 ] ; then
 	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/v${MAJOR_VERSION}/downloads'}
