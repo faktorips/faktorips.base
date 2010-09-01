@@ -15,13 +15,12 @@
 \section{Einleitung}
 
 Faktor-IPS verwaltet Produktdaten während der Produktentwicklung in XML Dateien.
-Zur Laufzeit wurde bis Version 2.5 ausschließlich mit XML
-Dateien gearbeitet. Genau genommen muss man von XML-Ressourcen sprechen, da die
-einzelnen XML-Dateien meist in Bibliotheken (z.B. JAR-Dateien) zusammengefasst
-werden. Um die Produktdaten zu laden müssen sie zur Laufzeit im Classpath der
-Applikation verfügbar sein, entweder als einzelne Dateien oder in Form von
-Bibliotheken. Innerhalb einer Applikation kann auf die Produktdaten über ein
+Zur Laufzeit liegen die Produktdaten in XML-Ressourcen vor, Formeln werden in
+Java-Klassen generiert. Die XML-Ressourcen werden meist in Bibliotheken (z.B.
+JAR-Dateien) zusammengefasst werden. Um die Produktdaten zu laden müssen sie zur Laufzeit im Classpath der
+Applikation verfügbar sein. Innerhalb einer Applikation kann auf die Produktdaten über ein
 Runtime Repository (z.B. $ClassloaderRuntimeRepository$) zugegriffen werden.
+Diese Aufteilung wird in Abbildung \ref{old_architecture} verdeutlicht. 
 
 \begin{figure}[htb] \centering
 \includegraphics[width=8cm]{./pics/old_architecture.png} \caption{Bisher wurden
@@ -46,18 +45,22 @@ entwickelten Lösungen werden in diesem Dokument vorgestellt.
 
 \section{Herausforderungen}
 
+In diesem Kapitel werden die Probleme, die sich auf dem Weg zum getrennten
+Deployment von Produktdaten ergaben aufgezeigt. Im Kapitel
+\ref{loesungen} wird zu jedem Problem die entwickelte Lösung präsentiert.
+
 \subsection{Runtime Repository}
 
 Für den Zugriff auf die Produktdaten steht in Faktor-IPS zur Laufzeit das
 Interface $IRuntimeRepository$ zur Verfügung. Wie bereits einleitend erwähnt
-wurde bisher meist die Implementierung $ClassloaderRuntimeRepository$ verwendet.
+wird meist die Implementierung $ClassloaderRuntimeRepository$ verwendet.
 Dieses lädt die Produktdaten über den Klassenpfad als Ressourcen.
 
 Um die Produktdaten unabhängig vom Programmcode zu halten muss zunächst ein
 Repository entwickelt werden, dass die Produktdaten unabhängig vom Klassenpfad
-der Applikation laden kann. Die später genauer vorgestellte Lösung greift dazu
-auf einen separaten Service (EJB 3.0 Stateless Session Bean) zu; die Verwendung
-einer Datenbank soll ohne großen Aufwand implementierbar sein.
+der Applikation laden kann. Die später vorgestellte Lösung greift dazu
+auf einen J2EE Service (EJB 3.0 Stateless Session Bean) zu; die Verwendung
+einer Datenbank ist ohne großen Aufwand möglich.
 
 \subsection{Ausführen von Formeln}
 
@@ -67,60 +70,66 @@ Formel festgelegt, die Berechnungsvorschriften liegen in den Produktdaten. Um
 diese Formeln zur Laufzeit auszuführen werden sie vom Faktor-IPS-Builder in
 Java-Code übersetzt.
 
-Bisher wurde dazu für jeden Anpassungsstufe eines Produktbausteins eine Subklasse
-erzeugt in der die Methode der Formel überschrieben wurde. Das Runtime Repository
-war so aufgebaut, dass es jeweils die korrekte Implementierung zu einem
-Produktbaustein lud.
+Dazu wird für jede Anpassungsstufe eines Produktbausteins eine Subklasse
+erzeugt in der die Methode der Formel überschrieben wird. Das Runtime Repository
+ist so aufgebaut, dass es jeweils die korrekte Implementierung zu einem
+Produktbaustein lädt.
 
 \begin{figure}[htb] \centering
 \includegraphics[width=13cm]{./pics/subclassing.png} \caption{Für jeden
 Produktbaustein wird eine Subclass angelegt, in der die übersetzte Formel
-implementiert ist}
+implementiert ist (Beispiel aus Faktor-IPS Tutorial Teil
+2)}
 \label{subclassing}
 \end{figure}
 
-! verweis auf Tutorial Teil 2
-
-Werden nun die Produktdaten durch einen separaten Service abgerufen, müsste nach
+Werden nun die Produktdaten durch einen separaten Service abgerufen, muss nach
 diesem Ansatz auch die Implementierung über den Service abgerufen werden. Ändert
 sich in einer neuen Version der Produktdaten eine Formel, muss auch die
 Implementierung ausgetauscht werden. Der Classloader von Java sieht jedoch keinen
-Austausch von Klassen während des Betriebs vor. Da Application Server im JavaEE
-Umfeld selbst diverse Anpassungen am Classloader vornehmen ist eine eigene
-Anpassung an dieser Stelle nicht möglich.
-
-! EJB speck verbietet das
+Austausch von Klassen während des Betriebs vor. Anpassungen am Classloader sind
+im J2EE Umfeld durch die EJB Spezifikation verboten.
 
 Eine Herausforderung im separaten Deployment ist es daher, die Formeln nicht wie
 bisher in Subklassen zu kompilieren sondern zur Laufzeit zu interpretieren. Die
 Produktdaten werden dadurch frei von Programmcode.
 
-\subsection{Abarbeiten von Anfragen}
-! besserer titel
+\subsection{Konsistenter Zustand der Daten während einer Anfrage}
 \label{requests}
 
 Mit dem Separaten Deployment von Produktdaten soll es möglich sein, ohne
-Unterbrechung des Betriebs der Anwendung neue Produktdaten auszuliefern. Im Fall
-eines EJB Services wird also der Produktdaten Service per Hot-Deployment
-ausgetauscht.
+Unterbrechung der Anwendung neue Produktdaten auszuliefern. Im Fall
+eines EJB Services wird also der Service, der die Produktdaten bereitstellt, per
+Hot-Deployment ausgetauscht.
 
 Nehmen wir an, ein Client\footnote{Als Client bezeichnen wir ein Programm, das
 Produktdaten abruft - also der Client des Runtime Repositories} möchte
-Produktdaten verarbeiten. Dazu muss er im allgemeinen eine Reihe von Anfragen an
+Produktdaten verarbeiten. Dazu muss er im Allgemeinen eine Reihe von Anfragen an
 das Repository senden: z.B. fordert der Client einen Produktbaustein an, dann die
 aktuell gültige Generation und daraufhin alle assoziierten Produktbausteine. Für
 den Client ist dabei wichtig, dass er innerhalb seiner Anfrage auf einem
-konsistenten Datenstand arbeitet. Werden während solch einer Anfrage die
-Produktdaten ausgetatuscht, muss der Client entweder weiter mit den alten Daten
-versorgt werden oder muss eine Exception erhalten und seinen Request abbrechen.
+konsistenten Datenstand arbeitet. Im Beispiel in Abbildung
+\ref{concurrent_access} wurden vom $Client 1$ bereits die Produktdaten $P1$ und
+$D1$ geladen. Dann wurden die Produktdaten ausgetauscht. Ruft der Client nun das
+Objekt $D2$ ab, muss darauf geachtet werden, dass er nicht das neue
+Objekt $D2'$ erhält. Das Repository muss entweder in der Lage sein, weiterhin
+die alten Daten auszuliefern (z.B. wenn die Daten noch im Cache liegen) oder eine
+Exception werfen, damit der Client die Abfrage abbricht.
 
-Um bei einem neuen Versuch mit den neuen Daten weiter zu arbeiten, muss der
-Client den Beginn seiner Anfrage signalisieren. Das Runtime Repository kann
-daraufhin die neuen Produktdaten laden und an den Client weiterleiten. Dabei ist
-darauf zu achten, dass ein anderer Client, der sich noch in einer Anfrage
-befindet, immernoch eine Exception auslösen muss.
+\begin{figure}[htb] \centering
+\includegraphics[width=13cm]{./pics/concurrent_access.png} \caption{Während der
+Anfrage von Client 1 wurden die Produktdaten ausgetauscht. Client 1 muss eine
+Exception erhalten, Client 2 kann mit den neuen Daten arbeiten}
+\label{concurrent_access}
+\end{figure}
+
+$Client 2$ beginnt dagegen seine Anfrage erst nachdem die Produktdaten
+ausgetauscht wurden. Für ihn soll es kein Problem sein, das Objekt $D2$
+anzufordern. Das Runtime Repository muss daher wissen, welche Clients bereits
+mit den neuen Daten arbeiten und welche auf dem alten Stand sind.
 
 \section{Lösungen}
+\label{loesungen}
 
 \subsection{Überblick der Architektur}
 
@@ -155,25 +164,27 @@ Repository statt.
 
 \subsection{Interpretation von Formeln}
 
-! gegenwart: ... gibt es jetzt folgenden
+Anstatt die Formeln als Java-Code in Subklassen zu generieren kann der
+Java-Code der übersetzten Formel ab Version 3.0 auch direkt in die XML Dateien
+der Produktdaten geschrieben werden. Diese Option wird in den Einstellungen für den Faktor-IPS Code Generator
+unter der Option "`Formula Compiling"' eingestellt. Als Standard wird der
+Java-Code sowohl in Subklassen als auch in das XML geschrieben - zur Laufzeit
+kann damit sowohl das alte als auch das neue Runtime Repository verwendet
+werden.
 
-Um die Formeln nicht in Subklassen zu implementieren muss ein Mechanismus zum
-Interpretieren des Formel-Codes geschaffen werden. Da das Compilieren der Formeln
-in Java-Code bereits existiert, ist die die naheliegenste Lösung diesen
-Mechanismus weiter zu verwenden. Der Java-Code wird dazu in das XML der
-Produktbausteine geschrieben. Zur Laufzeit wird der Code von
-Groovy\footnote{http://groovy.codehaus.org/} ausgeführt. Die Produktdaten
-enthalten dadurch keinen Programmcode und sind unabhängig vom Classloader der
+Zur Laufzeit wird der Java-Code aus den XML-Dateien gelesen und von
+Groovy\footnote{http://groovy.codehaus.org/, Version 1.6.0} ausgeführt. Die
+Produktdaten enthalten dadurch keinen Programmcode und sind unabhängig vom Classloader der
 Applikation.
 
-\subsection{Abarbeiten von Anfragen}
+\subsection{Konsistenter Zustand der Daten während einer Anfrage}
 
 Um innerhalb einer Anfrage einen konsistenten Datenstand zu gewährleisten, ist es
 notwendig, dass ein Client den Beginn seiner Anfrage ankündigt. Nach dem
 optimistischen Locking Verfahren kann die Anfrage abgearbeitet werden, bis es zu
-einem Fehler kommt. Wenn ein Fehler auftritt muss die Anfrage neu gestartet
-werden. Da der Austausch von Produktdaten nicht besonders oft auftritt, ist
-dieses Locking Verhalten völlig ausreichend.
+einem Fehler kommt. Wenn ein Fehler auftritt muss die Anfrage verworfen und
+evtl. neu gestartet werden. Da der Austausch von Produktdaten nicht besonders
+oft auftritt, ist das optimistische Locking Verfahren völlig ausreichend.
 
 Um dieses Locking zu realisieren wird ein Runtime Repository Manager eingeführt.
 Jeder Client erhält zunächst anstatt des Runtime Reposiories einen Manager.
@@ -195,7 +206,7 @@ keine Daten ändern arbeitet er auf dem gleichen Repository weiter.}
 Werden während der Anfrage die Produktdaten ausgetauscht wirft das Runtime
 Repository beim nächsten Abruf von
 Produktdaten eine $DataModifiedRuntimeException$. Der Client muss
-daraufhin seine Anfrage abbrechen.
+daraufhin seine Anfrage verwerfen.
 
 Um eine neue Anfrage mit geänderten Produktdaten zu starten wird vom Manager ein
 neues Repository geholt. Der Manager stellt die geänderten Produktdaten
@@ -227,8 +238,9 @@ Instantiierung des $DetachedContentRuntimeRepositoryManager$ wird ein
 Builder\footnote{Dieser Builder ist nach Item 2 im Buch "`Effective Java"' von
 Joshua Bloch \cite{effectiveJava} erstellt und weicht vom bekannten Builder
 Design Pattern ab.} verwendet. Der Builder ist als innere Klasse des
-Repositories realisiert und erwartet eine Implementierung von $IProductDataProviderFactory$ zum instantiieren des Product-Data-Providers. Optional kann man im Builder weitere Voreinstellungen treffen.
-Insbesondere eine Implementierung von $IFormulaEvaluatorFactory$\footnote{z.B.
+Repository Managers realisiert und erwartet eine Implementierung von
+$IProductDataProviderFactory$ zum instantiieren des Product-Data-Providers.
+Optional kann man im Builder weitere Voreinstellungen treffen. Insbesondere eine Implementierung von $IFormulaEvaluatorFactory$\footnote{z.B.
 GroovyFormulaEvaluatorFactory zur Ausführen der Formeln mit Groovy (in den
 Addons enthalten)} zum ausführen der Formeln sollte gesetzt werden. Ist der
 Builder fertig konfiguriert, wird die Methode $build()$ aufgerufen - als Ergebnis erhält man einen $DetachedContentRuntimeRepositoryManager$. Ein
@@ -247,14 +259,13 @@ repositoryManager = new DetachedContentRuntimeRepositoryManager
 
 In den meisten Fällen werden Modell- und Produktdaten in mehrere Projekte
 untergliedert. Für den Zugriff auf die Daten muss zur Laufzeit für jedes dieser
-Projekte ein eigenes Runtime Repository instantiiert werden. Um direkt mit einer
-Abfrage an alle relevanten Daten zu gelangen gibt es die Möglichkeit Runtime
-Repositories zu verbinden. Die Implementierung des Runtime Repositories
-durchsucht automatisch alle verbundenen Repositories um die gewünschten Daten zu
-finden.
+Projekte ein eigenes Runtime Repository instantiiert werden.
+Analog zu den Referenzen zwischen den Projekten müssen auch dei Runtime
+Repositories miteinander verbunden werden, um mit einer Abfrage an alle
+relevanten Daten zu gelangen.
 
 Mit der Einführung des Runtime Repository Managers ist es nun Aufgabe des
-Managers die Repositories zu erstellen. Es muss damit ebenfalls sichergestellt
+Managers neue Repositories zu erstellen. Es muss damit ebenfalls sichergestellt
 werden, dass in einem neuen Repository alle notwendigen Verknüpfungen gesetzt
 sind. Da sich auch in verknüpften Repositories Produktdaten ändern können, muss
 der Manager außerdem überprüfen, ob sich in einem referenzierten Repository die
@@ -265,6 +276,25 @@ Repositories miteinander verknüpft. Ein Manager kann dadurch alle verbundenen
 Manager nach dem aktuellen Repository fragen und entsprechend das eigene
 Repository zusammen bauen.
 
+\subsection{Beispiel einer Abfrage}
+
+Das folgende Beispiel baut auf den Tutorial Projekten auf. Der Programmcode der
+Tutorial Projekte kann von http://faktorzehn.org/fips:tutorial runtergeladen
+werden.
+
+Um das neue Runtime Repository zu testen benötigen wir zunächst einen
+Application Server, in dem der $ProductDataService$ laufen kann. Im Projekt
+$org.faktorips.tutorial.de.ProductDataServiceDemo$ wird dazu Apache
+OpenEJB\footnote{http://openejb.apache.org}. In der $main$-Methode von
+ProductDataServiceDemo wird lediglich der Application Server gestartet. Dieser
+packt automatisch alle Bibliotheken im Classpath und deployd darin enthaltene
+Services.
+
+Der Demoservice wird in der Datei $ejb-jar.xml$ konfiguriert. 
+
+
+
+
 \subsection{Konfiguration des EJB Product-Data-Providers}
 
 Der EJB Product-Data-Provider wird mit den Runtime-Addons von Faktor-IPS zur Verfügung gestellt und
@@ -273,6 +303,7 @@ kann von der Faktor-IPS Downloadsite\footnote{http://update.faktorzehn.org/fakto
 Der Product-Data-Provider muss zusammen mit den Produktdaten als eigenes EAR (oder WAR) gebündelt werden.
 Dazu werden folgende Bibliotheken benötigt:
 \begin{itemize}
+	\item faktorips-runtime.java5.jar
 	\item faktorips-runtime.productdataservice.jar
 	\item faktorips-runtime.productdataservice.common.jar
 \end{itemize}
@@ -281,8 +312,12 @@ Um auf den Service zuzugreifen müssen auf der Seite des Runtime Repositories
 folgende Bibliotheken eingebunden werden:
 
 \begin{itemize}
+	\item faktorips-runtime.java5.jar
+	\item faktorips-valuetypes.java5.jar
 	\item faktorips-runtime.productdataprovider.ejbclient
 	\item faktorips-runtime.productdataservice.common.jar
+	\item faktorips-runtime.groovy.jar (wenn die Formeln mit Groovy ausgeführt
+	werden sollen)
 \end{itemize}
 
 Der Product-Data-Provider wird über die $ejb-jar.xml$\footnote{Die EJB-Konfiguration liegt im Ordner META-INF} konfiguriert. Das Beispiel in Listing \ref{ejb-jar.xml}
@@ -296,12 +331,12 @@ vorliegen; der Pfad wird per Injection in die Variable $tocFileName$ gesetzt.
 			<ejb-name>
 				ProductDataService
 			</ejb-name>
-			<business-remote>
-				org.faktorips.productdataservice.IProductDataService
-			</business-remote>
 			<ejb-class>
 				org.faktorips.productdataservice.ProductDataService
 			</ejb-class>
+			<mapped-name>
+				ProductDataService
+			</mapped-name>
 			<session-type>
 				Stateless
 			</session-type>
@@ -331,20 +366,18 @@ vorliegen; der Pfad wird per Injection in die Variable $tocFileName$ gesetzt.
 
 \subsection{Implementierung eigener Product-Data-Providers}
 
-!Gegenwart
-
-Ziel des Separaten Deployments von Produktdaten war es, die Produktdaten
-unabhängig von der Applikation ausliefern zu können. Dabei soll es nicht nur
-möglich sein, die Daten von einem Service abzurufen. Auch die Abfrage einer
-Datenbank sollte mit möglichst geringem Aufwand ermöglicht werden. Dazu wurde die
-eigentliche Abrage der Daten unabhängig vom $DerivedContentRuntimeRepository$
-implementiert. Dieses ruft über das Interface $IProductDataProvider$ die
+Ziel des Separaten Deployments von Produktdaten ist es, die Produktdaten
+unabhängig von der Applikation ausliefern zu können. Dabei ist es nicht nur
+möglich, die Daten von einem Service abzurufen. Auch die Abfrage einer
+Datenbank ist mit geringem Aufwand möglich. Die eigentliche Abfrage der Daten
+ist dazu unabhängig vom $DerivedContentRuntimeRepository$
+implementiert. Das Repository ruft über das Interface $IProductDataProvider$ die
 Methoden zur Abfrage der Produktdaten auf. Zur Instantiierung des konkreten
 Product-Data-Providers erhällt das Runtime Repository eine
 $ProductDataProviderFactory$.
 
-Das Interface $IProductDataProvider$ enthält Methoden um die unterschiedlichen
-Produktdaten (ProductComponent, TableContent, EnumValue, \ldots) abzufragen.
+Das Interface $IProductDataProvider$ beinhaltet Methoden um die
+unterschiedlichen Produktdaten (ProductComponent, TableContent, EnumValue, \ldots) abzufragen.
 Außerdem kann das Repository die aktuelle Table-Of-Content laden und die Version
 der Produktdaten abfragen.
 
@@ -356,7 +389,7 @@ kompatibel sind, wenn Major- und Minor-Version gleich sind, jedoch die
 Micro-Version abweicht.
 
 Zusammenfassend müssen zur Implementierung eigener Product-Data-Providers
-folgende Implementierungen erstellt werden:
+folgende Interfaces implementiert werden:
 
 \begin{itemize}
 	\item $IProductDataProvider$ zur Abfrage der Daten und der Version - optional
@@ -366,6 +399,8 @@ folgende Implementierungen erstellt werden:
 	\item Optional eine eigene Implementierung von $IVersionChecker$
 \end{itemize}
 
+Weitere Dokumentation zur Implementierung der einzelnen Interfaces befindet sich
+im JavaDoc.
 
 \bibliography{literatur}
 
