@@ -770,7 +770,7 @@ schutz” abgerufen und ausgedruckt werden.
    </license>
 
    <url>
-      <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/"/>
+      <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/v3/"/>
    </url>
 
    <includes
