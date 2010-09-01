@@ -175,7 +175,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         supertype.setSupertype(supersupertype.getQualifiedName());
 
         hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        IPolicyCmptType[] supertypes = hierarchy.getAllSupertypes(pcType);
+        IPolicyCmptType[] supertypes = (IPolicyCmptType[])hierarchy.getAllSupertypes(pcType);
         assertEquals(2, supertypes.length);
         assertEquals(supertype, supertypes[0]);
         assertEquals(supersupertype, supertypes[1]);
@@ -183,7 +183,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         // now same with cycle in hierarchy
         supersupertype.setSupertype(pcType.getQualifiedName());
         hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        supertypes = hierarchy.getAllSupertypes(pcType);
+        supertypes = (IPolicyCmptType[])hierarchy.getAllSupertypes(pcType);
         assertEquals(2, supertypes.length);
         assertEquals(supertype, supertypes[0]);
         assertEquals(supersupertype, supertypes[1]);
@@ -201,7 +201,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         supertype.setSupertype(supersupertype.getQualifiedName());
 
         hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        IPolicyCmptType[] supertypes = hierarchy.getAllSupertypesInclSelf(pcType);
+        IPolicyCmptType[] supertypes = (IPolicyCmptType[])hierarchy.getAllSupertypesInclSelf(pcType);
         assertEquals(3, supertypes.length);
         assertEquals(pcType, supertypes[0]);
         assertEquals(supertype, supertypes[1]);
@@ -210,7 +210,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         // now same with cycle in hierarchy
         supersupertype.setSupertype(pcType.getQualifiedName());
         hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        supertypes = hierarchy.getAllSupertypesInclSelf(pcType);
+        supertypes = (IPolicyCmptType[])hierarchy.getAllSupertypesInclSelf(pcType);
         assertEquals(3, supertypes.length);
         assertEquals(pcType, supertypes[0]);
         assertEquals(supertype, supertypes[1]);
@@ -258,7 +258,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute a2 = supertype.newPolicyCmptTypeAttribute();
         IPolicyCmptTypeAttribute a3 = supersupertype.newPolicyCmptTypeAttribute();
         TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        IPolicyCmptTypeAttribute[] attributes = hierarchy.getAllAttributes(pcType);
+        IPolicyCmptTypeAttribute[] attributes = (IPolicyCmptTypeAttribute[])hierarchy.getAllAttributes(pcType);
         assertEquals(3, attributes.length);
         assertEquals(a1, attributes[0]);
         assertEquals(a2, attributes[1]);
@@ -267,7 +267,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         // now same with cycle in hierarchy
         supersupertype.setSupertype(pcType.getQualifiedName());
         hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        attributes = hierarchy.getAllAttributes(pcType);
+        attributes = (IPolicyCmptTypeAttribute[])hierarchy.getAllAttributes(pcType);
         assertEquals(3, attributes.length);
         assertEquals(a1, attributes[0]);
         assertEquals(a2, attributes[1]);
@@ -288,14 +288,15 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         a3.setName("c");
 
         TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        IPolicyCmptTypeAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        IPolicyCmptTypeAttribute[] attributes = (IPolicyCmptTypeAttribute[])hierarchy
+                .getAllAttributesRespectingOverride(pcType);
         assertEquals(3, attributes.length);
 
         // a1 overrides a2, a3 not overridden
         a1.setName("b");
         a1.setOverwrite(true);
 
-        attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        attributes = (IPolicyCmptTypeAttribute[])hierarchy.getAllAttributesRespectingOverride(pcType);
         assertEquals(2, attributes.length);
         assertEquals(a1, attributes[0]);
         assertEquals(a3, attributes[1]);
@@ -304,7 +305,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         a3.setName("b");
         a2.setOverwrite(true);
 
-        attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        attributes = (IPolicyCmptTypeAttribute[])hierarchy.getAllAttributesRespectingOverride(pcType);
         assertEquals(1, attributes.length);
         assertEquals(a1, attributes[0]);
 
@@ -312,7 +313,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         a1.setName("x");
         a1.setOverwrite(false);
 
-        attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        attributes = (IPolicyCmptTypeAttribute[])hierarchy.getAllAttributesRespectingOverride(pcType);
         assertEquals(2, attributes.length);
         assertEquals(a1, attributes[0]);
         assertEquals(a2, attributes[1]);
@@ -320,7 +321,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         // now same with cycle in hierarchy
         supersupertype.setSupertype(pcType.getQualifiedName());
         hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        attributes = (IPolicyCmptTypeAttribute[])hierarchy.getAllAttributesRespectingOverride(pcType);
         assertEquals(2, attributes.length);
         assertEquals(a1, attributes[0]);
         assertEquals(a2, attributes[1]);
@@ -403,23 +404,23 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
 
         TypeHierarchy hierarchy = TypeHierarchy.getSubtypeHierarchy(supersupertype);
 
-        IPolicyCmptType[] types = hierarchy.getAllSubtypes(supersupertype);
+        IPolicyCmptType[] types = (IPolicyCmptType[])hierarchy.getAllSubtypes(supersupertype);
         assertEquals(2, types.length);
         assertSame(supertype, types[0]);
         assertSame(pcType, types[1]);
 
-        types = hierarchy.getAllSubtypes(supertype);
+        types = (IPolicyCmptType[])hierarchy.getAllSubtypes(supertype);
         assertEquals(1, types.length);
         assertSame(pcType, types[0]);
 
-        types = hierarchy.getAllSubtypes(pcType);
+        types = (IPolicyCmptType[])hierarchy.getAllSubtypes(pcType);
         assertEquals(0, types.length);
 
         // now same with cycle in hierarchy
         supersupertype.setSupertype(pcType.getQualifiedName());
         hierarchy = TypeHierarchy.getSubtypeHierarchy(supersupertype);
         assertTrue(hierarchy.containsCycle());
-        types = hierarchy.getAllSubtypes(supersupertype);
+        types = (IPolicyCmptType[])hierarchy.getAllSubtypes(supersupertype);
         assertEquals(2, types.length);
         assertSame(supertype, types[0]);
         assertSame(pcType, types[1]);

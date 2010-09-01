@@ -56,7 +56,7 @@ public class AssociationTargetRefControl extends PcTypeRefControl {
          * policy cmpt from this selection of policy cmpt types
          */
         ITypeHierarchy subTypeHierarchy = policyCmptTypeTarget.getSubtypeHierarchy();
-        IPolicyCmptType[] subTypes = subTypeHierarchy.getAllSubtypes(policyCmptTypeTarget);
+        IPolicyCmptType[] subTypes = (IPolicyCmptType[])subTypeHierarchy.getAllSubtypes(policyCmptTypeTarget);
         if (subTypes == null) {
             subTypes = new IPolicyCmptType[0];
         }

@@ -2285,7 +2285,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         // TODO joerg getSubtypeHierarchy better performance using IpsSrcFiles
-        IPolicyCmptType[] allSubtypes = policyCmptType.getSubtypeHierarchy().getAllSubtypes(policyCmptType);
+        IPolicyCmptType[] allSubtypes = (IPolicyCmptType[])policyCmptType.getSubtypeHierarchy().getAllSubtypes(
+                policyCmptType);
         List<IIpsSrcFile> allIpsSrcFilesSubtypes = new ArrayList<IIpsSrcFile>();
         for (IPolicyCmptType allSubtype : allSubtypes) {
             if (allSubtype.isAbstract()) {

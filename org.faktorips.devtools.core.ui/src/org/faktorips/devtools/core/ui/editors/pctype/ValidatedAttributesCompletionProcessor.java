@@ -44,7 +44,8 @@ public class ValidatedAttributesCompletionProcessor extends AbstractCompletionPr
             throws Exception {
 
         prefix = prefix.toLowerCase();
-        IPolicyCmptTypeAttribute[] attributes = pcType.getSupertypeHierarchy().getAllAttributes(pcType);
+        IPolicyCmptTypeAttribute[] attributes = (IPolicyCmptTypeAttribute[])pcType.getSupertypeHierarchy()
+                .getAllAttributes(pcType);
         List<String> validatedAttributes = Arrays.asList(rule.getValidatedAttributes());
         for (int i = 0; i < attributes.length; i++) {
             if (attributes[i].getAttributeType() != AttributeType.CONSTANT) {

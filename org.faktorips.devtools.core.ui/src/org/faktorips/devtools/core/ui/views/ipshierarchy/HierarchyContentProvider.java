@@ -17,16 +17,21 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 
 public class HierarchyContentProvider implements ITreeContentProvider {
 
     private ITypeHierarchy hierarchy;
-    private IPolicyCmptType selected;
+    private IType selected;
 
     @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof IPolicyCmptType) {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)parentElement;
+            return hierarchy.getSubtypes(policyCmptType);
+        } else if (parentElement instanceof IProductCmptType) {
+            IProductCmptType policyCmptType = (IProductCmptType)parentElement;
             return hierarchy.getSubtypes(policyCmptType);
         } else {
             return new Object[0];
@@ -38,6 +43,9 @@ public class HierarchyContentProvider implements ITreeContentProvider {
         if (element instanceof IPolicyCmptType) {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)element;
             return hierarchy.getSupertype(policyCmptType);
+        } else if (element instanceof IProductCmptType) {
+            IProductCmptType policyCmptType = (IProductCmptType)element;
+            return hierarchy.getSupertype(policyCmptType);
         } else {
             return null;
         }
@@ -45,14 +53,14 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     @Override
     public boolean hasChildren(Object element) {
-        return getChildren(element) != null || getChildren(element).length != 0;
-
+        boolean b = (getChildren(element) != null && getChildren(element).length != 0);
+        return b;
     }
 
     @Override
     public Object[] getElements(Object inputElement) {
 
-        IPolicyCmptType root = hierarchy.getType();
+        IType root = hierarchy.getType();
 
         while (hierarchy.getSupertype(root) != null) {
             root = hierarchy.getSupertype(root);
@@ -74,11 +82,19 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     }
 
-    public IPolicyCmptType getActualElement() {
+    public IType getActualElement() {
         return selected;
     }
 
-    public void setActualElement(IPolicyCmptType selected) {
+    public void setActualElement(IType selected) {
         this.selected = selected;
+    }
+
+    public void deleteActualElement() {
+        this.selected = null;
+    }
+
+    public ITypeHierarchy getInput() {
+        return this.hierarchy;
     }
 }

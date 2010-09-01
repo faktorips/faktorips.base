@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -58,10 +57,7 @@ public class ShowHierarchyAction extends IpsAction {
         if (selectedElement instanceof IProductCmptType || selectedElement instanceof IPolicyCmptType) {
             setText(Messages.ShowHierarchyAction_nameForTypes);
             setDescription(Messages.ShowHierarchyAction_descriptionForTypes);
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IpsHierarchyView.IMAGE));
-
-        } else {
-            setText(NLS.bind(Messages.ShowHierarchyAction_nameForInstances, "")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IpsHierarchyView.LOGO));
         }
         setToolTipText(getDescription());
     }

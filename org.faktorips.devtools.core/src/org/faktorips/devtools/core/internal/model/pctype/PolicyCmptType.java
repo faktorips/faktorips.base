@@ -379,11 +379,15 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         // find all overwrite-candidates
-        IPolicyCmptTypeAttribute[] candidates = getSupertypeHierarchy().getAllAttributes(supertype);
+        IAttribute[] candidates = getSupertypeHierarchy().getAllAttributes(
+                supertype);
         List<IPolicyCmptTypeAttribute> result = new ArrayList<IPolicyCmptTypeAttribute>();
         for (int i = 0; i < candidates.length; i++) {
             if (!toExclude.containsKey(candidates[i].getName())) {
-                result.add(candidates[i]);
+            if (candidates[i] instanceof IPolicyCmptTypeAttribute) {
+                IPolicyCmptTypeAttribute pctAttributeCandidate = (IPolicyCmptTypeAttribute)candidates[i];
+                result.add(pctAttributeCandidate);
+            }
             }
         }
 

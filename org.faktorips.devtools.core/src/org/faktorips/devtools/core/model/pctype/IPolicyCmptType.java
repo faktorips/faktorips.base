@@ -207,8 +207,7 @@ public interface IPolicyCmptType extends IType {
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject)
-            throws CoreException;
+    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Creates a new attribute and returns it.
