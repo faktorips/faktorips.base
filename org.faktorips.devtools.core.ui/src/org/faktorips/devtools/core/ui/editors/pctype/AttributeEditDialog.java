@@ -1008,8 +1008,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         private void addToResult(List<ICompletionProposal> result, IMethod method, int documentOffset) {
             String name = method.getSignatureString();
+            String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(method);
             CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                    .getImageHandling().getImage(method), name, null, method.getCurrentDescription());
+                    .getImageHandling().getImage(method), name, null, localizedDescription);
             result.add(proposal);
         }
 

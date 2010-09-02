@@ -147,7 +147,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     public void testGetCurrentLabelProvider() {
         ILabel label = attribute.newLabel();
-        label.setLocale(IpsPlugin.getDefault().getIpsModelLocale());
+        label.setLocale(IpsPlugin.getDefault().getLocalizationLocale());
         label.setValue("quarniboo");
         assertEquals(label.getValue(), attrValue.getCurrentLabel());
     }

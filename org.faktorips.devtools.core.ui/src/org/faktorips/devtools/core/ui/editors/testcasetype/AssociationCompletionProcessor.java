@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
@@ -79,8 +81,10 @@ public class AssociationCompletionProcessor extends AbstractCompletionProcessor 
 
         String name = association.getName();
         String displayText = name + " - " + association.getParent().getName(); //$NON-NLS-1$
-        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                .getImageHandling().getImage(association), displayText, null, association.getCurrentDescription());
+        Image image = IpsUIPlugin.getImageHandling().getImage(association);
+        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(association);
+        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
+                displayText, null, localizedDescription);
         result.add(proposal);
     }
 }

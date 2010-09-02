@@ -72,7 +72,8 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setUnqualifiedName(getBusinessFunction().getName());
         mainSection.setClassModifier(Modifier.PUBLIC | Modifier.FINAL);
         mainSection.setClass(true);
-        mainSection.getJavaDocForTypeBuilder().javaDoc(getBusinessFunction().getDescription(), ANNOTATION_GENERATED);
+        String description = getDescriptionInGeneratorLanguage(getBusinessFunction());
+        mainSection.getJavaDocForTypeBuilder().javaDoc(description, ANNOTATION_GENERATED);
         // TODO add IBusinessFunction interface to runtime
         // mainSection.setExtendedInterfaces(new String[] { IBusinessFunction.class.getName()});
 
@@ -110,9 +111,9 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         List<IBFElement> bfElements = getBusinessFunction().getBFElements();
         for (IBFElement element : bfElements) {
             if (element.getType().equals(BFElementType.ACTION_INLINE) && element.isValid()) {
+                String description = getDescriptionInGeneratorLanguage(element);
                 methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameInlineAction((IActionBFE)element),
-                        new String[0], new Class[0], new JavaCodeFragment(), element.getDescription(),
-                        ANNOTATION_GENERATED);
+                        new String[0], new Class[0], new JavaCodeFragment(), description, ANNOTATION_GENERATED);
             }
         }
     }
@@ -444,8 +445,9 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
         JavaCodeFragment body = new JavaCodeFragment();
         generateControlFlowMethodBody(body, decision, methodBuilder);
+        String description = getDescriptionInGeneratorLanguage(decision);
         methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameForDecision(decision), new String[0],
-                new Class[0], body, decision.getDescription(), ANNOTATION_GENERATED);
+                new Class[0], body, description, ANNOTATION_GENERATED);
     }
 
     private String getParameterBFEVarName(IParameterBFE parameterBFE) {

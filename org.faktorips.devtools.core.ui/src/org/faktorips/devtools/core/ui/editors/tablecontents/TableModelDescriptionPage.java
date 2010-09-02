@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -42,8 +43,9 @@ public class TableModelDescriptionPage extends DefaultModelDescriptionPage {
 
         ITableStructure tableStructure = tableContents.findTableStructure(tableContents.getIpsProject());
 
+        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(tableStructure);
         DescriptionItem structureDescription = new DescriptionItem(
-                Messages.TableModelDescriptionPage_generalInformation, tableStructure.getCurrentDescription());
+                Messages.TableModelDescriptionPage_generalInformation, localizedDescription);
         columnsList.add(structureDescription);
 
         IColumn[] columns = tableStructure.getColumns();
@@ -52,7 +54,8 @@ public class TableModelDescriptionPage extends DefaultModelDescriptionPage {
          * Default sort order is same as table definition.
          */
         for (IColumn column : columns) {
-            DescriptionItem item = new DescriptionItem(column.getName(), column.getCurrentDescription());
+            localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(column);
+            DescriptionItem item = new DescriptionItem(column.getName(), localizedDescription);
             columnsList.add(item);
         }
 

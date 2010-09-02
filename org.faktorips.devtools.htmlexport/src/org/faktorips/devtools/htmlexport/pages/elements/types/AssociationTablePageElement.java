@@ -58,10 +58,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         // will be replaced with the link
         values.add(""); //$NON-NLS-1$
 
-        /*
-         * TODO AW: What is the right description to use as model elements can now have descriptions
-         * in different languages?
-         */
+        // TODO AW: HTML-Export description needs to be configured
         values.add(association.getDescription());
         values.add(association.getAssociationType().getName());
         values.add(association.getAggregationKind().getName());

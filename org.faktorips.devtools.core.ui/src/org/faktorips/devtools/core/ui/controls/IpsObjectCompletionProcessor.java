@@ -103,15 +103,17 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                     String qName = qnt.getName();
                     String displayText = qnt.getUnqualifiedName()
                             + " - " + mapDefaultPackageName(ipsSrcFile.getIpsPackageFragment().getName()); //$NON-NLS-1$
-                    String description = null;
+                    String localizedDescription = null;
                     if (IpsObjectType.TABLE_CONTENTS != ipsSrcFile.getIpsObjectType()) {
                         // table contents doesn't support description, thus doen't call getIpsObject
                         // due to performance reason
-                        description = ipsSrcFile.getIpsObject().getCurrentDescription();
+                        localizedDescription = IpsPlugin.getDefault()
+                                .getLocalizedDescription(ipsSrcFile.getIpsObject());
                     }
 
                     CompletionProposal proposal = new CompletionProposal(qName, 0, documentOffset, qName.length(),
-                            IpsUIPlugin.getImageHandling().getImage(ipsSrcFile), displayText, null, description);
+                            IpsUIPlugin.getImageHandling().getImage(ipsSrcFile), displayText, null,
+                            localizedDescription);
                     result.add(proposal);
                 }
             }

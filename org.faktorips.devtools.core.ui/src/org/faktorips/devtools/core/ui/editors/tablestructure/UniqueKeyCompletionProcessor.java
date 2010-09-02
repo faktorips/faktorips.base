@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
@@ -62,8 +64,10 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
     private void addToResult(List<ICompletionProposal> result, IUniqueKey key, int documentOffset) {
         String name = key.getName();
         String displayText = name;
-        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                .getImageHandling().getImage(key), displayText, null, key.getCurrentDescription());
+        Image image = IpsUIPlugin.getImageHandling().getImage(key);
+        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(key);
+        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
+                displayText, null, localizedDescription);
         result.add(proposal);
     }
 

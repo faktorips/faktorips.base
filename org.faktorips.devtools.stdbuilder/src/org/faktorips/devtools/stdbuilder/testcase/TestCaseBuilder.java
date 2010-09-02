@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.transform.TransformerException;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -69,7 +71,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
 
     private Map<Element, ITestPolicyCmpt> targetObjectIdMap = new HashMap<Element, ITestPolicyCmpt>();
 
-    /*
+    /**
      * Class to generate an unique object id within the input and the expected result.
      */
     private class ObjectId {
@@ -85,16 +87,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /**
-     * @param builderSet
-     */
     public TestCaseBuilder(IIpsArtefactBuilderSet builderSet) {
         super(builderSet);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return "TestCaseBuilder";
@@ -118,11 +114,6 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         return packageInternal.replace('.', '/') + '/' + testCase.getName() + ".xml";
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IOException
-     */
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         ArgumentCheck.isTrue(ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE);
@@ -164,17 +155,11 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TEST_CASE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getXmlContentFile(ipsSrcFile);
@@ -183,7 +168,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /*
+    /**
      * Converts the given string content as ByteArrayInputStream.
      */
     private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException {
@@ -194,7 +179,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /*
+    /**
      * Returns the package folder for the given ips sourcefile.
      */
     private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -203,7 +188,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
     }
 
-    /*
+    /**
      * Returns the file resource of the given ips source file.
      */
     private IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -212,19 +197,22 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         return folder.getFile(StringUtil.getFilenameWithoutExtension(file.getName()) + ".xml");
     }
 
-    /*
+    /**
      * Transforms the given test case object to an ips test case xml which can executed as ips test
      * case in runtime.
      * 
      * @param doc the xml document that can be used as a factory to create xml elment. @param
-     * testCase the test case which will be transformed to the runtime test case format.
+     *            testCase the test case which will be transformed to the runtime test case format.
      * 
      * @return the xml representation of the test case
      */
     private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) throws CoreException {
         Element testCaseElm = doc.createElement("TestCase");
         testCaseElm.setAttribute("testCaseType", testCase.getTestCaseType());
-        DescriptionHelper.setDescription(testCaseElm, testCase.getDescription());
+        Locale generatorLocale = getBuilderSet().getLanguageUsedInGeneratedSourceCode();
+        IDescription generatorDescription = testCase.getDescription(generatorLocale);
+        String description = generatorDescription == null ? "" : generatorDescription.getText();
+        DescriptionHelper.setDescription(testCaseElm, description);
         doc.appendChild(testCaseElm);
 
         Element input = doc.createElement("Input");
@@ -268,7 +256,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         objectIdMap.clear();
     }
 
-    /*
+    /**
      * Add the given test values to the given element.
      */
     private void addTestValues(Document doc, Element element, ITestValue[] testValues) throws CoreException {
@@ -284,7 +272,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /*
+    /**
      * Add the given test rules to the given element.
      */
     private void addTestRules(Document doc, Element element, ITestRule[] testRules) throws CoreException {
@@ -308,7 +296,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /*
+    /**
      * Add test given policy components to the given element.
      */
     private void addTestPolicyCmpts(Document doc,
@@ -317,6 +305,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             ITestPolicyCmptLink link,
             boolean isInput,
             ObjectId objectId) throws CoreException {
+
         if (testPolicyCmpts == null) {
             return;
         }
@@ -413,7 +402,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         return testPolicyCmptElem;
     }
 
-    /*
+    /**
      * Add the given associations to the given element.
      */
     private void addAssociations(Document doc,
@@ -461,7 +450,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         return param.isInputOrCombinedParameter() && isInput || param.isExpextedResultOrCombinedParameter() && !isInput;
     }
 
-    /*
+    /**
      * Add the given test attributes to the given element.
      */
     private void addTestAttrValues(Document doc,
@@ -503,11 +492,6 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * Returns true.
-     */
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;
@@ -520,4 +504,5 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         XmlUtil.addNewCDATAorTextChild(doc, element, value);
         element.setAttribute("type", type);
     }
+
 }

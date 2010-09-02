@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import java.util.Locale;
+import java.util.Set;
+
 import org.faktorips.devtools.core.model.Described;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.Validatable;
@@ -20,48 +23,43 @@ import org.faktorips.devtools.core.model.XmlSupport;
 import org.faktorips.util.memento.MementoSupport;
 
 /**
- * A container for IPS object parts that may have {@link IDescription}s and {@link ILabel}s attached
- * to it.
+ * A container for {@link IIpsObjectPart}s that may have {@link IDescription}s and {@link ILabel}s
+ * attached to it.
  * <p>
- * Whether or not descriptions and / or labels are supported by this IPS object part container can
- * be queried trough the operations {@link #hasDescriptionSupport()} and {@link #hasLabelSupport()}
- * respectively.
+ * Whether or not descriptions and / or labels are supported by this
+ * <tt>IIpsObjectPartContainer</tt> can be queried trough the operations
+ * {@link #hasDescriptionSupport()} and {@link #hasLabelSupport()} respectively.
  * 
  * @author Thorsten Guenther
  * @author Alexander Weickmann
- * 
- * @see ILabel
- * @see ILabeledElement
- * @see IDescription
- * @see IDescribedElement
  */
 public interface IIpsObjectPartContainer extends IIpsElement, IExtensionPropertyAccess, Validatable, XmlSupport,
         MementoSupport, Described, IDescribedElement, ILabeledElement {
 
     /**
-     * Returns the IPS object this part belongs to if the container is a part, or the IPS object
-     * itself, if this container is the IPS object.
+     * Returns the IPS object this part belongs to if this <tt>IIpsObjectPartContainer</tt> is a
+     * part, or the IPS object itself, if this <tt>IIpsObjectPartContainer</tt> is the IPS object.
      */
     public IIpsObject getIpsObject();
 
     /**
-     * Returns the IPS source file this container belongs to.
+     * Returns the IPS source file this <tt>IIpsObjectPartContainer</tt> belongs to.
      */
     public IIpsSrcFile getIpsSrcFile();
 
     /**
-     * Returns whether this IPS object part container does support descriptions.
+     * Returns whether this <tt>IIpsObjectPartContainer</tt> does support descriptions.
      */
     public boolean hasDescriptionSupport();
 
     /**
-     * Returns whether this IPS object part container does support labels.
+     * Returns whether this <tt>IIpsObjectPartContainer</tt> does support labels.
      */
     public boolean hasLabelSupport();
 
     /**
-     * @throws UnsupportedOperationException If this IPS object part container does not support
-     *             descriptions.
+     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
+     *             support descriptions.
      * 
      * @see #hasDescriptionSupport()
      */
@@ -69,17 +67,26 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
     public IDescription newDescription();
 
     /**
-     * @throws UnsupportedOperationException If this IPS object part container does not support
-     *             descriptions.
+     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
+     *             support descriptions.
      * 
      * @see #hasDescriptionSupport()
      */
     @Override
-    public String getCurrentDescription();
+    public IDescription getDescription(Locale locale);
 
     /**
-     * @throws UnsupportedOperationException If this IPS object part container does not support
-     *             labels.
+     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
+     *             support descriptions.
+     * 
+     * @see #hasDescriptionSupport()
+     */
+    @Override
+    public Set<IDescription> getDescriptions();
+
+    /**
+     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
+     *             support labels.
      * 
      * @see #hasLabelSupport()
      */
@@ -87,8 +94,8 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
     public ILabel newLabel();
 
     /**
-     * @throws UnsupportedOperationException If this IPS object part container does not support
-     *             plural labels.
+     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
+     *             support plural labels.
      * 
      * @see #isPluralLabelSupported()
      */

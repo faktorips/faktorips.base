@@ -21,6 +21,8 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -76,6 +78,28 @@ public abstract class JavaGeneratorForIpsPart {
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
     public abstract Locale getLanguageUsedInGeneratedSourceCode();
+
+    /**
+     * Returns the description of the given {@link IIpsObjectPart} in the language of the code
+     * generator.
+     * <p>
+     * Returns an empty string if the given {@link IIpsObjectPart} does not support descriptions.
+     * 
+     * @param ipsObjectPart The {@link IIpsObjectPart} to obtain the description of.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPart</tt> is <tt>null</tt>.
+     */
+    protected final String getDescriptionInGeneratorLanguage(IIpsObjectPart ipsObjectPart) {
+        ArgumentCheck.notNull(ipsObjectPart);
+        String description = ""; //$NON-NLS-1$
+        if (ipsObjectPart.hasDescriptionSupport()) {
+            IDescription generatorDescription = ipsObjectPart.getDescription(getLanguageUsedInGeneratedSourceCode());
+            if (generatorDescription != null) {
+                description = generatorDescription.getText();
+            }
+        }
+        return description;
+    }
 
     protected void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder) {
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, builder, getLanguageUsedInGeneratedSourceCode());

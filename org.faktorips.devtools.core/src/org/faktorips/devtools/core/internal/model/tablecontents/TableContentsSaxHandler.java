@@ -15,8 +15,11 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -75,6 +78,8 @@ public class TableContentsSaxHandler extends DefaultHandler {
     /** contains the id of the value node */
     private String idValue;
 
+    private String currentDescriptionLocale;
+
     private TableContentsGeneration currentGeneration;
 
     public TableContentsSaxHandler(ITableContents tableContents) {
@@ -90,7 +95,15 @@ public class TableContentsSaxHandler extends DefaultHandler {
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = false;
             if (textBuffer != null) {
-                tableContents.setDescription(textBuffer.toString());
+                if (!(StringUtils.isEmpty(currentDescriptionLocale))) {
+                    Locale locale = new Locale(currentDescriptionLocale);
+                    IDescription description = tableContents.getDescription(locale);
+                    if (description == null) {
+                        description = tableContents.newDescription();
+                        description.setLocale(locale);
+                    }
+                    description.setText(textBuffer.toString());
+                }
             }
             textBuffer = null;
         } else if (EXTENSIONPROPERTIES.equals(qName)) {
@@ -123,6 +136,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
                             .getValue(ATTRIBUTE_VALIDFROM)));
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = true;
+            currentDescriptionLocale = attributes.getValue(IDescription.PROPERTY_LOCALE);
         } else if (EXTENSIONPROPERTIES.equals(qName)) {
             insideExtensionPropertiesNode = true;
         } else if (ROW.equals(qName)) {

@@ -124,8 +124,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         IDescription description = policyContainer.newDescription();
         description.setLocale(Locale.US);
+        IDescription description2 = policyContainer.newDescription();
+        description2.setLocale(Locale.GERMAN);
         policyContainer.setDescription("new description");
-        assertEquals("new description", policyContainer.getDescription());
+        assertEquals("new description", policyContainer.getDescription(Locale.US).getText());
+        assertEquals("", policyContainer.getDescription(Locale.GERMAN).getText());
         assertTrue(policyContainer.getIpsSrcFile().isDirty());
         assertEquals(policyContainer.getIpsSrcFile(), lastEvent.getIpsSrcFile());
 
@@ -148,8 +151,15 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testGetDescriptionDeprecatedVersion() throws CoreException {
         IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
         assertEquals("", policyContainer.getDescription());
-        usDescription.setText("blub");
-        assertEquals("blub", container.getDescription());
+
+        Locale localizationLocale = IpsPlugin.getDefault().getLocalizationLocale();
+        IDescription localizedDescription = policyContainer.getDescription(localizationLocale);
+        if (localizedDescription == null) {
+            localizedDescription = policyContainer.newDescription();
+            localizedDescription.setLocale(localizationLocale);
+        }
+        localizedDescription.setText("blub");
+        assertEquals("blub", policyContainer.getDescription());
     }
 
     // OK to suppress deprecation warnings as this is a test for a deprecated method.
@@ -527,7 +537,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testGetCurrentLabelIpsModelLocaleLabelExistent() {
         ILabel modelLocaleLabel = container.getLabelForIpsModelLocale();
         if (modelLocaleLabel == null) {
-            Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+            Locale ipsModelLocale = IpsPlugin.getDefault().getLocalizationLocale();
             modelLocaleLabel = container.newLabel();
             modelLocaleLabel.setLocale(ipsModelLocale);
             modelLocaleLabel.setValue("squishibu");
@@ -566,57 +576,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(container.getLastResortPluralLabel(), container.getCurrentPluralLabel());
     }
 
-    public void testGetCurrentDescriptionIpsModelLocaleDescriptionExistent() {
-        IDescription modelLocaleDescription = container.getDescriptionForIpsModelLocale();
-        if (modelLocaleDescription == null) {
-            Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
-            modelLocaleDescription = container.newDescription();
-            modelLocaleDescription.setLocale(ipsModelLocale);
-            modelLocaleDescription.setText("foo");
-        }
-        assertEquals(modelLocaleDescription.getText(), container.getCurrentDescription());
-    }
-
-    public void testGetCurrentDescriptionDefaultLocaleExistent() {
-        IDescription modelLocaleDescription = container.getDescriptionForIpsModelLocale();
-        if (modelLocaleDescription != null) {
-            modelLocaleDescription.delete();
-        }
-        IDescription defaultLocaleDescription = container.getDescriptionForDefaultLocale();
-        if (defaultLocaleDescription == null) {
-            defaultLocaleDescription = container.newDescription();
-            defaultLocaleDescription.setLocale(Locale.GERMAN);
-            defaultLocaleDescription.setText("schwubdibu");
-        }
-        assertEquals(defaultLocaleDescription.getText(), container.getCurrentDescription());
-    }
-
-    public void testGetCurrentDescriptionNoneExistent() {
-        IDescription modelLocaleDescription = container.getDescriptionForIpsModelLocale();
-        if (modelLocaleDescription != null) {
-            modelLocaleDescription.delete();
-        }
-        IDescription defaultLocaleDescription = container.getDescriptionForDefaultLocale();
-        if (defaultLocaleDescription != null) {
-            defaultLocaleDescription.delete();
-        }
-        assertEquals("", container.getCurrentDescription());
-    }
-
-    public void testGetDescriptionForIpsModelLocale() {
-        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
-        assertEquals(ipsModelLocale.getLanguage(), container.getDescriptionForIpsModelLocale().getLocale()
-                .getLanguage());
-    }
-
     public void testGetLabelForIpsModelLocale() {
-        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        Locale ipsModelLocale = IpsPlugin.getDefault().getLocalizationLocale();
         assertEquals(ipsModelLocale.getLanguage(), container.getLabelForIpsModelLocale().getLocale().getLanguage());
-    }
-
-    public void testGetDescriptionForDefaultLocale() {
-        Locale defaultLocale = Locale.GERMAN;
-        assertEquals(defaultLocale, container.getDescriptionForDefaultLocale().getLocale());
     }
 
     public void testGetLabelForDefaultLocale() {

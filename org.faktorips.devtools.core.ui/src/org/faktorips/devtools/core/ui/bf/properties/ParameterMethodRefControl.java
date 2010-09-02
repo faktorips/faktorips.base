@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
@@ -136,9 +137,10 @@ public class ParameterMethodRefControl extends TextButtonControl {
             String match = prefix.toLowerCase();
             for (IMethod method : getSelectableMethods()) {
                 if (method.getName().startsWith(match)) {
+                    String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(method);
+                    Image image = IpsUIPlugin.getImageHandling().getImage(method);
                     result.add(new CompletionProposal(method.getName(), 0, documentOffset, method.getName().length(),
-                            IpsUIPlugin.getImageHandling().getImage(method), method.getSignatureString(), null, method
-                                    .getCurrentDescription()));
+                            image, method.getSignatureString(), null, localizedDescription));
                 }
             }
         }

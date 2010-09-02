@@ -37,9 +37,13 @@ import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.internal.model.versionmanager.IpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.bf.BFElementType;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
@@ -347,17 +351,16 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the locale that Faktor-IPS uses to internationalize Faktor-IPS models. Currently,
-     * this is the locale that is specified at the startup of Eclipse but at a later point may be
-     * changed so that it can be configured via the IPS preferences for example.
+     * Returns the locale that Faktor-IPS uses to internationalize things like descriptions and
+     * labels. Currently, this is the locale that is specified at the startup of Eclipse but at a
+     * later point may be changed so that it can be configured via the IPS preferences for example.
      * <p>
-     * Note that this is <strong>not</strong> the locale used for internationalization of
-     * Faktor-IPS. The Faktor-IPS locale defines the language in that labels and descriptions of
-     * model elements shall be displayed.
+     * Note that this is <strong>not</strong> the locale used for internationalization of Faktor-IPS
+     * itself.
      * 
      * @see #getUsedLanguagePackLocale()
      */
-    public Locale getIpsModelLocale() {
+    public Locale getLocalizationLocale() {
         String nl = Platform.getNL();
         // As of now, only the language is of concern to us, not the country.
         if (nl.length() > 2) {
@@ -608,6 +611,96 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public DependencyGraphPersistenceManager getDependencyGraphPersistenceManager() {
         return dependencyGraphPersistenceManager;
+    }
+
+    /**
+     * Returns the description for the locale that Faktor-IPS uses at the time this operation is
+     * called to internationalize Faktor-IPS elements.
+     * <p>
+     * If there is no description for that locale, the default description will be returned. If
+     * there is no default description, an empty string is returned.
+     * 
+     * @param describedElement The {@link IDescribedElement} to obtain the localized description of.
+     * 
+     * @throws NullPointerException If <tt>describedElement</tt> is <tt>null</tt>.
+     * 
+     * @see #getLocalizationLocale()
+     */
+    public String getLocalizedDescription(IDescribedElement describedElement) {
+        ArgumentCheck.notNull(describedElement);
+
+        String description = ""; //$NON-NLS-1$
+        IDescription localizedDescription = describedElement.getDescription(getLocalizationLocale());
+        if (localizedDescription == null) {
+            description = getDefaultDescription(describedElement);
+        } else {
+            description = localizedDescription.getText();
+        }
+
+        return description;
+    }
+
+    /**
+     * Returns the description of the given element for the default language. The default language
+     * is specified trough the IPS project the element belongs to.
+     * <p>
+     * If there is no description for that locale or no default language is specified, an empty
+     * string is returned.
+     * 
+     * @param describedElement The {@link IDescribedElement} to obtain the default description of.
+     * 
+     * @throws NullPointerException If <tt>describedElement</tt> is <tt>null</tt>.
+     * 
+     * @see IIpsProjectProperties#getDefaultLanguage()
+     */
+    public String getDefaultDescription(IDescribedElement describedElement) {
+        ArgumentCheck.notNull(describedElement);
+
+        String description = ""; //$NON-NLS-1$
+        Locale defaultLocale = getDefaultLocale(describedElement.getIpsProject());
+        if (defaultLocale != null) {
+            IDescription descriptionPart = describedElement.getDescription(defaultLocale);
+            if (descriptionPart != null) {
+                description = descriptionPart.getText();
+            }
+        }
+
+        return description;
+    }
+
+    /**
+     * Sets the description of the given element for the default language. The default language is
+     * specified trough the IPS project the element belongs to.
+     * <p>
+     * If there is no description for that locale or no default language is specified, nothing will
+     * happen.
+     * 
+     * @param describedElement The {@link IDescribedElement} to set the default description for.
+     * @param text The description text to set.
+     * 
+     * @throws NullPointerException If <tt>describedElement</tt> or <tt>text</tt> is <tt>null</tt>.
+     * 
+     * @see IIpsProjectProperties#getDefaultLanguage()
+     */
+    public void setDefaultDescription(IDescribedElement describedElement, String text) {
+        ArgumentCheck.notNull(new Object[] { describedElement, text });
+
+        Locale defaultLocale = getDefaultLocale(describedElement.getIpsProject());
+        if (defaultLocale != null) {
+            IDescription descriptionPart = describedElement.getDescription(defaultLocale);
+            if (descriptionPart != null) {
+                descriptionPart.setText(text);
+            }
+        }
+    }
+
+    private Locale getDefaultLocale(IIpsProject ipsProject) {
+        Locale defaultLocale = null;
+        ISupportedLanguage defaultLanguage = ipsProject.getProperties().getDefaultLanguage();
+        if (defaultLanguage != null) {
+            defaultLocale = defaultLanguage.getLocale();
+        }
+        return defaultLocale;
     }
 
 }

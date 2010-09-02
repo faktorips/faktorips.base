@@ -481,7 +481,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         configElement.setPolicyCmptTypeAttribute(policyAttribute.getName());
 
         ILabel label = policyAttribute.newLabel();
-        label.setLocale(IpsPlugin.getDefault().getIpsModelLocale());
+        label.setLocale(IpsPlugin.getDefault().getLocalizationLocale());
         label.setValue("plantsch");
         assertEquals(label.getValue(), configElement.getCurrentLabel());
     }

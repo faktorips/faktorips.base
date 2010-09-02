@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
@@ -66,8 +68,10 @@ public class InverseAssociationCompletionProcessor extends AbstractCompletionPro
     private void addToResult(List<ICompletionProposal> result, IPolicyCmptTypeAssociation relation, int documentOffset) {
         String name = relation.getName();
         String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
-        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                .getImageHandling().getImage(relation), displayText, null, relation.getCurrentDescription());
+        Image image = IpsUIPlugin.getImageHandling().getImage(relation);
+        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(relation);
+        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
+                displayText, null, localizedDescription);
         result.add(proposal);
     }
 

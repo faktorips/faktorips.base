@@ -80,10 +80,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             attributeData1.add(rowData.isUnique() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
             attributeData1.add(rowData.isInherited() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 
-            /*
-             * TODO AW: What is the right description to use as model elements can now have
-             * descriptions in different languages?
-             */
+            // TODO AW: HTML-Export description needs to be configured
             attributeData1.add(rowData.getDescription());
             List<String> attributeData = attributeData1;
             return Arrays.asList(PageElementUtils.createTextPageElements(attributeData));

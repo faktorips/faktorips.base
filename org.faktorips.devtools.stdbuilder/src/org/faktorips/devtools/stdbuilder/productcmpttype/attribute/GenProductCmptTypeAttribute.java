@@ -125,8 +125,9 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     void generateMethodGetValueInterface(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder)
             throws CoreException {
 
-        String description = StringUtils.isEmpty(getAttribute().getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
-                + "<p>" + SystemUtils.LINE_SEPARATOR + getAttribute().getDescription();
+        String description = StringUtils.isEmpty(getDescriptionInGeneratorLanguage(getAttribute())) ? ""
+                : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR
+                        + getDescriptionInGeneratorLanguage(getAttribute());
         String[] replacements = new String[] { getAttribute().getName(), description };
         appendLocalizedJavaDoc("METHOD_GET_VALUE", replacements, builder);
         generateSignatureGetValue(datatypeHelper, builder);
@@ -248,8 +249,9 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
             throws CoreException {
 
         if (!generatesInterface) {
-            String description = StringUtils.isEmpty(getAttribute().getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
-                    + "<p>" + SystemUtils.LINE_SEPARATOR + getAttribute().getDescription();
+            String description = StringUtils.isEmpty(getDescriptionInGeneratorLanguage(getAttribute())) ? ""
+                    : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR
+                            + getDescriptionInGeneratorLanguage(getAttribute());
             methodBuilder.javaDoc(getLocalizedText("METHOD_GETVALUE_JAVADOC", new String[] { getAttribute().getName(),
                     description }), JavaSourceFileBuilder.ANNOTATION_GENERATED);
             generateGetterSignature(methodBuilder);

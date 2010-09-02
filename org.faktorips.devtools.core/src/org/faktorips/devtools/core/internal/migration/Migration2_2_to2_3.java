@@ -248,9 +248,7 @@ public class Migration2_2_to2_3 {
             newEnumType.setAbstract(true);
             newEnumType.setContainingValues(false);
 
-            @SuppressWarnings("deprecation")
-            // OK to suppress warning as there is no locale for a description in version 2.3
-            String oldDescription = currentTableStructure.getDescription();
+            String oldDescription = currentTableStructure.getDescriptions().toArray(new IDescription[1])[0].getText();
             IDescription description = newEnumType.newDescription();
             description.setText(oldDescription);
 
@@ -274,9 +272,7 @@ public class Migration2_2_to2_3 {
                 }
                 newEnumAttribute.setInherited(false);
 
-                @SuppressWarnings("deprecation")
-                // OK to suppress warning as there is no locale for a description in version 2.3
-                String columnDescription = currentColumn.getDescription();
+                String columnDescription = currentColumn.getDescriptions().toArray(new IDescription[1])[0].getText();
                 IDescription attributeDescription = newEnumAttribute.newDescription();
                 attributeDescription.setText(columnDescription);
             }

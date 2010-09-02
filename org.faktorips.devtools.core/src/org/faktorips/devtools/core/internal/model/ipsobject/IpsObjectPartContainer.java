@@ -955,7 +955,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     @Override
     public ILabel getLabelForIpsModelLocale() {
-        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
+        Locale ipsModelLocale = IpsPlugin.getDefault().getLocalizationLocale();
         return getLabel(ipsModelLocale);
     }
 
@@ -980,6 +980,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public IDescription getDescription(Locale locale) {
         ArgumentCheck.notNull(locale);
+        if (!(hasDescriptionSupport())) {
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
+        }
+
         for (IDescription description : descriptions) {
             Locale descriptionLocale = description.getLocale();
             if (descriptionLocale == null) {
@@ -994,23 +998,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     @Override
     public Set<IDescription> getDescriptions() {
-        return Collections.unmodifiableSet(descriptions);
-    }
-
-    @Override
-    public IDescription getDescriptionForIpsModelLocale() {
-        Locale ipsModelLocale = IpsPlugin.getDefault().getIpsModelLocale();
-        return getDescription(ipsModelLocale);
-    }
-
-    @Override
-    public IDescription getDescriptionForDefaultLocale() {
-        IDescription defaultDescription = null;
-        ISupportedLanguage defaultLanguage = getIpsProject().getProperties().getDefaultLanguage();
-        if (defaultLanguage != null) {
-            defaultDescription = getDescription(defaultLanguage.getLocale());
+        if (!(hasDescriptionSupport())) {
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
         }
-        return defaultDescription;
+
+        return Collections.unmodifiableSet(descriptions);
     }
 
     @Override
@@ -1018,6 +1010,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (!(hasDescriptionSupport())) {
             throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
         }
+
         return newDescription(getNextPartId());
     }
 
@@ -1025,30 +1018,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Deprecated
     @Override
     public String getDescription() {
-        String description = ""; //$NON-NLS-1$
-        Set<IDescription> descriptionSet = getDescriptions();
-        if (descriptionSet.size() > 0) {
-            IDescription firstDescription = descriptionSet.toArray(new IDescription[descriptionSet.size()])[0];
-            description = firstDescription.getText();
-        }
-        return description;
-    }
-
-    @Override
-    public String getCurrentDescription() {
-        if (!(hasDescriptionSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
-        }
-
-        String descriptionText = ""; //$NON-NLS-1$
-        IDescription description = getDescriptionForIpsModelLocale();
-        if (description == null) {
-            description = getDescriptionForDefaultLocale();
-        }
-        if (description != null) {
-            descriptionText = description.getText();
-        }
-        return descriptionText;
+        return IpsPlugin.getDefault().getLocalizedDescription(this);
     }
 
     // Deprecated since 3.1

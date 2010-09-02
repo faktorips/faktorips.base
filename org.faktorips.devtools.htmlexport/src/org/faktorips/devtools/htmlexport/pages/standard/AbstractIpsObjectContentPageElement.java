@@ -89,6 +89,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                 + getDocumentedIpsObject().getIpsSrcFile().getIpsPackageFragment()));
 
         addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_description, TextType.HEADING_2));
+        // TODO AW: HTML-Export description needs to be configured
         addPageElements(new TextPageElement(
                 StringUtils.isBlank(getDocumentedIpsObject().getDescription()) ? Messages.AbstractObjectContentPageElement_noDescription
                         : getDocumentedIpsObject().getDescription(), TextType.BLOCK));

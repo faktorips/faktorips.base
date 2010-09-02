@@ -396,8 +396,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * </pre>
      */
     protected void generateSetterInterface(JavaCodeFragmentBuilder methodsBuilder) {
-        String description = StringUtils.isEmpty(getAttribute().getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
-                + "<p>" + SystemUtils.LINE_SEPARATOR + getAttribute().getDescription();
+        String description = StringUtils.isEmpty(getDescriptionInGeneratorLanguage(getAttribute())) ? ""
+                : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR
+                        + getDescriptionInGeneratorLanguage(getAttribute());
         String[] replacements = new String[] { getAttribute().getName(), description };
         appendLocalizedJavaDoc("METHOD_SETVALUE", replacements, getAttribute().getName(), methodsBuilder);
         generateSetterSignature(methodsBuilder);
@@ -459,8 +460,8 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     }
 
     protected void generateConstantEnumSetOfAllowedValues(JavaCodeFragmentBuilder builder) {
-        appendLocalizedJavaDoc("FIELD_MAX_ALLOWED_VALUES_FOR", getAttribute().getName(), getAttribute()
-                .getDescription(), builder);
+        appendLocalizedJavaDoc("FIELD_MAX_ALLOWED_VALUES_FOR", getAttribute().getName(),
+                getDescriptionInGeneratorLanguage(getAttribute()), builder);
         String[] valueIds = EMPTY_STRING_ARRAY;
         boolean containsNull = false;
         if (((IPolicyCmptTypeAttribute)getAttribute()).getValueSet() instanceof IEnumValueSet) {

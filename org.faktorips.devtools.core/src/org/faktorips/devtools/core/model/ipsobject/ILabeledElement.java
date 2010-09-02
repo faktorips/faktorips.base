@@ -61,7 +61,7 @@ public interface ILabeledElement {
      * <p>
      * If there is no label for that locale, <tt>null</tt> is returned.
      * 
-     * @see IpsPlugin#getIpsModelLocale()
+     * @see IpsPlugin#getLocalizationLocale()
      */
     public ILabel getLabelForIpsModelLocale();
 

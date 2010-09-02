@@ -296,9 +296,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
@@ -307,8 +304,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setSuperClass(Table.class.getName());
         mainSection.setClass(true);
 
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection
-                .getJavaDocForTypeBuilder());
+        String description = getDescriptionInGeneratorLanguage(getIpsObject());
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), description, mainSection.getJavaDocForTypeBuilder());
         createFields(mainSection.getMemberVarBuilder());
         generateConstructors(mainSection.getConstructorBuilder());
         createAddRowMethod(mainSection.getMethodBuilder());

@@ -29,6 +29,7 @@ import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -137,7 +138,11 @@ public class PullUpRefactoringParticipant extends RefactoringParticipant {
             targetAttribute.setName(attribute.getName());
             targetAttribute.setDatatype(attribute.getDatatype());
             targetAttribute.setDefaultValue(attribute.getDefaultValue());
-            targetAttribute.setDescription(attribute.getDescription());
+            for (IDescription description : attribute.getDescriptions()) {
+                IDescription newDescription = targetAttribute.newDescription();
+                newDescription.setLocale(description.getLocale());
+                newDescription.setText(description.getText());
+            }
             targetAttribute.setModifier(attribute.getModifier());
             if (attribute instanceof IPolicyCmptTypeAttribute) {
                 IPolicyCmptTypeAttribute originalPolicyAttribute = (IPolicyCmptTypeAttribute)attribute;

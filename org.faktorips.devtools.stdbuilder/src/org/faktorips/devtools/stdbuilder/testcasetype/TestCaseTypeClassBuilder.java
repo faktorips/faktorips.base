@@ -149,8 +149,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setSuperClass(getSuperClassName());
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection
-                .getJavaDocForTypeBuilder());
+        String description = getDescriptionInGeneratorLanguage(getIpsObject());
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), description, mainSection.getJavaDocForTypeBuilder());
 
         JavaCodeFragmentBuilder xmlCallbackBuilder = new JavaCodeFragmentBuilder();
         buildXmlCallbackClasses(xmlCallbackBuilder, testCaseType);

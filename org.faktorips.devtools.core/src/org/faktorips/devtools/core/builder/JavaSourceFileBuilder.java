@@ -56,7 +56,9 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -228,6 +230,31 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public Locale getLanguageUsedInGeneratedSourceCode() {
         return getBuilderSet().getLanguageUsedInGeneratedSourceCode();
+    }
+
+    /**
+     * Returns the description of the given {@link IIpsObjectPartContainer} in the language of the
+     * code generator.
+     * <p>
+     * Returns an empty string if the given {@link IIpsObjectPartContainer} does not support
+     * descriptions.
+     * 
+     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the description
+     *            of.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     */
+    protected final String getDescriptionInGeneratorLanguage(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+        String description = ""; //$NON-NLS-1$
+        if (ipsObjectPartContainer.hasDescriptionSupport()) {
+            IDescription generatorDescription = ipsObjectPartContainer
+                    .getDescription(getLanguageUsedInGeneratedSourceCode());
+            if (generatorDescription != null) {
+                description = generatorDescription.getText();
+            }
+        }
+        return description;
     }
 
     /**

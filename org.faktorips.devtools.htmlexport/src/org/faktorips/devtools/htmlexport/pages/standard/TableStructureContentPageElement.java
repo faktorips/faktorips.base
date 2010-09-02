@@ -63,10 +63,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", "))); //$NON-NLS-1$
             cells.add(link);
             cells.add(new TextPageElement(foreignKey.getReferencedUniqueKey()));
-            /*
-             * TODO AW: What is the right description to use as model elements can now have
-             * descriptions in different languages?
-             */
+            // TODO AW: HTML-Export description needs to be configured
             cells.add(new TextPageElement(foreignKey.getDescription()));
 
             return cells;
@@ -125,10 +122,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             columnData.add(columnRange.getColumnRangeType().getName());
             columnData.add(columnRange.getFromColumn());
             columnData.add(columnRange.getToColumn());
-            /*
-             * TODO AW: What is the right description to use as model elements can now have
-             * descriptions in different languages?
-             */
+            // TODO AW: HTML-Export description needs to be configured
             columnData.add(columnRange.getDescription());
 
             return columnData;
@@ -177,10 +171,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
             columnData.add(column.getName());
             columnData.add(column.getDatatype());
-            /*
-             * TODO AW: What is the right description to use as model elements can now have
-             * descriptions in different languages?
-             */
+            // TODO AW: HTML-Export description needs to be configured
             columnData.add(column.getDescription());
 
             return columnData;
@@ -219,10 +210,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             List<String> columnData = new ArrayList<String>();
 
             columnData.add(uniqueKey.getName());
-            /*
-             * TODO AW: What is the right description to use as model elements can now have
-             * descriptions in different languages?
-             */
+            // TODO AW: HTML-Export description needs to be configured
             columnData.add(uniqueKey.getDescription());
 
             return columnData;

@@ -103,7 +103,8 @@ public class GenProductCmptTypeMethod extends GenMethod {
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(),
                         JavaSourceFileBuilder.ANNOTATION_GENERATED);
             } else {
-                methodsBuilder.javaDoc(getMethod().getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+                methodsBuilder.javaDoc(getDescriptionInGeneratorLanguage(getMethod()),
+                        JavaSourceFileBuilder.ANNOTATION_GENERATED);
             }
 
             generateSignatureForModelMethod(getMethod().isAbstract(), false, methodsBuilder, ipsProject);
@@ -161,7 +162,8 @@ public class GenProductCmptTypeMethod extends GenMethod {
             throws CoreException {
 
         if (isPublished()) {
-            methodsBuilder.javaDoc(getMethod().getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            methodsBuilder.javaDoc(getDescriptionInGeneratorLanguage(getMethod()),
+                    JavaSourceFileBuilder.ANNOTATION_GENERATED);
             generateSignatureForModelMethod(false, false, methodsBuilder, ipsProject);
             methodsBuilder.append(';');
         }

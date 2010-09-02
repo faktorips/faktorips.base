@@ -89,7 +89,8 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
 
     @Override
     public String getDescription() {
-        return fct.getCurrentDescription();
+        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(fct);
+        return localizedDescription;
     }
 
     @Override

@@ -110,7 +110,8 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
                 if (value instanceof IIpsElement) {
                     label = IpsUIPlugin.getLabel((IIpsElement)value);
                 }
-                DescriptionItem item = new DescriptionItem(label, property.getCurrentDescription());
+                String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(property);
+                DescriptionItem item = new DescriptionItem(label, localizedDescription);
                 descriptions.add(item);
             }
         }

@@ -372,7 +372,8 @@ public class TestCaseDetailArea {
                 .getTestAttribute()));
         if (testAttribute != null) {
             // use description of parameter as tooltip
-            label.setToolTipText(testAttribute.getCurrentDescription());
+            String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(testAttribute);
+            label.setToolTipText(localizedDescription);
         }
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);
 
@@ -556,8 +557,9 @@ public class TestCaseDetailArea {
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Value);
         if (param != null) {
             // use description of parameter as tooltip
-            label.setToolTipText(param.getCurrentDescription());
-            section.getChildren()[0].setToolTipText(param.getCurrentDescription());
+            String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(param);
+            label.setToolTipText(localizedDescription);
+            section.getChildren()[0].setToolTipText(localizedDescription);
         }
 
         final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null, ipsProject);
@@ -620,8 +622,9 @@ public class TestCaseDetailArea {
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Violation);
         if (testRuleParameter != null) {
             // use description of parameter as tooltip
-            label.setToolTipText(testRuleParameter.getCurrentDescription());
-            section.getChildren()[0].setToolTipText(testRuleParameter.getCurrentDescription());
+            String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(testRuleParameter);
+            label.setToolTipText(localizedDescription);
+            section.getChildren()[0].setToolTipText(localizedDescription);
         }
         final EditField editField = new EnumValueField(toolkit.createCombo(composite, TestRuleViolationType
                 .getEnumType()), TestRuleViolationType.getEnumType());

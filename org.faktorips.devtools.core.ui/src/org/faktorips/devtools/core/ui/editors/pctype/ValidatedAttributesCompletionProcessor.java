@@ -18,6 +18,8 @@ import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -58,8 +60,10 @@ public class ValidatedAttributesCompletionProcessor extends AbstractCompletionPr
 
     private void addToResult(List<ICompletionProposal> result, IPolicyCmptTypeAttribute attribute, int documentOffset) {
         String name = attribute.getName();
-        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                .getImageHandling().getImage(attribute), name, null, attribute.getCurrentDescription());
+        Image image = IpsUIPlugin.getImageHandling().getImage(attribute);
+        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(attribute);
+        CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image, name, null,
+                localizedDescription);
         result.add(proposal);
     }
 }

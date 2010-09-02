@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model;
 
 import java.util.Locale;
 
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -64,9 +65,8 @@ public interface Described {
      * 
      * @deprecated In version 3.1 another interface called {@link IDescribedElement} was introduced.
      *             Use {@link IDescribedElement#getDescription(Locale)} or
-     *             {@link IDescribedElement#getCurrentDescription()} instead. This method now
-     *             returns the text of the first description it can find or an empty string if it
-     *             can't find any description.
+     *             {@link IpsPlugin#getLocalizedDescription(IDescribedElement)} instead. This method
+     *             now delegates to {@link IpsPlugin#getLocalizedDescription(IDescribedElement)}.
      */
     // Deprecated since 3.1
     @Deprecated

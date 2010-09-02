@@ -169,7 +169,8 @@ public class DefaultsAndRangesSection extends IpsSection {
         Label label = toolkit.createFormLabel(rootPane, IpsUIPlugin.getLabel(element));
         // use the description of the attribute as tooltip
         if (attribute != null) {
-            label.setToolTipText(attribute.getCurrentDescription());
+            String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(attribute);
+            label.setToolTipText(localizedDescription);
         }
     }
 

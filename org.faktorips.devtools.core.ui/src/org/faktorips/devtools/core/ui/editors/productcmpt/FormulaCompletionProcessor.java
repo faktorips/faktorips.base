@@ -22,8 +22,10 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -241,9 +243,10 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
         String name = attribute.getName();
         String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
+        Image image = IpsUIPlugin.getImageHandling().getImage(attribute);
+        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(attribute);
         ICompletionProposal proposal = new CompletionProposal(name, replacementOffset, replacementLength,
-                name.length(), IpsUIPlugin.getImageHandling().getImage(attribute), displayText, null, attribute
-                        .getCurrentDescription());
+                name.length(), image, displayText, null, localizedDescription);
         result.add(proposal);
     }
 

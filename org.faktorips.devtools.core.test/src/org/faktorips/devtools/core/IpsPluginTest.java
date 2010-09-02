@@ -18,14 +18,20 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.xml.sax.SAXException;
 
 /**
@@ -34,9 +40,15 @@ import org.xml.sax.SAXException;
  */
 public class IpsPluginTest extends AbstractIpsPluginTest {
 
+    private final IpsPlugin ipsPlugin = IpsPlugin.getDefault();
+
     private IpsPreferences pref;
 
     private String oldPresentationString;
+
+    private IIpsProject ipsProject;
+
+    private IPolicyCmptType policyCmptType;
 
     public IpsPluginTest() {
         super();
@@ -47,9 +59,18 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    protected void setUp() {
+    protected void setUp() throws CoreException {
         pref = IpsPlugin.getDefault().getIpsPreferences();
         oldPresentationString = pref.getNullPresentation();
+
+        ipsProject = newIpsProject();
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.addSupportedLanguage(Locale.GERMAN);
+        properties.addSupportedLanguage(Locale.US);
+        properties.setDefaultLanguage(properties.getSupportedLanguage(Locale.GERMAN));
+        ipsProject.setProperties(properties);
+
+        policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy");
     }
 
     @Override
@@ -63,8 +84,37 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         docBuilder.parse(new ByteArrayInputStream(xml.getBytes("UTF-8")));
     }
 
-    public void testIpsPreferencesInclListener() {
+    public void testGetLocalizedDescriptionLocalizationLocaleDescriptionExistent() {
+        IDescription description = policyCmptType.newDescription();
+        description.setLocale(ipsPlugin.getLocalizationLocale());
+        description.setText("foo");
 
+        assertEquals("foo", ipsPlugin.getLocalizedDescription(policyCmptType));
+    }
+
+    public void testGetLocalizedDescriptionDefaultLocaleExistent() {
+        IDescription description = policyCmptType.newDescription();
+        description.setLocale(Locale.GERMAN);
+        description.setText("foo");
+
+        assertEquals("foo", ipsPlugin.getLocalizedDescription(policyCmptType));
+    }
+
+    public void testGetLocalizedDescriptionNoneExistent() {
+        assertEquals("", ipsPlugin.getDefaultDescription(policyCmptType));
+    }
+
+    public void testGetDefaultDescription() {
+        assertEquals("", ipsPlugin.getDefaultDescription(policyCmptType));
+
+        IDescription description = policyCmptType.newDescription();
+        description.setLocale(Locale.GERMAN);
+        description.setText("foo");
+
+        assertEquals("foo", ipsPlugin.getDefaultDescription(policyCmptType));
+    }
+
+    public void testIpsPreferencesInclListener() {
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         IPreferenceStore store = IpsPlugin.getDefault().getPreferenceStore();
         store.addPropertyChangeListener(listener);

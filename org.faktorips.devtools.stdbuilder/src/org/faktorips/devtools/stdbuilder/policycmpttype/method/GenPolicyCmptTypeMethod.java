@@ -69,7 +69,8 @@ public class GenPolicyCmptTypeMethod extends GenMethod {
         if (isPublished()) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         } else {
-            methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            methodsBuilder.javaDoc(getDescriptionInGeneratorLanguage(method),
+                    JavaSourceFileBuilder.ANNOTATION_GENERATED);
         }
 
         IMethod overiddenMethod = method.findOverriddenMethod(getIpsPart().getIpsProject());
@@ -96,7 +97,7 @@ public class GenPolicyCmptTypeMethod extends GenMethod {
         if (!(isPublished())) {
             return;
         }
-        methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        methodsBuilder.javaDoc(getDescriptionInGeneratorLanguage(method), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureForMethodDefinedInModel(method, java.lang.reflect.Modifier.PUBLIC, returnType, methodsBuilder);
         methodsBuilder.appendln(";");
     }

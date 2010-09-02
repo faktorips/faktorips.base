@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.model.ipsobject;
 import java.util.Locale;
 import java.util.Set;
 
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 
 /**
@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
  * @see IDescription
  * @see IIpsProjectProperties#getSupportedLanguages()
  */
-public interface IDescribedElement {
+public interface IDescribedElement extends IIpsElement {
 
     /**
      * Returns the {@link IDescription} for the given {@link Locale}. If no description for the
@@ -49,37 +49,8 @@ public interface IDescribedElement {
     public Set<IDescription> getDescriptions();
 
     /**
-     * Returns the description for the locale that Faktor-IPS uses at the time this operation is
-     * called to internationalize Faktor-IPS models.
-     * <p>
-     * If there is no description for that locale, <tt>null</tt> is returned.
-     * 
-     * @see IpsPlugin#getIpsModelLocale()
-     */
-    public IDescription getDescriptionForIpsModelLocale();
-
-    /**
-     * Returns the description for the default language. The default language is specified trough
-     * the IPS project. Returns <tt>null</tt> if no description for the default language exists or
-     * no default language is specified.
-     */
-    public IDescription getDescriptionForDefaultLocale();
-
-    /**
      * Creates a new description for this element.
      */
     public IDescription newDescription();
-
-    /**
-     * Returns the text of the element's current {@link IDescription}. That is primarily the
-     * description for the IPS model locale as returned by
-     * {@link #getDescriptionForIpsModelLocale()}.
-     * <p>
-     * Should no {@link IDescription} exist for that locale, the next in question is the description
-     * for the default locale as returned by {@link #getDescriptionForDefaultLocale()}.
-     * <p>
-     * Should no description exist for that locale as well, an empty string is returned.
-     */
-    public String getCurrentDescription();
 
 }

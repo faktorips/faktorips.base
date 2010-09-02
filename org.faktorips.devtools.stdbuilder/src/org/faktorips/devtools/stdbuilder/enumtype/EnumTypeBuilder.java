@@ -159,7 +159,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
         mainSection.setClassModifier(classModifier);
         mainSection.setUnqualifiedName(getJavaNamingConvention().getTypeName(enumType.getName()));
-        mainSection.getJavaDocForTypeBuilder().javaDoc(enumType.getDescription(), ANNOTATION_GENERATED);
+        String description = getDescriptionInGeneratorLanguage(enumType);
+        mainSection.getJavaDocForTypeBuilder().javaDoc(description, ANNOTATION_GENERATED);
 
         if (((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport() && !enumType.isContainingValues()
                 && !enumType.isAbstract()) {
@@ -560,9 +561,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
                             .findDatatype(ipsProject));
                     if (datatypeHelper != null) {
-                        // can happen, if attribute is inherited from supertype, but the supertype
-                        // can't be found
-                        attributeBuilder.javaDoc(currentEnumAttribute.getDescription(), ANNOTATION_GENERATED);
+                        /*
+                         * happens if the attribute is inherited from the supertype, but the
+                         * supertype can't be found
+                         */
+                        String description = getDescriptionInGeneratorLanguage(currentEnumAttribute);
+                        attributeBuilder.javaDoc(description, ANNOTATION_GENERATED);
                         attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);
                         attributeBuilder.appendln(' ');
                     }
@@ -748,7 +752,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     continue;
                 }
                 String attributeName = currentEnumAttribute.getName();
-                String description = currentEnumAttribute.getDescription();
+                String description = getDescriptionInGeneratorLanguage(currentEnumAttribute);
                 String methodName = getMethodNameGetter(currentEnumAttribute);
 
                 // If an interface is to be generated then only generate the method signatures.

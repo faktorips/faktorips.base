@@ -50,10 +50,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         ruleData.add(rule.getMessageSeverity().getName());
         ruleData.add(rule.getMessageText());
         ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));
-        /*
-         * TODO AW: What is the right description to use as model elements can now have descriptions
-         * in different languages?
-         */
+        // TODO AW: HTML-Export description needs to be configured
         ruleData.add(rule.getDescription());
 
         return Arrays.asList(PageElementUtils.createTextPageElements(ruleData));

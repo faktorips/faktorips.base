@@ -79,10 +79,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
             addPolicyComponentAndDataType(attribute, attributeData);
 
-            /*
-             * TODO AW: What is the right description to use as model elements can now have
-             * descriptions in different languages?
-             */
+            // TODO AW: HTML-Export description needs to be configured
             attributeData.add(new TextPageElement(attribute.getDescription()));
 
             return attributeData.toArray(new PageElement[attributeData.size()]);
@@ -240,10 +237,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter
                 .getTestParameterType().getName());
-        /*
-         * TODO AW: What is the right description to use as model elements can now have descriptions
-         * in different languages?
-         */
+        // TODO AW: HTML-Export description needs to be configured
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, testParameter
                 .getDescription());
 
@@ -264,10 +258,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 .getValueDatatype());
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter
                 .getTestParameterType().getName());
-        /*
-         * TODO AW: What is the right description to use as model elements can now have descriptions
-         * in different languages?
-         */
+        // TODO AW: HTML-Export description needs to be configured
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, testParameter
                 .getDescription());
 

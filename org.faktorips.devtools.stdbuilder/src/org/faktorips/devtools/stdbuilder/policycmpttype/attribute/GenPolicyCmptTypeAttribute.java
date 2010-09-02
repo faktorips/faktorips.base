@@ -102,8 +102,9 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      * </pre>
      */
     protected void generateGetterInterface(JavaCodeFragmentBuilder builder) {
-        String description = StringUtils.isEmpty(getAttribute().getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
-                + "<p>" + SystemUtils.LINE_SEPARATOR + getAttribute().getDescription();
+        String description = StringUtils.isEmpty(getDescriptionInGeneratorLanguage(getAttribute())) ? ""
+                : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR
+                        + getDescriptionInGeneratorLanguage(getAttribute());
 
         String[] replacements = new String[] { getAttribute().getName(), description };
         appendLocalizedJavaDoc("METHOD_GETVALUE", replacements, builder);
