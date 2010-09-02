@@ -29,6 +29,21 @@ import org.faktorips.util.ArgumentCheck;
 public class IpsPreferences {
 
     /**
+     * Constant identifying the refactoring mode
+     */
+    public final static String REFACTORING_MODE = IpsPlugin.PLUGIN_ID + ".refactoringmode"; //$NON-NLS-1$
+
+    /**
+     * Constant identifying the refactoring mode direct
+     */
+    public final static String REFACTORING_MODE_DIRECT = "direct"; //$NON-NLS-1$
+
+    /**
+     * Constant identifying the refactoring mode explicit
+     */
+    public final static String REFACTORING_MODE_EXPLICIT = "explicit"; //$NON-NLS-1$
+
+    /**
      * Constant identifying the working mode
      */
     public final static String WORKING_MODE = IpsPlugin.PLUGIN_ID + ".workingmode"; //$NON-NLS-1$
@@ -136,6 +151,7 @@ public class IpsPreferences {
         prefStore.setDefault(CHANGES_OVER_TIME_NAMING_CONCEPT, IChangesOverTimeNamingConvention.FAKTOR_IPS);
         prefStore.setDefault(EDIT_RECENT_GENERATION, false);
         prefStore.setDefault(MODIFY_RUNTIME_ID, false);
+        prefStore.setDefault(REFACTORING_MODE, REFACTORING_MODE_EXPLICIT);
         prefStore.setDefault(WORKING_MODE, WORKING_MODE_EDIT);
         prefStore.setDefault(ENABLE_GENERATING, true);
         prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
@@ -299,6 +315,13 @@ public class IpsPreferences {
     }
 
     /**
+     * Sets the refactoring mode.
+     */
+    public void setRefactoringMode(String refactoringMode) {
+        prefStore.setValue(REFACTORING_MODE, refactoringMode);
+    }
+
+    /**
      * Returns <code>true</code> if the currently set working mode is edit, <code>false</code>
      * otherwise
      */
@@ -312,6 +335,14 @@ public class IpsPreferences {
      */
     public boolean isWorkingModeBrowse() {
         return prefStore.getString(WORKING_MODE).equals(WORKING_MODE_BROWSE);
+    }
+
+    public boolean isRefactoringModeDirect() {
+        return prefStore.getString(REFACTORING_MODE).equals(REFACTORING_MODE_DIRECT);
+    }
+
+    public boolean isRefactoringModeExplicit() {
+        return prefStore.getString(REFACTORING_MODE).equals(REFACTORING_MODE_EXPLICIT);
     }
 
     public boolean canModifyRuntimeId() {

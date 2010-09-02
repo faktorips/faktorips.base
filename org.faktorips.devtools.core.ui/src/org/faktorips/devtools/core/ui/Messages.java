@@ -43,6 +43,12 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_title_numberOfSections;
 
+    public static String FaktorIpsPreferencePage_title_refactoringMode;
+
+    public static String FaktorIpsPreferencePage_label_direct;
+
+    public static String FaktorIpsPreferencePage_label_explicit;
+
     public static String PdPackageSelectionDialog_title;
 
     public static String PdPackageSelectionDialog_description;

@@ -23,6 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.window.Window;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -63,6 +64,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -85,6 +87,7 @@ import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeMethodEditDialog;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.memento.Memento;
@@ -97,8 +100,11 @@ import org.faktorips.util.message.MessageList;
  */
 public class AttributeEditDialog extends IpsPartEditDialog2 {
 
-    /** the attribute beeing edited. */
+    /** the attribute being edited. */
     private IPolicyCmptTypeAttribute attribute;
+
+    /** Keep track of the content of the name field to be able to determine whether it has changed. */
+    private final String initialName;
 
     private IIpsProject ipsProject;
 
@@ -189,6 +195,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     public AttributeEditDialog(IPolicyCmptTypeAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
+        initialName = attribute.getName();
         ipsProject = attribute.getIpsProject();
         rule = attribute.findValueSetRule(ipsProject);
         try {
@@ -951,6 +958,28 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             setMessage(text, IMessageProvider.WARNING);
             persistenceAttributeInfo.resetManuallyCodeFixNecessary();
         }
+    }
+
+    @Override
+    protected void okPressed() {
+        String newName = attribute.getName();
+        if (!(newName.equals(initialName))) {
+            if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+                applyRenameRefactoring(newName);
+            }
+        }
+        super.okPressed();
+    }
+
+    private void applyRenameRefactoring(String newName) {
+        // First, reset the initial name as otherwise the error 'names must not equal' will occur
+        attribute.setName(initialName);
+
+        ProcessorBasedRefactoring renameRefactoring = attribute.getRenameRefactoring();
+        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+        renameProcessor.setNewName(newName);
+        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
+        refactorOp.runDirectExecution();
     }
 
     class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {

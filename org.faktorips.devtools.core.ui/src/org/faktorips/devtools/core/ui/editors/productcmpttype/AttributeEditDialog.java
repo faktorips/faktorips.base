@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -45,6 +47,7 @@ import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 
 /**
  * Dialog to edit a product cmpt type attribute.
@@ -57,6 +60,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      * Folder which contains the pages shown by this dialog. Used to modify which page is shown.
      */
     private TabFolder folder;
+
+    /** Keep track of the content of the name field to be able to determine whether it has changed. */
+    private final String initialName;
 
     private IIpsProject ipsProject;
     private IProductCmptTypeAttribute attribute;
@@ -79,6 +85,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         super(productCmptTypeAttribute, parentShell, Messages.AttributeEditDialog_title, true);
 
         attribute = productCmptTypeAttribute;
+        initialName = attribute.getName();
         ipsProject = attribute.getIpsProject();
 
         try {
@@ -212,6 +219,28 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
              */
             valueSetEditControl.setValueSetType(currentValueSetType);
         }
+    }
+
+    @Override
+    protected void okPressed() {
+        String newName = attribute.getName();
+        if (!(newName.equals(initialName))) {
+            if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+                applyRenameRefactoring(newName);
+            }
+        }
+        super.okPressed();
+    }
+
+    private void applyRenameRefactoring(String newName) {
+        // First, reset the initial name as otherwise the error 'names must not equal' will occur
+        attribute.setName(initialName);
+
+        ProcessorBasedRefactoring renameRefactoring = attribute.getRenameRefactoring();
+        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+        renameProcessor.setNewName(newName);
+        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
+        refactorOp.runDirectExecution();
     }
 
 }

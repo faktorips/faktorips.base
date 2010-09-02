@@ -1071,10 +1071,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                      * refactorings when applicable in the IPS preferences. Otherwise the user has
                      * to explicitly start the refactoring via the context menu.
                      */
-                    // TODO AW: Program refactoring mode switch in IpsPreferences
-                    boolean immediatelyApplyRefactorings = false;
-                    if (immediatelyApplyRefactorings) {
-                        applyRenameLiteralNameRefactoring(value, enumAttributeValue);
+                    if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+                        applyRenameLiteralNameRefactoring((String)value, enumAttributeValue);
                     } else {
                         enumAttributeValue.setValue((String)value);
                     }
@@ -1086,11 +1084,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
         }
 
-        private void applyRenameLiteralNameRefactoring(Object value, IEnumAttributeValue enumAttributeValue) {
+        private void applyRenameLiteralNameRefactoring(String newName, IEnumAttributeValue enumAttributeValue) {
             IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)enumAttributeValue;
             ProcessorBasedRefactoring renameRefactoring = literalNameValue.getRenameRefactoring();
             IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-            renameProcessor.setNewName((String)value);
+            renameProcessor.setNewName(newName);
             IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
             refactorOp.runDirectExecution();
         }

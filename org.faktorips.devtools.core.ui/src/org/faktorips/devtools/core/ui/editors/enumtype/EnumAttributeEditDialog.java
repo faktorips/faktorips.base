@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -35,10 +37,12 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 
 /**
  * Dialog to edit an <tt>IEnumAttribute</tt> of an <tt>IEnumType</tt>.
@@ -57,6 +61,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /** The UI control to set the <tt>name</tt> property. */
     private Text nameText;
+
+    /** Keep track of the content of the name field to be able to determine whether it has changed. */
+    private final String initialName;
 
     /**
      * The UI control to set the <tt>defaultValueProviderAttribute</tt> property (only for
@@ -101,6 +108,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         super(enumAttribute, parentShell, Messages.EnumAttributeEditDialog_title, true);
 
         this.enumAttribute = enumAttribute;
+        initialName = enumAttribute.getName();
         inherited = enumAttribute.isInherited();
         extFactory = new ExtensionPropertyControlFactory(enumAttribute.getClass());
         literalNameAttribute = enumAttribute instanceof IEnumLiteralNameAttribute;
@@ -323,6 +331,28 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             rebindContents();
             bindingContext.updateUI();
         }
+    }
+
+    @Override
+    protected void okPressed() {
+        String newName = enumAttribute.getName();
+        if (!(newName.equals(initialName))) {
+            if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+                applyRenameRefactoring(newName);
+            }
+        }
+        super.okPressed();
+    }
+
+    private void applyRenameRefactoring(String newName) {
+        // First, reset the initial name as otherwise the error 'names must not equal' will occur
+        enumAttribute.setName(initialName);
+
+        ProcessorBasedRefactoring renameRefactoring = enumAttribute.getRenameRefactoring();
+        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+        renameProcessor.setNewName(newName);
+        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
+        refactorOp.runDirectExecution();
     }
 
 }

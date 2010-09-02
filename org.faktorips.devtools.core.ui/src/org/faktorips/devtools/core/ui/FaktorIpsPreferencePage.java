@@ -119,6 +119,16 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                         { Messages.FaktorIpsPreferencePage_label_fourSections,
                                 IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE } }, getFieldEditorParent(), true);
         addField(sectionsInTypeEditors);
+
+        RadioGroupFieldEditor refactoringMode = new RadioGroupFieldEditor(
+                IpsPreferences.REFACTORING_MODE,
+                Messages.FaktorIpsPreferencePage_title_refactoringMode,
+                2,
+                new String[][] {
+                        { Messages.FaktorIpsPreferencePage_label_direct, IpsPreferences.REFACTORING_MODE_DIRECT },
+                        { Messages.FaktorIpsPreferencePage_label_explicit, IpsPreferences.REFACTORING_MODE_EXPLICIT } },
+                getFieldEditorParent(), true);
+        addField(refactoringMode);
     }
 
     @Override
