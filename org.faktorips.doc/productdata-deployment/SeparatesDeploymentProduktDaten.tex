@@ -243,19 +243,11 @@ $IProductDataProviderFactory$ zum instantiieren des Product-Data-Providers.
 Optional kann man im Builder weitere Voreinstellungen treffen. Insbesondere eine Implementierung von $IFormulaEvaluatorFactory$\footnote{z.B.
 GroovyFormulaEvaluatorFactory zur Ausführen der Formeln mit Groovy (in den
 Addons enthalten)} zum ausführen der Formeln sollte gesetzt werden. Ist der
-Builder fertig konfiguriert, wird die Methode $build()$ aufgerufen - als Ergebnis erhält man einen $DetachedContentRuntimeRepositoryManager$. Ein
-Beispiel zur Instantiierung des Managers ist in Listing \ref{initManager}
+Builder fertig konfiguriert, wird die Methode $build()$ aufgerufen - als Ergebnis erhält man einen $DetachedContentRuntimeRepositoryManager$. 
+Ein Beispiel zur Instantiierung des Managers wird im Kapitel \ref{appExample}
 gegeben.
 
-\begin{lstlisting}[caption=Initialize DetachedContentRuntimeRepositoryManager,
-label=initManager]
-repositoryManager = new DetachedContentRuntimeRepositoryManager
-	.Builder(pdpFactory)
-	.setFormulaEvaluatorFactory(new GroovyFormulaEvaluatorFactory())
-	.build();
-\end{lstlisting}
-
-\subsubsection{Verknüpfen mehrerer Repositories}
+\subsection{Verknüpfen mehrerer Repositories}
 
 In den meisten Fällen werden Modell- und Produktdaten in mehrere Projekte
 untergliedert. Für den Zugriff auf die Daten muss zur Laufzeit für jedes dieser
@@ -276,87 +268,67 @@ Repositories miteinander verknüpft. Ein Manager kann dadurch alle verbundenen
 Manager nach dem aktuellen Repository fragen und entsprechend das eigene
 Repository zusammen bauen.
 
-\subsection{Beispiel einer Abfrage}
+\subsection{Beispiel einer Applikation}
 
 Das folgende Beispiel baut auf den Tutorial Projekten auf. Der Programmcode der
 Tutorial Projekte kann von http://faktorzehn.org/fips:tutorial runtergeladen
-werden.
+werden. 
+
+Die Implementierung des hier vorgestellten Beispiels kann ebenfall
+von der Turorial Site runter geladen werden.
+Der Product Data Service sowie der EJB Product Data Provider liegen auch im Runtime Addons Archiv
+im Faktor IPS
+Downloadbereich\footnote{http://update.faktorzehn.org/faktorips/cgi/download.pl?subfolder=v3} bereit.
+
+\subsubsection{Beispiel für den ProductDataService}
 
 Um das neue Runtime Repository zu testen benötigen wir zunächst einen
-Application Server, in dem der $ProductDataService$ laufen kann. Im Projekt
-$org.faktorips.tutorial.de.ProductDataServiceDemo$ wird dazu Apache
-OpenEJB\footnote{http://openejb.apache.org}. In der $main$-Methode von
-ProductDataServiceDemo wird lediglich der Application Server gestartet. Dieser
-packt automatisch alle Bibliotheken im Classpath und deployd darin enthaltene
-Services.
+Application Server, in dem der $ProductDataService$ laufen kann. Im
+Projekt ProductDataServiceDemo wird dazu der Apache
+OpenEJB\footnote{http://openejb.apache.org} Server verwendet. 
+Der Server wird über die Launch-Konfiguration $ProductDataServiceDemo (OpenEJB
+Server)$ gestartet. Die Konfiguration liegt im Projekt
+$org.faktorips.tutorial.de.ProductDataServiceDemo$.
+Der OpenEJB Server packt automatisch alle Bibliotheken im Classpath und deployd
+darin enthaltene Services. Im Klassenpfad sind neben dem ProductDataService auch die Produktdaten
+des Tutorialprojekts $Hausratproduk$ enthalten.
 
-Der Demoservice wird in der Datei $ejb-jar.xml$ konfiguriert. 
-
-
-
-
-\subsection{Konfiguration des EJB Product-Data-Providers}
-
-Der EJB Product-Data-Provider wird mit den Runtime-Addons von Faktor-IPS zur Verfügung gestellt und
-kann von der Faktor-IPS Downloadsite\footnote{http://update.faktorzehn.org/faktorips/cgi/download.pl?subfolder=v3} heruntergeladen werden.
-
-Der Product-Data-Provider muss zusammen mit den Produktdaten als eigenes EAR (oder WAR) gebündelt werden.
-Dazu werden folgende Bibliotheken benötigt:
-\begin{itemize}
-	\item faktorips-runtime.java5.jar
-	\item faktorips-runtime.productdataservice.jar
-	\item faktorips-runtime.productdataservice.common.jar
-\end{itemize}
-
-Um auf den Service zuzugreifen müssen auf der Seite des Runtime Repositories
-folgende Bibliotheken eingebunden werden:
-
-\begin{itemize}
-	\item faktorips-runtime.java5.jar
-	\item faktorips-valuetypes.java5.jar
-	\item faktorips-runtime.productdataprovider.ejbclient
-	\item faktorips-runtime.productdataservice.common.jar
-	\item faktorips-runtime.groovy.jar (wenn die Formeln mit Groovy ausgeführt
-	werden sollen)
-\end{itemize}
-
-Der Product-Data-Provider wird über die $ejb-jar.xml$\footnote{Die EJB-Konfiguration liegt im Ordner META-INF} konfiguriert. Das Beispiel in Listing \ref{ejb-jar.xml}
-konfiguriert einen Produktdatenservice mit dem EJB-Namen $ProductDataService$. Das TOC-File wird über den Classpath geladen und muss daher im Bundle
-vorliegen; der Pfad wird per Injection in die Variable $tocFileName$ gesetzt.
+Konfiguriert wird der Service im Deployment Descriptor in der Datei
+$ejb-jar.xml$. Im Listing \ref{ejb-jar.xml} ist die Konfiguration aus dem
+Beispiel abgebildet. Darin wird der Service
+$org.faktorips.tutorial.ProductDataServiceDemo$
+eingestellt, mit dem Element $mapped-name$ wird der Name für den InitialContext
+angegeben (siehe später). Das TOC-File wird über den Classpath geladen und muss
+daher im Bundle vorliegen; der Pfad wird im Deployment Descriptor per Injection
+in die Variable $tocFileName$ gesetzt.
 
 \begin{lstlisting}[caption=Beispiel einer ejb-jar.xml, label=ejb-jar.xml,language=XML]{ejb-jar.xml}
 <ejb-jar>
 	<enterprise-beans>
 		<session>
 			<ejb-name>
-				ProductDataService
+				org.faktorips.tutorial.ProductDataServiceDemo
 			</ejb-name>
+			<mapped-name>
+				HausratProductDataProviderDemo
+			</mapped-name>
 			<ejb-class>
 				org.faktorips.productdataservice.ProductDataService
 			</ejb-class>
-			<mapped-name>
-				ProductDataService
-			</mapped-name>
 			<session-type>
 				Stateless
 			</session-type>
 			<env-entry>
-				<env-entry-name>
-					tocFileName
-				</env-entry-name>
-				<env-entry-type>
-					java.lang.String
-				</env-entry-type>
+				<env-entry-name>tocFileName</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>
-					org/faktorips/model/faktorips-repository-toc.xml
+org/faktorips/tutorial/produktdaten/faktorips-repository-toc.xml
 				</env-entry-value>
 				<injection-target>
 					<injection-target-class>
 						org.faktorips.productdataservice.ProductDataService
 					</injection-target-class>
-					<injection-target-name>
-						tocFileName
-					</injection-target-name>
+					<injection-target-name>tocFileName</injection-target-name>
 				</injection-target>
 			</env-entry>
 		</session>
@@ -364,14 +336,87 @@ vorliegen; der Pfad wird per Injection in die Variable $tocFileName$ gesetzt.
 </ejb-jar>
 \end{lstlisting}
 
+Wenn weitere Produktdatenprojekte ausgeliefert werden, muss für jedes Projekt
+ein eigener Service konfiguriert werden - $ejb-name$ und $mapped-name$ müssen
+sich unterscheiden.
+
+Um den Service in einem anderen Application Server auszuliefern, muss der
+Service zusammen mit den Produktdaten in ein EAR bzw. WAR gepackt werden. Dazu
+müssen folgende Bibliotheken eingebunden werden:
+
+\begin{itemize}
+	\item faktorips-runtime.productdataservice.jar
+	\item faktorips-runtime.productdataservice.common.jar
+	\item faktorips-runtime.java5.jar
+	\item Bibliothek mit Produktdaten
+\end{itemize}
+
+\subsubsection{Beispiel für eine Abfrage}
+\label{appExample}
+
+Im Projekt $org.faktorips.tutorial.de.ProductDataProviderDemo$ wird eine
+Abfrage auf den Service im vorherigen Kapitel gestartet. Um das Demoprogramm
+auszuführen muss der Server $ProductDataServiceDemo$ gestartet sein.
+
+Wie in Listing \ref{initManager} dargestellt wird zunächst der Repository
+Manager erstellt. In den Properties im InitialContext werden spezifische
+Einstellungen für den Application Server gesetzt. Dem Konstruktor von
+EjbProductDataProviderFactory wird neben dem InitialContext der JNDI Name des
+Service mitgegeben. Der JNDI Name wurde im Deployment Descriptor im Listing
+\ref{ejb-jar.xml} mit dem XML Element $mapped-name$ gesetzt.
+
+\begin{lstlisting}[caption=Initialisierung des
+Repository Managers,label=initManager]
+InitialContext initialContext = new InitialContext(properties);
+EjbProductDataProviderFactory pdpFactory =
+		new EjbProductDataProviderFactory("HausratProductDataProviderDemo",
+			initialContext);
+
+repositoryMngr = new DetachedContentRuntimeRepositoryManager
+			.Builder(pdpFactory)
+			.setFormulaEvaluatorFactory(new GroovyFormulaEvaluatorFactory())
+			.build();
+\end{lstlisting}
+
+Wenn der Manager initialisiert ist, kann eine Abfrage beginnen. Im Beispiel wird
+ein neuer HausratVertrag in der Methode $createHausratVertrag$ erstellt. Dazu
+wird, wie in Listing \ref{getRepository} gezeigt zunächst das
+aktuelle Runtime Repository vom Manager abgefragt.
+
+\begin{lstlisting}[caption=Aktuelles Repository vom Manager
+abrufen,label=getRepository]
+		IRuntimeRepository repository = repositoryManager
+				.getActualRuntimeRepository();
+\end{lstlisting}
+
+Alle weiteren Operationen werden auf diesem Repository ausgeführt. Dabei ist zu
+beachten, dass in den Produktobjekten und damit indirekt auch in den
+Vertragobjekten eine Referenz auf das Repository gehalten wird. Solange mit
+diesen Instanzen gearbeitet wird kann dieses Repository immer wieder abgefragt
+werden. Der Andwendungsentwickler muss daher daruaf achten, dass über die
+gesamte Abfrage - im Beispiel: solange das Objekt $vertrag$ verwendet wird - auf
+die Exception $DataModifiedRuntimeException$ geachtet wird.
+
+Um den $EjbProductDataProvider$ zu verwenden muss die Applikation neben den
+Faktor IPS Runtime abhängigkeiten und dem Modellklassen folgende Bibliotheken
+referenzieren:
+
+\begin{itemize}
+	\item faktorips-runtime.productdataprovider.ejbclient
+	\item faktorips-runtime.productdataservice.common.jar
+	\item faktorips-runtime.groovy.jar (wenn die Formeln mit Groovy ausgeführt
+	\item Groovy-All\footnote{http://groovy.codehaus.org/} (Version 1.6.0)
+	werden sollen)
+\end{itemize}
+
 \subsection{Implementierung eigener Product-Data-Providers}
 
 Ziel des Separaten Deployments von Produktdaten ist es, die Produktdaten
 unabhängig von der Applikation ausliefern zu können. Dabei ist es nicht nur
 möglich, die Daten von einem Service abzurufen. Auch die Abfrage einer
 Datenbank ist mit geringem Aufwand möglich. Die eigentliche Abfrage der Daten
-ist dazu unabhängig vom $DerivedContentRuntimeRepository$
-implementiert. Das Repository ruft über das Interface $IProductDataProvider$ die
+ist dazu unabhängig von der Implementierung von
+$DerivedContentRuntimeRepository$. Das Repository ruft über das Interface $IProductDataProvider$ die
 Methoden zur Abfrage der Produktdaten auf. Zur Instantiierung des konkreten
 Product-Data-Providers erhällt das Runtime Repository eine
 $ProductDataProviderFactory$.

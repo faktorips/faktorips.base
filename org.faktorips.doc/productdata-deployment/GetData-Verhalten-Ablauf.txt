@@ -1,4 +1,0 @@
-- checkForModifications (modified / not modified)
-- getProductData
-	- get Data From Cache (cached / not cached)
-	- load data from service (ok / exception)
