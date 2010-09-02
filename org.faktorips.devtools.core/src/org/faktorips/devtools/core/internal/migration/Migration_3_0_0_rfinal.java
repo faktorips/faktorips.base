@@ -42,7 +42,8 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
  * each {@link ILabeledElement}.
  * <p>
  * The existing descriptions for each {@link IDescribedElement} are associated to the locale of the
- * generator language.
+ * generator language. A new description is added to every {@link IDescribedElement} that does not
+ * have a description yet (in case there should be any at all).
  * 
  * @author Alexander Weickmann
  */
