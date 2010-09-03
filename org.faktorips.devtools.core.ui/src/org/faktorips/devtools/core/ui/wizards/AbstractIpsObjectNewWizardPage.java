@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 
 /**
@@ -261,24 +260,6 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
     public final void finishIpsObjects(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
             throws CoreException {
 
-        IIpsProject ipsProject = newIpsObject.getIpsProject();
-        Set<ISupportedLanguage> supportedLanguages = ipsProject.getProperties().getSupportedLanguages();
-        for (ISupportedLanguage language : supportedLanguages) {
-            boolean modified = false;
-            if (newIpsObject.hasDescriptionSupport()) {
-                IDescription description = newIpsObject.newDescription();
-                description.setLocale(language.getLocale());
-                modified = true;
-            }
-            if (newIpsObject.hasLabelSupport()) {
-                ILabel label = newIpsObject.newLabel();
-                label.setLocale(language.getLocale());
-                modified = true;
-            }
-            if (modified) {
-                modifiedIpsObjects.add(newIpsObject);
-            }
-        }
         finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
     }
 

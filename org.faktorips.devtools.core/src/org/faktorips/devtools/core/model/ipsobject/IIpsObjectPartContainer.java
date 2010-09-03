@@ -48,12 +48,16 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
     public IIpsSrcFile getIpsSrcFile();
 
     /**
-     * Returns whether this <tt>IIpsObjectPartContainer</tt> does support descriptions.
+     * Returns whether this <tt>IIpsObjectPartContainer</tt> does support descriptions. This
+     * operation is called by the constructor so it's crucial that the return value does not depend
+     * on any instance state.
      */
     public boolean hasDescriptionSupport();
 
     /**
-     * Returns whether this <tt>IIpsObjectPartContainer</tt> does support labels.
+     * Returns whether this <tt>IIpsObjectPartContainer</tt> does support labels. This operation is
+     * called by the constructor so it's crucial that the return value does not depend on any
+     * instance state.
      */
     public boolean hasLabelSupport();
 

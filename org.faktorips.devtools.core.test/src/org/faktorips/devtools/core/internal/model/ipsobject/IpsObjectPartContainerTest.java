@@ -89,19 +89,15 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         container = new TestIpsObjectPartContainer();
         model = (IpsModel)container.getIpsModel();
 
-        usDescription = container.newDescription();
-        usDescription.setLocale(Locale.US);
+        usDescription = container.getDescription(Locale.US);
         usDescription.setText("US Description");
-        germanDescription = container.newDescription();
-        germanDescription.setLocale(Locale.GERMAN);
+        germanDescription = container.getDescription(Locale.GERMAN);
         germanDescription.setText("German Description");
 
-        usLabel = container.newLabel();
-        usLabel.setLocale(Locale.US);
+        usLabel = container.getLabel(Locale.US);
         usLabel.setValue("foo");
         usLabel.setPluralValue("foos");
-        germanLabel = container.newLabel();
-        germanLabel.setLocale(Locale.GERMAN);
+        germanLabel = container.getLabel(Locale.GERMAN);
         germanLabel.setValue("bar");
         germanLabel.setPluralValue("bars");
     }
@@ -117,18 +113,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             }
         });
 
-        policyContainer.getIpsSrcFile().markAsClean();
         policyContainer.setDescription("new description");
-        assertEquals("", policyContainer.getDescription());
-        assertFalse(policyContainer.getIpsSrcFile().isDirty());
-
-        IDescription description = policyContainer.newDescription();
-        description.setLocale(Locale.US);
-        IDescription description2 = policyContainer.newDescription();
-        description2.setLocale(Locale.GERMAN);
-        policyContainer.setDescription("new description");
-        assertEquals("new description", policyContainer.getDescription(Locale.US).getText());
-        assertEquals("", policyContainer.getDescription(Locale.GERMAN).getText());
+        assertEquals("new description", policyContainer.getDescription(Locale.GERMAN).getText());
+        assertEquals("", policyContainer.getDescription(Locale.US).getText());
         assertTrue(policyContainer.getIpsSrcFile().isDirty());
         assertEquals(policyContainer.getIpsSrcFile(), lastEvent.getIpsSrcFile());
 
@@ -136,13 +123,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             container.setDescription(null);
             fail();
         } catch (IllegalArgumentException e) {
-        }
-
-        container.descriptionSupport = false;
-        try {
-            container.setDescription("lalala");
-            fail();
-        } catch (UnsupportedOperationException e) {
         }
     }
 
@@ -166,8 +146,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     @SuppressWarnings("deprecation")
     public void testIsDescriptionChangeable() {
         assertTrue(container.isDescriptionChangable());
-        container.descriptionSupport = false;
-        assertFalse(container.isDescriptionChangable());
     }
 
     public void testGetExtProperty() {
@@ -378,9 +356,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IPolicyCmptType type = this.newPolicyCmptType(rootFolder, "folder.TestProduct");
         memento = type.newMemento();
         type.newPolicyCmptTypeAttribute();
-        assertEquals(1, type.getChildren().length);
+        assertEquals(5, type.getChildren().length);
         type.setState(memento);
-        assertEquals(0, type.getChildren().length);
+        assertEquals(4, type.getChildren().length);
 
         IpsSrcFile file2 = new IpsSrcFile(null, IpsObjectType.POLICY_CMPT_TYPE.getFileName("file"));
         IIpsObject pdObject2 = new PolicyCmptType(file2);
@@ -392,7 +370,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Test method for IpsObjectPartContainer#validate(). Tests wether the validation is performed
+     * Test method for IpsObjectPartContainer#validate(). Tests whether the validation is performed
      * on <code>IpsObjectPartContainer</code>s contained in historic <code>IIpsSrcFile</code>s.
      */
     public void testValidate() throws CoreException {
@@ -505,10 +483,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testGetDescriptions() {
         Set<IDescription> descriptionSet = container.getDescriptions();
         assertEquals(2, descriptionSet.size());
-        assertTrue(descriptionSet.contains(usDescription));
-        assertTrue(descriptionSet.contains(germanDescription));
         try {
-            descriptionSet.remove(germanDescription);
+            descriptionSet.remove(descriptionSet.toArray(new IDescription[descriptionSet.size()]));
             fail();
         } catch (UnsupportedOperationException e) {
         }
@@ -517,10 +493,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testGetLabels() {
         Set<ILabel> labelSet = container.getLabels();
         assertEquals(2, labelSet.size());
-        assertTrue(labelSet.contains(usLabel));
-        assertTrue(labelSet.contains(germanLabel));
         try {
-            labelSet.remove(germanLabel);
+            labelSet.remove(labelSet.toArray(new ILabel[labelSet.size()])[0]);
             fail();
         } catch (UnsupportedOperationException e) {
         }
@@ -534,65 +508,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals("", container.getLastResortPluralLabel());
     }
 
-    public void testGetCurrentLabelIpsModelLocaleLabelExistent() {
-        ILabel modelLocaleLabel = container.getLabelForIpsModelLocale();
-        if (modelLocaleLabel == null) {
-            Locale ipsModelLocale = IpsPlugin.getDefault().getLocalizationLocale();
-            modelLocaleLabel = container.newLabel();
-            modelLocaleLabel.setLocale(ipsModelLocale);
-            modelLocaleLabel.setValue("squishibu");
-            modelLocaleLabel.setPluralValue("squishibus");
-        }
-        assertEquals(modelLocaleLabel.getValue(), container.getCurrentLabel());
-        assertEquals(modelLocaleLabel.getPluralValue(), container.getCurrentPluralLabel());
-    }
-
-    public void testGetCurrentLabelDefaultLocaleLabelExistent() {
-        ILabel modelLocaleLabel = container.getLabelForIpsModelLocale();
-        if (modelLocaleLabel != null) {
-            modelLocaleLabel.delete();
-        }
-        ILabel defaultLocaleLabel = container.getLabelForDefaultLocale();
-        if (defaultLocaleLabel == null) {
-            defaultLocaleLabel = container.newLabel();
-            defaultLocaleLabel.setLocale(Locale.GERMAN);
-            defaultLocaleLabel.setValue("zwirgbi");
-            defaultLocaleLabel.setPluralValue("zwirgbis");
-        }
-        assertEquals(defaultLocaleLabel.getValue(), container.getCurrentLabel());
-        assertEquals(defaultLocaleLabel.getPluralValue(), container.getCurrentPluralLabel());
-    }
-
-    public void testGetCurrentLabelLastResort() {
-        ILabel modelLocaleLabel = container.getLabelForIpsModelLocale();
-        if (modelLocaleLabel != null) {
-            modelLocaleLabel.delete();
-        }
-        ILabel defaultLocaleLabel = container.getLabelForDefaultLocale();
-        if (defaultLocaleLabel != null) {
-            defaultLocaleLabel.delete();
-        }
-        assertEquals(container.getLastResortLabel(), container.getCurrentLabel());
-        assertEquals(container.getLastResortPluralLabel(), container.getCurrentPluralLabel());
-    }
-
-    public void testGetLabelForIpsModelLocale() {
-        Locale ipsModelLocale = IpsPlugin.getDefault().getLocalizationLocale();
-        assertEquals(ipsModelLocale.getLanguage(), container.getLabelForIpsModelLocale().getLocale().getLanguage());
-    }
-
-    public void testGetLabelForDefaultLocale() {
-        Locale defaultLocale = Locale.GERMAN;
-        assertEquals(defaultLocale, container.getLabelForDefaultLocale().getLocale());
-    }
-
     class TestIpsObjectPartContainer extends AtomicIpsObjectPart {
 
         private String name;
 
         private int numOfUpdateSrcFileCalls;
-
-        private boolean descriptionSupport = true;
 
         public TestIpsObjectPartContainer() throws CoreException {
             super(newPolicyCmptType(ipsProject, "Parent"), "someId");
@@ -681,7 +601,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         public boolean hasDescriptionSupport() {
-            return descriptionSupport;
+            return true;
         }
 
         @Override

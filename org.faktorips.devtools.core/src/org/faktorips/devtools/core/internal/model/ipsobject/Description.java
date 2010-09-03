@@ -62,6 +62,10 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
         valueChanged(oldValue, locale);
     }
 
+    public void setLocaleWithoutChangeEvent(Locale locale) {
+        this.locale = locale;
+    }
+
     @Override
     public void setText(String text) {
         String oldValue = this.text;

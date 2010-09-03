@@ -67,6 +67,10 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
         valueChanged(oldValue, locale);
     }
 
+    public void setLocaleWithoutChangeEvent(Locale locale) {
+        this.locale = locale;
+    }
+
     @Override
     public void setPluralValue(String pluralValue) {
         String oldValue = this.pluralValue;

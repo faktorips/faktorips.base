@@ -102,13 +102,36 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     public IpsObjectPartContainer(IIpsElement parent, String name) {
         super(parent, name);
+        if (!(this instanceof ILabel || this instanceof IDescription)) {
+            initLabelsAndDescriptions();
+        }
     }
 
     /**
      * Only for testing purposes.
      */
     public IpsObjectPartContainer() {
-        super();
+        this(null, null);
+    }
+
+    private void initLabelsAndDescriptions() {
+        if (!(hasLabelSupport() || hasDescriptionSupport())) {
+            return;
+        }
+        IIpsProject ipsProject = getIpsProject();
+        if (ipsProject != null) {
+            for (ISupportedLanguage language : ipsProject.getProperties().getSupportedLanguages()) {
+                Locale locale = language.getLocale();
+                if (hasLabelSupport()) {
+                    Label label = (Label)newLabel();
+                    label.setLocaleWithoutChangeEvent(locale);
+                }
+                if (hasDescriptionSupport()) {
+                    Description description = (Description)newDescription();
+                    description.setLocaleWithoutChangeEvent(locale);
+                }
+            }
+        }
     }
 
     @Override
@@ -276,8 +299,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     private void checkExtProperty(String propertyId) {
         if (!isExtPropertyDefinitionAvailable(propertyId)) {
-            throw new IllegalArgumentException(
-                    "Extension property " + propertyId + " is not defined for type " + getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("Extension property " + propertyId + " is not defined for type "
+                    + getClass().getName());
         }
     }
 
@@ -315,7 +338,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             String propertyId = propertie.getPropertyId();
             valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID, propertyId);
             Object value = extPropertyValues.get(propertyId);
-            valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, value == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
+            valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, value == null ? "true" : "false");
             if (value != null) {
                 propertie.valueToXml(valueEl, value);
             }
@@ -454,8 +477,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
         IExtensionPropertyDefinition property = extPropertyDefinitions.get(propertyId);
         if (property == null) {
-            IpsPlugin.log(new IpsStatus(IStatus.WARNING,
-                    "Extension property " + propertyId + " for " + this + " is unknown")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Extension property " + propertyId + " for " + this
+                    + " is unknown"));
         }
 
         return property;
@@ -482,7 +505,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             } else {
                 boolean added = addPart(part);
                 if (!(added)) {
-                    throw new IllegalArgumentException("Could not re-add part " + part); //$NON-NLS-1$
+                    throw new IllegalArgumentException("Could not re-add part " + part);
                 }
             }
             // part might be null if the element does not represent a part!
@@ -676,14 +699,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         MessageList result = getValidationCache().getResult(this);
         if (result != null) {
             if (IpsModel.TRACE_VALIDATION) {
-                System.out.println("Validation of " + this + ": Got result from cache."); //$NON-NLS-1$ //$NON-NLS-2$
+                System.out.println("Validation of " + this + ": Got result from cache.");
             }
             return result;
         }
 
         if (IpsModel.TRACE_VALIDATION) {
             validationStartTime = System.currentTimeMillis();
-            System.out.println("Validation of " + this + ": Started."); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out.println("Validation of " + this + ": Started.");
         }
         return result;
     }
@@ -696,8 +719,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         validateExtensionProperties(result);
         validateChildren(result, ipsProject);
         if (IpsModel.TRACE_VALIDATION) {
-            System.out
-                    .println("Validation of " + this + ": Finished, took " + (System.currentTimeMillis() - validationStartTime) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("Validation of " + this + ": Finished, took "
+                    + (System.currentTimeMillis() - validationStartTime) + "ms.");
             validationStartTime = -1;
         }
         getValidationCache().putResult(this, result);
@@ -784,7 +807,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public void setState(Memento memento) {
         if (!memento.getOriginator().equals(this)) {
-            throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this);
         }
 
         initFromXml(((XmlMemento)memento).getState());
@@ -866,7 +889,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public String getCurrentPluralLabel() {
         if (!(isPluralLabelSupported())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Plural Labels."); //$NON-NLS-1$
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Plural Labels.");
         }
         return getCurrentLabel(true);
     }
@@ -930,7 +953,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * <tt>null</tt>.
      */
     protected String getLastResortPluralLabel() {
-        return ""; //$NON-NLS-1$
+        return "";
     }
 
     @Override
@@ -972,7 +995,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public ILabel newLabel() {
         if (!(hasLabelSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Labels."); //$NON-NLS-1$
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Labels.");
         }
         return newLabel(getNextPartId());
     }
@@ -981,7 +1004,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     public IDescription getDescription(Locale locale) {
         ArgumentCheck.notNull(locale);
         if (!(hasDescriptionSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions.");
         }
 
         for (IDescription description : descriptions) {
@@ -999,7 +1022,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public Set<IDescription> getDescriptions() {
         if (!(hasDescriptionSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions.");
         }
 
         return Collections.unmodifiableSet(descriptions);
@@ -1008,7 +1031,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public IDescription newDescription() {
         if (!(hasDescriptionSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions.");
         }
 
         return newDescription(getNextPartId());

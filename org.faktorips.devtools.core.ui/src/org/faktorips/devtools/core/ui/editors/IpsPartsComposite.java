@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -38,13 +37,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
@@ -506,12 +501,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             boolean dirty = file.isDirty();
             Memento memento = ipsObject.newMemento();
             IIpsObjectPart newPart = newIpsPart();
-            if (newPart.hasDescriptionSupport()) {
-                createDescriptionsForNewPart(newPart);
-            }
-            if (newPart.hasLabelSupport()) {
-                createLabelsForNewPart(newPart);
-            }
             EditDialog dialog = createEditDialog(newPart, getShell());
             if (dialog == null) {
                 return;
@@ -529,25 +518,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
 
         refresh();
-    }
-
-    private void createLabelsForNewPart(IIpsObjectPart newPart) {
-        for (ISupportedLanguage language : getSupportedLanguages(newPart)) {
-            ILabel label = newPart.newLabel();
-            label.setLocale(language.getLocale());
-        }
-    }
-
-    private void createDescriptionsForNewPart(IIpsObjectPart newPart) {
-        for (ISupportedLanguage language : getSupportedLanguages(newPart)) {
-            IDescription description = newPart.newDescription();
-            description.setLocale(language.getLocale());
-        }
-    }
-
-    private Set<ISupportedLanguage> getSupportedLanguages(IIpsObjectPart newPart) {
-        IIpsProjectProperties projectProperties = newPart.getIpsProject().getProperties();
-        return projectProperties.getSupportedLanguages();
     }
 
     protected void editPart() {
