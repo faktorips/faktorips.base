@@ -189,7 +189,8 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
             return;
         }
 
-        KeyValueTablePageElement extensionPropertiesTable = new KeyValueTablePageElement();
+        KeyValueTablePageElement extensionPropertiesTable = new KeyValueTablePageElement(Messages.AbstractIpsObjectContentPageElement_extensionPropertyKeyHeadline, Messages.AbstractIpsObjectContentPageElement_extensionPropertyValueHeadline);
+
         for (IExtensionPropertyDefinition iExtensionPropertyDefinition : properties) {
             Object extPropertyValue = getDocumentedIpsObject().getExtPropertyValue(
                     iExtensionPropertyDefinition.getPropertyId());
