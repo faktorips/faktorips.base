@@ -236,8 +236,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns the description of the given {@link IIpsObjectPartContainer} in the language of the
      * code generator.
      * <p>
-     * Returns an empty string if the given {@link IIpsObjectPartContainer} does not support
-     * descriptions.
+     * If there is no description in that locale, the description of the default language will be
+     * returned.
+     * <p>
+     * Returns an empty string if there is no default description as well or the given
+     * {@link IIpsObjectPartContainer} does not support descriptions.
      * 
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the description
      *            of.
@@ -252,6 +255,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     .getDescription(getLanguageUsedInGeneratedSourceCode());
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
+            } else {
+                description = IpsPlugin.getDefault().getDefaultDescription(ipsObjectPartContainer);
             }
         }
         return description;

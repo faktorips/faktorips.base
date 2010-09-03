@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -83,7 +84,11 @@ public abstract class JavaGeneratorForIpsPart {
      * Returns the description of the given {@link IIpsObjectPart} in the language of the code
      * generator.
      * <p>
-     * Returns an empty string if the given {@link IIpsObjectPart} does not support descriptions.
+     * If there is no description in that locale, the description of the default language will be
+     * returned.
+     * <p>
+     * Returns an empty string if there is no default description as well or the given
+     * {@link IIpsObjectPart} does not support descriptions.
      * 
      * @param ipsObjectPart The {@link IIpsObjectPart} to obtain the description of.
      * 
@@ -96,6 +101,8 @@ public abstract class JavaGeneratorForIpsPart {
             IDescription generatorDescription = ipsObjectPart.getDescription(getLanguageUsedInGeneratedSourceCode());
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
+            } else {
+                description = IpsPlugin.getDefault().getDefaultDescription(ipsObjectPart);
             }
         }
         return description;
