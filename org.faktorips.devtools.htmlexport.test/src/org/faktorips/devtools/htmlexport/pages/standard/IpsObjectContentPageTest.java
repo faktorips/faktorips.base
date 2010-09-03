@@ -27,10 +27,13 @@ import org.xml.sax.SAXException;
 
 public class IpsObjectContentPageTest extends AbstractHtmlExportTest {
     private class HtmlExportXmlUnitTest extends XMLTestCase {
-        public void test(String xPath, String xml) throws XpathException, IOException, SAXException {
-            String xmlWithoutDoctypeDeclaration = prepareXml(xml);
+        public void test(String xml, String... xPaths) throws XpathException, IOException, SAXException {
+            for (String xPath : xPaths) {
+                String xmlWithoutDoctypeDeclaration = prepareXml(xml);
 
-            assertXpathExists(xPath, xmlWithoutDoctypeDeclaration);
+                assertXpathExists(xPath, xmlWithoutDoctypeDeclaration);
+            }
+
         }
 
         private String prepareXml(String xml) {
@@ -59,7 +62,7 @@ public class IpsObjectContentPageTest extends AbstractHtmlExportTest {
 
     }
 
-    private void assertXPath(AbstractPageElement pageElement, final String xPath) throws Exception {
+    private void assertXPath(AbstractPageElement pageElement, String... xPath) throws Exception {
         pageElement.build();
 
         layouter.clear();
@@ -67,7 +70,7 @@ public class IpsObjectContentPageTest extends AbstractHtmlExportTest {
 
         String xml = new String(layouter.generate(), IGenerator.CHARSET);
 
-        new HtmlExportXmlUnitTest().test(xPath, xml);
+        new HtmlExportXmlUnitTest().test(xml, xPath);
 
     }
 }
