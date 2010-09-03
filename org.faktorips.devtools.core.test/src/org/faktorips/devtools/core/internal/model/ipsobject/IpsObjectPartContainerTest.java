@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -481,20 +480,20 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     public void testGetDescriptions() {
-        Set<IDescription> descriptionSet = container.getDescriptions();
-        assertEquals(2, descriptionSet.size());
+        List<IDescription> descriptionList = container.getDescriptions();
+        assertEquals(2, descriptionList.size());
         try {
-            descriptionSet.remove(descriptionSet.toArray(new IDescription[descriptionSet.size()]));
+            descriptionList.remove(descriptionList.get(0));
             fail();
         } catch (UnsupportedOperationException e) {
         }
     }
 
     public void testGetLabels() {
-        Set<ILabel> labelSet = container.getLabels();
-        assertEquals(2, labelSet.size());
+        List<ILabel> labelList = container.getLabels();
+        assertEquals(2, labelList.size());
         try {
-            labelSet.remove(labelSet.toArray(new ILabel[labelSet.size()])[0]);
+            labelList.remove(labelList.get(0));
             fail();
         } catch (UnsupportedOperationException e) {
         }

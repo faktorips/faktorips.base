@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.core.internal.migration;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFile;
@@ -97,10 +97,10 @@ public class Migration_3_0_0_rfinal extends DefaultMigration {
          * There is exactly one description or none, it has already been loaded by the XML
          * initialization process.
          */
-        Set<IDescription> descriptionSet = describedElement.getDescriptions();
+        List<IDescription> descriptionList = describedElement.getDescriptions();
         IDescription description;
-        if (descriptionSet.size() > 0) {
-            description = descriptionSet.toArray(new IDescription[1])[0];
+        if (descriptionList.size() > 0) {
+            description = descriptionList.get(0);
         } else {
             description = describedElement.newDescription();
         }

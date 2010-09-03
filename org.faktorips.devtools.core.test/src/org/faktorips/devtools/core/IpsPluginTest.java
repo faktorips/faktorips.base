@@ -50,6 +50,10 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType policyCmptType;
 
+    private IDescription germanDescription;
+
+    private IDescription usDescription;
+
     public IpsPluginTest() {
         super();
     }
@@ -71,6 +75,10 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
 
         policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy");
+        germanDescription = policyCmptType.getDescription(Locale.GERMAN);
+        germanDescription.setText("German");
+        usDescription = policyCmptType.getDescription(Locale.US);
+        usDescription.setText("US");
     }
 
     @Override
@@ -85,33 +93,29 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
     }
 
     public void testGetLocalizedDescriptionLocalizationLocaleDescriptionExistent() {
-        IDescription description = policyCmptType.newDescription();
-        description.setLocale(ipsPlugin.getLocalizationLocale());
+        IDescription description = policyCmptType.getDescription(ipsPlugin.getLocalizationLocale());
+        if (description == null) {
+            description = policyCmptType.newDescription();
+            description.setLocale(ipsPlugin.getLocalizationLocale());
+        }
         description.setText("foo");
 
         assertEquals("foo", ipsPlugin.getLocalizedDescription(policyCmptType));
     }
 
     public void testGetLocalizedDescriptionDefaultLocaleExistent() {
-        IDescription description = policyCmptType.newDescription();
-        description.setLocale(Locale.GERMAN);
-        description.setText("foo");
-
-        assertEquals("foo", ipsPlugin.getLocalizedDescription(policyCmptType));
+        usDescription.delete();
+        assertEquals(germanDescription.getText(), ipsPlugin.getLocalizedDescription(policyCmptType));
     }
 
     public void testGetLocalizedDescriptionNoneExistent() {
+        germanDescription.delete();
+        usDescription.delete();
         assertEquals("", ipsPlugin.getDefaultDescription(policyCmptType));
     }
 
     public void testGetDefaultDescription() {
-        assertEquals("", ipsPlugin.getDefaultDescription(policyCmptType));
-
-        IDescription description = policyCmptType.newDescription();
-        description.setLocale(Locale.GERMAN);
-        description.setText("foo");
-
-        assertEquals("foo", ipsPlugin.getDefaultDescription(policyCmptType));
+        assertEquals("German", ipsPlugin.getDefaultDescription(policyCmptType));
     }
 
     public void testIpsPreferencesInclListener() {
@@ -124,6 +128,15 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         assertEquals("-", listener.lastEvent.getNewValue());
     }
 
+    public void testGetIpsLoggingFrameworkConnectors() {
+        IIpsLoggingFrameworkConnector[] connectors = IpsPlugin.getDefault().getIpsLoggingFrameworkConnectors();
+        List<String> connectorIds = new ArrayList<String>();
+        for (IIpsLoggingFrameworkConnector connector : connectors) {
+            connectorIds.add(connector.getId());
+        }
+        assertTrue(connectorIds.contains("org.faktorips.devtools.core.javaUtilLoggingConnector"));
+    }
+
     class MyPropertyChangeListener implements IPropertyChangeListener {
 
         PropertyChangeEvent lastEvent;
@@ -132,15 +145,6 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         public void propertyChange(PropertyChangeEvent event) {
             lastEvent = event;
         }
-    }
-
-    public void testGetIpsLoggingFrameworkConnectors() {
-        IIpsLoggingFrameworkConnector[] connectors = IpsPlugin.getDefault().getIpsLoggingFrameworkConnectors();
-        List<String> connectorIds = new ArrayList<String>();
-        for (IIpsLoggingFrameworkConnector connector : connectors) {
-            connectorIds.add(connector.getId());
-        }
-        assertTrue(connectorIds.contains("org.faktorips.devtools.core.javaUtilLoggingConnector"));
     }
 
 }

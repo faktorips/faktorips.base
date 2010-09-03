@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -88,11 +87,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected final static String XML_ATTRIBUTE_ISNULL = "isNull"; //$NON-NLS-1$
 
-    /** Set containing all labels attached to the object part container. */
-    private final Set<ILabel> labels = new LinkedHashSet<ILabel>();
+    /** List containing all labels attached to the object part container. */
+    private final List<ILabel> labels = new ArrayList<ILabel>(2);
 
-    /** Set containing all descriptions attached to the object part container. */
-    private final Set<IDescription> descriptions = new LinkedHashSet<IDescription>();
+    /** List containing all descriptions attached to the object part container. */
+    private final List<IDescription> descriptions = new ArrayList<IDescription>(2);
 
     /** Map containing extension property IDs as keys and their values. */
     private HashMap<String, Object> extPropertyValues = null;
@@ -972,8 +971,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     @Override
-    public Set<ILabel> getLabels() {
-        return Collections.unmodifiableSet(labels);
+    public List<ILabel> getLabels() {
+        return Collections.unmodifiableList(labels);
     }
 
     @Override
@@ -1020,12 +1019,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     @Override
-    public Set<IDescription> getDescriptions() {
+    public List<IDescription> getDescriptions() {
         if (!(hasDescriptionSupport())) {
             throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
         }
-
-        return Collections.unmodifiableSet(descriptions);
+        return Collections.unmodifiableList(descriptions);
     }
 
     @Override
@@ -1033,7 +1031,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (!(hasDescriptionSupport())) {
             throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
         }
-
         return newDescription(getNextPartId());
     }
 
@@ -1056,11 +1053,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             throw new IllegalArgumentException();
         }
 
-        Set<IDescription> descriptionSet = getDescriptions();
-        if (descriptionSet.size() == 0) {
+        List<IDescription> descriptionList = getDescriptions();
+        if (descriptionList.size() == 0) {
             return;
         }
-        IDescription firstDescription = descriptionSet.toArray(new IDescription[descriptionSet.size()])[0];
+        IDescription firstDescription = descriptionList.get(0);
         firstDescription.setText(newDescription);
     }
 

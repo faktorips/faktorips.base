@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -46,9 +46,9 @@ public interface ILabeledElement {
     public ILabel getLabel(Locale locale);
 
     /**
-     * Returns an unmodifiable view on the set of labels this element currently has attached.
+     * Returns an unmodifiable view on the list of labels this element currently has attached.
      */
-    public Set<ILabel> getLabels();
+    public List<ILabel> getLabels();
 
     /**
      * Returns whether this element has a plural label.

@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.faktorips.devtools.core.model.Described;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -86,7 +86,7 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * @see #hasDescriptionSupport()
      */
     @Override
-    public Set<IDescription> getDescriptions();
+    public List<IDescription> getDescriptions();
 
     /**
      * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not

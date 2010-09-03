@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -44,9 +44,9 @@ public interface IDescribedElement extends IIpsElement {
     public IDescription getDescription(Locale locale);
 
     /**
-     * Returns an unmodifiable view on the set of descriptions of this element.
+     * Returns an unmodifiable view on the list of descriptions of this element.
      */
-    public Set<IDescription> getDescriptions();
+    public List<IDescription> getDescriptions();
 
     /**
      * Creates a new description for this element.
