@@ -45,8 +45,6 @@ class DescriptionPage extends IpsObjectEditorPage {
 
         private final IIpsProject ipsProject;
 
-        private DescriptionEditComposite descriptionEditComposite;
-
         private DescriptionSection(IDescribedElement describedElement, IIpsProject ipsProject, Composite parent,
                 UIToolkit toolkit) {
 
@@ -61,15 +59,12 @@ class DescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            descriptionEditComposite = new DescriptionEditComposite(client, describedElement, ipsProject, toolkit);
+            new DescriptionEditComposite(client, describedElement, ipsProject, toolkit);
         }
 
         @Override
         protected void performRefresh() {
-            if (describedElement == null) {
-                return;
-            }
-            descriptionEditComposite.refresh();
+            // Nothing to do
         }
 
     }

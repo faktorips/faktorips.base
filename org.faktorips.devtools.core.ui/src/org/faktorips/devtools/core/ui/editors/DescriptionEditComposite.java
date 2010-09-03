@@ -120,6 +120,15 @@ public class DescriptionEditComposite extends Composite {
             combo.select(defaultIndex);
         }
 
+        combo.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                refresh();
+            }
+
+        });
+
         return combo;
     }
 
