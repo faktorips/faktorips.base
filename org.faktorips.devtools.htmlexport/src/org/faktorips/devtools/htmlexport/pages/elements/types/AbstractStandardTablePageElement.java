@@ -48,7 +48,7 @@ public abstract class AbstractStandardTablePageElement extends TablePageElement 
      */
     public AbstractStandardTablePageElement() {
         super();
-        addLayouts(new RowTablePageElementLayout(0, Style.TABLE_HEADLINE));
+        addLayouts(RowTablePageElementLayout.HEADLINE);
         addLayouts(new AlternateRowTablePageElementLayout(true));
     }
 

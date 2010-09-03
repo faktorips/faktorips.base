@@ -18,6 +18,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.AlternateRowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RegexTablePageElementLayout;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.RowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
@@ -27,6 +28,19 @@ public class KeyValueTablePageElement extends TablePageElement {
         super(true);
         addLayouts(new AlternateRowTablePageElementLayout(false));
         addLayouts(new RegexTablePageElementLayout(".{1,3}", Style.CENTER)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an KeyValueTablePageElement with a headline
+     * 
+     */
+    public KeyValueTablePageElement(String keyHeadline, String valueHeadline) {
+        super(true);
+        addLayouts(RowTablePageElementLayout.HEADLINE);
+        addLayouts(new AlternateRowTablePageElementLayout(true));
+        addLayouts(new RegexTablePageElementLayout(".{1,3}", Style.CENTER)); //$NON-NLS-1$
+
+        addKeyValueRow(keyHeadline, valueHeadline);
     }
 
     /**
@@ -78,5 +92,4 @@ public class KeyValueTablePageElement extends TablePageElement {
         addSubElement(new TableRowPageElement(new PageElement[] { keyPageElement, valuePageElement }));
         return this;
     }
-
 }

@@ -23,6 +23,9 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
  * 
  */
 public class RowTablePageElementLayout extends DefaultTablePageElementLayout {
+
+    public final static RowTablePageElementLayout HEADLINE = new RowTablePageElementLayout(0, Style.TABLE_HEADLINE);
+
     private int[] rows;
     private Style[] styles;
 
