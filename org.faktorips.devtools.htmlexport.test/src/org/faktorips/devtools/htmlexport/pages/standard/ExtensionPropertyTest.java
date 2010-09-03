@@ -27,11 +27,6 @@ import org.faktorips.devtools.htmlexport.test.helper.ContainsTextTestLayouter;
 
 public class ExtensionPropertyTest extends AbstractHtmlExportTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
     private void addExtensionProperty(String id, String name, Class<?> type, String defaultValue) {
         IpsModel ipsModel = (IpsModel)ipsProject.getIpsModel();
         ExtensionPropertyDefinition property = new StringExtensionPropertyDefinition();
