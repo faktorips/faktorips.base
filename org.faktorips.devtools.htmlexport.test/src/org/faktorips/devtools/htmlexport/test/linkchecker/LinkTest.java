@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.htmlexport.test.documentor.AbstractFipsDocTest;
+import org.faktorips.devtools.htmlexport.test.documentor.AbstractHtmlExportTest;
 
-public class LinkTest extends AbstractFipsDocTest {
+public class LinkTest extends AbstractHtmlExportTest {
 
     public void testCheckLinks() throws CoreException, MalformedURLException {
 

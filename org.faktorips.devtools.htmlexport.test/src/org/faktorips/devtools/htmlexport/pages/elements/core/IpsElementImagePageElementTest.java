@@ -27,9 +27,9 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
-import org.faktorips.devtools.htmlexport.test.documentor.AbstractFipsDocTest;
+import org.faktorips.devtools.htmlexport.test.documentor.AbstractHtmlExportTest;
 
-public class IpsElementImagePageElementTest extends AbstractFipsDocTest {
+public class IpsElementImagePageElementTest extends AbstractHtmlExportTest {
 
     public void testPathPolicyCmptType() throws CoreException {
         PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$

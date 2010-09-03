@@ -26,18 +26,18 @@ import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 
-public abstract class AbstractFipsDocTest extends AbstractIpsPluginTest {
+public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
 
     protected String zielpfad;
     protected IIpsProject ipsProject;
     protected DocumentorConfiguration config;
     protected HtmlExportOperation operation;
 
-    public AbstractFipsDocTest() {
+    public AbstractHtmlExportTest() {
         super();
     }
 
-    public AbstractFipsDocTest(String name) {
+    public AbstractHtmlExportTest(String name) {
         super(name);
     }
 

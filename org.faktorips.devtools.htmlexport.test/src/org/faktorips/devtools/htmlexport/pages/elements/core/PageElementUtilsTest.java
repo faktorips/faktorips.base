@@ -19,9 +19,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.htmlexport.test.documentor.AbstractFipsDocTest;
+import org.faktorips.devtools.htmlexport.test.documentor.AbstractHtmlExportTest;
 
-public class PageElementUtilsTest extends AbstractFipsDocTest {
+public class PageElementUtilsTest extends AbstractHtmlExportTest {
     private static final String TARGET = "target"; //$NON-NLS-1$
 
     public void testCreateLinkPageElementAllTypesDocumented() throws CoreException {
