@@ -57,7 +57,6 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     private IStructuredSelection selection;
 
     private UIToolkit toolkit = new UIToolkit(null);
-    // TODO private Checkbox includeReferencedProjects;
     private Combo destinationNamesCombo;
     private Checkbox showValidationErrorsCheckBox;
 
@@ -65,7 +64,8 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         super(PAGE_NAME);
         this.selection = selection;
         IProject project = getProject();
-        String projectName = project != null ? project.getName() : "No project selected";
+        String projectName = project != null ? project.getName()
+                : Messages.IpsProjectHtmlExportWizardPage_noProjectSelected;
         setTitle(Messages.IpsProjectHtmlExportWizardPage_projectName + projectName);
         setDescription(Messages.IpsProjectHtmlExportWizardPage_description);
 
@@ -74,14 +74,12 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     @Override
     protected boolean allowNewContainerName() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public void handleEvent(Event event) {
-        // TODO Auto-generated method stub
-
+        // nothing to do
     }
 
     @Override
@@ -90,9 +88,6 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         composite.setLayout(new GridLayout(1, true));
 
         createDestinationGroup(composite);
-
-        // TODO includeReferencedProjects = toolkit.createCheckbox(composite,
-        // "Include referenced Projects");
 
         showValidationErrorsCheckBox = toolkit.createCheckbox(composite,
                 Messages.IpsProjectHtmlExportWizardPage_showValidationErrors);
@@ -203,7 +198,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     public boolean isIncludingReferencedProjects() {
-        return true; // TODO includeReferencedProjects.isChecked();
+        return true;
     }
 
     private void canFinish() {
