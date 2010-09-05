@@ -17,7 +17,6 @@ import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -25,7 +24,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 
 public class DescriptionTest extends AbstractIpsPluginTest {
 
@@ -60,21 +58,18 @@ public class DescriptionTest extends AbstractIpsPluginTest {
         assertEquals("", description.getText());
     }
 
-    public void testXml() throws ParserConfigurationException, CoreException {
+    public void testXml() throws ParserConfigurationException {
         description.setLocale(Locale.ENGLISH);
         description.setText("foo");
 
-        Element xmlElement = policyCmptType.toXml(createXmlDocument(IDescription.XML_TAG_NAME));
-        Node descriptionNode = xmlElement.getChildNodes().item(0).getChildNodes().item(2);
-        NamedNodeMap descriptionAttributes = descriptionNode.getAttributes();
+        Element xmlElement = description.toXml(createXmlDocument(IDescription.XML_TAG_NAME));
+        NamedNodeMap descriptionAttributes = xmlElement.getAttributes();
         assertEquals(Locale.ENGLISH.getLanguage(), descriptionAttributes.getNamedItem(IDescription.PROPERTY_LOCALE)
                 .getTextContent());
-        assertEquals("foo", descriptionNode.getTextContent());
+        assertEquals("foo", xmlElement.getTextContent());
 
-        IPolicyCmptType loadedPolicyCmptType = newPolicyCmptType(ipsProject, "LoadedPolicy");
-        loadedPolicyCmptType.initFromXml(xmlElement);
-        IDescription loadedDescription = loadedPolicyCmptType.getAttributes()[0].getDescriptions().toArray(
-                new IDescription[1])[0];
+        IDescription loadedDescription = policyCmptType.newDescription();
+        loadedDescription.initFromXml(xmlElement);
         assertEquals(Locale.ENGLISH, loadedDescription.getLocale());
         assertEquals("foo", loadedDescription.getText());
     }

@@ -90,21 +90,20 @@ public class LabelTest extends AbstractIpsPluginTest {
         assertEquals(0, validationMessages.getNoOfMessages());
     }
 
-    public void testXml() throws ParserConfigurationException, CoreException {
+    public void testXml() throws ParserConfigurationException {
         label.setLocale(Locale.ENGLISH);
         label.setValue("foo");
         label.setPluralValue("bar");
 
-        Element xmlElement = policyCmptType.toXml(createXmlDocument(ILabel.XML_TAG_NAME));
-        NamedNodeMap labelAttributes = xmlElement.getChildNodes().item(0).getChildNodes().item(2).getAttributes();
+        Element xmlElement = label.toXml(createXmlDocument(ILabel.XML_TAG_NAME));
+        NamedNodeMap labelAttributes = xmlElement.getAttributes();
         assertEquals(Locale.ENGLISH.getLanguage(), labelAttributes.getNamedItem(ILabel.PROPERTY_LOCALE)
                 .getTextContent());
         assertEquals("foo", labelAttributes.getNamedItem(ILabel.PROPERTY_VALUE).getTextContent());
         assertEquals("bar", labelAttributes.getNamedItem(ILabel.PROPERTY_PLURAL_VALUE).getTextContent());
 
-        IPolicyCmptType loadedPolicyCmptType = newPolicyCmptType(ipsProject, "LoadedPolicy");
-        loadedPolicyCmptType.initFromXml(xmlElement);
-        ILabel loadedLabel = loadedPolicyCmptType.getAttributes()[0].getLabels().toArray(new ILabel[1])[0];
+        ILabel loadedLabel = policyCmptType.newLabel();
+        loadedLabel.initFromXml(xmlElement);
         assertEquals(Locale.ENGLISH, loadedLabel.getLocale());
         assertEquals("foo", loadedLabel.getValue());
         assertEquals("bar", loadedLabel.getPluralValue());
