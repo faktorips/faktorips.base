@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -165,9 +164,8 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     protected abstract Composite createWorkAreaThis(Composite parent);
 
     private TabItem createDescriptionTabItem(TabFolder folder) {
-        IIpsProject ipsProject = part.getIpsProject();
         IDescribedElement describedElement = part;
-        Composite editComposite = new DescriptionEditComposite(folder, describedElement, ipsProject, uiToolkit);
+        Composite editComposite = new DescriptionEditComposite(folder, describedElement, uiToolkit);
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemDescription);

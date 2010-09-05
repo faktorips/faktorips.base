@@ -60,6 +60,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
+import org.faktorips.devtools.core.ui.actions.CleanUpAction;
 import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
@@ -167,8 +168,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Creates this parts' context menu in the given MenuManager dynamically. The context menu and
      * its elements depend on the current selection and the <tt>ModelExplorerConfiguration</tt>.
      */
@@ -391,23 +390,23 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {
-        if (selected instanceof IIpsElement) {
-            if (selected instanceof IIpsProject) {
-                IIpsProject ipsProject = (IIpsProject)selected;
-                manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource()));
-                // Show migration option only for the model explorer
-                if (modelExplorer.isModelExplorer()) {
-                    try {
-                        AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
-                                .getMigrationOperation(ipsProject);
-                        MigrateProjectAction migrateAction = new MigrateProjectAction(viewSite.getWorkbenchWindow(),
-                                selection);
-                        migrateAction.setEnabled(!(migrationOperation.isEmpty()));
-                        manager.add(migrateAction);
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
-                    }
+        if (selected instanceof IIpsProject) {
+            IIpsProject ipsProject = (IIpsProject)selected;
+            manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource()));
+
+            if (modelExplorer.isModelExplorer()) {
+                try {
+                    AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
+                            .getMigrationOperation(ipsProject);
+                    MigrateProjectAction migrateAction = new MigrateProjectAction(viewSite.getWorkbenchWindow(),
+                            selection);
+                    migrateAction.setEnabled(!(migrationOperation.isEmpty()));
+                    manager.add(migrateAction);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
                 }
+
+                manager.add(new CleanUpAction(treeViewer, viewSite.getShell()));
             }
         } else {
             if (selected instanceof IProject) {

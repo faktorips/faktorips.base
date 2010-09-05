@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
@@ -36,22 +35,17 @@ class DescriptionPage extends IpsObjectEditorPage {
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
-        new DescriptionSection(getIpsObject(), getIpsObject().getIpsProject(), formBody, toolkit);
+        new DescriptionSection(getIpsObject(), formBody, toolkit);
     }
 
     private static class DescriptionSection extends IpsSection {
 
         private final IDescribedElement describedElement;
 
-        private final IIpsProject ipsProject;
-
-        private DescriptionSection(IDescribedElement describedElement, IIpsProject ipsProject, Composite parent,
-                UIToolkit toolkit) {
-
+        private DescriptionSection(IDescribedElement describedElement, Composite parent, UIToolkit toolkit) {
             super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
             this.describedElement = describedElement;
-            this.ipsProject = ipsProject;
 
             initControls();
             setText(Messages.DescriptionSection_description);
@@ -59,7 +53,7 @@ class DescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            new DescriptionEditComposite(client, describedElement, ipsProject, toolkit);
+            new DescriptionEditComposite(client, describedElement, toolkit);
         }
 
         @Override

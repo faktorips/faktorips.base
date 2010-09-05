@@ -198,4 +198,7 @@ public class Messages extends NLS {
 
     public static String CreateMissingEnumContentsAction_text;
 
+    public static String CleanUpAction_text;
+    public static String CleanUpAction_progressTask;
+
 }

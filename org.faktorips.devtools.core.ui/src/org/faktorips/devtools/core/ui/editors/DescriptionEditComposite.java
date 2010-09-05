@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -29,7 +28,7 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
@@ -52,8 +51,6 @@ public class DescriptionEditComposite extends Composite {
 
     private final Text textArea;
 
-    private final Set<ISupportedLanguage> supportedLanguages;
-
     /** A map that associates language names to their language codes. */
     private final Map<String, String> languageCodes;
 
@@ -62,23 +59,18 @@ public class DescriptionEditComposite extends Composite {
 
     private boolean viewOnly;
 
-    public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, IIpsProject ipsProject,
-            UIToolkit uiToolkit) {
-
+    public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit) {
         super(parent, SWT.NONE);
-
-        languageCodes = new HashMap<String, String>();
 
         this.uiToolkit = uiToolkit;
         this.describedElement = describedElement;
 
-        supportedLanguages = ipsProject.getProperties().getSupportedLanguages();
-        for (ISupportedLanguage language : supportedLanguages) {
-            Locale locale = language.getLocale();
-            if (locale == null) {
-                continue;
+        languageCodes = new HashMap<String, String>();
+        for (IDescription description : describedElement.getDescriptions()) {
+            Locale locale = description.getLocale();
+            if (locale != null) {
+                languageCodes.put(locale.getDisplayLanguage(), locale.getLanguage());
             }
-            languageCodes.put(language.getLanguageName(), locale.getLanguage());
         }
 
         createLayout();
@@ -103,16 +95,19 @@ public class DescriptionEditComposite extends Composite {
         Combo combo = uiToolkit.createCombo(this);
 
         int defaultIndex = -1;
-        for (int i = 0; i < supportedLanguages.size(); i++) {
-            ISupportedLanguage language = supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages.size()])[i];
-            String languageName = language.getLanguageName();
+        int i = 0;
+        for (String languageName : languageCodes.keySet()) {
             String languageCode = languageCodes.get(languageName);
-            if (languageCode != null) {
-                combo.add(languageName + " (" + languageCode + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+            combo.add(languageName + " (" + languageCode + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            IIpsProjectProperties properties = describedElement.getIpsProject().getProperties();
+            ISupportedLanguage language = properties.getSupportedLanguage(new Locale(languageCode));
+            if (language != null) {
+                if (language.isDefaultLanguage()) {
+                    defaultIndex = i;
+                }
             }
-            if (language.isDefaultLanguage()) {
-                defaultIndex = i;
-            }
+            i++;
         }
 
         // Preselect the default language if available

@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.util.ArgumentCheck;
@@ -125,10 +124,9 @@ public abstract class IpsPartEditDialog extends EditDialog {
     }
 
     private TabItem createDescriptionTabItem(TabFolder folder) {
-        IIpsProject ipsProject = part.getIpsProject();
         IDescribedElement describedElement = part;
         DescriptionEditComposite descriptionEditComposite = new DescriptionEditComposite(folder, describedElement,
-                ipsProject, uiToolkit);
+                uiToolkit);
         descriptionEditComposite.setViewOnly(!(descriptionEnabled));
 
         TabItem item = new TabItem(folder, SWT.NONE);
