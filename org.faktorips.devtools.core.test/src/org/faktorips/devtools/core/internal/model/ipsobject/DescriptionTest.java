@@ -65,7 +65,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
         description.setText("foo");
 
         Element xmlElement = policyCmptType.toXml(createXmlDocument(IDescription.XML_TAG_NAME));
-        Node descriptionNode = xmlElement.getChildNodes().item(1).getChildNodes().item(2);
+        Node descriptionNode = xmlElement.getChildNodes().item(0).getChildNodes().item(2);
         NamedNodeMap descriptionAttributes = descriptionNode.getAttributes();
         assertEquals(Locale.ENGLISH.getLanguage(), descriptionAttributes.getNamedItem(IDescription.PROPERTY_LOCALE)
                 .getTextContent());

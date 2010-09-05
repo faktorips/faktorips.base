@@ -96,7 +96,7 @@ public class LabelTest extends AbstractIpsPluginTest {
         label.setPluralValue("bar");
 
         Element xmlElement = policyCmptType.toXml(createXmlDocument(ILabel.XML_TAG_NAME));
-        NamedNodeMap labelAttributes = xmlElement.getChildNodes().item(1).getChildNodes().item(2).getAttributes();
+        NamedNodeMap labelAttributes = xmlElement.getChildNodes().item(0).getChildNodes().item(2).getAttributes();
         assertEquals(Locale.ENGLISH.getLanguage(), labelAttributes.getNamedItem(ILabel.PROPERTY_LOCALE)
                 .getTextContent());
         assertEquals("foo", labelAttributes.getNamedItem(ILabel.PROPERTY_VALUE).getTextContent());
