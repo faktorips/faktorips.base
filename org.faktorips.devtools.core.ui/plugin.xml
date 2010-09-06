@@ -216,10 +216,6 @@
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.faktorips.devtools.core.launchIpsTest.debug">
       </command>
-      <command
-            id="org.faktorips.devtools.core.ui.commands.cleanUpTranslations"
-            name="%cleanUpTranslationsCommand">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -361,6 +357,42 @@
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
         <objectContribution
+              id="cleanUpTranslations"
+              objectClass="org.eclipse.core.runtime.IAdaptable">
+           <menu
+                 id="faktorIPSMenu"
+                 label="%faktorIPSMenu">
+              <groupMarker
+                    name="faktorIpsGroup">
+              </groupMarker>
+           </menu>
+           <menu
+                 id="cleanUpMenu"
+                 label="%cleanUpMenu"
+                 path="faktorIPSMenu/faktorIpsGroup">
+              <separator
+                    name="main">
+              </separator>
+           </menu>
+           <visibility>
+              <or>
+                 <objectClass
+                       name="org.eclipse.core.resources.IResource">
+                 </objectClass>
+                 <objectClass
+                       name="org.eclipse.jdt.core.IJavaProject">
+                 </objectClass>
+              </or>
+           </visibility>
+           <action
+                 class="org.faktorips.devtools.core.ui.actions.CleanUpTranslationsAction"
+                 enablesFor="*"
+                 id="cleanUpTranslationsAction"
+                 label="%cleanUpTranslationsAction"
+                 menubarPath="faktorIPSMenu/cleanUpMenu/main">
+           </action>
+        </objectContribution>
+        <objectContribution
               id="createMissingEnumContents"
               objectClass="org.eclipse.core.runtime.IAdaptable">
            <menu
@@ -369,6 +401,14 @@
                  path="additions">
               <separator
                     name="faktorIpsGroup">
+              </separator>
+           </menu>
+           <menu
+                 id="cleanUpMenu"
+                 label="%cleanUpMenu"
+                 path="faktorIPSMenu/faktorIpsGroup">
+              <separator
+                    name="main">
               </separator>
            </menu>
            <visibility>
@@ -387,10 +427,45 @@
                  icon="icons/CreateMissingEnumContents.gif"
                  id="createMissingEnumContentsAction"
                  label="%createMissingEnumContentsAction"
-                 menubarPath="faktorIPSMenu/faktorIpsGroup"
+                 menubarPath="faktorIPSMenu/cleanUpMenu/main"
                  tooltip="%createMissingEnumContentsAction.tooltip">
            </action>
-        </objectContribution>  
+        </objectContribution>
+    	<objectContribution id="fixDifferencesAction" objectClass="org.eclipse.core.runtime.IAdaptable">
+            <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
+			    <separator name="faktorIpsGroup"/>
+            </menu>
+            <menu
+                  id="cleanUpMenu"
+                  label="%cleanUpMenu"
+                  path="faktorIPSMenu/faktorIpsGroup">
+               <separator
+                     name="main">
+               </separator>
+            </menu>
+	    	<action
+            class="org.faktorips.devtools.core.ui.wizards.fixdifferences.OpenFixDifferencesToModelWizardAction"
+            enablesFor="*"
+            icon="icons/FixDifferencesToModel.gif"
+            id="fixDifferencesAction"
+            label="%fixDifferencesAction"
+            menubarPath="faktorIPSMenu/cleanUpMenu/main">
+	            <enablement>
+		             <or>
+			              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
+			              <objectClass name="org.eclipse.core.resources.IResource"/>
+			              <objectClass name="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport"/>
+		             </or>
+	            </enablement> 
+            </action>
+		      <visibility>
+	             <or>
+		              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
+		              <objectClass name="org.eclipse.core.resources.IResource"/>
+		              <objectClass name="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport"/>
+	             </or>
+		      </visibility> 
+    	</objectContribution>  
 		<objectContribution id="addIpsNature" objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
 			    <separator name="faktorIpsGroup"/>
@@ -414,33 +489,6 @@
    </visibility>
 		  		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
 		</objectContribution>
-    	<objectContribution id="fixDifferencesAction" objectClass="org.eclipse.core.runtime.IAdaptable">
-            <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
-			    <separator name="faktorIpsGroup"/>
-            </menu>
-	    	<action
-            class="org.faktorips.devtools.core.ui.wizards.fixdifferences.OpenFixDifferencesToModelWizardAction"
-            enablesFor="*"
-            icon="icons/FixDifferencesToModel.gif"
-            id="fixDifferencesAction"
-            label="%fixDifferencesAction"
-            menubarPath="faktorIPSMenu/faktorIpsGroup">
-	            <enablement>
-		             <or>
-			              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
-			              <objectClass name="org.eclipse.core.resources.IResource"/>
-			              <objectClass name="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport"/>
-		             </or>
-	            </enablement> 
-            </action>
-		      <visibility>
-	             <or>
-		              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
-		              <objectClass name="org.eclipse.core.resources.IResource"/>
-		              <objectClass name="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport"/>
-	             </or>
-		      </visibility> 
-    	</objectContribution>
         <objectContribution id="migrateIpsProject"
             objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
@@ -1307,33 +1355,6 @@
             </count>
          </enabledWhen>
       </handler>
-      <handler
-            class="org.faktorips.devtools.core.ui.handlers.CleanUpTranslationsHandler"
-            commandId="org.faktorips.devtools.core.ui.commands.cleanUpTranslations">
-         <enabledWhen>
-            <with
-                  variable="selection">
-               <iterate
-                     ifEmpty="false"
-                     operator="or">
-                  <adapt
-                        type="org.eclipse.core.runtime.IAdaptable">
-                     <or>
-                        <instanceof
-                              value="org.eclipse.core.resources.IResource">
-                        </instanceof>
-                        <instanceof
-                              value="org.eclipse.jdt.core.IJavaElement">
-                        </instanceof>
-                        <instanceof
-                              value="org.faktorips.devtools.core.model.IIpsElement">
-                        </instanceof>
-                     </or>
-                  </adapt>
-               </iterate>
-            </with>
-         </enabledWhen>
-      </handler>
    </extension>
 
    <extension
@@ -1349,28 +1370,6 @@
    
       <extension
          point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
-         <menu
-               label="%faktorIPSMenu">
-            <menu
-                  label="%cleanUpMenu">
-               <command
-                     commandId="org.faktorips.devtools.core.ui.commands.cleanUpTranslations"
-                     label="%cleanUpTranslationsCommand"
-                     style="push">
-               </command>
-            </menu>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            locationURI="popup:org.faktorips.devtools.core.ui.views.modelexplorer.cleanup">
-         <command
-               commandId="org.faktorips.devtools.core.ui.commands.cleanUpTranslations"
-               label="%cleanUpTranslationsCommand"
-               style="push">
-         </command>
-      </menuContribution>
       <menuContribution
             locationURI="popup:org.faktorips.devtools.core.ui.views.modelexplorer.refactoring">
          <command

@@ -60,6 +60,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
+import org.faktorips.devtools.core.ui.actions.CleanUpTranslationsAction;
 import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
@@ -462,9 +463,11 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         if (selected instanceof IIpsElement) {
             MenuManager cleanUpMenu = new MenuManager(Messages.ModelExplorer_submenuCleanUp,
                     "org.faktorips.devtools.core.ui.views.modelexplorer.cleanup"); //$NON-NLS-1$
-            // Commands added via extension point org.eclipse.ui.menus
             createFixDifferencesAction(cleanUpMenu, selected, (IStructuredSelection)treeViewer.getSelection());
             cleanUpMenu.add(new CreateMissingEnumContentsAction(treeViewer, viewSite.getWorkbenchWindow()));
+            if (modelExplorer.isModelExplorer()) {
+                cleanUpMenu.add(new CleanUpTranslationsAction(treeViewer, viewSite.getWorkbenchWindow()));
+            }
             manager.add(cleanUpMenu);
         }
     }
