@@ -56,16 +56,19 @@ public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
     }
 
     public void testBuild() throws CoreException {
+        assertFalse(getContentsFile().exists());
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertTrue(getContentsFile().exists());
     }
 
-    private IJavaPackageStructure getPackageStructure() throws CoreException {
+    private IJavaPackageStructure getPackageStructure() {
         return project.getIpsArtefactBuilderSet();
     }
 
     public void testDelete() throws CoreException {
+        assertFalse(getContentsFile().exists());
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        assertTrue(getContentsFile().exists());
         contents.getIpsSrcFile().getCorrespondingFile().delete(true, null);
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertFalse(getContentsFile().exists());
